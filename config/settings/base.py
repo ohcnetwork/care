@@ -4,9 +4,7 @@ Base settings to build other settings files upon.
 
 import environ
 
-ROOT_DIR = (
-    environ.Path(__file__) - 3
-)  # (care/config/settings/base.py - 3 = care/)
+ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
 
 env = environ.Env()
@@ -42,9 +40,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres:///care")
-}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # URLS
@@ -93,6 +89,10 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
+
+ACCOUNT_FORMS = {"signup": "users.forms.CustomSignupForm"}
+
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
@@ -271,3 +271,9 @@ SOCIALACCOUNT_ADAPTER = "care.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+
+ACCOUNT_EMAIL_VERIFICATION = False
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+

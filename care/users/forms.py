@@ -28,3 +28,25 @@ class UserCreationForm(forms.UserCreationForm):
             return username
 
         raise ValidationError(self.error_messages["duplicate_username"])
+
+
+from django.contrib.auth.forms import UserCreationForm
+
+
+class CustomSignupForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "district",
+            "user_type",
+            "phone_number",
+            "gender",
+            "age",
+            "skill",
+            "password1",
+            "password2",
+        )
