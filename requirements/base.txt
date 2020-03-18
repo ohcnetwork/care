@@ -4,6 +4,8 @@ Pillow==7.0.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==19.2.0  # https://github.com/hynek/argon2_cffi
 whitenoise==5.0.1  # https://github.com/evansd/whitenoise
 redis==3.4.1 # https://github.com/andymccurdy/redis-py
+boto3==1.12.23 # For AWS interactions
+collectfast==2.1.0 # For Caching Static Files Hashes
 
 # Django
 # ------------------------------------------------------------------------------
@@ -13,3 +15,5 @@ django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
 django-allauth==0.41.0  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.9.0  # https://github.com/django-crispy-forms/django-crispy-forms
 django-redis==4.11.0  # https://github.com/niwinz/django-redis
+django-storages==1.9.1 # For Storing Static Files in AWS
+
