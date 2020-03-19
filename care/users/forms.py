@@ -50,3 +50,4 @@ class CustomSignupForm(UserCreationForm):
             "password1",
             "password2",
         )
+
