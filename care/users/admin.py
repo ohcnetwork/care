@@ -14,7 +14,7 @@ class UserAdmin(auth_admin.UserAdmin):
     add_form = UserCreationForm
     fieldsets = (("User", {"fields": ("user_type",)}),) + auth_admin.UserAdmin.fieldsets
     list_display = ["username", "is_superuser"]
-    search_fields = []
+    search_fields = ['first_name', 'last_name']
 
 
 admin.site.register(Skill)
