@@ -8,7 +8,22 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 TYPE_CHOICES = [(5, "Doctor"), (10, "Staff"), (15, "Patient"), (20, "Volunteer")]
 
-DISTRICT_CHOICES = [(1, "Trivandrum"), (2, "Alappuzha")]
+DISTRICT_CHOICES = [
+    (1, "Thiruvananthapuram"),
+    (2, "Kollam"),
+    (3, "Pathanamthitta"),
+    (4, "Alappuzha"),
+    (5, "Kottayam"),
+    (6, "Idukki"),
+    (7, "Ernakulam"),
+    (8, "Thrissur"),
+    (9, "Palakkad"),
+    (10, "Malappuram"),
+    (11, "Kozhikode"),
+    (12, "Wayanad"),
+    (13, "Kannur"),
+    (14, "Kasaragod"),
+]
 
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
 
