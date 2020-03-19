@@ -19,6 +19,7 @@ class FacilityCreation(LoginRequiredMixin, View):
             form = self.form_class()
             return render(request, self.template, {"form": form})
         except Exception as e:
+            print(e)
             return HttpResponseRedirect("")
 
     def post(self, request):
@@ -32,6 +33,7 @@ class FacilityCreation(LoginRequiredMixin, View):
                 )
             return render(request, self.template, {"form": form})
         except Exception as e:
+            print(e)
             return HttpResponseRedirect("")
 
 

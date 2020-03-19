@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import FacilityCreation, FacilityCapacityCreation
 
-app_name = "users"
+app_name = "facility"
 urlpatterns = [
     path("create/", FacilityCreation.as_view(), name="facility-create"),
     path(
