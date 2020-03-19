@@ -44,6 +44,9 @@ class FacilityCapacity(DateBaseModel):
     room_type = models.IntegerField(choices=ROOM_TYPES)
     capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
+    class Meta:
+        unique_together = ["facility", "room_type"]
+
 
 class FacilityStaff(DateBaseModel):
     facility = models.ForeignKey(
