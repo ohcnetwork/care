@@ -29,6 +29,9 @@ class Facility(DateBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self):
         return self.name

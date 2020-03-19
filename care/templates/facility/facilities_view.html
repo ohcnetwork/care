@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+{% for i in data  %}
+<h1><a href="/facility/{{i.id}}"> {{i.name}} </a></h1>
+{% endfor %}
+
+{% endblock %}

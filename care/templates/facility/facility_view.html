@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+<h1>{{facility.name}}</h1>
+{% for i in data  %}
+<h2> {{i.get_room_type_display}} - {{i.capacity}} <a href="/facility/{{facility.id}}/capacity/{{i.id}}"> Update </a>
+</h2>
+{% endfor %}
+<a href="/facility/{{facility.id}}/capacity/add">Add More Rooms</a>
+{% endblock %}
