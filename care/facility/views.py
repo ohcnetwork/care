@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.views import View
 
@@ -68,7 +68,7 @@ class FacilityCapacityCreation(View):
                         "/facility/{}/capacity/add".format(facility_obj.id)
                     )
                 else:
-                    return HttpResponseRedirect("")
+                    return redirect("home")
             return render(
                 request, self.template, {"form": form, "duplicate": duplicate}
             )

@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% load static i18n %}
 {% block content %}
-  <h1> Welcome to CARE </h1>
-  <p> CARE is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified Corona Safe Network so that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare capacity.</p>
+<h1> Welcome to CARE </h1>
+<p> CARE is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified Corona Safe Network so
+  that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare
+  capacity.</p>
 
-  {% if request.user.is_authenticated %}
+{% if request.user.is_authenticated %}
 <!-- For views to come -->
-  {% else %}
-    <div class="row mt-4">
-    <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-      <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'account_signup' %}">{% trans "SIGN UP" %}</a>
-    </div>
-    <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-      <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'account_login' %}">{% trans "SIGN IN" %}</a>
-    </div>
-    </div>
-  {% endif %}
+{% else %}
+<div class="row mt-4">
+  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+    <a id="sign-up-link" class="p-4 nav-link text-primary h4">{% trans "SIGN UP" %}</a>
+  </div>
+  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+    <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
+  </div>
+</div>
+{% endif %}
 
 {% endblock content %}
