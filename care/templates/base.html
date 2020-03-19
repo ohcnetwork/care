@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Care{% endblock title %}</title>
+    <title>{% block title %}CARE{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -16,30 +16,31 @@
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
     {% block css %}
-    
+
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+
 
     <!-- Your stuff: Third-party CSS libraries go here -->
-    
+
     <!-- This file stores project-specific CSS -->
-    
+
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-    
-    
+    <link href="{% static 'css/custom.min.css' %}" rel="stylesheet">
+
+
     {% endblock %}
 
   </head>
 
-  <body>
+  <body class="bg-gray-100 d-flex flex-column vh-100">
 
     <div class="mb-1">
-      <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <nav class="navbar navbar-expand-md navbar-light bg-white">
+        <a class="navbar-brand" href="{% url 'home' %}">CARE</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'home' %}">Care</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
@@ -74,7 +75,7 @@
 
     </div>
 
-    <div class="container">
+    <div class="container py-xl-5 py-4 px-3">
 
       {% if messages %}
           {% for message in messages %}
@@ -83,8 +84,7 @@
       {% endif %}
 
       {% block content %}
-        <h1> Care.coronasafe.network </h1>
-        <p> Care is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified Corona Safe Network so that the Kerala Chief Ministers Office has direct access to live reports of health data v/s our total. healthcare capacity</p>
+
       {% endblock content %}
 
     </div> <!-- /container -->
@@ -95,21 +95,31 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     {% block javascript %}
-      
+
       <!-- Bootstrap JS and its dependencies-->
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
       <!-- Your stuff: Third-party javascript libraries go here -->
-      
+
 
       <!-- place project specific Javascript in this file -->
-      
+
       <script src="{% static 'js/project.js' %}"></script>
-      
+
 
     {% endblock javascript %}
+
+    <footer class="footer mt-auto">
+    <div class="container-fluid bg-white">
+    <p class="py-4 m-0 text-center">
+              <a href="https://coronasafe.network/">A Part Of Corona Literacy Mission</a>
+              <a href="https://github.com/coronasafe/care">(Github)</a>
+    </p>
+
+    </div>
+    </footer>
   </body>
+
 </html>
- 
