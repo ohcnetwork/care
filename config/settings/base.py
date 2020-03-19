@@ -76,7 +76,7 @@ THIRD_PARTY_APPS = [
     "storages",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility.apps.FacilityConfig"]
+LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
