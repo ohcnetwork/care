@@ -6,6 +6,9 @@
 {% block content %}
 <h1>{{ user.username }}</h1>
 <form class="form-horizontal" method="post" action="">
+  {% if duplicate %}
+  Please Enter a Room Type that is not entered already
+  {% endif %}
   {% csrf_token %}
   {{ form|crispy }}
   <div class="control-group">

@@ -145,7 +145,6 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
                     return redirect("facility:facility-view", facility_obj.id)
                 except IntegrityError:
                     duplicate = True
-            print(form)
             return render(
                 request, self.template, {"form": form, "duplicate": duplicate}
             )
