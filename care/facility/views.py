@@ -3,13 +3,22 @@ from django.views import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import IntegrityError
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.contrib.auth.views import redirect_to_login
 
 from .forms import FacilityCreationForm, FacilityCapacityCreationForm
 from .models import Facility
 
 
-class FacilityCreation(LoginRequiredMixin, View):
+class StaffRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.user_type == 10:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return redirect_to_login(self.request.get_full_path())
+
+
+class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
 
     form_class = FacilityCreationForm
     template = "facility/facility_creation.html"
@@ -37,7 +46,7 @@ class FacilityCreation(LoginRequiredMixin, View):
             return HttpResponseRedirect("")
 
 
-class FacilityCapacityCreation(LoginRequiredMixin, View):
+class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
     form_class = FacilityCapacityCreationForm
     template = "facility/facility_capacity_creation.html"
 
