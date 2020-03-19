@@ -17,25 +17,32 @@ class DateBaseModel(models.Model):
 
 # Facility Model Start
 
+ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "ICCU")]
+
 
 class FacilityLocation(DateBaseModel):
-    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-
-    def __str__(self):
-        return self.district
+    pass
 
 
 class Facility(DateBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
-    bed_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    icu_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    verified = models.BooleanField(default=False)
+    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = "Facilities"
+
+
+class FacilityCapacity(DateBaseModel):
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
+    room_type = models.IntegerField(choices=ROOM_TYPES)
+    capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
 
 class FacilityStaff(DateBaseModel):
@@ -85,8 +92,6 @@ class Building(DateBaseModel):
 
 
 # Room Model Start
-
-ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "ICCU")]
 
 
 class Room(DateBaseModel):
