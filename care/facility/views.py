@@ -1,19 +1,15 @@
 from django.shortcuts import render, redirect
-
 from django.views import View
-
 from django.http import HttpResponseRedirect
-
 from django.urls import reverse
-
 from django.db import IntegrityError
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import FacilityCreationForm, FacilityCapacityCreationForm
-
 from .models import Facility
 
 
-class FacilityCreation(View):
+class FacilityCreation(LoginRequiredMixin, View):
 
     form_class = FacilityCreationForm
     template = "facility/facility_creation.html"
@@ -39,7 +35,7 @@ class FacilityCreation(View):
             return HttpResponseRedirect("")
 
 
-class FacilityCapacityCreation(View):
+class FacilityCapacityCreation(LoginRequiredMixin, View):
     form_class = FacilityCapacityCreationForm
     template = "facility/facility_capacity_creation.html"
 

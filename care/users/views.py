@@ -105,6 +105,7 @@ class SinginView(View):
 
     def post(self, request):
         form = AuthenticationForm(request=request, data=request.POST)
+        next_url = request.GET.get("next", False)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
@@ -112,5 +113,7 @@ class SinginView(View):
             if user:
                 if user.is_active:
                     login(request, user)
+                    if next_url:
+                        return HttpResponseRedirect(next_url)
                     return redirect("home")
         return render(request, self.template, {"form": form, "error": True})
