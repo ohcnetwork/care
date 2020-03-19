@@ -42,7 +42,6 @@ class CustomSignupForm(UserCreationForm):
             "last_name",
             "email",
             "district",
-            "user_type",
             "phone_number",
             "gender",
             "age",
