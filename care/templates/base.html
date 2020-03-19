@@ -56,10 +56,10 @@
             <a class="nav-link" href="{% url 'about' %}">About</a>
           </li>
           {% if request.user.is_authenticated %}
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="">{% trans "My Profile" %}</a>
-          </li>
+          </li> -->
           {% if request.user.user_type == 10 %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'facility:facility-create' %}">{% trans "Create Hospital" %}</a>
