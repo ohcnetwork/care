@@ -1,28 +1,34 @@
 {% extends "base.html" %}
 {% load static i18n %}
-{% block content %}
-<h1> Welcome to CARE </h1>
-<p> CARE is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified Corona Safe Network so
-  that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare
-  capacity.</p>
 
-{% if request.user.is_authenticated %}
-<!-- For views to come -->
-{% else %}
-<div class="row mt-4">
-  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
-  </div>
-  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
-  </div>
-  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL STAFF SIGN UP" %}</a>
-  </div>
-  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-    <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
-  </div>
-</div>
-{% endif %}
+{% block content %}
+
+
+<section class="mt-4 max-w-lg">
+    <h1 class="text-3xl font-bold"> Welcome to CARE </h1>
+    <p class="text-lg mt-1 text-gray-700"> CARE is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified <a href="https://coronasafe.network" class="text-gray-900 font-semibold">Corona Safe Network</a> so that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare
+        capacity.</p>
+
+    {% if request.user.is_authenticated %}
+    <!-- For views to come -->
+    {% else %}
+    
+    <div class="row mt-4">
+      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
+      </div>
+      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
+      </div>
+      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL STAFF SIGN UP" %}</a>
+      </div>
+      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+        <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
+      </div>
+    </div>
+    {% endif %}
+
+</section>
 
 {% endblock content %}

@@ -8,14 +8,18 @@
 
 {% block inner %}
 
-<h1 class="text-center my-3">{% trans "SIGN IN" %}</h1>
-
-
-
-<form class="login" method="POST" action="">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-</form>
+<section>
+    <h1 class="text-2xl font-bold">{% trans "Sign In" %}</h1>
+    <p class="text-gray-700">
+        Use your username and password to sign in.
+    </p>
+    <div class="mt-8">
+        <form class="login" method="POST" action="">
+            {% csrf_token %}
+            {{ form | crispy }}
+          <button class="px-3 py-2 rounded-md shadow-lg bg-gray-900 uppercase font-bold text-sm text-white" type="submit">{% trans "Sign In" %}</button>
+        </form>
+    </div>
+</section>
 
 {% endblock %}
