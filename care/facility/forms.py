@@ -6,7 +6,7 @@ from .models import Facility, FacilityCapacity, HospitalDoctors
 class FacilityCreationForm(ModelForm):
     class Meta:
         model = Facility
-        fields = ["name", "district"]
+        fields = ["name", "district", "address"]
 
 
 class FacilityCapacityCreationForm(ModelForm):

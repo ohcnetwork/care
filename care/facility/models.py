@@ -34,6 +34,7 @@ class Facility(DateBaseModel):
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
+    address = models.TextField()
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
