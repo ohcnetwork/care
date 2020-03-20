@@ -1,22 +1,20 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Add Rooms{% endblock %}
+{% block title %}{{facility.name}}{% endblock %}
 
 {% block content %}
-
 <h1>{{ user.username }}</h1>
 <form class="form-horizontal" method="post" action="">
-  {% csrf_token %}
   {% if duplicate %}
   Please Enter a Room Type that is not entered already
   {% endif %}
+  {% csrf_token %}
   {{ form|crispy }}
   <div class="control-group">
     <div class="controls">
-      <button type="submit" name="addmore" class="btn btn-primary">Save and Add More Rooms</button>
-      <button type="submit" class="btn btn-primary">Save and Complete</button>
-      <a class="btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Cancel</a>
+      <button type="submit" class="btn btn-primary">UPDATE</button>
+      <a class="btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
     </div>
   </div>
 </form>

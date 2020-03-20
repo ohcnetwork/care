@@ -6,6 +6,8 @@ from .views import (
     FacilitiesView,
     FacilityView,
     FacilityCapacityUpdation,
+    DoctorCountCreation,
+    DoctorCountUpdation,
 )
 
 app_name = "facility"
@@ -22,5 +24,15 @@ urlpatterns = [
         "<int:fpk>/capacity/<int:cpk>/",
         FacilityCapacityUpdation.as_view(),
         name="facility-capacity-update",
+    ),
+    path(
+        "<int:pk>/doctorcount/add/",
+        DoctorCountCreation.as_view(),
+        name="facility-doctor-count-create",
+    ),
+    path(
+        "<int:fpk>/doctorcount/<int:cpk>/",
+        DoctorCountUpdation.as_view(),
+        name="facility-doctor-count-update",
     ),
 ]

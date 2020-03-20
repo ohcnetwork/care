@@ -19,6 +19,10 @@ class DateBaseModel(models.Model):
 
 ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "ICCU")]
 
+FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
+
+DOCTOR_TYPES = [(1, "Oncologist"), (2, "Other Area"), (3, "Other")]
+
 
 class FacilityLocation(DateBaseModel):
     pass
@@ -29,6 +33,7 @@ class Facility(DateBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    facility_type = models.IntegerField(choices=FACILITY_TYPES)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -38,6 +43,20 @@ class Facility(DateBaseModel):
 
     class Meta:
         verbose_name_plural = "Facilities"
+
+
+class HospitalDoctors(DateBaseModel):
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
+    area = models.IntegerField(choices=DOCTOR_TYPES)
+    count = models.IntegerField()
+
+    def __str__(self):
+        return str(self.facility) + str(self.count)
+
+    class Meta:
+        unique_together = ["facility", "area"]
 
 
 class FacilityCapacity(DateBaseModel):
@@ -78,8 +97,6 @@ class FacilityVolunteer(DateBaseModel):
 
 # Building Model Start
 
-BUILDING_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
-
 
 class Building(DateBaseModel):
     facility = models.ForeignKey(
@@ -88,7 +105,6 @@ class Building(DateBaseModel):
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     num_floors = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    building_type = models.IntegerField(choices=BUILDING_TYPES)
 
     def __str__(self):
         return self.name + " under " + str(self.facility)

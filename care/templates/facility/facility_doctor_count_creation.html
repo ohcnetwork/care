@@ -9,14 +9,14 @@
 <form class="form-horizontal" method="post" action="">
   {% csrf_token %}
   {% if duplicate %}
-  Please Enter a Room Type that is not entered already
+  Please Enter a Area that is not entered already
   {% endif %}
   {{ form|crispy }}
   <div class="control-group">
     <div class="controls">
-      <button type="submit" name="addmore" class="btn btn-primary">Save and Add More Rooms</button>
+      <button type="submit" name="addmore" class="btn btn-primary">Save and Add More Doctors</button>
       <button type="submit" class="btn btn-primary">Save and Complete</button>
-      <a class="btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Cancel</a>
+      <a class="btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
     </div>
   </div>
 </form>
