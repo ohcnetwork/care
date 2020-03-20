@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.db import IntegrityError
-from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.conf import settings
 
@@ -158,4 +157,3 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
         except Exception as e:
             print(e)
             return HttpResponseRedirect("")
-
