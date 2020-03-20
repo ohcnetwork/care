@@ -9,15 +9,15 @@
 {% block inner %}
 
 <section>
-    <h1 class="text-2xl font-bold">{% trans "Sign In" %}</h1>
-    <p class="text-gray-700">
-        Use your username and password to sign in.
+    <h1 class="text-2xl font-bold text-center">{% trans "SIGN IN" %}</h1>
+    <p class="text-gray-700 mt-3">
+        Use your username and password to sign in to CARE.
     </p>
     <div class="mt-8">
         <form class="login" method="POST" action="">
             {% csrf_token %}
             {{ form | crispy }}
-          <button class="px-3 py-2 rounded-md shadow-lg bg-gray-900 uppercase font-bold text-sm text-white" type="submit">{% trans "Sign In" %}</button>
+          <button class="px-3 py-2 mt-3 rounded-md shadow-lg bg-gray-900 uppercase font-bold text-sm text-white" type="submit">{% trans "Sign In" %}</button>
         </form>
     </div>
 </section>
