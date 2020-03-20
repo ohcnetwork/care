@@ -178,6 +178,9 @@ class Inventory(DateBaseModel):
             + str(self.facility)
         )
 
+    class Meta:
+        verbose_name_plural = "Inventories"
+
 
 class InventoryLog(DateBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
