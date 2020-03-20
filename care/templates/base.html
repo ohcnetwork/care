@@ -58,7 +58,7 @@
                         <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'about' %}" title="Link">About</a>
                     </li>
 
-                    {% if request.user.is_authenticated and request.user.user_type == 10%}
+                    {% if request.user.is_authenticated and request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
                     <!-- <li class="nav-item">
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="">{% trans "My Profile" %}</a>
@@ -90,6 +90,7 @@
                 </ul>
             </div>
         </div>
+
     </nav>
 
     <div class="container py-xl-5 py-4 px-3">

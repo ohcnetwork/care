@@ -16,8 +16,7 @@
     <div class="controls">
       <button type="submit" name="addmore" class="btn btn-primary">Save and Add More Rooms</button>
       <button type="submit" class="btn btn-primary">Save and Complete</button>
-      <!-- <button type="submit" class="btn btn-danger">cancel</button> -->
-
+      <a class="btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
     </div>
   </div>
 </form>

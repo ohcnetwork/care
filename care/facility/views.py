@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.db import IntegrityError
-from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
+from django.conf import settings
 
 from .forms import FacilityCreationForm, FacilityCapacityCreationForm
 from .models import Facility, FacilityCapacity
@@ -12,7 +12,7 @@ from .models import Facility, FacilityCapacity
 
 class StaffRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
-        if request.user.user_type == 10:
+        if request.user.user_type == settings.STAFF_ACCOUNT_TYPE:
             return super().dispatch(request, *args, **kwargs)
         else:
             return redirect_to_login(self.request.get_full_path())
@@ -55,7 +55,11 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
     def get(self, request, pk):
         try:
             form = self.form_class()
-            return render(request, self.template, {"form": form})
+            current_user = request.user
+            facility_obj = Facility.objects.get(id=pk, created_by=current_user)
+            return render(
+                request, self.template, {"form": form, "facility": facility_obj}
+            )
         except Exception as e:
             return HttpResponseRedirect("")
 
@@ -126,7 +130,9 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             facility_obj = Facility.objects.get(id=fpk, created_by=current_user)
             capacity_obj = FacilityCapacity.objects.get(id=cpk, facility=facility_obj)
             form = self.form_class(instance=capacity_obj)
-            return render(request, self.template, {"form": form})
+            return render(
+                request, self.template, {"form": form, "facility": facility_obj}
+            )
         except Exception as e:
             print(e)
             return HttpResponseRedirect("")
@@ -151,4 +157,3 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
         except Exception as e:
             print(e)
             return HttpResponseRedirect("")
-
