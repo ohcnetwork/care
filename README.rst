@@ -17,7 +17,6 @@ corona care center management app for govt of kerala
 
 :License: MIT
 
-
 Settings
 --------
 
