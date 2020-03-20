@@ -82,9 +82,7 @@ class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
                 facility_obj.created_by = request.user
                 facility_obj.facility_type = 2
                 facility_obj.save()
-                return HttpResponseRedirect(
-                    "/facility/{}/capacity/add".format(facility_obj.id)
-                )
+                return redirect("facility:facility-capacity-create", facility_obj.id)
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
