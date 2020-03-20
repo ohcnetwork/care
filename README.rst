@@ -1,6 +1,10 @@
 Care
 ====
 
+.. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
+
 corona care center management app for govt of kerala
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
