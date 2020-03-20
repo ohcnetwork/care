@@ -12,19 +12,21 @@
     {% if request.user.is_authenticated %}
     <!-- For views to come -->
     {% else %}
-    
-    <div class="row mt-4">
-      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
-      </div>
-      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
-      </div>
-      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-        <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL STAFF SIGN UP" %}</a>
-      </div>
-      <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-        <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
+
+    <div>
+      <div class="mt-4 flex flex-col">
+        <div class="mt-4 bg-white border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold py-2 px-4 rounded cursor-pointer hover:bg-gray-300">
+          <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
+        </div>
+      <div class="mt-4 bg-white border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold py-2 px-4 rounded cursor-pointer hover:bg-gray-300">
+          <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
+        </div>
+        <div class="mt-4 bg-white border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold py-2 px-4 rounded cursor-pointer hover:bg-gray-300">
+          <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL STAFF SIGN UP" %}</a>
+        </div>
+        <div class="mt-4 bg-white border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold py-2 px-4 rounded cursor-pointer hover:bg-gray-300">
+          <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
+        </div>
       </div>
     </div>
     {% endif %}
