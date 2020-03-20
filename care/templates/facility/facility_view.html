@@ -5,6 +5,10 @@
 
 {% block content %}
 <h1>Hospital : {{facility.name}}</h1>
+<h1>Address : {{facility.address}}</h1>
+<a href="{% url 'facility:facility-update' pk=facility.id %}"> Update Hospital Info</a>
+<br>
+<br>
 <br>
 <h2><strong>Room Types</strong></h2>
 {% for i in capacities  %}
@@ -23,5 +27,6 @@
     href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> Update </a>
 </h3>
 {% endfor %}
-<a href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Add More Rooms</a>
+<br>
+<a href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Add More Doctor Counts</a>
 {% endblock %}

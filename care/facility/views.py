@@ -91,6 +91,36 @@ class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
             return HttpResponseRedirect("")
 
 
+class FacilityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
+
+    form_class = FacilityCreationForm
+    template = "facility/facility_updation.html"
+
+    def get(self, request, pk):
+        try:
+            current_user = request.user
+            facility_obj = Facility.objects.get(id=pk, created_by=current_user)
+            form = self.form_class(instance=facility_obj)
+            return render(request, self.template, {"form": form})
+        except Exception as e:
+            print(e)
+            return HttpResponseRedirect("")
+
+    def post(self, request, pk):
+        try:
+            current_user = request.user
+            facility_obj = Facility.objects.get(id=pk, created_by=current_user)
+            data = request.POST
+            form = self.form_class(data, instance=facility_obj)
+            if form.is_valid():
+                form.save()
+                return redirect("facility:facility-view", facility_obj.id)
+            return render(request, self.template, {"form": form})
+        except Exception as e:
+            print(e)
+            return HttpResponseRedirect("")
+
+
 class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
     form_class = FacilityCapacityCreationForm
     template = "facility/facility_capacity_creation.html"
