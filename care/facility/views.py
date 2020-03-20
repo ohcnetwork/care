@@ -56,7 +56,11 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
     def get(self, request, pk):
         try:
             form = self.form_class()
-            return render(request, self.template, {"form": form})
+            current_user = request.user
+            facility_obj = Facility.objects.get(id=pk, created_by=current_user)
+            return render(
+                request, self.template, {"form": form, "facility": facility_obj}
+            )
         except Exception as e:
             return HttpResponseRedirect("")
 
@@ -127,7 +131,9 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             facility_obj = Facility.objects.get(id=fpk, created_by=current_user)
             capacity_obj = FacilityCapacity.objects.get(id=cpk, facility=facility_obj)
             form = self.form_class(instance=capacity_obj)
-            return render(request, self.template, {"form": form})
+            return render(
+                request, self.template, {"form": form, "facility": facility_obj}
+            )
         except Exception as e:
             print(e)
             return HttpResponseRedirect("")
