@@ -30,9 +30,9 @@ urlpatterns = [
     path(
         "signup/staff/",
         SignupView.as_view(),
-        {"type": 10, "name": "Doctor"},
+        {"type": 10, "name": "Staff"},
         name="signup-staff",
     ),
-    path("signin", SinginView.as_view(), name="signin"),
+    path("signin/", SinginView.as_view(), name="signin"),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]
