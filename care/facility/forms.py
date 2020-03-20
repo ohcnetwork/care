@@ -12,7 +12,7 @@ class FacilityCreationForm(ModelForm):
 class FacilityCapacityCreationForm(ModelForm):
     class Meta:
         model = FacilityCapacity
-        fields = ["room_type", "capacity"]
+        fields = ["room_type", "total_capacity", "current_capacity"]
 
 
 class DoctorsCountCreationForm(ModelForm):

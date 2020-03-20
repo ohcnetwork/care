@@ -65,7 +65,8 @@ class FacilityCapacity(DateBaseModel):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     room_type = models.IntegerField(choices=ROOM_TYPES)
-    capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
         unique_together = ["facility", "room_type"]

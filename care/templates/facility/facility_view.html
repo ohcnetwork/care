@@ -8,8 +8,9 @@
 <br>
 <h2><strong>Room Types</strong></h2>
 {% for i in capacities  %}
-<h3> {{i.get_room_type_display}} - {{i.capacity}} <a
-    href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> Update </a>
+<h3> {{i.get_room_type_display}} <br> Total Capacity {{i.total_capacity}} <br> Current Capacity {{i.current_capacity}}
+  <a href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> Update </a>
+  <br><br>
 </h3>
 {% endfor %}
 <a href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Add More Rooms</a>
