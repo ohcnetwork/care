@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.contrib.auth.views import redirect_to_login
+from django.conf import settings
 
 from .forms import FacilityCreationForm, FacilityCapacityCreationForm
 from .models import Facility, FacilityCapacity
@@ -12,7 +13,7 @@ from .models import Facility, FacilityCapacity
 
 class StaffRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
-        if request.user.user_type == 10:
+        if request.user.user_type == settings.STAFF_ACCOUNT_TYPE:
             return super().dispatch(request, *args, **kwargs)
         else:
             return redirect_to_login(self.request.get_full_path())

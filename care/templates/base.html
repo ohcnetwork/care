@@ -60,7 +60,7 @@
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="">{% trans "My Profile" %}</a>
           </li> -->
-          {% if request.user.user_type == 10 %}
+          {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'facility:facility-create' %}">{% trans "Create Hospital" %}</a>
           </li>
