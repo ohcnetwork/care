@@ -6,8 +6,9 @@
 {% block content %}
 <h1>{{facility.name}}</h1>
 {% for i in data  %}
-<h2> {{i.get_room_type_display}} - {{i.capacity}} <a href="/facility/{{facility.id}}/capacity/{{i.id}}"> Update </a>
+<h2> {{i.get_room_type_display}} - {{i.capacity}} <a
+    href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> Update </a>
 </h2>
 {% endfor %}
-<a href="/facility/{{facility.id}}/capacity/add">Add More Rooms</a>
+<a href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Add More Rooms</a>
 {% endblock %}
