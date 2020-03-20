@@ -35,7 +35,7 @@
 
 </head>
 
-<body class="bg-gray-100 leading-normal tracking-normal font-sans text-gray-900">
+<body class="bg-gray-100 leading-normal tracking-normal font-sans text-gray-900 flex flex-col min-h-screen">
   <nav x-data="{open: true}" class="bg-white shadow" role="navigation">
     <div class="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
       <div class="mr-4 md:mr-8">
@@ -82,10 +82,12 @@
             {# URL provided by django-allauth/account/urls.py #}
             <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'users:logout' %}">{% trans "Sign Out" %}</a>
           </li>
-          {% else %} <li>
+          {% else %}
+
+          <!--<li>
             {# URL provided by django-allauth/account/urls.py #}
             <a class="block px-4 py-1 md:p-2 lg:px-4" href="">{% trans "Sign Up" %}</a>
-          </li>
+          </li> -->
           <li>
             {# URL provided by django-allauth/account/urls.py #}
             <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
@@ -130,7 +132,7 @@
 
   {% endblock javascript %}
 
-  <footer class="footer mt-auto">
+  <footer class="mt-auto">
     <div class="container-fluid bg-white">
       <p class="py-4 m-0 text-center">
         <a href="https://coronasafe.network/">A Part Of Corona Literacy Mission</a>

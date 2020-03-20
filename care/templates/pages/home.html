@@ -11,7 +11,13 @@
 {% else %}
 <div class="row mt-4">
   <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
-    <a id="sign-up-link" class="p-4 nav-link text-primary h4">{% trans "SIGN UP" %}</a>
+    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
+  </div>
+  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
+  </div>
+  <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
+    <a id="sign-up-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL STAFF SIGN UP" %}</a>
   </div>
   <div class="col-xl border border-dark bg-white rounded-lg mr-xl-4 m-2 text-center">
     <a id="log-in-link" class="p-4 nav-link text-primary h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
