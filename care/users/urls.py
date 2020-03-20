@@ -18,19 +18,19 @@ urlpatterns = [
     path(
         "signup/volunteer/",
         SignupView.as_view(),
-        {"type": 20, "name": "Volunteer"},
+        {"type": 20, "name": "VOLUNTEER"},
         name="signup-volunteer",
     ),
     path(
         "signup/doctor/",
         SignupView.as_view(),
-        {"type": 5, "name": "Doctor"},
+        {"type": 5, "name": "DOCTOR"},
         name="signup-doctor",
     ),
     path(
         "signup/staff/",
         SignupView.as_view(),
-        {"type": 10, "name": "Staff"},
+        {"type": 10, "name": "HOSPITAL ADMINISTRATOR"},
         name="signup-staff",
     ),
     path("signin/", SinginView.as_view(), name="signin"),

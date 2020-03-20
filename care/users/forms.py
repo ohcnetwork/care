@@ -1,6 +1,10 @@
 from django.contrib.auth import forms, get_user_model
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, ButtonHolder, Submit, Fieldset
+from django.contrib.auth.forms import AuthenticationForm
+
 
 User = get_user_model()
 
@@ -49,4 +53,37 @@ class CustomSignupForm(UserCreationForm):
             "password1",
             "password2",
         )
+        labels = {
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "Email Address",
+        "phone_number": "10 Digit Mobile Number",
+        "password2": "Password Confirmation",
+        }
 
+    def __init__(self, *args, **kwargs):
+        super(CustomSignupForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('username',placeholder= "Desired Username", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('first_name',placeholder= "Your first name", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('last_name',placeholder= "Your last name", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('email',placeholder="Your Email Address", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('district', css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('phone_number',placeholder="Your 10 Digit Mobile Number", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('gender', css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('age',placeholder= "Your age in numbers", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('skill', css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('password1',placeholder= "Password Confirmation", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('password2',placeholder= "Password", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+        )
+
+
+class AuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(AuthenticationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('username',placeholder= " Username", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('password',placeholder= "Password", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+        )

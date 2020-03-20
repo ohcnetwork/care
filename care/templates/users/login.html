@@ -4,7 +4,7 @@
 {% load account socialaccount %}
 {% load crispy_forms_tags %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block head_title %}{% trans "SIGN IN" %}{% endblock %}
 
 {% block inner %}
 
@@ -17,7 +17,7 @@
         <form class="login" method="POST" action="">
             {% csrf_token %}
             {{ form | crispy }}
-          <button class="px-3 py-2 mt-3 rounded-md shadow-lg bg-gray-900 uppercase font-bold text-sm text-white" type="submit">{% trans "Sign In" %}</button>
+          <button class="mt-4 btn btn-primary w-full" type="submit">{% trans "SIGN IN" %} &raquo;</button>
         </form>
     </div>
 </section>
