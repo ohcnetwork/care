@@ -3,131 +3,128 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>{% block title %}CARE{% endblock title %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}CARE{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
     <![endif]-->
 
-  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
+    <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
-  {% block css %}
+    {% block css %}
 
-  <!-- Latest compiled and minified Bootstrap CSS -->
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-
-
-  <!-- Your stuff: Third-party CSS libraries go here -->
-
-  <!-- This file stores project-specific CSS -->
-
-  <link href="{% static 'css/project.css' %}" rel="stylesheet">
-  <link href="{% static 'css/custom.min.css' %}" rel="stylesheet">
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
 
-  {% endblock %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+
+    <!-- This file stores project-specific CSS -->
+
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.min.css' %}" rel="stylesheet">
+
+
+    {% endblock %}
 
 </head>
 
 <body class="bg-gray-100 d-flex flex-column vh-100">
 
-  <div class="mb-1">
-    <nav class="navbar navbar-expand-md navbar-light bg-white">
-      <a class="navbar-brand" href="{% url 'home' %}">CARE</a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <div class="mb-1">
+        <nav class="navbar navbar-expand-md navbar-light bg-white">
+            <a class="navbar-brand" href="{% url 'home' %}">CARE</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">About</a>
-          </li>
-          {% if request.user.is_authenticated %}
-          <!-- <li class="nav-item">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <!-- <li class="nav-item">
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="">{% trans "My Profile" %}</a>
           </li> -->
-          {% if request.user.user_type == 10 %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'facility:facility-create' %}">{% trans "Create Hospital" %}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'facility:facilities-view' %}">{% trans "View Created Hospitals" %}</a>
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="{% url 'users:logout' %}">{% trans "Sign Out" %}</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="sign-up-link" class="nav-link" href="">{% trans "Sign Up" %}</a>
-          </li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="log-in-link" class="nav-link" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </nav>
-
-  </div>
-
-  <div class="container py-xl-5 py-4 px-3">
-
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
-        class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
-    {% endfor %}
-    {% endif %}
-
-    {% block content %}
-
-    {% endblock content %}
-
-  </div> <!-- /container -->
-
-  {% block modal %}{% endblock modal %}
-
-  <!-- Le javascript
-    ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  {% block javascript %}
-
-  <!-- Your stuff: Third-party javascript libraries go here -->
-
-
-  <!-- place project specific Javascript in this file -->
-
-  <script src="{% static 'js/project.js' %}"></script>
-
-
-  {% endblock javascript %}
-
-  <footer class="footer mt-auto">
-    <div class="container-fluid bg-white">
-      <p class="py-4 m-0 text-center">
-        <a href="https://coronasafe.network/">A Part Of Corona Literacy Mission</a>
-        <a href="https://github.com/coronasafe/care">(Github)</a>
-      </p>
+                    {% if request.user.user_type == 10 %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'facility:facility-create' %}">{% trans "Create Hospital" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'facility:facilities-view' %}">{% trans "View Created Hospitals" %}</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        {# URL provided by django-allauth/account/urls.py #}
+                        <a class="nav-link" href="{% url 'users:logout' %}">{% trans "Sign Out" %}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        {# URL provided by django-allauth/account/urls.py #}
+                        <a id="sign-up-link" class="nav-link" href="">{% trans "Sign Up" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        {# URL provided by django-allauth/account/urls.py #}
+                        <a id="log-in-link" class="nav-link" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
 
     </div>
-  </footer>
+
+    <div class="container py-xl-5 py-4 px-3">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}
+
+        {% endblock content %}
+
+    </div> <!-- /container -->
+
+    {% block modal %}{% endblock modal %}
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {% block javascript %}
+
+    <!-- Your stuff: Third-party javascript libraries go here -->
+
+
+    <!-- place project specific Javascript in this file -->
+
+    <script src="{% static 'js/project.js' %}"></script>
+
+
+    {% endblock javascript %}
+
+    <footer class="footer mt-auto">
+        <div class="container-fluid bg-white">
+            <p class="py-4 m-0 text-center">
+                <a href="https://coronasafe.network/">A Part Of Corona Literacy Mission</a>
+                <a href="https://github.com/coronasafe/care">(Github)</a>
+            </p>
+
+        </div>
+    </footer>
 </body>
 
 </html>
