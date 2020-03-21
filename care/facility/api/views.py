@@ -13,7 +13,7 @@ from care.facility.api.serializer import FacilitySerializer
 
 
 class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin,
-                   UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+                          UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """Base class for all endpoints related to Faclity model."""
 
     permission_classes = (IsAuthenticated, )

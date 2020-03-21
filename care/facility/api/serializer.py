@@ -10,7 +10,6 @@ class FacilitySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "is_active",
             "verified",
             "district",
             "facility_type",
