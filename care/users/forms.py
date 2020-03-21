@@ -65,17 +65,17 @@ class CustomSignupForm(UserCreationForm):
         super(CustomSignupForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Field('username',placeholder= "Desired Username", css_class="form-input my-1 block w-full"),
-            Field('first_name',placeholder= "Your first name", css_class="form-input my-1 block w-full"),
-            Field('last_name',placeholder= "Your last name", css_class="form-input my-1 block w-full"),
-            Field('email',placeholder="Your Email Address", css_class="form-input my-1 block w-full"),
-            Field('district', css_class="form-select my-1 block w-full"),
-            Field('phone_number',placeholder="Your 10 Digit Mobile Number", css_class="form-input my-1 block w-full"),
-            Field('gender', css_class="form-select my-1 block"),
-            Field('age',placeholder= "Your age in numbers", css_class="form-input my-1 block w-full"),
-            Field('skill', css_class="form-select my-1 block"),
-            Field('password1',placeholder= "Password Confirmation", css_class="form-input my-1 block w-full"),
-        Field('password2',placeholder= "Password", css_class="form-input my-1 block w-full"),
+            Field('username',placeholder= "Desired Username", css_class=""),
+            Field('first_name',placeholder= "Your first name", css_class=""),
+            Field('last_name',placeholder= "Your last name", css_class=""),
+            Field('email',placeholder="Your Email Address", css_class=""),
+            Field('district', css_class=""),
+            Field('phone_number',placeholder="Your 10 Digit Mobile Number", css_class="'"),
+            Field('gender', css_class=""),
+            Field('age',placeholder= "Your age in numbers", css_class=""),
+            Field('skill', css_class=""),
+            Field('password1',placeholder= "Password Confirmation", css_class=""),
+        Field('password2',placeholder= "Password", css_class=""),
         )
 
 
@@ -84,6 +84,6 @@ class AuthenticationForm(AuthenticationForm):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Field('username',placeholder= " Username", css_class="form-input appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
-            Field('password',placeholder= "Password", css_class="appearance-none block w-full text-sm bg-white border border-gray-400 rounded py-3 px-4 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"),
+            Field('username',placeholder= " Username", css_class=""),
+            Field('password',placeholder= "Password", css_class=""),
         )
