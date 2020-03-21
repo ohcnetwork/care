@@ -4,24 +4,31 @@
 {% block title %}{{facility.name}}{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold text-center">{{facility.name}}</h1>
+<h1>Hospital : {{facility.name}}</h1>
+<h1>Address : {{facility.address}}</h1>
+<a href="{% url 'facility:facility-update' pk=facility.id %}"> Update Hospital Info</a>
+<br>
+<br>
 <br>
 <h2><strong>Bed Types</strong></h2>
 {% for i in capacities  %}
-<h3> {{i.get_room_type_display}} <br> Total Capacity {{i.total_capacity}} <br> Current Capacity Utilisation {{i.current_capacity}}
+<h3> {{i.get_room_type_display}} <br> Total Capacity {{i.total_capacity}} <br> Current Capacity Utilisation
+  {{i.current_capacity}}
   <a class="btn btn-primary" href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> Edit </a>
   <br><br>
 </h3>
 {% endfor %}
-<a class="btn btn-primary" href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Save & Add More Bed Types</a>
+<a class="btn btn-primary" href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Save & Add More Bed
+  Types</a>
 
 <br>
 <br>
 <h2><strong>Doctor Counts</strong></h2>
 {% for i in doctor_counts  %}
-<h3> {{i.get_area_display}} - {{i.count}} <a
-    class="btn btn-primary" href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> Edit </a>
+<h3> {{i.get_area_display}} - {{i.count}} <a class="btn btn-primary"
+    href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> Edit </a>
 </h3>
 {% endfor %}
-<a class="btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Add More Doctor Counts</a>
+<a class="btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Add More Doctor
+  Counts</a>
 {% endblock %}

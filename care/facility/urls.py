@@ -5,6 +5,7 @@ from .views import (
     FacilityCapacityCreation,
     FacilitiesView,
     FacilityView,
+    FacilityUpdation,
     FacilityCapacityUpdation,
     DoctorCountCreation,
     DoctorCountUpdation,
@@ -15,6 +16,7 @@ urlpatterns = [
     path("create/", FacilityCreation.as_view(), name="facility-create"),
     path("", FacilitiesView.as_view(), name="facilities-view"),
     path("<int:pk>", FacilityView.as_view(), name="facility-view"),
+    path("<int:pk>/update", FacilityUpdation.as_view(), name="facility-update"),
     path(
         "<int:pk>/capacity/add/",
         FacilityCapacityCreation.as_view(),
