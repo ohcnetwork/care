@@ -10,6 +10,5 @@ else:
 
 router.register("user", UserViewSet)
 
-
 app_name = "api"
 urlpatterns = router.urls

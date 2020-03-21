@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import environ
+from datetime import timedelta
 
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
@@ -278,6 +279,18 @@ ACCOUNT_ADAPTER = "care.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "care.users.adapters.SocialAccountAdapter"
 
 
+# Django Rest Framework
+# ------------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        # Primary api authentication
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    )
+}
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 
@@ -286,3 +299,14 @@ ACCOUNT_EMAIL_VERIFICATION = False
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGOUT_REDIRECT_URL = "/"
 STAFF_ACCOUNT_TYPE = 10
+
+
+# Simple JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=120)
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=env("JWT_REFRESH_TOKEN_LIFETIME", default=7)
+    ),
+}

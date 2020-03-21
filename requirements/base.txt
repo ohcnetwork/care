@@ -17,3 +17,4 @@ django-crispy-forms==1.9.0  # https://github.com/django-crispy-forms/django-cris
 django-redis==4.11.0  # https://github.com/niwinz/django-redis
 django-storages==1.9.1 # For Storing Static Files in AWS
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
+djangorestframework-simplejwt==4.4.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
