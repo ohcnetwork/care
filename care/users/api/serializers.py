@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES)
     district = ChoiceField(choices=User.DISTRICT_CHOICES)
     gender = ChoiceField(choices=User.GENDER_CHOICES)
-    verified = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
@@ -25,7 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
             "gender",
             "age",
             "skill",
-            "verified",
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
