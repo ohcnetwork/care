@@ -17,6 +17,13 @@ corona care center management app for govt of kerala
 
 :License: MIT
 
+Set up Local environment
+------------------------
+
+Follow the steps listed here_.
+
+.. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
+
 Settings
 --------
 
