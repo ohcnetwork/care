@@ -6,14 +6,14 @@
 {% block content %}
 <h1>Hospital : {{facility.name}}</h1>
 <br>
-<h2><strong>Room Types</strong></h2>
+<h2><strong>Bed Types</strong></h2>
 {% for i in capacities  %}
-<h3> {{i.get_room_type_display}} <br> Total Capacity {{i.total_capacity}} <br> Current Capacity {{i.current_capacity}}
+<h3> {{i.get_room_type_display}} <br> Total Capacity {{i.total_capacity}} <br> Current Capacity Utilisation {{i.current_capacity}}
   <a href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> Update </a>
   <br><br>
 </h3>
 {% endfor %}
-<a href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Add More Rooms</a>
+<a href="{% url 'facility:facility-capacity-create' pk=facility.id %}">Save & Add More Bed Types</a>
 
 <br>
 <br>
