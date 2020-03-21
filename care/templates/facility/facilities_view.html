@@ -13,6 +13,7 @@
     <a href="{% url 'facility:facility-view' pk=i.id %}">
         <span class="hospital-title block text-4xl text-center">{{i.name}}</span>
         <h1 class="text-gray-700">Address : {{i.address}}</h1>
+        <h1 class="text-gray-700">Phone : {{i.phone_number}}</h1>
         <h1 class="text-gray-700">District : {{i.get_district_display}}</h1>
         <p class="btn block mx-auto text-center w-full mt-2"> View & Edit Details</p>
     </a>
