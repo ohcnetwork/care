@@ -7,14 +7,13 @@
 
 import logging
 
-from django.shortcuts import render
-from django.contrib.auth import login, authenticate
-from care.users.forms import CustomSignupForm
-from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 from django.views import View
 from django.http import HttpResponseRedirect
 
+from care.users.forms import CustomSignupForm
 
 # User = get_user_model()
 

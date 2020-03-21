@@ -6,9 +6,8 @@ from django.urls import path
 #     user_update_view,
 # )
 
-from .views import SignupView, SinginView
 from django.contrib.auth.views import LogoutView
-from django.urls import reverse
+from .views import SignupView, SinginView
 
 app_name = "users"
 urlpatterns = [
