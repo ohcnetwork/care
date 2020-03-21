@@ -5,7 +5,13 @@
 
 {% block content %}
 {% for i in data  %}
-<h1><a href="{% url 'facility:facility-view' pk=i.id %}"> {{i.name}} </a></h1>
+<div class="shadow-lg rounded overflow-hidden w-full p-3 mb-3">
+    <a href="{% url 'facility:facility-view' pk=i.id %}"> 
+        <span class="hospital-title-label block text-xl">Hospital</span>
+        <span class="hospital-title block text-4xl">{{i.name}}</span>
+        <h1 class="text-gray-700">Address : {{i.address}}</h1>
+    </a>
+</div>
 {% endfor %}
 
 {% endblock %}
