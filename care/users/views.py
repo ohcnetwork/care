@@ -13,6 +13,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponseRedirect
+from crispy_forms.layout import Submit
 
 
 # User = get_user_model()
@@ -71,6 +72,7 @@ class SignupView(View):
     def get(self, request, **kwargs):
         try:
             form = self.form_class()
+            form.helper.add_input(Submit('submit', 'Submit'))
             return render(
                 request, self.template, {"form": form, "type": kwargs["name"]}
             )
