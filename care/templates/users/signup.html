@@ -6,11 +6,14 @@
 {% block head_title %}{{type}}{% endblock %}
 
 {% block inner %}
-<h1 class="text-3xl font-bold">{% trans "Sign In As A " %}{{type}}</h1>
+<h1 class="text-3xl font-bold">{% trans "Register As " %}{{type}}</h1>
 
-<p class="mt-2">Already have an account? Then please <a href="{% url 'users:signin' %}" class="care-secondary-color">Sign in</a>.</p>
+<p class="mt-2">
+If you are visiting this site for the first time, sign up as a {{type}}.
+<br><br>
+Already have an account? Then please <a href="{% url 'users:signin' %}" class="care-secondary-color">Sign in</a>.</p>
 
-<div class="max-w-md mt-8">
+<div class="max-w-md mt-4">
     <form class="signup" id="signup_form" method="post" action="">
         {% csrf_token %}
         {{ form|crispy }}
