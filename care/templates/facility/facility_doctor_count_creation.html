@@ -6,11 +6,11 @@
 
 {% block content %}
 
-<h1 class="text-2xl font-bold text-center">{% trans "Add the number of doctors in different specializations" %}</h1>
+<h1 class="text-2xl font-bold text-center">{% trans "Add The Number Of Doctors In Different Specializations" %}</h1>
 <form class="form-horizontal" method="post" action="">
   {% csrf_token %}
   {% if duplicate %}
-  Please Enter a Area that is not entered already
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Please enter an area that is not entered already</p>
   {% endif %}
   {{ form|crispy }}
   <div class="control-group">

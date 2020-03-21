@@ -5,10 +5,10 @@
 {% block title %}{{facility.name}}{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold text-center">{% trans "Edit bed type" %}</h1>
+<h1 class="text-2xl font-bold text-center">{% trans "Edit Bed Capacity" %}</h1>
 <form class="form-horizontal" method="post" action="">
   {% if duplicate %}
-  Please Enter a Room Type that is not entered already
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Please Enter a Room Type that is not entered already</p>
   {% endif %}
   {% csrf_token %}
   {{ form|crispy }}
