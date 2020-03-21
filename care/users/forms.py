@@ -41,7 +41,6 @@ class CustomSignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = (
-            "username",
             "first_name",
             "last_name",
             "email",
@@ -50,15 +49,20 @@ class CustomSignupForm(UserCreationForm):
             "gender",
             "age",
             "skill",
+            "username",
             "password1",
             "password2",
         )
         labels = {
-        "first_name": "First Name",
-        "last_name": "Last Name",
-        "email": "Email Address",
-        "phone_number": "10 Digit Mobile Number",
-        "password2": "Password Confirmation",
+        "first_name": "Enter Your First Name*",
+        "last_name": "Enter Your Last Name",
+        "email": "Enter Your Email Address",
+        "district":"Pick Your District",
+        "phone_number": "Enter Your 10 Digit Mobile Number",
+        "gender":"Pick Your Gender",
+        "age":"Enter Your Age",
+        "skill":"Pick Your Role",
+        "username":"Enter A Username",   
         }
 
     def __init__(self, *args, **kwargs):
