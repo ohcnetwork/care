@@ -157,7 +157,9 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
                 except IntegrityError:
                     duplicate = True
             return render(
-                request, self.template, {"form": form, "duplicate": duplicate}
+                request,
+                self.template,
+                {"form": form, "facility": facility_obj, "duplicate": duplicate},
             )
         except Exception as e:
             print(e)
@@ -238,7 +240,9 @@ class DoctorCountCreation(LoginRequiredMixin, StaffRequiredMixin, View):
                 except IntegrityError:
                     duplicate = True
             return render(
-                request, self.template, {"form": form, "duplicate": duplicate}
+                request,
+                self.template,
+                {"form": form, "facility": facility_obj, "duplicate": duplicate},
             )
         except Exception as e:
             return HttpResponseRedirect("")
