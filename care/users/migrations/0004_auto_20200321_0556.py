@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='user_type',
-            field=models.IntegerField(choices=[(5, 'Doctor'), (10, 'Staff'), (15, 'Patient'), (20, 'Volunteer')], default=3),
+            field=models.IntegerField(choices=[(5, 'Doctor'), (10, 'Staff'), (15, 'Patient'), (20, 'Volunteer')]),
         ),
     ]
