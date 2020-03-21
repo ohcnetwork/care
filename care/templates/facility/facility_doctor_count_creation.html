@@ -14,10 +14,10 @@
   {% endif %}
   {{ form|crispy }}
   <div class="control-group">
-    <div class="mt-4 controls flex justify-between">
-      <button type="submit" name="addmore" class="btn btn-primary">Save and Add More Doctors</button>
-      <button type="submit" class="btn btn-primary">Save and Complete</button>
-      <a class="btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
+    <div class="controls md:flex md:justify-between">
+      <button type="submit" name="addmore" class="mt-4 btn btn-primary">Save and Add More Doctors</button>
+      <button type="submit" class="mt-4 btn btn-primary">Save and Complete</button>
+      <a class="mt-4 btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
     </div>
   </div>
 </form>
