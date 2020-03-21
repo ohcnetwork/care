@@ -21,7 +21,7 @@ ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "ICCU")]
 
 FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
 
-DOCTOR_TYPES = [(1, "Oncologist"), (2, "Other Area"), (3, "Other")]
+DOCTOR_TYPES = [(1, "General Medicine"), (2, "Pulmonology"), (3, "Critical Care"), (4, "Paediatrics")]
 
 
 class FacilityLocation(DateBaseModel):
