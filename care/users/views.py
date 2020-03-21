@@ -76,7 +76,7 @@ class SignupView(View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, **kwargs):
         form = CustomSignupForm(request.POST)
@@ -102,6 +102,7 @@ class SinginView(View):
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
+            return HttpResponseRedirect("/500")
 
     def post(self, request):
         form = AuthenticationForm(request=request, data=request.POST)

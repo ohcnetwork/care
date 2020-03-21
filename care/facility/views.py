@@ -33,7 +33,7 @@ class FacilitiesView(LoginRequiredMixin, StaffRequiredMixin, View):
             return render(request, self.template, {"data": data})
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class FacilityView(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -57,7 +57,7 @@ class FacilityView(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -71,7 +71,7 @@ class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request):
         try:
@@ -86,7 +86,7 @@ class FacilityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class FacilityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -102,7 +102,7 @@ class FacilityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, pk):
         try:
@@ -116,7 +116,7 @@ class FacilityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             return render(request, self.template, {"form": form})
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -133,7 +133,7 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, pk):
         try:
@@ -163,7 +163,7 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -181,7 +181,7 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, fpk, cpk):
         try:
@@ -202,7 +202,7 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class DoctorCountCreation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -218,7 +218,7 @@ class DoctorCountCreation(LoginRequiredMixin, StaffRequiredMixin, View):
                 request, self.template, {"form": form, "facility": facility_obj}
             )
         except Exception as e:
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, pk):
         try:
@@ -245,7 +245,7 @@ class DoctorCountCreation(LoginRequiredMixin, StaffRequiredMixin, View):
                 {"form": form, "facility": facility_obj, "duplicate": duplicate},
             )
         except Exception as e:
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
 
 class DoctorCountUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
@@ -265,7 +265,7 @@ class DoctorCountUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
 
     def post(self, request, fpk, cpk):
         try:
@@ -288,4 +288,4 @@ class DoctorCountUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             )
         except Exception as e:
             print(e)
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/500")
