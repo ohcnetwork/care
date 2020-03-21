@@ -10,7 +10,7 @@
 <form class="form-horizontal" method="post" action="">
   {% csrf_token %}
   {% if duplicate %}
-  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Please enter an area that is not entered already</p>
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">The area for which you are trying to add the count is already added, please edit it instead. </p>
   {% endif %}
   {{ form|crispy }}
   <div class="control-group">
