@@ -5,6 +5,7 @@
 # from django.utils.translation import ugettext_lazy as _
 # from django.views.generic import DetailView, RedirectView, UpdateView
 
+import logging
 
 from django.shortcuts import render
 from django.contrib.auth import login, authenticate
@@ -75,7 +76,7 @@ class SignupView(View):
                 request, self.template, {"form": form, "type": kwargs["name"]}
             )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return HttpResponseRedirect("/500")
 
     def post(self, request, **kwargs):
@@ -101,7 +102,7 @@ class SinginView(View):
             form = self.form_class()
             return render(request, self.template, {"form": form})
         except Exception as e:
-            print(e)
+            logging.error(e)
             return HttpResponseRedirect("/500")
 
     def post(self, request):
