@@ -5,9 +5,9 @@
 
 
 <section class="mt-4 max-w-lg ">
-    <h1 class="text-3xl font-bold text-center"> CORONA CARE </h1>
-    <p class="text-lg mt-1 text-gray-700 text-justify "> CARE is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified <a href="https://coronasafe.network" class="text-gray-900 font-semibold">Corona Safe Network</a> so that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare
-        capacity.</p>
+    <h1 class="text-3xl font-bold text-center"> Corona Care </h1>
+    <p class="text-lg mt-1 text-gray-700 text-justify "> Care is a single point to link Hospitals, Corona Care Centers and Volunteers to the unified <a href="https://coronasafe.network" class="text-gray-900 font-semibold">Corona Safe Network</a> so that the Kerala Chief Minister's Office has direct access to live reports of health data v/s our total healthcare
+          capacity.</p>
 
     {% if request.user.is_authenticated %}
     <!-- For views to come -->
@@ -16,16 +16,16 @@
     <div>
       <div class="mt-4 flex flex-col">
         <div class="flex flex-col">
-          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-volunteer' %}">{% trans "VOLUNTEER SIGN UP" %}</a>
+          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-volunteer' %}">{% trans "Volunteer Sign Up" %}</a>
         </div>
         <div class="flex flex-col">
-          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-doctor' %}">{% trans "DOCTOR SIGN UP" %}</a>
+          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-doctor' %}">{% trans "Doctor Sign Up" %}</a>
         </div>
       <div class="flex flex-col">
-        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-staff' %}">{% trans "HOSPITAL ADMINISTRATOR SIGN UP" %}</a>
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-staff' %}">{% trans "Hospital Administrator Sign Up" %}</a>
         </div>
       <div class="flex flex-col">
-        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signin' %}">{% trans "SIGN IN" %}</a>
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
         </div>
       </div>
     </div>
