@@ -10,24 +10,34 @@
           capacity.</p>
 
     {% if request.user.is_authenticated %}
-    <!-- For views to come -->
+      {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
+      <div class="mt-4 flex flex-col">
+        <div class="flex flex-col">
+          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'facility:facility-create' %}">{% trans "Add Hospital" %}</a>
+        </div>
+        <div class="flex flex-col">
+          <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'facility:facilities-view' %}">{% trans "View Hospitals" %}</a>
+        </div>
+      </div>
+      {% endif %}
+
     {% else %}
 
     <div>
       <div class="mt-4 flex flex-col">
-        <div class="flex flex-col">
+        <!--<div class="flex flex-col">
           <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-volunteer' %}">{% trans "Volunteer Sign Up" %}</a>
         </div>
         <div class="flex flex-col">
           <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-doctor' %}">{% trans "Doctor Sign Up" %}</a>
-        </div>
+        </div>-->
       <div class="flex flex-col">
         <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-staff' %}">{% trans "Hospital Administrator Sign Up" %}</a>
         </div>
       <div class="flex flex-col">
         <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
         </div>
-      </div>
+      </div
     </div>
     {% endif %}
 

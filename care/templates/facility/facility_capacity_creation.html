@@ -8,7 +8,7 @@
 {% block content %}
 
 <h1 class="text-2xl font-bold text-center">{% trans "Enter Your Hospital's Capacity" %}</h1>
-<p class="max-w-lg text-lg mt-3 text-gray-700 text-justify">The Chief Ministers's office request to know imformation about  total capacity and current Utlisation of Normal Beds, ICU Beds and Ventilators in your Hospital.
+<p class="max-w-lg text-lg mt-3 text-gray-700 text-justify">The Chief Ministers's office request to know information about  total capacity and current Utlisation of Normal Beds, ICU Beds and Ventilators in your Hospital.
 <br>
 1. Normal Beds<br>
 2. ICU Beds<br>
@@ -20,10 +20,10 @@
   {% endif %}
   {{ form|crispy }}
   <div class="control-group">
-    <div class="mt-4 controls flex justify-between">
-      <button type="submit" name="addmore" class="btn btn-primary">Save & Add More Bed Types</button>
+    <div class="controls md:flex md:justify-between">
+      <button type="submit" name="addmore" class=" mt-4 btn btn-primary">Save & Add More Bed Types</button>
       <button type="submit" class="btn btn-primary">Save & Complete</button>
-      <a class="btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Cancel</a>
+      <a class=" mt-4 btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Cancel</a>
     </div>
   </div>
 </form>
