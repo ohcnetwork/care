@@ -1,13 +1,31 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from care.users.models import User
+from config.serializers import ChoiceField
+
+User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    user_type = ChoiceField(choices=User.TYPE_CHOICES)
+    district = ChoiceField(choices=User.DISTRICT_CHOICES)
+    gender = ChoiceField(choices=User.GENDER_CHOICES)
+    verified = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = User
-        fields = ["username", "email", "url"]
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "user_type",
+            "district",
+            "phone_number",
+            "gender",
+            "age",
+            "skill",
+            "verified",
+        )
 
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
-        }
+        extra_kwargs = {"url": {"lookup_field": "username"}}

@@ -5,6 +5,8 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 
+from config import api_router
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
@@ -16,6 +18,8 @@ urlpatterns = [
     path("users/", include("care.users.urls", namespace="users")),
     # path("accounts/", include("allauth.urls")),
     path("facility/", include("care.facility.urls", namespace="facility")),
+    # RESTful APIs
+    path("api/v1/", include(api_router.urlpatterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
