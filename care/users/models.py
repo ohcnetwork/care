@@ -50,6 +50,7 @@ class User(AbstractUser):
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
+    REQUIRED_FIELDS = ['user_type','email','phone_number','age','gender','district']
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
