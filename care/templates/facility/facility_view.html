@@ -6,9 +6,9 @@
 {% block content %}
 <div class="flex flex-wrap mb-3">
   <div class="w-full lg:w-2/3 mb-3">
-    <span class="hospital-title-label block text-xl">Hospital</span>
     <span class="hospital-title block text-4xl">{{facility.name}}</span>
     <h1 class="text-gray-700">Address : {{facility.address}}</h1>
+    <h1 class="text-gray-700">District : {{facility.get_district_display}}</h1>
   </div>
   <div class="w-full lg:w-1/3">
     <a class="btn btn-primary" href="{% url 'facility:facility-update' pk=facility.id %}"> Update Hospital Info</a>
