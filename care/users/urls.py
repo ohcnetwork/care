@@ -30,7 +30,7 @@ urlpatterns = [
     path(
         "signup/staff/",
         SignupView.as_view(),
-        {"type": 10, "name": "Staff"},
+        {"type": 10, "name": "Hospital Administrator"},
         name="signup-staff",
     ),
     path("signin/", SinginView.as_view(), name="signin"),

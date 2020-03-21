@@ -8,10 +8,9 @@
   <form class="form-horizontal" method="post" action="{% url 'users:update' %}">
     {% csrf_token %}
     {{ form|crispy }}
-    <div class="control-group">
-      <div class="controls">
+
+    <div class="mt-4">
         <button type="submit" class="btn btn-primary">Update</button>
-      </div>
     </div>
   </form>
 {% endblock %}
