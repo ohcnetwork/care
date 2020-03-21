@@ -17,7 +17,7 @@ class DateBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "ICCU")]
+ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "Ventilator")]
 
 FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
 
