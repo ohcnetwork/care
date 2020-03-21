@@ -36,7 +36,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return self.queryset
 
     @action(detail=False, methods=["GET"])
-    def me(self, request):
+    def getcurrentuser(self, request):
         return Response(
             status=status.HTTP_200_OK,
             data=self.serializer_class(request.user, context={"request": request}).data,
