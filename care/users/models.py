@@ -20,8 +20,13 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-
-    TYPE_CHOICES = [(5, "Doctor"), (10, "Staff"), (15, "Patient"), (20, "Volunteer")]
+    TYPE_VALUE_MAP = {
+        "Doctor": 5,
+        "Staff": 10,
+        "Patient": 15,
+        "Volunteer": 20,
+    }
+    TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     DISTRICT_CHOICES = [
         (1, "Thiruvananthapuram"),
