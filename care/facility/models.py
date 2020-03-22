@@ -226,7 +226,7 @@ class Ambulance(FacilityBaseModel):
     vehicle_number_regex = RegexValidator(
         regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{1,4}$",
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
-        code="invalid_mobile",
+        code="invalid_vehicle_number",
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
