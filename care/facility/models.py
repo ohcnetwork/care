@@ -48,6 +48,7 @@ class Facility(FacilityBaseModel):
         message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
         code="invalid_mobile",
     )
+    oxygen_capacity= models.IntegerField()
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
