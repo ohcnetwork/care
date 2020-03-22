@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "storages",
     "rest_framework",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
