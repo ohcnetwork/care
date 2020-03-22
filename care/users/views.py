@@ -18,7 +18,6 @@ class SignupView(View):
     template = "users/signup.html"
 
     def get(self, request, **kwargs):
-        import pdb; pdb.set_trace()
         try:
             form = self.form_class()
             if kwargs["type"] != User.TYPE_VALUE_MAP['Volunteer']:
