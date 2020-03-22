@@ -18,6 +18,9 @@
   {% if duplicate %}
   <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">The bed type you are trying to add has already been added to the hospital, Please pick a different bed type.</p>
   {% endif %}
+  {% if validation_error %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Currently Occupied Number should be lesser than or equel to Total Capacity.</p>
+  {% endif %}
   {{ form|crispy }}
   <p class="max-w-lg text-lg mt-3 text-gray-700 text-justify">
     <br>
