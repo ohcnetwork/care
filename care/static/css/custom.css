@@ -32,9 +32,9 @@ label{
 }
 
 @media (min-width: 768px){
-  
+
 .cardwidth{
-  width: 30%!important;
+  min-width: 30%!important;
 }
 
 }
