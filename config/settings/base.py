@@ -77,6 +77,7 @@ THIRD_PARTY_APPS = [
     "storages",
     "rest_framework",
     "drf_yasg",
+    "drf_extra_fields",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
