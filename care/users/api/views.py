@@ -17,7 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = UserSerializer
-    queryset = User.objects.filter(deleted=False)
+    queryset = User.objects.all()
     lookup_field = "username"
 
     def get_permissions(self):
