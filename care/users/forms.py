@@ -2,8 +2,7 @@ from django.contrib.auth import forms, get_user_model
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, ButtonHolder, Submit, Fieldset
-from django.contrib.auth.forms import AuthenticationForm
+from crispy_forms.layout import Layout, Field
 
 
 User = get_user_model()
@@ -34,10 +33,7 @@ class UserCreationForm(forms.UserCreationForm):
         raise ValidationError(self.error_messages["duplicate_username"])
 
 
-from django.contrib.auth.forms import UserCreationForm
-
-
-class CustomSignupForm(UserCreationForm):
+class CustomSignupForm(forms.UserCreationForm):
     class Meta:
         model = User
         fields = (
@@ -83,7 +79,7 @@ class CustomSignupForm(UserCreationForm):
         )
 
 
-class AuthenticationForm(AuthenticationForm):
+class AuthenticationForm(forms.AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

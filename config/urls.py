@@ -4,6 +4,14 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+from . import api_router
+
+from config import api_router
 
 from config import api_router
 
@@ -12,15 +20,18 @@ urlpatterns = [
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
+    # Rest API
+    path("api/v1/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("care.users.urls", namespace="users")),
     # path("accounts/", include("allauth.urls")),
     path("facility/", include("care.facility.urls", namespace="facility")),
-    #Api
-    path("api/v1/", include(api_router.urlpatterns))
-
+    # RESTful APIs
+    path("api/v1/", include(api_router.urlpatterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
