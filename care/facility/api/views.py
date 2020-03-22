@@ -52,7 +52,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
     filterset_class = AmbulanceFilterSet
 
     @action(methods=['POST'], detail=True)
-    def add_driver(self, request, *args, **kwargs):
+    def add_driver(self, request):
         ambulance = self.get_object()
         serializer = AmbulanceDriverSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -61,7 +61,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['DELETE'], detail=True)
-    def remove_driver(self, request, *args, **kwargs):
+    def remove_driver(self, request):
         class DeleteDriverSerializer(serializers.Serializer):
             driver_id = serializers.IntegerField()
 

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from rest_framework import serializers
 from drf_extra_fields.geo_fields import PointField
+from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, AmbulanceDriver
 from care.facility.models import Facility, Ambulance
@@ -61,6 +61,6 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             return ambulance
 
     def update(self, instance, validated_data):
-        drivers = validated_data.pop('drivers', [])
-        ambulance = super(AmbulanceSerializer, self).create(validated_data)
+        validated_data.pop('drivers', [])
+        ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
         return ambulance
