@@ -6,7 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.views import View
 from django.http import HttpResponseRedirect
 
-from care.users.forms import CustomSignupForm
+from care.users.forms import CustomSignupForm, User
 
 
 def home_view(request):
@@ -18,8 +18,11 @@ class SignupView(View):
     template = "users/signup.html"
 
     def get(self, request, **kwargs):
+        import pdb; pdb.set_trace()
         try:
             form = self.form_class()
+            if kwargs["type"] != User.TYPE_VALUE_MAP['Volunteer']:
+                form.fields.pop('skill')
             return render(
                 request, self.template, {"form": form, "type": kwargs["name"]}
             )

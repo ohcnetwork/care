@@ -9,7 +9,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from . import api_router
 
 from config import api_router
 
