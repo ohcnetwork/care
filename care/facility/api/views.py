@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 from care.facility.models import Facility
-from care.facility.api.serializer import FacilitySerializer
+from care.facility.api.serializers import FacilitySerializer
 
 
 class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin,
@@ -24,3 +24,16 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
 
     serializer_class = FacilitySerializer
     queryset = Facility.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return self.queryset
+        return Facility.objects.filter(created_by=user)
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(created_by=self.request.user)
+    
