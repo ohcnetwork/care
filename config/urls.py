@@ -12,8 +12,6 @@ from rest_framework_simplejwt.views import (
 
 from config import api_router
 
-from config import api_router
-
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
