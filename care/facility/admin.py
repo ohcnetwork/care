@@ -11,7 +11,8 @@ from .models import (
     InventoryItem,
     Inventory,
     InventoryLog,
-)
+    AmbulanceDriver,
+    Ambulance)
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -52,6 +53,19 @@ class StaffRoomAllocationAdmin(admin.ModelAdmin):
     autocomplete_fields = ["staff", "room"]
 
 
+class AmbulanceDriverInline(admin.TabularInline):
+    model = AmbulanceDriver
+
+
+class AmbulanceAdmin(admin.ModelAdmin):
+    search_fields = ["vehicle_number"]
+    inlines = [AmbulanceDriverInline, ]
+
+
+class AmbulanceDriverAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['ambulance']
+
+
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
@@ -62,3 +76,5 @@ admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
 admin.site.register(InventoryItem, InventoryItemAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
+admin.site.register(Ambulance, AmbulanceAdmin)
+admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
