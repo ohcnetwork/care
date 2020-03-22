@@ -22,10 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            self.permission_classes = (
-                IsAuthenticated,
-                IsAdminUser,
-            )
+            self.permission_classes = ()  # allows signup
         else:
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
