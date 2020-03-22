@@ -11,7 +11,7 @@
     <h1 class="text-gray-700">Phone : {{facility.phone_number}}</h1>
     <h1 class="text-gray-700">District : {{facility.get_district_display}}</h1>
   </div>
-  <div class="w-full lg:w-1/3 items-center">
+  <div class="w-full lg:w-1/3 flex flex-col items-center pl-2">
     <a class="btn btn-primary m-2" href="{% url 'facility:facility-update' pk=facility.id %}"> Update Hospital Info</a>
     <a class="btn btn-primary m-2" href="{% url 'facility:facility-capacity-create' pk=facility.id %}"> Add More Bed Types</a>
     <a class="btn btn-primary m-2" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}"> Add More Doctor Types</a>

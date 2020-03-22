@@ -8,10 +8,10 @@
   <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
     {% if request.user.is_authenticated %}
     <p class="text-lg mt-1 text-gray-700 text-justify ">You  have successfully logged in to the corona care network.
-    <br><br>    
+    <br><br>
     The next step is to register your Hospital into the corona care network and enter details about total capacity of regular beds, ICU beds, and ventilators.
     <br><br>
-    Once you connect your hospital to the corona care network, You will be able to view hospital details using th view hospital button.</p>
+    Once you connect your hospital to the corona care network, You will be able to view hospital details using the view hospital button.</p>
       {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
       <div class="mt-4 flex flex-col">
         <div class="flex flex-col">

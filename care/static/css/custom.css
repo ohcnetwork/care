@@ -34,7 +34,8 @@ label{
 @media (min-width: 768px){
 
 .cardwidth{
-  min-width: 30%!important;
+  width: 30%!important;
+  min-width: 250px!important;
 }
 
 }
