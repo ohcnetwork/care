@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from .models import (
     Facility,
-    FacilityLocation,
     FacilityStaff,
     FacilityCapacity,
     FacilityVolunteer,
@@ -69,7 +68,6 @@ class AmbulanceDriverAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Facility, FacilityAdmin)
-admin.site.register(FacilityLocation)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
 admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)

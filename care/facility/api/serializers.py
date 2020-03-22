@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
+from drf_extra_fields.geo_fields import PointField
 
 from care.facility.models import FACILITY_TYPES, AmbulanceDriver
 from care.facility.models import Facility, Ambulance
@@ -16,6 +17,11 @@ class FacilitySerializer(serializers.ModelSerializer):
 
     district = ChoiceField(choices=User.DISTRICT_CHOICES)
     facility_type = ChoiceField(choices=FACILITY_TYPES)
+    # A valid location => {
+    #     "latitude": 49.8782482189424,
+    #     "longitude": 24.452545489
+    # }
+    location = PointField(required=False)
 
     class Meta:
         model = Facility
@@ -25,6 +31,8 @@ class FacilitySerializer(serializers.ModelSerializer):
             "district",
             "facility_type",
             "address",
+            "location",
+            "oxygen_capacity",
             "phone_number",
         ]
 

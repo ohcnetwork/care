@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.core.validators import RegexValidator
 from django.db import models
+from location_field.models.spatial import LocationField
 
 User = get_user_model()
 
@@ -51,6 +52,8 @@ class Facility(FacilityBaseModel):
     district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
+    location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    oxygen_capacity = models.IntegerField()
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True

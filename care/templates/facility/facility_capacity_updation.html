@@ -10,6 +10,9 @@
   {% if duplicate %}
   <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Please Enter a Room Type that is not entered already</p>
   {% endif %}
+  {% if validation_error %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Currently occupied number should be lesser than or equal to the total Capacity.</p>
+  {% endif %}
   {% csrf_token %}
   {{ form|crispy }}
   <div class="control-group">
