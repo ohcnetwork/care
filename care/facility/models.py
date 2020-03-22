@@ -33,11 +33,6 @@ DOCTOR_TYPES = [
     (4, "Paediatrics"),
 ]
 
-
-class FacilityLocation(FacilityBaseModel):
-    pass
-
-
 phone_number_regex = RegexValidator(
     regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
     message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
@@ -235,9 +230,6 @@ class Ambulance(FacilityBaseModel):
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
-    facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
-    )
     vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
 
     owner_name = models.CharField(max_length=255)

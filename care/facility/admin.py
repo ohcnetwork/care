@@ -58,7 +58,6 @@ class AmbulanceDriverInline(admin.TabularInline):
 
 
 class AmbulanceAdmin(admin.ModelAdmin):
-    autocomplete_fields = ["facility"]
     search_fields = ["vehicle_number"]
     inlines = [AmbulanceDriverInline, ]
 

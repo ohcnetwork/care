@@ -344,3 +344,4 @@ care/media/
 !.envs/.local/
 
 .vscode
+.idea/
