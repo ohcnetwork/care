@@ -16,7 +16,7 @@ class FacilityCapacityCreationForm(ModelForm):
         model = FacilityCapacity
         fields = ["room_type", "total_capacity", "current_capacity"]
         labels = {"room_type": "Bed Type", "total_capacity": "Total Capacity",
-                  "current_capacity": "Current Capacity Utilisation"}
+                  "current_capacity": "Currently Occupied"}
 
 
 class DoctorsCountCreationForm(ModelForm):

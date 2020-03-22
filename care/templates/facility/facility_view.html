@@ -24,11 +24,11 @@
   <div id="facilityCard" class="shadow-lg rounded overflow-hidden w-full cardwidth md:w-1/2 sm:w-full mr-4 mb-5">
     <span class="room_type text-xl block p-3">{{i.get_room_type_display}}</span>
     <span class="capacity-qty block text-4xl text-center">{{i.current_capacity}}</span>
-    <span class="label block text-center text-gray-600">Current Capacity</span>
+    <span class="label block text-center text-gray-600">Currently Occupied</span>
     <button class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
       <a href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> EDIT </a> </button>
     <div class="footer bg-gray-900 px-3 py-3 text-center">
-      <span class="text-white ">Total Capacity {{i.total_capacity}}</span>
+      <span class="text-white ">Total Capacity: {{i.total_capacity}}</span>
     </div>
   </div>
   {% endfor %}
