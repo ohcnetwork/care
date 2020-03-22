@@ -43,6 +43,8 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 
 DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["ENGINE"] = ("django.contrib.gis.db.backends.postgis",)
+
 
 # URLS
 # ------------------------------------------------------------------------------
