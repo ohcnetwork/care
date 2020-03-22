@@ -50,9 +50,11 @@ urlpatterns = [
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
     # Rest API
-    path("api/v1/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path(
+        "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+    ),
+    path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
