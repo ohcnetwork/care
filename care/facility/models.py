@@ -1,8 +1,7 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
 from django.core.validators import MinValueValidator
-
+from django.core.validators import RegexValidator
+from django.db import models
 
 User = get_user_model()
 
@@ -38,6 +37,13 @@ class FacilityLocation(FacilityBaseModel):
     pass
 
 
+phone_number_regex = RegexValidator(
+    regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
+    code="invalid_mobile",
+)
+
+
 class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
@@ -45,11 +51,6 @@ class Facility(FacilityBaseModel):
     district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
-    phone_number_regex = RegexValidator(
-        regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-        message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-        code="invalid_mobile",
-    )
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
@@ -221,3 +222,46 @@ class InventoryLog(FacilityBaseModel):
 
 
 # Inventory Model End
+
+
+class Ambulance(FacilityBaseModel):
+    vehicle_number_regex = RegexValidator(
+        regex="^$",
+        message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
+        code="invalid_mobile",
+    )
+    INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
+
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
+    vehicle_number = models.CharField(max_length=20)
+
+    owner_name = models.CharField(max_length=255)
+    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    owner_is_smart_phone = models.BooleanField(default=True)
+
+    primary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
+    secondary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
+    third_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
+
+    has_oxygen = models.BooleanField()
+    has_ventilator = models.BooleanField()
+    has_suction_machine = models.BooleanField()
+    has_defibrillator = models.BooleanField()
+
+    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+
+    def __str__(self):
+        return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
+
+
+class AmbulanceDriver(FacilityBaseModel):
+    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    is_smart_phone = models.BooleanField()
+
+    def __str__(self):
+        return f"Driver: {self.name}({self.phone_number})"

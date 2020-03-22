@@ -1,22 +1,22 @@
+from django_filters import rest_framework as filters
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
     CreateModelMixin,
     UpdateModelMixin,
     DestroyModelMixin)
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
-
-from care.facility.models import Facility
-from care.facility.api.serializers import FacilitySerializer
+from care.facility.api.serializers import FacilitySerializer, AmbulanceSerializer
+from care.facility.models import Facility, Ambulance
 
 
 class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin,
                           UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """Base class for all endpoints related to Faclity model."""
 
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
 
 class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
@@ -36,3 +36,10 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
 
     def perform_update(self, serializer):
         serializer.save(created_by=self.request.user)
+
+
+class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
+    serializer_class = AmbulanceSerializer
+    queryset = Ambulance.objects.filter(deleted=False)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('owner_phone_number',)
