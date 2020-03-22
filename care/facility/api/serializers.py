@@ -22,5 +22,6 @@ class FacilitySerializer(serializers.ModelSerializer):
             "district",
             "facility_type",
             "address",
+            "oxygen_capacity",
             "phone_number",
         ]

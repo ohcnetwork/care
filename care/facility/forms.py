@@ -6,10 +6,10 @@ from .models import Facility, FacilityCapacity, HospitalDoctors
 class FacilityCreationForm(ModelForm):
     class Meta:
         model = Facility
-        fields = ["name", "district", "address", "phone_number"]
+        fields = ["name", "district", "address", "oxygen_capacity", "phone_number"]
         labels = {"name": "Enter the name of your hospital", "district": "Pick your District",
                   "address": "Enter Hospital Address",
-                  "phone_number": "Enter emergency contact number of your hospital"}
+                  "phone_number": "Enter emergency contact number of your hospital","oxygen_capacity":"Enter the total oxygen capacity of your hospital (in litres)"}
 
 
 class FacilityCapacityCreationForm(ModelForm):
