@@ -19,3 +19,4 @@ django-storages==1.9.1 # For Storing Static Files in AWS
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 djangorestframework-simplejwt==4.4.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
 drf-yasg==1.17.1 # For Api Docs
+django-extra-fields==2.0.3 # https://github.com/Hipo/drf-extra-fields
