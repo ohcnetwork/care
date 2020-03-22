@@ -15,7 +15,7 @@ from config import api_router
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
+        "ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"
     ),
     # Rest API
     path("api/v1/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
