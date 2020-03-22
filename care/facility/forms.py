@@ -7,8 +7,8 @@ class FacilityCreationForm(ModelForm):
     class Meta:
         model = Facility
         fields = ["name", "district", "address", "phone_number"]
-        labels = {"name": "Name of Hospital", "address": "Enter Hospital Address",
-                  "phone_number": "Contact Number for Hospital"}
+        labels = {"name": "Enter the name of your hospital", "district": "Pick your District",
+                  "address": "Enter Hospital Address", "phone_number": "Contact Number for Hospital"}
 
 
 class FacilityCapacityCreationForm(ModelForm):
@@ -23,3 +23,4 @@ class DoctorsCountCreationForm(ModelForm):
     class Meta:
         model = HospitalDoctors
         fields = ["area", "count"]
+        labels = {"area": "Enter emergency contact number of your hospital"}

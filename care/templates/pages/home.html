@@ -5,16 +5,15 @@
 
 
 <section class="mt-4 max-w-lg ">
-    <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
-    <p class="text-lg mt-1 text-gray-700 text-justify "> Our Goal is defend the Healthcare system of Kerala from overloading beyond capacity.
-    <br><br>
-    For this to happen, the Chief Minister's Office needs access to the live capacity utilisation of the healthcare system against the total capacity.
-    <br><br>
-    Corona Care is a tool designed for hospital administrators to send the most up-to-date information in a real-time basis to CMO through the Control Room setup by State Disaster Management Authority.
-    <br><br>
-    If you have already registered, you can log-in the network using the username/password that you created during sign-up.</p>
+    
 
     {% if request.user.is_authenticated %}
+    <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
+    <p class="text-lg mt-1 text-gray-700 text-justify "> You  have successfully logged in to the corona care network.
+    <br><br>
+    The next step is to register your Hospital into the corona care network and enter details about total capacity of regular beds, ICU beds, and ventilators.
+    <br><br>
+    Once you connect your hospital to the corona care network, You will be able to view hospital details using th view hospital button.</p>
       {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
       <div class="mt-4 flex flex-col">
         <div class="flex flex-col">
@@ -27,6 +26,14 @@
       {% endif %}
 
     {% else %}
+      <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
+      <p class="text-lg mt-1 text-gray-700 text-justify "> Our Goal is defend the Healthcare system of Kerala from overloading beyond capacity.
+      <br><br>
+      For this to happen, the Chief Minister's Office needs access to the live capacity utilisation of the healthcare system against the total capacity.
+      <br><br>
+      Corona Care is a tool designed for hospital administrators to send the most up-to-date information in a real-time basis to CMO through the Control Room setup by State Disaster Management Authority.
+      <br><br>
+      If you have already registered, you can log-in the network using the username/password that you created during sign-up.</p>
 
     <div>
       <div class="mt-4 flex flex-col">
