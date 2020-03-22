@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 
 from care.users.forms import CustomSignupForm
 
+
 def home_view(request):
     return render(request, "home.html")
 

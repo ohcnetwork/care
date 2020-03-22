@@ -7,15 +7,17 @@ class FacilityCreationForm(ModelForm):
     class Meta:
         model = Facility
         fields = ["name", "district", "address", "phone_number"]
-        labels = { "name":"Name of Hospital", "address":"Enter Hospital Address", 
-        "phone_number":"Contact Number for Hospital"}
+        labels = {"name": "Name of Hospital", "address": "Enter Hospital Address",
+                  "phone_number": "Contact Number for Hospital"}
 
 
 class FacilityCapacityCreationForm(ModelForm):
     class Meta:
         model = FacilityCapacity
         fields = ["room_type", "total_capacity", "current_capacity"]
-        labels = {"room_type":"Bed Type","total_capacity":"Total Capacity","current_capacity":"Current Capacity Utilisation"}
+        labels = {"room_type": "Bed Type", "total_capacity": "Total Capacity",
+                  "current_capacity": "Current Capacity Utilisation"}
+
 
 class DoctorsCountCreationForm(ModelForm):
     class Meta:

@@ -20,7 +20,6 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-
     TYPE_CHOICES = [(5, "Doctor"), (10, "Staff"), (15, "Patient"), (20, "Volunteer")]
 
     DISTRICT_CHOICES = [
