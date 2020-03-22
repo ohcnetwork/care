@@ -7,12 +7,17 @@ from django.core.validators import MinValueValidator
 User = get_user_model()
 
 
-class DateBaseModel(models.Model):
+class FacilityBaseModel(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
+
+    def delete(self):
+        self.deleted = True
+        self.save()
 
 
 # Facility Model Start
@@ -29,11 +34,11 @@ DOCTOR_TYPES = [
 ]
 
 
-class FacilityLocation(DateBaseModel):
+class FacilityLocation(FacilityBaseModel):
     pass
 
 
-class Facility(DateBaseModel):
+class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
@@ -57,7 +62,7 @@ class Facility(DateBaseModel):
         verbose_name_plural = "Facilities"
 
 
-class HospitalDoctors(DateBaseModel):
+class HospitalDoctors(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -71,7 +76,7 @@ class HospitalDoctors(DateBaseModel):
         unique_together = ["facility", "area"]
 
 
-class FacilityCapacity(DateBaseModel):
+class FacilityCapacity(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -83,7 +88,7 @@ class FacilityCapacity(DateBaseModel):
         unique_together = ["facility", "room_type"]
 
 
-class FacilityStaff(DateBaseModel):
+class FacilityStaff(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -93,7 +98,7 @@ class FacilityStaff(DateBaseModel):
         return str(self.staff) + " for facility " + str(self.facility)
 
 
-class FacilityVolunteer(DateBaseModel):
+class FacilityVolunteer(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -111,7 +116,7 @@ class FacilityVolunteer(DateBaseModel):
 # Building Model Start
 
 
-class Building(DateBaseModel):
+class Building(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -129,7 +134,7 @@ class Building(DateBaseModel):
 # Room Model Start
 
 
-class Room(DateBaseModel):
+class Room(FacilityBaseModel):
     building = models.ForeignKey(
         "Building", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -143,7 +148,7 @@ class Room(DateBaseModel):
         return self.num + " under " + str(self.building)
 
 
-class StaffRoomAllocation(DateBaseModel):
+class StaffRoomAllocation(FacilityBaseModel):
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -156,7 +161,7 @@ class StaffRoomAllocation(DateBaseModel):
 # Inventory Model Start
 
 
-class InventoryItem(DateBaseModel):
+class InventoryItem(FacilityBaseModel):
     name = models.CharField(max_length=1000)
     description = models.TextField()
     minimum_stock = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -172,7 +177,7 @@ class InventoryItem(DateBaseModel):
         )
 
 
-class Inventory(DateBaseModel):
+class Inventory(FacilityBaseModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -194,7 +199,7 @@ class Inventory(DateBaseModel):
         verbose_name_plural = "Inventories"
 
 
-class InventoryLog(DateBaseModel):
+class InventoryLog(FacilityBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
     updated_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
