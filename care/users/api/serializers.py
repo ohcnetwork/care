@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES)
     district = ChoiceField(choices=User.DISTRICT_CHOICES)
     gender = ChoiceField(choices=User.GENDER_CHOICES)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -19,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
+            "password",
             "user_type",
             "district",
             "phone_number",
@@ -28,3 +30,5 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
+
+

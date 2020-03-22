@@ -1,7 +1,6 @@
 # PostgreSQL
 # ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
+POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
-POSTGRES_DB=care
-POSTGRES_USER=tqSuxePMRMcDduwVCzTnCEbqWfroNvcz
-POSTGRES_PASSWORD=JDUQbjXh0jmzK6tk5gWsK04PQvBXP6t7cIkuxyqBAB5JbZxtWSy5DMmOAv1Fn2jO
+POSTGRES_DB=postgres
+POSTGRES_PASSWORD=15931593

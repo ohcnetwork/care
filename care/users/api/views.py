@@ -17,15 +17,12 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = UserSerializer
-    queryset = User.objects.filter(deleted=False)
+    queryset = User.objects.all()
     lookup_field = "username"
 
     def get_permissions(self):
         if self.request.method == "POST":
-            self.permission_classes = (
-                IsAuthenticated,
-                IsAdminUser,
-            )
+            self.permission_classes = ()  # allows signup
         else:
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()

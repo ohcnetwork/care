@@ -5,7 +5,7 @@ Care
    :alt: Codacy Badge
    :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
 
-corona care center management app for govt of kerala
+Care is a Corona Care Center management app for the Govt of Kerala
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
@@ -14,6 +14,10 @@ corona care center management app for govt of kerala
      :target: https://github.com/ambv/black
      :alt: Black code style
 
+
+.. image:: https://i.imgur.com/V7jxjak.png
+     :target: http://slack.coronasafe.in/
+     :alt: Join CoronaSafe Slack channel
 
 :License: MIT
 
