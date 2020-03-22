@@ -141,27 +141,33 @@ class FacilityCapacityCreation(LoginRequiredMixin, StaffRequiredMixin, View):
         try:
             data = request.POST
             form = self.form_class(data)
+            facility_obj = Facility.objects.get(id=pk)
+            validation_error = False
+            duplicate = False
             if form.is_valid():
-                duplicate = False
-                facility_capacity_obj = form.save(commit=False)
-                facility_obj = Facility.objects.get(id=pk)
-                facility_capacity_obj.facility = facility_obj
-                try:
-                    facility_capacity_obj.save()
-                    if "addmore" in data:
-                        return redirect(
-                            "facility:facility-capacity-create", facility_obj.id
-                        )
-                    else:
-                        return redirect(
-                            "facility:facility-doctor-count-create", facility_obj.id
-                        )
-                except IntegrityError:
-                    duplicate = True
+                if form.cleaned_data.get('total_capacity') >= form.cleaned_data.get('current_capacity'):
+                    duplicate = False
+                    facility_capacity_obj = form.save(commit=False)
+                    facility_obj = Facility.objects.get(id=pk)
+                    facility_capacity_obj.facility = facility_obj
+                    try:
+                        facility_capacity_obj.save()
+                        if "addmore" in data:
+                            return redirect(
+                                "facility:facility-capacity-create", facility_obj.id
+                            )
+                        else:
+                            return redirect(
+                                "facility:facility-doctor-count-create", facility_obj.id
+                            )
+                    except IntegrityError:
+                        duplicate = True
+                else:
+                    validation_error = True
             return render(
                 request,
                 self.template,
-                {"form": form, "facility": facility_obj, "duplicate": duplicate},
+                {"form": form, "facility": facility_obj, "duplicate": duplicate, "validation_error": validation_error},
             )
         except Exception as e:
             logging.error(e)
