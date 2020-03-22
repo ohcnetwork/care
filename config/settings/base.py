@@ -41,7 +41,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # URLS
@@ -63,6 +63,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
+    "django.contrib.gis",
     "collectfast",  # Overrides collectstatic command in django
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
@@ -77,6 +78,8 @@ THIRD_PARTY_APPS = [
     "storages",
     "rest_framework",
     "drf_yasg",
+    "drf_extra_fields",
+    "location_field.apps.DefaultConfig",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
