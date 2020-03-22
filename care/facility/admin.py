@@ -54,9 +54,14 @@ class StaffRoomAllocationAdmin(admin.ModelAdmin):
     autocomplete_fields = ["staff", "room"]
 
 
+class AmbulanceDriverInline(admin.TabularInline):
+    model = AmbulanceDriver
+
+
 class AmbulanceAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     search_fields = ["vehicle_number"]
+    inlines = [AmbulanceDriverInline, ]
 
 
 class AmbulanceDriverAdmin(admin.ModelAdmin):

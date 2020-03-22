@@ -1,4 +1,6 @@
 from django_filters import rest_framework as filters
+from rest_framework import status, serializers
+from rest_framework.decorators import action
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -6,9 +8,10 @@ from rest_framework.mixins import (
     UpdateModelMixin,
     DestroyModelMixin)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers import FacilitySerializer, AmbulanceSerializer
+from care.facility.api.serializers import FacilitySerializer, AmbulanceSerializer, AmbulanceDriverSerializer
 from care.facility.models import Facility, Ambulance
 
 
@@ -38,8 +41,43 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         serializer.save(created_by=self.request.user)
 
 
+class AmbulanceFilterSet(filters.FilterSet):
+    vehicle_numbers = filters.BaseInFilter(field_name='vehicle_number')
+
+
 class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False)
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('owner_phone_number',)
+    filterset_class = AmbulanceFilterSet
+
+    @action(methods=['POST'], detail=True)
+    def add_driver(self, request, *args, **kwargs):
+        ambulance = self.get_object()
+        serializer = AmbulanceDriverSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
+        return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
+
+    @action(methods=['DELETE'], detail=True)
+    def remove_driver(self, request, *args, **kwargs):
+        class DeleteDriverSerializer(serializers.Serializer):
+            driver_id = serializers.IntegerField()
+
+            def update(self, instance, validated_data):
+                raise NotImplementedError
+
+            def create(self, validated_data):
+                raise NotImplementedError
+
+        ambulance = self.get_object()
+        serializer = DeleteDriverSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        driver = ambulance.ambulancedriver_set.filter(id=serializer.validated_data['driver_id']).first()
+        if not driver:
+            raise serializers.ValidationError({"driver_id": "Detail not found"})
+
+        driver.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

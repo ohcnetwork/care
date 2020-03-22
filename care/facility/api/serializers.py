@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, AmbulanceDriver
@@ -7,7 +8,7 @@ from config.serializers import ChoiceField
 
 User = get_user_model()
 
-READ_ONLY_FIELDS = ('created_date', 'modified_date', 'deleted',)
+TIMESTAMP_FIELDS = ('created_date', 'modified_date', 'deleted',)
 
 
 class FacilitySerializer(serializers.ModelSerializer):
@@ -28,17 +29,30 @@ class FacilitySerializer(serializers.ModelSerializer):
         ]
 
 
-class DriverSerializer(serializers.ModelSerializer):
+class AmbulanceDriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = AmbulanceDriver
-        fields = '__all__'
-        read_only_fields = READ_ONLY_FIELDS
+        exclude = TIMESTAMP_FIELDS + ('ambulance',)
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
-    drivers = serializers.ListSerializer(child=DriverSerializer())
+    drivers = serializers.ListSerializer(
+        child=AmbulanceDriverSerializer())
 
     class Meta:
         model = Ambulance
-        fields = '__all__'
-        read_only_fields = READ_ONLY_FIELDS
+        exclude = TIMESTAMP_FIELDS
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            drivers = validated_data.pop('drivers', [])
+            ambulance = super(AmbulanceSerializer, self).create(validated_data)
+            for d in drivers:
+                d['ambulance'] = ambulance
+                AmbulanceDriverSerializer().create(d)
+            return ambulance
+
+    def update(self, instance, validated_data):
+        drivers = validated_data.pop('drivers', [])
+        ambulance = super(AmbulanceSerializer, self).create(validated_data)
+        return ambulance
