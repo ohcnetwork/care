@@ -6,13 +6,7 @@
 
 <section class="mt-4 max-w-lg ">
     <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
-    <p class="text-lg mt-1 text-gray-700 text-justify "> Our Goal is defend the Healthcare system of Kerala from overloading beyond capacity.
-    <br><br>
-    For this to happen, the Chief Minister's Office needs access to the live capacity utilisation of the healthcare system against the total capacity.
-    <br><br>
-    Corona Care is a tool designed for hospital administrators to send the most up-to-date information in a real-time basis to CMO through the Control Room setup by State Disaster Management Authority.
-    <br><br>
-    If you have already registered, you can log-in the network using the username/password that you created during sign-up.</p>
+    <p class="text-lg mt-1 text-gray-700 text-justify "> Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity.
 
     {% if request.user.is_authenticated %}
       {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
@@ -37,7 +31,7 @@
           <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-doctor' %}">{% trans "Doctor Sign Up" %}</a>
         </div>-->
       <div class="flex flex-col">
-        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-staff' %}">{% trans "Sign Up As Hospital Administrator" %}</a>
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'ksdma' %}">{% trans "KSDMA: Hospital Registration" %}</a>
         </div>
       <div class="flex flex-col">
         <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signin' %}">{% trans "Login to Corona Safe Network" %}</a>

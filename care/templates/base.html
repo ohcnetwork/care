@@ -58,9 +58,9 @@
                     <li>
                         <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'home' %}" title="Link">Home</a>
                     </li>
-                    <li>
-                        <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'about' %}" title="Link">About</a>
-                    </li>
+                    <!--<li>
+                        <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'ksdma' %}" title="Link">KSDMA</a>
+                    </li>-->
 
                     {% if request.user.is_authenticated and request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
                     <!-- <li class="nav-item">
