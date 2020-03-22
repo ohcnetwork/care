@@ -63,6 +63,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
+    "django.contrib.gis",
     "collectfast",  # Overrides collectstatic command in django
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
