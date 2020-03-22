@@ -41,7 +41,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("POSTGIS_URL", default="postgis:///care")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 
@@ -319,4 +319,11 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         days=env("JWT_REFRESH_TOKEN_LIFETIME", default=7)
     ),
+}
+
+
+LOCATION_FIELD = {
+    "search.provider": "google",
+    "map.provider": "openstreetmap",
+    "provider.openstreetmap.max_zoom": 18,
 }
