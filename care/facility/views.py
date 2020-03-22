@@ -193,14 +193,19 @@ class FacilityCapacityUpdation(LoginRequiredMixin, StaffRequiredMixin, View):
             capacity_obj = FacilityCapacity.objects.get(id=cpk, facility=facility_obj)
             form = self.form_class(data, instance=capacity_obj)
             duplicate = False
+            validation_error = False
             if form.is_valid():
-                try:
-                    form.save()
-                    return redirect("facility:facility-view", facility_obj.id)
-                except IntegrityError:
-                    duplicate = True
+                if form.cleaned_data.get('total_capacity') >= form.cleaned_data.get('current_capacity'):
+                    try:
+                        form.save()
+                        return redirect("facility:facility-view", facility_obj.id)
+                    except IntegrityError:
+                        duplicate = True
+                else:
+                    validation_error = True
             return render(
-                request, self.template, {"form": form, "duplicate": duplicate}
+                request, self.template, {"form": form, "duplicate": duplicate,
+                                         "validation_error": validation_error, "facility": facility_obj}
             )
         except Exception as e:
             logging.error(e)
