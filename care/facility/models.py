@@ -1,8 +1,9 @@
 from django.db import models
-from django.contrib.gis.db.models import PointField
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.core.validators import MinValueValidator
+
+from location_field.models.spatial import LocationField
 
 
 User = get_user_model()
@@ -42,13 +43,13 @@ class Facility(FacilityBaseModel):
     district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
-    location = PointField(blank=True, null=True)
+    location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     phone_number_regex = RegexValidator(
         regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
         message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
         code="invalid_mobile",
     )
-    oxygen_capacity= models.IntegerField()
+    oxygen_capacity = models.IntegerField()
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True

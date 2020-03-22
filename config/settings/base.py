@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_yasg",
     "drf_extra_fields",
+    "location_field.apps.DefaultConfig",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
