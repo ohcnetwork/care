@@ -34,10 +34,6 @@ DOCTOR_TYPES = [
 ]
 
 
-class FacilityLocation(FacilityBaseModel):
-    pass
-
-
 class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
