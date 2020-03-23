@@ -1,7 +1,8 @@
 from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from care.facility.api.views import FacilityViewSet, AmbulanceViewSet
+from care.facility.api.viewsets.ambulance import AmbulanceViewSet
+from care.facility.api.viewsets.facility import FacilityViewSet
 from care.users.api.views import UserViewSet
 
 if settings.DEBUG:
