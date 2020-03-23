@@ -31,6 +31,7 @@ DOCTOR_TYPES = [
     (2, "Pulmonology"),
     (3, "Critical Care"),
     (4, "Paediatrics"),
+    (5, "Other Speciality Doctors"),
 ]
 
 phone_number_regex = RegexValidator(
