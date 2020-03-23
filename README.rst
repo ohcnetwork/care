@@ -26,7 +26,17 @@ Set up Local environment
 
 Follow the steps listed here_.
 
+If you are installing PostgreSQL for the first time, follow the steps given in this answer_.
+
+You also might have to install PostGIS scripts by running 
+::
+
+  $ sudo apt install postgresql-<version>-postgis-scripts
+
+
 .. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
+.. _answer: https://stackoverflow.com/a/12670521/4385622
+
 
 Settings
 --------
