@@ -1,48 +1,15 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers import (
+from care.facility.api.serializers.ambulance import (
     AmbulanceDriverSerializer,
     AmbulanceSerializer,
-    FacilitySerializer,
 )
-from care.facility.models import Ambulance, Facility
-
-
-class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet):
-    """Base class for all endpoints related to Faclity model."""
-
-    permission_classes = (IsAuthenticated,)
-
-
-class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
-    """Viewset for facility CRUD operations."""
-
-    serializer_class = FacilitySerializer
-    queryset = Facility.objects.filter(is_active=True)
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_superuser:
-            return self.queryset
-        return self.queryset.filter(created_by=user)
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(created_by=self.request.user)
+from care.facility.api.viewsets import FacilityBaseViewset
+from care.facility.models import Ambulance
 
 
 class AmbulanceFilterSet(filters.FilterSet):
