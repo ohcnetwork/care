@@ -28,10 +28,13 @@ Follow the steps listed here_.
 
 If you are installing PostgreSQL for the first time, follow the steps given in this answer_.
 
-You also might have to install PostGIS scripts by running 
-::
+You also might have to install PostGIS scripts.
 
-  $ sudo apt install postgresql-<version>-postgis-scripts
+* Linux users can install PostGIS scripts by running ::
+    
+    $ sudo apt install postgresql-<version>-postgis-scripts
+  
+* Windows users can install PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.  
 
 
 .. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
