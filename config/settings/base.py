@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "drf_extra_fields",
     "location_field.apps.DefaultConfig",
+    "django_filters",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
