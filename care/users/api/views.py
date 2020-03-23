@@ -1,12 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-
-from users.api.serializers import UserSerializer
+from care.users.api.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -36,6 +34,5 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK,
-            data=self.serializer_class(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK, data=self.serializer_class(request.user, context={"request": request}).data,
         )

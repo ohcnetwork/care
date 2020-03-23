@@ -30,5 +30,3 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
-
-

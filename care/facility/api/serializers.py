@@ -3,13 +3,16 @@ from django.db import transaction
 from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
 
-from care.facility.models import FACILITY_TYPES, AmbulanceDriver
-from care.facility.models import Facility, Ambulance
+from care.facility.models import FACILITY_TYPES, Ambulance, AmbulanceDriver, Facility
 from config.serializers import ChoiceField
 
 User = get_user_model()
 
-TIMESTAMP_FIELDS = ('created_date', 'modified_date', 'deleted',)
+TIMESTAMP_FIELDS = (
+    "created_date",
+    "modified_date",
+    "deleted",
+)
 
 
 class FacilitySerializer(serializers.ModelSerializer):
@@ -40,12 +43,11 @@ class FacilitySerializer(serializers.ModelSerializer):
 class AmbulanceDriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = AmbulanceDriver
-        exclude = TIMESTAMP_FIELDS + ('ambulance',)
+        exclude = TIMESTAMP_FIELDS + ("ambulance",)
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
-    drivers = serializers.ListSerializer(
-        child=AmbulanceDriverSerializer())
+    drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
     class Meta:
         model = Ambulance
@@ -53,14 +55,14 @@ class AmbulanceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            drivers = validated_data.pop('drivers', [])
+            drivers = validated_data.pop("drivers", [])
             ambulance = super(AmbulanceSerializer, self).create(validated_data)
             for d in drivers:
-                d['ambulance'] = ambulance
+                d["ambulance"] = ambulance
                 AmbulanceDriverSerializer().create(d)
             return ambulance
 
     def update(self, instance, validated_data):
-        validated_data.pop('drivers', [])
+        validated_data.pop("drivers", [])
         ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
         return ambulance

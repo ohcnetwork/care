@@ -1,22 +1,26 @@
 from django_filters import rest_framework as filters
-from rest_framework import status, serializers
+from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
-    CreateModelMixin,
     UpdateModelMixin,
-    DestroyModelMixin)
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers import FacilitySerializer, AmbulanceSerializer, AmbulanceDriverSerializer
-from care.facility.models import Facility, Ambulance
+from care.facility.api.serializers import (
+    AmbulanceDriverSerializer,
+    AmbulanceSerializer,
+    FacilitySerializer,
+)
+from care.facility.models import Ambulance, Facility
 
 
-class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin,
-                          UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+class FacilityBaseViewset(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """Base class for all endpoints related to Faclity model."""
 
     permission_classes = (IsAuthenticated,)
@@ -42,7 +46,7 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
 
 
 class AmbulanceFilterSet(filters.FilterSet):
-    vehicle_numbers = filters.BaseInFilter(field_name='vehicle_number')
+    vehicle_numbers = filters.BaseInFilter(field_name="vehicle_number")
 
 
 class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
@@ -51,7 +55,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=["POST"], detail=True)
     def add_driver(self, request):
         ambulance = self.get_object()
         serializer = AmbulanceDriverSerializer(data=request.data)
@@ -60,7 +64,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
         return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
 
-    @action(methods=['DELETE'], detail=True)
+    @action(methods=["DELETE"], detail=True)
     def remove_driver(self, request):
         class DeleteDriverSerializer(serializers.Serializer):
             driver_id = serializers.IntegerField()
@@ -75,7 +79,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         serializer = DeleteDriverSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        driver = ambulance.ambulancedriver_set.filter(id=serializer.validated_data['driver_id']).first()
+        driver = ambulance.ambulancedriver_set.filter(id=serializer.validated_data["driver_id"]).first()
         if not driver:
             raise serializers.ValidationError({"driver_id": "Detail not found"})
 
