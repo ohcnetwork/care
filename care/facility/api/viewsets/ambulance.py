@@ -12,6 +12,14 @@ from care.facility.api.serializers.ambulance import (
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Ambulance
 
+from rest_framework.mixins import (
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+)
+from rest_framework.viewsets import GenericViewSet
+
 
 class AmbulanceFilterSet(filters.FilterSet):
     vehicle_numbers = filters.BaseInFilter(field_name="vehicle_number")
@@ -58,3 +66,11 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
 
         driver.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
+    permission_classes = (AllowAny,)
+    serializer_class = AmbulanceSerializer
+    queryset = Ambulance.objects.filter(deleted=False)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AmbulanceFilterSet
