@@ -21,7 +21,7 @@ class BuildingAdmin(admin.ModelAdmin):
 
 
 class FacilityAdmin(admin.ModelAdmin):
-    search_fields = ["facility"]
+    search_fields = ["name"]
 
 
 class FacilityStaffAdmin(admin.ModelAdmin):
