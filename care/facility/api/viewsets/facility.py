@@ -64,6 +64,10 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         serializer = FacilityUpsertSerializer(data=data, many=True)
         serializer.is_valid(raise_exception=True)
 
+        validated_data = serializer.validated_data
+        for d in validated_data:
+            d['created_by'] = request.user
+
         with transaction.atomic():
             serializer.create(serializer.validated_data)
         return Response(status=status.HTTP_204_NO_CONTENT)

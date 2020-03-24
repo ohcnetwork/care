@@ -52,7 +52,8 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
             "location",
             "oxygen_capacity",
             "phone_number",
-            "capacity"
+            "capacity",
+            "created_by"
         ]
 
     def validate_name(self, value):
