@@ -73,7 +73,7 @@ class HospitalDoctors(FacilityBaseModel):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        unique_together = ["facility", "area"]
+        unique_together = ["facility", "area", "deleted"]
 
 
 class FacilityCapacity(FacilityBaseModel):
@@ -85,7 +85,7 @@ class FacilityCapacity(FacilityBaseModel):
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
-        unique_together = ["facility", "room_type"]
+        unique_together = ["facility", "room_type", "deleted"]
 
 
 class FacilityStaff(FacilityBaseModel):
