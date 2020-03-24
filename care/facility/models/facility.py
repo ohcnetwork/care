@@ -36,6 +36,8 @@ DOCTOR_TYPES = [
     (5, "Other Speciality"),
 ]
 
+AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
+
 phone_number_regex = RegexValidator(
     regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
     message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
@@ -250,6 +252,8 @@ class Ambulance(FacilityBaseModel):
     has_defibrillator = models.BooleanField()
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+
+    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False)
 
     @property
     def drivers(self):
