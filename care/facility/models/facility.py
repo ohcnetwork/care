@@ -9,10 +9,18 @@ from care.users.models import GENDER_CHOICES, DISTRICT_CHOICES
 User = get_user_model()
 
 
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(deleted=False)
+
+
 class FacilityBaseModel(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
 
     class Meta:
         abstract = True
@@ -24,7 +32,13 @@ class FacilityBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES = [(0, "Total"), (1, "Normal"), (2, "Hostel"), (10, "ICU"), (20, "Ventilator")]
+ROOM_TYPES = [
+    (0, "Total"),
+    (1, "Normal"),
+    (2, "Hostel"),
+    (10, "ICU"),
+    (20, "Ventilator"),
+]
 
 FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
 
@@ -54,7 +68,9 @@ class Facility(FacilityBaseModel):
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     oxygen_capacity = models.IntegerField(default=0)
-    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, blank=True, validators=[phone_number_regex]
+    )
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
@@ -236,15 +252,23 @@ class Ambulance(FacilityBaseModel):
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
+    vehicle_number = models.CharField(
+        max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True
+    )
 
     owner_name = models.CharField(max_length=255)
-    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    owner_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex]
+    )
     owner_is_smart_phone = models.BooleanField(default=True)
 
     primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    secondary_district = models.IntegerField(
+        choices=DISTRICT_CHOICES, blank=True, null=True
+    )
+    third_district = models.IntegerField(
+        choices=DISTRICT_CHOICES, blank=True, null=True
+    )
 
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()
@@ -253,7 +277,9 @@ class Ambulance(FacilityBaseModel):
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
 
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
+    ambulance_type = models.IntegerField(
+        choices=AMBULANCE_TYPES, blank=False, default=1
+    )
 
     @property
     def drivers(self):
