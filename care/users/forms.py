@@ -67,6 +67,7 @@ class CustomSignupForm(forms.UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(CustomSignupForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             Field('username', autocomplete=self.autocomplete_value),
             Field('first_name'),
