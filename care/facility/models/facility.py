@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 
+from care.users.models import GENDER_CHOICES, DISTRICT_CHOICES
+
 User = get_user_model()
 
 
@@ -45,7 +47,7 @@ class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
+    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
@@ -238,9 +240,9 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    primary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=True, null=True)
+    primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()

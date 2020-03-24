@@ -12,7 +12,9 @@ from .models import (
     Inventory,
     InventoryLog,
     AmbulanceDriver,
-    Ambulance)
+    Ambulance,
+    PatientRegistration,
+    PatientTeleConsultation)
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -78,3 +80,5 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
+admin.site.register(PatientRegistration)
+admin.site.register(PatientTeleConsultation)
