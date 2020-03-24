@@ -253,7 +253,7 @@ class Ambulance(FacilityBaseModel):
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
 
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False)
+    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
 
     @property
     def drivers(self):
