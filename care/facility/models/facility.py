@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 
-from care.users.models import DISTRICT_CHOICES, District, LocalBody
+from care.users.models import District, LocalBody
 
 User = get_user_model()
 
@@ -62,8 +62,7 @@ class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
@@ -74,7 +73,7 @@ class Facility(FacilityBaseModel):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name}, {DISTRICT_CHOICES[self.district - 1][1]}"
+        return f"{self.name}, {self.district}"
 
     class Meta:
         verbose_name_plural = "Facilities"
@@ -223,17 +222,13 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-
-    new_primary_district = models.ForeignKey(
+    primary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
-    new_secondary_district = models.ForeignKey(
+    secondary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances"
     )
-    new_third_district = models.ForeignKey(
+    third_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances"
     )
 

@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.users.api.serializers import UserSerializer
+from care.users.api.serializers.user import UserSerializer
 
 User = get_user_model()
 

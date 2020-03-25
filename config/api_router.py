@@ -11,7 +11,8 @@ from care.facility.api.viewsets.facility import FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import PatientViewSet
-from care.users.api.views import UserViewSet
+from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
+from care.users.api.viewsets.users import UserViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -23,6 +24,11 @@ router.register("facility", FacilityViewSet)
 router.register("ambulance", AmbulanceViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("patient", PatientViewSet)
+
+# Local Body / LSG Viewsets
+router.register("state", StateViewSet)
+router.register("district", DistrictViewSet)
+router.register("local_body", LocalBodyViewSet)
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")

@@ -16,6 +16,9 @@ from care.facility.models import Ambulance
 
 class AmbulanceFilterSet(filters.FilterSet):
     vehicle_numbers = filters.BaseInFilter(field_name="vehicle_number")
+    primary_district_name = filters.CharFilter(field_name="primary_district__name", lookup_expr="icontains")
+    secondary_district_name = filters.CharFilter(field_name="secondary_district__name", lookup_expr="icontains")
+    third_district_name = filters.CharFilter(field_name="third_district__name", lookup_expr="icontains")
 
 
 class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):

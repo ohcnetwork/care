@@ -1,4 +1,5 @@
 from django.db import transaction
+from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
@@ -12,11 +13,18 @@ from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility
 
 
+class FacilityFilter(filters.FilterSet):
+    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+
+
 class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     """Viewset for facility CRUD operations."""
 
     serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityFilter
 
     def get_queryset(self):
         user = self.request.user

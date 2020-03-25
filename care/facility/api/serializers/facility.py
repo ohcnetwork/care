@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility
-from care.users.models import DISTRICT_CHOICES
+from care.users.api.serializers.lsg import DistrictSerializer
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -14,7 +14,6 @@ User = get_user_model()
 class FacilitySerializer(serializers.ModelSerializer):
     """Serializer for facility.models.Facility."""
 
-    district = ChoiceField(choices=DISTRICT_CHOICES)
     facility_type = ChoiceField(choices=FACILITY_TYPES)
     # A valid location => {
     #     "latitude": 49.8782482189424,
@@ -34,6 +33,11 @@ class FacilitySerializer(serializers.ModelSerializer):
             "oxygen_capacity",
             "phone_number",
         ]
+
+    def to_representation(self, instance):
+        data = super(FacilitySerializer, self).to_representation(instance)
+        data["district"] = DistrictSerializer().to_representation(instance.district)
+        return data
 
 
 class FacilityUpsertSerializer(serializers.ModelSerializer):
