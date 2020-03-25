@@ -8,10 +8,18 @@ from care.users.models import DISTRICT_CHOICES
 User = get_user_model()
 
 
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(deleted=False)
+
+
 class FacilityBaseModel(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
 
     class Meta:
         abstract = True
@@ -23,7 +31,13 @@ class FacilityBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES = [(0, "Total"), (1, "Normal"), (2, "Hostel"), (10, "ICU"), (20, "Ventilator")]
+ROOM_TYPES = [
+    (0, "Total"),
+    (1, "Normal"),
+    (2, "Hostel"),
+    (10, "ICU"),
+    (20, "Ventilator"),
+]
 
 FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
 
@@ -58,7 +72,7 @@ class Facility(FacilityBaseModel):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}, {DISTRICT_CHOICES[self.district - 1][1]}"
 
     class Meta:
         verbose_name_plural = "Facilities"
