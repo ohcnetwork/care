@@ -3,14 +3,7 @@
       "test": {
         "scripts": {
           "test": "pytest care/facility/tests --no-input"
-          //"test-setup": "python manage.py collectstatic --noinput --settings=settings.test"
         },
-        // "addons": [
-        //   "heroku-redis",
-        //   {
-        //     "plan": "heroku-redis:hobby-dev"
-        //   }
-        // ],
         "buildpacks": [{
             "url": "https://github.com/cyberdelia/heroku-geo-buildpack.git"
           },
@@ -21,6 +14,12 @@
         "env": {
           "DJANGO_SETTINGS_MODULE": {
             "value": "config.settings.test"
+          },
+          "LD_LIBRARY_PATH": {
+            "value": "/app/lib"
+          },
+          "BUILD_WITH_GEO_LIBRARIES": {
+            "value": "1"
           }
         }
       }
