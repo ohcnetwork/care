@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility
@@ -76,9 +77,13 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
             }
         ).first()
 
+        user = self.context["user"]
         if not facility:
+            validated_data["created_by"] = user
             facility = Facility.objects.create(**validated_data)
         else:
+            if facility.created_by != user and not user.is_superuser:
+                raise PermissionDenied(f"{facility} is owned by another user")
             for k, v in validated_data.items():
                 setattr(facility, k, v)
             facility.save()
