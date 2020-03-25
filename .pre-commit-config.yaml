@@ -3,13 +3,37 @@ default_stages: [commit]
 fail_fast: true
 
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: master
     hooks:
       - id: trailing-whitespace
         files: (^|/)a/.+\.(py|html|sh|css|js)$
+      - id: check-merge-conflict
+        name: check for merge conflict
+        description: Prevent accidentally commiting files with merge conflicts.
+      - id: end-of-file-fixer
+        name: fix end of files.
+        description: Ensures that a file is either empty, or ends with one newline.
 
--   repo: local
+
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: v2.1.0
+    hooks:
+      - id: seed-isort-config
+
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v4.3.21
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+      - id: black
+        args: [--line-length=120, --safe]
+        language_version: python3.7
+
+  - repo: local
     hooks:
       - id: flake8
         name: flake8
@@ -18,3 +42,10 @@ repos:
         types: [python]
         args: ['--config=setup.cfg']
 
+      - id: pre-commit-django-migrations
+        name: Check django migrations
+        entry: python manage.py makemigrations --check
+        language: system
+        types: [python]
+        pass_filenames: false
+        require_serial: true

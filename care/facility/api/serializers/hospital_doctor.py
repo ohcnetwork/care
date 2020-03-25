@@ -7,4 +7,4 @@ from care.facility.models import HospitalDoctors
 class HospitalDoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = HospitalDoctors
-        exclude = TIMESTAMP_FIELDS + ('id', 'facility',)
+        exclude = TIMESTAMP_FIELDS + ("id", "facility",)

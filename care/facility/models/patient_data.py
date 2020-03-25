@@ -1,10 +1,15 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.users.models import GENDER_CHOICES, phone_number_regex, User
+from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
-MEDICAL_HISTORY_CHOICES = [(1, "NO"), (2, "Diabetes"),
-                           (3, "Heart Disease"), (4, "HyperTension"), (5, "Kidney Diseases")]
+MEDICAL_HISTORY_CHOICES = [
+    (1, "NO"),
+    (2, "Diabetes"),
+    (3, "Heart Disease"),
+    (4, "HyperTension"),
+    (5, "Kidney Diseases"),
+]
 
 SYMPTOM_CHOICES = [(1, "NO"), (2, "FEVER"), (3, "SORE THROAT"), (4, "COUGH"), (5, "BREATHLESSNESS")]
 
@@ -30,7 +35,7 @@ class PatientRegistration(models.Model):
 
     @property
     def tele_consultation_history(self):
-        return self.patientteleconsultation_set.order_by('-id')
+        return self.patientteleconsultation_set.order_by("-id")
 
 
 class PatientTeleConsultation(models.Model):

@@ -1,8 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.core.validators import RegexValidator
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
@@ -24,7 +23,7 @@ DISTRICT_CHOICES = [
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
 
 phone_number_regex = RegexValidator(
-    regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
     message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
     code="invalid_mobile",
 )

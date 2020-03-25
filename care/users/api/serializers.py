@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from config.serializers import ChoiceField
 from care.users.models import DISTRICT_CHOICES, GENDER_CHOICES
+from config.serializers import ChoiceField
 
 User = get_user_model()
 
@@ -31,5 +31,3 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
-
-

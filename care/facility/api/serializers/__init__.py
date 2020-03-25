@@ -1,1 +1,5 @@
-TIMESTAMP_FIELDS = ('created_date', 'modified_date', 'deleted',)
+TIMESTAMP_FIELDS = (
+    "created_date",
+    "modified_date",
+    "deleted",
+)
