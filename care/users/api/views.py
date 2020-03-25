@@ -26,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if self.request.user.is_superuser or self.request.method == "GET":
             return self.queryset
         else:
             return self.queryset.filter(id=self.request.user.id)
