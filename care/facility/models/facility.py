@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 
-from care.users.models import DISTRICT_CHOICES
+from care.users.models import DISTRICT_CHOICES, District, LocalBody
 
 User = get_user_model()
 
@@ -63,6 +63,8 @@ class Facility(FacilityBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
@@ -225,6 +227,16 @@ class Ambulance(FacilityBaseModel):
     secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
     third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
+    new_primary_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
+    )
+    new_secondary_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances"
+    )
+    new_third_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances"
+    )
+
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()
     has_suction_machine = models.BooleanField()
@@ -251,30 +263,3 @@ class AmbulanceDriver(FacilityBaseModel):
 
     def __str__(self):
         return f"Driver: {self.name}({self.phone_number})"
-
-
-class State(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f"State: {self.name}"
-
-
-class District(models.Model):
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f"District: {self.name} - {self.state.name}"
-
-
-LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
-
-
-class LocalBody(models.Model):
-    district = models.ForeignKey(District, on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
-    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
-
-    def __str__(self):
-        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
