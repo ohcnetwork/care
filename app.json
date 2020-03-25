@@ -2,7 +2,7 @@
     "environments": {
       "test": {
         "scripts": {
-          "test": "pytest care/facility/tests --no-input"
+          "test": "pytest care/facility/tests"
         },
         "buildpacks": [{
             "url": "https://github.com/cyberdelia/heroku-geo-buildpack.git"
