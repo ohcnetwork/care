@@ -251,3 +251,30 @@ class AmbulanceDriver(FacilityBaseModel):
 
     def __str__(self):
         return f"Driver: {self.name}({self.phone_number})"
+
+
+class State(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"State: {self.name}"
+
+
+class District(models.Model):
+    state = models.ForeignKey(State, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"District: {self.name} - {self.state.name}"
+
+
+LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
+
+
+class LocalBody(models.Model):
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+
+    def __str__(self):
+        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
