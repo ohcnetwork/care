@@ -55,6 +55,8 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 
     $ pre-commit run --all-files
 
+* FAQs and Issues with pre-commit
+    - Reach out on the #coronasafe_django channel in slack to resolve the issues.
 
 .. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
 .. _answer: https://stackoverflow.com/a/12670521/4385622
