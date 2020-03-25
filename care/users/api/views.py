@@ -26,13 +26,14 @@ class UserViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        if self.request.method == "DELETE" or self.request.method == "PUT":
-            return self.queryset.filter(id=self.request.user.id)
-        else:
+        if self.request.user.is_superuser:
             return self.queryset
+        else:
+            return self.queryset.filter(id=self.request.user.id)
 
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK, data=self.serializer_class(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+            data=self.serializer_class(request.user, context={"request": request}).data,
         )
