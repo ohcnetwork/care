@@ -305,6 +305,7 @@ class TestFacilityBulkUpsert:
             ],
         )
         assert response.status_code == 403
+        assert response.json()["detail"] == "Foo, Kannur is owned by another user"
 
     def test_admins_can_update_ones_facility(self, client, user, facility):
         client.force_authenticate(user=user)
