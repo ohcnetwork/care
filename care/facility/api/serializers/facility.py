@@ -83,9 +83,7 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
             facility = Facility.objects.create(**validated_data)
         else:
             if facility.created_by != user and not user.is_superuser:
-                raise PermissionDenied(
-                    f"{facility.name}, {DISTRICT_CHOICES[facility.district][1]} is owned by another user"
-                )
+                raise PermissionDenied(f"{facility} is owned by another user")
             for k, v in validated_data.items():
                 setattr(facility, k, v)
             facility.save()

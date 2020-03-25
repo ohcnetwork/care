@@ -77,7 +77,7 @@ class Facility(FacilityBaseModel):
     )
 
     def __str__(self):
-        return self.name
+        return f"{self.name}, {DISTRICT_CHOICES[self.district][1]}"
 
     class Meta:
         verbose_name_plural = "Facilities"
