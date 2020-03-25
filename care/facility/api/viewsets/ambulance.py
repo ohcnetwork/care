@@ -1,8 +1,10 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.ambulance import (
     AmbulanceDriverSerializer,
@@ -17,6 +19,7 @@ class AmbulanceFilterSet(filters.FilterSet):
 
 
 class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
+    permission_classes = (AllowAny,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False)
     filter_backends = (filters.DjangoFilterBackend,)
@@ -52,3 +55,11 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
 
         driver.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
+    permission_classes = (AllowAny,)
+    serializer_class = AmbulanceSerializer
+    queryset = Ambulance.objects.filter(deleted=False)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AmbulanceFilterSet

@@ -11,6 +11,8 @@ from .models import (
     Inventory,
     InventoryItem,
     InventoryLog,
+    PatientRegistration,
+    PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
 )
@@ -22,7 +24,7 @@ class BuildingAdmin(admin.ModelAdmin):
 
 
 class FacilityAdmin(admin.ModelAdmin):
-    search_fields = ["facility"]
+    search_fields = ["name"]
 
 
 class FacilityStaffAdmin(admin.ModelAdmin):
@@ -81,3 +83,5 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
+admin.site.register(PatientRegistration)
+admin.site.register(PatientTeleConsultation)

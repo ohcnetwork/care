@@ -3,6 +3,8 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 
+from care.users.models import DISTRICT_CHOICES
+
 User = get_user_model()
 
 
@@ -21,7 +23,7 @@ class FacilityBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES = [(1, "Normal"), (10, "ICU"), (20, "Ventilator")]
+ROOM_TYPES = [(0, "Total"), (1, "Normal"), (2, "Hostel"), (10, "ICU"), (20, "Ventilator")]
 
 FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
 
@@ -30,7 +32,10 @@ DOCTOR_TYPES = [
     (2, "Pulmonology"),
     (3, "Critical Care"),
     (4, "Paediatrics"),
+    (5, "Other Speciality"),
 ]
+
+AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -43,12 +48,13 @@ class Facility(FacilityBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
+    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
-    oxygen_capacity = models.IntegerField()
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    oxygen_capacity = models.IntegerField(default=0)
+    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -67,7 +73,7 @@ class HospitalDoctors(FacilityBaseModel):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        unique_together = ["facility", "area"]
+        unique_together = ["facility", "area", "deleted"]
 
 
 class FacilityCapacity(FacilityBaseModel):
@@ -77,7 +83,7 @@ class FacilityCapacity(FacilityBaseModel):
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
-        unique_together = ["facility", "room_type"]
+        unique_together = ["facility", "room_type", "deleted"]
 
 
 class FacilityStaff(FacilityBaseModel):
@@ -201,9 +207,9 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    primary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=User.DISTRICT_CHOICES, blank=True, null=True)
+    primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()
@@ -211,6 +217,8 @@ class Ambulance(FacilityBaseModel):
     has_defibrillator = models.BooleanField()
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+
+    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
 
     @property
     def drivers(self):
