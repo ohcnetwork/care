@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
-from users.api.serializers import UserSerializer
+from care.users.api.serializers import UserSerializer
 
 User = get_user_model()
 
