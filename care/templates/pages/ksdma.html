@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block content %}
+<section class="max-w-lg">
+  <h1 class="text-3xl font-bold text-center"> Corona Safe Network </h1>
+  <p class="text-lg mt-1 text-gray-700 text-justify "> Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity.
+  <br><br>
+  For this to happen, the Chief Minister's Office needs access to the live capacity utilisation of the healthcare system against the total capacity.
+  <br><br>
+  Corona Care is a tool designed for hospital administrators to send the most up-to-date information in a real-time basis to CMO through the Control Room setup by State Disaster Management Authority.
+  <br><br>
+  This form is made on request of Kerala State Disaster Management Authority for gathering information of private hospitals as ordered vide <a href="https://drive.google.com/file/d/1CIK_h-cHRzX3qfWG1CYDRpageffGDgtE/view?usp=sharing" class="care-secondary-color">GO (Ms) No 48/2020/GAD dated 21-3-2020</a>.
+  {% if request.user.is_authenticated %}
+    {% if request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
+    <div class="mt-4 flex flex-col">
+      <div class="flex flex-col">
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'facility:facility-create' %}">{% trans "Add Hospital" %}</a>
+      </div>
+      <div class="flex flex-col">
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'facility:facilities-view' %}">{% trans "View Hospitals" %}</a>
+      </div>
+    </div>
+    {% endif %}
+
+  {% else %}
+
+  <div>
+    <div class="mt-4 flex flex-col">
+      <!--<div class="flex flex-col">
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-volunteer' %}">{% trans "Volunteer Sign Up" %}</a>
+      </div>
+      <div class="flex flex-col">
+        <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-doctor' %}">{% trans "Doctor Sign Up" %}</a>
+      </div>-->
+    <div class="flex flex-col">
+      <a id="sign-up-link" class="py-6 mt-4 bg-white rounded-md shadow border border-grey-500 inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold rounded cursor-pointer hover:bg-gray-300 h4" href="{% url 'users:signup-staff' %}">{% trans "Sign Up As Hospital Administrator" %}</a>
+      </div>
+    </div
+  </div>
+  {% endif %}
+
+</section>
+{% endblock content %}

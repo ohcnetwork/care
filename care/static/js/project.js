@@ -3,6 +3,7 @@
 // Use JS to Style all inputs with the same Tailwind classes
 let inputElements = document.querySelectorAll("input");
 let selectElements = document.querySelectorAll("select");
+let textareaElements = document.querySelectorAll("textarea");
 
 for (let i = 0; i < inputElements.length; i++) {
     defaultElementStyle(inputElements[i]);
@@ -12,6 +13,11 @@ for (let i = 0; i < inputElements.length; i++) {
 for (let i = 0; i < selectElements.length; i++) {
     defaultElementStyle(selectElements[i]);
     selectElements[i].classList.add("form-select");
+}
+
+for (let i = 0; i < textareaElements.length; i++) {
+    defaultElementStyle(textareaElements[i]);
+    textareaElements[i].classList.add("form-input");
 }
 
 function defaultElementStyle(elem) {
