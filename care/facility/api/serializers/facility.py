@@ -40,7 +40,11 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
     """
     Use only for listing and upserting - Upsert based on name and district uniqueness
     """
-    capacity = serializers.ListSerializer(child=FacilityCapacitySerializer(), source='facilitycapacity_set')
+
+    capacity = serializers.ListSerializer(
+        child=FacilityCapacitySerializer(), source="facilitycapacity_set"
+    )
+    location = PointField(required=False)
 
     class Meta:
         model = Facility
@@ -54,7 +58,7 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
             "oxygen_capacity",
             "phone_number",
             "capacity",
-            "created_by"
+            "created_by",
         ]
 
     def validate_name(self, value):
@@ -64,9 +68,12 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
         return str(value).strip().replace("  ", " ")
 
     def create(self, validated_data):
-        capacities = validated_data.pop('facilitycapacity_set')
+        capacities = validated_data.pop("facilitycapacity_set")
         facility = Facility.objects.filter(
-            **{"name__iexact": validated_data['name'], "district": validated_data['district']}
+            **{
+                "name__iexact": validated_data["name"],
+                "district": validated_data["district"],
+            }
         ).first()
 
         if not facility:
@@ -78,8 +85,7 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
 
         for ca in capacities:
             facility.facilitycapacity_set.update_or_create(
-                room_type=ca['room_type'],
-                defaults=ca
+                room_type=ca["room_type"], defaults=ca
             )
         return facility
 
