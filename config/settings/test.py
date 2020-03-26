@@ -38,4 +38,4 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-DATABASES["default"] = env.db("POSTGIS_URL")
+DATABASES["default"] = env.db("TEST_POSTGIS_URL")
