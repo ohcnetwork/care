@@ -63,8 +63,8 @@ class Facility(FacilityBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
@@ -231,10 +231,10 @@ class Ambulance(FacilityBaseModel):
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
     new_secondary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances"
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
     )
     new_third_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances"
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
     )
 
     has_oxygen = models.BooleanField()
