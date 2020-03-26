@@ -20,7 +20,7 @@ DISTRICT_CHOICES = [
     (14, "Kasaragod"),
 ]
 
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -44,7 +44,12 @@ class District(models.Model):
         return f"District: {self.name} - {self.state.name}"
 
 
-LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
+LOCAL_BODY_CHOICES = (
+    (1, "Panchayath"),
+    (2, "Municipality"),
+    (3, "Corporation"),
+    (25, "Others"),
+)
 
 
 class LocalBody(models.Model):
