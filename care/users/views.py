@@ -41,7 +41,7 @@ class SignupView(View):
         return render(request, self.template, {"form": form})
 
 
-class SinginView(View):
+class SigninView(View):
     form_class = AuthenticationForm
     template = "users/login.html"
 
