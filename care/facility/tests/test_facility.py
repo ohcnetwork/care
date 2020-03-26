@@ -1,13 +1,16 @@
+# flake8: noqa
+
 import pytest
 from django.contrib.gis.geos import Point
-from rest_framework.test import APIClient
 
-from config.tests.helper import client, user
 from care.facility.models import Facility, FacilityCapacity
+from care.users.models import User
+from care.users.tests.test_users import data as user_data
+from config.tests.helper import client, user
 
 
 @pytest.fixture()
-def data():
+def facility_data():
     return {
         "name": "Foo",
         "district": 13,
@@ -38,46 +41,31 @@ class TestFacility:
         response = client.post("/api/v1/facility/", {},)
         assert response.status_code == 403
 
-    def test_create(self, client, user, data):
+    def test_create(self, client, user, facility_data):
         client.force_authenticate(user=user)
-        response = client.post(
-            "/api/v1/facility/",
-            {
-                "name": data["name"],
-                "district": data["district"],
-                "facility_type": data["facility_type"],
-                "address": data["address"],
-                "location": data["location"],
-                "oxygen_capacity": data["oxygen_capacity"],
-                "phone_number": data["phone_number"],
-            },
-        )
+        response = client.post("/api/v1/facility/", facility_data,)
 
         assert response.status_code == 201
         response.data.pop("id")
         assert response.data == {
-            "name": data["name"],
+            **facility_data,
             "district": "Kannur",
             "facility_type": "Educational Inst",
-            "address": data["address"],
-            "location": data["location"],
-            "oxygen_capacity": data["oxygen_capacity"],
-            "phone_number": data["phone_number"],
         }
 
         facility = Facility.objects.get(
-            name=data["name"],
-            district=data["district"],
-            facility_type=data["facility_type"],
-            address=data["address"],
-            oxygen_capacity=data["oxygen_capacity"],
-            phone_number=data["phone_number"],
+            name=facility_data["name"],
+            district=facility_data["district"],
+            facility_type=facility_data["facility_type"],
+            address=facility_data["address"],
+            oxygen_capacity=facility_data["oxygen_capacity"],
+            phone_number=facility_data["phone_number"],
             created_by=user,
         )
         assert facility
         assert facility.location.tuple == (
-            data["location"]["longitude"],
-            data["location"]["latitude"],
+            facility_data["location"]["longitude"],
+            facility_data["location"]["latitude"],
         )
 
     def test_active_check(self, client, user, facility):
@@ -100,10 +88,7 @@ class TestFacility:
             "district": "Kannur",
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
-            },
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -129,15 +114,26 @@ class TestFacility:
             "district": "Kannur",
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
-            },
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
         facility.refresh_from_db()
         assert facility.name == "Another name"
+
+    def test_update_doesnt_change_creator(self, client, user, user_data, facility, facility_data):
+        facility.created_by = User.objects.create(**user_data)
+        facility.save()
+        original_creator = facility.created_by
+
+        user.is_superuser = True
+        user.save()
+        client.force_authenticate(user=user)
+
+        response = client.put(f"/api/v1/facility/{facility.id}/", facility_data)
+        assert response.status_code == 200
+        facility.refresh_from_db()
+        assert facility.created_by == original_creator
 
     def test_destroy(self, client, user, facility):
         client.force_authenticate(user=user)
@@ -166,10 +162,7 @@ class TestFacility:
                     "district": "Kannur",
                     "facility_type": "Educational Inst",
                     "address": facility.address,
-                    "location": {
-                        "latitude": facility.location.tuple[1],
-                        "longitude": facility.location.tuple[0],
-                    },
+                    "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
                     "oxygen_capacity": facility.oxygen_capacity,
                     "phone_number": facility.phone_number,
                 },
@@ -198,9 +191,7 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
                 {
                     "name": name,
@@ -209,16 +200,8 @@ class TestFacilityBulkUpsert:
                     "address": address,
                     "phone_number": phone_number,
                     "capacity": [
-                        {
-                            "room_type": 0,
-                            "total_capacity": 350,
-                            "current_capacity": 150,
-                        },
-                        {
-                            "room_type": 1,
-                            "total_capacity": 200,
-                            "current_capacity": 100,
-                        },
+                        {"room_type": 0, "total_capacity": 350, "current_capacity": 150,},
+                        {"room_type": 1, "total_capacity": 200, "current_capacity": 100,},
                     ],
                 },
             ],
@@ -235,12 +218,7 @@ class TestFacilityBulkUpsert:
         assert len(capacities) == 1
 
         new_facility = Facility.objects.get(
-            created_by=user,
-            name=name,
-            district=1,
-            facility_type=2,
-            address=address,
-            phone_number=phone_number,
+            created_by=user, name=name, district=1, facility_type=2, address=address, phone_number=phone_number,
         )
         assert new_facility
         capacities = new_facility.facilitycapacity_set.all()
@@ -267,10 +245,7 @@ class TestFacilityBulkUpsert:
             "district": "Kannur",
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
-            },
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -285,9 +260,7 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
             ],
         )
@@ -306,9 +279,7 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
             ],
         )
