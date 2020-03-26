@@ -1,6 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
+from care.facility.models import SoftDeleteManager
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 MEDICAL_HISTORY_CHOICES = [
@@ -25,6 +26,8 @@ class PatientRegistration(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True, help_text="Not active when discharged, or removed from the watchlist")
     deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())

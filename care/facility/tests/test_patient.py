@@ -131,6 +131,16 @@ class TestPatient:
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
 
+    def test_destroy(self, client, user, patient):
+        client.force_authenticate(user=user)
+        patient.created_by = user
+        patient.save()
+
+        response = client.delete(f"/api/v1/patient/{patient.id}/",)
+        assert response.status_code == 204
+        with pytest.raises(PatientRegistration.DoesNotExist):
+            PatientRegistration.objects.get(id=patient.id)
+
     def test_list(self, client, user, patient):
         client.force_authenticate(user=user)
         patient.created_by = user
