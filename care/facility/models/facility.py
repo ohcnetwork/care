@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 
-from care.users.models import DISTRICT_CHOICES
+from care.users.models import DISTRICT_CHOICES, District, LocalBody
 
 User = get_user_model()
 
@@ -63,6 +63,8 @@ class Facility(FacilityBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
@@ -224,6 +226,16 @@ class Ambulance(FacilityBaseModel):
     primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
     secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
     third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+
+    new_primary_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
+    )
+    new_secondary_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances"
+    )
+    new_third_district = models.ForeignKey(
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances"
+    )
 
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()

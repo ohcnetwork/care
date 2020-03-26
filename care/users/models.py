@@ -29,6 +29,33 @@ phone_number_regex = RegexValidator(
 )
 
 
+class State(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"State: {self.name}"
+
+
+class District(models.Model):
+    state = models.ForeignKey(State, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"District: {self.name} - {self.state.name}"
+
+
+LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
+
+
+class LocalBody(models.Model):
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+
+    def __str__(self):
+        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
+
+
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
@@ -54,6 +81,7 @@ class User(AbstractUser):
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
