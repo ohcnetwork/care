@@ -55,10 +55,10 @@ LOCAL_BODY_CHOICES = (
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
-    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
 
     def __str__(self):
-        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
+        return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
 
 
 class CustomUserManager(UserManager):
