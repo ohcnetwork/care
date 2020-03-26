@@ -7,16 +7,18 @@ import partial_index
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0027_auto_20200326_1015'),
+        ("facility", "0027_auto_20200326_1015"),
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='hospitaldoctors',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="hospitaldoctors", unique_together=set(),),
         migrations.AddIndex(
-            model_name='hospitaldoctors',
-            index=partial_index.PartialIndex(fields=['facility', 'area'], name='facility_ho_facilit_ec08f4_partial', unique=True, where=partial_index.PQ(deleted=False)),
+            model_name="hospitaldoctors",
+            index=partial_index.PartialIndex(
+                fields=["facility", "area"],
+                name="facility_ho_facilit_ec08f4_partial",
+                unique=True,
+                where=partial_index.PQ(deleted=False),
+            ),
         ),
     ]
