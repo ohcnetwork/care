@@ -1,13 +1,13 @@
+from django.contrib.auth.views import LogoutView
 from django.urls import path
+
+from care.users.views import SignupView, SinginView
 
 # from care.users.views import (
 #     user_detail_view,
 #     user_redirect_view,
 #     user_update_view,
 # )
-
-from django.contrib.auth.views import LogoutView
-from .views import SignupView, SinginView
 
 app_name = "users"
 urlpatterns = [
