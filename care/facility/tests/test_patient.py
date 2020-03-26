@@ -3,8 +3,6 @@
 import pytest
 
 from care.facility.models import PatientRegistration
-from care.users.models import User
-from care.users.tests.test_users import data as user_data
 from config.tests.helper import client, user
 
 
