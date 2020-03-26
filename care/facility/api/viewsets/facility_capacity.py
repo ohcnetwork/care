@@ -12,17 +12,17 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = self.queryset.filter(facility__id=self.kwargs.get('facility_pk'))
+        queryset = self.queryset.filter(facility__id=self.kwargs.get("facility_pk"))
         if user.is_superuser:
             return queryset
 
         return queryset.filter(facility__created_by=user)
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), room_type=self.kwargs.get('pk'))
+        return get_object_or_404(self.get_queryset(), room_type=self.kwargs.get("pk"))
 
     def get_facility(self):
-        facility_qs = Facility.objects.filter(pk=self.kwargs.get('facility_pk'))
+        facility_qs = Facility.objects.filter(pk=self.kwargs.get("facility_pk"))
         if not self.request.user.is_superuser:
             facility_qs.filter(created_by=self.request.user)
         return get_object_or_404(facility_qs)

@@ -1,8 +1,59 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.core.validators import RegexValidator
-from django.core.validators import MaxValueValidator, MinValueValidator
+
+DISTRICT_CHOICES = [
+    (1, "Thiruvananthapuram"),
+    (2, "Kollam"),
+    (3, "Pathanamthitta"),
+    (4, "Alappuzha"),
+    (5, "Kottayam"),
+    (6, "Idukki"),
+    (7, "Ernakulam"),
+    (8, "Thrissur"),
+    (9, "Palakkad"),
+    (10, "Malappuram"),
+    (11, "Kozhikode"),
+    (12, "Wayanad"),
+    (13, "Kannur"),
+    (14, "Kasaragod"),
+]
+
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
+
+phone_number_regex = RegexValidator(
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
+    code="invalid_mobile",
+)
+
+
+class State(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"State: {self.name}"
+
+
+class District(models.Model):
+    state = models.ForeignKey(State, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"District: {self.name} - {self.state.name}"
+
+
+LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
+
+
+class LocalBody(models.Model):
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+
+    def __str__(self):
+        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
 
 
 class CustomUserManager(UserManager):
@@ -28,32 +79,9 @@ class User(AbstractUser):
     }
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
-    DISTRICT_CHOICES = [
-        (1, "Thiruvananthapuram"),
-        (2, "Kollam"),
-        (3, "Pathanamthitta"),
-        (4, "Alappuzha"),
-        (5, "Kottayam"),
-        (6, "Idukki"),
-        (7, "Ernakulam"),
-        (8, "Thrissur"),
-        (9, "Palakkad"),
-        (10, "Malappuram"),
-        (11, "Kozhikode"),
-        (12, "Wayanad"),
-        (13, "Kannur"),
-        (14, "Kasaragod"),
-    ]
-
-    GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
-
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    phone_number_regex = RegexValidator(
-        regex="^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-        message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-        code="invalid_mobile",
-    )
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])

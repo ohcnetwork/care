@@ -69,17 +69,17 @@ class CustomSignupForm(forms.UserCreationForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Field('username', autocomplete=self.autocomplete_value),
-            Field('first_name'),
-            Field('last_name'),
-            Field('email', autocomplete=self.autocomplete_value),
-            Field('district', autocomplete=self.autocomplete_value),
-            Field('phone_number'),
-            Field('gender', autocomplete=self.autocomplete_value),
-            Field('age', autocomplete=self.autocomplete_value),
-            Field('skill', autocomplete=self.autocomplete_value),
-            Field('password1', autocomplete=self.autocomplete_value),
-            Field('password2', autocomplete=self.autocomplete_value),
+            Field("username", autocomplete=self.autocomplete_value),
+            Field("first_name"),
+            Field("last_name"),
+            Field("email", autocomplete=self.autocomplete_value),
+            Field("district", autocomplete=self.autocomplete_value),
+            Field("phone_number"),
+            Field("gender", autocomplete=self.autocomplete_value),
+            Field("age", autocomplete=self.autocomplete_value),
+            Field("skill", autocomplete=self.autocomplete_value),
+            Field("password1", autocomplete=self.autocomplete_value),
+            Field("password2", autocomplete=self.autocomplete_value),
         )
 
 
@@ -88,6 +88,6 @@ class AuthenticationForm(forms.AuthenticationForm):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Field('username', placeholder=" Username", css_class=""),
-            Field('password', placeholder="Password", css_class=""),
+            Field("username", placeholder=" Username", css_class=""),
+            Field("password", placeholder="Password", css_class=""),
         )

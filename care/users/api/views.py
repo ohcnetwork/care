@@ -1,12 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-
-from users.api.serializers import UserSerializer
+from care.users.api.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -28,10 +26,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        if self.request.method == "DELETE" or self.request.method == "PUT":
-            return self.queryset.filter(id=self.request.user.id)
-        else:
+        if self.request.user.is_superuser or self.request.method == "GET":
             return self.queryset
+        else:
+            return self.queryset.filter(id=self.request.user.id)
 
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):

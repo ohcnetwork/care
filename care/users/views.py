@@ -22,9 +22,7 @@ class SignupView(View):
             form = self.form_class()
             if kwargs["type"] != User.TYPE_VALUE_MAP["Volunteer"]:
                 form.fields.pop("skill")
-            return render(
-                request, self.template, {"form": form, "type": kwargs["name"]}
-            )
+            return render(request, self.template, {"form": form, "type": kwargs["name"]})
         except Exception as e:
             logging.error(e)
             return HttpResponseRedirect("/500")

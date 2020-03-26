@@ -24,21 +24,44 @@ Care is a Corona Care Center management app for the Govt of Kerala
 Set up Local environment
 ------------------------
 
-Follow the steps listed here_.
-
-If you are installing PostgreSQL for the first time, follow the steps given in this answer_.
+Install PostgreSQL.
+If you are installing PostgreSQL for the first time, follow the steps given in this answer_ to setup password based authentication.
 
 You also might have to install PostGIS scripts.
 
 * Linux users can install PostGIS scripts by running ::
-    
-    $ sudo apt install postgresql-<version>-postgis-scripts
-  
-* Windows users can install PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.  
 
+    $ sudo apt install postgresql-<version>-postgis-scripts
+
+* Windows users can install PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
+
+Then follow the steps listed here_.
+
+Setting up Pre-Commit
+^^^^^^^^^^^^^^^^^^^^^
+Git hooks is a feature which helps to fix small issues in your code before you commit the code.
+Pre-Commit is a package manager and tool for running and organising your git hooks. More here at pre_commit_site_.
+
+* Install pre-commit
+    pre-commit is installed while you run `pip install -r requirements/local.txt`
+
+* Setup
+    this installs all the git-hooks ::
+
+    $ pre-commit install
+
+* Running pre-commits
+    The git hooks run every time you commit code to the repo.
+    If you want to run it before committing, use the following command ::
+
+    $ pre-commit run --all-files
+
+* FAQs and Issues with pre-commit
+    - Reach out on the #coronasafe_django channel in slack to resolve the issues.
 
 .. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
 .. _answer: https://stackoverflow.com/a/12670521/4385622
+.. _pre_commit_site: https://pre-commit.com/
 
 
 Settings

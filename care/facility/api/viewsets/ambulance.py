@@ -1,24 +1,17 @@
 from django_filters import rest_framework as filters
-from rest_framework import status, serializers
+from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
-from rest_framework.response import Response
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.ambulance import (
-    AmbulanceSerializer,
     AmbulanceDriverSerializer,
+    AmbulanceSerializer,
 )
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Ambulance
-
-from rest_framework.mixins import (
-    CreateModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
-)
-from rest_framework.viewsets import GenericViewSet
 
 
 class AmbulanceFilterSet(filters.FilterSet):
@@ -39,9 +32,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
-        return Response(
-            data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED
-        )
+        return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
 
     @action(methods=["DELETE"], detail=True)
     def remove_driver(self, request):
@@ -58,9 +49,7 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         serializer = DeleteDriverSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        driver = ambulance.ambulancedriver_set.filter(
-            id=serializer.validated_data["driver_id"]
-        ).first()
+        driver = ambulance.ambulancedriver_set.filter(id=serializer.validated_data["driver_id"]).first()
         if not driver:
             raise serializers.ValidationError({"driver_id": "Detail not found"})
 

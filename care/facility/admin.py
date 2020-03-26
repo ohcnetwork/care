@@ -1,18 +1,21 @@
 from django.contrib import admin
 
 from .models import (
-    Facility,
-    FacilityStaff,
-    FacilityCapacity,
-    FacilityVolunteer,
+    Ambulance,
+    AmbulanceDriver,
     Building,
+    Facility,
+    FacilityCapacity,
+    FacilityStaff,
+    FacilityVolunteer,
+    Inventory,
+    InventoryItem,
+    InventoryLog,
+    PatientRegistration,
+    PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
-    InventoryItem,
-    Inventory,
-    InventoryLog,
-    AmbulanceDriver,
-    Ambulance)
+)
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -59,11 +62,13 @@ class AmbulanceDriverInline(admin.TabularInline):
 
 class AmbulanceAdmin(admin.ModelAdmin):
     search_fields = ["vehicle_number"]
-    inlines = [AmbulanceDriverInline, ]
+    inlines = [
+        AmbulanceDriverInline,
+    ]
 
 
 class AmbulanceDriverAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['ambulance']
+    autocomplete_fields = ["ambulance"]
 
 
 admin.site.register(Facility, FacilityAdmin)
@@ -78,3 +83,5 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
+admin.site.register(PatientRegistration)
+admin.site.register(PatientTeleConsultation)
