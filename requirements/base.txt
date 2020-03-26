@@ -24,6 +24,7 @@ django-extra-fields==2.0.3 # https://github.com/Hipo/drf-extra-fields
 django-location-field==2.1.0 # https://django-location-field.readthedocs.io/en/latest/
 drf-nested-routers==0.91
 django-multiselectfield==0.1.12 # https://github.com/goinnn/django-multiselectfield
+django-partial-index==0.6.0 # https://github.com/mattiaslinnap/django-partial-index/blob/master/README.md
 
 # Testing
 # ------------------------------------------------------------------------------
