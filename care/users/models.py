@@ -44,13 +44,33 @@ class District(models.Model):
         return f"District: {self.name} - {self.state.name}"
 
 
-LOCAL_BODY_CHOICES = ((1, "Panchayath"), (2, "Municipality"), (3, "Corporation"), (25, "Others"))
+LOCAL_BODY_CHOICES = (
+    # Panchayath levels
+    (1, "Grama Panchayath"),
+    (2, "Block Panchayath"),
+    (3, "District Panchayath"),
+    # Municipality levels
+    (10, "Municipality"),
+    # Corporation levels
+    (20, "Corporation"),
+    # Unknown
+    (50, "Others"),
+)
 
 
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
+
     name = models.CharField(max_length=255)
     type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    localbody_code = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        unique_together = (
+            "district",
+            "type",
+            "name",
+        )
 
     def __str__(self):
         return f"LocalBody: {self.name} ({self.type}) / {self.district}"
