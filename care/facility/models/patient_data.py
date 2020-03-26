@@ -2,6 +2,7 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
+from config.models import CareBaseModel
 
 MEDICAL_HISTORY_CHOICES = [
     (1, "NO"),
@@ -14,7 +15,7 @@ MEDICAL_HISTORY_CHOICES = [
 SYMPTOM_CHOICES = [(1, "NO"), (2, "FEVER"), (3, "SORE THROAT"), (4, "COUGH"), (5, "BREATHLESSNESS")]
 
 
-class PatientRegistration(models.Model):
+class PatientRegistration(CareBaseModel):
     name = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
@@ -38,7 +39,7 @@ class PatientRegistration(models.Model):
         return self.patientteleconsultation_set.order_by("-id")
 
 
-class PatientTeleConsultation(models.Model):
+class PatientTeleConsultation(CareBaseModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES)
     other_symptoms = models.TextField(blank=True, null=True)

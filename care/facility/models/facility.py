@@ -4,29 +4,9 @@ from django.db import models
 from location_field.models.spatial import LocationField
 
 from care.users.models import DISTRICT_CHOICES
+from config.models import CareBaseModel
 
 User = get_user_model()
-
-
-class SoftDeleteManager(models.Manager):
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(deleted=False)
-
-
-class FacilityBaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = SoftDeleteManager()
-
-    class Meta:
-        abstract = True
-
-    def delete(self):
-        self.deleted = True
-        self.save()
 
 
 # Facility Model Start
@@ -58,7 +38,7 @@ phone_number_regex = RegexValidator(
 )
 
 
-class Facility(FacilityBaseModel):
+class Facility(CareBaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
@@ -78,7 +58,7 @@ class Facility(FacilityBaseModel):
         verbose_name_plural = "Facilities"
 
 
-class HospitalDoctors(FacilityBaseModel):
+class HospitalDoctors(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
@@ -90,7 +70,7 @@ class HospitalDoctors(FacilityBaseModel):
         unique_together = ["facility", "area", "deleted"]
 
 
-class FacilityCapacity(FacilityBaseModel):
+class FacilityCapacity(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -100,7 +80,7 @@ class FacilityCapacity(FacilityBaseModel):
         unique_together = ["facility", "room_type", "deleted"]
 
 
-class FacilityStaff(FacilityBaseModel):
+class FacilityStaff(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -108,7 +88,7 @@ class FacilityStaff(FacilityBaseModel):
         return str(self.staff) + " for facility " + str(self.facility)
 
 
-class FacilityVolunteer(FacilityBaseModel):
+class FacilityVolunteer(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     volunteer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -122,7 +102,7 @@ class FacilityVolunteer(FacilityBaseModel):
 # Building Model Start
 
 
-class Building(FacilityBaseModel):
+class Building(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -138,7 +118,7 @@ class Building(FacilityBaseModel):
 # Room Model Start
 
 
-class Room(FacilityBaseModel):
+class Room(CareBaseModel):
     building = models.ForeignKey("Building", on_delete=models.CASCADE, null=False, blank=False)
     num = models.CharField(max_length=1000)
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -150,7 +130,7 @@ class Room(FacilityBaseModel):
         return self.num + " under " + str(self.building)
 
 
-class StaffRoomAllocation(FacilityBaseModel):
+class StaffRoomAllocation(CareBaseModel):
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -163,7 +143,7 @@ class StaffRoomAllocation(FacilityBaseModel):
 # Inventory Model Start
 
 
-class InventoryItem(FacilityBaseModel):
+class InventoryItem(CareBaseModel):
     name = models.CharField(max_length=1000)
     description = models.TextField()
     minimum_stock = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -173,7 +153,7 @@ class InventoryItem(FacilityBaseModel):
         return self.name + " with unit " + self.unit + " with minimum stock " + str(self.minimum_stock)
 
 
-class Inventory(FacilityBaseModel):
+class Inventory(CareBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     quantitiy = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -185,7 +165,7 @@ class Inventory(FacilityBaseModel):
         verbose_name_plural = "Inventories"
 
 
-class InventoryLog(FacilityBaseModel):
+class InventoryLog(CareBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     prev_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -207,7 +187,7 @@ class InventoryLog(FacilityBaseModel):
 # Inventory Model End
 
 
-class Ambulance(FacilityBaseModel):
+class Ambulance(CareBaseModel):
     vehicle_number_regex = RegexValidator(
         regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{1,4}$",
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
@@ -242,7 +222,7 @@ class Ambulance(FacilityBaseModel):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
 
 
-class AmbulanceDriver(FacilityBaseModel):
+class AmbulanceDriver(CareBaseModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=255)

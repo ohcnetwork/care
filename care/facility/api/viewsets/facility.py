@@ -16,7 +16,7 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     """Viewset for facility CRUD operations."""
 
     serializer_class = FacilitySerializer
-    queryset = Facility.objects.filter(is_active=True)
+    queryset = Facility.objects.filter()
 
     def get_queryset(self):
         user = self.request.user
