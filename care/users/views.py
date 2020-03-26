@@ -1,10 +1,10 @@
 import logging
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.views import View
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
+from django.views import View
 
 from care.users.forms import CustomSignupForm, User
 
@@ -20,8 +20,8 @@ class SignupView(View):
     def get(self, request, **kwargs):
         try:
             form = self.form_class()
-            if kwargs["type"] != User.TYPE_VALUE_MAP['Volunteer']:
-                form.fields.pop('skill')
+            if kwargs["type"] != User.TYPE_VALUE_MAP["Volunteer"]:
+                form.fields.pop("skill")
             return render(
                 request, self.template, {"form": form, "type": kwargs["name"]}
             )
@@ -43,7 +43,7 @@ class SignupView(View):
         return render(request, self.template, {"form": form})
 
 
-class SinginView(View):
+class SigninView(View):
     form_class = AuthenticationForm
     template = "users/login.html"
 
