@@ -14,8 +14,10 @@ from care.facility.models import Facility
 
 
 class FacilityFilter(filters.FilterSet):
-    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
-    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    district = filters.NumberFilter(field_name="facilitylocalgovtbody__district_id")
+    district_name = filters.CharFilter(field_name="facilitylocalgovtbody__district__name", lookup_expr="icontains")
+    local_body = filters.NumberFilter(field_name="facilitylocalgovtbody__local_body_id")
+    local_body_name = filters.CharFilter(field_name="facilitylocalgovtbody__local_body__name", lookup_expr="icontains")
 
 
 class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
@@ -38,12 +40,45 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     def perform_update(self, serializer):
         serializer.save(created_by=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        """
+        Facility List
+
+        Supported filters
+        - `district` - ID
+        - `district_name` - supports for ilike match
+        - `local_body` - ID
+        - `local_body_name` - supports for ilike match
+        """
+        return super(FacilityViewSet, self).list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Facility Create
+
+        - `local_govt_body` is a read_only field
+        - `local_body` is the field for local_body/ panchayath / municipality / corporation
+        - `district` current supports only Kerala, will be changing when the UI is ready to support any district
+        """
+        return super(FacilityViewSet, self).create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Facility Update
+
+        - `local_govt_body` is a read_only field
+        - `local_body` is the field for local_body / panchayath / municipality / corporation
+        - `district` current supports only Kerala, will be changing when the UI is ready to support any district
+        """
+        return super(FacilityViewSet, self).update(request, *args, **kwargs)
+
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
         """
         Upserts based on case insensitive name (after stripping off blank spaces) and district.
         Check serializer for more.
 
+        Request:
         [
             {
                 "name": "Name",

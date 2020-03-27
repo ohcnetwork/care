@@ -1,0 +1,132 @@
+{
+    "timeStamp": 1566349742833,
+    "date": "2019-08-21",
+    "name": "Kalikavu\n  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "area": null,
+    "localbody_code": "B100200",
+    "no_of_wards": 14,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "PKHALIDMASTER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MAILAMPARA",
+            "person": {
+                "id": "2015125200101",
+                "name": "KAREEM NEELAMBRA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHULLIYODE",
+            "person": {
+                "id": "2015125200201",
+                "name": "P.M RATHNAGOPI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHOKKAD",
+            "person": {
+                "id": "2015125200301",
+                "name": "ASHRAF PAINATTIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ADAKKAKKUND",
+            "person": {
+                "id": "2015125200401",
+                "name": "JOJI K. ALEX"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THARISH",
+            "person": {
+                "id": "2015125200501",
+                "name": "RAMLA K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARUVARAKUNDU",
+            "person": {
+                "id": "2015125200601",
+                "name": "SUBRAMANNYAN . C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANJILANGADI",
+            "person": {
+                "id": "2015125200701",
+                "name": "KAPPIL SHOUKATHALI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAPPATTA",
+            "person": {
+                "id": "2015125200801",
+                "name": "SAFIYA V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "TUVVUR",
+            "person": {
+                "id": "2015125200901",
+                "name": "SUBAIDA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLAYUR",
+            "person": {
+                "id": "2015125201001",
+                "name": "SANDHYA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALIKAVU",
+            "person": {
+                "id": "2015125201101",
+                "name": "P KHALID MASTER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MADAMBAM",
+            "person": {
+                "id": "2015125201201",
+                "name": "HYDARALI K.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMARAMBALAM SOUTH",
+            "person": {
+                "id": "2015125201301",
+                "name": "BABY VINODINI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARULAI",
+            "person": {
+                "id": "2015125201401",
+                "name": "FATHIMA SALEEM"
+            }
+        }
+    ]
+}

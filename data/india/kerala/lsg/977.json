@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348802698,
+    "date": "2019-08-21",
+    "name": "Ponmundam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Thanur",
+    "area": "13.9km",
+    "localbody_code": "G101206",
+    "no_of_wards": 16,
+    "population": 34761,
+    "male": 16703,
+    "female": 18058,
+    "population_density": 2501,
+    "sex_ratio": 1081,
+    "literacy_rate": 86.73,
+    "literacy_rate_male": 91.46,
+    "literacy_rate_female": 81.01,
+    "president": "SUBAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAVAPPURA",
+            "person": {
+                "id": "2015097700101",
+                "name": "ASHARAF ALI.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARYATHARA",
+            "person": {
+                "id": "2015097700201",
+                "name": "NABEEHA VARIKOTTIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ATHRISSERI",
+            "person": {
+                "id": "2015097700301",
+                "name": "ASMABI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTIPPALA",
+            "person": {
+                "id": "2015097700401",
+                "name": "SAREENA PULIKKATHODI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANNARAMKUNNU",
+            "person": {
+                "id": "2015097700501",
+                "name": "ABDUL GAFOOR.T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PONMUNDAM",
+            "person": {
+                "id": "2015097700601",
+                "name": "ABDUL GAFOOR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANHIKULANGARA",
+            "person": {
+                "id": "2015097700701",
+                "name": "UMMUHABEEBA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHOLAPPURAM",
+            "person": {
+                "id": "2015097700801",
+                "name": "AYSHUMMU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KULANGARA",
+            "person": {
+                "id": "2015097700901",
+                "name": "HYDROSE. P.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NOTTAPPURAM",
+            "person": {
+                "id": "2015097701001",
+                "name": "VASU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VAILATHOOR",
+            "person": {
+                "id": "2015097701101",
+                "name": "JABIRARLI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ATHANIKKAL",
+            "person": {
+                "id": "2015097701201",
+                "name": "RAMLA MANTHADATHIL KUVVAPPALLI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ARIPEEDIYENGAL",
+            "person": {
+                "id": "2015097701301",
+                "name": "SHAMSEERA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ITTILAKKAL",
+            "person": {
+                "id": "2015097701401",
+                "name": "SUBAIR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHILAVIL",
+            "person": {
+                "id": "2015097701501",
+                "name": "SAFIYA ENGAPADALIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANNADIKKAVU",
+            "person": {
+                "id": "2015097701601",
+                "name": "MANSOOR ALI"
+            }
+        }
+    ]
+}

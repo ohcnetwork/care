@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566347505412,
+    "date": "2019-08-21",
+    "name": "Pazhayannur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Pazhayannur",
+    "area": "59.03km",
+    "localbody_code": "G080405",
+    "no_of_wards": 22,
+    "population": 34713,
+    "male": 16684,
+    "female": 18029,
+    "population_density": 588,
+    "sex_ratio": 1081,
+    "literacy_rate": 81.2,
+    "literacy_rate_male": 87,
+    "literacy_rate_female": 75.91,
+    "president": "SOBHANARAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NEERNAMUKKU",
+            "person": {
+                "id": "2015073800101",
+                "name": "BINDHU DHARMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KALLAMPARAMBU",
+            "person": {
+                "id": "2015073800201",
+                "name": "M.P SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KODATHUR",
+            "person": {
+                "id": "2015073800301",
+                "name": "N. V. NARAYANANKUTTY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNNATHARA",
+            "person": {
+                "id": "2015073800401",
+                "name": "GEETHA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLEPADAM",
+            "person": {
+                "id": "2015073800501",
+                "name": "A. K. RAMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAKKAL",
+            "person": {
+                "id": "2015073800601",
+                "name": "P. S. SULAIMAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUNNAMPULLY",
+            "person": {
+                "id": "2015073800701",
+                "name": "RAJANI BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POTTA",
+            "person": {
+                "id": "2015073800801",
+                "name": "SIFANATH. U. H"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENNUR",
+            "person": {
+                "id": "2015073800901",
+                "name": "MADHU. T. S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ADICHIRA",
+            "person": {
+                "id": "2015073801001",
+                "name": "C. SAJIMON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUMANI",
+            "person": {
+                "id": "2015073801101",
+                "name": "V. K. SANTHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELANAD",
+            "person": {
+                "id": "2015073801201",
+                "name": "RUGMANI. C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEELAMPALLIYAL",
+            "person": {
+                "id": "2015073801301",
+                "name": "O. K. SHEENA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THRIKKANAYA",
+            "person": {
+                "id": "2015073801401",
+                "name": "N. ARAVINDAKSHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARUTHIPRA",
+            "person": {
+                "id": "2015073801501",
+                "name": "N. G. GIRILAL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VENDOKKUMPARAMBU",
+            "person": {
+                "id": "2015073801601",
+                "name": "V. K. SOUMYA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUMBALAKODE",
+            "person": {
+                "id": "2015073801701",
+                "name": "PADMAJA MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VELLAPPARA",
+            "person": {
+                "id": "2015073801801",
+                "name": "K.P. SREEJAYAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PAZHAYANNUR",
+            "person": {
+                "id": "2015073801901",
+                "name": "INDIRA. V"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VELLARUKULAM",
+            "person": {
+                "id": "2015073802001",
+                "name": "SOBHANA RAJAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PUTHIRITHARA",
+            "person": {
+                "id": "2015073802101",
+                "name": "PRADEEP. R"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "VADAKKETHARA",
+            "person": {
+                "id": "2015073802201",
+                "name": "P. K. MURALEEDHARAN"
+            }
+        }
+    ]
+}

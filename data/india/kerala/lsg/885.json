@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348440696,
+    "date": "2019-08-21",
+    "name": "Kannambra  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "29.72km",
+    "localbody_code": "G091208",
+    "no_of_wards": 16,
+    "population": 23570,
+    "male": 11268,
+    "female": 12302,
+    "population_density": 793,
+    "sex_ratio": 1092,
+    "literacy_rate": 81.72,
+    "literacy_rate_male": 89.34,
+    "literacy_rate_female": 74.8,
+    "president": "REJIMOND",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARAPPOTTA",
+            "person": {
+                "id": "2015088500101",
+                "name": "ABDUL LATHEEF K."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTEKKAD",
+            "person": {
+                "id": "2015088500201",
+                "name": "SWAMINATHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKUMURI",
+            "person": {
+                "id": "2015088500301",
+                "name": "K. AJITHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANNAPRA",
+            "person": {
+                "id": "2015088500401",
+                "name": "V. GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIMKOOTAM",
+            "person": {
+                "id": "2015088500501",
+                "name": "SATHEESH K."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ARAMTHODI",
+            "person": {
+                "id": "2015088500601",
+                "name": "A. VANAJAKUMARI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIRA",
+            "person": {
+                "id": "2015088500701",
+                "name": "CHENTHAMARAKSHAN M."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KONNENCHERRY",
+            "person": {
+                "id": "2015088500801",
+                "name": "JOSHI B."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARAYANKAD",
+            "person": {
+                "id": "2015088500901",
+                "name": "SHAKEELA SALEEM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNAMBRA",
+            "person": {
+                "id": "2015088501001",
+                "name": "K. PRASANNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHALLIPARAMBU",
+            "person": {
+                "id": "2015088501101",
+                "name": "RAJANI RAMADAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANTHALAMPADAM",
+            "person": {
+                "id": "2015088501201",
+                "name": "SUNITHA P."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RAKKANDI",
+            "person": {
+                "id": "2015088501301",
+                "name": "M. J. JOSE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLINKALPADAM",
+            "person": {
+                "id": "2015088501401",
+                "name": "V. PRAMEELA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALLERI",
+            "person": {
+                "id": "2015088501501",
+                "name": "P. AMBIKA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHOORKUNNU",
+            "person": {
+                "id": "2015088501601",
+                "name": "REJIMON D"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345044994,
+    "date": "2019-08-21",
+    "name": "Kattappana  Block Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Kattappana",
+    "area": "372.98km",
+    "localbody_code": "B060600",
+    "no_of_wards": 13,
+    "population": 155904,
+    "male": 78780,
+    "female": 77124,
+    "population_density": 419,
+    "sex_ratio": 971,
+    "literacy_rate": 88,
+    "literacy_rate_male": 92,
+    "literacy_rate_female": 85,
+    "president": "SALYJOLLY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANCHIYAR",
+            "person": {
+                "id": "2015006300101",
+                "name": "RAJAN (KANCHIYAR RAJAN)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERATTAYAR",
+            "person": {
+                "id": "2015006300201",
+                "name": "JOSNA JOBIN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEMPAKAPPARA",
+            "person": {
+                "id": "2015006300301",
+                "name": "KUTTYAMMA SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VANDANMEDU",
+            "person": {
+                "id": "2015006300401",
+                "name": "SANDHYA RAJA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOCHARA",
+            "person": {
+                "id": "2015006300501",
+                "name": "JOBAN PANOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KADASIKADAVU",
+            "person": {
+                "id": "2015006300601",
+                "name": "SABU JOHN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHAKKUPALLAM",
+            "person": {
+                "id": "2015006300701",
+                "name": "JIJI K PHILIP"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANAVILASAM",
+            "person": {
+                "id": "2015006300801",
+                "name": "RAJESH KUNJUMOL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALTHOTTY",
+            "person": {
+                "id": "2015006300901",
+                "name": "SALY JOLLY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AYYAPPANCOVIL",
+            "person": {
+                "id": "2015006301001",
+                "name": "RAJENDRAN MARIYIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "UPPUTHARA",
+            "person": {
+                "id": "2015006301101",
+                "name": "INDIRA SREENI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PASUPPARA",
+            "person": {
+                "id": "2015006301201",
+                "name": "AMBILY V.G"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALACODE",
+            "person": {
+                "id": "2015006301301",
+                "name": "ASHA ANTONY (NIRMAL)"
+            }
+        }
+    ]
+}

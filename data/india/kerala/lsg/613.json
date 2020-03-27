@@ -1,0 +1,123 @@
+{
+    "timeStamp": 1566347055609,
+    "date": "2019-08-21",
+    "name": "Kumaramangalam  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Thodupuzha",
+    "area": "19.35km",
+    "localbody_code": "G060702",
+    "no_of_wards": 13,
+    "population": 12819,
+    "male": 6408,
+    "female": 6411,
+    "population_density": 648,
+    "sex_ratio": 1026,
+    "literacy_rate": 95,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 92,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALOOR",
+            "person": {
+                "id": "2015061300101",
+                "name": "DENNY FRANCIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAYYAVU",
+            "person": {
+                "id": "2015061300201",
+                "name": "LINTA SIBIN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EZHALLOOR",
+            "person": {
+                "id": "2015061300301",
+                "name": "SHAMEENA NAZAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PATHAZHAPARA",
+            "person": {
+                "id": "2015061300401",
+                "name": "CHINNAMMA SOJAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLUMARI",
+            "person": {
+                "id": "2015061300501",
+                "name": "BENNY CHERIYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARUKA",
+            "person": {
+                "id": "2015061300601",
+                "name": "BEEMA ASSIS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERUMPILLICHIRA",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADHURAPPARA",
+            "person": {
+                "id": "2015061300801",
+                "name": "ADV.BINU K S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MAILACOMBU",
+            "person": {
+                "id": "2015061300901",
+                "name": "JAMES CHACKO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PAYNKULAM",
+            "person": {
+                "id": "2015061301001",
+                "name": "USHA RAJASEKHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUMARAMANGALAM",
+            "person": {
+                "id": "2015061301101",
+                "name": "K.G.SINDUKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AREEKARA",
+            "person": {
+                "id": "2015061301201",
+                "name": "MANJU P. PARAMESWARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARIKULAM",
+            "person": {
+                "id": "2015061301301",
+                "name": "SIJU O.P"
+            }
+        }
+    ]
+}

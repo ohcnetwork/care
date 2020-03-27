@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348314687,
+    "date": "2019-08-21",
+    "name": "Parali  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Palakkad",
+    "area": "30.27km",
+    "localbody_code": "G090706",
+    "no_of_wards": 20,
+    "population": 29640,
+    "male": 14525,
+    "female": 15115,
+    "population_density": 979,
+    "sex_ratio": 1041,
+    "literacy_rate": 80.76,
+    "literacy_rate_male": 88.17,
+    "literacy_rate_female": 73.72,
+    "president": "KRGIRIJA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AYYERMALA",
+            "person": {
+                "id": "2015085100101",
+                "name": "GEETHA C S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THENUR EAST",
+            "person": {
+                "id": "2015085100201",
+                "name": "SUNITHA V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARALI BAZAR",
+            "person": {
+                "id": "2015085100301",
+                "name": "P A SACHIDANANDAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KINAVALLUR WEST",
+            "person": {
+                "id": "2015085100401",
+                "name": "VASANTHI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KINAVALLUR",
+            "person": {
+                "id": "2015085100501",
+                "name": "SUJITHA D"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THALAPOTTA",
+            "person": {
+                "id": "2015085100601",
+                "name": "BHAGAYASREE M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANDEKKAD",
+            "person": {
+                "id": "2015085100701",
+                "name": "KRISHNANKUTTY C C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VAZHUKKAPPARA",
+            "person": {
+                "id": "2015085100801",
+                "name": "SUMA C"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANAKKAMPADAM",
+            "person": {
+                "id": "2015085100901",
+                "name": "BHASKARAN M P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAMBA",
+            "person": {
+                "id": "2015085101001",
+                "name": "SIRAJUDEEN K U"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANTHAMPADAM",
+            "person": {
+                "id": "2015085101101",
+                "name": "SURESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDATHARA NORTH",
+            "person": {
+                "id": "2015085101201",
+                "name": "KUNHILAKSHMI K P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANCHAM MILE",
+            "person": {
+                "id": "2015085101301",
+                "name": "SHAJAHAN P S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EDATHARA",
+            "person": {
+                "id": "2015085101401",
+                "name": "K R GIRIJA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NADAKKAVUPARAMBU",
+            "person": {
+                "id": "2015085101501",
+                "name": "RAMESH K S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PARALI CENTRE",
+            "person": {
+                "id": "2015085101601",
+                "name": "BHAVAJAN V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PARALI KADAVU",
+            "person": {
+                "id": "2015085101701",
+                "name": "P A NARAYANANKUTTY"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ODANUR",
+            "person": {
+                "id": "2015085101801",
+                "name": "V P MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THENUR",
+            "person": {
+                "id": "2015085101901",
+                "name": "PRASEETHA K K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THENUR WEST",
+            "person": {
+                "id": "2015085102001",
+                "name": "UDAYAKUMARI V V"
+            }
+        }
+    ]
+}

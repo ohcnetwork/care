@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347467282,
+    "date": "2019-08-21",
+    "name": "Thekkumkara  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vadakkamchery",
+    "area": "55.2km",
+    "localbody_code": "G080305",
+    "no_of_wards": 18,
+    "population": 25898,
+    "male": 12611,
+    "female": 13287,
+    "population_density": 469,
+    "sex_ratio": 1053,
+    "literacy_rate": 87.74,
+    "literacy_rate_male": 91.74,
+    "literacy_rate_female": 84.02,
+    "president": "SREEJAM.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARUMATHRA",
+            "person": {
+                "id": "2015073000101",
+                "name": "RAJEEVAN M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARUMATHRA VADAKKEKKARA",
+            "person": {
+                "id": "2015073000201",
+                "name": "SUJATHA SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VIRUPPAKKA",
+            "person": {
+                "id": "2015073000301",
+                "name": "PUSHPALATHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VAZHANI",
+            "person": {
+                "id": "2015073000401",
+                "name": "V.G SURESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANALITHRA KIZHAKKEKKARA",
+            "person": {
+                "id": "2015073000501",
+                "name": "GEETHA VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANALITHRA",
+            "person": {
+                "id": "2015073000601",
+                "name": "SUNITHAKUMARI P V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MALAKKA",
+            "person": {
+                "id": "2015073000701",
+                "name": "E.N SASI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VEEROLIPPADAM",
+            "person": {
+                "id": "2015073000801",
+                "name": "JIJI THOMAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAZHAYANNUPPADAM",
+            "person": {
+                "id": "2015073000901",
+                "name": "P J RAJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMBALAPPAD",
+            "person": {
+                "id": "2015073001001",
+                "name": "BIJU RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNDUKAD",
+            "person": {
+                "id": "2015073001101",
+                "name": "RAJAN K M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MEPPADAM",
+            "person": {
+                "id": "2015073001201",
+                "name": "SREEJA M.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAMBAI",
+            "person": {
+                "id": "2015073001301",
+                "name": "GIREESH T C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUTHUPARA",
+            "person": {
+                "id": "2015073001401",
+                "name": "C V SUNIL KUMAR(MONI)"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ADANGALAM",
+            "person": {
+                "id": "2015073001501",
+                "name": "VASA SURESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PANANGATTUKARA",
+            "person": {
+                "id": "2015073001601",
+                "name": "K CHANDRASEKARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THEKKUMKARA",
+            "person": {
+                "id": "2015073001701",
+                "name": "RAJANI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUNNAMPARAMBU",
+            "person": {
+                "id": "2015073001801",
+                "name": "BEENA JOHNSON"
+            }
+        }
+    ]
+}

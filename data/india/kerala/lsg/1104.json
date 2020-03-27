@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349214629,
+    "date": "2019-08-21",
+    "name": "Kankol - Alappadamba  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "42.07km",
+    "localbody_code": "G130104",
+    "no_of_wards": 14,
+    "population": 18552,
+    "male": 9196,
+    "female": 9356,
+    "population_density": 440,
+    "sex_ratio": 1044,
+    "literacy_rate": 90.59,
+    "literacy_rate_male": 95.9,
+    "literacy_rate_female": 85.54,
+    "president": "USHA.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ETTUKUDUKKA",
+            "person": {
+                "id": "2015110400101",
+                "name": "RAJAN PANIKKAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANAM",
+            "person": {
+                "id": "2015110400201",
+                "name": "P.PUSHPALATHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHALLACHAL",
+            "person": {
+                "id": "2015110400301",
+                "name": "YESODA.P.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHOORAL",
+            "person": {
+                "id": "2015110400401",
+                "name": "P.VASANTHI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAVANTHUR",
+            "person": {
+                "id": "2015110400501",
+                "name": "V.V BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MATHIL",
+            "person": {
+                "id": "2015110400601",
+                "name": "P.V KANCHANA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ALAKKAD",
+            "person": {
+                "id": "2015110400701",
+                "name": "SURESH BABU.K.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALEESWARAM",
+            "person": {
+                "id": "2015110400801",
+                "name": "SHOBHANA.C.V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARINKUZHI",
+            "person": {
+                "id": "2015110400901",
+                "name": "C.RAMESAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNDAYAMKOVVAL",
+            "person": {
+                "id": "2015110401001",
+                "name": "USHA.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THAZHEKURUNTH",
+            "person": {
+                "id": "2015110401101",
+                "name": "RAJESH.A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANKOL",
+            "person": {
+                "id": "2015110401201",
+                "name": "N.ABDUL GAFOOR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAPPARATTA",
+            "person": {
+                "id": "2015110401301",
+                "name": "P.SAVITHRI ANDARJANAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAKKIRIYAD",
+            "person": {
+                "id": "2015110401401",
+                "name": "BALAKESAVAN NAMBISAN"
+            }
+        }
+    ]
+}

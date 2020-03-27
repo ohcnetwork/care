@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566345705654,
+    "date": "2019-08-21",
+    "name": "Edava  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Varkala",
+    "area": "9.14km",
+    "localbody_code": "G010102",
+    "no_of_wards": 17,
+    "population": 26537,
+    "male": 12560,
+    "female": 13977,
+    "population_density": 2903,
+    "sex_ratio": 1113,
+    "literacy_rate": 89.55,
+    "literacy_rate_male": 93.47,
+    "literacy_rate_female": 86.13,
+    "president": "SUNITHASBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAPPIL",
+            "person": {
+                "id": "2015022600101",
+                "name": "N RAJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAPPIL HS",
+            "person": {
+                "id": "2015022600201",
+                "name": "S JAYADEVAN NAIR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBEDKAR",
+            "person": {
+                "id": "2015022600301",
+                "name": "SHYLAJA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAYIL",
+            "person": {
+                "id": "2015022600401",
+                "name": "S MOHANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VENKULAM",
+            "person": {
+                "id": "2015022600501",
+                "name": "ANITHA S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POTTAKULAM",
+            "person": {
+                "id": "2015022600601",
+                "name": "AJITHA KUMARI S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTUVILA",
+            "person": {
+                "id": "2015022600701",
+                "name": "K ASOK KUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KURUVILA",
+            "person": {
+                "id": "2015022600801",
+                "name": "P CHANDRA BABU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENKULAM LVUPS",
+            "person": {
+                "id": "2015022600901",
+                "name": "SUNITHA S BABU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHEMBAKATHINMOODU",
+            "person": {
+                "id": "2015022601001",
+                "name": "BAIJU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EMHS",
+            "person": {
+                "id": "2015022601101",
+                "name": "YAHILIMA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ODAYAM",
+            "person": {
+                "id": "2015022601201",
+                "name": "SINDHU F KALAM"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANTHARA",
+            "person": {
+                "id": "2015022601301",
+                "name": "NAVAS KHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SREEYETTU",
+            "person": {
+                "id": "2015022601401",
+                "name": "A SATHYABHAMA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MADRASA",
+            "person": {
+                "id": "2015022601501",
+                "name": "A RASHEEDA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EDAVA PHC",
+            "person": {
+                "id": "2015022601601",
+                "name": "SEENATH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VETTAKADA",
+            "person": {
+                "id": "2015022601701",
+                "name": "HARSHAD SABU"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345333200,
+    "date": "2019-08-21",
+    "name": "Thalassery  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thalassery",
+    "area": "99.03km",
+    "localbody_code": "B130700",
+    "no_of_wards": 14,
+    "population": 200776,
+    "male": 94722,
+    "female": 106054,
+    "population_density": 2027,
+    "sex_ratio": 1120,
+    "literacy_rate": 94.16,
+    "literacy_rate_male": 97.28,
+    "literacy_rate_female": 91.42,
+    "president": "KKRAJEEVAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANJARAKANDY",
+            "person": {
+                "id": "2015014500101",
+                "name": "RAMYA  A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUZHAPPALA",
+            "person": {
+                "id": "2015014500201",
+                "name": "K SHYMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VENGAD",
+            "person": {
+                "id": "2015014500301",
+                "name": "C K PURUSHOTHAMAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PADUVILAYI",
+            "person": {
+                "id": "2015014500401",
+                "name": "C K VALSALA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATHIRIYAD",
+            "person": {
+                "id": "2015014500501",
+                "name": "VIJINA N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ERUVATTY",
+            "person": {
+                "id": "2015014500601",
+                "name": "SWEETNA K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VADAKKUMPAD",
+            "person": {
+                "id": "2015014500701",
+                "name": "VIMALA K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ERANHOLI",
+            "person": {
+                "id": "2015014500801",
+                "name": "C HAREENDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NEW MAHE",
+            "person": {
+                "id": "2015014500901",
+                "name": "PRADEEP PUTHUKKUDI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "DHARMADAM",
+            "person": {
+                "id": "2015014501002",
+                "name": "SEEMA P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOODAKKADAVU",
+            "person": {
+                "id": "2015014501101",
+                "name": "T K UTHAMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUZHAPPILANGAD",
+            "person": {
+                "id": "2015014501201",
+                "name": "K HAMEED"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALAYAD",
+            "person": {
+                "id": "2015014501301",
+                "name": "M K KANAKAVALLY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PINARAYI",
+            "person": {
+                "id": "2015014501401",
+                "name": "K K RAJEEVAN"
+            }
+        }
+    ]
+}

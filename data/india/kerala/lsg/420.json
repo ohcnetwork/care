@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346379322,
+    "date": "2019-08-21",
+    "name": "Kalanjoor  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Parakkode",
+    "area": "66.01km",
+    "localbody_code": "G030805",
+    "no_of_wards": 20,
+    "population": 32267,
+    "male": 15752,
+    "female": 16515,
+    "population_density": 489,
+    "sex_ratio": 1048,
+    "literacy_rate": 92.38,
+    "literacy_rate_male": 94.54,
+    "literacy_rate_female": 90.31,
+    "president": "MANOJKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NEDUMONCAVU",
+            "person": {
+                "id": "2015042000101",
+                "name": "PRASANNA P.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MARUTHIKKALA",
+            "person": {
+                "id": "2015042000201",
+                "name": "JYOTHISREE M.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MURINJAKAL",
+            "person": {
+                "id": "2015042000301",
+                "name": "MANOJ M.JAMES"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "INCHAPPARA",
+            "person": {
+                "id": "2015042000401",
+                "name": "ASHA SAJI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ATHIRUMKAL",
+            "person": {
+                "id": "2015042000501",
+                "name": "SANTHAN R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KULATHUMON",
+            "person": {
+                "id": "2015042000601",
+                "name": "SANDHYA SUNIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THATTAKUDI",
+            "person": {
+                "id": "2015042000701",
+                "name": "SAJEEV RAWTHAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PADOM",
+            "person": {
+                "id": "2015042000801",
+                "name": "RAJU P.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANCODE",
+            "person": {
+                "id": "2015042000901",
+                "name": "VIPIN KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "STADIUM",
+            "person": {
+                "id": "2015042001001",
+                "name": "JAYAKUMAR P.V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUNNAMOODU",
+            "person": {
+                "id": "2015042001101",
+                "name": "RAJI BIJU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALANJOOR EAST",
+            "person": {
+                "id": "2015042001201",
+                "name": "LEKSHMI ASHOK"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ONNAMKUTTI",
+            "person": {
+                "id": "2015042001301",
+                "name": "SIBY ISSAC"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EDATHARA",
+            "person": {
+                "id": "2015042001401",
+                "name": "ASHOKAN NAIR.V.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALLARETH",
+            "person": {
+                "id": "2015042001501",
+                "name": "ASWATHY M.R"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KALANJOOR TOWN",
+            "person": {
+                "id": "2015042001601",
+                "name": "REMA SURESH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "K.I.P",
+            "person": {
+                "id": "2015042001701",
+                "name": "MANOJ KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOODAL TOWN",
+            "person": {
+                "id": "2015042001801",
+                "name": "THOMAS EAPEN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NELLIMURUPPU",
+            "person": {
+                "id": "2015042001901",
+                "name": "CHANDRAN UNNITHAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PALLOOR",
+            "person": {
+                "id": "2015042002001",
+                "name": "LILLY VARGHESE"
+            }
+        }
+    ]
+}

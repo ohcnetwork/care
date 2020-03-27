@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566346975201,
+    "date": "2019-08-21",
+    "name": "Nedumkandam  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "71.95km",
+    "localbody_code": "G060305",
+    "no_of_wards": 22,
+    "population": 36969,
+    "male": 18736,
+    "female": 18233,
+    "population_density": 514,
+    "sex_ratio": 973,
+    "literacy_rate": 91,
+    "literacy_rate_male": 93,
+    "literacy_rate_female": 89,
+    "president": "S.NJANASUNDARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PONNAMA",
+            "person": {
+                "id": "2015058900101",
+                "name": "ALICE THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANJAPETTY",
+            "person": {
+                "id": "2015058900201",
+                "name": "BIJU AUGUSTIN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHARALMEDU",
+            "person": {
+                "id": "2015058900301",
+                "name": "SUSAN CHANDY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALKOONTHAL",
+            "person": {
+                "id": "2015058900401",
+                "name": "SREEDEVI KALADHARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAILASAPPARA",
+            "person": {
+                "id": "2015058900501",
+                "name": "LAILATH BEEVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ILLIKKANAM",
+            "person": {
+                "id": "2015058900601",
+                "name": "AJEESH MUTHUKUNNEL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOMBAYAR",
+            "person": {
+                "id": "2015058900701",
+                "name": "S.NJANASUNDARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALAR",
+            "person": {
+                "id": "2015058900801",
+                "name": "SYAMALA VISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUSHPAKANDAM",
+            "person": {
+                "id": "2015058900901",
+                "name": "OMANA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHENNAPPARA",
+            "person": {
+                "id": "2015058901001",
+                "name": "K.R.SUKUMARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHOTTUPARA",
+            "person": {
+                "id": "2015058901101",
+                "name": "VIJUMOL K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOOKUPALAM",
+            "person": {
+                "id": "2015058901201",
+                "name": "SHANTY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALLUMMEKKALLU",
+            "person": {
+                "id": "2015058901301",
+                "name": "JOY KUNNUVILAYIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THANNIMOODU",
+            "person": {
+                "id": "2015058901401",
+                "name": "SHIHABUDHEEN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015058901501",
+                "name": "K.N.THANKAPPAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NEDUMKANDAM EAST",
+            "person": {
+                "id": "2015058901602",
+                "name": "BINDHU BIJU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEDUMKANDAM WEST",
+            "person": {
+                "id": "2015058901701",
+                "name": "AJITHA SHIBU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOUNTHY",
+            "person": {
+                "id": "2015058901801",
+                "name": "JIJO MARANGATTU"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "EZHUKUMVAYAL",
+            "person": {
+                "id": "2015058901901",
+                "name": "JOHNY SCARIYA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PACHADY",
+            "person": {
+                "id": "2015058902001",
+                "name": "ANTONY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PATHUVALAVU",
+            "person": {
+                "id": "2015058902101",
+                "name": "ELSY THOMAS"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MANJAPPARA",
+            "person": {
+                "id": "2015058902201",
+                "name": "RANI THOMAS"
+            }
+        }
+    ]
+}

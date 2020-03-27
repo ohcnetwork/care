@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348334473,
+    "date": "2019-08-21",
+    "name": "Kannadi  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Kuzhalmannam",
+    "area": "19.8km",
+    "localbody_code": "G090807",
+    "no_of_wards": 15,
+    "population": 19576,
+    "male": 9705,
+    "female": 9871,
+    "population_density": 988,
+    "sex_ratio": 1017,
+    "literacy_rate": 78.35,
+    "literacy_rate_male": 86.88,
+    "literacy_rate_female": 7.05,
+    "president": "K.A.VENUGOPALAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADALAKURISSI",
+            "person": {
+                "id": "2015085900101",
+                "name": "RAKESH.R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANALOOR",
+            "person": {
+                "id": "2015085900201",
+                "name": "NISHA.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKUMURI",
+            "person": {
+                "id": "2015085900301",
+                "name": "VASANTHA.K.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUZHAKKAL",
+            "person": {
+                "id": "2015085900401",
+                "name": "R.SIDHARTHAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "YAKKARA",
+            "person": {
+                "id": "2015085900501",
+                "name": "SRIJINI.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "UPPUMPADAM",
+            "person": {
+                "id": "2015085900601",
+                "name": "K.N.BABY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADUMTHURITHI",
+            "person": {
+                "id": "2015085900701",
+                "name": "N.M.INDIRA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THANNEERPANTHAL",
+            "person": {
+                "id": "2015085900801",
+                "name": "K.A.VENUGOPALAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARAPPANA",
+            "person": {
+                "id": "2015085900901",
+                "name": "VINODKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEDUVAKKAD",
+            "person": {
+                "id": "2015085901001",
+                "name": "K.MANIYAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHENGALAMKADU",
+            "person": {
+                "id": "2015085901101",
+                "name": "KUNCHAPPAN.V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NJAYARAZCHAKAVU",
+            "person": {
+                "id": "2015085901201",
+                "name": "AJITHA MENON"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATHIKKAL",
+            "person": {
+                "id": "2015085901301",
+                "name": "GEETHU.N"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THARUVAKURISSI",
+            "person": {
+                "id": "2015085901401",
+                "name": "N.VINESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADAKURISSI",
+            "person": {
+                "id": "2015085901501",
+                "name": "SEENAMOL.V.V"
+            }
+        }
+    ]
+}

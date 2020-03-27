@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349131431,
+    "date": "2019-08-21",
+    "name": "Thondernad  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Mananthavady",
+    "area": "131.15km",
+    "localbody_code": "G120104",
+    "no_of_wards": 15,
+    "population": 19639,
+    "male": 9893,
+    "female": 9746,
+    "population_density": 150,
+    "sex_ratio": 985,
+    "literacy_rate": 83.77,
+    "literacy_rate_male": 90.1,
+    "literacy_rate_female": 77.36,
+    "president": "KURIAKKOSEP.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNHOME",
+            "person": {
+                "id": "2015107400101",
+                "name": "MUSTHAFA M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PORLOME",
+            "person": {
+                "id": "2015107400201",
+                "name": "THRESSIA V.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIMBIL",
+            "person": {
+                "id": "2015107400301",
+                "name": "SUNITHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALERY",
+            "person": {
+                "id": "2015107400401",
+                "name": "ANEESH P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VANHODE",
+            "person": {
+                "id": "2015107400501",
+                "name": "SALOMY FRANCIS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015107400601",
+                "name": "SREEJA RAJESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THETTAMALA",
+            "person": {
+                "id": "2015107400701",
+                "name": "RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALLIKKUNNU",
+            "person": {
+                "id": "2015107400801",
+                "name": "ANCY JOY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELLILADI",
+            "person": {
+                "id": "2015107400901",
+                "name": "ASHAR ALI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANHIRANGADE",
+            "person": {
+                "id": "2015107401001",
+                "name": "KURIAKKOSE P.A"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAKKIYAD",
+            "person": {
+                "id": "2015107401101",
+                "name": "USHA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOROME",
+            "person": {
+                "id": "2015107401201",
+                "name": "MYMOONATH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOOTTAPPARA",
+            "person": {
+                "id": "2015107401301",
+                "name": "V C SALEEM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MATTILAYAM",
+            "person": {
+                "id": "2015107401401",
+                "name": "KESAVAN P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NIRAVILPUZHA",
+            "person": {
+                "id": "2015107401501",
+                "name": "SINDHU HARIKUMAR"
+            }
+        }
+    ]
+}

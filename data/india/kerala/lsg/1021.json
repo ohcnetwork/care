@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348967190,
+    "date": "2019-08-21",
+    "name": "Cheruvannur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Perambra",
+    "area": "21.61km",
+    "localbody_code": "G110601",
+    "no_of_wards": 15,
+    "population": 20687,
+    "male": 10341,
+    "female": 10346,
+    "population_density": 957,
+    "sex_ratio": 1000,
+    "literacy_rate": 90.58,
+    "literacy_rate_male": 95.92,
+    "literacy_rate_female": 85.26,
+    "president": "BIJUK.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOVUPPURAM",
+            "person": {
+                "id": "2015102100101",
+                "name": "NAFEESA KOYILOTH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AVALA",
+            "person": {
+                "id": "2015102100201",
+                "name": "SOBHA K.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MADHATHIL MUKKU",
+            "person": {
+                "id": "2015102100301",
+                "name": "BINEESH.B.B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015102100401",
+                "name": "BIJU K.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUTTOTH",
+            "person": {
+                "id": "2015102100501",
+                "name": "BALAKRISHNAN K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANIKKOTH",
+            "person": {
+                "id": "2015102100601",
+                "name": "KUNHABDULLA K.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AYOLPADI",
+            "person": {
+                "id": "2015102100701",
+                "name": "NISHA P.C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERUVANNUR",
+            "person": {
+                "id": "2015102100801",
+                "name": "JAMEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANDEETHAZHA",
+            "person": {
+                "id": "2015102100901",
+                "name": "LATHIKA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDACHERICHALIL",
+            "person": {
+                "id": "2015102101001",
+                "name": "RAMADEVI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VIYYANCHIRA",
+            "person": {
+                "id": "2015102101101",
+                "name": "JIJI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADINHARAKKARA",
+            "person": {
+                "id": "2015102101201",
+                "name": "MOLI V.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUYIPPOTH",
+            "person": {
+                "id": "2015102101301",
+                "name": "ABDULLA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENNARODE",
+            "person": {
+                "id": "2015102101401",
+                "name": "RAJINI M.P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAKKARAMUKK",
+            "person": {
+                "id": "2015102101501",
+                "name": "KUNHIKRISHNAN K"
+            }
+        }
+    ]
+}

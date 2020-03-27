@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566347591184,
+    "date": "2019-08-21",
+    "name": "Valapad  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Thalikkulam",
+    "area": "16.33km",
+    "localbody_code": "G080805",
+    "no_of_wards": 20,
+    "population": 33078,
+    "male": 15685,
+    "female": 17393,
+    "population_density": 2026,
+    "sex_ratio": 1109,
+    "literacy_rate": 91.52,
+    "literacy_rate_male": 94.88,
+    "literacy_rate_female": 88.55,
+    "president": "E.K.THOMAS.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALAPAD BEACH",
+            "person": {
+                "id": "2015075900101",
+                "name": "JAYABHARATHY BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015075900201",
+                "name": "C.K.KUTTAN MASTER ."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALAPAD CENTER",
+            "person": {
+                "id": "2015075900301",
+                "name": "KRISHNAVENI PRAMOD"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALAPAD HIGHSCHOOL",
+            "person": {
+                "id": "2015075900401",
+                "name": "BEENA AJAYAGHOSH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ILLIKUZHY",
+            "person": {
+                "id": "2015075900501",
+                "name": "E.K.THOMAS ."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AANAVIZHUNGI",
+            "person": {
+                "id": "2015075900601",
+                "name": "THULASI SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTHAKULAM WEST",
+            "person": {
+                "id": "2015075900701",
+                "name": "C.R.SHINE ."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MYTHRI",
+            "person": {
+                "id": "2015075900801",
+                "name": "BABY RAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAYACHODE",
+            "person": {
+                "id": "2015075900901",
+                "name": "USHA JOSHY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAMUTTAM",
+            "person": {
+                "id": "2015075901001",
+                "name": "ABDUL MAJEED ."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAPETTY",
+            "person": {
+                "id": "2015075901101",
+                "name": "SUMESH P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PATTUKULANGARA",
+            "person": {
+                "id": "2015075901201",
+                "name": "SUNDARAN I.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAZHIMBRAM",
+            "person": {
+                "id": "2015075901301",
+                "name": "AJITH P.S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MAHATHMA",
+            "person": {
+                "id": "2015075901401",
+                "name": "VALSAN P.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ELAVARAM",
+            "person": {
+                "id": "2015075901501",
+                "name": "LENNY HARIDASAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARAYAMUTTAM",
+            "person": {
+                "id": "2015075901601",
+                "name": "KANNAN P.B"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "FISHERIES SCHOOL",
+            "person": {
+                "id": "2015075901701",
+                "name": "BINDU RAJU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHALUKULAM",
+            "person": {
+                "id": "2015075901801",
+                "name": "SHEEJA HARIDAS"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ANJANGADI",
+            "person": {
+                "id": "2015075901901",
+                "name": "INDIRA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KOTHAKULAM BEACH",
+            "person": {
+                "id": "2015075902001",
+                "name": "SEENA ."
+            }
+        }
+    ]
+}

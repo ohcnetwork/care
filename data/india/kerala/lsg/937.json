@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348664803,
+    "date": "2019-08-21",
+    "name": "Elamkulam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perinthalmanna",
+    "area": "21.31km",
+    "localbody_code": "G100702",
+    "no_of_wards": 16,
+    "population": 20816,
+    "male": 9945,
+    "female": 10871,
+    "population_density": 977,
+    "sex_ratio": 1093,
+    "literacy_rate": 90.83,
+    "literacy_rate_male": 93.49,
+    "literacy_rate_female": 88.18,
+    "president": "AYISHA.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUKARA",
+            "person": {
+                "id": "2015093700101",
+                "name": "MUHAMMED SHAISAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALUMKOOTTAM",
+            "person": {
+                "id": "2015093700201",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KIZHUNGATHOLE",
+            "person": {
+                "id": "2015093700301",
+                "name": "SWAPNA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAKKALMUKKU",
+            "person": {
+                "id": "2015093700401",
+                "name": "RASHEEDA. K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHENGANAMPATTA",
+            "person": {
+                "id": "2015093700501",
+                "name": "SHEEBA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ETHEPARAMBU",
+            "person": {
+                "id": "2015093700601",
+                "name": "REMYA. M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHENAMPARAMBU",
+            "person": {
+                "id": "2015093700701",
+                "name": "SANDHYA. P. K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUTHUKURUSSI",
+            "person": {
+                "id": "2015093700801",
+                "name": "RAJAGOPALAN. P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNNAKKAVU",
+            "person": {
+                "id": "2015093700901",
+                "name": "IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALLISSERI",
+            "person": {
+                "id": "2015093701001",
+                "name": "UNNEENKUTTY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KORAKKUTH",
+            "person": {
+                "id": "2015093701101",
+                "name": "AYISHA. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THEKKUMPURAM",
+            "person": {
+                "id": "2015093701201",
+                "name": "SUBHADRA.M.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALATHOLE",
+            "person": {
+                "id": "2015093701301",
+                "name": "ANITHA. P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ELAMKULAM",
+            "person": {
+                "id": "2015093701401",
+                "name": "ANIL.T.P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERUMBARA",
+            "person": {
+                "id": "2015093701501",
+                "name": "ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULINKAVU",
+            "person": {
+                "id": "2015093701601",
+                "name": "UMMER"
+            }
+        }
+    ]
+}

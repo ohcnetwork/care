@@ -1,0 +1,260 @@
+{
+    "timeStamp": 1566345387621,
+    "date": "2019-08-21",
+    "name": "Palakkad  District Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "area": "4480km",
+    "localbody_code": "D090000",
+    "no_of_wards": 30,
+    "population": 2617072,
+    "male": 1351278,
+    "female": 1265794,
+    "population_density": 532,
+    "sex_ratio": 1061,
+    "literacy_rate": 84.31,
+    "literacy_rate_male": 89.76,
+    "literacy_rate_female": 71.31,
+    "president": "SANTHAKUMARIK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SREEKRISHNAPURAM",
+            "person": {
+                "id": "2015016100101",
+                "name": "DEVI M.K."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADAMPAZHIPURAM",
+            "person": {
+                "id": "2015016100201",
+                "name": "SREEJA P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ALANALLUR",
+            "person": {
+                "id": "2015016100301",
+                "name": "JINESH M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THENGARA",
+            "person": {
+                "id": "2015016100401",
+                "name": "SEEMA K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ATTAPPADY",
+            "person": {
+                "id": "2015016100501",
+                "name": "RADHAKRISHNAN C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANJIRAPUZHA",
+            "person": {
+                "id": "2015016100601",
+                "name": "ACHUTHAN C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KONGAD",
+            "person": {
+                "id": "2015016100701",
+                "name": "RAJANI C.K."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARALI",
+            "person": {
+                "id": "2015016100801",
+                "name": "RADHIKA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHUPPARIYARAM",
+            "person": {
+                "id": "2015016100901",
+                "name": "BINDU A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALAMPUZHA",
+            "person": {
+                "id": "2015016101001",
+                "name": "RAJAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015016101101",
+                "name": "NIDHIN R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOZHINJAPARA",
+            "person": {
+                "id": "2015016101201",
+                "name": "CHINNASWAMY K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MEENAKSHIPURAM",
+            "person": {
+                "id": "2015016101301",
+                "name": "ADV.MURUGADAS V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KODUVAYUR",
+            "person": {
+                "id": "2015016101401",
+                "name": "SILPA N.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOLLENGODE",
+            "person": {
+                "id": "2015016101501",
+                "name": "SANTHOSH KUMAR K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NEMMARA",
+            "person": {
+                "id": "2015016101601",
+                "name": "GEETHA TEACHER A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALLASSENA",
+            "person": {
+                "id": "2015016101701",
+                "name": "AZEES U"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KIZHAKKENCHERY",
+            "person": {
+                "id": "2015016101801",
+                "name": "OUSEPH A.T."
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ALATHUR",
+            "person": {
+                "id": "2015016101901",
+                "name": "MEENAKUMARY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THARUR",
+            "person": {
+                "id": "2015016102001",
+                "name": "LEELA T"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KODUNTHIRAPPULLY",
+            "person": {
+                "id": "2015016102101",
+                "name": "BINUMOL K"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "KOTTAYI",
+            "person": {
+                "id": "2015016102201",
+                "name": "SANTHAKUMARI K"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "LAKKIDI",
+            "person": {
+                "id": "2015016102301",
+                "name": "RAJAGOPAL U"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "VANIYAMKULAM",
+            "person": {
+                "id": "2015016102401",
+                "name": "NARAYANIKUTTY"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "PERUMUDIYUR",
+            "person": {
+                "id": "2015016102501",
+                "name": "SHABIRA A"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "CHALISSERY",
+            "person": {
+                "id": "2015016102601",
+                "name": "NARAYANADAS T.K."
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "NAGALASSERY",
+            "person": {
+                "id": "2015016102701",
+                "name": "ABDULKAREEM T"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "THIRUVEGAPPURA",
+            "person": {
+                "id": "2015016102801",
+                "name": "INDIRA S.NAIR"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "KULUKKALLUR",
+            "person": {
+                "id": "2015016102901",
+                "name": "RAJAN M"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "CHALAVARA",
+            "person": {
+                "id": "2015016103001",
+                "name": "SUDHAKARAN P.K."
+            }
+        }
+    ]
+}

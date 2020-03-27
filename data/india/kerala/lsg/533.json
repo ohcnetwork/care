@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566346804170,
+    "date": "2019-08-21",
+    "name": "Moonnilavu  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Erattupetta",
+    "area": "33.41km",
+    "localbody_code": "G050602",
+    "no_of_wards": 13,
+    "population": 9187,
+    "male": 4647,
+    "female": 4540,
+    "population_density": 275,
+    "sex_ratio": 975,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERUMAPRA",
+            "person": {
+                "id": "2015053300102",
+                "name": "DOLLY ISAC"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALAKAM",
+            "person": {
+                "id": "2015053300201",
+                "name": "BINDHU SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MECHAL",
+            "person": {
+                "id": "2015053300301",
+                "name": "SHERLY SAMUEL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAZHUKKAKKANAM",
+            "person": {
+                "id": "2015053300401",
+                "name": "SHAJI JOHN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANKOMBU",
+            "person": {
+                "id": "2015053300501",
+                "name": "STENY CHACKO"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VELLARA",
+            "person": {
+                "id": "2015053300601",
+                "name": "SHERLY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANJUMALA",
+            "person": {
+                "id": "2015053300701",
+                "name": "JOSHY JOSHUA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MOONNILAVU",
+            "person": {
+                "id": "2015053300802",
+                "name": "JOY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERUMKAVU",
+            "person": {
+                "id": "2015053300901",
+                "name": "JUSTIN JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KURINJIPLAVU",
+            "person": {
+                "id": "2015053301001",
+                "name": "SHEELA SATHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAKINIYAMTHADAM",
+            "person": {
+                "id": "2015053301101",
+                "name": "LEKHA KRISHNANKUTTY NAIR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015053301201",
+                "name": "MARYKUTTY GEORGE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THAZHAKKAVAYAL",
+            "person": {
+                "id": "2015053301301",
+                "name": "CHACKO T.J"
+            }
+        }
+    ]
+}

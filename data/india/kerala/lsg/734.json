@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566347489171,
+    "date": "2019-08-21",
+    "name": "Chelakkara  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Pazhayannur",
+    "area": "59.83km",
+    "localbody_code": "G080401",
+    "no_of_wards": 22,
+    "population": 35886,
+    "male": 16872,
+    "female": 19014,
+    "population_density": 600,
+    "sex_ratio": 1126,
+    "literacy_rate": 83.69,
+    "literacy_rate_male": 88,
+    "literacy_rate_female": 79.94,
+    "president": "R.UNNIKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VENGANELLUR PADINJATTUMURY",
+            "person": {
+                "id": "2015073400101",
+                "name": "SUPRIYA SURESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VENGANELLUR NORTH",
+            "person": {
+                "id": "2015073400202",
+                "name": "GIREESH.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "METHUKU",
+            "person": {
+                "id": "2015073400301",
+                "name": "SUJITHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NATTIANCHIRA",
+            "person": {
+                "id": "2015073400401",
+                "name": "ASIYA ISMAIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VENGANELLUR KIZHAKKUMURY",
+            "person": {
+                "id": "2015073400501",
+                "name": "VINOD PANTHALADI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MEPPADAM",
+            "person": {
+                "id": "2015073400601",
+                "name": "R.UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULAKODE VADAKKUMURY",
+            "person": {
+                "id": "2015073400701",
+                "name": "JAYA.P.U"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULAKODE THEKKUMURY",
+            "person": {
+                "id": "2015073400801",
+                "name": "SANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ADAKKODE",
+            "person": {
+                "id": "2015073400901",
+                "name": "T.V.MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANAMKUTTI",
+            "person": {
+                "id": "2015073401001",
+                "name": "P.A.ACHANKUNJU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALIYAROAD",
+            "person": {
+                "id": "2015073401101",
+                "name": "K.A.BALKEESA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANGARAPILLY",
+            "person": {
+                "id": "2015073401201",
+                "name": "K.S.SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANTHIMAHAKALANKAVU",
+            "person": {
+                "id": "2015073401301",
+                "name": "RUKHIYA KAREEM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PATHUKUDY",
+            "person": {
+                "id": "2015073401401",
+                "name": "SAINABA IQBAL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VATTULLY",
+            "person": {
+                "id": "2015073401501",
+                "name": "P.B.BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KURUMALA",
+            "person": {
+                "id": "2015073401601",
+                "name": "GAYATHRI JAYAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THOTTEKODE",
+            "person": {
+                "id": "2015073401702",
+                "name": "N.PRASANNA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THONOORKKARA",
+            "person": {
+                "id": "2015073401801",
+                "name": "M.SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THONOORKKARA WEST",
+            "person": {
+                "id": "2015073401901",
+                "name": "M.MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015073402001",
+                "name": "PRADEEP NAMBIATH"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHELAKKARA",
+            "person": {
+                "id": "2015073402101",
+                "name": "BINI VINOD"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "CHELAKKARA NORTH",
+            "person": {
+                "id": "2015073402201",
+                "name": "SARITHA PRABAKARAN"
+            }
+        }
+    ]
+}

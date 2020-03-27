@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346415692,
+    "date": "2019-08-21",
+    "name": "Panavally  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Thycattussery",
+    "area": "19.55km",
+    "localbody_code": "G040103",
+    "no_of_wards": 18,
+    "population": 26597,
+    "male": 13091,
+    "female": 13506,
+    "population_density": 1360,
+    "sex_ratio": 1032,
+    "literacy_rate": 90,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 84,
+    "president": "RAJESHVIVEKANANDA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THRICHATTUKULAM",
+            "person": {
+                "id": "2015042800101",
+                "name": "RAJESH VIVEKANANDA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHELATTUBHAGAM WEST",
+            "person": {
+                "id": "2015042800201",
+                "name": "SREEDEVI MAHADEVAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHELATTUBHAGAM EAST",
+            "person": {
+                "id": "2015042800301",
+                "name": "SAFIYA A.E"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THRICHATTUKULAM H S WARD",
+            "person": {
+                "id": "2015042800401",
+                "name": "S.JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VAZHATHARA VELI",
+            "person": {
+                "id": "2015042800501",
+                "name": "VINEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANNAM",
+            "person": {
+                "id": "2015042800601",
+                "name": "SHIBU P.V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ODAMPALLY",
+            "person": {
+                "id": "2015042800701",
+                "name": "DR.PRADEEP KOODAIKKAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PANCHAYATH OFFICE WARD",
+            "person": {
+                "id": "2015042800801",
+                "name": "PREMLAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GEETHANANDA PURAM",
+            "person": {
+                "id": "2015042800901",
+                "name": "SHEEBA SATHYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "POLICE STATION WARD",
+            "person": {
+                "id": "2015042801001",
+                "name": "VIJI UTHAMAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SREEKANDESWARAM",
+            "person": {
+                "id": "2015042801101",
+                "name": "ADV. S. RAJESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "COMMUNITY HALL WARD",
+            "person": {
+                "id": "2015042801201",
+                "name": "SHEELA KARTHIKEYAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALLIVELI",
+            "person": {
+                "id": "2015042801301",
+                "name": "RAGINI REMANAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THALIYAPARAMBU",
+            "person": {
+                "id": "2015042801401",
+                "name": "M RAJANI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAPANGAZHI",
+            "person": {
+                "id": "2015042801501",
+                "name": "P.K SUSEELAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUTTATHUKADAVU",
+            "person": {
+                "id": "2015042801601",
+                "name": "SUNITHA KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NALPPATHENESWARAM",
+            "person": {
+                "id": "2015042801701",
+                "name": "SINDHU BEEVI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ANNALATHODU",
+            "person": {
+                "id": "2015042801801",
+                "name": "CHANDRAMATHY REMESAN"
+            }
+        }
+    ]
+}

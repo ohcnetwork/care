@@ -1,0 +1,196 @@
+{
+    "timeStamp": 1566345373475,
+    "date": "2019-08-21",
+    "name": "Kottayam  District Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "area": "2203km",
+    "localbody_code": "D050000",
+    "no_of_wards": 22,
+    "population": 1952901,
+    "male": 964433,
+    "female": 988468,
+    "population_density": 830,
+    "sex_ratio": 1006,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "ADV.SUNNYPAMPADY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAIKOM",
+            "person": {
+                "id": "2015015700101",
+                "name": "P SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLOOR",
+            "person": {
+                "id": "2015015700201",
+                "name": "KALA MANGATTU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADUTHURUTHY",
+            "person": {
+                "id": "2015015700301",
+                "name": "MARY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "UZHAVOOR",
+            "person": {
+                "id": "2015015700401",
+                "name": "ANITHA RAJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KURAVILANGADU",
+            "person": {
+                "id": "2015015700501",
+                "name": "ZACHARIAS KUTHIRAVELIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BHARANAGANAM",
+            "person": {
+                "id": "2015015700601",
+                "name": "PENNAMMA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POONJAR",
+            "person": {
+                "id": "2015015700701",
+                "name": "LISSY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUNDAKAYAM",
+            "person": {
+                "id": "2015015700801",
+                "name": "K RAJESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ERUMELI",
+            "person": {
+                "id": "2015015700901",
+                "name": "MAGI JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANJIRAPPALLY",
+            "person": {
+                "id": "2015015701001",
+                "name": "ADV.SEBSTIAN KULATHUNKAL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PONKUNNAM",
+            "person": {
+                "id": "2015015701101",
+                "name": "SASIKALA NAIR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANGAZHA",
+            "person": {
+                "id": "2015015701201",
+                "name": "N.AJITH MUTHIRAMALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAMPADY",
+            "person": {
+                "id": "2015015701301",
+                "name": "ADV.SUNNY PAMPADY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AYARKUNNAM",
+            "person": {
+                "id": "2015015701401",
+                "name": "LISAMMA BABY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHUPPALLY",
+            "person": {
+                "id": "2015015701501",
+                "name": "JESSYMOL MANOJ"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VAKATHANAM",
+            "person": {
+                "id": "2015015701601",
+                "name": "JOSHY PHILIP"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THRIKODITHANAM",
+            "person": {
+                "id": "2015015701701",
+                "name": "V.K.SUNIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KURICHY",
+            "person": {
+                "id": "2015015701801",
+                "name": "SOBHANAKUMARI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KUMARAKOM",
+            "person": {
+                "id": "2015015701901",
+                "name": "JAYESH MOHANAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ATHIRAMPUZHA",
+            "person": {
+                "id": "2015015702001",
+                "name": "B.MAHESH CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KIDANGOOR",
+            "person": {
+                "id": "2015015702101",
+                "name": "BETTY ROY MANIYANGATTU"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THALAYAZHAM",
+            "person": {
+                "id": "2015015702201",
+                "name": "ADV. K.K.RENJITH"
+            }
+        }
+    ]
+}

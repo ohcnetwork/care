@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349522812,
+    "date": "2019-08-21",
+    "name": "Meenja  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "44.91km",
+    "localbody_code": "G140104",
+    "no_of_wards": 15,
+    "population": 18246,
+    "male": 8937,
+    "female": 9309,
+    "population_density": 406,
+    "sex_ratio": 1042,
+    "literacy_rate": 78.57,
+    "literacy_rate_male": 87.16,
+    "literacy_rate_female": 70.45,
+    "president": "SHAMSHADSHUKOOR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MAJEERPALLA",
+            "person": {
+                "id": "2015118200101",
+                "name": "FATHIMA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOLIYOOR",
+            "person": {
+                "id": "2015118200201",
+                "name": "SHOBHA S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "TALEKALA",
+            "person": {
+                "id": "2015118200301",
+                "name": "SHAMSHAD SHUKOOR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MEENJA",
+            "person": {
+                "id": "2015118200401",
+                "name": "VAHEED"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BERIKE",
+            "person": {
+                "id": "2015118200501",
+                "name": "KRISHNA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ARIYALA",
+            "person": {
+                "id": "2015118200601",
+                "name": "SHALINI B SHETTY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIGURUPADE",
+            "person": {
+                "id": "2015118200701",
+                "name": "CHANDRASHEKARA K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BALIYOOR",
+            "person": {
+                "id": "2015118200801",
+                "name": "MOHAMMED M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KULOOR",
+            "person": {
+                "id": "2015118200901",
+                "name": "CHANDRAVATHI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MOODAMBAIL",
+            "person": {
+                "id": "2015118201001",
+                "name": "CHANDRAVATHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAJIBAIL",
+            "person": {
+                "id": "2015118201102",
+                "name": "P SHANTHARAMA SHETTY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "DURGIPALLA",
+            "person": {
+                "id": "2015118201201",
+                "name": "SHAILA BALAKRISHNA A.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "BEJJA",
+            "person": {
+                "id": "2015118201301",
+                "name": "KUSUMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADAMBAR",
+            "person": {
+                "id": "2015118201401",
+                "name": "SUNDARI R SHETTY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALIYOOR",
+            "person": {
+                "id": "2015118201501",
+                "name": "HEMALATHA M"
+            }
+        }
+    ]
+}

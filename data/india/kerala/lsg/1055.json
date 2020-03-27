@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349063149,
+    "date": "2019-08-21",
+    "name": "Kodiyathur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnamangalam",
+    "area": "29.81km",
+    "localbody_code": "G111101",
+    "no_of_wards": 16,
+    "population": 21242,
+    "male": 10529,
+    "female": 10713,
+    "population_density": 713,
+    "sex_ratio": 1017,
+    "literacy_rate": 93.39,
+    "literacy_rate_male": 96.67,
+    "literacy_rate_female": 90.19,
+    "president": "ABDULLACHALTHODIKACHALTHODIKA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KODIYATHUR",
+            "person": {
+                "id": "2015105500101",
+                "name": "SARA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARAKUTTY",
+            "person": {
+                "id": "2015105500201",
+                "name": "ABDULLA CHALTHODIKA CHALTHODIKA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MATTUMURY",
+            "person": {
+                "id": "2015105500301",
+                "name": "THAJUNNEESSA MAVAYIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "GOTHAMBUROAD",
+            "person": {
+                "id": "2015105500401",
+                "name": "KABEER KAKKADANKUNNU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THOTTUMUKKAM",
+            "person": {
+                "id": "2015105500501",
+                "name": "K.C NADIKUTTY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALLITHAZHAM",
+            "person": {
+                "id": "2015105500601",
+                "name": "SUNNY VELLAMCHIRA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHIYANIDAM",
+            "person": {
+                "id": "2015105500701",
+                "name": "SUJA TOM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ERANHIMAVU",
+            "person": {
+                "id": "2015105500801",
+                "name": "SWAPNA ARIYANGOTTUCHALIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANNICODE",
+            "person": {
+                "id": "2015105500901",
+                "name": "SHIJI PARAPPIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PAZHAMPARAMBU",
+            "person": {
+                "id": "2015105501001",
+                "name": "MUHAMMED T.P.C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POTTAMMEL",
+            "person": {
+                "id": "2015105501101",
+                "name": "K.V ABDURAHIMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERUVADI",
+            "person": {
+                "id": "2015105501201",
+                "name": "AMINA PARAKKAL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHULLIKKAPARAMBU WEST",
+            "person": {
+                "id": "2015105501301",
+                "name": "JAMEELA THOTTIMMAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHULLIKKAPARAMBU EAST",
+            "person": {
+                "id": "2015105501401",
+                "name": "CHETTUR MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KANNAMPARAMBU",
+            "person": {
+                "id": "2015105501501",
+                "name": "CHANDRAN K.P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SOUTH KODIYATHUR",
+            "person": {
+                "id": "2015105501601",
+                "name": "SABIRA THARAMMAL"
+            }
+        }
+    ]
+}

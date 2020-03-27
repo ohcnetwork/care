@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348719003,
+    "date": "2019-08-21",
+    "name": "Kodur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "18.42km",
+    "localbody_code": "G100605",
+    "no_of_wards": 19,
+    "population": 27863,
+    "male": 13582,
+    "female": 14281,
+    "population_density": 1513,
+    "sex_ratio": 1051,
+    "literacy_rate": 91.9,
+    "literacy_rate_male": 95.59,
+    "literacy_rate_female": 88.22,
+    "president": "CPSHAJI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANGATTUPULAM",
+            "person": {
+                "id": "2015094900101",
+                "name": "RAMADEVI M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKEMANNA",
+            "person": {
+                "id": "2015094900201",
+                "name": "SABNA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEMMANKADAVU",
+            "person": {
+                "id": "2015094900301",
+                "name": "HARIFA RAHIMAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHOLAKKAL",
+            "person": {
+                "id": "2015094900401",
+                "name": "SAJNA MOL AMIYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "UMMATHUR",
+            "person": {
+                "id": "2015094900501",
+                "name": "ABIDA OTTUMMAL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERINGOTTUPULAM",
+            "person": {
+                "id": "2015094900601",
+                "name": "SAJEENA MENAMANNIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHATTIPPARAMB",
+            "person": {
+                "id": "2015094900701",
+                "name": "SIVASANKARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EAST KODUR",
+            "person": {
+                "id": "2015094900801",
+                "name": "THEKKIL JAMEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THANIKKAL",
+            "person": {
+                "id": "2015094900901",
+                "name": "REEJA KURUPATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALIYAD",
+            "person": {
+                "id": "2015094901001",
+                "name": "SUBAIR KILIYAMANNIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ARAKKALPADI",
+            "person": {
+                "id": "2015094901101",
+                "name": "ABDUNNAZAR KUNNATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ALPATTAKKULAMBA",
+            "person": {
+                "id": "2015094901201",
+                "name": "MOHAMMEDALI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIYATTUKULAM",
+            "person": {
+                "id": "2015094901301",
+                "name": "AHAMMEDKUTTY POOVAKKAT"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "OTTATHARA",
+            "person": {
+                "id": "2015094901401",
+                "name": "MOHAMMED"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VARIKKODE",
+            "person": {
+                "id": "2015094901501",
+                "name": "C P SHAJI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NATTUKALLINGAL PADI",
+            "person": {
+                "id": "2015094901601",
+                "name": "HAFSATH CHOLASSERY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALAKKAL",
+            "person": {
+                "id": "2015094901701",
+                "name": "SHEENA KATTUMUNDA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "WEST KODUR",
+            "person": {
+                "id": "2015094901801",
+                "name": "ABDUL BASHEER"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KAREEPARAMBA",
+            "person": {
+                "id": "2015094901901",
+                "name": "P K SHAREEFA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345074532,
+    "date": "2019-08-21",
+    "name": "Koovappady  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Koovappady",
+    "area": "372km",
+    "localbody_code": "B070400",
+    "no_of_wards": 13,
+    "population": 133096,
+    "male": 67017,
+    "female": 66079,
+    "population_density": 358,
+    "sex_ratio": 986,
+    "literacy_rate": 89.98,
+    "literacy_rate_male": 93.75,
+    "literacy_rate_female": 86.17,
+    "president": "MINIBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOODALAPPADU",
+            "person": {
+                "id": "2015006900101",
+                "name": "SICILY EYOB"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KODANADU",
+            "person": {
+                "id": "2015006900201",
+                "name": "PRAKASH M P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KRARIYELI",
+            "person": {
+                "id": "2015006900301",
+                "name": "SARALA KRISHNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENGOOR",
+            "person": {
+                "id": "2015006900401",
+                "name": "SEENA BIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ASAMANNOOR",
+            "person": {
+                "id": "2015006900501",
+                "name": "VARGHESE K P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "METHALA",
+            "person": {
+                "id": "2015006900601",
+                "name": "PREETHA SUKU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KEEZHILLAM",
+            "person": {
+                "id": "2015006900701",
+                "name": "MANOJ K C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULLUVAZHI",
+            "person": {
+                "id": "2015006900801",
+                "name": "PAUL UTHUP"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "RAYAMANGALAM",
+            "person": {
+                "id": "2015006900901",
+                "name": "BINDU GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUDAKUZHA",
+            "person": {
+                "id": "2015006901001",
+                "name": "JOBY MATHEW"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ELAMBAKAPILLY",
+            "person": {
+                "id": "2015006901101",
+                "name": "MINI BABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOVAPPADY",
+            "person": {
+                "id": "2015006901201",
+                "name": "MANOJ MOOTHEDAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "OKKAL",
+            "person": {
+                "id": "2015006901301",
+                "name": "GAYATHRI VINOD"
+            }
+        }
+    ]
+}

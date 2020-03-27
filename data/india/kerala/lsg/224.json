@@ -1,0 +1,324 @@
+{
+    "timeStamp": 1566345697618,
+    "date": "2019-08-21",
+    "name": "Kasaragod  Municipality, Kasargode District",
+    "district": "Kasargode",
+    "area": "16.68km",
+    "localbody_code": "M140200",
+    "no_of_wards": 38,
+    "population": 52683,
+    "male": 25698,
+    "female": 26985,
+    "population_density": 3005,
+    "sex_ratio": 1014,
+    "literacy_rate": 87.38,
+    "literacy_rate_male": 92.05,
+    "literacy_rate_female": 82.82,
+    "chairperson": "BEEFATHIMAIBRAHIM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERANGAI WEST",
+            "person": {
+                "id": "2015022400101",
+                "name": "MISIRIYA HAMEED"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERANGAI EAST",
+            "person": {
+                "id": "2015022400201",
+                "name": "HAJARA MOHAMMED KUNHI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ADUKATHBAIL",
+            "person": {
+                "id": "2015022400301",
+                "name": "HANEEFA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THALIPADUPPU",
+            "person": {
+                "id": "2015022400401",
+                "name": "RAMESH P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARANTHAKAD",
+            "person": {
+                "id": "2015022400501",
+                "name": "DUGGAPPA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANABAGILU",
+            "person": {
+                "id": "2015022400601",
+                "name": "RAVINDRA POOJARY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NULLIPPADI",
+            "person": {
+                "id": "2015022400701",
+                "name": "K SANDHYA SHETTY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NULLIPPADI NORTH",
+            "person": {
+                "id": "2015022400801",
+                "name": "K SHANKARA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANANGOOR",
+            "person": {
+                "id": "2015022400901",
+                "name": "JANAKI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VIDYANAGAR",
+            "person": {
+                "id": "2015022401001",
+                "name": "SAVITHA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "BEDIRA",
+            "person": {
+                "id": "2015022401101",
+                "name": "HAMEED BEDIRA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHALA",
+            "person": {
+                "id": "2015022401201",
+                "name": "MUMTHAZ ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHALAKKUNNU",
+            "person": {
+                "id": "2015022401301",
+                "name": "L A MAHAMOOD"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THURUTHI",
+            "person": {
+                "id": "2015022401401",
+                "name": "SAMEERA ABDUL RAZAK"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOLLAMBADI",
+            "person": {
+                "id": "2015022401501",
+                "name": "BEEFATHIMA IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PACHAKKAD",
+            "person": {
+                "id": "2015022401601",
+                "name": "HASEENA AMEER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHENNIKKARA",
+            "person": {
+                "id": "2015022401701",
+                "name": "DINESH K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PULIKKUNNU",
+            "person": {
+                "id": "2015022401801",
+                "name": "SUJITH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KORAKODE",
+            "person": {
+                "id": "2015022401901",
+                "name": "K S JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "FISH MARKET",
+            "person": {
+                "id": "2015022402001",
+                "name": "RASHID POORANAM"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "HONNAMOOLA",
+            "person": {
+                "id": "2015022402101",
+                "name": "K M ABDUL RAHIMAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THERUVATH",
+            "person": {
+                "id": "2015022402201",
+                "name": "VISHWANATHAN K"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PALLIKKAL",
+            "person": {
+                "id": "2015022402301",
+                "name": "ADV. V M MUNEER"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "KHAZILINE",
+            "person": {
+                "id": "2015022402401",
+                "name": "NAIMUNNISA M"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "THALANGARA BANGOD",
+            "person": {
+                "id": "2015022402501",
+                "name": "FARSANA SHIHABUDDEEN"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "THALANGARA JADEED ROAD",
+            "person": {
+                "id": "2015022402601",
+                "name": "SELVANA FAIZER"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "THALANGARA KANDATHIL",
+            "person": {
+                "id": "2015022402701",
+                "name": "FARSANA HASSAIN"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "THALANGARA K K PURAM",
+            "person": {
+                "id": "2015022402801",
+                "name": "NASEERA ISMAIL"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "THALANGRA PADINCHAR",
+            "person": {
+                "id": "2015022402901",
+                "name": "AHAMMED MUJEEB"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "THALANGARA DEENAR NAGAR",
+            "person": {
+                "id": "2015022403001",
+                "name": "RAMSEENA RIYAS"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "THAYALANGADI",
+            "person": {
+                "id": "2015022403101",
+                "name": "SAMEENA MUJEEB"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "THALUK OFFICE",
+            "person": {
+                "id": "2015022403201",
+                "name": "SRILATHA M"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "BEERANTHBAIL",
+            "person": {
+                "id": "2015022403301",
+                "name": "ARUN KUMAR"
+            }
+        },
+        {
+            "ward_number": "34",
+            "name": "NELLIKKUNNU",
+            "person": {
+                "id": "2015022403401",
+                "name": "ZIYANA HANEEF"
+            }
+        },
+        {
+            "ward_number": "35",
+            "name": "PALLAM",
+            "person": {
+                "id": "2015022403501",
+                "name": "MOHAMMED HARIS BANNU"
+            }
+        },
+        {
+            "ward_number": "36",
+            "name": "KADAPPURAM SOUTH",
+            "person": {
+                "id": "2015022403602",
+                "name": "REHNA. S"
+            }
+        },
+        {
+            "ward_number": "37",
+            "name": "KADAPPURAM NORTH",
+            "person": {
+                "id": "2015022403701",
+                "name": "UMA M"
+            }
+        },
+        {
+            "ward_number": "38",
+            "name": "LIGHT HOUSE",
+            "person": {
+                "id": "2015022403801",
+                "name": "K G MANOHARAN"
+            }
+        }
+    ]
+}

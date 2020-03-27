@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348226715,
+    "date": "2019-08-21",
+    "name": "Chalavara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Ottappalam",
+    "area": "27.9km",
+    "localbody_code": "G090303",
+    "no_of_wards": 15,
+    "population": 19273,
+    "male": 8989,
+    "female": 10284,
+    "population_density": 691,
+    "sex_ratio": 1144,
+    "literacy_rate": 85.85,
+    "literacy_rate_male": 88.9,
+    "literacy_rate_female": 83.28,
+    "president": "VALSALA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUNDAKKOTTUKURUSSI",
+            "person": {
+                "id": "2015082300101",
+                "name": "RUKKIYA O"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNDAKKOTTUKURUSSI VADAKKUMURI",
+            "person": {
+                "id": "2015082300201",
+                "name": "JAYAN K.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULINTHARA",
+            "person": {
+                "id": "2015082300301",
+                "name": "VILASINI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHALAVARA NORTH",
+            "person": {
+                "id": "2015082300401",
+                "name": "NABEESA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHALAVARA EAST",
+            "person": {
+                "id": "2015082300501",
+                "name": "UNNIKRISHNAN C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULIYANAMKUNNU",
+            "person": {
+                "id": "2015082300601",
+                "name": "SANTHOSHKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHALAVARA",
+            "person": {
+                "id": "2015082300701",
+                "name": "ABDUL RAHIMAN P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKARAPPARA",
+            "person": {
+                "id": "2015082300801",
+                "name": "SUDINA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OLD VILLAGE",
+            "person": {
+                "id": "2015082300901",
+                "name": "RAJESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAYILIYAD MELMURI",
+            "person": {
+                "id": "2015082301001",
+                "name": "MANOJ"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VEMBALATHUPADAM",
+            "person": {
+                "id": "2015082301101",
+                "name": "SATHYAPALAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VELLACHEERIPARAMBU",
+            "person": {
+                "id": "2015082301201",
+                "name": "VALSALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAYILIYAD",
+            "person": {
+                "id": "2015082301301",
+                "name": "AJITHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THRIKKARAMANNA",
+            "person": {
+                "id": "2015082301401",
+                "name": "VINEETHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUNDAKKOTTUKURUSSI  CITY",
+            "person": {
+                "id": "2015082301501",
+                "name": "SUNANDA"
+            }
+        }
+    ]
+}

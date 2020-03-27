@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347601674,
+    "date": "2019-08-21",
+    "name": "Avinissery  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Cherpu",
+    "area": "7.82km",
+    "localbody_code": "G081001",
+    "no_of_wards": 14,
+    "population": 16715,
+    "male": 8326,
+    "female": 8389,
+    "population_density": 2137,
+    "sex_ratio": 1007,
+    "literacy_rate": 92.61,
+    "literacy_rate_male": 95.98,
+    "literacy_rate_female": 89.29,
+    "president": "SURYASHOBY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALAKKAL",
+            "person": {
+                "id": "2015076400101",
+                "name": "GEETHA SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALISSERY NORTH",
+            "person": {
+                "id": "2015076400201",
+                "name": "P N SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBEDKAR",
+            "person": {
+                "id": "2015076400301",
+                "name": "ROSILY JOY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "BOTTUJETTY",
+            "person": {
+                "id": "2015076400401",
+                "name": "JOY P J"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AVINISSERY",
+            "person": {
+                "id": "2015076400501",
+                "name": "PRASEETHA MAKESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALLISSERY NORTH",
+            "person": {
+                "id": "2015076400601",
+                "name": "SURYA SHOBY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALLISSERY",
+            "person": {
+                "id": "2015076400701",
+                "name": "K. R. JAYARAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VALLISSERY SOUTH",
+            "person": {
+                "id": "2015076400801",
+                "name": "SHEENA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THRITHAMARASSERY",
+            "person": {
+                "id": "2015076400901",
+                "name": "RAMACHANDRAN T K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERINCHERY",
+            "person": {
+                "id": "2015076401001",
+                "name": "SHEELA MOHAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERUVATHERY",
+            "person": {
+                "id": "2015076401101",
+                "name": "VANAJA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOTTAPAYA",
+            "person": {
+                "id": "2015076401201",
+                "name": "C K NANDAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALISSERY",
+            "person": {
+                "id": "2015076401301",
+                "name": "E S PRADEESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALAKKAL EAST",
+            "person": {
+                "id": "2015076401401",
+                "name": "VINAYA SACHIN"
+            }
+        }
+    ]
+}

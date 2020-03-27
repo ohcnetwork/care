@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348821642,
+    "date": "2019-08-21",
+    "name": "Thirunavaya  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Tirur",
+    "area": "19.58km",
+    "localbody_code": "G101305",
+    "no_of_wards": 23,
+    "population": 37867,
+    "male": 17904,
+    "female": 19963,
+    "population_density": 1934,
+    "sex_ratio": 1115,
+    "literacy_rate": 84.26,
+    "literacy_rate_male": 88.9,
+    "literacy_rate_female": 79.63,
+    "president": "FAIZALEDASSERI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANDAMPARA",
+            "person": {
+                "id": "2015098400101",
+                "name": "SHAMSUDHEEN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERURAL",
+            "person": {
+                "id": "2015098400201",
+                "name": "HASEENA THOTTATHIL T"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUTTIKAD",
+            "person": {
+                "id": "2015098400301",
+                "name": "AYISHA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KONALLOOR",
+            "person": {
+                "id": "2015098400401",
+                "name": "MOHAMMED ALI SHIHAB K.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NAMBIYAMKUNNU",
+            "person": {
+                "id": "2015098400501",
+                "name": "SAKEER M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALIYAPARAPPUR",
+            "person": {
+                "id": "2015098400601",
+                "name": "ABDUL KADER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADANANGADI",
+            "person": {
+                "id": "2015098400701",
+                "name": "THEYYAN K.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAKKULAM EAST",
+            "person": {
+                "id": "2015098400801",
+                "name": "RUWAIDA K K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "താഴത്തറ",
+            "person": {
+                "id": "2015098400901",
+                "name": "VELAYUDHAN T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THIRUNAVAYA",
+            "person": {
+                "id": "2015098401001",
+                "name": "HAKKEEMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AZHAKATHUKALAM",
+            "person": {
+                "id": "2015098401101",
+                "name": "ANNE GOTLIPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THIRUTHI",
+            "person": {
+                "id": "2015098401201",
+                "name": "ABDUL NASER P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CODACAL NORTH",
+            "person": {
+                "id": "2015098401301",
+                "name": "ABUBACKER HAJI T"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CODACAL WEST",
+            "person": {
+                "id": "2015098401401",
+                "name": "SHAMSUDHEEN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KARATHUR",
+            "person": {
+                "id": "2015098401501",
+                "name": "FAIZAL EDASSERI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SOUTH PALLAR",
+            "person": {
+                "id": "2015098401601",
+                "name": "SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EDAKKULAM WEST",
+            "person": {
+                "id": "2015098401701",
+                "name": "E.P . SUHARA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "കുന്നുംപുറം",
+            "person": {
+                "id": "2015098401801",
+                "name": "SABIRA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KUTHUKALLU",
+            "person": {
+                "id": "2015098401901",
+                "name": "ABDUL GAFOOR"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VAIRAMKODE",
+            "person": {
+                "id": "2015098402001",
+                "name": "SHAKEELA"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHOONDIKKAL",
+            "person": {
+                "id": "2015098402101",
+                "name": "HAFSATH"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "KAITHAKKARA",
+            "person": {
+                "id": "2015098402201",
+                "name": "SUHARA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "IQBQL NAGAR",
+            "person": {
+                "id": "2015098402301",
+                "name": "RAMLA IRINGAVOOR VALAPPIL"
+            }
+        }
+    ]
+}

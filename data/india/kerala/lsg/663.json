@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566347216111,
+    "date": "2019-08-21",
+    "name": "Pallippuram  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vypin",
+    "area": "16.66km",
+    "localbody_code": "G070704",
+    "no_of_wards": 23,
+    "population": 41100,
+    "male": 20107,
+    "female": 20993,
+    "population_density": 2467,
+    "sex_ratio": 1044,
+    "literacy_rate": 93.34,
+    "literacy_rate_male": 96.25,
+    "literacy_rate_female": 90.59,
+    "president": "PKRADHAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUNAMBAM KADAPPURAM",
+            "person": {
+                "id": "2015066300101",
+                "name": "SUNIL DEVASSY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNAMBAM JANAHITHA",
+            "person": {
+                "id": "2015066300201",
+                "name": "SUMA PRASAD"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUNAMBAM HARBOUR",
+            "person": {
+                "id": "2015066300301",
+                "name": "SUNILA DAYALU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALLIPPURAM",
+            "person": {
+                "id": "2015066300401",
+                "name": "MARY SHINE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOVILAKAM",
+            "person": {
+                "id": "2015066300501",
+                "name": "CHANDRAMATHY SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOVILAKAM SOUTH",
+            "person": {
+                "id": "2015066300601",
+                "name": "M B SOBHIKA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SAHODARABHAVAN",
+            "person": {
+                "id": "2015066300701",
+                "name": "VASANTHY SALEEVAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THRIKKADAKKAPPILLY",
+            "person": {
+                "id": "2015066300801",
+                "name": "BABY NATESAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAKKARAKKADAVU",
+            "person": {
+                "id": "2015066300901",
+                "name": "SUNITHA PRASAD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANCHAYAT",
+            "person": {
+                "id": "2015066301001",
+                "name": "P K RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOMARANTHY",
+            "person": {
+                "id": "2015066301101",
+                "name": "E. K JAYAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANAYATHUKADU",
+            "person": {
+                "id": "2015066301201",
+                "name": "K M PRASOON"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "GOWREESWARAM",
+            "person": {
+                "id": "2015066301301",
+                "name": "K N SHIBU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "REKTHESWARY KADAPPURAM",
+            "person": {
+                "id": "2015066301401",
+                "name": "SANTHINI PRASAD"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "SAMOOHYA SEVASANGHAM",
+            "person": {
+                "id": "2015066301502",
+                "name": "SHARON T S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PUBLIC LIBRARY",
+            "person": {
+                "id": "2015066301601",
+                "name": "BINDU THANKACHAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEDIYARA",
+            "person": {
+                "id": "2015066301701",
+                "name": "SHIJA JOSHI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "S M H S",
+            "person": {
+                "id": "2015066301801",
+                "name": "RADHIKA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VADEYKKAKAM",
+            "person": {
+                "id": "2015066301901",
+                "name": "K K LENIN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "JANATHA",
+            "person": {
+                "id": "2015066302001",
+                "name": "SHERY ANTONY"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CONVENT KADAPPURAM",
+            "person": {
+                "id": "2015066302101",
+                "name": "BINDU RAJESH"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MOSQE ROAD",
+            "person": {
+                "id": "2015066302201",
+                "name": "RAMANI AJAYAN"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "BEACH WARD",
+            "person": {
+                "id": "2015066302301",
+                "name": "SHIMMI PREETHAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,252 @@
+{
+    "timeStamp": 1566345617650,
+    "date": "2019-08-21",
+    "name": "Chittur Tattamangalam  Municipality, Palakkad District",
+    "district": "Palakkad",
+    "area": "14.71km",
+    "localbody_code": "M090300",
+    "no_of_wards": 29,
+    "population": 130736,
+    "male": 64293,
+    "female": 66443,
+    "population_density": 2179,
+    "sex_ratio": 1055,
+    "literacy_rate": 84.51,
+    "literacy_rate_male": 91.12,
+    "literacy_rate_female": 78.35,
+    "chairman": "MADHUK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUMKODE",
+            "person": {
+                "id": "2015020700101",
+                "name": "ANIL KUMAR V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "BUS STAND WARD",
+            "person": {
+                "id": "2015020700201",
+                "name": "SUNITHA MUHAMMED SALEEM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARANGAM",
+            "person": {
+                "id": "2015020700301",
+                "name": "MADHU K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHEMBAKASSERY",
+            "person": {
+                "id": "2015020700401",
+                "name": "A KANNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AMBATTUPALAYAM",
+            "person": {
+                "id": "2015020700501",
+                "name": "SHEEJA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTHUKAD",
+            "person": {
+                "id": "2015020700601",
+                "name": "PUSHPALATHA P U"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADAMBIDI",
+            "person": {
+                "id": "2015020700701",
+                "name": "MUKESH M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VADAKKATHARA",
+            "person": {
+                "id": "2015020700801",
+                "name": "K G SEKHARANUNNI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NARAMKUZHI",
+            "person": {
+                "id": "2015020700901",
+                "name": "KRISHNALEELA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KIZHAKKATHARA",
+            "person": {
+                "id": "2015020701001",
+                "name": "KAVITHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNANTHARA",
+            "person": {
+                "id": "2015020701101",
+                "name": "PRIYA U"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOSATHARA",
+            "person": {
+                "id": "2015020701201",
+                "name": "A SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KACHERIMEDU",
+            "person": {
+                "id": "2015020701301",
+                "name": "SADIQE ALI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ARYAMPALLAM",
+            "person": {
+                "id": "2015020701401",
+                "name": "SWAMINATHAN M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "DEVANGAPURAM",
+            "person": {
+                "id": "2015020701501",
+                "name": "RAJA S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VALMUTTY",
+            "person": {
+                "id": "2015020701601",
+                "name": "MANIKANDAN K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ANIKODE",
+            "person": {
+                "id": "2015020701701",
+                "name": "SIVAKUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THEKKEGRAMAM",
+            "person": {
+                "id": "2015020701801",
+                "name": "K A SHEEBA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THARAKKALAM",
+            "person": {
+                "id": "2015020701901",
+                "name": "BABY SALINI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KUNNATHUPALAYAM",
+            "person": {
+                "id": "2015020702001",
+                "name": "USHA PRASOBHANAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "COLLEGE WARD",
+            "person": {
+                "id": "2015020702101",
+                "name": "MAHESWARI C"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "BANGLAPARAMBU",
+            "person": {
+                "id": "2015020702201",
+                "name": "BINDU K"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PARUTHIKAVU",
+            "person": {
+                "id": "2015020702301",
+                "name": "K C PREETH"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "THUMBICHIRA",
+            "person": {
+                "id": "2015020702401",
+                "name": "P RATHNAMANI"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "MANNATHUKAVU",
+            "person": {
+                "id": "2015020702501",
+                "name": "SUBRADAM S S"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "SREEKURUMBAKAVU",
+            "person": {
+                "id": "2015020702601",
+                "name": "T S THIRUVENKIDAM"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "KADAVALAVU",
+            "person": {
+                "id": "2015020702701",
+                "name": "UMMUL HABEEBA"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "GRAMAM WARD",
+            "person": {
+                "id": "2015020702801",
+                "name": "RADHAMANI"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "METTUVALAVU",
+            "person": {
+                "id": "2015020702901",
+                "name": "SABEENA YASMIN M"
+            }
+        }
+    ]
+}

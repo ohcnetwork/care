@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347366397,
+    "date": "2019-08-21",
+    "name": "Avoly  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Muvattupuzha",
+    "area": "18.6km",
+    "localbody_code": "G071401",
+    "no_of_wards": 14,
+    "population": 15760,
+    "male": 7935,
+    "female": 7825,
+    "population_density": 847,
+    "sex_ratio": 986,
+    "literacy_rate": 93.9,
+    "literacy_rate_male": 95.85,
+    "literacy_rate_female": 91.94,
+    "president": "GEORDIVARGHEESE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KIZHAKKEKKARA",
+            "person": {
+                "id": "2015070400101",
+                "name": "MUHAMMED AYOOBKHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "RANDAR",
+            "person": {
+                "id": "2015070400202",
+                "name": "SUHARA SIDHEEK"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015070400301",
+                "name": "BALKIS RASHEED"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIRUVUMPLAVU TEMPLE",
+            "person": {
+                "id": "2015070400401",
+                "name": "M .K . AJI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ST. SEBASTIANS ANICADU",
+            "person": {
+                "id": "2015070400501",
+                "name": "GEORGE JOHN MONIPPILLIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAREEKKAPEEDIKA",
+            "person": {
+                "id": "2015070400601",
+                "name": "MOLLY JAMES"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAVANA",
+            "person": {
+                "id": "2015070400701",
+                "name": "GEORDI VARGHEESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAVANA GOV. LPS",
+            "person": {
+                "id": "2015070400801",
+                "name": "MANOJ P.T."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NADUKKARA",
+            "person": {
+                "id": "2015070400901",
+                "name": "JOJI JOSE KURUPPUMADAM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015070401001",
+                "name": "SHIBU JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANICADU",
+            "person": {
+                "id": "2015070401101",
+                "name": "SHIMMY TOMSON"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "P . H .C",
+            "person": {
+                "id": "2015070401201",
+                "name": "SINI SATHYAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "COMPANYPADY",
+            "person": {
+                "id": "2015070401301",
+                "name": "LINCY TITUS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NIRMALACOLLEGE",
+            "person": {
+                "id": "2015070401401",
+                "name": "GEETHA BHASKARAN"
+            }
+        }
+    ]
+}

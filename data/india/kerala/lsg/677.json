@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347260550,
+    "date": "2019-08-21",
+    "name": "VadavucodePuthencruz  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vadavucode",
+    "area": "36.89km",
+    "localbody_code": "G071003",
+    "no_of_wards": 17,
+    "population": 26144,
+    "male": 13440,
+    "female": 12704,
+    "population_density": 709,
+    "sex_ratio": 945,
+    "literacy_rate": 90.4,
+    "literacy_rate_male": 94.02,
+    "literacy_rate_female": 86.63,
+    "president": "VELAYUDHANPK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "BRAHMAPURAM",
+            "person": {
+                "id": "2015067700101",
+                "name": "BEENA KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIMUKAL NORTH",
+            "person": {
+                "id": "2015067700202",
+                "name": "ABDUL BASHIER K A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PEECHINGACHIRA",
+            "person": {
+                "id": "2015067700301",
+                "name": "OMANA SHANMUGHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "RAMALLOOR",
+            "person": {
+                "id": "2015067700401",
+                "name": "MARY POULOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANINADU",
+            "person": {
+                "id": "2015067700501",
+                "name": "LISSY SLEEBA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "RAJARSHI",
+            "person": {
+                "id": "2015067700601",
+                "name": "BENNY P P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VADAVUCODE",
+            "person": {
+                "id": "2015067700701",
+                "name": "PAUL T K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHENCRUZ",
+            "person": {
+                "id": "2015067700801",
+                "name": "AMBIKA NANDANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VADAYAMPATHUMALA",
+            "person": {
+                "id": "2015067700901",
+                "name": "SOPHY ISSAC"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VARIKOLY",
+            "person": {
+                "id": "2015067701001",
+                "name": "MANJU VIJAYADHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTTUMANOOR",
+            "person": {
+                "id": "2015067701101",
+                "name": "LISSY ALIAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARIMUKAL SOUTH",
+            "person": {
+                "id": "2015067701201",
+                "name": "PREETHY KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELOOR",
+            "person": {
+                "id": "2015067701301",
+                "name": "LEENA MATHEW"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AMBALAMEDU",
+            "person": {
+                "id": "2015067701401",
+                "name": "ASOKAKUMAR K K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PULIYAMPLLIMUKAL",
+            "person": {
+                "id": "2015067701501",
+                "name": "VELAYUDHAN P K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ADOOR",
+            "person": {
+                "id": "2015067701601",
+                "name": "RAVI M K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "FACT",
+            "person": {
+                "id": "2015067701701",
+                "name": "VISHAK K P"
+            }
+        }
+    ]
+}

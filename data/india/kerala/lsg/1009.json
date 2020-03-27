@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566348908852,
+    "date": "2019-08-21",
+    "name": "Maruthonkara  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnummal",
+    "area": "26.9km",
+    "localbody_code": "G110305",
+    "no_of_wards": 14,
+    "population": 16985,
+    "male": 8542,
+    "female": 8443,
+    "population_density": 631,
+    "sex_ratio": 988,
+    "literacy_rate": 90.39,
+    "literacy_rate_male": 94.79,
+    "literacy_rate_female": 84.8,
+    "president": "KMSATHI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLAD",
+            "person": {
+                "id": "2015100900101",
+                "name": "ABDUL LATHEEF"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAIKKATTUMMAL",
+            "person": {
+                "id": "2015100900201",
+                "name": "T K SOBHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KACHERI",
+            "person": {
+                "id": "2015100900301",
+                "name": "ANEESH K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MARUTHOMKARA",
+            "person": {
+                "id": "2015100900401",
+                "name": "K M SATHI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VILLIAMPARA",
+            "person": {
+                "id": "2015100900501",
+                "name": "ASHOKAN  T P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTHODE",
+            "person": {
+                "id": "2015100900601",
+                "name": "RAJILESH P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THOOVATTAPOYIL",
+            "person": {
+                "id": "2015100900701",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PASUKKADAVU",
+            "person": {
+                "id": "2015100900801",
+                "name": "BIBY PARACKEL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CENTREMUKKU",
+            "person": {
+                "id": "2015100900901",
+                "name": "BEENA ALACKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VANNATHICHIRA",
+            "person": {
+                "id": "2015100901001",
+                "name": "C P BABURAJ"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULLANKUNNU",
+            "person": {
+                "id": "2015100901101",
+                "name": "THRESIAMMA MATHEW"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MARUTHOMKARA SOUTH",
+            "person": {
+                "id": "2015100901201",
+                "name": "BIJUMON(K T MURALI)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUNDAKKUTTI",
+            "person": {
+                "id": "2015100901301",
+                "name": "NISHA K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ADUKKATH",
+            "person": {
+                "id": "2015100901401",
+                "name": "RAMLA K K"
+            }
+        }
+    ]
+}

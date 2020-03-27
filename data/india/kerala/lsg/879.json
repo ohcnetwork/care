@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348417413,
+    "date": "2019-08-21",
+    "name": "Kavassery  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "30.46km",
+    "localbody_code": "G091203",
+    "no_of_wards": 17,
+    "population": 24783,
+    "male": 11917,
+    "female": 12866,
+    "population_density": 814,
+    "sex_ratio": 1080,
+    "literacy_rate": 79.34,
+    "literacy_rate_male": 87.62,
+    "literacy_rate_female": 71.8,
+    "president": "BHAMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PEECHAMKODE",
+            "person": {
+                "id": "2015087900101",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PADUR",
+            "person": {
+                "id": "2015087900201",
+                "name": "SHANTHA.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLEPULLY",
+            "person": {
+                "id": "2015087900301",
+                "name": "MANJUSHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALIYAPARAMBU",
+            "person": {
+                "id": "2015087900401",
+                "name": "BABU.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATHANAPURAM",
+            "person": {
+                "id": "2015087900501",
+                "name": "AJAYAGOSH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTHANODE",
+            "person": {
+                "id": "2015087900601",
+                "name": "RAMESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARAPPUZHA",
+            "person": {
+                "id": "2015087900701",
+                "name": "BHAMA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHUNDAKKAD",
+            "person": {
+                "id": "2015087900801",
+                "name": "K.MADHU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOOPPUPARAMBU",
+            "person": {
+                "id": "2015087900901",
+                "name": "ANILA PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANAMARY",
+            "person": {
+                "id": "2015087901001",
+                "name": "ASHAD"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERATTAKULAM",
+            "person": {
+                "id": "2015087901101",
+                "name": "SATHYABHAMA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KONGALAKKODE",
+            "person": {
+                "id": "2015087901201",
+                "name": "K.CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VEPPILASSERY",
+            "person": {
+                "id": "2015087901301",
+                "name": "SANGEETHA .C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THENNILAPURAM",
+            "person": {
+                "id": "2015087901401",
+                "name": "T.VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNNINPURAM",
+            "person": {
+                "id": "2015087901501",
+                "name": "SUBADHRA.R"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHEENIKKODE",
+            "person": {
+                "id": "2015087901601",
+                "name": "SANTHA.V.C"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUNDUTHODI",
+            "person": {
+                "id": "2015087901701",
+                "name": "UNNIKRISHNAN.P.K"
+            }
+        }
+    ]
+}

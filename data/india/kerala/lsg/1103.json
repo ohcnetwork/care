@@ -1,0 +1,132 @@
+{
+    "timeStamp": 1566349213256,
+    "date": "2019-08-21",
+    "name": "Karivellur Peralam  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "22.23km",
+    "localbody_code": "G130103",
+    "no_of_wards": 14,
+    "population": 19062,
+    "male": 9105,
+    "female": 9957,
+    "population_density": 857,
+    "sex_ratio": 1094,
+    "literacy_rate": 90.9,
+    "literacy_rate_male": 95.83,
+    "literacy_rate_female": 86.45,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKUMBAD",
+            "person": {
+                "id": "2015110300101",
+                "name": "NARAYANAN PADINHARE VEEDU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALAKKUNNU",
+            "person": {
+                "id": "2015110300201",
+                "name": "VINOD KUMAR THEKKE VEETTIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NORTH MANAKKAD",
+            "person": {
+                "id": "2015110300301",
+                "name": "THANKAMANI V. V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOOKKANAM",
+            "person": {
+                "id": "2015110300401",
+                "name": "CHANDRAN POTTAKKULATH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015110300501",
+                "name": "RADHAMANI K.V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VEREEKKARA",
+            "person": {
+                "id": "2015110300601",
+                "name": "PANKAJAKSHI P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOZHUMMAL",
+            "person": {
+                "id": "2015110300701",
+                "name": "RAGHAVAN M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOOVACHERI",
+            "person": {
+                "id": "2015110300801",
+                "name": "SUDHAMANI R.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERALAM",
+            "person": {
+                "id": "2015110300901",
+                "name": "SUMATHI K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SOUTH MANAKKAD",
+            "person": {
+                "id": "2015110301001",
+                "name": "GIREESH KUMAR A.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ONAKKUNNU",
+            "person": {
+                "id": "2015110301101",
+                "name": "NIRMALA C.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNIYAN KIZHAKKEKKARA",
+            "person": {
+                "id": "2015110301201",
+                "name": "SUDHAKARAN K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNIYAN PADINHARU",
+            "person": {
+                "id": "2015110301301",
+                "name": "SAHADEVAN K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALLIKKOVVAL",
+            "person": {
+                "id": "2015110301401",
+                "name": "PONNAMMA P.R"
+            }
+        }
+    ]
+}

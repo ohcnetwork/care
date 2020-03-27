@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348050224,
+    "date": "2019-08-21",
+    "name": "Thrikkur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Kodakara",
+    "area": "25.38km",
+    "localbody_code": "G081106",
+    "no_of_wards": 17,
+    "population": 23707,
+    "male": 11567,
+    "female": 12140,
+    "population_density": 934,
+    "sex_ratio": 1049,
+    "literacy_rate": 89.88,
+    "literacy_rate_male": 93.9,
+    "literacy_rate_female": 86.1,
+    "president": "PREMAKUTTAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KONIKKARA",
+            "person": {
+                "id": "2015077300101",
+                "name": "PAULSON THEKKUMPEEDIKA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THRIKKUR",
+            "person": {
+                "id": "2015077300201",
+                "name": "AJITH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ATHANI",
+            "person": {
+                "id": "2015077300301",
+                "name": "MAYA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALLIYARA",
+            "person": {
+                "id": "2015077300401",
+                "name": "PRIYA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MATHIKKUNNU",
+            "person": {
+                "id": "2015077300501",
+                "name": "PREMA KUTTAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAKKAD",
+            "person": {
+                "id": "2015077300601",
+                "name": "VASU MEPPURATH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTTAYI",
+            "person": {
+                "id": "2015077300701",
+                "name": "DENNY P.D."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MAVINCHUVADU",
+            "person": {
+                "id": "2015077300801",
+                "name": "SUNDARY MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALENGAD",
+            "person": {
+                "id": "2015077300901",
+                "name": "SREEJA ANIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUTTITHADI",
+            "person": {
+                "id": "2015077301001",
+                "name": "K. C. SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLAYI",
+            "person": {
+                "id": "2015077301101",
+                "name": "MERCY SCARIA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAVALLUR",
+            "person": {
+                "id": "2015077301201",
+                "name": "MINI MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ATHUR",
+            "person": {
+                "id": "2015077301301",
+                "name": "SHIJU ALIAS SYMON NAMBADAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALAKKAPARAMBU",
+            "person": {
+                "id": "2015077301401",
+                "name": "JINI MANESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NJELLUR",
+            "person": {
+                "id": "2015077301501",
+                "name": "GRACY VARGHESE KUNNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NAYARANGADI",
+            "person": {
+                "id": "2015077301601",
+                "name": "NARAYANANKUTTY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALLUR",
+            "person": {
+                "id": "2015077301701",
+                "name": "SANDEEP KANIYATH"
+            }
+        }
+    ]
+}

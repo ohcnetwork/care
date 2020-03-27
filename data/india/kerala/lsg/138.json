@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345311114,
+    "date": "2019-08-21",
+    "name": "Sulthan Bathery  Block Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Sulthanbathery",
+    "area": "761.9km",
+    "localbody_code": "B120300",
+    "no_of_wards": 13,
+    "population": 249695,
+    "male": 128649,
+    "female": 121046,
+    "population_density": 328,
+    "sex_ratio": 942,
+    "literacy_rate": 83.76,
+    "literacy_rate_male": 87.7,
+    "literacy_rate_female": 79.54,
+    "president": "LATHASASI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MEENANGADY",
+            "person": {
+                "id": "2015013800101",
+                "name": "VASUDEVAN P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOLAGAPPARA",
+            "person": {
+                "id": "2015013800201",
+                "name": "LATHA SASI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBUKUTHI",
+            "person": {
+                "id": "2015013800301",
+                "name": "REKHA DEVAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NAMBIKOLLY",
+            "person": {
+                "id": "2015013800401",
+                "name": "NASEERA ISMAIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLOOR",
+            "person": {
+                "id": "2015013800501",
+                "name": "A.K. KUMARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTHANGA",
+            "person": {
+                "id": "2015013800601",
+                "name": "SINDU K M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHEERAL",
+            "person": {
+                "id": "2015013800701",
+                "name": "BABY V T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLIYADI",
+            "person": {
+                "id": "2015013800801",
+                "name": "JAYA MURALI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHULLIODE",
+            "person": {
+                "id": "2015013800901",
+                "name": "SURESH THALOOR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THOMATTUCHAL",
+            "person": {
+                "id": "2015013801001",
+                "name": "M U GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AMBALAVAYAL",
+            "person": {
+                "id": "2015013801101",
+                "name": "GEETHA RAJU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUMBALERY",
+            "person": {
+                "id": "2015013801201",
+                "name": "A P KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KRISHNAGIRI",
+            "person": {
+                "id": "2015013801301",
+                "name": "MINI JOHNSON"
+            }
+        }
+    ]
+}

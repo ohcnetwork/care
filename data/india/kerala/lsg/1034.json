@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566349006656,
+    "date": "2019-08-21",
+    "name": "Panangad  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Balussery",
+    "area": "46.96km",
+    "localbody_code": "G110706",
+    "no_of_wards": 20,
+    "population": 30339,
+    "male": 14990,
+    "female": 15349,
+    "population_density": 646,
+    "sex_ratio": 1024,
+    "literacy_rate": 91.44,
+    "literacy_rate_male": 95.77,
+    "literacy_rate_female": 87.26,
+    "president": "KAMALHAKSIV.M.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANNADIPOYIL",
+            "person": {
+                "id": "2015103400101",
+                "name": "VILASINI L.V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KURUMPOYIL",
+            "person": {
+                "id": "2015103400201",
+                "name": "KRISHNA KUMAR K .K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAYALADA",
+            "person": {
+                "id": "2015103400301",
+                "name": "BIJU T.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THALAYAD",
+            "person": {
+                "id": "2015103400401",
+                "name": "SURESH P.R."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PADIKAL VAYAL",
+            "person": {
+                "id": "2015103400501",
+                "name": "USMAN P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANKAYAM",
+            "person": {
+                "id": "2015103400601",
+                "name": "SHYNI C.K."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EZHUKANDY",
+            "person": {
+                "id": "2015103400701",
+                "name": "NAZAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALAMTHALA",
+            "person": {
+                "id": "2015103400801",
+                "name": "ABDU LATHEEF"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOVAMBAYI",
+            "person": {
+                "id": "2015103400901",
+                "name": "DEVESAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "RAROTH MUKKU",
+            "person": {
+                "id": "2015103401001",
+                "name": "MUHAMMED M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHINDRAMANGALAM",
+            "person": {
+                "id": "2015103401101",
+                "name": "HAMEEDA KABEER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VATOLY BAZAR",
+            "person": {
+                "id": "2015103401201",
+                "name": "SHOBANA K.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ARAPEEDIKA",
+            "person": {
+                "id": "2015103401301",
+                "name": "SHYMA KOROTH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUNDAKKARA",
+            "person": {
+                "id": "2015103401401",
+                "name": "PUSHPA P.C"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THIRUVANCHERY POYIL",
+            "person": {
+                "id": "2015103401501",
+                "name": "KAMALHAKSI V.M."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARAYATHODI",
+            "person": {
+                "id": "2015103401601",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KATTAMVALLY",
+            "person": {
+                "id": "2015103401701",
+                "name": "SUKRUTHI THANKAMANI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NIRMALLOOR",
+            "person": {
+                "id": "2015103401801",
+                "name": "GANGADHARAN C"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PANANGAD NORTH",
+            "person": {
+                "id": "2015103401901",
+                "name": "SABEESH C.P."
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KATTODE",
+            "person": {
+                "id": "2015103402001",
+                "name": "SHEEJA K .K"
+            }
+        }
+    ]
+}

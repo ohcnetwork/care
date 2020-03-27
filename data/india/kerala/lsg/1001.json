@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348888749,
+    "date": "2019-08-21",
+    "name": "Tuneri  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Thuneri",
+    "area": "15.45km",
+    "localbody_code": "G110204",
+    "no_of_wards": 15,
+    "population": 20208,
+    "male": 9420,
+    "female": 10788,
+    "population_density": 1308,
+    "sex_ratio": 1145,
+    "literacy_rate": 85.68,
+    "literacy_rate_male": 93.02,
+    "literacy_rate_female": 79.47,
+    "president": "VALAPPILKUNHAMMEDMASTER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUDAVANTHERI WEST",
+            "person": {
+                "id": "2015100100101",
+                "name": "CHANDRIKA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KALATHARA",
+            "person": {
+                "id": "2015100100201",
+                "name": "SANEESH KIZHAKKAYIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUDAVANTHERI EAST",
+            "person": {
+                "id": "2015100100301",
+                "name": "N.K.SARA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PERODE",
+            "person": {
+                "id": "2015100100401",
+                "name": "P.SHAHINA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AVOLAM",
+            "person": {
+                "id": "2015100100501",
+                "name": "SUJITHA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHALAPPURAM",
+            "person": {
+                "id": "2015100100601",
+                "name": "RAJESH KALLATT"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VELLOOR SOUTH",
+            "person": {
+                "id": "2015100100701",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KODANCHERY SOUTH",
+            "person": {
+                "id": "2015100100801",
+                "name": "M.M.RAVI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KODANCHERY NORTH",
+            "person": {
+                "id": "2015100100901",
+                "name": "DEVI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "TUNERI WEST",
+            "person": {
+                "id": "2015100101001",
+                "name": "JIMESH T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELLOOR NORTH",
+            "person": {
+                "id": "2015100101101",
+                "name": "P.P.SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHALAPPURAM NORTH",
+            "person": {
+                "id": "2015100101201",
+                "name": "K.P.C THANGAL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNANKAI",
+            "person": {
+                "id": "2015100101301",
+                "name": "BEENA PALERI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "TUNERI TWON",
+            "person": {
+                "id": "2015100101401",
+                "name": "ANITHA M.P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUDAVANTHERI",
+            "person": {
+                "id": "2015100101501",
+                "name": "VALAPPIL KUNHAMMED MASTER"
+            }
+        }
+    ]
+}

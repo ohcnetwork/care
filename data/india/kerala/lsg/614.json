@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347057981,
+    "date": "2019-08-21",
+    "name": "Edavetty  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Thodupuzha",
+    "area": "18.52km",
+    "localbody_code": "G060703",
+    "no_of_wards": 13,
+    "population": 10728,
+    "male": 5400,
+    "female": 5328,
+    "population_density": 579,
+    "sex_ratio": 987,
+    "literacy_rate": 93,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 90,
+    "president": "LATHEEFMUHAMMED",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDAVETTYCHIRA",
+            "person": {
+                "id": "2015061400101",
+                "name": "T M MUJEEB"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THONDIKUZHA",
+            "person": {
+                "id": "2015061400201",
+                "name": "LATHEEF MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NADAYAM",
+            "person": {
+                "id": "2015061400301",
+                "name": "ASWATHY R NAIR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "GANDHINAGAR",
+            "person": {
+                "id": "2015061400401",
+                "name": "JASEELA LATHEEF"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SASTHAMPARA",
+            "person": {
+                "id": "2015061400501",
+                "name": "AGINAS E.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MEENMUTTY",
+            "person": {
+                "id": "2015061400601",
+                "name": "SIBI JOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALLANICKAL",
+            "person": {
+                "id": "2015061400701",
+                "name": "SHEELA DEEPU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALANKARA",
+            "person": {
+                "id": "2015061400801",
+                "name": "SUBHASHKUMAR A.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THEKKUMHAGAM",
+            "person": {
+                "id": "2015061400901",
+                "name": "BEENA VINOD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KEERIKODU",
+            "person": {
+                "id": "2015061401001",
+                "name": "PRAKSH P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARTHOMA",
+            "person": {
+                "id": "2015061401101",
+                "name": "SHEEJA NOUSHAD"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAVETTY SOUTH",
+            "person": {
+                "id": "2015061401201",
+                "name": "SEENA NAVAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAVETTY NORTH",
+            "person": {
+                "id": "2015061401301",
+                "name": "BEEVI SALIM"
+            }
+        }
+    ]
+}

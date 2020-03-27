@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348819329,
+    "date": "2019-08-21",
+    "name": "Vettom  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Tirur",
+    "area": "21.6km",
+    "localbody_code": "G101304",
+    "no_of_wards": 20,
+    "population": 48522,
+    "male": 23344,
+    "female": 25178,
+    "population_density": 2246,
+    "sex_ratio": 1079,
+    "literacy_rate": 85.27,
+    "literacy_rate_male": 80.12,
+    "literacy_rate_female": 81.42,
+    "president": "RAMLA.N.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEVARKADAPPURAM",
+            "person": {
+                "id": "2015098300101",
+                "name": "P.P. FATHIMA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAVANNA EAST",
+            "person": {
+                "id": "2015098300201",
+                "name": "P.P.MEHARUNNISA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MURIVAZHIKKAL",
+            "person": {
+                "id": "2015098300301",
+                "name": "SEKKEENA.V.P."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PACHATTIRI",
+            "person": {
+                "id": "2015098300401",
+                "name": "RAJANI.P.P."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOTTEKKAD",
+            "person": {
+                "id": "2015098300502",
+                "name": "MOHANDAS.C CHELAT"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARIYAPURAM",
+            "person": {
+                "id": "2015098300601",
+                "name": "ZAINUDHEEN.P.K."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EAST ARIKKANCHIRA",
+            "person": {
+                "id": "2015098300701",
+                "name": "THANAKAMANI.V."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANOOR",
+            "person": {
+                "id": "2015098300801",
+                "name": "SUNANDA.A.P."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALISSERY",
+            "person": {
+                "id": "2015098300901",
+                "name": "CHANDRAN.P."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NADUVILAKKADAVU",
+            "person": {
+                "id": "2015098301001",
+                "name": "P.K.ABDUL JABBAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VETTATHUKAVU",
+            "person": {
+                "id": "2015098301101",
+                "name": "BEENA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "RANDATHANI",
+            "person": {
+                "id": "2015098301201",
+                "name": "SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VETTOMCHEERPPU",
+            "person": {
+                "id": "2015098301301",
+                "name": "MOHAMED BAVA CHEAKU MARAKKARAKATH THIRUTHIYIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THEKKAN PADIYAM",
+            "person": {
+                "id": "2015098301401",
+                "name": "MANHAMPRAYAKATH ASHARAF"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VADAKKAN PADIYAM",
+            "person": {
+                "id": "2015098301501",
+                "name": "MALLIKA.K."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VAKKAD WEST",
+            "person": {
+                "id": "2015098301601",
+                "name": "NOORJAHAN.K."
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VAKKAD EAST",
+            "person": {
+                "id": "2015098301701",
+                "name": "RAMLA.N."
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KANJIRAKKUTTY",
+            "person": {
+                "id": "2015098301801",
+                "name": "JASEENA KALARIKKAL"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PARAVANNA TOWN",
+            "person": {
+                "id": "2015098301901",
+                "name": "NUSAIBANU"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PUTHANGADI",
+            "person": {
+                "id": "2015098302001",
+                "name": "UMMAR"
+            }
+        }
+    ]
+}

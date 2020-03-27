@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566345878021,
+    "date": "2019-08-21",
+    "name": "Balaramapuram  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Nemom",
+    "area": "10.53km",
+    "localbody_code": "G010801",
+    "no_of_wards": 20,
+    "population": 31559,
+    "male": 15847,
+    "female": 15712,
+    "population_density": 2997,
+    "sex_ratio": 991,
+    "literacy_rate": 88.56,
+    "literacy_rate_male": 92.34,
+    "literacy_rate_female": 84.75,
+    "president": "RSVASANTHAKUMARI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERUTHAVOOR",
+            "person": {
+                "id": "2015027600101",
+                "name": "BINDHU R.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "RUSSELPURAM",
+            "person": {
+                "id": "2015027600201",
+                "name": "SUPRIYA.I.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAKKUZHI",
+            "person": {
+                "id": "2015027600301",
+                "name": "JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUNNAKKADU",
+            "person": {
+                "id": "2015027600401",
+                "name": "MADHU B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THALAYAL",
+            "person": {
+                "id": "2015027600501",
+                "name": "R S VASANTHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULLIYIL",
+            "person": {
+                "id": "2015027600601",
+                "name": "MINI M I"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "TOWN WARD",
+            "person": {
+                "id": "2015027600701",
+                "name": "S K SINDHU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THOPPU",
+            "person": {
+                "id": "2015027600801",
+                "name": "R HEMALATHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANTHIYOOR",
+            "person": {
+                "id": "2015027600901",
+                "name": "SOBHANA.L"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "RAMAPURAM",
+            "person": {
+                "id": "2015027601001",
+                "name": "KUMAR. G"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTUKALKONAM",
+            "person": {
+                "id": "2015027601101",
+                "name": "NIRMALA RANI B"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALACHALKONAM",
+            "person": {
+                "id": "2015027601202",
+                "name": "RAJAN J"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANAYARAKUNNU",
+            "person": {
+                "id": "2015027601301",
+                "name": "THANKARAJAN S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NELLIVILA",
+            "person": {
+                "id": "2015027601401",
+                "name": "PRABHA.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAMANAKUZHI",
+            "person": {
+                "id": "2015027601501",
+                "name": "S. RAJESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "R C STREET",
+            "person": {
+                "id": "2015027601601",
+                "name": "PRAMEELA KUMARI. A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHAMAVILA",
+            "person": {
+                "id": "2015027601701",
+                "name": "SHAMILA BEEVI.R"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ITHIYOOR",
+            "person": {
+                "id": "2015027601801",
+                "name": "VINOD.V.S"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MANALI",
+            "person": {
+                "id": "2015027601901",
+                "name": "A.M SUDHEER"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "OFFICE WARD",
+            "person": {
+                "id": "2015027602001",
+                "name": "HARIHARAN.K"
+            }
+        }
+    ]
+}

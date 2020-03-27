@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349067937,
+    "date": "2019-08-21",
+    "name": "Karassery  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnamangalam",
+    "area": "28.54km",
+    "localbody_code": "G111104",
+    "no_of_wards": 18,
+    "population": 23659,
+    "male": 11663,
+    "female": 11996,
+    "population_density": 829,
+    "sex_ratio": 1029,
+    "literacy_rate": 90.91,
+    "literacy_rate_male": 95.17,
+    "literacy_rate_female": 86.78,
+    "president": "V.K.VINOD",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUMARANELLUR",
+            "person": {
+                "id": "2015105800101",
+                "name": "ABDULLA KUMARANELLUR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARAMOOLA WEST",
+            "person": {
+                "id": "2015105800201",
+                "name": "DIVYA KATTUMPOYILIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARAMOOLA EAST",
+            "person": {
+                "id": "2015105800301",
+                "name": "JAMNAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALLATHAIPPARA",
+            "person": {
+                "id": "2015105800401",
+                "name": "RUBEENA KANNATTIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHUNDATHUMPOIL",
+            "person": {
+                "id": "2015105800501",
+                "name": "SAJI THOMAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THOTTAKKAD",
+            "person": {
+                "id": "2015105800601",
+                "name": "LISY EDAMLAVIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THEKKUMKUTTY",
+            "person": {
+                "id": "2015105800701",
+                "name": "SUNILA KANNANKARA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ALLY",
+            "person": {
+                "id": "2015105800801",
+                "name": "V.P.JAMEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALARIKANDI",
+            "person": {
+                "id": "2015105800901",
+                "name": "SUBAIDA MALIYEKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MYSOORMALA",
+            "person": {
+                "id": "2015105801001",
+                "name": "AISHALATHA.K.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANAYAMKUNNU",
+            "person": {
+                "id": "2015105801101",
+                "name": "SHIHABUDHEEN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARUTHAPARAMBU",
+            "person": {
+                "id": "2015105801201",
+                "name": "SAVAD IBRAHI KANNATTUKUZHI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIKKAPARAMBU",
+            "person": {
+                "id": "2015105801301",
+                "name": "ASHRAF MUKKONTHODIKA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAKKAD",
+            "person": {
+                "id": "2015105801401",
+                "name": "G.ABDUL AKBAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "SOUTH KARASSERY",
+            "person": {
+                "id": "2015105801501",
+                "name": "V.K. VINOD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHONATTU",
+            "person": {
+                "id": "2015105801601",
+                "name": "SUHARA K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NORTH KARASSERY",
+            "person": {
+                "id": "2015105801701",
+                "name": "ANVAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ANAYAMKUNNU WEST",
+            "person": {
+                "id": "2015105801801",
+                "name": "REMYA KUVVAPARAMMAL"
+            }
+        }
+    ]
+}

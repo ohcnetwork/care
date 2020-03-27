@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347445111,
+    "date": "2019-08-21",
+    "name": "Kandanassery  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chowwannur",
+    "area": "15.27km",
+    "localbody_code": "G080204",
+    "no_of_wards": 16,
+    "population": 21037,
+    "male": 9854,
+    "female": 11183,
+    "population_density": 1378,
+    "sex_ratio": 1135,
+    "literacy_rate": 91.86,
+    "literacy_rate_male": 95.25,
+    "literacy_rate_female": 88.91,
+    "president": "PRAMODK.G",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHOWALLOOR KARIYANOOR",
+            "person": {
+                "id": "2015072200101",
+                "name": "SULFATH BACKER"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOWALLOOR",
+            "person": {
+                "id": "2015072200201",
+                "name": "MUSTHAFA P.A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANDANASSERY",
+            "person": {
+                "id": "2015072200301",
+                "name": "GEETHA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ARIKANNIYOOR",
+            "person": {
+                "id": "2015072200401",
+                "name": "MOIDEEN A. M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALANAGAR",
+            "person": {
+                "id": "2015072200501",
+                "name": "SEENATH SALIM"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOONAMOOCHI",
+            "person": {
+                "id": "2015072200601",
+                "name": "NEETHU SINTO"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VETTUKKAD",
+            "person": {
+                "id": "2015072200701",
+                "name": "SATHEESH KUMAR A. K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ALOOR",
+            "person": {
+                "id": "2015072200801",
+                "name": "MINI JAYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THIRUVATHRA KANDIYUR",
+            "person": {
+                "id": "2015072200901",
+                "name": "ADV. P. V. NIVAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MATTOM",
+            "person": {
+                "id": "2015072201001",
+                "name": "ALPHONSA GRAISON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MATTOM WEST",
+            "person": {
+                "id": "2015072201101",
+                "name": "AMILINI SUBRAMANIAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALIADAMKARA",
+            "person": {
+                "id": "2015072201201",
+                "name": "NALINI RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VADUTHALA",
+            "person": {
+                "id": "2015072201301",
+                "name": "PUSHPALATHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NAMBAZHIKKAD",
+            "person": {
+                "id": "2015072201401",
+                "name": "NISHAD"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "SANKARAMKULAM",
+            "person": {
+                "id": "2015072201501",
+                "name": "DASAN V.K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AAYIRAMKULAM",
+            "person": {
+                "id": "2015072201601",
+                "name": "PRAMOD K.G"
+            }
+        }
+    ]
+}

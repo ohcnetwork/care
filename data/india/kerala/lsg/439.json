@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346446990,
+    "date": "2019-08-21",
+    "name": "Mararikulam North  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Kanjikuzhy",
+    "area": "16.97km",
+    "localbody_code": "G040301",
+    "no_of_wards": 18,
+    "population": 26883,
+    "male": 13326,
+    "female": 13557,
+    "population_density": 1584,
+    "sex_ratio": 1017,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 92,
+    "president": "ADV.D.PRIYESHKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHENNAVELI",
+            "person": {
+                "id": "2015043900101",
+                "name": "MINI ( MINI ANTONY)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIKKAD NORTH",
+            "person": {
+                "id": "2015043900201",
+                "name": "MINI V.P (MINI SUKHALAL)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIKKAD SOUTH",
+            "person": {
+                "id": "2015043900301",
+                "name": "SANTHAKUMARY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POKLASERY",
+            "person": {
+                "id": "2015043900401",
+                "name": "SHEEBA S.KURUP"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANICHUKULANGARA",
+            "person": {
+                "id": "2015043900501",
+                "name": "N.SHYLAJA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANAKUNNAM",
+            "person": {
+                "id": "2015043900601",
+                "name": "ADV. D.PRIYESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THIRUVIZHA",
+            "person": {
+                "id": "2015043900701",
+                "name": "P.K.PONNAPPAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VARAKADI",
+            "person": {
+                "id": "2015043900801",
+                "name": "REJIKUMAR C.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THOPPUVELY",
+            "person": {
+                "id": "2015043900901",
+                "name": "T.K PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015043901001",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARARIKKULAM",
+            "person": {
+                "id": "2015043901101",
+                "name": "P. RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "GANDHI SMARAKAM",
+            "person": {
+                "id": "2015043901201",
+                "name": "PONNAMMA PONNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KASTHOORBA",
+            "person": {
+                "id": "2015043901301",
+                "name": "P.B.SURA (SURESH)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALLIWARD",
+            "person": {
+                "id": "2015043901401",
+                "name": "E.V. RAJU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "JANAKSHEMAM",
+            "person": {
+                "id": "2015043901501",
+                "name": "SUNITHAMOL ( SUNITHA JAYAN)"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERUVALLYSERI",
+            "person": {
+                "id": "2015043901601",
+                "name": "C.V. MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHETHI",
+            "person": {
+                "id": "2015043901701",
+                "name": "K.K. RAMANAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "BEACH WARD",
+            "person": {
+                "id": "2015043901801",
+                "name": "SUNITHA CHARLY"
+            }
+        }
+    ]
+}

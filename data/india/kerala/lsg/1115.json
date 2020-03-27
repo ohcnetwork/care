@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349267956,
+    "date": "2019-08-21",
+    "name": "Pariyaram  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "54.77km",
+    "localbody_code": "G130304",
+    "no_of_wards": 18,
+    "population": 24632,
+    "male": 12031,
+    "female": 12601,
+    "population_density": 450,
+    "sex_ratio": 1047,
+    "literacy_rate": 86.6,
+    "literacy_rate_male": 92.55,
+    "literacy_rate_female": 80.99,
+    "president": "ARAJESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAYAD",
+            "person": {
+                "id": "2015111500101",
+                "name": "KOROTH VALAPPIL REMA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THIRUVATTOOR",
+            "person": {
+                "id": "2015111500201",
+                "name": "RAHEEMA K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PACHENI",
+            "person": {
+                "id": "2015111500301",
+                "name": "E V SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERIYOOR",
+            "person": {
+                "id": "2015111500401",
+                "name": "SHOBHANA K V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANHIRANGAD",
+            "person": {
+                "id": "2015111500501",
+                "name": "SHEEBA T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THALORA",
+            "person": {
+                "id": "2015111500601",
+                "name": "A RAJESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAVICHERI",
+            "person": {
+                "id": "2015111500701",
+                "name": "REKHA C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PANANGATTOOR",
+            "person": {
+                "id": "2015111500801",
+                "name": "PRAKASINI M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUTTIYERI",
+            "person": {
+                "id": "2015111500901",
+                "name": "P P REGHU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLAVU",
+            "person": {
+                "id": "2015111501001",
+                "name": "GIRIJA E"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUPPAM",
+            "person": {
+                "id": "2015111501101",
+                "name": "SALMATH K P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUKKUNNU",
+            "person": {
+                "id": "2015111501201",
+                "name": "EBRAHIM K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "IRINGAL",
+            "person": {
+                "id": "2015111501301",
+                "name": "SOUMINI NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHITHAPPILE POYIL",
+            "person": {
+                "id": "2015111501401",
+                "name": "SAJIDA P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARIYARAM CENTER",
+            "person": {
+                "id": "2015111501501",
+                "name": "P V SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EMBETT",
+            "person": {
+                "id": "2015111501601",
+                "name": "GOPALAN P V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUDIKKANAM",
+            "person": {
+                "id": "2015111501701",
+                "name": "P V SURESH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AMMANAPPARA",
+            "person": {
+                "id": "2015111501801",
+                "name": "M T MANOHARAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346083432,
+    "date": "2019-08-21",
+    "name": "Kareepra  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "23.2km",
+    "localbody_code": "G020603",
+    "no_of_wards": 18,
+    "population": 26717,
+    "male": 12985,
+    "female": 13732,
+    "population_density": 1152,
+    "sex_ratio": 1058,
+    "literacy_rate": 92.6,
+    "literacy_rate_male": 96.29,
+    "literacy_rate_female": 89.19,
+    "president": "ABDULRAHMAN.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THRIPPILAZHIKAM",
+            "person": {
+                "id": "2015033900101",
+                "name": "SUBHANA BEEGAM.S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOWALLOOR",
+            "person": {
+                "id": "2015033900201",
+                "name": "SUJITH.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IDAKKIDAM",
+            "person": {
+                "id": "2015033900301",
+                "name": "GEETHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "GURUNATHANMUKAL",
+            "person": {
+                "id": "2015033900401",
+                "name": "J.ASOKAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADAKKODE",
+            "person": {
+                "id": "2015033900501",
+                "name": "BINU G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ILAYAM",
+            "person": {
+                "id": "2015033900601",
+                "name": "BINDHU S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PLACKODE",
+            "person": {
+                "id": "2015033900701",
+                "name": "GEETHAMANY K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAREEPRA",
+            "person": {
+                "id": "2015033900801",
+                "name": "JESSY B P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULAVOORKONAM",
+            "person": {
+                "id": "2015033900901",
+                "name": "MINIMOL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAKKANADU",
+            "person": {
+                "id": "2015033901001",
+                "name": "PRADEEP KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ULACODU",
+            "person": {
+                "id": "2015033901101",
+                "name": "PUSHPA KUMARY.T.C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NEDUMONCAVU",
+            "person": {
+                "id": "2015033901201",
+                "name": "ABDUL RAHMAN.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ETTUVAIKODU",
+            "person": {
+                "id": "2015033901301",
+                "name": "REMA DEVI.B"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUDIKKODU",
+            "person": {
+                "id": "2015033901401",
+                "name": "GIREESH KUMAR.R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MADANTHACODU",
+            "person": {
+                "id": "2015033901501",
+                "name": "SANDHYA BHAGI .T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THALOVOORKONAM",
+            "person": {
+                "id": "2015033901601",
+                "name": "C.VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHOORAPOIKA",
+            "person": {
+                "id": "2015033901701",
+                "name": "T.SOORYAKALA BHAI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KUZHIMATHIKADU",
+            "person": {
+                "id": "2015033901801",
+                "name": "T.MATHAI"
+            }
+        }
+    ]
+}

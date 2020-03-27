@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348254504,
+    "date": "2019-08-21",
+    "name": "Vellinezhi  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Sreekrishnapuram",
+    "area": "26.86km",
+    "localbody_code": "G090406",
+    "no_of_wards": 13,
+    "population": 15649,
+    "male": 7368,
+    "female": 8281,
+    "population_density": 583,
+    "sex_ratio": 1124,
+    "literacy_rate": 87.27,
+    "literacy_rate_male": 91.46,
+    "literacy_rate_female": 83.58,
+    "president": "K.SREEDHARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANTHALLOOR",
+            "person": {
+                "id": "2015083200101",
+                "name": "K.V.KUMARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHAMAKKUNNU",
+            "person": {
+                "id": "2015083200201",
+                "name": "RUGMINI.M.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKEN VELLINEZHI",
+            "person": {
+                "id": "2015083200301",
+                "name": "RADHAKRISHNAN.V.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KURUVATTOOR",
+            "person": {
+                "id": "2015083200401",
+                "name": "SUMA.V.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUTTANASSERY",
+            "person": {
+                "id": "2015083200501",
+                "name": "REMADEVI.N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALLUMPURAM",
+            "person": {
+                "id": "2015083200601",
+                "name": "BINDHU.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THIRUNARAYANAPURAM",
+            "person": {
+                "id": "2015083200701",
+                "name": "P.RUGMINI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THIRUVAZHIYODE",
+            "person": {
+                "id": "2015083200801",
+                "name": "P.K.SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANGADIKKULAM",
+            "person": {
+                "id": "2015083200901",
+                "name": "P.N.NANDHINI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KULAKKAD",
+            "person": {
+                "id": "2015083201001",
+                "name": "K.SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ADAKKAPUTHUR",
+            "person": {
+                "id": "2015083201101",
+                "name": "K.T.UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NJALAKURUSSI",
+            "person": {
+                "id": "2015083201201",
+                "name": "SHEEBA.P.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELLINEZHI",
+            "person": {
+                "id": "2015083201301",
+                "name": "K.RAMANKUTTY MASTER"
+            }
+        }
+    ]
+}

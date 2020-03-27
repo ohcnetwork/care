@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346494609,
+    "date": "2019-08-21",
+    "name": "Punnapra North  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Ambalapuzha",
+    "area": "12.117km",
+    "localbody_code": "G040505",
+    "no_of_wards": 17,
+    "population": 28629,
+    "male": 13206,
+    "female": 15423,
+    "population_density": null,
+    "sex_ratio": 1167,
+    "literacy_rate": 91,
+    "literacy_rate_male": 93,
+    "literacy_rate_female": 88,
+    "president": "SUVARNAP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "LOURD MATHA PALLY WARD",
+            "person": {
+                "id": "2015045100101",
+                "name": "SHIRLY SABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "I T C WARD",
+            "person": {
+                "id": "2015045100201",
+                "name": "GEETHA BABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "BLOCK OFFICE WARD",
+            "person": {
+                "id": "2015045100301",
+                "name": "GOPINATHAN S. B."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NAVATHARANGINI VAYANASALA",
+            "person": {
+                "id": "2015045100401",
+                "name": "SUVARNA P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "GOVT. HIGH SCHOOL WARD",
+            "person": {
+                "id": "2015045100501",
+                "name": "L P JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THOOKKUKULAM WARD",
+            "person": {
+                "id": "2015045100601",
+                "name": "REMA SADASIVAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANCHAYATH OFFICE WARD",
+            "person": {
+                "id": "2015045100701",
+                "name": "V K VISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ASSAMBLY WARD",
+            "person": {
+                "id": "2015045100801",
+                "name": "SAJITHA SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EERATHODE WARD",
+            "person": {
+                "id": "2015045100901",
+                "name": "RATHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ASPINWALL WARD",
+            "person": {
+                "id": "2015045101001",
+                "name": "SHIBI OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POONTHOTTAM WARD",
+            "person": {
+                "id": "2015045101101",
+                "name": "SINDHU R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KURISHUPURA WARD",
+            "person": {
+                "id": "2015045101201",
+                "name": "MARY JANCY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "P H CENTER WARD",
+            "person": {
+                "id": "2015045101301",
+                "name": "JOHNKUTTY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ST JOSEPH H S WARD",
+            "person": {
+                "id": "2015045101401",
+                "name": "SABITHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VADACKAL WARD",
+            "person": {
+                "id": "2015045101501",
+                "name": "USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "I D PLOT WARD",
+            "person": {
+                "id": "2015045101601",
+                "name": "TINTU ANTONY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AMBEDKAR SCHOOL WARD",
+            "person": {
+                "id": "2015045101701",
+                "name": "SASIKALA S"
+            }
+        }
+    ]
+}

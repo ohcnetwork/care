@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346436055,
+    "date": "2019-08-21",
+    "name": "Thuravoor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "19.18km",
+    "localbody_code": "G040203",
+    "no_of_wards": 18,
+    "population": 25583,
+    "male": 12549,
+    "female": 13034,
+    "population_density": 1334,
+    "sex_ratio": 1039,
+    "literacy_rate": 93,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 90,
+    "president": "ANITHASOMAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLITHODE",
+            "person": {
+                "id": "2015043400101",
+                "name": "JAIN EARNEST"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALUNKKAL",
+            "person": {
+                "id": "2015043400201",
+                "name": "PHILOMINA OMANAPILLAI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALARIKAL",
+            "person": {
+                "id": "2015043400301",
+                "name": "PREETHA PURUSHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THURAVOOR TOWN",
+            "person": {
+                "id": "2015043400401",
+                "name": "K.R RENSHU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "S.C.S.H.S",
+            "person": {
+                "id": "2015043400501",
+                "name": "R VIDYADHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ALUMVARAMBU",
+            "person": {
+                "id": "2015043400601",
+                "name": "SARASAMMA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALAMANGALAM NORTH",
+            "person": {
+                "id": "2015043400701",
+                "name": "LALU SADHANADAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADATHURUTHU",
+            "person": {
+                "id": "2015043400801",
+                "name": "ANEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "S.H.CHURCH",
+            "person": {
+                "id": "2015043400901",
+                "name": "LATHIKA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALAMANGALAM SOUTH",
+            "person": {
+                "id": "2015043401001",
+                "name": "R MOHANAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PAZHAMPALLIKKAVU",
+            "person": {
+                "id": "2015043401101",
+                "name": "SOJIMON ANTHRAPER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015043401201",
+                "name": "ANITHA SOMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MILMA FACTORY",
+            "person": {
+                "id": "2015043401301",
+                "name": "RENJITH KUMAR.G"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHANKAVU",
+            "person": {
+                "id": "2015043401401",
+                "name": "MANJU RAMANATHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANAKKODAM",
+            "person": {
+                "id": "2015043401501",
+                "name": "SHYMOL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ILLIKKAL",
+            "person": {
+                "id": "2015043401601",
+                "name": "VARGHESE T.M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PADIJARE MANAKKODAM",
+            "person": {
+                "id": "2015043401701",
+                "name": "DHANYAMOL VIKAS"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ANNAPURAM",
+            "person": {
+                "id": "2015043401801",
+                "name": "MARY SEEMOL JOSEY"
+            }
+        }
+    ]
+}

@@ -1,0 +1,148 @@
+{
+    "timeStamp": 1566346085075,
+    "date": "2019-08-21",
+    "name": "Ezhukone  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "17.24km",
+    "localbody_code": "G020604",
+    "no_of_wards": 16,
+    "population": 22531,
+    "male": 11050,
+    "female": 11481,
+    "population_density": 1307,
+    "sex_ratio": 1039,
+    "literacy_rate": 93.41,
+    "literacy_rate_male": 96.52,
+    "literacy_rate_female": 90.48,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARUVELIL",
+            "person": {
+                "id": "2015034000101",
+                "name": "GEETHAMBIKA J"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITTACODE",
+            "person": {
+                "id": "2015034000201",
+                "name": "REJI PANICKER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IRUMPANANGADU",
+            "person": {
+                "id": "2015034000301",
+                "name": "GEETHABHAI AMMA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMBALATHUMKALA",
+            "person": {
+                "id": "2015034000401",
+                "name": "SREELATHA.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAKKAKOTTOOR",
+            "person": {
+                "id": "2015034000501",
+                "name": "REKHA ULLAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALAYICODE",
+            "person": {
+                "id": "2015034000601",
+                "name": "R.SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POCHAMKONAM",
+            "person": {
+                "id": "2015034000701",
+                "name": "SUJA.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PANCHAYATH OFFICE WARD",
+            "person": {
+                "id": "2015034000801",
+                "name": "USHAKUMARI.S(USHA REMANAN)"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOCHANJILIMOODU",
+            "person": {
+                "id": "2015034000901",
+                "name": "AMBIKA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAKKODE",
+            "person": {
+                "id": "2015034001001",
+                "name": "PARAKKADAVU SHARAF"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NEDUMPAIKULAM",
+            "person": {
+                "id": "2015034001101",
+                "name": "SOSAMMA RAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "E S I WARD",
+            "person": {
+                "id": "2015034001201",
+                "name": "ALEX VARGHESE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "IRUMPANANGADU H S",
+            "person": {
+                "id": "2015034001301",
+                "name": "VIJAYAPRAKSH.R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EZHUKONE H S",
+            "person": {
+                "id": "2015034001401",
+                "name": "R.S.RATHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHEERANKAVU",
+            "person": {
+                "id": "2015034001501",
+                "name": "KANAKADAS.S.H"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PARUTHUMPARA",
+            "person": {
+                "id": "2015034001601",
+                "name": "BABU MANIYANAM KUNNIL"
+            }
+        }
+    ]
+}

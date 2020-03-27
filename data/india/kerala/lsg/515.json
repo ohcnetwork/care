@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346736485,
+    "date": "2019-08-21",
+    "name": "Arpookara  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Ettumanoor",
+    "area": "24.53km",
+    "localbody_code": "G050304",
+    "no_of_wards": 16,
+    "population": 21584,
+    "male": 10829,
+    "female": 10755,
+    "population_density": 880,
+    "sex_ratio": 993,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "ANANDPANJIKKARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANCHADIKKARI",
+            "person": {
+                "id": "2015051500101",
+                "name": "ADV. JOSHI CHEEPPUNKAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANIYAPARAMBU",
+            "person": {
+                "id": "2015051500201",
+                "name": "MOHAN C CHATHURACHIRA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHOORAKKAVU",
+            "person": {
+                "id": "2015051500301",
+                "name": "JUSTIN JOSEPH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PINANCHIRAKUZHY",
+            "person": {
+                "id": "2015051500401",
+                "name": "BEENA RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VILLOONNI",
+            "person": {
+                "id": "2015051500501",
+                "name": "SOBHANA VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THONNUMKUZHY",
+            "person": {
+                "id": "2015051500601",
+                "name": "ASHA PRABHATH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NEREKADAVU",
+            "person": {
+                "id": "2015051500701",
+                "name": "SHINEY LUKOSE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VARYAMUTTOM CHARAMKULAM",
+            "person": {
+                "id": "2015051500801",
+                "name": "ROSILY TOMICHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MEDICAL COLLEGE",
+            "person": {
+                "id": "2015051500901",
+                "name": "ELSAMMA JOSEPH VELASSERIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANGADI",
+            "person": {
+                "id": "2015051501001",
+                "name": "DEEPA JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANAMBALAM",
+            "person": {
+                "id": "2015051501101",
+                "name": "ANAND PANJIKKARAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARIPPA",
+            "person": {
+                "id": "2015051501201",
+                "name": "AJITHA KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERUMBADAPPU",
+            "person": {
+                "id": "2015051501301",
+                "name": "JAMES THITTALAYIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULIKKUTTISSERY",
+            "person": {
+                "id": "2015051501401",
+                "name": "SANDHYA SREEKANTH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KARIPPUTHATTU",
+            "person": {
+                "id": "2015051501501",
+                "name": "P K SHAJI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARYATTOOZHAM CHALAKARI",
+            "person": {
+                "id": "2015051501601",
+                "name": "PRAVEEN KUMAR"
+            }
+        }
+    ]
+}

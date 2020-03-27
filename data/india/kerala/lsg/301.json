@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345959312,
+    "date": "2019-08-21",
+    "name": "Thirupuram  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Parassala",
+    "area": "8.57km",
+    "localbody_code": "G011105",
+    "no_of_wards": 14,
+    "population": 16600,
+    "male": 8341,
+    "female": 8259,
+    "population_density": 1937,
+    "sex_ratio": 990,
+    "literacy_rate": 92.2,
+    "literacy_rate_male": 94.75,
+    "literacy_rate_female": 89.63,
+    "president": "CHRISTUDASL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MULLUVILA",
+            "person": {
+                "id": "2015030100101",
+                "name": "CHRISTUDAS L"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "IRUVAIKONAM",
+            "person": {
+                "id": "2015030100201",
+                "name": "SOBHANA M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUMILI",
+            "person": {
+                "id": "2015030100301",
+                "name": "LATHA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALUMUGHAM",
+            "person": {
+                "id": "2015030100401",
+                "name": "SOBHAKUMARI M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAZHAYAKADA",
+            "person": {
+                "id": "2015030100501",
+                "name": "SANTHAVALSALAN R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANNAKALLU",
+            "person": {
+                "id": "2015030100601",
+                "name": "MANJUSHA S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANJAMPAZHINJI",
+            "person": {
+                "id": "2015030100701",
+                "name": "SALINI B"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THIRUPURAM",
+            "person": {
+                "id": "2015030100801",
+                "name": "SHANOJ J"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PLANTHOTTAM",
+            "person": {
+                "id": "2015030100901",
+                "name": "ANITHA D"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHENKADA",
+            "person": {
+                "id": "2015030101001",
+                "name": "JACOB JAYAN ."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PATHANAVILA",
+            "person": {
+                "id": "2015030101101",
+                "name": "STEEPHEN S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANKOOTTAM",
+            "person": {
+                "id": "2015030101201",
+                "name": "RAVEENDRAN D"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULAVANGAL",
+            "person": {
+                "id": "2015030101301",
+                "name": "SAJI RAJ VICTOR P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PURUTHIVILA",
+            "person": {
+                "id": "2015030101401",
+                "name": "MERCY M"
+            }
+        }
+    ]
+}

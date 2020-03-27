@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349401151,
+    "date": "2019-08-21",
+    "name": "Kadirur  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thalassery",
+    "area": "12.3km",
+    "localbody_code": "G130801",
+    "no_of_wards": 18,
+    "population": 26586,
+    "male": 12553,
+    "female": 14033,
+    "population_density": 2161,
+    "sex_ratio": 1118,
+    "literacy_rate": 96.25,
+    "literacy_rate_male": 97.92,
+    "literacy_rate_female": 92.91,
+    "president": "M.SHEEBA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULLYODU",
+            "person": {
+                "id": "2015114700101",
+                "name": "K.C. RAGHUTHAMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PULLYODU C.H  NAGAR",
+            "person": {
+                "id": "2015114700201",
+                "name": "NIRMALA P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADIRUR TOWN",
+            "person": {
+                "id": "2015114700301",
+                "name": "PRAMEESH C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADIRUR THERU",
+            "person": {
+                "id": "2015114700401",
+                "name": "VIMALA P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AANIKKAMPOYIL",
+            "person": {
+                "id": "2015114700501",
+                "name": "SAJITH A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHUNDANGAPPOYIL",
+            "person": {
+                "id": "2015114700601",
+                "name": "NANDANAN A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKARA",
+            "person": {
+                "id": "2015114700701",
+                "name": "N.V RAGHAVAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PONNYAM PALAM",
+            "person": {
+                "id": "2015114700801",
+                "name": "(PALAYADAN) PAVITHRAN P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PONNYAM SOUTH",
+            "person": {
+                "id": "2015114700901",
+                "name": "SAVITHRI .P.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNDUCHIRA",
+            "person": {
+                "id": "2015114701001",
+                "name": "LEHIJA .V.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PARAMKUNNU",
+            "person": {
+                "id": "2015114701101",
+                "name": "M . VIMALA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PONNYAM SRAMBI",
+            "person": {
+                "id": "2015114701201",
+                "name": "P. LEELA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULLODI",
+            "person": {
+                "id": "2015114701301",
+                "name": "M. SHEEBA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHOYYADAM",
+            "person": {
+                "id": "2015114701401",
+                "name": "P.V RAGHAVAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADIRUR  TEMPLE",
+            "person": {
+                "id": "2015114701501",
+                "name": "SHYLAJA K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUTTYERICHAL",
+            "person": {
+                "id": "2015114701601",
+                "name": "SANGEETHA A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "4 TH - MILE",
+            "person": {
+                "id": "2015114701701",
+                "name": "MANOJ M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PULLYOD EAST",
+            "person": {
+                "id": "2015114701801",
+                "name": "SANIL .P.P"
+            }
+        }
+    ]
+}

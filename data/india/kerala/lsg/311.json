@@ -1,0 +1,172 @@
+{
+    "timeStamp": 1566345999435,
+    "date": "2019-08-21",
+    "name": "Sasthamcotta  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Sasthamcotta",
+    "area": "24.42km",
+    "localbody_code": "G020201",
+    "no_of_wards": 19,
+    "population": 29563,
+    "male": 14658,
+    "female": 14905,
+    "population_density": 1211,
+    "sex_ratio": 1017,
+    "literacy_rate": 91.29,
+    "literacy_rate_male": 94.38,
+    "literacy_rate_female": 88.28,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANAPPETTY",
+            "person": {
+                "id": "2015031100101",
+                "name": "ANIL PANAPPETTY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANAPPETTY EAST",
+            "person": {
+                "id": "2015031100201",
+                "name": "SAFFEENA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CINEMAPARAMBU",
+            "person": {
+                "id": "2015031100301",
+                "name": "SINI P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUTHUPILAKKADU EAST",
+            "person": {
+                "id": "2015031100401",
+                "name": "MAYADEVI S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUTHUPILAKKADU",
+            "person": {
+                "id": "2015031100501",
+                "name": "ANIYAN T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARIMTHOTTUVA",
+            "person": {
+                "id": "2015031100601",
+                "name": "B BINOI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERUVELIKKARA",
+            "person": {
+                "id": "2015031100701",
+                "name": "SOOSAN VARGHESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUNNAMOODU",
+            "person": {
+                "id": "2015031100801",
+                "name": "BIJU LUKOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUTHUPILAKKADU WEST",
+            "person": {
+                "id": "2015031100901",
+                "name": "T R SANKARA PILLAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANAKKARA EAST",
+            "person": {
+                "id": "2015031101001",
+                "name": "T R BEENA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SASTHAMCOTTA TOWN",
+            "person": {
+                "id": "2015031101101",
+                "name": "DILEEP KUMAR S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "RAJAGIRI",
+            "person": {
+                "id": "2015031101201",
+                "name": "LAWRANCE B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANAKKARA WEST",
+            "person": {
+                "id": "2015031101301",
+                "name": "NISHA SAJEEV"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALLISSERICKAL SOUTH",
+            "person": {
+                "id": "2015031101401",
+                "name": "JUMAILATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLISSERICKAL",
+            "person": {
+                "id": "2015031101501",
+                "name": "THASNI A"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PALLISSERICKAL WEST",
+            "person": {
+                "id": "2015031101601",
+                "name": "KRISHNA KUMAR. R"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALLISSERICKAL EAST",
+            "person": {
+                "id": "2015031101701",
+                "name": "I NAUSHAD"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MANAKKARA",
+            "person": {
+                "id": "2015031101801",
+                "name": "BIJU G"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "BHARANIKKAVU",
+            "person": {
+                "id": "2015031101902",
+                "name": "BINDHU GOPALAKRISHNAN"
+            }
+        }
+    ]
+}

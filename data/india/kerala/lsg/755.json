@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347577789,
+    "date": "2019-08-21",
+    "name": "Engandiyur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Thalikkulam",
+    "area": "15.68km",
+    "localbody_code": "G080801",
+    "no_of_wards": 16,
+    "population": 21464,
+    "male": 9914,
+    "female": 11550,
+    "population_density": 1369,
+    "sex_ratio": 1165,
+    "literacy_rate": 89.67,
+    "literacy_rate_male": 93.14,
+    "literacy_rate_female": 86.75,
+    "president": "JYOTHILAL.P.N",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHETTUVA",
+            "person": {
+                "id": "2015075500101",
+                "name": "SUMAYYA SIDHIQ"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMMURY",
+            "person": {
+                "id": "2015075500201",
+                "name": "IRSHAD. K. CHETTUVA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULIKKAKADAVU",
+            "person": {
+                "id": "2015075500301",
+                "name": "INDIRA.K.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULINCHODE",
+            "person": {
+                "id": "2015075500401",
+                "name": "BEENA SINGH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SREENARAYANA",
+            "person": {
+                "id": "2015075500501",
+                "name": "PRAISON. O.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VETTEKORUMAKAN",
+            "person": {
+                "id": "2015075500601",
+                "name": "JYOTHILAL.P.N"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MARKET",
+            "person": {
+                "id": "2015075500701",
+                "name": "UDAY THOTTAPPULLY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "N.H.S",
+            "person": {
+                "id": "2015075500801",
+                "name": "VANAJA VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AYIRAMKANNI",
+            "person": {
+                "id": "2015075500901",
+                "name": "SURESH.P.V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THIRUNARAYANA",
+            "person": {
+                "id": "2015075501001",
+                "name": "OMANA BALAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POLAKKAL",
+            "person": {
+                "id": "2015075501101",
+                "name": "SINDHU SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THIRUMANGALAM",
+            "person": {
+                "id": "2015075501201",
+                "name": "K.V ASOKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "FISHARIES",
+            "person": {
+                "id": "2015075501301",
+                "name": "USHA SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ETHAI",
+            "person": {
+                "id": "2015075501401",
+                "name": "BEENA. P.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NETHAJI",
+            "person": {
+                "id": "2015075501501",
+                "name": "BHARATHY. C.B"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOTTA",
+            "person": {
+                "id": "2015075501601",
+                "name": "BAIJU.A.B"
+            }
+        }
+    ]
+}

@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566345966740,
+    "date": "2019-08-21",
+    "name": "Kulasekharapuram  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Oachira",
+    "area": "16.75km",
+    "localbody_code": "G020102",
+    "no_of_wards": 23,
+    "population": 41464,
+    "male": 20476,
+    "female": 20988,
+    "population_density": 2475,
+    "sex_ratio": 1025,
+    "literacy_rate": 88.94,
+    "literacy_rate_male": 94.1,
+    "literacy_rate_female": 83.95,
+    "president": "SREELEKHAKRISHNAKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLIKKAVU",
+            "person": {
+                "id": "2015030400101",
+                "name": "S.SUBHASH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTACKUPURAM",
+            "person": {
+                "id": "2015030400201",
+                "name": "SEEMA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "H.S.S",
+            "person": {
+                "id": "2015030400301",
+                "name": "SULABHA RAMADAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALARIVATHUKKAL",
+            "person": {
+                "id": "2015030400401",
+                "name": "USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ADINADU NORTH",
+            "person": {
+                "id": "2015030400501",
+                "name": "SREELEKHA KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANCHAYAT CENTER",
+            "person": {
+                "id": "2015030400601",
+                "name": "D.RAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NEELIKULAM",
+            "person": {
+                "id": "2015030400701",
+                "name": "GEETHA THAMPI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADATHOOR",
+            "person": {
+                "id": "2015030400801",
+                "name": "ALAVUDEEN.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KURUNGAPPALLY",
+            "person": {
+                "id": "2015030400901",
+                "name": "P.PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNADISSERI",
+            "person": {
+                "id": "2015030401001",
+                "name": "SUJITHA NAZAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHENTHERUVU",
+            "person": {
+                "id": "2015030401101",
+                "name": "REHIYANATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KULASEKHARAPURAM",
+            "person": {
+                "id": "2015030401201",
+                "name": "ABDUL SALAM"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUNNACKULAM",
+            "person": {
+                "id": "2015030401301",
+                "name": "JUMAILATH BEEVI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHIYAKAVU",
+            "person": {
+                "id": "2015030401401",
+                "name": "K.SUDARSANAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ADINAD SOUTH",
+            "person": {
+                "id": "2015030401501",
+                "name": "SIVANANDAN T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PUTHENCHANTHA",
+            "person": {
+                "id": "2015030401601",
+                "name": "REMA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "HEALTH CENTER",
+            "person": {
+                "id": "2015030401701",
+                "name": "KAMARBAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOCHUMAMMOODU",
+            "person": {
+                "id": "2015030401801",
+                "name": "M.RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "SAKTHIKULANGARA",
+            "person": {
+                "id": "2015030401901",
+                "name": "REMA DEVI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "SANGAPPURAMUKKU",
+            "person": {
+                "id": "2015030402001",
+                "name": "BEENA REVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KATTILKADAVU",
+            "person": {
+                "id": "2015030402101",
+                "name": "SREEJA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "COMMUNITY HALL",
+            "person": {
+                "id": "2015030402201",
+                "name": "GELI SHANMUGHAN"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "THURAYILKADAVU",
+            "person": {
+                "id": "2015030402301",
+                "name": "T.BIJO"
+            }
+        }
+    ]
+}

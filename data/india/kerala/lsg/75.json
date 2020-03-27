@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345095777,
+    "date": "2019-08-21",
+    "name": "Mulanthuruthy  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Mullamthuruthy",
+    "area": "118.38km",
+    "localbody_code": "B070900",
+    "no_of_wards": 13,
+    "population": 121720,
+    "male": 60672,
+    "female": 61048,
+    "population_density": 1028,
+    "sex_ratio": 1006,
+    "literacy_rate": 93.19,
+    "literacy_rate_male": 96.82,
+    "literacy_rate_female": 89.5,
+    "president": "JAYASOMAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHOTTANIKKARA",
+            "person": {
+                "id": "2015007500101",
+                "name": "N K NISHAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERUVELI",
+            "person": {
+                "id": "2015007500201",
+                "name": "INDIRA DHARMARAJAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MULAMTHURUTHY",
+            "person": {
+                "id": "2015007500301",
+                "name": "SHAJI MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANEED",
+            "person": {
+                "id": "2015007500401",
+                "name": "JAYA SOMAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARAKKUNNAM",
+            "person": {
+                "id": "2015007500501",
+                "name": "SHINY SAJI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "EDAKKATTUVAYAL",
+            "person": {
+                "id": "2015007500601",
+                "name": "ASHA ACHUTHAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THIRUMARAYUR",
+            "person": {
+                "id": "2015007500701",
+                "name": "RAJEEV SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALLUR",
+            "person": {
+                "id": "2015007500801",
+                "name": "T K MOHANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANJIRAMATTAM",
+            "person": {
+                "id": "2015007500901",
+                "name": "BIJU THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERUMPILLI",
+            "person": {
+                "id": "2015007501001",
+                "name": "SUDHA RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POOTHOTTA",
+            "person": {
+                "id": "2015007501101",
+                "name": "JAYAN KUNNEL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AMEDA",
+            "person": {
+                "id": "2015007501201",
+                "name": "USHA DHANAPALAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "UDAYAMPEROOR",
+            "person": {
+                "id": "2015007501301",
+                "name": "OMANA PRAKASHAN"
+            }
+        }
+    ]
+}

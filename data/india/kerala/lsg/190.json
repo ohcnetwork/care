@@ -1,0 +1,300 @@
+{
+    "timeStamp": 1566345542703,
+    "date": "2019-08-21",
+    "name": "Thodupuzha  Municipality, Idukki District",
+    "district": "Idukki",
+    "area": "35.43km",
+    "localbody_code": "M060100",
+    "no_of_wards": 35,
+    "population": 46226,
+    "male": 22826,
+    "female": 23400,
+    "population_density": 1148,
+    "sex_ratio": 1023,
+    "literacy_rate": 92,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 89,
+    "chairperson": "PROF.JESSYANTONY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VENGALLOOR WARD",
+            "person": {
+                "id": "2015019000101",
+                "name": "T K SUDAKARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GURU ITC WARD",
+            "person": {
+                "id": "2015019000201",
+                "name": "SHIMNAS K K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VENGATHANAM WARD",
+            "person": {
+                "id": "2015019000301",
+                "name": "BIJI SURESH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MADATHIKANDAM WARD",
+            "person": {
+                "id": "2015019000401",
+                "name": "JISHA BINU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUNICIPAL UP SCHOOL WARD",
+            "person": {
+                "id": "2015019000501",
+                "name": "RAJIVE PUSHPANGATHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBALAM WARD",
+            "person": {
+                "id": "2015019000601",
+                "name": "K GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BHS WARD",
+            "person": {
+                "id": "2015019000701",
+                "name": "BINZY ALI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VADAKKUMURRY WARD",
+            "person": {
+                "id": "2015019000801",
+                "name": "SAFIYA JABBAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PETTENADU WARD",
+            "person": {
+                "id": "2015019000901",
+                "name": "JESSY JOHNY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "HOLY FAMILY HOSPITAL WARD",
+            "person": {
+                "id": "2015019001001",
+                "name": "VICTORIA SHIRLY MENDEZ"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLUMARRY WARD",
+            "person": {
+                "id": "2015019001101",
+                "name": "RINY JOSHY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAROOPPARA WARD",
+            "person": {
+                "id": "2015019001201",
+                "name": "MERCY KURIAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATTAYAMKAVALA WARD",
+            "person": {
+                "id": "2015019001301",
+                "name": "RASHEED K K R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUTHALAKODAM WARD",
+            "person": {
+                "id": "2015019001401",
+                "name": "ADV. C K JAFFER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "UNDAPLAVU WARD",
+            "person": {
+                "id": "2015019001501",
+                "name": "HARID A M"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BTM SCHOOL WARD",
+            "person": {
+                "id": "2015019001601",
+                "name": "T K ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUMMAMKALLU WARD",
+            "person": {
+                "id": "2015019001701",
+                "name": "SABEENA BINJU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MALEPPARAMBU WARD",
+            "person": {
+                "id": "2015019001801",
+                "name": "BEENA BASHEER"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KEERIKODE WARD",
+            "person": {
+                "id": "2015019001901",
+                "name": "K M SHAJAHAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MUTHALIYARMADOM WARD",
+            "person": {
+                "id": "2015019002001",
+                "name": "M K SHAHUL HAMEED"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "COLLEGE WARD",
+            "person": {
+                "id": "2015019002101",
+                "name": "P A SHAHUL HAMEED"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MARAMKUNNU WARD",
+            "person": {
+                "id": "2015019002201",
+                "name": "VIJAYAKUMARI P R"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MUNICIPAL OFFICE WARD",
+            "person": {
+                "id": "2015019002302",
+                "name": "MAYA DINU"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "KANJIRAMATTOM WARD",
+            "person": {
+                "id": "2015019002401",
+                "name": "ARUNIMA DHANESH"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "OLAMATTOM WARD",
+            "person": {
+                "id": "2015019002501",
+                "name": "MINI MADHU"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "ARACKAPPARA WARD",
+            "person": {
+                "id": "2015019002601",
+                "name": "CICILY JOSE"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "KOTHAIKUNNU WARD",
+            "person": {
+                "id": "2015019002701",
+                "name": "LUCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "CHUNKOM WARD",
+            "person": {
+                "id": "2015019002801",
+                "name": "SUMAMOL STEPHEN"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "KOLANI WARD",
+            "person": {
+                "id": "2015019002901",
+                "name": "R HARI"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "NADUKKANDOM WARD",
+            "person": {
+                "id": "2015019003001",
+                "name": "NIRMALA SHAJI"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "PARAKKADAVU WARD",
+            "person": {
+                "id": "2015019003101",
+                "name": "P V SHIBU"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "AMARAMKAVU WARD",
+            "person": {
+                "id": "2015019003201",
+                "name": "AJI R"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "CO-OPERATIVE HOSPITAL WARD",
+            "person": {
+                "id": "2015019003301",
+                "name": "BINDU PADMAKUMAR"
+            }
+        },
+        {
+            "ward_number": "34",
+            "name": "RIVER VIEW WARD",
+            "person": {
+                "id": "2015019003401",
+                "name": "PROF. JESSY ANTONY"
+            }
+        },
+        {
+            "ward_number": "35",
+            "name": "MANAKKAD WARD",
+            "person": {
+                "id": "2015019003501",
+                "name": "BABU PARAMESWARAN"
+            }
+        }
+    ]
+}

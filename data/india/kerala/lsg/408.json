@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346332133,
+    "date": "2019-08-21",
+    "name": "Pramadom  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Konni",
+    "area": "37.1km",
+    "localbody_code": "G030603",
+    "no_of_wards": 19,
+    "population": 29980,
+    "male": 14350,
+    "female": 15630,
+    "population_density": 808,
+    "sex_ratio": 1089,
+    "literacy_rate": 93.52,
+    "literacy_rate_male": 95.31,
+    "literacy_rate_female": 91.91,
+    "president": "ROBINPETER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MAROOR",
+            "person": {
+                "id": "2015040800101",
+                "name": "SUSEELA AJI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALAMAROOR",
+            "person": {
+                "id": "2015040800201",
+                "name": "PRASANNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULIMUKKU",
+            "person": {
+                "id": "2015040800301",
+                "name": "SARI PRADEEP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VETTOOR",
+            "person": {
+                "id": "2015040800401",
+                "name": "ANANDHAWALLI AMMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ELAKOLLOOR",
+            "person": {
+                "id": "2015040800501",
+                "name": "DEEPA S RAJAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THENGUMKAVU",
+            "person": {
+                "id": "2015040800601",
+                "name": "MATHEW T G"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VATTAKKAVU",
+            "person": {
+                "id": "2015040800701",
+                "name": "K K NEHRU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLAPPARA",
+            "person": {
+                "id": "2015040800801",
+                "name": "K R PRABHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POVANPARA",
+            "person": {
+                "id": "2015040800901",
+                "name": "LIZY JAMES"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ELAPPUPARA",
+            "person": {
+                "id": "2015040801001",
+                "name": "M V PHILIP"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAITHAKKARA",
+            "person": {
+                "id": "2015040801101",
+                "name": "P K UTHAMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VAKAYAR",
+            "person": {
+                "id": "2015040801201",
+                "name": "ASWATHY B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EZHUMON",
+            "person": {
+                "id": "2015040801301",
+                "name": "SULOCHANA DEVI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANDICHANDA",
+            "person": {
+                "id": "2015040801401",
+                "name": "ROBIN PETER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "V KOTTAYAM",
+            "person": {
+                "id": "2015040801501",
+                "name": "G PRAMOD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NEDUMPARA",
+            "person": {
+                "id": "2015040801601",
+                "name": "SAJITHA AJI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "LAKKOOR",
+            "person": {
+                "id": "2015040801701",
+                "name": "K PRAKASH KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "POONKAVU",
+            "person": {
+                "id": "2015040801801",
+                "name": "ANNAMMA PHILIP"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PRAMADOM",
+            "person": {
+                "id": "2015040801901",
+                "name": "K M MOHANAN"
+            }
+        }
+    ]
+}

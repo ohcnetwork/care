@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348523413,
+    "date": "2019-08-21",
+    "name": "Chokkad  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Nilambur",
+    "area": null,
+    "localbody_code": "G100204",
+    "no_of_wards": 18,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "NASEEMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MADAMBAM",
+            "person": {
+                "id": "2015090400101",
+                "name": "BINDU K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MAMBATTUMOOLA",
+            "person": {
+                "id": "2015090400201",
+                "name": "SHARAFUDHEEN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANNIKKOTTUMUNDA",
+            "person": {
+                "id": "2015090400301",
+                "name": "HAMSA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ANAKKALLU",
+            "person": {
+                "id": "2015090400401",
+                "name": "NASEEMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHOKKAD",
+            "person": {
+                "id": "2015090400501",
+                "name": "SHAHINA GAFOOR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PEDYANTHAL",
+            "person": {
+                "id": "2015090400601",
+                "name": "UNNIKRISHNAN A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MARUTHANGAD",
+            "person": {
+                "id": "2015090400701",
+                "name": "ANNAMMA MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALLAMOOLA",
+            "person": {
+                "id": "2015090400801",
+                "name": "HAMEEDALI C"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SRAMBIKKALLU",
+            "person": {
+                "id": "2015090400901",
+                "name": "ANVAR SADIQ"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PULLANGODE",
+            "person": {
+                "id": "2015090401001",
+                "name": "JISHA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VEDIVACHAPARA",
+            "person": {
+                "id": "2015090401101",
+                "name": "SUHRA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "UDARAMPOYIL",
+            "person": {
+                "id": "2015090401201",
+                "name": "ABDUL HAMEED"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALIYAPARAMBU",
+            "person": {
+                "id": "2015090401301",
+                "name": "BASHEER VALANCHIRA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLAPOYIL",
+            "person": {
+                "id": "2015090401401",
+                "name": "ABDURAHIMAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MALIYEKKAL",
+            "person": {
+                "id": "2015090401501",
+                "name": "RASEENA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANJAPPETTY",
+            "person": {
+                "id": "2015090401601",
+                "name": "BABY LATHA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ORAVANKUNNU",
+            "person": {
+                "id": "2015090401701",
+                "name": "SUDHA K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOORIPOYIL",
+            "person": {
+                "id": "2015090401801",
+                "name": "BAIJU"
+            }
+        }
+    ]
+}

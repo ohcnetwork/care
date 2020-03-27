@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346525815,
+    "date": "2019-08-21",
+    "name": "Kavalam  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Veliyanad",
+    "area": "17.43km",
+    "localbody_code": "G040704",
+    "no_of_wards": 13,
+    "population": 14427,
+    "male": 7227,
+    "female": 7200,
+    "population_density": 828,
+    "sex_ratio": 996,
+    "literacy_rate": 98,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 97,
+    "president": "SANDHYARAMESHKUMARSANDHYARAMESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ST. THRESIAS L.P.S WARD",
+            "person": {
+                "id": "2015046100101",
+                "name": "THILAKAN VASU (R V THILAKAN)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "LISSUE WARD",
+            "person": {
+                "id": "2015046100201",
+                "name": "REVAMMA NADESAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALEDAM WARD",
+            "person": {
+                "id": "2015046100301",
+                "name": "SANDHYA RAMESHKUMAR (SANDHYA RAMESH)"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALLIYARAKAVU WARD",
+            "person": {
+                "id": "2015046100401",
+                "name": "LATHA OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAYANADY WARD",
+            "person": {
+                "id": "2015046100501",
+                "name": "KUNJERIYA (JOJO KOOTHASSERY)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARIYURMANGALAM WARD",
+            "person": {
+                "id": "2015046100601",
+                "name": "DEEPAMOL SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AMBADKAR WARD",
+            "person": {
+                "id": "2015046100701",
+                "name": "DR. T N RAMANPILLAI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAVALAM WARD",
+            "person": {
+                "id": "2015046100801",
+                "name": "RAJENDRAN NARAYANAN (N RAJENDRAN)"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOCHU KAVALAM WARD",
+            "person": {
+                "id": "2015046100901",
+                "name": "AJIMOL MANIKKUTTAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NORTH VELIYANADU WARD",
+            "person": {
+                "id": "2015046101002",
+                "name": "AJITHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THATTASERY WARD",
+            "person": {
+                "id": "2015046101101",
+                "name": "SANDHYA SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "C M S WARD",
+            "person": {
+                "id": "2015046101201",
+                "name": "REENAMOL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANGALAM WARD",
+            "person": {
+                "id": "2015046101301",
+                "name": "O G SHAJI"
+            }
+        }
+    ]
+}

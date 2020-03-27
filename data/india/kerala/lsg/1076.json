@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566349136434,
+    "date": "2019-08-21",
+    "name": "Thavinhal  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Mananthavady",
+    "area": "142.3km",
+    "localbody_code": "G120106",
+    "no_of_wards": 22,
+    "population": 38307,
+    "male": 19326,
+    "female": 18981,
+    "population_density": 230,
+    "sex_ratio": 984,
+    "literacy_rate": 82.24,
+    "literacy_rate_male": 87.08,
+    "literacy_rate_female": 77.33,
+    "president": "ANISHAP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THAZHE PERIYA",
+            "person": {
+                "id": "2015107600101",
+                "name": "MUHAMMED RAFEEK"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERIYA",
+            "person": {
+                "id": "2015107600201",
+                "name": "BABU SHAJIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALLITHODU",
+            "person": {
+                "id": "2015107600301",
+                "name": "CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VARAYAL",
+            "person": {
+                "id": "2015107600401",
+                "name": "SHEEJA BABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAVINHAL 44",
+            "person": {
+                "id": "2015107600501",
+                "name": "SURESH BABU C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAITHAKOLLY",
+            "person": {
+                "id": "2015107600601",
+                "name": "VIJAYALAKSHMI P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHIYIDAM",
+            "person": {
+                "id": "2015107600701",
+                "name": "C PRASAD"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THALAPUZHA",
+            "person": {
+                "id": "2015107600801",
+                "name": "ANISHA P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IDIKKARA",
+            "person": {
+                "id": "2015107600901",
+                "name": "ELSY JOY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMBALAKOLLY",
+            "person": {
+                "id": "2015107601001",
+                "name": "SHABITHA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUTHIRERI",
+            "person": {
+                "id": "2015107601101",
+                "name": "PHILOMINA ANTONY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PORUR",
+            "person": {
+                "id": "2015107601201",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015107601301",
+                "name": "N J SHAJITH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KATTIMOOLA",
+            "person": {
+                "id": "2015107601401",
+                "name": "SHYMA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOLANGODE",
+            "person": {
+                "id": "2015107601501",
+                "name": "M G BABU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHULLY",
+            "person": {
+                "id": "2015107601601",
+                "name": "ELSY THOMAS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VALAD",
+            "person": {
+                "id": "2015107601701",
+                "name": "KATHREENA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "EDATHANA",
+            "person": {
+                "id": "2015107601801",
+                "name": "BINDHU VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KARACHAL",
+            "person": {
+                "id": "2015107601901",
+                "name": "SALMA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "IRUMANATHUR",
+            "person": {
+                "id": "2015107602001",
+                "name": "LISSY JOSE"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VATTOLI",
+            "person": {
+                "id": "2015107602101",
+                "name": "SASIKUMAR V K"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ALATTIL",
+            "person": {
+                "id": "2015107602201",
+                "name": "BENNY ANTONY"
+            }
+        }
+    ]
+}

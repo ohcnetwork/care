@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345735872,
+    "date": "2019-08-21",
+    "name": "Pallickal  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Kilimannoor",
+    "area": "16.36km",
+    "localbody_code": "G010205",
+    "no_of_wards": 13,
+    "population": 14709,
+    "male": 7010,
+    "female": 7699,
+    "population_density": 899,
+    "sex_ratio": 1098,
+    "literacy_rate": 90.27,
+    "literacy_rate_male": 94.62,
+    "literacy_rate_female": 86.44,
+    "president": "B.UNNIKRISHNAPILLAI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARAYIL",
+            "person": {
+                "id": "2015023600101",
+                "name": "B. UNNIKRISHNA PILLAI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAKALKURI",
+            "person": {
+                "id": "2015023600201",
+                "name": "PRASANNA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOOTHALA",
+            "person": {
+                "id": "2015023600301",
+                "name": "ABUTHALIB.N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MOOLABHAGAM",
+            "person": {
+                "id": "2015023600401",
+                "name": "MINIKUMARI. S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "K .K. KONAM",
+            "person": {
+                "id": "2015023600501",
+                "name": "S. NIZAMUDEEN ."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MOLYCHANTHA",
+            "person": {
+                "id": "2015023600601",
+                "name": "PUSHPALATHA . S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLICKAL TOWN",
+            "person": {
+                "id": "2015023600701",
+                "name": "SUDHIRAJ . K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OONNAMKALLU",
+            "person": {
+                "id": "2015023600801",
+                "name": "SARIKA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KATTUPUTHUSSERI",
+            "person": {
+                "id": "2015023600901",
+                "name": "NAZARKHAN. M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALLICKAL",
+            "person": {
+                "id": "2015023601001",
+                "name": "SHEEJA. G.R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEMMARAM",
+            "person": {
+                "id": "2015023601101",
+                "name": "PALLICKAL NAZEER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PLACHIVILA",
+            "person": {
+                "id": "2015023601201",
+                "name": "HASEENA. M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTIYAMMUKKU",
+            "person": {
+                "id": "2015023601301",
+                "name": "RENUKAKUMARI. G"
+            }
+        }
+    ]
+}

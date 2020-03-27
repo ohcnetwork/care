@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345296818,
+    "date": "2019-08-21",
+    "name": "Chelannur  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Chelannur",
+    "area": "138.66km",
+    "localbody_code": "B110900",
+    "no_of_wards": 13,
+    "population": 183331,
+    "male": 90296,
+    "female": 93035,
+    "population_density": 1322,
+    "sex_ratio": 1030,
+    "literacy_rate": 92.4,
+    "literacy_rate_male": 96.47,
+    "literacy_rate_female": 88.51,
+    "president": "SOBHANAO.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEEKILODE",
+            "person": {
+                "id": "2015013300101",
+                "name": "SOBHANA O.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NANMINDA",
+            "person": {
+                "id": "2015013300201",
+                "name": "M.GANGADHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUNNASSERY",
+            "person": {
+                "id": "2015013300301",
+                "name": "PRAMEELA.K.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANNIKKOTTOOR",
+            "person": {
+                "id": "2015013300401",
+                "name": "N.P.MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NARIKKUNNI",
+            "person": {
+                "id": "2015013300501",
+                "name": "T.P.SOBANA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAKKUR",
+            "person": {
+                "id": "2015013300601",
+                "name": "C.M.SHAJI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHELANNUR",
+            "person": {
+                "id": "2015013300701",
+                "name": "V.M.MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALATH",
+            "person": {
+                "id": "2015013300801",
+                "name": "SANTHA MUTHIYERI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAKKODI",
+            "person": {
+                "id": "2015013300901",
+                "name": "SOBHINDRAN.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MORIKKARA",
+            "person": {
+                "id": "2015013301001",
+                "name": "KAVITHA MANOJ"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "OLOPPARA",
+            "person": {
+                "id": "2015013301101",
+                "name": "SUJATHA T K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARAMBATH",
+            "person": {
+                "id": "2015013301201",
+                "name": "MANOHARAN E.T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANNASSERY",
+            "person": {
+                "id": "2015013301301",
+                "name": "SEENA SURESH"
+            }
+        }
+    ]
+}

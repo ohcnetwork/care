@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348591846,
+    "date": "2019-08-21",
+    "name": "Cherukavu  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Kondotty",
+    "area": "16.87km",
+    "localbody_code": "G100402",
+    "no_of_wards": 19,
+    "population": 25322,
+    "male": 12670,
+    "female": 12652,
+    "population_density": 1501,
+    "sex_ratio": 999,
+    "literacy_rate": 91.57,
+    "literacy_rate_male": 94.74,
+    "literacy_rate_female": 88.41,
+    "president": "SHAJINIV.P.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "DHANAGRAM",
+            "person": {
+                "id": "2015091500101",
+                "name": "CHINNAMALU M."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERINGAVU",
+            "person": {
+                "id": "2015091500201",
+                "name": "K. HEMAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KODAPPURAM",
+            "person": {
+                "id": "2015091500301",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERAPADAM",
+            "person": {
+                "id": "2015091500401",
+                "name": "UNNI K.P."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHOOPADAM",
+            "person": {
+                "id": "2015091500501",
+                "name": "N.K. ASMABI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNAMVETTIKAVU",
+            "person": {
+                "id": "2015091500601",
+                "name": "KOPPILAN MANZOORALI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHENAPARAMB",
+            "person": {
+                "id": "2015091500701",
+                "name": "SULAIKHA M.D."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAVOOR",
+            "person": {
+                "id": "2015091500801",
+                "name": "REENA M.K."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERIYAMBALAM",
+            "person": {
+                "id": "2015091500901",
+                "name": "RAHYANA FIROZ"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHEVAYOOR",
+            "person": {
+                "id": "2015091501001",
+                "name": "AJITHA KALLADA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MINI ESTATE",
+            "person": {
+                "id": "2015091501101",
+                "name": "M. BINDU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHAMAPARAMB",
+            "person": {
+                "id": "2015091501201",
+                "name": "ABDUL RASHEED K."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SIYAMKANDAM",
+            "person": {
+                "id": "2015091501301",
+                "name": "SHAJINI V.P."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENNAYOOR",
+            "person": {
+                "id": "2015091501401",
+                "name": "P.K. ABDULLAKOYA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AYIKKARAPPADI",
+            "person": {
+                "id": "2015091501501",
+                "name": "P.V. ABDUL JALEEL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAITHAKUNDA",
+            "person": {
+                "id": "2015091501601",
+                "name": "RADHAMANI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "POOCHAL",
+            "person": {
+                "id": "2015091501701",
+                "name": "MUHAMMED BASHEER A."
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PENGAD",
+            "person": {
+                "id": "2015091501801",
+                "name": "BADARUDHEEN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUTHUKKODE",
+            "person": {
+                "id": "2015091501901",
+                "name": "SREENIVASAN P.P."
+            }
+        }
+    ]
+}

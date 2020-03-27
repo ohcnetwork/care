@@ -1,0 +1,164 @@
+{
+    "timeStamp": 1566349380758,
+    "date": "2019-08-21",
+    "name": "Peralassery  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "19.4km",
+    "localbody_code": "G130607",
+    "no_of_wards": 18,
+    "population": 26662,
+    "male": 12855,
+    "female": 13807,
+    "population_density": 1374,
+    "sex_ratio": 1074,
+    "literacy_rate": 93.57,
+    "literacy_rate_male": 97.28,
+    "literacy_rate_female": 90.16,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POTHUVACHERRY",
+            "person": {
+                "id": "2015114400101",
+                "name": "RAHOOF K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNDAYODE",
+            "person": {
+                "id": "2015114400201",
+                "name": "PRAKASHAN P P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUZHIKKILAYI",
+            "person": {
+                "id": "2015114400301",
+                "name": "PRADEEPAN K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MAKRARI",
+            "person": {
+                "id": "2015114400401",
+                "name": "SOUMINI C K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BAVODE",
+            "person": {
+                "id": "2015114400501",
+                "name": "DEEPA K K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BAVODE EAST",
+            "person": {
+                "id": "2015114400601",
+                "name": "SURESH BABU THANDARATH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KILALOOR",
+            "person": {
+                "id": "2015114400701",
+                "name": "SATHYAN P P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VADAKKUMBAD",
+            "person": {
+                "id": "2015114400801",
+                "name": "SUNITHA M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERALASSERY",
+            "person": {
+                "id": "2015114400901",
+                "name": "VALSALA T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTAM NORTH",
+            "person": {
+                "id": "2015114401001",
+                "name": "RAGASUDHA M C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTAM SOUTH",
+            "person": {
+                "id": "2015114401101",
+                "name": "SALILA M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUNDALUR",
+            "person": {
+                "id": "2015114401201",
+                "name": "BALAGOPALAN K P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUNDALUR WEST",
+            "person": {
+                "id": "2015114401301",
+                "name": "SUNILA P C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHERUMAVILAYI",
+            "person": {
+                "id": "2015114401401",
+                "name": "KOUSALLIA V K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MOCHERI",
+            "person": {
+                "id": "2015114401501",
+                "name": "MINI C"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ODUNGODE",
+            "person": {
+                "id": "2015114401601",
+                "name": "PREMACHANDRAN P V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MAVILAYI",
+            "person": {
+                "id": "2015114401701",
+                "name": "NARAYANAN P K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KEEZHARA",
+            "person": {
+                "id": "2015114401801",
+                "name": "CHANDRAN A K"
+            }
+        }
+    ]
+}

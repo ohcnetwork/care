@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346555766,
+    "date": "2019-08-21",
+    "name": "Pandanad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Chengannur",
+    "area": "10.39km",
+    "localbody_code": "G040807",
+    "no_of_wards": 13,
+    "population": 12039,
+    "male": 5837,
+    "female": 6202,
+    "population_density": 1159,
+    "sex_ratio": 1063,
+    "literacy_rate": 98,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 97,
+    "president": "SIVANKUTTYAILARATHIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PRAMATTAKKARA",
+            "person": {
+                "id": "2015047100101",
+                "name": "SHERLY MATHEW"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANDANAD KOTTAYAM",
+            "person": {
+                "id": "2015047100201",
+                "name": "PHILOMINA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MADAVANA",
+            "person": {
+                "id": "2015047100301",
+                "name": "HANCY MATHEW"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PRAYAR",
+            "person": {
+                "id": "2015047100401",
+                "name": "SIVANKUTTY AILARATHIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUTHAVAZHY",
+            "person": {
+                "id": "2015047100501",
+                "name": "SMITHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VANMAZHY EAST",
+            "person": {
+                "id": "2015047100601",
+                "name": "JACOB P C (JOJI PALANGATTIL)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANMAZHY WEST",
+            "person": {
+                "id": "2015047100701",
+                "name": "ASHA V NAIR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MITHRAMADOM",
+            "person": {
+                "id": "2015047100801",
+                "name": "M S RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KEEZHVANMAZHY EAST",
+            "person": {
+                "id": "2015047100901",
+                "name": "BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KEEZHVANMAZHY WEST",
+            "person": {
+                "id": "2015047101001",
+                "name": "P K ANITHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANDANAD EAST",
+            "person": {
+                "id": "2015047101101",
+                "name": "T D MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANDANAD WEST",
+            "person": {
+                "id": "2015047101201",
+                "name": "SREEDEVI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ILLIMALA",
+            "person": {
+                "id": "2015047101301",
+                "name": "GEEVARGHESE P G"
+            }
+        }
+    ]
+}

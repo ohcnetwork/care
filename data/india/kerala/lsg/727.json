@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347456781,
+    "date": "2019-08-21",
+    "name": "Kadangode  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vadakkamchery",
+    "area": "32.05km",
+    "localbody_code": "G080207",
+    "no_of_wards": 18,
+    "population": 27340,
+    "male": 12980,
+    "female": 14360,
+    "population_density": 853,
+    "sex_ratio": 1106,
+    "literacy_rate": 86.44,
+    "literacy_rate_male": 90.15,
+    "literacy_rate_female": 83.15,
+    "president": "RAMANIRAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHIRAMANENGAD",
+            "person": {
+                "id": "2015072700101",
+                "name": "PRASAD P.V."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAPPU NELLIKKUNNU",
+            "person": {
+                "id": "2015072700201",
+                "name": "AMINA SULAIMAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADANGODE PARAPPURRAM",
+            "person": {
+                "id": "2015072700301",
+                "name": "KRISHNAN P.V."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADANGODE RICE MILL THEKKUMURRI",
+            "person": {
+                "id": "2015072700401",
+                "name": "KANCHANA MOHAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADANGODE KIZHAKUMURI",
+            "person": {
+                "id": "2015072700501",
+                "name": "SOUMYA SURESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANDAMPARAMBU",
+            "person": {
+                "id": "2015072700601",
+                "name": "JOSEPH T.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAZHIYOTTUMURI",
+            "person": {
+                "id": "2015072700701",
+                "name": "RAMANI RAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLARAKKAD",
+            "person": {
+                "id": "2015072700801",
+                "name": "DEEPA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PENGATTUPARA",
+            "person": {
+                "id": "2015072700901",
+                "name": "LIPIN K.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLATHERY",
+            "person": {
+                "id": "2015072701001",
+                "name": "JALEEL ADHOOR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ADHUR",
+            "person": {
+                "id": "2015072701101",
+                "name": "BABITHA RAVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EYYAL PARAPURAM",
+            "person": {
+                "id": "2015072701201",
+                "name": "SANDHYA BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EYYAL AMBALAM",
+            "person": {
+                "id": "2015072701301",
+                "name": "GOPALAKRISHNAN P.C."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHITTILENGADU",
+            "person": {
+                "id": "2015072701401",
+                "name": "SIMI K.R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NEENDOOR",
+            "person": {
+                "id": "2015072701501",
+                "name": "ADV.NOWSHAD K.M"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MARATHAMCODE",
+            "person": {
+                "id": "2015072701601",
+                "name": "MANI K.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KIDANGOOR A.K.G.NAGAR",
+            "person": {
+                "id": "2015072701701",
+                "name": "SUGIJA SUMESH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PANNITHADAM",
+            "person": {
+                "id": "2015072701801",
+                "name": "SHUKKUR PANNITHADAM"
+            }
+        }
+    ]
+}

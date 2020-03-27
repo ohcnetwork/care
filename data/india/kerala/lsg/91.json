@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345147130,
+    "date": "2019-08-21",
+    "name": "Kodakara  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Kodakara",
+    "area": "297.8km",
+    "localbody_code": "B081100",
+    "no_of_wards": 15,
+    "population": 196268,
+    "male": 95485,
+    "female": 100783,
+    "population_density": 659,
+    "sex_ratio": 1055,
+    "literacy_rate": 88.95,
+    "literacy_rate_male": 92.9,
+    "literacy_rate_female": 85.26,
+    "president": "KALAPRIYASURESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THALORE",
+            "person": {
+                "id": "2015009100101",
+                "name": "BAIJU T S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "TRIKKUR",
+            "person": {
+                "id": "2015009100201",
+                "name": "ALPHONSA STIMA STEPHEN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLUR",
+            "person": {
+                "id": "2015009100301",
+                "name": "PREEBANAN C B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALAPPILLY",
+            "person": {
+                "id": "2015009100401",
+                "name": "JOLLY JOSE MANJALY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUPLIYAM",
+            "person": {
+                "id": "2015009100501",
+                "name": "JAYAN M N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VARANDARAPPILLY",
+            "person": {
+                "id": "2015009100601",
+                "name": "KALAPRIYA SURESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KODALY",
+            "person": {
+                "id": "2015009100701",
+                "name": "ASHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLIKKULANGARA",
+            "person": {
+                "id": "2015009100801",
+                "name": "MOHANAN CHALLIYIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MATTATHUR",
+            "person": {
+                "id": "2015009100901",
+                "name": "JINI MURALI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERAMBRA",
+            "person": {
+                "id": "2015009101001",
+                "name": "JUSTIN V V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KODAKARA",
+            "person": {
+                "id": "2015009101101",
+                "name": "AMBILY SOMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SNEHAPURAM",
+            "person": {
+                "id": "2015009101201",
+                "name": "SHAJU KALIYANGARA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ALAGAPPANAGAR",
+            "person": {
+                "id": "2015009101301",
+                "name": "ALEX C G"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AMBALLUR",
+            "person": {
+                "id": "2015009101401",
+                "name": "LATHIKA V K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUDUKKAD",
+            "person": {
+                "id": "2015009101501",
+                "name": "AMBIKA SAHADEVAN"
+            }
+        }
+    ]
+}

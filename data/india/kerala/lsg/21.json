@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344912683,
+    "date": "2019-08-21",
+    "name": "Chavara  Block Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chavara",
+    "area": "74.9km",
+    "localbody_code": "B020800",
+    "no_of_wards": 13,
+    "population": 152985,
+    "male": 76092,
+    "female": 76893,
+    "population_density": 2043,
+    "sex_ratio": 1011,
+    "literacy_rate": 89.96,
+    "literacy_rate_male": 93.94,
+    "literacy_rate_female": 86.05,
+    "president": "THANKAMANYPILLAIK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKUMTHALA",
+            "person": {
+                "id": "2015002100101",
+                "name": "K.G.VISWAMBARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THEVALAKKARA",
+            "person": {
+                "id": "2015002100201",
+                "name": "MUMTHAS A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARINALLOOR",
+            "person": {
+                "id": "2015002100301",
+                "name": "KOIVILASIMON"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUKUNDAPURAM",
+            "person": {
+                "id": "2015002100401",
+                "name": "MUTHAS M.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOYIVILA",
+            "person": {
+                "id": "2015002100501",
+                "name": "THANKAMANYPILLAI K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKUMBHAGOM",
+            "person": {
+                "id": "2015002100601",
+                "name": "VIJAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NEENDAKARA",
+            "person": {
+                "id": "2015002100701",
+                "name": "SHEELA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHAVARA",
+            "person": {
+                "id": "2015002100801",
+                "name": "N MOHANLAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTAMKULANGARA",
+            "person": {
+                "id": "2015002100901",
+                "name": "ARUNRAJ R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SANKARAMANGALAM",
+            "person": {
+                "id": "2015002101001",
+                "name": "BINDHUKRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOVILTHOTTAM",
+            "person": {
+                "id": "2015002101101",
+                "name": "BINDHUSUNNY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VADUTHALA",
+            "person": {
+                "id": "2015002101201",
+                "name": "P SUDHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANMANA",
+            "person": {
+                "id": "2015002101301",
+                "name": "K.A.NIYAS"
+            }
+        }
+    ]
+}

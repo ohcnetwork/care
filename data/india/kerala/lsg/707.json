@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566347379761,
+    "date": "2019-08-21",
+    "name": "Paipra  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Muvattupuzha",
+    "area": "32.18km",
+    "localbody_code": "G071404",
+    "no_of_wards": 22,
+    "population": 32779,
+    "male": 16718,
+    "female": 16061,
+    "population_density": 1019,
+    "sex_ratio": 961,
+    "literacy_rate": 87.78,
+    "literacy_rate_male": 92.35,
+    "literacy_rate_female": 83.02,
+    "president": "ALICEKALIYAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANARY",
+            "person": {
+                "id": "2015070700101",
+                "name": "P.S.GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAIPRA",
+            "person": {
+                "id": "2015070700201",
+                "name": "NASEEMA SUNIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAIPRA EAST",
+            "person": {
+                "id": "2015070700301",
+                "name": "M.P.EBRAHIM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OZHUPARA",
+            "person": {
+                "id": "2015070700401",
+                "name": "SEENATH AZEEZ"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MULAVOOR NORTH",
+            "person": {
+                "id": "2015070700501",
+                "name": "SAINABA KOCHAKKON"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MULAVOOR",
+            "person": {
+                "id": "2015070700601",
+                "name": "MANOJ . A.G"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MULAVOOR SOUTH",
+            "person": {
+                "id": "2015070700701",
+                "name": "SAINABA SALIM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PERUMATTOM",
+            "person": {
+                "id": "2015070700801",
+                "name": "SURUMI UMMER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERUMATTOM WEST",
+            "person": {
+                "id": "2015070700901",
+                "name": "P.M. ABOOBAKER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NIRAPPU",
+            "person": {
+                "id": "2015070701001",
+                "name": "ANTONY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THATTUPARAMBU",
+            "person": {
+                "id": "2015070701101",
+                "name": "C.K.SIDHIK"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PEZHAKKAPPILLY HIGHSCHOOL",
+            "person": {
+                "id": "2015070701201",
+                "name": "SHEFEEK. V.H"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANCHAYAT OFFICE WARD",
+            "person": {
+                "id": "2015070701301",
+                "name": "MARIYAM BEEVI NASSAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PEZHAKKAPPILLY PALLIPPADY",
+            "person": {
+                "id": "2015070701401",
+                "name": "NISHAMOL  E B"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUDAVOOR EAST",
+            "person": {
+                "id": "2015070701501",
+                "name": "SHIHAB K.E"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUDAVOOR",
+            "person": {
+                "id": "2015070701601",
+                "name": "P.A.ANIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOORIKKAVU",
+            "person": {
+                "id": "2015070701701",
+                "name": "AMINA MUHAMMED RAFI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "S.VALAVU",
+            "person": {
+                "id": "2015070701801",
+                "name": "NOORJAHAN NAZAR"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUNNOPPADI",
+            "person": {
+                "id": "2015070701901",
+                "name": "ALICE K ALIYAS"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THERAPPARA",
+            "person": {
+                "id": "2015070702001",
+                "name": "MATHEWS VARKEY"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "THRIKKALATHOOR",
+            "person": {
+                "id": "2015070702101",
+                "name": "M.C.VINAYAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THRIKKALATHOOR EAST",
+            "person": {
+                "id": "2015070702201",
+                "name": "ASWATHI SREEJITH"
+            }
+        }
+    ]
+}

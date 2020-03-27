@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346650950,
+    "date": "2019-08-21",
+    "name": "Palamel  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Bharinikavu",
+    "area": "25.6km",
+    "localbody_code": "G041106",
+    "no_of_wards": 19,
+    "population": 29471,
+    "male": 14261,
+    "female": 15210,
+    "population_density": 1151,
+    "sex_ratio": 1067,
+    "literacy_rate": 92,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 89,
+    "president": "OMANAVIJAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTHUKATTUKARA",
+            "person": {
+                "id": "2015049100101",
+                "name": "SOMALATHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "P.H.C",
+            "person": {
+                "id": "2015049100201",
+                "name": "SUNI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAVUMPAD",
+            "person": {
+                "id": "2015049100301",
+                "name": "S. RAJANI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MATTAPPALLY",
+            "person": {
+                "id": "2015049100401",
+                "name": "J. OMANA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ULAVUKKAD",
+            "person": {
+                "id": "2015049100501",
+                "name": "LALITHA RAVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUDASSANAD",
+            "person": {
+                "id": "2015049100601",
+                "name": "SUSAMMA CHACKO"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULIKKUNNU",
+            "person": {
+                "id": "2015049100701",
+                "name": "PRASANNA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANJUKODE",
+            "person": {
+                "id": "2015049100801",
+                "name": "OMANA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ADHIKKATTUKULANGARA NORTH",
+            "person": {
+                "id": "2015049100901",
+                "name": "B. JAYADEVAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ADHIKKATTUKULANGARA TOWN",
+            "person": {
+                "id": "2015049101002",
+                "name": "SHYLAJA SHAJI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ADHIKKATTUKULANGARA SOUTH",
+            "person": {
+                "id": "2015049101101",
+                "name": "MUHAMMAD ALI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAMMOODE",
+            "person": {
+                "id": "2015049101201",
+                "name": "OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAYYANALLOOR",
+            "person": {
+                "id": "2015049101301",
+                "name": "K. M. VISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALLICKAL",
+            "person": {
+                "id": "2015049101401",
+                "name": "K. BIJU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUKALUVILA",
+            "person": {
+                "id": "2015049101502",
+                "name": "DHARMAPALAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PANAYIL",
+            "person": {
+                "id": "2015049101601",
+                "name": "SREENI PANAYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "FACTORY",
+            "person": {
+                "id": "2015049101701",
+                "name": "N. N. VIJAYAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ERUMAKKUZHY",
+            "person": {
+                "id": "2015049101801",
+                "name": "S. RADHIKA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NOORANADU TOWN",
+            "person": {
+                "id": "2015049101901",
+                "name": "R. MANJU"
+            }
+        }
+    ]
+}

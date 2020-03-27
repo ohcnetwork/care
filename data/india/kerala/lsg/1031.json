@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348999641,
+    "date": "2019-08-21",
+    "name": "Ulliyeri  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Balussery",
+    "area": "25.89km",
+    "localbody_code": "G110703",
+    "no_of_wards": 19,
+    "population": 27805,
+    "male": 13756,
+    "female": 14049,
+    "population_density": 1074,
+    "sex_ratio": 1021,
+    "literacy_rate": 90.15,
+    "literacy_rate_male": 95.79,
+    "literacy_rate_female": 84.7,
+    "president": "SHAJUCHERUKKAVIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAKKANCHERY",
+            "person": {
+                "id": "2015103100101",
+                "name": "CHANDRIKA POOMADATHIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOYAKKAD WEST",
+            "person": {
+                "id": "2015103100201",
+                "name": "SILJA P.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THERUVATH KADAVU",
+            "person": {
+                "id": "2015103100301",
+                "name": "ANEESH.M.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ULLIYERI WEST",
+            "person": {
+                "id": "2015103100401",
+                "name": "LATHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ORAVIL",
+            "person": {
+                "id": "2015103100501",
+                "name": "RAMANKUTTY C.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ULLIYERI NORTH",
+            "person": {
+                "id": "2015103100601",
+                "name": "BINDU KALARIYULLATHIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAMBOYIL",
+            "person": {
+                "id": "2015103100701",
+                "name": "RADHAKRISHNAN KURUNGOT"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ULLIYERI SOUTH",
+            "person": {
+                "id": "2015103100801",
+                "name": "SHAJI P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNDOTH",
+            "person": {
+                "id": "2015103100901",
+                "name": "VASANTHA.K.K NARATHIDATHIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NARATH",
+            "person": {
+                "id": "2015103101001",
+                "name": "ANITHA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNATHARA",
+            "person": {
+                "id": "2015103101101",
+                "name": "BINDU KOROTH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHANCHERY",
+            "person": {
+                "id": "2015103101202",
+                "name": "REMA KOTTARATHIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHOORVATTOM",
+            "person": {
+                "id": "2015103101301",
+                "name": "SUNITHA A.M"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "OLLUR",
+            "person": {
+                "id": "2015103101401",
+                "name": "PRASANNA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "OLLUR NORTH",
+            "person": {
+                "id": "2015103101501",
+                "name": "SHAJU CHERUKKAVIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANAYANKOD",
+            "person": {
+                "id": "2015103101601",
+                "name": "ANOOP KUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ANAVATHIL",
+            "person": {
+                "id": "2015103101701",
+                "name": "SANTHOSH PUTHUKKEMPURAM"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KANNOOR",
+            "person": {
+                "id": "2015103101801",
+                "name": "RAVEENDRAN ALANKODE"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MANAD",
+            "person": {
+                "id": "2015103101901",
+                "name": "SUJATHA NAMBOOTHIRI"
+            }
+        }
+    ]
+}
