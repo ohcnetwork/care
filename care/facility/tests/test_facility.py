@@ -11,6 +11,13 @@ from config.tests.helper import mock_equal
 
 
 @pytest.fixture()
+def user_data():
+    return dict(
+        username="bar", user_type=5, district=13, phone_number="8887776664", gender=1, age=30, email="bar@foobar.com",
+    )
+
+
+@pytest.fixture()
 def facility_data():
     return {
         "name": "Foo",
@@ -53,6 +60,7 @@ class TestFacility:
         response_json = response.json()
         assert response_json == {
             **facility_data,
+            "id": mock_equal,
             "facility_type": "Educational Inst",
             "local_govt_body": {
                 "id": mock_equal,
@@ -114,11 +122,13 @@ class TestFacility:
         facility.created_by = user
         facility.save()
 
+        new_district = {"id": 12, "name": "Wayanad"}
+
         response = client.put(
             f"/api/v1/facility/{facility.id}/",
             {
                 "name": "Another name",
-                "district": facility.district,
+                "district": new_district["id"],
                 "facility_type": facility.facility_type,
                 "address": facility.address,
             },
@@ -127,7 +137,7 @@ class TestFacility:
         assert response.json() == {
             "id": facility.id,
             "name": "Another name",
-            "district": facility.district,
+            "district": new_district["id"],
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -135,7 +145,7 @@ class TestFacility:
                 "id": mock_equal,
                 "facility": facility.id,
                 "local_body": None,
-                "district": {"id": 12, "name": "Wayanad", "state": mock_equal},
+                "district": {"id": new_district["id"], "name": new_district["name"], "state": mock_equal},
             },
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
