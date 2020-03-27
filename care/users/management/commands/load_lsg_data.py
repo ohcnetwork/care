@@ -42,7 +42,7 @@ class Command(BaseCommand):
                     name=lb["name"],
                     district=district_map[lb["district"]],
                     localbody_code=lb["localbody_code"],
-                    type=LOCAL_BODY_CHOICE_MAP.get((lb["localbody_code"] or " ")[0], LOCAL_BODY_CHOICES[-1][0]),
+                    body_type=LOCAL_BODY_CHOICE_MAP.get((lb["localbody_code"] or " ")[0], LOCAL_BODY_CHOICES[-1][0]),
                 )
                 for lb in local_body_list
                 if lb.get("district") is not None
