@@ -1,0 +1,171 @@
+{
+    "timeStamp": 1566345300847,
+    "date": "2019-08-21",
+    "name": "Kunnamangalam  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnamangalam",
+    "area": "337.93km",
+    "localbody_code": "B111100",
+    "no_of_wards": 19,
+    "population": 285788,
+    "male": 143490,
+    "female": 142298,
+    "population_density": 846,
+    "sex_ratio": 992,
+    "literacy_rate": 91.96,
+    "literacy_rate_male": 95.78,
+    "literacy_rate_female": 88.11,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KURUVATTUR",
+            "person": {
+                "id": "2015013500101",
+                "name": "C.T BINOY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUNNAMANGALAM",
+            "person": {
+                "id": "2015013500201",
+                "name": "BUSHRA U.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHETHUKADAVU",
+            "person": {
+                "id": "2015013500301",
+                "name": "VIJI MUPPRAMMAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KATTANGAL",
+            "person": {
+                "id": "2015013500401",
+                "name": "SIVADASAN NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHATHAMANGALAM",
+            "person": {
+                "id": "2015013500501",
+                "name": "SUNITHA .P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KODIYATHUR",
+            "person": {
+                "id": "2015013500601",
+                "name": "A.K.T CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARASSERY",
+            "person": {
+                "id": "2015013500701",
+                "name": "V.N SUHAIB"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUMARANALLOOR",
+            "person": {
+                "id": "2015013500801",
+                "name": "V.JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANNIKODE",
+            "person": {
+                "id": "2015013500901",
+                "name": "UMA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUVADI",
+            "person": {
+                "id": "2015013501001",
+                "name": "K.P ABDURAHIMAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAVOOR",
+            "person": {
+                "id": "2015013501101",
+                "name": "K.M APPUKUNHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEROOPPA",
+            "person": {
+                "id": "2015013501201",
+                "name": "RAVIKUMAR PANOLI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERUKULATHOOR",
+            "person": {
+                "id": "2015013501301",
+                "name": "M.SUSHAMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOVATTUPARAMBA",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERUMANNA",
+            "person": {
+                "id": "2015013501501",
+                "name": "AMINABI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PAYYADIMEETHAL",
+            "person": {
+                "id": "2015013501601",
+                "name": "RAJEEV PERUMANPURA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUTTIKKATTOOR",
+            "person": {
+                "id": "2015013501701",
+                "name": "RAMLA T.K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PAINGOTUPURAM",
+            "person": {
+                "id": "2015013501801",
+                "name": "THRIPURI POOLORA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "POLOOR",
+            "person": {
+                "id": "2015013501901",
+                "name": "RATHI THADATHIL"
+            }
+        }
+    ]
+}

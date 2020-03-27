@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348347923,
+    "date": "2019-08-21",
+    "name": "Pattanchery  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Chittur",
+    "area": "30.3km",
+    "localbody_code": "G091006",
+    "no_of_wards": 16,
+    "population": 23505,
+    "male": 11476,
+    "female": 12029,
+    "population_density": 776,
+    "sex_ratio": 1048,
+    "literacy_rate": 73.34,
+    "literacy_rate_male": 82.5,
+    "literacy_rate_female": 64.68,
+    "president": "JAYASREEK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMBATTUPARAMBU",
+            "person": {
+                "id": "2015086300101",
+                "name": "SREEJITH R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAVILKALAM",
+            "person": {
+                "id": "2015086300201",
+                "name": "SUJITHA E.J"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ATTANCHERY",
+            "person": {
+                "id": "2015086300301",
+                "name": "SUNDARAN R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VILAKANAMKODE",
+            "person": {
+                "id": "2015086300401",
+                "name": "PRIYA V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANAMKAVU",
+            "person": {
+                "id": "2015086300501",
+                "name": "SURESH M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VANDITHAVALAM",
+            "person": {
+                "id": "2015086300601",
+                "name": "DHANALAKSHMY P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AYYAMVEETUCHALLA",
+            "person": {
+                "id": "2015086300701",
+                "name": "MOHANAN T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAKATTUCHALLA",
+            "person": {
+                "id": "2015086300801",
+                "name": "ARUMUGHAN M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATTIKULAM",
+            "person": {
+                "id": "2015086300901",
+                "name": "UDAYAKUMARI G"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNIMARI",
+            "person": {
+                "id": "2015086301001",
+                "name": "SIVADASAN P.S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THEKKEKAD",
+            "person": {
+                "id": "2015086301101",
+                "name": "JAYASREE K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHOZHIYAKKAD",
+            "person": {
+                "id": "2015086301201",
+                "name": "SHANI M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUTTUCHIRA",
+            "person": {
+                "id": "2015086301301",
+                "name": "SANTHAKUMARI K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADUCHIRA",
+            "person": {
+                "id": "2015086301401",
+                "name": "JAYANTHI G"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PATTANCHERY",
+            "person": {
+                "id": "2015086301501",
+                "name": "VIMALDAS P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARIPPALI",
+            "person": {
+                "id": "2015086301601",
+                "name": "MANIKKAN K.C"
+            }
+        }
+    ]
+}

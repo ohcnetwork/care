@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348292340,
+    "date": "2019-08-21",
+    "name": "Pudur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Attappady",
+    "area": "413.47km",
+    "localbody_code": "G090602",
+    "no_of_wards": 13,
+    "population": 12354,
+    "male": 6392,
+    "female": 5972,
+    "population_density": 30,
+    "sex_ratio": 936,
+    "literacy_rate": 39.02,
+    "literacy_rate_male": 45.94,
+    "literacy_rate_female": 31.47,
+    "president": "JYOTHIANILKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THUDUKKI",
+            "person": {
+                "id": "2015084300101",
+                "name": "ASHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALOOR",
+            "person": {
+                "id": "2015084300201",
+                "name": "PONNUSWAMI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOLAPPADI",
+            "person": {
+                "id": "2015084300301",
+                "name": "MANIYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SWARNNAGADHA",
+            "person": {
+                "id": "2015084300401",
+                "name": "MALLIKA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "UMMATHAMPADI",
+            "person": {
+                "id": "2015084300501",
+                "name": "MURUKES"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUDUR",
+            "person": {
+                "id": "2015084300601",
+                "name": "KARTHIK. R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHAVADIYOOR",
+            "person": {
+                "id": "2015084300701",
+                "name": "VATTATHAMMA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHALAYOOR",
+            "person": {
+                "id": "2015084300801",
+                "name": "JYOTHI ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULLI",
+            "person": {
+                "id": "2015084300901",
+                "name": "THANKAVEL.C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ELACHIVAZHI",
+            "person": {
+                "id": "2015084301001",
+                "name": "RAVI.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEERAKKADAVU",
+            "person": {
+                "id": "2015084301101",
+                "name": "KUPPAMMAL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADAVAYAL",
+            "person": {
+                "id": "2015084301201",
+                "name": "MALLIKA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANAKKAL",
+            "person": {
+                "id": "2015084301301",
+                "name": "R.MENAKARANI"
+            }
+        }
+    ]
+}

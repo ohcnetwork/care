@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348899128,
+    "date": "2019-08-21",
+    "name": "Kunnummal  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnummal",
+    "area": "10.58km",
+    "localbody_code": "G110301",
+    "no_of_wards": 13,
+    "population": 16870,
+    "male": 8302,
+    "female": 8568,
+    "population_density": 1563,
+    "sex_ratio": 1017,
+    "literacy_rate": 90.24,
+    "literacy_rate_male": 95.31,
+    "literacy_rate_female": 85.31,
+    "president": "RAJAN.K.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PATHIRIPPATTA WEST",
+            "person": {
+                "id": "2015100400101",
+                "name": "KUNHABDULLA.P.M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PATHIRIPPATTA EAST",
+            "person": {
+                "id": "2015100400201",
+                "name": "VIJILESH.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PILACHERI",
+            "person": {
+                "id": "2015100400301",
+                "name": "RADHIKA.R.T.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MURUVASSERY",
+            "person": {
+                "id": "2015100400401",
+                "name": "CHANDRI.K.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MOKERI EAST",
+            "person": {
+                "id": "2015100400501",
+                "name": "REETHA.V.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MOKERI WEST",
+            "person": {
+                "id": "2015100400601",
+                "name": "MALLIKA."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VATTOLI",
+            "person": {
+                "id": "2015100400701",
+                "name": "SAJITHA.C.P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MATHUKUNNU",
+            "person": {
+                "id": "2015100400801",
+                "name": "BINDU.M.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAKKATTIL SOUTH",
+            "person": {
+                "id": "2015100400901",
+                "name": "VANAJA OTHAYOTH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNUMMAL",
+            "person": {
+                "id": "2015100401001",
+                "name": "ASHRAF"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAKKATTIL NORTH",
+            "person": {
+                "id": "2015100401101",
+                "name": "REENA SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "OTHAYOTH",
+            "person": {
+                "id": "2015100401201",
+                "name": "KUNHIRAMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNDUKADAVU",
+            "person": {
+                "id": "2015100401301",
+                "name": "RAJAN.K.T"
+            }
+        }
+    ]
+}

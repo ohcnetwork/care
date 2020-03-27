@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349637419,
+    "date": "2019-08-21",
+    "name": "Koruthodu  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kanjirappally",
+    "area": "27.46km",
+    "localbody_code": "G051107",
+    "no_of_wards": 13,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "T.K.RAJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "OREKKAR COLONY",
+            "person": {
+                "id": "2015121800101",
+                "name": "JAYAN P.T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MYNAKKULAM",
+            "person": {
+                "id": "2015121800201",
+                "name": "K.K.THANKAPPAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOMBUKUTHI",
+            "person": {
+                "id": "2015121800301",
+                "name": "P.K SUDHEER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUNDAKKAYAM BLOCK",
+            "person": {
+                "id": "2015121800401",
+                "name": "RATHNAMMA RAVINDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHANNAPLAVU",
+            "person": {
+                "id": "2015121800501",
+                "name": "JOJO PAMPADATHU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KORUTHODU",
+            "person": {
+                "id": "2015121800601",
+                "name": "K.B.RAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUZHIMAVU",
+            "person": {
+                "id": "2015121800701",
+                "name": "SHIJI AJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALLIPPADI",
+            "person": {
+                "id": "2015121800801",
+                "name": "RENI SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "504 I.H.D.P COLONY",
+            "person": {
+                "id": "2015121800901",
+                "name": "SAUMYAMOL K.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MOONNOLI I.H.D.P COLONY",
+            "person": {
+                "id": "2015121801001",
+                "name": "T.K. RAJU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOSADI",
+            "person": {
+                "id": "2015121801101",
+                "name": "MINI THANKACHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MADUKKA",
+            "person": {
+                "id": "2015121801201",
+                "name": "SASIKALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANACKACHIRA",
+            "person": {
+                "id": "2015121801301",
+                "name": "AJITHA OMANAKKUTTAN"
+            }
+        }
+    ]
+}

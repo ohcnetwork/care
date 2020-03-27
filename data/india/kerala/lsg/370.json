@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346203095,
+    "date": "2019-08-21",
+    "name": "Elamadu  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chadayamanagalam",
+    "area": "30.02km",
+    "localbody_code": "G021106",
+    "no_of_wards": 17,
+    "population": 23941,
+    "male": 11638,
+    "female": 12303,
+    "population_density": 798,
+    "sex_ratio": 1057,
+    "literacy_rate": 90.27,
+    "literacy_rate_male": 93.91,
+    "literacy_rate_female": 86.88,
+    "president": "CHITRAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALIYODU",
+            "person": {
+                "id": "2015037000101",
+                "name": "REENA.S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAMKODU",
+            "person": {
+                "id": "2015037000201",
+                "name": "RAMESH KUMAR R"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULIKKUZHI",
+            "person": {
+                "id": "2015037000301",
+                "name": "SUJAMOLE S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENGOOR",
+            "person": {
+                "id": "2015037000401",
+                "name": "VALIYODU JACOB"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEVANNOOR",
+            "person": {
+                "id": "2015037000501",
+                "name": "SHEELA S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KULANJIYIL",
+            "person": {
+                "id": "2015037000601",
+                "name": "M.A SATHAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELAMADU",
+            "person": {
+                "id": "2015037000701",
+                "name": "SHYLA V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALAMMUKKU",
+            "person": {
+                "id": "2015037000801",
+                "name": "BALACHANDRAN P.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THOTTATHARA",
+            "person": {
+                "id": "2015037000901",
+                "name": "NASEEMA BEEVI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARKKANNOOR",
+            "person": {
+                "id": "2015037001001",
+                "name": "TRIVIKRAMAN NAIR N"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNAMKODU",
+            "person": {
+                "id": "2015037001101",
+                "name": "RASHEEDA BEEVI N"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARALIKONAM",
+            "person": {
+                "id": "2015037001201",
+                "name": "SALEENA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POOTHOOR",
+            "person": {
+                "id": "2015037001301",
+                "name": "CHITRA S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EDATHARAPPANA",
+            "person": {
+                "id": "2015037001401",
+                "name": "MINIMOLE P.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOTTAKKAVILA",
+            "person": {
+                "id": "2015037001501",
+                "name": "SHYLA MANOJ"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERUVAKKAL",
+            "person": {
+                "id": "2015037001601",
+                "name": "CHANDRAN PILLAI R.A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NETTAYAM",
+            "person": {
+                "id": "2015037001701",
+                "name": "BIJU M"
+            }
+        }
+    ]
+}

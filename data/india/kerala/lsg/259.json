@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345819086,
+    "date": "2019-08-21",
+    "name": "Uzhamalakkal  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vellanad",
+    "area": "18.74km",
+    "localbody_code": "G010505",
+    "no_of_wards": 15,
+    "population": 19307,
+    "male": 9542,
+    "female": 9765,
+    "population_density": 1030,
+    "sex_ratio": 1023,
+    "literacy_rate": 86.5,
+    "literacy_rate_male": 91.27,
+    "literacy_rate_female": 81.87,
+    "president": "RAHIMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERILA",
+            "person": {
+                "id": "2015025900101",
+                "name": "ANTONY D"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYYAPPANKKUZHY",
+            "person": {
+                "id": "2015025900201",
+                "name": "SUNIL KUMAR S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KURYATHY",
+            "person": {
+                "id": "2015025900301",
+                "name": "SUJATHA B.B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PONGODU",
+            "person": {
+                "id": "2015025900401",
+                "name": "SUJATHA R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUNPALA",
+            "person": {
+                "id": "2015025900501",
+                "name": "USHAILA S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHITTUVEEDU",
+            "person": {
+                "id": "2015025900601",
+                "name": "SIMI V.S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULIMOOD",
+            "person": {
+                "id": "2015025900701",
+                "name": "RAJEEV SATHYAN S.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KULAPPADA",
+            "person": {
+                "id": "2015025900801",
+                "name": "RAHIM A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALOOKONAM",
+            "person": {
+                "id": "2015025900901",
+                "name": "LATHA O.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ELIYAVOOR",
+            "person": {
+                "id": "2015025901001",
+                "name": "MANILA SHIVAN U"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAKRAPANIPURAM",
+            "person": {
+                "id": "2015025901101",
+                "name": "SHYJA L"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANJAMMOOLA",
+            "person": {
+                "id": "2015025901201",
+                "name": "KUMARI SAILAJA M.J"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHUKKULANGARA",
+            "person": {
+                "id": "2015025901301",
+                "name": "OSSANKUNJU A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANIKYAPURAM",
+            "person": {
+                "id": "2015025901401",
+                "name": "BEENA S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARUTHYKUZHI",
+            "person": {
+                "id": "2015025901501",
+                "name": "JAYAKUMAR K"
+            }
+        }
+    ]
+}

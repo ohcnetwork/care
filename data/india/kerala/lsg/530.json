@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346794732,
+    "date": "2019-08-21",
+    "name": "Meenachil  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Lalam",
+    "area": "30.14km",
+    "localbody_code": "G050505",
+    "no_of_wards": 13,
+    "population": 16054,
+    "male": 8097,
+    "female": 7957,
+    "population_density": 533,
+    "sex_ratio": 983,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "RENIBIJOY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARAPPALLY",
+            "person": {
+                "id": "2015053000101",
+                "name": "AMBILY K.T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIZHAPARAYAR",
+            "person": {
+                "id": "2015053000201",
+                "name": "SHIBU SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDAMATTOM",
+            "person": {
+                "id": "2015053000301",
+                "name": "MANJU VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POOVATHODU",
+            "person": {
+                "id": "2015053000401",
+                "name": "JESSY JOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHATHAMKULAM",
+            "person": {
+                "id": "2015053000501",
+                "name": "MERCYKUTTY KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VILAKKUMADOM",
+            "person": {
+                "id": "2015053000601",
+                "name": "VIMALA VINODH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAIKA",
+            "person": {
+                "id": "2015053000701",
+                "name": "SINDHU JAIBU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POOVARANI",
+            "person": {
+                "id": "2015053000801",
+                "name": "SAJO JOHN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUKALEL PEEDIKA",
+            "person": {
+                "id": "2015053000901",
+                "name": "BIJU C.B"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOCHUKOTTARAM",
+            "person": {
+                "id": "2015053001001",
+                "name": "RENI BIJOY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAAKKADU",
+            "person": {
+                "id": "2015053001101",
+                "name": "JANCY SHAJI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VILAKKUMMARUTHU",
+            "person": {
+                "id": "2015053001201",
+                "name": "SURESH K.B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MEENACHIL",
+            "person": {
+                "id": "2015053001301",
+                "name": "JIBIN JOHN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345910522,
+    "date": "2019-08-21",
+    "name": "Ottasekharamangalam  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Perumkadavila",
+    "area": "18.14km",
+    "localbody_code": "G010903",
+    "no_of_wards": 14,
+    "population": 17434,
+    "male": 8685,
+    "female": 8749,
+    "population_density": 961,
+    "sex_ratio": 1007,
+    "literacy_rate": 87.82,
+    "literacy_rate_male": 91.35,
+    "literacy_rate_female": 84.31,
+    "president": "LVAJAYAKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POOZHANADU",
+            "person": {
+                "id": "2015028500101",
+                "name": "MOLY S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALACHALKKONAM",
+            "person": {
+                "id": "2015028500201",
+                "name": "CHERUPUSHPAM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANAKKALA",
+            "person": {
+                "id": "2015028500301",
+                "name": "B SHIBU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PEREKKONAM",
+            "person": {
+                "id": "2015028500401",
+                "name": "K VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALIVILAKAM",
+            "person": {
+                "id": "2015028500501",
+                "name": "SREEDHARAN THRISEELAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VAZHICHAL",
+            "person": {
+                "id": "2015028500601",
+                "name": "MINI VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PLAMPAZHINJI",
+            "person": {
+                "id": "2015028500702",
+                "name": "PRABHA T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VATTAPARAMBU",
+            "person": {
+                "id": "2015028500801",
+                "name": "B USHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OTTASEKHARAMANGALAM",
+            "person": {
+                "id": "2015028500901",
+                "name": "SHAJI KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KURAVARA",
+            "person": {
+                "id": "2015028501001",
+                "name": "SREEKALA S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALIKODE",
+            "person": {
+                "id": "2015028501101",
+                "name": "L V AJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANDAPATHINKADAVU",
+            "person": {
+                "id": "2015028501201",
+                "name": "ANITHA A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNNANADU",
+            "person": {
+                "id": "2015028501301",
+                "name": "K JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADAMPARA",
+            "person": {
+                "id": "2015028501401",
+                "name": "MINARVA SUKUMARAN"
+            }
+        }
+    ]
+}

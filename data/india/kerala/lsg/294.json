@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566345941253,
+    "date": "2019-08-21",
+    "name": "Kottukal  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Athiyannoor",
+    "area": "12.16km",
+    "localbody_code": "G011004",
+    "no_of_wards": 19,
+    "population": 28968,
+    "male": 14540,
+    "female": 14428,
+    "population_density": 2382,
+    "sex_ratio": 992,
+    "literacy_rate": 84.31,
+    "literacy_rate_male": 86.84,
+    "literacy_rate_female": 81.76,
+    "president": "SAJI.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANNOTTUKONAM",
+            "person": {
+                "id": "2015029400101",
+                "name": "BINU.R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AVANAKUZHI",
+            "person": {
+                "id": "2015029400201",
+                "name": "VASANTHA.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANNAKKALLU",
+            "person": {
+                "id": "2015029400301",
+                "name": "SAJI.T"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOLLAKONAM",
+            "person": {
+                "id": "2015029400401",
+                "name": "SULOCHANA.B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUZHIVILAKONAM",
+            "person": {
+                "id": "2015029400501",
+                "name": "CHANDRA LEKHA.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015029400601",
+                "name": "ANITHA.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MOOLAKKARA",
+            "person": {
+                "id": "2015029400701",
+                "name": "SOBHA.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHOWARA",
+            "person": {
+                "id": "2015029400801",
+                "name": "CHANDRALEKHA.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AMBALATHUMOOLA",
+            "person": {
+                "id": "2015029400901",
+                "name": "KOCHUTHRESIA..J"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ADIMALATHURA",
+            "person": {
+                "id": "2015029401001",
+                "name": "THRESIA DAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULINKUDI",
+            "person": {
+                "id": "2015029401101",
+                "name": "SAJITHRA.S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHAPPATH",
+            "person": {
+                "id": "2015029401201",
+                "name": "SYAMALA.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEKKEKONAM",
+            "person": {
+                "id": "2015029401301",
+                "name": "AJITHAKUMARI.A.S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUNNAKULAM",
+            "person": {
+                "id": "2015029401401",
+                "name": "BINU.T.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "OFFICE WARD",
+            "person": {
+                "id": "2015029401501",
+                "name": "SAJI.K.S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MARUTHOORKONAM",
+            "person": {
+                "id": "2015029401601",
+                "name": "PRASAD.R"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAYATTUVILA",
+            "person": {
+                "id": "2015029401701",
+                "name": "USHAKUMARI.B"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PULIYOORKONAM",
+            "person": {
+                "id": "2015029401801",
+                "name": "HARICHANDRAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PULIVILA",
+            "person": {
+                "id": "2015029401901",
+                "name": "SUJAKUMARI.A.O"
+            }
+        }
+    ]
+}

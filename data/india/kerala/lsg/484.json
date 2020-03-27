@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346599781,
+    "date": "2019-08-21",
+    "name": "Chennithala-Thripperumthura  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Mavelikkara",
+    "area": "22.26km",
+    "localbody_code": "G041003",
+    "no_of_wards": 18,
+    "population": 27569,
+    "male": 13259,
+    "female": 14310,
+    "population_density": 1238,
+    "sex_ratio": 1079,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "E.N.NARAYANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINJAREVAZHI",
+            "person": {
+                "id": "2015048400101",
+                "name": "UMAYAMMA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERAMATHOOR WEST",
+            "person": {
+                "id": "2015048400201",
+                "name": "JINU GEORGE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ERAMATHOOR EAST",
+            "person": {
+                "id": "2015048400301",
+                "name": "D.GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NAVODAYA WARD",
+            "person": {
+                "id": "2015048400401",
+                "name": "BINU C VARGHESE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ORIPRAM",
+            "person": {
+                "id": "2015048400501",
+                "name": "AMBIKA KUMARI K.R(SANTHI)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARAZHMA",
+            "person": {
+                "id": "2015048400601",
+                "name": "V.J.VARGHESE (SAM)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARAZHMA EAST",
+            "person": {
+                "id": "2015048400701",
+                "name": "AJITHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ASRAMAM WARD",
+            "person": {
+                "id": "2015048400801",
+                "name": "E.N.NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PRAYIKARA",
+            "person": {
+                "id": "2015048400901",
+                "name": "XAVIER KUNNUMPURATHU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUKOLE",
+            "person": {
+                "id": "2015048401001",
+                "name": "ASHA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "WEST CHERUKOLE",
+            "person": {
+                "id": "2015048401101",
+                "name": "GIRIGA SHIVAKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTAYKAKAM",
+            "person": {
+                "id": "2015048401201",
+                "name": "UDAYAN CHENNITHALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANCHAYAT OFFICE WARD",
+            "person": {
+                "id": "2015048401301",
+                "name": "SUKUMARI (SUMA VISUAS)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THRIPPERUMTHURA",
+            "person": {
+                "id": "2015048401401",
+                "name": "VINITHA KUMARI.G"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHALAYIL KSHETHRAM WARD",
+            "person": {
+                "id": "2015048401501",
+                "name": "L.REMADEVI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PHC WARD",
+            "person": {
+                "id": "2015048401601",
+                "name": "OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THEKKUMMURI",
+            "person": {
+                "id": "2015048401701",
+                "name": "JAYAKUMARI.K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KARIKKUZHY",
+            "person": {
+                "id": "2015048401801",
+                "name": "THOMASKUTTY KADAVIL"
+            }
+        }
+    ]
+}

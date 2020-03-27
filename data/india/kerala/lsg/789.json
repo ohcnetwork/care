@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566348106136,
+    "date": "2019-08-21",
+    "name": "Sreenarayanapuram  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mathilakam",
+    "area": "19.26km",
+    "localbody_code": "G081405",
+    "no_of_wards": 21,
+    "population": 34878,
+    "male": 16489,
+    "female": 18389,
+    "population_density": 1811,
+    "sex_ratio": 1115,
+    "literacy_rate": 89.58,
+    "literacy_rate_male": 93.79,
+    "literacy_rate_female": 85.9,
+    "president": "MALLIKAERUMATHURUTHI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VEKKODE",
+            "person": {
+                "id": "2015078900101",
+                "name": "PRAKASHINI R K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYYAPPANKAVU",
+            "person": {
+                "id": "2015078900201",
+                "name": "JAYA SUNILRAJ"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POZHAMKAVU",
+            "person": {
+                "id": "2015078900301",
+                "name": "LALITHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015078900401",
+                "name": "K.RAGHUNADH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANANGAD",
+            "person": {
+                "id": "2015078900501",
+                "name": "M.S.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANCHAMPARATHY",
+            "person": {
+                "id": "2015078900601",
+                "name": "BIJISH P S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLINADA",
+            "person": {
+                "id": "2015078900701",
+                "name": "AMINA ANVAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SANTHIPURAM",
+            "person": {
+                "id": "2015078900801",
+                "name": "MUHAMMED HUSSAIN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALA",
+            "person": {
+                "id": "2015078900901",
+                "name": "AJITHA SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GOTHURUTH",
+            "person": {
+                "id": "2015078901001",
+                "name": "LAKSHMI MANJULAL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VASUDEVAVILASAM",
+            "person": {
+                "id": "2015078901101",
+                "name": "C.N.SATHEESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTHAPARAMBU",
+            "person": {
+                "id": "2015078901201",
+                "name": "SHIMJI AJITHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMANDOOR",
+            "person": {
+                "id": "2015078901301",
+                "name": "JISHA NITHISHKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHUMANAPARAMBU",
+            "person": {
+                "id": "2015078901401",
+                "name": "SAUDA NAZAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PATHAZHAKAD",
+            "person": {
+                "id": "2015078901502",
+                "name": "K A HYDROSE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NELPINI",
+            "person": {
+                "id": "2015078901601",
+                "name": "MALLIKA ERUMATHURUTHI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PATHIYASSERRY",
+            "person": {
+                "id": "2015078901701",
+                "name": "SHEELA BABU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THANIYAMBASAR",
+            "person": {
+                "id": "2015078901801",
+                "name": "VINAYAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KADAPPURAM",
+            "person": {
+                "id": "2015078901901",
+                "name": "SHYBI DINAKARAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "P VEMBALLUR",
+            "person": {
+                "id": "2015078902001",
+                "name": "K.R.ASOKAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ASMABICOLLEGE",
+            "person": {
+                "id": "2015078902101",
+                "name": "BEENA SANEESH"
+            }
+        }
+    ]
+}

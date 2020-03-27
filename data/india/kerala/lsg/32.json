@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344963008,
+    "date": "2019-08-21",
+    "name": "Pandalam  Block Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Pandalam",
+    "area": "55.65km",
+    "localbody_code": "B030700",
+    "no_of_wards": 13,
+    "population": 61903,
+    "male": 29592,
+    "female": 32311,
+    "population_density": 1112,
+    "sex_ratio": 1092,
+    "literacy_rate": 92.06,
+    "literacy_rate_male": 94.33,
+    "literacy_rate_female": 90.03,
+    "president": "PKTHANKAMMATEACHER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARATTUPUZHA",
+            "person": {
+                "id": "2015003200101",
+                "name": "N S KUMAR (MAKKAN)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ARANMULA",
+            "person": {
+                "id": "2015003200201",
+                "name": "P K SUBEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOOLOOR",
+            "person": {
+                "id": "2015003200301",
+                "name": "PINKY SREEDHAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THUMPAMON THAZHAM",
+            "person": {
+                "id": "2015003200401",
+                "name": "M K SYAMALAKUMARY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THUMPAMON",
+            "person": {
+                "id": "2015003200501",
+                "name": "THOMAS  T. VARGHEESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THATTAYIL",
+            "person": {
+                "id": "2015003200601",
+                "name": "N VILASINI TEACHER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PONGALADY",
+            "person": {
+                "id": "2015003200701",
+                "name": "REKHA ANIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VIJAYAPURAM",
+            "person": {
+                "id": "2015003200801",
+                "name": "REGHU PERUMPULICKAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KULANADA",
+            "person": {
+                "id": "2015003200901",
+                "name": "RADHAMONEY K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ULLANNOOR",
+            "person": {
+                "id": "2015003201001",
+                "name": "JOHNSON ULLANNOOR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MEZHUVELY",
+            "person": {
+                "id": "2015003201101",
+                "name": "P K THANKAMMA TEACHER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALLANA",
+            "person": {
+                "id": "2015003201201",
+                "name": "SANTHAKUMARI TEACHER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEERVILAKAM",
+            "person": {
+                "id": "2015003201301",
+                "name": "P B SATHEESHKUMAR"
+            }
+        }
+    ]
+}

@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348843443,
+    "date": "2019-08-21",
+    "name": "Edapal  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Ponnani",
+    "area": "22.28km",
+    "localbody_code": "G101403",
+    "no_of_wards": 19,
+    "population": 27817,
+    "male": 13382,
+    "female": 14435,
+    "population_density": 1249,
+    "sex_ratio": 1079,
+    "literacy_rate": 90.64,
+    "literacy_rate_male": 94.4,
+    "literacy_rate_female": 86.88,
+    "president": "BIJOYP.P.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THUYYAM NORTH",
+            "person": {
+                "id": "2015098800101",
+                "name": "VIJI P.P."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THATTANPADI",
+            "person": {
+                "id": "2015098800201",
+                "name": "MINIMOL K.P."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PONNAZHIKKARA",
+            "person": {
+                "id": "2015098800301",
+                "name": "RAVEENDRAN C."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THARAKKAL",
+            "person": {
+                "id": "2015098800401",
+                "name": "SUBRAHMANIAN K.P."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POLPPAKKARA",
+            "person": {
+                "id": "2015098800501",
+                "name": "BIJOY P.P."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMPARAMBA",
+            "person": {
+                "id": "2015098800601",
+                "name": "BHAVANI AMMA M.V."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POROOKKARA",
+            "person": {
+                "id": "2015098800701",
+                "name": "SREEJESH K."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAPAL ANGADI",
+            "person": {
+                "id": "2015098800801",
+                "name": "MAJEED V.K."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THALAMUNDA",
+            "person": {
+                "id": "2015098800901",
+                "name": "RADHIKA A.C."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAPAL CENTRE",
+            "person": {
+                "id": "2015098801001",
+                "name": "RADHIKA P.V."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VENGINIKKARA",
+            "person": {
+                "id": "2015098801101",
+                "name": "BABY PRASANNA MOOLAYIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PONKUNNU",
+            "person": {
+                "id": "2015098801201",
+                "name": "SOBHANA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIKKAD",
+            "person": {
+                "id": "2015098801301",
+                "name": "MANI C.P. CHEMBIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOLOLAMBA",
+            "person": {
+                "id": "2015098801401",
+                "name": "SUBAIDA C.V."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VAIDYARMOOLA",
+            "person": {
+                "id": "2015098801501",
+                "name": "KRISHNADAS K."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "POOKKARATHARA",
+            "person": {
+                "id": "2015098801601",
+                "name": "BUSHRA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AYILAKKAD EAST",
+            "person": {
+                "id": "2015098801701",
+                "name": "JANATHA PADMINI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AYILAKKAD WEST",
+            "person": {
+                "id": "2015098801801",
+                "name": "ABDUL NAVAS E.P."
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THUYYAM SOUTH",
+            "person": {
+                "id": "2015098801901",
+                "name": "NALINI P.V."
+            }
+        }
+    ]
+}

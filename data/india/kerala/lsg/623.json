@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566347095799,
+    "date": "2019-08-21",
+    "name": "Vandiperiyar  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Azhutta",
+    "area": "107.83km",
+    "localbody_code": "G060806",
+    "no_of_wards": 23,
+    "population": 45660,
+    "male": 22951,
+    "female": 22709,
+    "population_density": 426,
+    "sex_ratio": 989,
+    "literacy_rate": 75,
+    "literacy_rate_male": 84,
+    "literacy_rate_female": 67,
+    "president": "SHANTHIHARIDAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MOONGALAR",
+            "person": {
+                "id": "2015062300101",
+                "name": "VIJAYALAKSHMI C"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "DYMOCK",
+            "person": {
+                "id": "2015062300201",
+                "name": "MANONMANY S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANNIMARCHOLA",
+            "person": {
+                "id": "2015062300301",
+                "name": "RADHAMANI RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "WALLARDIE ESTATE",
+            "person": {
+                "id": "2015062300401",
+                "name": "RENUKA U"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NELLIMALA",
+            "person": {
+                "id": "2015062300501",
+                "name": "SUBASH T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "WALLARDIE NORTH",
+            "person": {
+                "id": "2015062300601",
+                "name": "BINCY BABY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANDIPERIYAR EAST",
+            "person": {
+                "id": "2015062300701",
+                "name": "KADALKANI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "WALLARDIE SOUTH",
+            "person": {
+                "id": "2015062300801",
+                "name": "GANESAN M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "INCHIKADU",
+            "person": {
+                "id": "2015062300904",
+                "name": "SUGANTHI P P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THANKAMALA",
+            "person": {
+                "id": "2015062301001",
+                "name": "RAJAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALLAKADAVU",
+            "person": {
+                "id": "2015062301101",
+                "name": "NOUSHAD P M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOUNT",
+            "person": {
+                "id": "2015062301201",
+                "name": "MARIYAPPAN M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "DEEPDEEN",
+            "person": {
+                "id": "2015062301301",
+                "name": "RAJENDRAN S P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ARANAKAL",
+            "person": {
+                "id": "2015062301401",
+                "name": "MUTHUKUMAR R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "GRAMBY",
+            "person": {
+                "id": "2015062301501",
+                "name": "PREMKUMAR P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANJUMALA",
+            "person": {
+                "id": "2015062301601",
+                "name": "LEELAMMA S"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "RAJAMUDI",
+            "person": {
+                "id": "2015062301701",
+                "name": "BALAMURUGAN K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VANDIPERIYAR TOWN WEST",
+            "person": {
+                "id": "2015062301801",
+                "name": "SHANTHI HARIDAS"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHURAKULAM UPPER DIVISION",
+            "person": {
+                "id": "2015062301901",
+                "name": "KALAIVANI J"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PASUMALA",
+            "person": {
+                "id": "2015062302001",
+                "name": "VANITHA R"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KEERIKARA",
+            "person": {
+                "id": "2015062302101",
+                "name": "GEETHA NESIYAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PALLIKADA",
+            "person": {
+                "id": "2015062302201",
+                "name": "SURENDRAN K.K"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "THENGAKAL",
+            "person": {
+                "id": "2015062302301",
+                "name": "JUSTIN  CHAVARAPUZHA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345234633,
+    "date": "2019-08-21",
+    "name": "Mankada  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "239.71km",
+    "localbody_code": "B100800",
+    "no_of_wards": 13,
+    "population": 244562,
+    "male": 118752,
+    "female": 125810,
+    "population_density": 1020,
+    "sex_ratio": 1059,
+    "literacy_rate": 90.05,
+    "literacy_rate_male": 93.32,
+    "literacy_rate_female": 86.78,
+    "president": "ELIKKOTTILSAHEEDA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOOTTILANGADI",
+            "person": {
+                "id": "2015011700101",
+                "name": "ASKAR ALI NK"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALLIKKAPATTA",
+            "person": {
+                "id": "2015011700201",
+                "name": "SUBAIDA NARIKKUNNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOZHIKKOTTUPARAMBA",
+            "person": {
+                "id": "2015011700301",
+                "name": "SHALI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANKADA",
+            "person": {
+                "id": "2015011700401",
+                "name": "ELIKKOTTIL SAHEEDA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKANGARA",
+            "person": {
+                "id": "2015011700501",
+                "name": "NASEEMA VP"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUZHAKATTIRI",
+            "person": {
+                "id": "2015011700601",
+                "name": "RAVEENDRAN K.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADUNGAPURAM",
+            "person": {
+                "id": "2015011700701",
+                "name": "SASI MENON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KULATHUR",
+            "person": {
+                "id": "2015011700801",
+                "name": "HALEEMA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENGADU",
+            "person": {
+                "id": "2015011700901",
+                "name": "CHAKRATHIL BINDU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANG",
+            "person": {
+                "id": "2015011701001",
+                "name": "SHIHABUTHEEN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PADAPARMBA",
+            "person": {
+                "id": "2015011701101",
+                "name": "SAJNA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAKKARAPARAMBA",
+            "person": {
+                "id": "2015011701201",
+                "name": "BASHEER VENKITTA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KURUVA",
+            "person": {
+                "id": "2015011701301",
+                "name": "ABDULSALAM  P"
+            }
+        }
+    ]
+}

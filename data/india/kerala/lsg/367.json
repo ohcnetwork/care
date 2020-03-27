@@ -1,0 +1,140 @@
+{
+    "timeStamp": 1566346191213,
+    "date": "2019-08-21",
+    "name": "Chadayamangalam  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chadayamanagalam",
+    "area": "19.04km",
+    "localbody_code": "G021103",
+    "no_of_wards": 15,
+    "population": 19846,
+    "male": 9600,
+    "female": 10246,
+    "population_density": 1042,
+    "sex_ratio": 1067,
+    "literacy_rate": 89.16,
+    "literacy_rate_male": 94.18,
+    "literacy_rate_female": 84.55,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THERUVINBHAGAM",
+            "person": {
+                "id": "2015036700101",
+                "name": "LEKSHMI. R.NAIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLOOPPARA",
+            "person": {
+                "id": "2015036700201",
+                "name": "B.MINI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDAKKODU",
+            "person": {
+                "id": "2015036700301",
+                "name": "P.RADHAKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MADANNADA",
+            "person": {
+                "id": "2015036700401",
+                "name": "J.SINDHU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POONKODU",
+            "person": {
+                "id": "2015036700501",
+                "name": "RENJITH.D"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AKKONAM",
+            "person": {
+                "id": "2015036700601",
+                "name": "MUHAMMED RAFFI.A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANNAMPARAMPU",
+            "person": {
+                "id": "2015036700701",
+                "name": "SAJEENA.A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANNANKODU",
+            "person": {
+                "id": "2015036700801",
+                "name": "D.JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHADAYAMANGALAM",
+            "person": {
+                "id": "2015036700901",
+                "name": "R.RAJENDRAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KURIYODU",
+            "person": {
+                "id": "2015036701001",
+                "name": "THARA.G"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VETTUVAZHI",
+            "person": {
+                "id": "2015036701101",
+                "name": "M.MANIKANDAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALAYAM",
+            "person": {
+                "id": "2015036701201",
+                "name": "MINI SUNIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALLIKKADU",
+            "person": {
+                "id": "2015036701301",
+                "name": "GIRIJA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MOOLAMKODU",
+            "person": {
+                "id": "2015036701401",
+                "name": "SINDHU.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POREDOM",
+            "person": {
+                "id": "2015036701501",
+                "name": "AHAMMEDKUNJU"
+            }
+        }
+    ]
+}

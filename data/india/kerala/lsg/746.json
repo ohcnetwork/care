@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347534562,
+    "date": "2019-08-21",
+    "name": "Arimpur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "22.65km",
+    "localbody_code": "G080905",
+    "no_of_wards": 17,
+    "population": 23289,
+    "male": 11375,
+    "female": 11914,
+    "population_density": 1028,
+    "sex_ratio": 1047,
+    "literacy_rate": 93.01,
+    "literacy_rate_male": 95.57,
+    "literacy_rate_female": 90.61,
+    "president": "SUJATHAMOHANDAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERAVU NORTH",
+            "person": {
+                "id": "2015074600101",
+                "name": "SUBITHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMPURAM",
+            "person": {
+                "id": "2015074600201",
+                "name": "AMBIKA M."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARIMPUR",
+            "person": {
+                "id": "2015074600301",
+                "name": "SILPA C."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAKKAD WEST",
+            "person": {
+                "id": "2015074600401",
+                "name": "SUDHA SADANANDAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAKKAD EAST",
+            "person": {
+                "id": "2015074600501",
+                "name": "SUJATHA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIZHAKKUMPURAM",
+            "person": {
+                "id": "2015074600601",
+                "name": "JAYASREE RAVI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANAKKODY",
+            "person": {
+                "id": "2015074600701",
+                "name": "AJAYAKUMAR K.A."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NADUMURI",
+            "person": {
+                "id": "2015074600801",
+                "name": "SINDHU SAHADEVAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANAKKODY SOUTH",
+            "person": {
+                "id": "2015074600901",
+                "name": "SARADA GIRIJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THACHAMPILLY",
+            "person": {
+                "id": "2015074601001",
+                "name": "SOBHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELUTHUR",
+            "person": {
+                "id": "2015074601101",
+                "name": "VIJITHA PRATHAPAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VILAKKUMADAM",
+            "person": {
+                "id": "2015074601202",
+                "name": "SAJEESH C. G"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNNATHANGADI",
+            "person": {
+                "id": "2015074601301",
+                "name": "SATHEESH N.C."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAIPILLY EAST",
+            "person": {
+                "id": "2015074601401",
+                "name": "SHAJU K.V."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAIPPILLY",
+            "person": {
+                "id": "2015074601501",
+                "name": "ARAVINDAKSHAN T.R."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ERAVU EAST",
+            "person": {
+                "id": "2015074601601",
+                "name": "PAUL C.P,"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ERAVU SOUTH",
+            "person": {
+                "id": "2015074601701",
+                "name": "PRASEEDH K."
+            }
+        }
+    ]
+}

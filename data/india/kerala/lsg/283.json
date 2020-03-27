@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345905251,
+    "date": "2019-08-21",
+    "name": "Perumkadavila  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Perumkadavila",
+    "area": "17.54km",
+    "localbody_code": "G010901",
+    "no_of_wards": 16,
+    "population": 21098,
+    "male": 10545,
+    "female": 10553,
+    "population_density": 1203,
+    "sex_ratio": 1001,
+    "literacy_rate": 86.62,
+    "literacy_rate_male": 90.25,
+    "literacy_rate_female": 83.04,
+    "president": "SUNITHAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAZHAMALA",
+            "person": {
+                "id": "2015028300101",
+                "name": "SREEKUMAR K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ANCODE",
+            "person": {
+                "id": "2015028300201",
+                "name": "S GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALKULANGARA",
+            "person": {
+                "id": "2015028300301",
+                "name": "PRASANNAKUMARI P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ALATHOOR",
+            "person": {
+                "id": "2015028300401",
+                "name": "NISHA V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THATHIYOOR",
+            "person": {
+                "id": "2015028300501",
+                "name": "G VALSALA KUMARI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THRIPPALAVOOR",
+            "person": {
+                "id": "2015028300601",
+                "name": "PRASAD B"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARUVIKKARA",
+            "person": {
+                "id": "2015028300701",
+                "name": "SARASWATHI A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VADAKARA",
+            "person": {
+                "id": "2015028300801",
+                "name": "I SIMON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHULLIYOOR",
+            "person": {
+                "id": "2015028300901",
+                "name": "C MOHANA KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANAMUKHAM",
+            "person": {
+                "id": "2015028301001",
+                "name": "N T SHEELAKUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARAYAMUTTOM",
+            "person": {
+                "id": "2015028301101",
+                "name": "P SREEDHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ARUVIPPURAM",
+            "person": {
+                "id": "2015028301201",
+                "name": "SUNITHA I R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AYIROOR",
+            "person": {
+                "id": "2015028301301",
+                "name": "S S SREERAG"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THATHAMALA",
+            "person": {
+                "id": "2015028301401",
+                "name": "SUNITHA S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PULIMANCODE",
+            "person": {
+                "id": "2015028301501",
+                "name": "PREEJA KUMARI  K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERUMKADAVILA",
+            "person": {
+                "id": "2015028301601",
+                "name": "J S JAYAKUMARI"
+            }
+        }
+    ]
+}

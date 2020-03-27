@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566349282004,
+    "date": "2019-08-21",
+    "name": "Alakode  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "77.7km",
+    "localbody_code": "G130308",
+    "no_of_wards": 21,
+    "population": 33456,
+    "male": 16888,
+    "female": 16568,
+    "population_density": 431,
+    "sex_ratio": 981,
+    "literacy_rate": 91.34,
+    "literacy_rate_male": 94.1,
+    "literacy_rate_female": 88.55,
+    "president": "MOLYMANUEL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHITTADI",
+            "person": {
+                "id": "2015112000101",
+                "name": "CHANDRAMATHI T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THERTHALLI",
+            "person": {
+                "id": "2015112000201",
+                "name": "VALSAMMA JOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "RAYAROME",
+            "person": {
+                "id": "2015112000301",
+                "name": "SHIBI SANEESH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MOONNAMKUNNU",
+            "person": {
+                "id": "2015112000401",
+                "name": "AYSHA P. C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAPPA",
+            "person": {
+                "id": "2015112000501",
+                "name": "FRANCIS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUTTAPARAMBA",
+            "person": {
+                "id": "2015112000601",
+                "name": "MOLY MANUEL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ALAKODE",
+            "person": {
+                "id": "2015112000701",
+                "name": "GIRIJAMANI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OTTATHAI",
+            "person": {
+                "id": "2015112000801",
+                "name": "SALI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAPPIMALA",
+            "person": {
+                "id": "2015112000901",
+                "name": "JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NELLIKUNNU",
+            "person": {
+                "id": "2015112001001",
+                "name": "MISSY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVUMKUDI",
+            "person": {
+                "id": "2015112001101",
+                "name": "NISHA P. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOLAMBI",
+            "person": {
+                "id": "2015112001201",
+                "name": "VIKRAMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NARIYAMPARA",
+            "person": {
+                "id": "2015112001301",
+                "name": "JOSEPH XAVIOUR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOTTAYAD",
+            "person": {
+                "id": "2015112001401",
+                "name": "ALICE"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NELLIPARA",
+            "person": {
+                "id": "2015112001501",
+                "name": "BIJI CHACKO"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARANGAM",
+            "person": {
+                "id": "2015112001601",
+                "name": "C. MOHANAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEDUVODE",
+            "person": {
+                "id": "2015112001701",
+                "name": "BINDU M. K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MARIGIRY",
+            "person": {
+                "id": "2015112001801",
+                "name": "LISSY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THIMIRI",
+            "person": {
+                "id": "2015112001901",
+                "name": "RAJALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHERUPARA",
+            "person": {
+                "id": "2015112002001",
+                "name": "DEVADAS"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KOODAPRAM",
+            "person": {
+                "id": "2015112002101",
+                "name": "MRIDULA"
+            }
+        }
+    ]
+}

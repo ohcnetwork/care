@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566349408554,
+    "date": "2019-08-21",
+    "name": "Pinarayi  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thalassery",
+    "area": "20.04km",
+    "localbody_code": "G130703",
+    "no_of_wards": 19,
+    "population": 28759,
+    "male": 13871,
+    "female": 14888,
+    "population_density": 1435,
+    "sex_ratio": 1073,
+    "literacy_rate": 94.14,
+    "literacy_rate_male": 97.48,
+    "literacy_rate_female": 91.07,
+    "president": "GEETHAMAPK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARAPRAM",
+            "person": {
+                "id": "2015114900101",
+                "name": "PRASADAN KAIPRATH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDAKKADAV",
+            "person": {
+                "id": "2015114900201",
+                "name": "PRAMEELA V K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERIKKAL",
+            "person": {
+                "id": "2015114900301",
+                "name": "M P DILNA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PINARAYI NORTH",
+            "person": {
+                "id": "2015114900401",
+                "name": "GEETHAMA P K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "OLAYAMBALAM",
+            "person": {
+                "id": "2015114900501",
+                "name": "ASLAM K P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VENDUTTAYI",
+            "person": {
+                "id": "2015114900601",
+                "name": "PRADEEPAN C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOZHUR",
+            "person": {
+                "id": "2015114900701",
+                "name": "PRASANNA U P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PANUNDA",
+            "person": {
+                "id": "2015114900801",
+                "name": "SHEEBA V V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OLAYIKKARA",
+            "person": {
+                "id": "2015114900901",
+                "name": "MANAPPATTI CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ERUVATTY",
+            "person": {
+                "id": "2015114901001",
+                "name": "SADANANDAN P P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAPPUMMAL",
+            "person": {
+                "id": "2015114901101",
+                "name": "PRASEETHA A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PENANKIMETTA",
+            "person": {
+                "id": "2015114901201",
+                "name": "A SAJITHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANTHAKKAPPARA",
+            "person": {
+                "id": "2015114901301",
+                "name": "U AJITHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UMMENCHIRA",
+            "person": {
+                "id": "2015114901401",
+                "name": "C SANILA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KIZHAKKUMBHAGAM",
+            "person": {
+                "id": "2015114901501",
+                "name": "A RAJILA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PADANNAKKARA",
+            "person": {
+                "id": "2015114901602",
+                "name": "REMESHAN N V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PINARAYI THERU",
+            "person": {
+                "id": "2015114901701",
+                "name": "KOYIPRATH RAJAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOLAD",
+            "person": {
+                "id": "2015114901801",
+                "name": "NAVYA M"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PINARAYI WEST",
+            "person": {
+                "id": "2015114901901",
+                "name": "K MOHANAN"
+            }
+        }
+    ]
+}

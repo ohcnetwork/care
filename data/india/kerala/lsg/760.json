@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566347593684,
+    "date": "2019-08-21",
+    "name": "Anthikad  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Anthikkad",
+    "area": "12.99km",
+    "localbody_code": "G080901",
+    "no_of_wards": 15,
+    "population": 19426,
+    "male": 9105,
+    "female": 10321,
+    "population_density": 1495,
+    "sex_ratio": 1133,
+    "literacy_rate": 93.19,
+    "literacy_rate_male": 96.44,
+    "literacy_rate_female": 90.4,
+    "president": "A.V.SREEVALSAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULAMBUZHA",
+            "person": {
+                "id": "2015076000101",
+                "name": "MINI CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANGATTUKARA",
+            "person": {
+                "id": "2015076000201",
+                "name": "SARUN.P.A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANTHIKAD NORTH",
+            "person": {
+                "id": "2015076000301",
+                "name": "JYOTHY RAMAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERIYANKULANGARA BHAGAM",
+            "person": {
+                "id": "2015076000401",
+                "name": "A.V.SREEVALSAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANCHAYATH OFFICE BHAGAM",
+            "person": {
+                "id": "2015076000501",
+                "name": "K.M.KISHORKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANCHAYATH  GROUND BHAGAM",
+            "person": {
+                "id": "2015076000601",
+                "name": "V.A.DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHENPEEDIKA EAST",
+            "person": {
+                "id": "2015076000701",
+                "name": "SHAJU MALIAKKAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHENPEEDIKA WEST",
+            "person": {
+                "id": "2015076000801",
+                "name": "REENA GOPI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANTHIKAD SOUTH",
+            "person": {
+                "id": "2015076000901",
+                "name": "RADHIKAMUKUNDHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PADIYAM",
+            "person": {
+                "id": "2015076001001",
+                "name": "SUMA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANJANGADI",
+            "person": {
+                "id": "2015076001101",
+                "name": "BABU.A.B"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHOORAKODE",
+            "person": {
+                "id": "2015076001201",
+                "name": "MADHANAMOHANAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUTTICHUR",
+            "person": {
+                "id": "2015076001301",
+                "name": "SANTHA SOLAMAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOTTARAPARAMBU",
+            "person": {
+                "id": "2015076001401",
+                "name": "SUMAIRA BASHEER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KARAMAKKAL",
+            "person": {
+                "id": "2015076001501",
+                "name": "SARITHA SURESH"
+            }
+        }
+    ]
+}

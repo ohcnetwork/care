@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348136416,
+    "date": "2019-08-21",
+    "name": "Meloor  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chalakudy",
+    "area": "23.06km",
+    "localbody_code": "G081604",
+    "no_of_wards": 17,
+    "population": 24854,
+    "male": 12486,
+    "female": 12368,
+    "population_density": 1012,
+    "sex_ratio": 1028,
+    "literacy_rate": 89.24,
+    "literacy_rate_male": 93.98,
+    "literacy_rate_female": 84.7,
+    "president": "BABUP.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SANTHIPURAM",
+            "person": {
+                "id": "2015080100101",
+                "name": "M.S. BIJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KALLUKUTHY",
+            "person": {
+                "id": "2015080100201",
+                "name": "VICTORIA DAVIS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POOLANI NORTH",
+            "person": {
+                "id": "2015080100301",
+                "name": "SREEDEVI JAYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KURUPPAM",
+            "person": {
+                "id": "2015080100401",
+                "name": "BABU P.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POOLANI SOUTH",
+            "person": {
+                "id": "2015080100501",
+                "name": "AMBIKA BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUNNAPPILLY",
+            "person": {
+                "id": "2015080100601",
+                "name": "SHIJI VIKAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ADICHILY",
+            "person": {
+                "id": "2015080100701",
+                "name": "M.D. PRADEEP"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUSHPAGIRI",
+            "person": {
+                "id": "2015080100801",
+                "name": "SWAPNA DAVIS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALAPPILLY",
+            "person": {
+                "id": "2015080100901",
+                "name": "AVARACHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MULLANPARA",
+            "person": {
+                "id": "2015080101001",
+                "name": "JOSEPH PYNADATH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MELOOR CENTRE",
+            "person": {
+                "id": "2015080101101",
+                "name": "M.T.DAVIS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOVAKKATTUKUNU",
+            "person": {
+                "id": "2015080101201",
+                "name": "SATHY RAJEEV"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NADUTHURUTH",
+            "person": {
+                "id": "2015080101301",
+                "name": "C.K. VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MURINGOOR SOUTH",
+            "person": {
+                "id": "2015080101401",
+                "name": "RAJESH MENOTH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MURINGOOR NORTH",
+            "person": {
+                "id": "2015080101501",
+                "name": "M.S. SUNITHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANDIKKUNNU",
+            "person": {
+                "id": "2015080101601",
+                "name": "LATHIKA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALADY",
+            "person": {
+                "id": "2015080101701",
+                "name": "VANAJA DIVAKARAN"
+            }
+        }
+    ]
+}

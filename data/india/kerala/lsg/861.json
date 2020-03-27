@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348343374,
+    "date": "2019-08-21",
+    "name": "Kozhinjampara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Chittur",
+    "area": "43.84km",
+    "localbody_code": "G090902",
+    "no_of_wards": 18,
+    "population": 28073,
+    "male": 13942,
+    "female": 14131,
+    "population_density": 640,
+    "sex_ratio": 1014,
+    "literacy_rate": 69.48,
+    "literacy_rate_male": 79.5,
+    "literacy_rate_female": 59.64,
+    "president": "BABIDAAK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ATHICODE",
+            "person": {
+                "id": "2015086100101",
+                "name": "NADIYA MOIDU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KULLARAYANPALAYAM",
+            "person": {
+                "id": "2015086100201",
+                "name": "JOSEPHIN SUSILA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAZHANIYARPALAYAM",
+            "person": {
+                "id": "2015086100301",
+                "name": "HELEN AMALORPAVAMARY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KULUKKAPARA",
+            "person": {
+                "id": "2015086100401",
+                "name": "KRISHNA RAMANI.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOZHINJAMPARA",
+            "person": {
+                "id": "2015086100501",
+                "name": "NILAVARNISA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMPARACHALLA",
+            "person": {
+                "id": "2015086100601",
+                "name": "K CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ALAMPADI",
+            "person": {
+                "id": "2015086100701",
+                "name": "J.SRI RANJANI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHALLAPATHA",
+            "person": {
+                "id": "2015086100801",
+                "name": "BABIDA A K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARAKKALAM",
+            "person": {
+                "id": "2015086100901",
+                "name": "J. JEROSA SAJEEV"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARUAMMANCHALLA",
+            "person": {
+                "id": "2015086101001",
+                "name": "VIJAYANAND N"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SRAMBI",
+            "person": {
+                "id": "2015086101101",
+                "name": "KALEESWARI  S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANALTHODE",
+            "person": {
+                "id": "2015086101201",
+                "name": "K. KANTHASWAMY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHANDANAMPILLACHALLA",
+            "person": {
+                "id": "2015086101301",
+                "name": "RAJADURAI A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLANDICHALLA",
+            "person": {
+                "id": "2015086101401",
+                "name": "LATHA  R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KEERAKKARANPADY",
+            "person": {
+                "id": "2015086101501",
+                "name": "VIJAYAKUMARAN V"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NATTUKAL",
+            "person": {
+                "id": "2015086101602",
+                "name": "VANAJA KANNAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARAMPOTTA",
+            "person": {
+                "id": "2015086101701",
+                "name": "PREETHA K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KARUVAPPARA",
+            "person": {
+                "id": "2015086101801",
+                "name": "BENSHI  AZAD"
+            }
+        }
+    ]
+}

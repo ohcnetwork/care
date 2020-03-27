@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346272608,
+    "date": "2019-08-21",
+    "name": "Omalloor  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Elanthur",
+    "area": "14.54km",
+    "localbody_code": "G030401",
+    "no_of_wards": 14,
+    "population": 16460,
+    "male": 7897,
+    "female": 8563,
+    "population_density": 1132,
+    "sex_ratio": 1084,
+    "literacy_rate": 95.83,
+    "literacy_rate_male": 97.31,
+    "literacy_rate_female": 94.49,
+    "president": "GEETHAVIJAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEEKKANAL",
+            "person": {
+                "id": "2015039000101",
+                "name": "BOSE CHERIAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "IMALI WEST",
+            "person": {
+                "id": "2015039000201",
+                "name": "ABHILASH (HAPPY)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IMALI EAST",
+            "person": {
+                "id": "2015039000301",
+                "name": "SARADA KUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAYANALI",
+            "person": {
+                "id": "2015039000401",
+                "name": "SHINU C K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANNARAMALA",
+            "person": {
+                "id": "2015039000501",
+                "name": "THOMAS P S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHENPEEDIKA",
+            "person": {
+                "id": "2015039000601",
+                "name": "REMADEVI KUTTAPPAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAIVALLI",
+            "person": {
+                "id": "2015039000701",
+                "name": "LEKSHMI MANOJ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VAZHAMUTTOM NORTH",
+            "person": {
+                "id": "2015039000801",
+                "name": "GEETHA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VAZHAMUTTOM",
+            "person": {
+                "id": "2015039000901",
+                "name": "SREEVIDYA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MULLANIKKADU",
+            "person": {
+                "id": "2015039001001",
+                "name": "BLESSEN T ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANNYALI",
+            "person": {
+                "id": "2015039001101",
+                "name": "SAJU KOCHUTHUNDIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ATTARIKAM",
+            "person": {
+                "id": "2015039001201",
+                "name": "JAYASREE P K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "OMALLOOR TOWN",
+            "person": {
+                "id": "2015039001301",
+                "name": "SUJITH KUMAR P S (APPU)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANJINIKKARA",
+            "person": {
+                "id": "2015039001401",
+                "name": "AMPILI K"
+            }
+        }
+    ]
+}

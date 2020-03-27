@@ -1,0 +1,235 @@
+{
+    "timeStamp": 1566345380011,
+    "date": "2019-08-21",
+    "name": "Ernakulam  District Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "area": "2377.29km",
+    "localbody_code": "D070000",
+    "no_of_wards": 27,
+    "population": 3098378,
+    "male": 1535881,
+    "female": 1562497,
+    "population_density": 1170,
+    "sex_ratio": 1000,
+    "literacy_rate": 92.35,
+    "literacy_rate_male": 95.46,
+    "literacy_rate_female": 89.27,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERAI",
+            "person": {
+                "id": "2015015900101",
+                "name": "AYYAMPILLY BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MOOTHAKUNNAM",
+            "person": {
+                "id": "2015015900201",
+                "name": "SHYLA P S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARUKUTTI",
+            "person": {
+                "id": "2015015900301",
+                "name": "ADV. K Y TOMY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MALAYATTUR",
+            "person": {
+                "id": "2015015900401",
+                "name": "SAMSON CHACKO"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALADY",
+            "person": {
+                "id": "2015015900501",
+                "name": "SARADA MOHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KODANAD",
+            "person": {
+                "id": "2015015900601",
+                "name": "JANCY GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULLUVAZHI",
+            "person": {
+                "id": "2015015900701",
+                "name": "BASIL PAUL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BHUTHATHANKETTU",
+            "person": {
+                "id": "2015015900802",
+                "name": "K M PAREETH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NERYAMANGALAM",
+            "person": {
+                "id": "2015015900901",
+                "name": "SAUMYA SASI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VARAPPETTY",
+            "person": {
+                "id": "2015015901001",
+                "name": "ABRAHAM K T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AVOLI",
+            "person": {
+                "id": "2015015901101",
+                "name": "DOLLY KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALAKAM",
+            "person": {
+                "id": "2015015901201",
+                "name": "ARUN N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAMBAKKUDA",
+            "person": {
+                "id": "2015015901301",
+                "name": "K N SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UDAYAMPERUR",
+            "person": {
+                "id": "2015015901401",
+                "name": "A P SUBASH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MULANTHURUTHI",
+            "person": {
+                "id": "2015015901502",
+                "name": "ASHA SANIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUMBALANGI",
+            "person": {
+                "id": "2015015901601",
+                "name": "ADV: ANITHA SHEELAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PUTHENCRUZ",
+            "person": {
+                "id": "2015015901701",
+                "name": "C K AYYAPPANKUTTY"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOLENCHERY",
+            "person": {
+                "id": "2015015901801",
+                "name": "GEORGE EDAPPARATHY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VENGOLA",
+            "person": {
+                "id": "2015015901901",
+                "name": "JOLLY BABY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "EDATHALA",
+            "person": {
+                "id": "2015015902001",
+                "name": "ASLAF PAREKADAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KEEZHMADU",
+            "person": {
+                "id": "2015015902101",
+                "name": "ADV. ABDUL MUTHALIB"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "NEDUMBASSERY",
+            "person": {
+                "id": "2015015902201",
+                "name": "SARALA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "ALANGAD",
+            "person": {
+                "id": "2015015902301",
+                "name": "RESIA REHMATH C K"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "KADUNGALLUR",
+            "person": {
+                "id": "2015015902401",
+                "name": "SHEEBA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "KOTTUVALLI",
+            "person": {
+                "id": "2015015902501",
+                "name": "HIMA HARISH"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "VALLARPADAM",
+            "person": {
+                "id": "2015015902601",
+                "name": "SONA O S"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "VYPIN",
+            "person": {
+                "id": "2015015902701",
+                "name": "ROSE MARY  LAWRENCE"
+            }
+        }
+    ]
+}

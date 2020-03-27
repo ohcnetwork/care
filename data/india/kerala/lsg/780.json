@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566348082023,
+    "date": "2019-08-21",
+    "name": "Padiyur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vellangallur",
+    "area": "18.57km",
+    "localbody_code": "G081301",
+    "no_of_wards": 14,
+    "population": 17204,
+    "male": 8089,
+    "female": 9115,
+    "population_density": 926,
+    "sex_ratio": 1127,
+    "literacy_rate": 91.75,
+    "literacy_rate_male": 95.54,
+    "literacy_rate_female": 88.52,
+    "president": "KCBIJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHETTIYAL NORTH",
+            "person": {
+                "id": "2015078000101",
+                "name": "SUDHA VISWAMBARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDATHIRINJI",
+            "person": {
+                "id": "2015078000201",
+                "name": "ASHA SURESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POTHANI",
+            "person": {
+                "id": "2015078000301",
+                "name": "K C BIJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POTHANI EAST",
+            "person": {
+                "id": "2015078000401",
+                "name": "K P KANNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SIVAKUMARESARAM EAST",
+            "person": {
+                "id": "2015078000501",
+                "name": "BINOY KOLANTHRA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KODAMKULAM",
+            "person": {
+                "id": "2015078000601",
+                "name": "SAJI SHAIJUKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PADIYOOR",
+            "person": {
+                "id": "2015078000701",
+                "name": "SANGEETHA SURESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VAIKAAM",
+            "person": {
+                "id": "2015078000801",
+                "name": "T.D DASOB"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALAVANANGADI",
+            "person": {
+                "id": "2015078000901",
+                "name": "C A SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MARAMKULAM",
+            "person": {
+                "id": "2015078001001",
+                "name": "C M UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHARUMTHARA",
+            "person": {
+                "id": "2015078001101",
+                "name": "SUNADHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SIVAKUMARESARAM WEST",
+            "person": {
+                "id": "2015078001201",
+                "name": "C S SUDHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHETTIYAL SOUTH",
+            "person": {
+                "id": "2015078001301",
+                "name": "USHA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAKKATHURUTTHI",
+            "person": {
+                "id": "2015078001401",
+                "name": "SUNITHA  MANOJ"
+            }
+        }
+    ]
+}

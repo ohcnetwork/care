@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346239721,
+    "date": "2019-08-21",
+    "name": "Mallappally  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "20.01km",
+    "localbody_code": "G030107",
+    "no_of_wards": 14,
+    "population": 17524,
+    "male": 8419,
+    "female": 9105,
+    "population_density": 876,
+    "sex_ratio": 1081,
+    "literacy_rate": 95.91,
+    "literacy_rate_male": 96.84,
+    "literacy_rate_female": 95.07,
+    "president": "REGISAMUEL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANKUZHI",
+            "person": {
+                "id": "2015037800101",
+                "name": "MARY SAJI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANJATHANAM",
+            "person": {
+                "id": "2015037800201",
+                "name": "REGI SAMUEL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MALLAPPALLY TOWN",
+            "person": {
+                "id": "2015037800301",
+                "name": "EMMANUVEL JOSEPH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUTTATHUMON",
+            "person": {
+                "id": "2015037800401",
+                "name": "PRAKASH KUMAR V.G"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURANI",
+            "person": {
+                "id": "2015037800501",
+                "name": "RAJAMMA P.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARACKATHANAM",
+            "person": {
+                "id": "2015037800601",
+                "name": "PRINCY KURUVILLA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NARAKATHANI",
+            "person": {
+                "id": "2015037800701",
+                "name": "BIJI VARGHESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KEEZHVAIPUR SOUTH",
+            "person": {
+                "id": "2015037800801",
+                "name": "REENA MERIN EASO (REENA YUGESH)"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIZHAKKEKKARA",
+            "person": {
+                "id": "2015037800902",
+                "name": "JACOB THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KEEZHVAIPUR EAST",
+            "person": {
+                "id": "2015037801001",
+                "name": "ROHINI JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUNNAMATTOM",
+            "person": {
+                "id": "2015037801101",
+                "name": "SUMESH K.S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015037801201",
+                "name": "MOLLY JOY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MALLAPPALLY WEST",
+            "person": {
+                "id": "2015037801301",
+                "name": "REMYA MANOJ"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NELLIMOODU",
+            "person": {
+                "id": "2015037801401",
+                "name": "PRAMOD B"
+            }
+        }
+    ]
+}

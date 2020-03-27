@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349585202,
+    "date": "2019-08-21",
+    "name": "Kallar  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kanhangad",
+    "area": null,
+    "localbody_code": "G140504",
+    "no_of_wards": 14,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "THRESIAMMAJOSEPH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUDUMBOOR",
+            "person": {
+                "id": "2015120500101",
+                "name": "T.K.NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ADAKAM",
+            "person": {
+                "id": "2015120500201",
+                "name": "MINI RAJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEDIKUNDU",
+            "person": {
+                "id": "2015120500301",
+                "name": "VANAJA AITHU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POOKKAYAM",
+            "person": {
+                "id": "2015120500401",
+                "name": "JANEESH P.J"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLICHAL",
+            "person": {
+                "id": "2015120500501",
+                "name": "SENTIMON MATHEW"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALAKALLU",
+            "person": {
+                "id": "2015120500601",
+                "name": "ABDUL MAJEED.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERUPANATHADY",
+            "person": {
+                "id": "2015120500701",
+                "name": "GEETHA.P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015120500801",
+                "name": "RAJITHA.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VANNATHIKKANAM",
+            "person": {
+                "id": "2015120500901",
+                "name": "E.K.GOPALAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "RAJAPURAM",
+            "person": {
+                "id": "2015120501001",
+                "name": "M.M.SIMON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POODUMKALLU",
+            "person": {
+                "id": "2015120501101",
+                "name": "REKHA.C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHETTUKALLU",
+            "person": {
+                "id": "2015120501201",
+                "name": "THRESIAMMA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTODY",
+            "person": {
+                "id": "2015120501301",
+                "name": "PENNAMMA JAMES"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANJANGANAM",
+            "person": {
+                "id": "2015120501401",
+                "name": "REMA.B"
+            }
+        }
+    ]
+}

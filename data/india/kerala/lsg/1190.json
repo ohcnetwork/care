@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349548036,
+    "date": "2019-08-21",
+    "name": "Delampady  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kasaragod",
+    "area": "49.85km",
+    "localbody_code": "G140205",
+    "no_of_wards": 16,
+    "population": 20625,
+    "male": 10350,
+    "female": 10275,
+    "population_density": 414,
+    "sex_ratio": 993,
+    "literacy_rate": 70.99,
+    "literacy_rate_male": 79.45,
+    "literacy_rate_female": 62.55,
+    "president": "MUSTHAFA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "UJJAMPADY",
+            "person": {
+                "id": "2015119000101",
+                "name": "MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "DELAMPADY",
+            "person": {
+                "id": "2015119000201",
+                "name": "AITHAPPA NAIKA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAPPA",
+            "person": {
+                "id": "2015119000301",
+                "name": "NALINAKSHI M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHIYAMBALAM",
+            "person": {
+                "id": "2015119000401",
+                "name": "KAMALAKSHI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "DEVARADKA",
+            "person": {
+                "id": "2015119000501",
+                "name": "SASHIKALA A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BELLAKKANA",
+            "person": {
+                "id": "2015119000601",
+                "name": "NARAYANAN T"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAYARADUKKA",
+            "person": {
+                "id": "2015119000701",
+                "name": "SUSHEELA N"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALLAMPARA",
+            "person": {
+                "id": "2015119000801",
+                "name": "SINDHU P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KATTIPPARA",
+            "person": {
+                "id": "2015119000901",
+                "name": "NIRMALA T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BALAVANTHADUKKA",
+            "person": {
+                "id": "2015119001001",
+                "name": "RATAN KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANDI",
+            "person": {
+                "id": "2015119001101",
+                "name": "USHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ADOOR",
+            "person": {
+                "id": "2015119001201",
+                "name": "MADHAVA B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAPARAMBA",
+            "person": {
+                "id": "2015119001301",
+                "name": "GULABI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MOGAR",
+            "person": {
+                "id": "2015119001401",
+                "name": "GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLANGOD",
+            "person": {
+                "id": "2015119001501",
+                "name": "SUHAIB A"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MAYYALA",
+            "person": {
+                "id": "2015119001601",
+                "name": "KORAGAPPA RAI"
+            }
+        }
+    ]
+}

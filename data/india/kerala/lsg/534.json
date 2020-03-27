@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346808266,
+    "date": "2019-08-21",
+    "name": "Poonjar  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Erattupetta",
+    "area": "24.16km",
+    "localbody_code": "G050603",
+    "no_of_wards": 13,
+    "population": 11152,
+    "male": 5590,
+    "female": 5562,
+    "population_density": 462,
+    "sex_ratio": 995,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "PRASADTHOMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERUNNILAM",
+            "person": {
+                "id": "2015053400101",
+                "name": "PRASAD THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MATTACKADU",
+            "person": {
+                "id": "2015053400201",
+                "name": "GISHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALACE",
+            "person": {
+                "id": "2015053400301",
+                "name": "SUBRAHMANYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NELLICKACHAL",
+            "person": {
+                "id": "2015053400401",
+                "name": "SHIHAB USMAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANACHIKAPPARA",
+            "person": {
+                "id": "2015053400501",
+                "name": "RAMESH B VETTIMATTOM"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THANNIPPARA",
+            "person": {
+                "id": "2015053400601",
+                "name": "GEETHA NOBLE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULICKAPPALAM",
+            "person": {
+                "id": "2015053400701",
+                "name": "BINDU ASOKAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANIYAMKUNNU",
+            "person": {
+                "id": "2015053400801",
+                "name": "GOPAKUMAR V G"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALATHOOKK",
+            "person": {
+                "id": "2015053400901",
+                "name": "LEELAMMA CHACKO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHENNADU",
+            "person": {
+                "id": "2015053401001",
+                "name": "OLVIN THOMAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NEDUNTHANAM",
+            "person": {
+                "id": "2015053401101",
+                "name": "JAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERUKUNNAM",
+            "person": {
+                "id": "2015053401201",
+                "name": "GEETHA GEMINI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANIYAMKULAM",
+            "person": {
+                "id": "2015053401301",
+                "name": "LISAMMA SUNNY"
+            }
+        }
+    ]
+}

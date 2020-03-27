@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345062705,
+    "date": "2019-08-21",
+    "name": "Paravur  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Paravur",
+    "area": "67.63km",
+    "localbody_code": "B070100",
+    "no_of_wards": 13,
+    "population": 134964,
+    "male": 65335,
+    "female": 69629,
+    "population_density": 1996,
+    "sex_ratio": 1066,
+    "literacy_rate": 93.25,
+    "literacy_rate_male": 96.44,
+    "literacy_rate_female": 90.31,
+    "president": "ADV.YESUDASPARAPPILLY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MALLIANKARA",
+            "person": {
+                "id": "2015006600101",
+                "name": "K.C.RAJEEV"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MOOTHAKUNNAM",
+            "person": {
+                "id": "2015006600201",
+                "name": "SAIBA SAJEEV"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "GOTHURUTH",
+            "person": {
+                "id": "2015006600301",
+                "name": "TITUS GOTHURUTH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHENDAMANGALAM",
+            "person": {
+                "id": "2015006600401",
+                "name": "T.D.SUDHEER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOTTAYIL KOVILAKAM",
+            "person": {
+                "id": "2015006600501",
+                "name": "GEETHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANNAM",
+            "person": {
+                "id": "2015006600601",
+                "name": "REMA SIVASANKARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERIYAPPILLY",
+            "person": {
+                "id": "2015006600701",
+                "name": "P.P.SHYJA TEACHER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOONAMMAVU",
+            "person": {
+                "id": "2015006600801",
+                "name": "HARI KANDAMMURI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTUVALLY",
+            "person": {
+                "id": "2015006600901",
+                "name": "ADV.YESUDAS PARAPPILLY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHATHANADU",
+            "person": {
+                "id": "2015006601001",
+                "name": "RASMI M.A."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EZHIKKARA",
+            "person": {
+                "id": "2015006601101",
+                "name": "SEETHALAKSHMI ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PATTANAM",
+            "person": {
+                "id": "2015006601201",
+                "name": "P.R.SAIJAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAVAKKAD",
+            "person": {
+                "id": "2015006601302",
+                "name": "RAJITHA PRABHASANKAR"
+            }
+        }
+    ]
+}

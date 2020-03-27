@@ -1,0 +1,139 @@
+{
+    "timeStamp": 1566345231874,
+    "date": "2019-08-21",
+    "name": "Malappuram  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Malappuram",
+    "area": "174.3km",
+    "localbody_code": "B100600",
+    "no_of_wards": 15,
+    "population": 187050,
+    "male": 91637,
+    "female": 95413,
+    "population_density": 1073,
+    "sex_ratio": 1041,
+    "literacy_rate": 82.47,
+    "literacy_rate_male": 93.07,
+    "literacy_rate_female": 71.86,
+    "president": "SALEENAK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MORAYUR",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALLUVAMBRAM",
+            "person": {
+                "id": "2015011500201",
+                "name": "PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARAVANKARA",
+            "person": {
+                "id": "2015011500301",
+                "name": "SALEENA K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POOKKOTTOOR",
+            "person": {
+                "id": "2015011500401",
+                "name": "SOBHA SATHYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "IRUMBUZHI",
+            "person": {
+                "id": "2015011500501",
+                "name": "HAFSATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANAKKAYAM",
+            "person": {
+                "id": "2015011500601",
+                "name": "NASEEBA TEACHER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANDALLOOR",
+            "person": {
+                "id": "2015011500701",
+                "name": "M.P ABDULHAMEED HAJI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "UMMATHUR",
+            "person": {
+                "id": "2015011500801",
+                "name": "ASIA. K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALIYAD",
+            "person": {
+                "id": "2015011500901",
+                "name": "MUHASIN M K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHENGOTTUR",
+            "person": {
+                "id": "2015011501001",
+                "name": "NUSRATH P.T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAPPANANGADI",
+            "person": {
+                "id": "2015011501101",
+                "name": "ABIDA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015011501201",
+                "name": "ABDULRAHIMAN V (V.A RAHIMAN ALIAS NANI)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "OTHUKKUNGAL",
+            "person": {
+                "id": "2015011501301",
+                "name": "ALI MELETHIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MATTATHUR",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ARIMBRA",
+            "person": {
+                "id": "2015011501501",
+                "name": "M. KUNHALANKUTTY"
+            }
+        }
+    ]
+}

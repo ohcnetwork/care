@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348190518,
+    "date": "2019-08-21",
+    "name": "Muthuthala  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Pattambi",
+    "area": "19.95km",
+    "localbody_code": "G090203",
+    "no_of_wards": 15,
+    "population": 18491,
+    "male": 8873,
+    "female": 9618,
+    "population_density": 927,
+    "sex_ratio": 1084,
+    "literacy_rate": 88.69,
+    "literacy_rate_male": 91.89,
+    "literacy_rate_female": 85.83,
+    "president": "NEELAKANDAN.C.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARAKUTH",
+            "person": {
+                "id": "2015081300101",
+                "name": "FOUSIYA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUTHUTHALA PADINJARRU",
+            "person": {
+                "id": "2015081300201",
+                "name": "PREMAKUMARY T"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUTHUTHALA KIZHAKKU",
+            "person": {
+                "id": "2015081300301",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAKKAD",
+            "person": {
+                "id": "2015081300401",
+                "name": "P.K GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOZHIKKOTTIRI",
+            "person": {
+                "id": "2015081300501",
+                "name": "M.P.MALATHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ALIKKAPARAMBU",
+            "person": {
+                "id": "2015081300601",
+                "name": "MUKESH.C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERUMUDIYUR",
+            "person": {
+                "id": "2015081300701",
+                "name": "OMANA.T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NABRAM",
+            "person": {
+                "id": "2015081300801",
+                "name": "SIJA.K.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHERUSSERY",
+            "person": {
+                "id": "2015081300901",
+                "name": "NANDINI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THARA",
+            "person": {
+                "id": "2015081301001",
+                "name": "UNNIKRISHNAN.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KODUMUNDA EAST",
+            "person": {
+                "id": "2015081301101",
+                "name": "UNNIKRISHNAN.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KODUMUNDA WEST",
+            "person": {
+                "id": "2015081301201",
+                "name": "T.GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THOTTINKARA",
+            "person": {
+                "id": "2015081301301",
+                "name": "HASEENA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOZHIKKOTTIRI WEST",
+            "person": {
+                "id": "2015081301401",
+                "name": "NEELAKANDAN.C.M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NALANGADI",
+            "person": {
+                "id": "2015081301501",
+                "name": "ROOPESH.K.P"
+            }
+        }
+    ]
+}

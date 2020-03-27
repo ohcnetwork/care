@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345776251,
+    "date": "2019-08-21",
+    "name": "Kadakkavoor  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Chirayinkeezhu",
+    "area": "10.39km",
+    "localbody_code": "G010306",
+    "no_of_wards": 16,
+    "population": 23037,
+    "male": 10665,
+    "female": 12372,
+    "population_density": 2217,
+    "sex_ratio": 1160,
+    "literacy_rate": 87.99,
+    "literacy_rate_male": 93.85,
+    "literacy_rate_female": 83.04,
+    "president": "K.VILASINI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MELATTINGAL",
+            "person": {
+                "id": "2015024600101",
+                "name": "BINDHU.R.V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SANKARAMANGALAM",
+            "person": {
+                "id": "2015024600201",
+                "name": "JAYANTHY SOMAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEEZHATTINGAL",
+            "person": {
+                "id": "2015024600301",
+                "name": "A.MADHUSOODANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VILAYILMOOLA",
+            "person": {
+                "id": "2015024600401",
+                "name": "RADHIKA.S.SACHU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SASTHAMNADA",
+            "person": {
+                "id": "2015024600501",
+                "name": "THRIDEEP KUMAR.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THINAVILA",
+            "person": {
+                "id": "2015024600601",
+                "name": "R.PRAKASH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AYIKKUDI",
+            "person": {
+                "id": "2015024600702",
+                "name": "S.SHEELA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKUMBHAGAM",
+            "person": {
+                "id": "2015024600801",
+                "name": "SUKUTTAN.K.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OOTTUPARAMBU",
+            "person": {
+                "id": "2015024600901",
+                "name": "RATHI PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "RAILWAY STATION",
+            "person": {
+                "id": "2015024601001",
+                "name": "K.VILASINI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADAKKAVUR",
+            "person": {
+                "id": "2015024601101",
+                "name": "K.SUBHASH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NILAKKAMUKKU",
+            "person": {
+                "id": "2015024601201",
+                "name": "S.KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "BHAJANAMADAM",
+            "person": {
+                "id": "2015024601301",
+                "name": "MOHANAKUMARI.M.S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANANAKKU",
+            "person": {
+                "id": "2015024601401",
+                "name": "SHAMAM BEEGUM"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERUMKULAM",
+            "person": {
+                "id": "2015024601501",
+                "name": "M.SHIJU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KALLOORKONAM",
+            "person": {
+                "id": "2015024601601",
+                "name": "USHAKUMARI.A"
+            }
+        }
+    ]
+}

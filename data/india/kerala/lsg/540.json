@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346826919,
+    "date": "2019-08-21",
+    "name": "Thidanad  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Erattupetta",
+    "area": "37.19km",
+    "localbody_code": "G050609",
+    "no_of_wards": 14,
+    "population": 18526,
+    "male": 9438,
+    "female": 9088,
+    "population_density": 498,
+    "sex_ratio": 963,
+    "literacy_rate": 97,
+    "literacy_rate_male": 90,
+    "literacy_rate_female": 96,
+    "president": "LEENAGEORGE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMPARANIRAPPEL",
+            "person": {
+                "id": "2015054000101",
+                "name": "T.K PRABHAKARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KONDOOR",
+            "person": {
+                "id": "2015054000201",
+                "name": "OMANA RAMESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATHAZHA",
+            "person": {
+                "id": "2015054000301",
+                "name": "XAVIER K.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VAILKANAMPARA",
+            "person": {
+                "id": "2015054000401",
+                "name": "SABU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PONTHANAL",
+            "person": {
+                "id": "2015054000501",
+                "name": "SURESHKUMAR K.V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEDUMCHERI",
+            "person": {
+                "id": "2015054000601",
+                "name": "SUJA BABU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VARIYANIKKAD",
+            "person": {
+                "id": "2015054000701",
+                "name": "MERCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHETTUTHODU",
+            "person": {
+                "id": "2015054000801",
+                "name": "LEENA GEORGE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALAKETTY",
+            "person": {
+                "id": "2015054000901",
+                "name": "BINO JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PINNAKKANAD",
+            "person": {
+                "id": "2015054001001",
+                "name": "JOMON K.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEMMALAMATTOM",
+            "person": {
+                "id": "2015054001101",
+                "name": "SEBASTIAN ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALLARANGAD",
+            "person": {
+                "id": "2015054001201",
+                "name": "AJITHA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIDANAD",
+            "person": {
+                "id": "2015054001301",
+                "name": "MINI SAVIO"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MOONNAMTHODU",
+            "person": {
+                "id": "2015054001401",
+                "name": "USHA SASI"
+            }
+        }
+    ]
+}

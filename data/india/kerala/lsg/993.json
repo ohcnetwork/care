@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348858548,
+    "date": "2019-08-21",
+    "name": "Veliancode  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perumpadappu",
+    "area": "15.21km",
+    "localbody_code": "G101505",
+    "no_of_wards": 18,
+    "population": 26867,
+    "male": 12965,
+    "female": 13892,
+    "population_density": 1766,
+    "sex_ratio": 1072,
+    "literacy_rate": 82.93,
+    "literacy_rate_male": 88.11,
+    "literacy_rate_female": 77.76,
+    "president": "SUHARA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "UMMERGHASI",
+            "person": {
+                "id": "2015099300101",
+                "name": "SUHARA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THAVALAKULAM",
+            "person": {
+                "id": "2015099300201",
+                "name": "MOHAMMED"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELIYANCODE EAST",
+            "person": {
+                "id": "2015099300301",
+                "name": "SHAJIRA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAZHANJI",
+            "person": {
+                "id": "2015099300401",
+                "name": "RIYAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MULAMUKKU",
+            "person": {
+                "id": "2015099300501",
+                "name": "CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMUDISSERI",
+            "person": {
+                "id": "2015099300601",
+                "name": "MANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ERAMANGALAM",
+            "person": {
+                "id": "2015099300701",
+                "name": "PREMAJA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THAZHATHELPADI",
+            "person": {
+                "id": "2015099300801",
+                "name": "BABU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHERIKALLU",
+            "person": {
+                "id": "2015099300901",
+                "name": "SEENA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NAKKOLA",
+            "person": {
+                "id": "2015099301001",
+                "name": "NAVAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERAMANGALAM WEST",
+            "person": {
+                "id": "2015099301101",
+                "name": "IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTHAMUKKU",
+            "person": {
+                "id": "2015099301201",
+                "name": "P.ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "GRAMAM",
+            "person": {
+                "id": "2015099301301",
+                "name": "RANI SASI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AYYOTTICHIRA",
+            "person": {
+                "id": "2015099301401",
+                "name": "BADHISHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THANNITHURA",
+            "person": {
+                "id": "2015099301501",
+                "name": "BABITHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VELIYANCODE TOWN",
+            "person": {
+                "id": "2015099301601",
+                "name": "FOUSIYA.V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PATHUMURI",
+            "person": {
+                "id": "2015099301701",
+                "name": "RAHMATH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MATTUMMAL",
+            "person": {
+                "id": "2015099301801",
+                "name": "BEERANKUTTY"
+            }
+        }
+    ]
+}

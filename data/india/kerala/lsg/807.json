@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348169517,
+    "date": "2019-08-21",
+    "name": "Nagalassery  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Thrithala",
+    "area": "26.2km",
+    "localbody_code": "G090104",
+    "no_of_wards": 17,
+    "population": 23288,
+    "male": 11135,
+    "female": 12153,
+    "population_density": 889,
+    "sex_ratio": 1091,
+    "literacy_rate": 84.76,
+    "literacy_rate_male": 89.33,
+    "literacy_rate_female": 80.69,
+    "president": "RAJEESHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOOTTANAD",
+            "person": {
+                "id": "2015080700101",
+                "name": "V.P.AIDRU MASTER"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NANDIYAMKODE",
+            "person": {
+                "id": "2015080700201",
+                "name": "M.BABY RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKE VAVANOOR",
+            "person": {
+                "id": "2015080700301",
+                "name": "T.K.BALAN MASTER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHALPRAM",
+            "person": {
+                "id": "2015080700401",
+                "name": "INDIRA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NAGALASSERY",
+            "person": {
+                "id": "2015080700501",
+                "name": "SAJITHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKE VAVANOOR",
+            "person": {
+                "id": "2015080700601",
+                "name": "MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PILAKKATTIRI",
+            "person": {
+                "id": "2015080700701",
+                "name": "ANITHA BABURAJ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKE THOZHUKKAD",
+            "person": {
+                "id": "2015080700801",
+                "name": "DHARMARAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERINGODE",
+            "person": {
+                "id": "2015080700901",
+                "name": "SETHUMADHAVAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALARAMKUNNU",
+            "person": {
+                "id": "2015080701001",
+                "name": "KARTHYAYANI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOOLIPPARAMB",
+            "person": {
+                "id": "2015080701101",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTHACHIRA THEKKUMURI",
+            "person": {
+                "id": "2015080701201",
+                "name": "MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTHACHIRA PADINJATTUMURI",
+            "person": {
+                "id": "2015080701301",
+                "name": "MANIKANDAN (MOHANAN)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOTHACHIRA VADAKKUMURI",
+            "person": {
+                "id": "2015080701401",
+                "name": "RASMI.K.G"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MATHOOR",
+            "person": {
+                "id": "2015080701501",
+                "name": "SULAIKHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AMAKKAVU",
+            "person": {
+                "id": "2015080701601",
+                "name": "REMYA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THOZHUKKAD",
+            "person": {
+                "id": "2015080701701",
+                "name": "RAJEESHA"
+            }
+        }
+    ]
+}

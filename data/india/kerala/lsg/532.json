@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346798937,
+    "date": "2019-08-21",
+    "name": "Melukavu  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Erattupetta",
+    "area": "30.49km",
+    "localbody_code": "G050601",
+    "no_of_wards": 13,
+    "population": 11228,
+    "male": 5581,
+    "female": 5647,
+    "population_density": 368,
+    "sex_ratio": 1012,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 97,
+    "president": "SHEEBAMOLJOSEPH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLUVETTOM",
+            "person": {
+                "id": "2015053200101",
+                "name": "ALICE JOSE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMBAGHAM",
+            "person": {
+                "id": "2015053200201",
+                "name": "SANTHOSH JOHN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ELAVEEZHAPOONJIRA",
+            "person": {
+                "id": "2015053200301",
+                "name": "SURESH C.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MELUKAVU",
+            "person": {
+                "id": "2015053200401",
+                "name": "SHINY BABY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MELUKAVUMATTOM",
+            "person": {
+                "id": "2015053200501",
+                "name": "REENA DOMINIC"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KONIPADU",
+            "person": {
+                "id": "2015053200601",
+                "name": "NISHA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VAKAKKADU",
+            "person": {
+                "id": "2015053200701",
+                "name": "JESSY BENNY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAMARUKU",
+            "person": {
+                "id": "2015053200801",
+                "name": "ALEX.T. JOSEPH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAILASAM",
+            "person": {
+                "id": "2015053200901",
+                "name": "JETO JOSE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KIZHAKKENMATTOM",
+            "person": {
+                "id": "2015053201001",
+                "name": "BETTY BIJU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PIOUSMOUNT",
+            "person": {
+                "id": "2015053201101",
+                "name": "SHEEBAMOL JOSEPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHALAMATTOM",
+            "person": {
+                "id": "2015053201201",
+                "name": "ANURAG K.R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KULATHIKANDAM",
+            "person": {
+                "id": "2015053201301",
+                "name": "JOSE SEBASTIAN"
+            }
+        }
+    ]
+}

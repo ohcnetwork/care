@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347411030,
+    "date": "2019-08-21",
+    "name": "Kadappuram  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chavakkad",
+    "area": "9.63km",
+    "localbody_code": "G080101",
+    "no_of_wards": 16,
+    "population": 26980,
+    "male": 73517,
+    "female": 13463,
+    "population_density": 2388,
+    "sex_ratio": 1144,
+    "literacy_rate": 82.51,
+    "literacy_rate_male": 87.85,
+    "literacy_rate_female": 78,
+    "president": "BASHEERPK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEERADESAM",
+            "person": {
+                "id": "2015071200101",
+                "name": "KANJANA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERATTAPPUZHA",
+            "person": {
+                "id": "2015071200201",
+                "name": "M K SHANMUKHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "BLANGAD",
+            "person": {
+                "id": "2015071200301",
+                "name": "K D VEERAMANI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POONTHIRUTHI",
+            "person": {
+                "id": "2015071200401",
+                "name": "NITHA VISHNUPAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MATTUMMAL",
+            "person": {
+                "id": "2015071200501",
+                "name": "RASIYA AMBALATHUVEETTIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VATTEKKAD",
+            "person": {
+                "id": "2015071200601",
+                "name": "SHAREEFA KUNNUMAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ADITHIRUTHI",
+            "person": {
+                "id": "2015071200701",
+                "name": "SHALIMA SUBAIR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARUKAMAD",
+            "person": {
+                "id": "2015071200801",
+                "name": "P M MUJEEB"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AZHIMUGHAM",
+            "person": {
+                "id": "2015071200901",
+                "name": "P A ASHKKAR ALI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHIYANGADI",
+            "person": {
+                "id": "2015071201001",
+                "name": "SREEBA RATHEESH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANJANGADI",
+            "person": {
+                "id": "2015071201101",
+                "name": "BASHEER P K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KACHERI",
+            "person": {
+                "id": "2015071201201",
+                "name": "V M MANAF"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ASHUPATHRIPPADI",
+            "person": {
+                "id": "2015071201301",
+                "name": "RAFEEKHA P K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTAPPU",
+            "person": {
+                "id": "2015071201401",
+                "name": "UMMERKUNHI.P.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "FOCUS",
+            "person": {
+                "id": "2015071201501",
+                "name": "SHYLA MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "LIGHT HOUSE",
+            "person": {
+                "id": "2015071201601",
+                "name": "SHAMSIYA THOUFEEQ"
+            }
+        }
+    ]
+}

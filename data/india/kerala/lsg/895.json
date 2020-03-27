@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348488426,
+    "date": "2019-08-21",
+    "name": "Amarambalam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Nilambur",
+    "area": "140.15km",
+    "localbody_code": "G100201",
+    "no_of_wards": 19,
+    "population": 26804,
+    "male": 13065,
+    "female": 13739,
+    "population_density": 191,
+    "sex_ratio": 1052,
+    "literacy_rate": 86.84,
+    "literacy_rate_male": 91.19,
+    "literacy_rate_female": 82.5,
+    "president": "MUNEESHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOOTTAMPARA",
+            "person": {
+                "id": "2015089500101",
+                "name": "HUSSAIN ILLIKKAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "UPPUVALLI",
+            "person": {
+                "id": "2015089500201",
+                "name": "ANITHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHELODE",
+            "person": {
+                "id": "2015089500301",
+                "name": "KALARIKKAL SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AYYAPPANKULAM",
+            "person": {
+                "id": "2015089500401",
+                "name": "GANGA DEVI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHULLIYODE",
+            "person": {
+                "id": "2015089500501",
+                "name": "AJISHA.C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAVALAMUKKATTA",
+            "person": {
+                "id": "2015089500601",
+                "name": "ANEESH.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATTAKKARIMBU",
+            "person": {
+                "id": "2015089500701",
+                "name": "MEENAKSHI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "T K COLONY",
+            "person": {
+                "id": "2015089500801",
+                "name": "BINDU PALLATTU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POTTIKKALLU",
+            "person": {
+                "id": "2015089500901",
+                "name": "SUDHAMANI.T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHETTIPPADAM",
+            "person": {
+                "id": "2015089501001",
+                "name": "VINOD JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THOTTEKKARA",
+            "person": {
+                "id": "2015089501101",
+                "name": "SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAMPATTA",
+            "person": {
+                "id": "2015089501201",
+                "name": "SOBHANA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THATTIYEKKAL",
+            "person": {
+                "id": "2015089501301",
+                "name": "FATHIMA NASEERA  V. P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOKKOTTUMPADAM",
+            "person": {
+                "id": "2015089501401",
+                "name": "SUJATHA.C"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARAKKAPPADAM",
+            "person": {
+                "id": "2015089501501",
+                "name": "MUHAMMED . N"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ULLADU",
+            "person": {
+                "id": "2015089501601",
+                "name": "MUNEESHA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AMARAMBALAM SOUTH",
+            "person": {
+                "id": "2015089501701",
+                "name": "SHAJI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHIYAKALAM",
+            "person": {
+                "id": "2015089501801",
+                "name": "BIJUMON"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NARIPOYIL",
+            "person": {
+                "id": "2015089501901",
+                "name": "HAMZA.T.P"
+            }
+        }
+    ]
+}

@@ -1,0 +1,172 @@
+{
+    "timeStamp": 1566348844816,
+    "date": "2019-08-21",
+    "name": "Alamkode  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perumpadappu",
+    "area": "20.53km",
+    "localbody_code": "G101501",
+    "no_of_wards": 19,
+    "population": 26927,
+    "male": 13051,
+    "female": 13876,
+    "population_density": 1312,
+    "sex_ratio": 1063,
+    "literacy_rate": 85.49,
+    "literacy_rate_male": 90.16,
+    "literacy_rate_female": 80.83,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALACHAL",
+            "person": {
+                "id": "2015098900101",
+                "name": "SAJIDA RASHEED"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAKKIDIKKAL",
+            "person": {
+                "id": "2015098900201",
+                "name": "SABITHA ANIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAKKIDIPPURAM",
+            "person": {
+                "id": "2015098900301",
+                "name": "P T SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THACHUPARAMBU",
+            "person": {
+                "id": "2015098900401",
+                "name": "SHAMEENA UMMER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANTHADAM",
+            "person": {
+                "id": "2015098900501",
+                "name": "K MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ALAMKODE",
+            "person": {
+                "id": "2015098900601",
+                "name": "PRADEEP P V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "UDHINUPARAMBU",
+            "person": {
+                "id": "2015098900701",
+                "name": "JAYANTHI K C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHIYYANNUR",
+            "person": {
+                "id": "2015098900802",
+                "name": "NAFEESABI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOKKUR NORTH",
+            "person": {
+                "id": "2015098900901",
+                "name": "AMBIKA TEACHER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOKKUR",
+            "person": {
+                "id": "2015098901001",
+                "name": "MUHAMMED ANWAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOKKUR WEST",
+            "person": {
+                "id": "2015098901101",
+                "name": "AYISHA HASSAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PAVITTAPPURAM",
+            "person": {
+                "id": "2015098901201",
+                "name": "V K SUBRAHMANIAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "OTHALOOR",
+            "person": {
+                "id": "2015098901301",
+                "name": "SUJITHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KIZHIKKARA",
+            "person": {
+                "id": "2015098901401",
+                "name": "ASIYA K P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLIKKUNNU",
+            "person": {
+                "id": "2015098901501",
+                "name": "SALMA MUHAMMEDKUTTY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHANGARAMKULAM EAST",
+            "person": {
+                "id": "2015098901601",
+                "name": "K M AREES BABU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHANGARAMKULAM  WEST",
+            "person": {
+                "id": "2015098901701",
+                "name": "ALI PARUVINGAL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PERUMUKKU",
+            "person": {
+                "id": "2015098901801",
+                "name": "ARIFA NASAR"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PANTHAVOOR",
+            "person": {
+                "id": "2015098901901",
+                "name": "E R LIJESH"
+            }
+        }
+    ]
+}

@@ -1,0 +1,236 @@
+{
+    "timeStamp": 1566345394415,
+    "date": "2019-08-21",
+    "name": "Kozhikode  District Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "area": "2344km",
+    "localbody_code": "D110000",
+    "no_of_wards": 27,
+    "population": 2878498,
+    "male": 1398674,
+    "female": 1479824,
+    "population_density": 1118,
+    "sex_ratio": 1027,
+    "literacy_rate": 91.1,
+    "literacy_rate_male": 95.58,
+    "literacy_rate_female": 86.79,
+    "president": "BABUPARASSERI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AZHIYOOR",
+            "person": {
+                "id": "2015016300101",
+                "name": "A .T. SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDACHERI",
+            "person": {
+                "id": "2015016300201",
+                "name": "SHYLAJA P K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NADAPURAM",
+            "person": {
+                "id": "2015016300301",
+                "name": "AHAMED PUNNAKKAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MOKERI",
+            "person": {
+                "id": "2015016300401",
+                "name": "P.K.SAJITHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUTTIADY",
+            "person": {
+                "id": "2015016300501",
+                "name": "P.G.GEORGE MASTER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERAMBRA",
+            "person": {
+                "id": "2015016300601",
+                "name": "A.K. BALAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTIPPARA",
+            "person": {
+                "id": "2015016300701",
+                "name": "NAJEEB KANTHAPURAM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BALUSSERY",
+            "person": {
+                "id": "2015016300801",
+                "name": "BABU PARASSERI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ENGAPUZHA",
+            "person": {
+                "id": "2015016300901",
+                "name": "V.D.JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KODENCHERY",
+            "person": {
+                "id": "2015016301001",
+                "name": "ANNAMMA MATHEW"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUVAMBADI",
+            "person": {
+                "id": "2015016301101",
+                "name": "C K KASIM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "OMASSERY",
+            "person": {
+                "id": "2015016301201",
+                "name": "PTM SHARAFUNNISA TEACHER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHATHAMANGALAM",
+            "person": {
+                "id": "2015016301301",
+                "name": "REENA MUNDANGAT"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PANTHEERANKAVU",
+            "person": {
+                "id": "2015016301401",
+                "name": "C USHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADALUNDI",
+            "person": {
+                "id": "2015016301501",
+                "name": "BHANUMATHI. P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUNNAMANGALAM",
+            "person": {
+                "id": "2015016301601",
+                "name": "RAJANI THADATHIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KAKKODI",
+            "person": {
+                "id": "2015016301701",
+                "name": "JUMAILATH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MADAVOOR",
+            "person": {
+                "id": "2015016301801",
+                "name": "M A GAFOOR MASTER"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NARIKUNI",
+            "person": {
+                "id": "2015016301901",
+                "name": "V. SHAKEELA TEACHER"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "NANMANDA",
+            "person": {
+                "id": "2015016302001",
+                "name": "MUKKOM MOHAMMED"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ATHOLI",
+            "person": {
+                "id": "2015016302101",
+                "name": "A M VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ULLIERI",
+            "person": {
+                "id": "2015016302201",
+                "name": "SREEJA PULLIRIKKAL"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "ARIKKULAM",
+            "person": {
+                "id": "2015016302301",
+                "name": "SALINI BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "MEPPAYUR",
+            "person": {
+                "id": "2015016302401",
+                "name": "SUJATHA MANAKKAL"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "PAYYOLI ANGADI",
+            "person": {
+                "id": "2015016302501",
+                "name": "M P AJITHA"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "MANIYOOR",
+            "person": {
+                "id": "2015016302601",
+                "name": "R BALARAM"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "CHORODE",
+            "person": {
+                "id": "2015016302701",
+                "name": "T K RAJAN MASTER"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566344883614,
+    "date": "2019-08-21",
+    "name": "Parassala  Block Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Parassala",
+    "area": "82.21km",
+    "localbody_code": "B011100",
+    "no_of_wards": 14,
+    "population": 170644,
+    "male": 85393,
+    "female": 85251,
+    "population_density": 2076,
+    "sex_ratio": 998,
+    "literacy_rate": 86.29,
+    "literacy_rate_male": 90.02,
+    "literacy_rate_female": 82.58,
+    "president": "SALOOJAVR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHANKADA",
+            "person": {
+                "id": "2015001200101",
+                "name": "RAJESH CHANDRADAS R S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THIRUPURAM",
+            "person": {
+                "id": "2015001200201",
+                "name": "MOHANDAS A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARYAPURAM",
+            "person": {
+                "id": "2015001200301",
+                "name": "SALOOJA V R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "UDHAYANKULANGARA",
+            "person": {
+                "id": "2015001200401",
+                "name": "NIRMALA KUMARI J"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NEDIYAMCODE",
+            "person": {
+                "id": "2015001200501",
+                "name": "NIRMALA KUMARI K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARASUVAYKKAL",
+            "person": {
+                "id": "2015001200601",
+                "name": "MANJU SMITHA L"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARASSALA TOWN",
+            "person": {
+                "id": "2015001200701",
+                "name": "Y SATHEESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHENKAVILA",
+            "person": {
+                "id": "2015001200801",
+                "name": "SHIJU P P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARODE",
+            "person": {
+                "id": "2015001200901",
+                "name": "GLADY GRACE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KULATHOOR",
+            "person": {
+                "id": "2015001201001",
+                "name": "SHEEJA S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POZHIYOOR",
+            "person": {
+                "id": "2015001201101",
+                "name": "JOHN BOSKO A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POOZHIKUNNU",
+            "person": {
+                "id": "2015001201201",
+                "name": "SANTHOSH KUMAR K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ARUMANOOR",
+            "person": {
+                "id": "2015001201301",
+                "name": "BUELA ANGEL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOVAR",
+            "person": {
+                "id": "2015001201401",
+                "name": "ARYADEVAN S"
+            }
+        }
+    ]
+}

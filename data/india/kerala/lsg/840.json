@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348283427,
+    "date": "2019-08-21",
+    "name": "Thachanattukara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "35.04km",
+    "localbody_code": "G090507",
+    "no_of_wards": 16,
+    "population": 19835,
+    "male": 9650,
+    "female": 10185,
+    "population_density": 566,
+    "sex_ratio": 1055,
+    "literacy_rate": 87.29,
+    "literacy_rate_male": 92.7,
+    "literacy_rate_female": 83.44,
+    "president": "KAMARULLAILAP.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THALLACHIRA",
+            "person": {
+                "id": "2015084000101",
+                "name": "ATTA BEEVI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANALUMPURAM",
+            "person": {
+                "id": "2015084000201",
+                "name": "NAVAS E.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NATTUKAL",
+            "person": {
+                "id": "2015084000301",
+                "name": "MUHAMMED BASHEER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ANNANTHODI",
+            "person": {
+                "id": "2015084000401",
+                "name": "SAILABI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHUMANAKULAMBU",
+            "person": {
+                "id": "2015084000501",
+                "name": "RAJANIPRIYA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KURUMALIKAVU",
+            "person": {
+                "id": "2015084000601",
+                "name": "SARADA C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUNDURKUNNU",
+            "person": {
+                "id": "2015084000701",
+                "name": "VINOD A.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALODE",
+            "person": {
+                "id": "2015084000801",
+                "name": "K.RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARAMMAL",
+            "person": {
+                "id": "2015084000901",
+                "name": "ABDUL JALEEL K.T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOORIMUKKU",
+            "person": {
+                "id": "2015084001001",
+                "name": "RAMANI M.C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAMAPARAMBU",
+            "person": {
+                "id": "2015084001101",
+                "name": "FOUSIYA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHETHALLOOR",
+            "person": {
+                "id": "2015084001201",
+                "name": "M.K LEELA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEKKUMURI",
+            "person": {
+                "id": "2015084001301",
+                "name": "V.RAMANKUTTY GUPTHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAVUVATTAM",
+            "person": {
+                "id": "2015084001401",
+                "name": "KALIDASAN M.P ALIAS SINDRU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POOVATHANI",
+            "person": {
+                "id": "2015084001501",
+                "name": "KAMARUL LAILA P.T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARINKALLATHANI",
+            "person": {
+                "id": "2015084001601",
+                "name": "SIDHEEQ P.T"
+            }
+        }
+    ]
+}

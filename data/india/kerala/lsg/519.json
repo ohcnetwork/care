@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346763207,
+    "date": "2019-08-21",
+    "name": "Marangattupilly  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "37.58km",
+    "localbody_code": "G050402",
+    "no_of_wards": 14,
+    "population": 21219,
+    "male": 10654,
+    "female": 10565,
+    "population_density": 565,
+    "sex_ratio": 992,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "ANSAMMASABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KURIANAD",
+            "person": {
+                "id": "2015051900101",
+                "name": "HARIDAS P.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POOVATHUMKAL",
+            "person": {
+                "id": "2015051900201",
+                "name": "OMANA SIVASANKARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KURICHITHANAM",
+            "person": {
+                "id": "2015051900301",
+                "name": "DEEPA SHAJI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NELLITHANATHUMALA",
+            "person": {
+                "id": "2015051900401",
+                "name": "RANI JOSEPH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "IRUMUKHAM",
+            "person": {
+                "id": "2015051900501",
+                "name": "MARTIN AUGUSTINE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALAKKATTUMALA",
+            "person": {
+                "id": "2015051900601",
+                "name": "MATHEWKUTTY GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANDOOR",
+            "person": {
+                "id": "2015051900701",
+                "name": "JOHNY NELLARI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MARANGATTUPILLY",
+            "person": {
+                "id": "2015051900801",
+                "name": "GEORGE C.V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAIKKAD",
+            "person": {
+                "id": "2015051900901",
+                "name": "ALEX K.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNACKANAD",
+            "person": {
+                "id": "2015051901001",
+                "name": "SILBY JAISON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALIYAPARA",
+            "person": {
+                "id": "2015051901101",
+                "name": "SYAMALA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERUVALLY",
+            "person": {
+                "id": "2015051901201",
+                "name": "REJI KULAPPALLIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALAKUZHI",
+            "person": {
+                "id": "2015051901301",
+                "name": "RAGINI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PAVACKAL",
+            "person": {
+                "id": "2015051901401",
+                "name": "ANSAMMA SABU"
+            }
+        }
+    ]
+}

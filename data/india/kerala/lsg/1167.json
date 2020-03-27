@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349474661,
+    "date": "2019-08-21",
+    "name": "Koodali  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Iritty",
+    "area": "40.27km",
+    "localbody_code": "G131005",
+    "no_of_wards": 18,
+    "population": 25518,
+    "male": 12700,
+    "female": 12818,
+    "population_density": 634,
+    "sex_ratio": 1009,
+    "literacy_rate": 90.37,
+    "literacy_rate_male": 95.04,
+    "literacy_rate_female": 85.79,
+    "president": "P.P.NOUFAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOVOOR",
+            "person": {
+                "id": "2015116700101",
+                "name": "K.MANOJ"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PATTANNUR",
+            "person": {
+                "id": "2015116700201",
+                "name": "K.N.BINDU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOORARI",
+            "person": {
+                "id": "2015116700301",
+                "name": "K.K.KUNHIKANNAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AYIPPUZHA",
+            "person": {
+                "id": "2015116700401",
+                "name": "K.A.NAJIYA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLAPPA",
+            "person": {
+                "id": "2015116700501",
+                "name": "K.V.KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANALAD",
+            "person": {
+                "id": "2015116700601",
+                "name": "RAJASREE.K.C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KODOLIPRAM",
+            "person": {
+                "id": "2015116700701",
+                "name": "P.P.SALINA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNNOTH",
+            "person": {
+                "id": "2015116700801",
+                "name": "P.K.VISALAKSHI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAYATTUPARA",
+            "person": {
+                "id": "2015116700901",
+                "name": "P.K.VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUTTANNUR",
+            "person": {
+                "id": "2015116701001",
+                "name": "K.MANOJAN (MANOJAN KAKKATH)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOOLAKKARI",
+            "person": {
+                "id": "2015116701101",
+                "name": "P.P.LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUMBHAM",
+            "person": {
+                "id": "2015116701201",
+                "name": "P.SARASWATHI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THATTYODE",
+            "person": {
+                "id": "2015116701301",
+                "name": "CHANDRAMATHI.A.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOODALI",
+            "person": {
+                "id": "2015116701401",
+                "name": "CHITTUDAN RAGHAVAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAVUNTHAZHA",
+            "person": {
+                "id": "2015116701501",
+                "name": "C.P.PREMARAJAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BANGANAPPARAMBA",
+            "person": {
+                "id": "2015116701601",
+                "name": "T.PRABHAVATHI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "POOVATHUR",
+            "person": {
+                "id": "2015116701701",
+                "name": "SHYNA.M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOLOLAM",
+            "person": {
+                "id": "2015116701801",
+                "name": "P.P.NOUFAL"
+            }
+        }
+    ]
+}

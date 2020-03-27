@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348747629,
+    "date": "2019-08-21",
+    "name": "Othukkungal  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Vengara",
+    "area": "17.28km",
+    "localbody_code": "G100606",
+    "no_of_wards": 20,
+    "population": 29037,
+    "male": 14181,
+    "female": 14856,
+    "population_density": 1680,
+    "sex_ratio": 1048,
+    "literacy_rate": 91,
+    "literacy_rate_male": 94.18,
+    "literacy_rate_female": 87.82,
+    "president": "BEEFATHIMMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAIPATTA",
+            "person": {
+                "id": "2015095900101",
+                "name": "AHAMAD KUTTIPPA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015095900201",
+                "name": "AYYAPPAN KAVUNGALKANDI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THEKKUMMURI",
+            "person": {
+                "id": "2015095900301",
+                "name": "MAYIN KURUNIYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MATTATHUR",
+            "person": {
+                "id": "2015095900401",
+                "name": "FOUSIYA PALERI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MOOLAPPARAMBA",
+            "person": {
+                "id": "2015095900501",
+                "name": "KOYAKUTTY KOLAMKADAVATH PARI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THODUKUTHUPARAMBA",
+            "person": {
+                "id": "2015095900601",
+                "name": "ABDURAHEEM ELLIKOTTIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUNAMBATH",
+            "person": {
+                "id": "2015095900701",
+                "name": "MOIDEEN THATTARUTHODI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MEENKALLU",
+            "person": {
+                "id": "2015095900801",
+                "name": "IBRAHIM KADAMBODAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NOTTANALAKKAL",
+            "person": {
+                "id": "2015095900901",
+                "name": "JASEENA NOTTANALAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "OTHUKKUNGAL TOWN",
+            "person": {
+                "id": "2015095901001",
+                "name": "RUKIYA KORADAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERUKUNNU",
+            "person": {
+                "id": "2015095901101",
+                "name": "FATHIMA MANHAKANDAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALIYAPARAMBA",
+            "person": {
+                "id": "2015095901201",
+                "name": "AYISHA KOLLETH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MELEKULAMBA",
+            "person": {
+                "id": "2015095901301",
+                "name": "RAMITHA .P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UDHIRANI",
+            "person": {
+                "id": "2015095901401",
+                "name": "RASIYA KOLLETH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015095901501",
+                "name": "MUMTHAZ"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOLATHUPARAMBA",
+            "person": {
+                "id": "2015095901601",
+                "name": "KUNHEEDU UMMATT"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ATTEERI",
+            "person": {
+                "id": "2015095901701",
+                "name": "RAZIYA .T"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KODAVANDOOR",
+            "person": {
+                "id": "2015095901801",
+                "name": "BEEFATHIMMA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KACHADIPPARA",
+            "person": {
+                "id": "2015095901901",
+                "name": "ABDURAHIMAN KAMBRATH PULIKKODAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MUNDOTHUPARAMBA",
+            "person": {
+                "id": "2015095902001",
+                "name": "FASALU KALANGADAN"
+            }
+        }
+    ]
+}

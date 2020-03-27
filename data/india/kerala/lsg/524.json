@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346775499,
+    "date": "2019-08-21",
+    "name": "Uzhavoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "25.09km",
+    "localbody_code": "G050406",
+    "no_of_wards": 13,
+    "population": 15338,
+    "male": 7781,
+    "female": 7557,
+    "population_density": 611,
+    "sex_ratio": 971,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "SHERLYRAJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ACHICKAL",
+            "person": {
+                "id": "2015052400101",
+                "name": "MATHEW JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUDUKKAPPARA",
+            "person": {
+                "id": "2015052400201",
+                "name": "SANTHY SAJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PIOUSMOUNT",
+            "person": {
+                "id": "2015052400301",
+                "name": "ANICE MATHEW"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AREEKKARA",
+            "person": {
+                "id": "2015052400401",
+                "name": "DR.SINDHUMOL JACOB"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NEDUMPARA",
+            "person": {
+                "id": "2015052400501",
+                "name": "BIBILA JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KURISUMALA",
+            "person": {
+                "id": "2015052400601",
+                "name": "ANIL T K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULPPARA",
+            "person": {
+                "id": "2015052400701",
+                "name": "THULASI VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "UZHAVOOR TOWN",
+            "person": {
+                "id": "2015052400801",
+                "name": "SHERLY RAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERUMTHANAM",
+            "person": {
+                "id": "2015052400901",
+                "name": "ABRAHAM LUKA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARUNECHI",
+            "person": {
+                "id": "2015052401001",
+                "name": "V T SURESH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ATTAKKANAL",
+            "person": {
+                "id": "2015052401101",
+                "name": "AJANTHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEENKALLEL",
+            "person": {
+                "id": "2015052401201",
+                "name": "THOMAS JOSEPH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MONIPPALLY TOWN",
+            "person": {
+                "id": "2015052401301",
+                "name": "MARY M T"
+            }
+        }
+    ]
+}

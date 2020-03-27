@@ -1,0 +1,172 @@
+{
+    "timeStamp": 1566349060260,
+    "date": "2019-08-21",
+    "name": "Omassery  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Koduvaliy",
+    "area": "25.46km",
+    "localbody_code": "G111008",
+    "no_of_wards": 19,
+    "population": 25420,
+    "male": 12511,
+    "female": 12909,
+    "population_density": 998,
+    "sex_ratio": 1032,
+    "literacy_rate": 88.05,
+    "literacy_rate_male": 93.62,
+    "literacy_rate_female": 82.76,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOODATHAI",
+            "person": {
+                "id": "2015105400101",
+                "name": "K.P KUNHAMMAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAKKATTUKUNNU",
+            "person": {
+                "id": "2015105400201",
+                "name": "SHINY BABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEMMARUTHAI",
+            "person": {
+                "id": "2015105400301",
+                "name": "MANU E.J"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PERUVILLY",
+            "person": {
+                "id": "2015105400401",
+                "name": "GRACY NELLIKKUNNEL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KORONTHIRI",
+            "person": {
+                "id": "2015105400501",
+                "name": "GIRIJA SUMODH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "OMASSERY EAST",
+            "person": {
+                "id": "2015105400602",
+                "name": "BHASKARAN K K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "OMASSERY WEST",
+            "person": {
+                "id": "2015105400701",
+                "name": "ABDURAHIMAN P.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALAKKANDY",
+            "person": {
+                "id": "2015105400801",
+                "name": "FATHIMA VADAKKINIKANDY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALUMTHARA",
+            "person": {
+                "id": "2015105400901",
+                "name": "SUHARABI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VENNAKODE",
+            "person": {
+                "id": "2015105401001",
+                "name": "C.K KADEEJA MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NADAMMALPOYIL",
+            "person": {
+                "id": "2015105401101",
+                "name": "M C RAFEENATHULUKHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANIYARKANDAM",
+            "person": {
+                "id": "2015105401201",
+                "name": "VASANTHA RAJENDARN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOLATHAKARA",
+            "person": {
+                "id": "2015105401301",
+                "name": "K.T SAKKEENA TEACHER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELIMANNA",
+            "person": {
+                "id": "2015105401401",
+                "name": "KUNHI MOIDEEN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015105401501",
+                "name": "AJITHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANGAD WEST",
+            "person": {
+                "id": "2015105401601",
+                "name": "CHANDRAMATHI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MANGAD EAST",
+            "person": {
+                "id": "2015105401701",
+                "name": "SREEBA AREEKKAL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHAKKIKAVU",
+            "person": {
+                "id": "2015105401801",
+                "name": "MANOJ KUMAR T.T"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MEPPALLY",
+            "person": {
+                "id": "2015105401901",
+                "name": "K.K RADHAKRISHNAN"
+            }
+        }
+    ]
+}

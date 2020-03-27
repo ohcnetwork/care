@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566345790165,
+    "date": "2019-08-21",
+    "name": "Pangode  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vamanpuram",
+    "area": "23.31km",
+    "localbody_code": "G010405",
+    "no_of_wards": 19,
+    "population": 27438,
+    "male": 13281,
+    "female": 14157,
+    "population_density": 1177,
+    "sex_ratio": 1066,
+    "literacy_rate": 89.32,
+    "literacy_rate_male": 92.8,
+    "literacy_rate_female": 86.11,
+    "president": "GEETHAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULIPPARA",
+            "person": {
+                "id": "2015025100101",
+                "name": "JAMEELA BEEVI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANACODE",
+            "person": {
+                "id": "2015025100201",
+                "name": "SANIL KUMAR V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANGODE",
+            "person": {
+                "id": "2015025100301",
+                "name": "RAJINA L"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MARANADU",
+            "person": {
+                "id": "2015025100401",
+                "name": "B CHANDRABABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THRIKKOVILVATTOM",
+            "person": {
+                "id": "2015025100501",
+                "name": "M PRABHAKARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MOOLAPPEZHU",
+            "person": {
+                "id": "2015025100601",
+                "name": "SHEEJA L M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AMBEDKARCOLONY",
+            "person": {
+                "id": "2015025100701",
+                "name": "LALITHAKUMARI P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BHARATHANNOOR",
+            "person": {
+                "id": "2015025100801",
+                "name": "GEETHA S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALIYAVAYAL",
+            "person": {
+                "id": "2015025100901",
+                "name": "RAJEENA A M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EX SERVICEMEN COLONY",
+            "person": {
+                "id": "2015025101001",
+                "name": "MOLY P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAKKANIKKARA",
+            "person": {
+                "id": "2015025101101",
+                "name": "SHAINI V S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MYLAMOODU",
+            "person": {
+                "id": "2015025101201",
+                "name": "K RAJESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ADAPPUPARA",
+            "person": {
+                "id": "2015025101301",
+                "name": "CHITHRAKUMARI S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLAYAMDESAM",
+            "person": {
+                "id": "2015025101401",
+                "name": "N SWAPNA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PULIKKARA",
+            "person": {
+                "id": "2015025101501",
+                "name": "SHEEJA V"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "LENINKUNNU",
+            "person": {
+                "id": "2015025101601",
+                "name": "L DEEPA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOCHALUMMOODU",
+            "person": {
+                "id": "2015025101701",
+                "name": "A M ANZARI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ULIYANCODE",
+            "person": {
+                "id": "2015025101801",
+                "name": "BINCY B V"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PAZHAVILA",
+            "person": {
+                "id": "2015025101901",
+                "name": "SUBASH R"
+            }
+        }
+    ]
+}

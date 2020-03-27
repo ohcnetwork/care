@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345227998,
+    "date": "2019-08-21",
+    "name": "Areacode  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Areekkode",
+    "area": "273.74km",
+    "localbody_code": "B100500",
+    "no_of_wards": 16,
+    "population": 190057,
+    "male": 94117,
+    "female": 95940,
+    "population_density": 694,
+    "sex_ratio": 1019,
+    "literacy_rate": 89.45,
+    "literacy_rate_male": 93.2,
+    "literacy_rate_female": 85.7,
+    "president": "LAKSHMIPARAMBAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KIZHUPARAMBU",
+            "person": {
+                "id": "2015011400101",
+                "name": "AYYAPPAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VETTILAPPARA",
+            "person": {
+                "id": "2015011400201",
+                "name": "ABDURAHIMAN KT"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MAITHRA",
+            "person": {
+                "id": "2015011400301",
+                "name": "ABDUL RAHOOF VP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OTHAYI",
+            "person": {
+                "id": "2015011400401",
+                "name": "ABDU RAHIMAN PK"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDAVANNA",
+            "person": {
+                "id": "2015011400501",
+                "name": "SHREEDHARAN NAIR CP"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANNIPPARA",
+            "person": {
+                "id": "2015011400601",
+                "name": "MUHAMMAD KUTTY K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHENGARA",
+            "person": {
+                "id": "2015011400701",
+                "name": "SUBAIDA KT"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULPATTA",
+            "person": {
+                "id": "2015011400801",
+                "name": "SUJISHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THRIPPANACHI",
+            "person": {
+                "id": "2015011400901",
+                "name": "KADHEEJA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAVANOOR",
+            "person": {
+                "id": "2015011401001",
+                "name": "SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHIMANNA",
+            "person": {
+                "id": "2015011401101",
+                "name": "KUTTI RAYIN PK"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KIZHISSHERI",
+            "person": {
+                "id": "2015011401201",
+                "name": "LAKSHMI PARAMBAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELLERI",
+            "person": {
+                "id": "2015011401301",
+                "name": "ABDU RAHIMAN C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AREACODE",
+            "person": {
+                "id": "2015011401401",
+                "name": "SHREEPRIYA K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "OMANOOR",
+            "person": {
+                "id": "2015011401501",
+                "name": "SHEREEFA T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHEACODE",
+            "person": {
+                "id": "2015011401601",
+                "name": "SAJIDA TK"
+            }
+        }
+    ]
+}

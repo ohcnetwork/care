@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349581457,
+    "date": "2019-08-21",
+    "name": "Panathady  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kanhangad",
+    "area": "140.62km",
+    "localbody_code": "G140503",
+    "no_of_wards": 15,
+    "population": 36239,
+    "male": 18379,
+    "female": 17860,
+    "population_density": 258,
+    "sex_ratio": 972,
+    "literacy_rate": 81.66,
+    "literacy_rate_male": 86.62,
+    "literacy_rate_female": 76.59,
+    "president": "PGMOHANANPILLA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANADUKKAM",
+            "person": {
+                "id": "2015120300101",
+                "name": "P SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PULIKKADAVU",
+            "person": {
+                "id": "2015120300201",
+                "name": "ANOOP CR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHAMMUNDIKKUNNU",
+            "person": {
+                "id": "2015120300301",
+                "name": "G SHAJILAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OTTAMALA",
+            "person": {
+                "id": "2015120300401",
+                "name": "P G MOHANAN PILLA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATTUVAM",
+            "person": {
+                "id": "2015120300501",
+                "name": "BIJU V R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALLAPALLI",
+            "person": {
+                "id": "2015120300601",
+                "name": "NALINAKSHI MD"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NELLIKKUNNU",
+            "person": {
+                "id": "2015120300701",
+                "name": "THAMBAN P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "RANIPURAM",
+            "person": {
+                "id": "2015120300801",
+                "name": "SHARADHA M C"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANATHUR",
+            "person": {
+                "id": "2015120300901",
+                "name": "OMANA VK"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARIPRODE",
+            "person": {
+                "id": "2015120301001",
+                "name": "PREETHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KURUNCHI",
+            "person": {
+                "id": "2015120301101",
+                "name": "USHAKUMARI P R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANATHADY",
+            "person": {
+                "id": "2015120301201",
+                "name": "MC MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERUPANATHADY",
+            "person": {
+                "id": "2015120301301",
+                "name": "RAJANI DEVI R C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PRANTHERKAVU",
+            "person": {
+                "id": "2015120301401",
+                "name": "ASHA SURESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ERINCHILAMKODU",
+            "person": {
+                "id": "2015120301501",
+                "name": "HEMAMBIKA K"
+            }
+        }
+    ]
+}

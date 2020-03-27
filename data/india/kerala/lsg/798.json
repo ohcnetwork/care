@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348127397,
+    "date": "2019-08-21",
+    "name": "Kadukutty  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chalakudy",
+    "area": "17.63km",
+    "localbody_code": "G081601",
+    "no_of_wards": 16,
+    "population": 22200,
+    "male": 10917,
+    "female": 11283,
+    "population_density": 1259,
+    "sex_ratio": 1033,
+    "literacy_rate": 92.22,
+    "literacy_rate_male": 94.81,
+    "literacy_rate_female": 89.73,
+    "president": "THOMASIKANNATH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALAYAMPARAMBU",
+            "person": {
+                "id": "2015079800101",
+                "name": "BEENA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADUKUTTY",
+            "person": {
+                "id": "2015079800201",
+                "name": "MERCY FRANCIS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VATTAKKOTTA",
+            "person": {
+                "id": "2015079800301",
+                "name": "TEDDY SIMETHY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "GANDHINAGAR",
+            "person": {
+                "id": "2015079800401",
+                "name": "SUNITHA RAMESAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAMPUTHARA",
+            "person": {
+                "id": "2015079800501",
+                "name": "DAVIS M R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANNANAD",
+            "person": {
+                "id": "2015079800601",
+                "name": "SINDHU JAYAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARANGALI",
+            "person": {
+                "id": "2015079800701",
+                "name": "MOLY THOMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANALPALAM",
+            "person": {
+                "id": "2015079800801",
+                "name": "SREEDEVI NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KATHIKUDOM",
+            "person": {
+                "id": "2015079800901",
+                "name": "POULOSE M I"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARAYAM",
+            "person": {
+                "id": "2015079801001",
+                "name": "JINI ANTONY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERALAKKUNNU",
+            "person": {
+                "id": "2015079801101",
+                "name": "VINAYAN K K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KULAYIDAM",
+            "person": {
+                "id": "2015079801201",
+                "name": "VIMAL KUMAR P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERUVALOOR",
+            "person": {
+                "id": "2015079801301",
+                "name": "SANDEEP ARIYAMPURAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLOOR",
+            "person": {
+                "id": "2015079801401",
+                "name": "SUKUMARAN V M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THYKKOOTTAM",
+            "person": {
+                "id": "2015079801501",
+                "name": "BINDU SASI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VYNTHALA",
+            "person": {
+                "id": "2015079801601",
+                "name": "THOMAS I KANNATH"
+            }
+        }
+    ]
+}

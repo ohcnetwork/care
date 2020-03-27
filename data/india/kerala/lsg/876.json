@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348401266,
+    "date": "2019-08-21",
+    "name": "Nenmara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Nenmara",
+    "area": "36.84km",
+    "localbody_code": "G091106",
+    "no_of_wards": 20,
+    "population": 32456,
+    "male": 15785,
+    "female": 16671,
+    "population_density": 881,
+    "sex_ratio": 1056,
+    "literacy_rate": 78.99,
+    "literacy_rate_male": 87.23,
+    "literacy_rate_female": 71.33,
+    "president": "K.PREMAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AYINAMPADAM",
+            "person": {
+                "id": "2015087600101",
+                "name": "PRABITHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUTHANTHARA",
+            "person": {
+                "id": "2015087600201",
+                "name": "SHARMILA KASIVISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALLANGHY",
+            "person": {
+                "id": "2015087600301",
+                "name": "BABY RAVI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLIKALTHARA",
+            "person": {
+                "id": "2015087600401",
+                "name": "SAJITHA PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NEMMARAPADAM",
+            "person": {
+                "id": "2015087600501",
+                "name": "LAKSHMANAN. M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOSSANIPALLAM",
+            "person": {
+                "id": "2015087600601",
+                "name": "T.K.BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VITHANASSERY",
+            "person": {
+                "id": "2015087600701",
+                "name": "JAYANTHI MOHANAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAZHATHARAKAD",
+            "person": {
+                "id": "2015087600801",
+                "name": "C. PRAKASHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NELLIPADAM",
+            "person": {
+                "id": "2015087600901",
+                "name": "S. GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AYYAPANPARA",
+            "person": {
+                "id": "2015087601001",
+                "name": "PUSHKALA HARIDAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POTHUNDY",
+            "person": {
+                "id": "2015087601101",
+                "name": "K. PREMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MATTAYI",
+            "person": {
+                "id": "2015087601201",
+                "name": "M.JAYALAKSHMY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIKAD",
+            "person": {
+                "id": "2015087601301",
+                "name": "RATHIKA RAMACHANADRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHATHAMANGALAM",
+            "person": {
+                "id": "2015087601401",
+                "name": "P. RAMESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PEZHUMPARA",
+            "person": {
+                "id": "2015087601501",
+                "name": "USHA RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PALAPARAMBU",
+            "person": {
+                "id": "2015087601601",
+                "name": "PUSHPALATHA M.R. NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEMMARA",
+            "person": {
+                "id": "2015087601701",
+                "name": "SIVAPRASAD. P.P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VAKKAVU",
+            "person": {
+                "id": "2015087601801",
+                "name": "BINDHU C.K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KALMOKKU",
+            "person": {
+                "id": "2015087601901",
+                "name": "AJITHKUMAR.T.G"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHENNAMKODE",
+            "person": {
+                "id": "2015087602001",
+                "name": "R. MURALEEDHARAN"
+            }
+        }
+    ]
+}

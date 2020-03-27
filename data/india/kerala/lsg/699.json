@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347349649,
+    "date": "2019-08-21",
+    "name": "Puthenvelikkara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Parakkadavu",
+    "area": "19.87km",
+    "localbody_code": "G071301",
+    "no_of_wards": 17,
+    "population": 29082,
+    "male": 14361,
+    "female": 14721,
+    "population_density": 1522,
+    "sex_ratio": 1049,
+    "literacy_rate": 93.05,
+    "literacy_rate_male": 95.8,
+    "literacy_rate_female": 90.47,
+    "president": "PVLAJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THURUTHOOR EAST",
+            "person": {
+                "id": "2015069900101",
+                "name": "P V LAJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANJIPPALLA",
+            "person": {
+                "id": "2015069900201",
+                "name": "LEENA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANANCHERIKUNNU",
+            "person": {
+                "id": "2015069900301",
+                "name": "SMITHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHENVELIKKARA NORTH",
+            "person": {
+                "id": "2015069900401",
+                "name": "K A BIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VATTEKKATTUKUNNU",
+            "person": {
+                "id": "2015069900501",
+                "name": "REENA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KODIKUTHIYAKUNNU",
+            "person": {
+                "id": "2015069900601",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELENTHIKARA",
+            "person": {
+                "id": "2015069900701",
+                "name": "M P JOSE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERUKADAPPURAM",
+            "person": {
+                "id": "2015069900801",
+                "name": "JOY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THELATHURUTH",
+            "person": {
+                "id": "2015069900901",
+                "name": "V S ANIKUTTAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALAVANA",
+            "person": {
+                "id": "2015069901001",
+                "name": "LEELA K R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHENVELIKKARA SOUTH",
+            "person": {
+                "id": "2015069901101",
+                "name": "RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHENVELIKKARA BAZAR",
+            "person": {
+                "id": "2015069901201",
+                "name": "PRASEENA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHENVELIKKARA WEST",
+            "person": {
+                "id": "2015069901301",
+                "name": "ULLASAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULIYAMTHURUTH",
+            "person": {
+                "id": "2015069901401",
+                "name": "LISSY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THURUTHIPPURAM",
+            "person": {
+                "id": "2015069901501",
+                "name": "SILVY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VELLOTTUPURAM",
+            "person": {
+                "id": "2015069901601",
+                "name": "ANU JALADHAS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THURUTHOOR WEST",
+            "person": {
+                "id": "2015069901701",
+                "name": "SHINY"
+            }
+        }
+    ]
+}

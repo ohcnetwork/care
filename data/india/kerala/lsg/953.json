@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348731381,
+    "date": "2019-08-21",
+    "name": "Irimbiliyam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Kuttipuram",
+    "area": "24.06km",
+    "localbody_code": "G100903",
+    "no_of_wards": 17,
+    "population": 23526,
+    "male": 11278,
+    "female": 12248,
+    "population_density": 978,
+    "sex_ratio": 1086,
+    "literacy_rate": 89.5,
+    "literacy_rate_male": 93.03,
+    "literacy_rate_female": 85.97,
+    "president": "RAJULA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMBAL",
+            "person": {
+                "id": "2015095300101",
+                "name": "VELAYUDHAN P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALIYAKUNNU WEST",
+            "person": {
+                "id": "2015095300201",
+                "name": "K.T UMMUKKULSU TEACHER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALIYAKUNNU EAST",
+            "person": {
+                "id": "2015095300301",
+                "name": "SARASWATHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KODUMUDI",
+            "person": {
+                "id": "2015095300401",
+                "name": "MAMMU PALOLI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARAPPARAMBU",
+            "person": {
+                "id": "2015095300501",
+                "name": "PRAVEENA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THOTTILAKKAL",
+            "person": {
+                "id": "2015095300601",
+                "name": "SELMATH P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PURAMANNUR",
+            "person": {
+                "id": "2015095300701",
+                "name": "AMEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "IRIMBILIYAM",
+            "person": {
+                "id": "2015095300801",
+                "name": "UMMUKULSU C.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOSCOW",
+            "person": {
+                "id": "2015095300901",
+                "name": "MANJULA V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELIKULAM",
+            "person": {
+                "id": "2015095301001",
+                "name": "ABOOBACKER KEEZHVEETTIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANKERY",
+            "person": {
+                "id": "2015095301101",
+                "name": "UMMUKULSU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VATTAPPARAMB",
+            "person": {
+                "id": "2015095301201",
+                "name": "MOHAMMED N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIRUNILAM",
+            "person": {
+                "id": "2015095301301",
+                "name": "HEMALATHA V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENDALLOOR SOUTH",
+            "person": {
+                "id": "2015095301401",
+                "name": "T.P. IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VENDALLOOR NORTH",
+            "person": {
+                "id": "2015095301501",
+                "name": "ABDU KULAMBIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ALUMKOOTTAM",
+            "person": {
+                "id": "2015095301601",
+                "name": "RAJULA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015095301701",
+                "name": "ABDUL SATHAR K.P"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346709532,
+    "date": "2019-08-21",
+    "name": "Manjoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kaduthuruthy",
+    "area": "28.98km",
+    "localbody_code": "G050408",
+    "no_of_wards": 18,
+    "population": 28060,
+    "male": 14042,
+    "female": 14018,
+    "population_density": 968,
+    "sex_ratio": 998,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "SUNUGEORGE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "METTUMPARA",
+            "person": {
+                "id": "2015050700101",
+                "name": "TOMY KARUKULAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERAVIMANGALAM",
+            "person": {
+                "id": "2015050700201",
+                "name": "ANCY MATHEW"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KURRUPANTHARA",
+            "person": {
+                "id": "2015050700301",
+                "name": "P SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANJIRATHANAM",
+            "person": {
+                "id": "2015050700401",
+                "name": "LISSY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SLEEVAPURAM",
+            "person": {
+                "id": "2015050700501",
+                "name": "BINDHU GIJI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "OMALLOOR",
+            "person": {
+                "id": "2015050700601",
+                "name": "ELSAMMA BABY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SOCIALWELFARE CENTRE",
+            "person": {
+                "id": "2015050700701",
+                "name": "KOMALAVALLY RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NAMBYAKULAM",
+            "person": {
+                "id": "2015050700801",
+                "name": "SUSAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTHANALLOOR",
+            "person": {
+                "id": "2015050700901",
+                "name": "JEENA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANJOOR",
+            "person": {
+                "id": "2015050701001",
+                "name": "MANJU ANIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "RAILWAY STATION",
+            "person": {
+                "id": "2015050701101",
+                "name": "K C MATHEW"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANJOOR CENTRAL",
+            "person": {
+                "id": "2015050701201",
+                "name": "MANJU AJITH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHAMAKALA",
+            "person": {
+                "id": "2015050701301",
+                "name": "BINOY EMMANUEL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANJOOR SOUTH",
+            "person": {
+                "id": "2015050701401",
+                "name": "LUKOSE MAKKIL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MEMURY",
+            "person": {
+                "id": "2015050701501",
+                "name": "JOHN NEELAMPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANVETTOM",
+            "person": {
+                "id": "2015050701601",
+                "name": "SUNU GEORGE"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VIJAYA LIBRARY",
+            "person": {
+                "id": "2015050701701",
+                "name": "ANNAMMA P C"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KAKKATHUMALA",
+            "person": {
+                "id": "2015050701802",
+                "name": "BIJU MATTAPPALLY"
+            }
+        }
+    ]
+}

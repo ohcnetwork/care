@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566345843341,
+    "date": "2019-08-21",
+    "name": "Aruvikkara  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Nedumangad",
+    "area": "21.86km",
+    "localbody_code": "G010602",
+    "no_of_wards": 20,
+    "population": 28661,
+    "male": 14155,
+    "female": 14506,
+    "population_density": 1311,
+    "sex_ratio": 1025,
+    "literacy_rate": 90.09,
+    "literacy_rate_male": 93.83,
+    "literacy_rate_female": 86.46,
+    "president": "MINII",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VELLORKKONAM",
+            "person": {
+                "id": "2015026400101",
+                "name": "F.BABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOKKOTHAMANGALAM",
+            "person": {
+                "id": "2015026400201",
+                "name": "JAYARAJ M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALATHARA",
+            "person": {
+                "id": "2015026400301",
+                "name": "REJITHAKUMARI C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUNDELA",
+            "person": {
+                "id": "2015026400401",
+                "name": "JAYACHANDRAN NAIR R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAILAMOODU",
+            "person": {
+                "id": "2015026400501",
+                "name": "VIJAYAKUMARI R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ARUVIKKARA",
+            "person": {
+                "id": "2015026400601",
+                "name": "V.VIJAYAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VEMBANNOOR",
+            "person": {
+                "id": "2015026400701",
+                "name": "AJITH K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADAMBANAD",
+            "person": {
+                "id": "2015026400801",
+                "name": "REJI R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANAMBOORU",
+            "person": {
+                "id": "2015026400901",
+                "name": "MINI I"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BHAGAVATHIPURAM",
+            "person": {
+                "id": "2015026401001",
+                "name": "ANITHAKUMARI JC"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERIYAKONNI",
+            "person": {
+                "id": "2015026401101",
+                "name": "SREEDEVI S S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "IRAYAMCODE",
+            "person": {
+                "id": "2015026401201",
+                "name": "VELAYUDHAN NAIR A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KACHANI",
+            "person": {
+                "id": "2015026401301",
+                "name": "SIMI P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALATHUKAAL",
+            "person": {
+                "id": "2015026401401",
+                "name": "SHAJU B"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MAILAM",
+            "person": {
+                "id": "2015026401501",
+                "name": "CHRISTHUKUMAR T E"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PANDIYODE",
+            "person": {
+                "id": "2015026401601",
+                "name": "PRASEETHA P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "IRUMBA",
+            "person": {
+                "id": "2015026401701",
+                "name": "NANDINI J R"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VATTAKKULAM",
+            "person": {
+                "id": "2015026401801",
+                "name": "JAMEELA BEEVI M"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AZHIKKODE",
+            "person": {
+                "id": "2015026401901",
+                "name": "MOHAMME ILLYAS A"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KARUMARAKKODE",
+            "person": {
+                "id": "2015026402001",
+                "name": "SABEENA J"
+            }
+        }
+    ]
+}

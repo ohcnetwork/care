@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346586491,
+    "date": "2019-08-21",
+    "name": "Pallippad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Harippad",
+    "area": "16.93km",
+    "localbody_code": "G040906",
+    "no_of_wards": 13,
+    "population": 23606,
+    "male": 11266,
+    "female": 12340,
+    "population_density": 1394,
+    "sex_ratio": 1095,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "RAJENDRAKURUP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAZHUTHANAM",
+            "person": {
+                "id": "2015047900101",
+                "name": "JESSY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PULLAMPADA",
+            "person": {
+                "id": "2015047900201",
+                "name": "SHEEMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KODUMTHAR",
+            "person": {
+                "id": "2015047900301",
+                "name": "T.K SUJATHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUREETHARA",
+            "person": {
+                "id": "2015047900401",
+                "name": "PETER THOMAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEKKEKKARA KIZHAKKU",
+            "person": {
+                "id": "2015047900501",
+                "name": "ABRAHAM (SUNIL)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KONUMADAM",
+            "person": {
+                "id": "2015047900601",
+                "name": "MANY  PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTTAKKAKAM",
+            "person": {
+                "id": "2015047900701",
+                "name": "ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKUM MURI",
+            "person": {
+                "id": "2015047900801",
+                "name": "RAJENDRA KURUP"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTAKKAKAM WEST",
+            "person": {
+                "id": "2015047900901",
+                "name": "RADHA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NADUVATTAM",
+            "person": {
+                "id": "2015047901001",
+                "name": "SREELATHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARANGATTUVILA",
+            "person": {
+                "id": "2015047901101",
+                "name": "SYAM SANKAR.V.S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERKAD",
+            "person": {
+                "id": "2015047901201",
+                "name": "KEECHERIL SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEENDOOR",
+            "person": {
+                "id": "2015047901301",
+                "name": "RAJI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346884236,
+    "date": "2019-08-21",
+    "name": "Vakathanam  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Madappally",
+    "area": "26.48km",
+    "localbody_code": "G050904",
+    "no_of_wards": 20,
+    "population": 31222,
+    "male": 15559,
+    "female": 15663,
+    "population_density": 1179,
+    "sex_ratio": 1007,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "PRAKASHCHANDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THRIKOTHAMANGALAM",
+            "person": {
+                "id": "2015056000101",
+                "name": "THOMAS KURIAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KODOORARVALLY",
+            "person": {
+                "id": "2015056000201",
+                "name": "JAYAMOL V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADAMURY",
+            "person": {
+                "id": "2015056000301",
+                "name": "MOLLY JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NJALIYAKUZHY",
+            "person": {
+                "id": "2015056000401",
+                "name": "SIBY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MARANGADU",
+            "person": {
+                "id": "2015056000502",
+                "name": "ARUNIMA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015056000601",
+                "name": "SINI MATHEW"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THOTTAKKAD",
+            "person": {
+                "id": "2015056000701",
+                "name": "K R SIMON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALAKAVALA",
+            "person": {
+                "id": "2015056000801",
+                "name": "BABYMOL M VARKEY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EZHUVANTHANAM",
+            "person": {
+                "id": "2015056000901",
+                "name": "PRAKASH CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ERAVUCHIRA",
+            "person": {
+                "id": "2015056001001",
+                "name": "LISIAMMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PONGAMTHANAM",
+            "person": {
+                "id": "2015056001101",
+                "name": "VINOD ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUDITHANAM",
+            "person": {
+                "id": "2015056001201",
+                "name": "ROSAMMA MATHAI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANIKANDAPURAM",
+            "person": {
+                "id": "2015056001301",
+                "name": "SREEKUMAR G"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UNNAMATTOM",
+            "person": {
+                "id": "2015056001401",
+                "name": "JYOTHI P J"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANDANCHIRA",
+            "person": {
+                "id": "2015056001501",
+                "name": "PRIYA ALEXANDER"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NALUNNAKKAL",
+            "person": {
+                "id": "2015056001601",
+                "name": "ELIZABETH MATHEW"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PUTHENCHANTHA",
+            "person": {
+                "id": "2015056001701",
+                "name": "SHEELA BABYCHEN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "JERUSALEMMOUNT",
+            "person": {
+                "id": "2015056001801",
+                "name": "MINI JACOB"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VALLIKKAD",
+            "person": {
+                "id": "2015056001901",
+                "name": "ANIL JACOB"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "UDHIKKAL",
+            "person": {
+                "id": "2015056002001",
+                "name": "C RAMESH"
+            }
+        }
+    ]
+}

@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566348199544,
+    "date": "2019-08-21",
+    "name": "Ongallur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Pattambi",
+    "area": "31.68km",
+    "localbody_code": "G090204",
+    "no_of_wards": 22,
+    "population": 31755,
+    "male": 15278,
+    "female": 16477,
+    "population_density": 1002,
+    "sex_ratio": 1078,
+    "literacy_rate": 85.14,
+    "literacy_rate_male": 89.92,
+    "literacy_rate_female": 80.81,
+    "president": "JISHARPARAMBIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POOVAKODE",
+            "person": {
+                "id": "2015081500101",
+                "name": "SUNITHA.S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THONDIYANNUR",
+            "person": {
+                "id": "2015081500201",
+                "name": "NARAYANAN A M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARUTHUR",
+            "person": {
+                "id": "2015081500301",
+                "name": "SANDHYA C K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLADIPATTA",
+            "person": {
+                "id": "2015081500401",
+                "name": "SUNITHA A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAMANIKKARA",
+            "person": {
+                "id": "2015081500501",
+                "name": "SAYINA T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POYLOOR",
+            "person": {
+                "id": "2015081500601",
+                "name": "VIJAYAN P P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VADANAMKURUSSI",
+            "person": {
+                "id": "2015081500701",
+                "name": "VINEETHA.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARKIDAKACHAL",
+            "person": {
+                "id": "2015081500801",
+                "name": "JYOTHILAKSHMI P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUZHIYANAMKUNNU",
+            "person": {
+                "id": "2015081500901",
+                "name": "PRASANNA P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MENCHITHARA",
+            "person": {
+                "id": "2015081501001",
+                "name": "UNNIKRISHNAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARAMANNA",
+            "person": {
+                "id": "2015081501101",
+                "name": "P.K.ABOOBACKER SIDHIK"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARAKKAD",
+            "person": {
+                "id": "2015081501201",
+                "name": "MUHAMMED IQBAL V K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAZHANCHEERIKKUNNU",
+            "person": {
+                "id": "2015081501301",
+                "name": "SAINABA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ONGALLUR SOUTH",
+            "person": {
+                "id": "2015081501401",
+                "name": "RENJITH K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MOLOORKKARA",
+            "person": {
+                "id": "2015081501501",
+                "name": "PUSHPALATHA V K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015081501601",
+                "name": "V.SAIDALI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOLLIPPARAMBU",
+            "person": {
+                "id": "2015081501701",
+                "name": "JISHAR PARAMBIL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KONDOORKKARA",
+            "person": {
+                "id": "2015081501801",
+                "name": "VIJAYAKUMARAN P P"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MANJALUNGAL",
+            "person": {
+                "id": "2015081501901",
+                "name": "SHEEBA AYUB"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ONGALLUR NORTH",
+            "person": {
+                "id": "2015081502001",
+                "name": "PUSHPALATHA K"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PULASSERIKKARA",
+            "person": {
+                "id": "2015081502101",
+                "name": "M.P.VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ANDALADI",
+            "person": {
+                "id": "2015081502201",
+                "name": "BULKEES MUHAMMEDALI"
+            }
+        }
+    ]
+}

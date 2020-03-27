@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346772623,
+    "date": "2019-08-21",
+    "name": "Kuravilangad  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "22.93km",
+    "localbody_code": "G050405",
+    "no_of_wards": 14,
+    "population": 17355,
+    "male": 8600,
+    "female": 8755,
+    "population_density": 757,
+    "sex_ratio": 10118,
+    "literacy_rate": 96,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 95,
+    "president": "P.CKURIAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "JAIGIRI",
+            "person": {
+                "id": "2015052300101",
+                "name": "SOUMYA JOSHY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ASUPATHRI",
+            "person": {
+                "id": "2015052300201",
+                "name": "SIBY MANI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANJIRAMKULAM",
+            "person": {
+                "id": "2015052300301",
+                "name": "SOPHI SAJI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SUBSTATION",
+            "person": {
+                "id": "2015052300401",
+                "name": "GEORGE G  CHENNELIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOZHA",
+            "person": {
+                "id": "2015052300501",
+                "name": "SHAIJU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "COLLEGE",
+            "person": {
+                "id": "2015052300601",
+                "name": "P.N MOHANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CLARATBHAVAN",
+            "person": {
+                "id": "2015052300701",
+                "name": "ALICE THOMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALIKAVU",
+            "person": {
+                "id": "2015052300801",
+                "name": "REMA RAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GOVINDAPURAM",
+            "person": {
+                "id": "2015052300901",
+                "name": "BAIJU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALATHOOR",
+            "person": {
+                "id": "2015052301001",
+                "name": "SAJI JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAZRATH HILL",
+            "person": {
+                "id": "2015052301101",
+                "name": "MINIMOL GEORGE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PAKALOMATTOM",
+            "person": {
+                "id": "2015052301201",
+                "name": "P.C KURIAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "INDIRAGIRI",
+            "person": {
+                "id": "2015052301301",
+                "name": "THRESIAMMA GEORGE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTUVA",
+            "person": {
+                "id": "2015052301401",
+                "name": "MERCY REJI"
+            }
+        }
+    ]
+}

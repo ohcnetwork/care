@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349044890,
+    "date": "2019-08-21",
+    "name": "Thalakulathur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Chelannur",
+    "area": "21.54km",
+    "localbody_code": "G110906",
+    "no_of_wards": 17,
+    "population": 23708,
+    "male": 11552,
+    "female": 12156,
+    "population_density": 1101,
+    "sex_ratio": 1052,
+    "literacy_rate": 92.18,
+    "literacy_rate_male": 97.11,
+    "literacy_rate_female": 87.56,
+    "president": "PRAKASAN.C",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANDIKODE",
+            "person": {
+                "id": "2015104600101",
+                "name": "PRAMEELA. K.T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANATHANATH",
+            "person": {
+                "id": "2015104600201",
+                "name": "PRAKASAN. C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANNASSERY",
+            "person": {
+                "id": "2015104600301",
+                "name": "DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EDAKKARA",
+            "person": {
+                "id": "2015104600401",
+                "name": "JAYANTHI. P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOCHAMVALLY",
+            "person": {
+                "id": "2015104600501",
+                "name": "USHA PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PATTARPALAM",
+            "person": {
+                "id": "2015104600601",
+                "name": "PRAKASAN. K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAPPARA",
+            "person": {
+                "id": "2015104600701",
+                "name": "SUBHASHINI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAVANAKKUZHI",
+            "person": {
+                "id": "2015104600801",
+                "name": "SHAREENA KARIM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAVAYIL",
+            "person": {
+                "id": "2015104600901",
+                "name": "PRAJITHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MATHILAKAM",
+            "person": {
+                "id": "2015104601001",
+                "name": "THAFSIJA MAJEED"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PARAMBATH",
+            "person": {
+                "id": "2015104601101",
+                "name": "VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUKKAMKADAVU",
+            "person": {
+                "id": "2015104601201",
+                "name": "HAREESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PURAKKATTIRI",
+            "person": {
+                "id": "2015104601301",
+                "name": "BALAN. M.P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALORA",
+            "person": {
+                "id": "2015104601401",
+                "name": "PRADEEP KUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POOZHIYIL",
+            "person": {
+                "id": "2015104601501",
+                "name": "SHEEJA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHIRAVALAPPIL",
+            "person": {
+                "id": "2015104601601",
+                "name": "JASEENA FAIZAL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PADANNAKKALAM",
+            "person": {
+                "id": "2015104601701",
+                "name": "AMARJITH. P.T"
+            }
+        }
+    ]
+}

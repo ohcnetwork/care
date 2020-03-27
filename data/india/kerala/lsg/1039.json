@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349022153,
+    "date": "2019-08-21",
+    "name": "Chengottukavu  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Panthalayani",
+    "area": "13.6km",
+    "localbody_code": "G110804",
+    "no_of_wards": 17,
+    "population": 23702,
+    "male": 11221,
+    "female": 12481,
+    "population_density": 1743,
+    "sex_ratio": 1112,
+    "literacy_rate": 91.96,
+    "literacy_rate_male": 96.51,
+    "literacy_rate_female": 87.49,
+    "president": "KARUNAKARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARANGADATH",
+            "person": {
+                "id": "2015103900101",
+                "name": "SUDHA.M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ANTHATTA",
+            "person": {
+                "id": "2015103900201",
+                "name": "SUDHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MELOOR WEST",
+            "person": {
+                "id": "2015103900301",
+                "name": "KARUNAKARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MELOOR",
+            "person": {
+                "id": "2015103900401",
+                "name": "PUSHPA.N.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ELATTERI NORTH",
+            "person": {
+                "id": "2015103900501",
+                "name": "SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELATTERI",
+            "person": {
+                "id": "2015103900601",
+                "name": "INDIRA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHELIYA TOWN",
+            "person": {
+                "id": "2015103900701",
+                "name": "PRIYA.O"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHELIYA EAST",
+            "person": {
+                "id": "2015103900801",
+                "name": "BALAKRISHNAN.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENGOTTUKAVU",
+            "person": {
+                "id": "2015103900901",
+                "name": "SUJALAKUMARI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALOPOYIL",
+            "person": {
+                "id": "2015103901001",
+                "name": "BALAKRISHNAN.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NJANAMPOYIL",
+            "person": {
+                "id": "2015103901101",
+                "name": "UNNI.V.T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAKKULAM CENTRE",
+            "person": {
+                "id": "2015103901201",
+                "name": "SADI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POILKAVU",
+            "person": {
+                "id": "2015103901301",
+                "name": "GEETHANDAN.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANGAD",
+            "person": {
+                "id": "2015103901401",
+                "name": "PUSHPA. M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAVALAD",
+            "person": {
+                "id": "2015103901501",
+                "name": "HAMEED.V.M"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EDAKKULAM",
+            "person": {
+                "id": "2015103901601",
+                "name": "JAYASREE"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MADAKKARA",
+            "person": {
+                "id": "2015103901701",
+                "name": "NUSRATH .V.C"
+            }
+        }
+    ]
+}

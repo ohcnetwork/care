@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349510125,
+    "date": "2019-08-21",
+    "name": "Kumbadaje  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "31.03km",
+    "localbody_code": "G140202",
+    "no_of_wards": 13,
+    "population": 12545,
+    "male": 6335,
+    "female": 6210,
+    "population_density": 404,
+    "sex_ratio": 980,
+    "literacy_rate": 79.24,
+    "literacy_rate_male": 87.78,
+    "literacy_rate_female": 70.65,
+    "president": "FATHIMATHZUHARA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANNADKA",
+            "person": {
+                "id": "2015117800101",
+                "name": "ADV. MOHAMMED QUASIM ANNADKAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNIYOOR",
+            "person": {
+                "id": "2015117800201",
+                "name": "ELIZABETH CRASTA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUMBADAJE",
+            "person": {
+                "id": "2015117800301",
+                "name": "S. MOHAMMED KUNHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "YETHADKA",
+            "person": {
+                "id": "2015117800401",
+                "name": "M. SHAILAJA BHAT"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHERUNI",
+            "person": {
+                "id": "2015117800501",
+                "name": "B.T. ABDULLA KUNHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BELINJA",
+            "person": {
+                "id": "2015117800601",
+                "name": "FATHIMATH ZUHARA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BALAKALA",
+            "person": {
+                "id": "2015117800701",
+                "name": "YASHODA. N"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VODAMBALA",
+            "person": {
+                "id": "2015117800801",
+                "name": "RAVEENDRA RAI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOVVAR",
+            "person": {
+                "id": "2015117800901",
+                "name": "NALINI. K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GOSADA",
+            "person": {
+                "id": "2015117801001",
+                "name": "MISIRIABI. M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "JAYANAGAR",
+            "person": {
+                "id": "2015117801101",
+                "name": "SHANTHA.S.BHAT"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AGALPADY",
+            "person": {
+                "id": "2015117801201",
+                "name": "SHASHIDHARA. T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "UBRANGALA",
+            "person": {
+                "id": "2015117801301",
+                "name": "ANANDA. K. MOVVAR"
+            }
+        }
+    ]
+}
