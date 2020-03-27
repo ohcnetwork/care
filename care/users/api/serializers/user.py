@@ -26,7 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
             "phone_number",
             "gender",
             "age",
-            "skill",
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
