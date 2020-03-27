@@ -289,7 +289,9 @@ class Ambulance(FacilityBaseModel):
 
     ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
 
-    service_charge = models.IntegerField(default=0)
+    price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    has_free_service = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def drivers(self):
@@ -297,6 +299,14 @@ class Ambulance(FacilityBaseModel):
 
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="ambulance_free_or_price",
+                check=models.Q(price_per_km__isnull=False) | models.Q(has_free_service=True),
+            )
+        ]
 
 
 class AmbulanceDriver(FacilityBaseModel):
