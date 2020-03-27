@@ -23,3 +23,10 @@ class PatientTeleConsultationSerializer(serializers.ModelSerializer):
 
 class PatientDetailSerializer(PatientSerializer):
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
+
+
+class PatientAdmissionSerializer(serializers.Serializer):
+    facility_id = serializers.IntegerField()
+    patient_id = serializers.IntegerField()
+    admission_date = serializers.DateTimeField(required=False)
+    discharge_date = serializers.DateTimeField(required=False)

@@ -57,7 +57,7 @@ class PatientAdmission(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE)
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE)
     admission_date = models.DateTimeField(default=datetime.now)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     discharge_date = models.DateTimeField(null=True)
 
     class Meta:
