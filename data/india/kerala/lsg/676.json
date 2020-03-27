@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347257885,
+    "date": "2019-08-21",
+    "name": "Thiruvaniyoor  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vadavucode",
+    "area": "21.91km",
+    "localbody_code": "G071002",
+    "no_of_wards": 16,
+    "population": 20984,
+    "male": 10550,
+    "female": 10434,
+    "population_density": 940,
+    "sex_ratio": 989,
+    "literacy_rate": 91.99,
+    "literacy_rate_male": 95.79,
+    "literacy_rate_female": 88.11,
+    "president": "ADV.K.C.PAULOSE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAKKAD",
+            "person": {
+                "id": "2015067600101",
+                "name": "REJI VARGHESE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MATTAKKUZHI-VENMANI",
+            "person": {
+                "id": "2015067600201",
+                "name": "ADV. K.C.PAULOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOKKAPPILLY",
+            "person": {
+                "id": "2015067600301",
+                "name": "AJI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHEMMANADU SOUTH",
+            "person": {
+                "id": "2015067600401",
+                "name": "LISSY ALEX"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHEMMANADU NORTH",
+            "person": {
+                "id": "2015067600501",
+                "name": "AJITHA MANI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MONAPPILLY",
+            "person": {
+                "id": "2015067600601",
+                "name": "SANALKUMAR K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VENKIDA-MARANGATTULLY",
+            "person": {
+                "id": "2015067600701",
+                "name": "M.M.PATHROSE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MARANGATTULLY",
+            "person": {
+                "id": "2015067600801",
+                "name": "ABHILASH THANKAPPAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAZHUKKAMATTOM",
+            "person": {
+                "id": "2015067600901",
+                "name": "KOCHURANI VARGHESE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THIRUVANIYOOR SOUTH",
+            "person": {
+                "id": "2015067601001",
+                "name": "GEETHA NARAYANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUVANIYOOR CITY",
+            "person": {
+                "id": "2015067601101",
+                "name": "BABY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANNIATTUNIRAPPU",
+            "person": {
+                "id": "2015067601201",
+                "name": "REJI P YOHANNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VANDIPETTA",
+            "person": {
+                "id": "2015067601301",
+                "name": "I V SHAJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENNIKKULAM",
+            "person": {
+                "id": "2015067601401",
+                "name": "OMANA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MURIAMANGALAM EAST",
+            "person": {
+                "id": "2015067601501",
+                "name": "SARADA GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MAMALA",
+            "person": {
+                "id": "2015067601601",
+                "name": "JESSY SABU"
+            }
+        }
+    ]
+}

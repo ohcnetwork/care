@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345108099,
+    "date": "2019-08-21",
+    "name": "Chowannur  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chowwannur",
+    "area": "122.13km",
+    "localbody_code": "B080200",
+    "no_of_wards": 14,
+    "population": 158938,
+    "male": 75714,
+    "female": 83224,
+    "population_density": 1301,
+    "sex_ratio": 1099,
+    "literacy_rate": 90.88,
+    "literacy_rate_male": 94.23,
+    "literacy_rate_female": 87.91,
+    "president": "AVSUMATHYSUMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PATTITHADAM",
+            "person": {
+                "id": "2015008200101",
+                "name": "P.K KOUSALLIA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADAVALLUR",
+            "person": {
+                "id": "2015008200201",
+                "name": "PRABHA TEACHER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERUMPILAVU",
+            "person": {
+                "id": "2015008200301",
+                "name": "SHAJITHA SALEEM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIPPILASSERY",
+            "person": {
+                "id": "2015008200401",
+                "name": "P K DEVADAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANNITHADAM",
+            "person": {
+                "id": "2015008200501",
+                "name": "A V SUMATHY (SUMA)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VELLARAKKAD",
+            "person": {
+                "id": "2015008200601",
+                "name": "MOHAMEDKUTTY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VELUR",
+            "person": {
+                "id": "2015008200701",
+                "name": "KURIAKOSE JOHN C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KECHERY",
+            "person": {
+                "id": "2015008200801",
+                "name": "N A IQBAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MATTAM",
+            "person": {
+                "id": "2015008200901",
+                "name": "JAISON CHACKO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANDANASSERY",
+            "person": {
+                "id": "2015008201001",
+                "name": "USHA PRABUKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHOONDAL",
+            "person": {
+                "id": "2015008201101",
+                "name": "PREETHY SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHOWANNUR",
+            "person": {
+                "id": "2015008201201",
+                "name": "M V PRASANTH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PORKULAM",
+            "person": {
+                "id": "2015008201301",
+                "name": "JYOTHISH K.A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PAZHANJI",
+            "person": {
+                "id": "2015008201401",
+                "name": "GEETHA SATHEESAN"
+            }
+        }
+    ]
+}

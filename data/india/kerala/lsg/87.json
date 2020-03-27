@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345134277,
+    "date": "2019-08-21",
+    "name": "Mullassery  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mullassery",
+    "area": "63.64km",
+    "localbody_code": "B080700",
+    "no_of_wards": 13,
+    "population": 86773,
+    "male": 40659,
+    "female": 46114,
+    "population_density": 1363,
+    "sex_ratio": 1134,
+    "literacy_rate": 90.19,
+    "literacy_rate_male": 94.22,
+    "literacy_rate_female": 86.75,
+    "president": "LETHYVENUGOPAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MARUTHAYOOR",
+            "person": {
+                "id": "2015008700101",
+                "name": "MEENA GIREESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAVARATTY",
+            "person": {
+                "id": "2015008700201",
+                "name": "MARY JOY ARAKKAL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHITTATTUKARA",
+            "person": {
+                "id": "2015008700301",
+                "name": "B R SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ELAVALLY",
+            "person": {
+                "id": "2015008700401",
+                "name": "T S SHAJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAMARAPPILLY",
+            "person": {
+                "id": "2015008700501",
+                "name": "LETHY VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUVATHUR",
+            "person": {
+                "id": "2015008700601",
+                "name": "BIJU KURIYAKKOT"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANNAKARA",
+            "person": {
+                "id": "2015008700701",
+                "name": "K R KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THANAVEEDHI",
+            "person": {
+                "id": "2015008700801",
+                "name": "V K RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULLASSERY",
+            "person": {
+                "id": "2015008700901",
+                "name": "MARY PRINCE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNOTH",
+            "person": {
+                "id": "2015008701001",
+                "name": "VASANTHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARUVANTHALA",
+            "person": {
+                "id": "2015008701101",
+                "name": "MUMTHAS RASAK"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADOOR",
+            "person": {
+                "id": "2015008701201",
+                "name": "JISHA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIRUNALLUR",
+            "person": {
+                "id": "2015008701301",
+                "name": "ASMABI NISAR"
+            }
+        }
+    ]
+}

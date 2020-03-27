@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566349539002,
+    "date": "2019-08-21",
+    "name": "Badiadka  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "67.79km",
+    "localbody_code": "G140305",
+    "no_of_wards": 19,
+    "population": 27265,
+    "male": 13874,
+    "female": 13391,
+    "population_density": 402,
+    "sex_ratio": 965,
+    "literacy_rate": 77.28,
+    "literacy_rate_male": 84.81,
+    "literacy_rate_female": 65.51,
+    "president": "K.N.KRISHNABHAT",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KILINGAR",
+            "person": {
+                "id": "2015118700101",
+                "name": "K.N.KRISHNA BHAT"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEERCHAL",
+            "person": {
+                "id": "2015118700201",
+                "name": "SHANKARA.D"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUNTIKANA",
+            "person": {
+                "id": "2015118700301",
+                "name": "JAYANTHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNTALMOOLA",
+            "person": {
+                "id": "2015118700401",
+                "name": "PRASANNA.M.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALLATHADKA",
+            "person": {
+                "id": "2015118700501",
+                "name": "B. LAKSHMINARAYANA PAI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEDENJI",
+            "person": {
+                "id": "2015118700601",
+                "name": "K. VISHWANATHA PRABHU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUDUPPAMKUZHI",
+            "person": {
+                "id": "2015118700701",
+                "name": "PUSHPA KUMARI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VIDYAGIRI",
+            "person": {
+                "id": "2015118700801",
+                "name": "K. BALAKRISHNA SHETTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "BADIADKA",
+            "person": {
+                "id": "2015118700901",
+                "name": "SHANTHA.B"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BEEJANTHADKA",
+            "person": {
+                "id": "2015118701001",
+                "name": "ZAIBUNNISA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEDEKAL",
+            "person": {
+                "id": "2015118701101",
+                "name": "MUNEER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERDALA",
+            "person": {
+                "id": "2015118701201",
+                "name": "MOHAMMED HANEEFA OZON"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANYAPPADY",
+            "person": {
+                "id": "2015118701301",
+                "name": "P.JAYASREE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PATTAJE",
+            "person": {
+                "id": "2015118701401",
+                "name": "RAJESHWARI .M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANYA",
+            "person": {
+                "id": "2015118701501",
+                "name": "SHYAMA PRASAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BIRMINADKA",
+            "person": {
+                "id": "2015118701601",
+                "name": "MUHAMMED .B .A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MALLADKA",
+            "person": {
+                "id": "2015118701701",
+                "name": "PREMAKUMARI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KUNJAR",
+            "person": {
+                "id": "2015118701801",
+                "name": "SABANA.S"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "BELA",
+            "person": {
+                "id": "2015118701901",
+                "name": "ANITHA CRASTA"
+            }
+        }
+    ]
+}

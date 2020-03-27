@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566346021627,
+    "date": "2019-08-21",
+    "name": "Vettikavala  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Vettikkavala",
+    "area": "36.23km",
+    "localbody_code": "G020302",
+    "no_of_wards": 21,
+    "population": 34178,
+    "male": 16712,
+    "female": 17466,
+    "population_density": 943,
+    "sex_ratio": 1045,
+    "literacy_rate": 91.01,
+    "literacy_rate_male": 94.1,
+    "literacy_rate_female": 88.09,
+    "president": "PREETHAMATHEWKUTTY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ULIYANADU",
+            "person": {
+                "id": "2015031800101",
+                "name": "SAJI YOHANNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ULIYANADU EAST",
+            "person": {
+                "id": "2015031800201",
+                "name": "SINI REJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VETTIKKAVALA",
+            "person": {
+                "id": "2015031800301",
+                "name": "KOCHANIYAN B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNAMKODU",
+            "person": {
+                "id": "2015031800401",
+                "name": "DHANYA SURESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PACHOOR",
+            "person": {
+                "id": "2015031800501",
+                "name": "SINDHU SURESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHIRATTAKKONAM",
+            "person": {
+                "id": "2015031800601",
+                "name": "PREETHA SUDARSANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THALACHIRA",
+            "person": {
+                "id": "2015031800701",
+                "name": "SAJITHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THALACHIRA EAST",
+            "person": {
+                "id": "2015031800801",
+                "name": "REJEENA RAHIM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAKKUVARAKKAL",
+            "person": {
+                "id": "2015031800901",
+                "name": "IRISHIKESAN PILLAI N"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GANDHIGRAM",
+            "person": {
+                "id": "2015031801001",
+                "name": "MOHAN KUMAR J"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTAVATTOM NORTH",
+            "person": {
+                "id": "2015031801101",
+                "name": "UJWALAKUMAR V.G"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTAVATTOM",
+            "person": {
+                "id": "2015031801201",
+                "name": "AJI THANKACHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOKKADU NORTH",
+            "person": {
+                "id": "2015031801301",
+                "name": "SREEJA VINOD"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOKKADU",
+            "person": {
+                "id": "2015031801401",
+                "name": "ADV. D. SAJAYA KUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADUVAPPARA",
+            "person": {
+                "id": "2015031801501",
+                "name": "BINDU BABURAJ"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAMUKINKODU",
+            "person": {
+                "id": "2015031801601",
+                "name": "JOSE MATHEW"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NIRAPPIL",
+            "person": {
+                "id": "2015031801701",
+                "name": "VALSALA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PANAVELY",
+            "person": {
+                "id": "2015031801801",
+                "name": "PREETHA MATHEWKUTTY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MADATHIYARA",
+            "person": {
+                "id": "2015031801901",
+                "name": "SHEEJA SETHUNATH"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ERANOOR",
+            "person": {
+                "id": "2015031802001",
+                "name": "JAYALEKSHMI G"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SADANANDAPURAM",
+            "person": {
+                "id": "2015031802101",
+                "name": "M.P SAJEEV"
+            }
+        }
+    ]
+}

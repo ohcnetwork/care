@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349098466,
+    "date": "2019-08-21",
+    "name": "Perumanna  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnamangalam",
+    "area": "13.45km",
+    "localbody_code": "G111109",
+    "no_of_wards": 18,
+    "population": 32124,
+    "male": 15903,
+    "female": 16221,
+    "population_density": 2388,
+    "sex_ratio": 1020,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "K.AJITHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAYYADIMETHAL",
+            "person": {
+                "id": "2015106400101",
+                "name": "NISSAR .T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAYYADITHAZHAM",
+            "person": {
+                "id": "2015106400201",
+                "name": "BALAN NAIR .N .V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAKKOT THAZHAM",
+            "person": {
+                "id": "2015106400301",
+                "name": "KIZHAKKETHODI BALAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PERUMANNA NORTH",
+            "person": {
+                "id": "2015106400401",
+                "name": "U. K. RUHAIMATH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARATHIL PARAMB",
+            "person": {
+                "id": "2015106400501",
+                "name": "NALINI TEACHER MUTHUMANA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMANPURA",
+            "person": {
+                "id": "2015106400601",
+                "name": "AJITHA .K .V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THAYYIL THAZHAM",
+            "person": {
+                "id": "2015106400701",
+                "name": "K. AJITHA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAMMAL",
+            "person": {
+                "id": "2015106400801",
+                "name": "SOBHANAKUMARI  .A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NERADUKUNNU",
+            "person": {
+                "id": "2015106400901",
+                "name": "BEENAKOTTAYI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLAYICODE",
+            "person": {
+                "id": "2015106401001",
+                "name": "SHAREEFA .N .K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERUMANNA SOUTH",
+            "person": {
+                "id": "2015106401101",
+                "name": "USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARAKKANDAM",
+            "person": {
+                "id": "2015106401201",
+                "name": "M. A. PRATHEESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHOORMADAM",
+            "person": {
+                "id": "2015106401301",
+                "name": "CHERAT NOUSHAD"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ILLATHUTHAZHAM",
+            "person": {
+                "id": "2015106401401",
+                "name": "AJITHA KUMARI .K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VALLIKKUNNU",
+            "person": {
+                "id": "2015106401501",
+                "name": "V. P.  BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AMBILOLY",
+            "person": {
+                "id": "2015106401601",
+                "name": "KUMMANGAL AHAMED"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PARAKULAM",
+            "person": {
+                "id": "2015106401701",
+                "name": "PARASSERI SYAMALA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NEDUMPARAMB",
+            "person": {
+                "id": "2015106401801",
+                "name": "K. K. SHEEBA"
+            }
+        }
+    ]
+}

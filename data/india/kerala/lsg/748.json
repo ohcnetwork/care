@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347543642,
+    "date": "2019-08-21",
+    "name": "Kaiparambu  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "20.48km",
+    "localbody_code": "G080603",
+    "no_of_wards": 18,
+    "population": 23210,
+    "male": 11286,
+    "female": 11924,
+    "population_density": 1133,
+    "sex_ratio": 1056,
+    "literacy_rate": 92.64,
+    "literacy_rate_male": 95.46,
+    "literacy_rate_female": 90.03,
+    "president": "C.J.ANTO",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAIPARAMBU",
+            "person": {
+                "id": "2015074800101",
+                "name": "K. MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAIPARAMBU KIZHAKKU",
+            "person": {
+                "id": "2015074800201",
+                "name": "JIMMY CHOONDAL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOLLANNUR",
+            "person": {
+                "id": "2015074800301",
+                "name": "M.R. SULEKHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTTEKKARA",
+            "person": {
+                "id": "2015074800401",
+                "name": "LINTY SHIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SANKARAMKANDAM",
+            "person": {
+                "id": "2015074800501",
+                "name": "OMANA RAMANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUNDUR",
+            "person": {
+                "id": "2015074800601",
+                "name": "THANKAMMA LAWRANCE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAILAMKULAM",
+            "person": {
+                "id": "2015074800701",
+                "name": "SHEENA SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANAPPADI",
+            "person": {
+                "id": "2015074800801",
+                "name": "MINI PUSHKARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERAMANGALAM VADAKKU",
+            "person": {
+                "id": "2015074800901",
+                "name": "MANOJ K.S."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERAMANGALAM CENTER",
+            "person": {
+                "id": "2015074801001",
+                "name": "C.P. JOY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERAMANGALAM THEKKU",
+            "person": {
+                "id": "2015074801101",
+                "name": "M.A. RAGHUNANDANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERAMANGALAM KIZHAKKU",
+            "person": {
+                "id": "2015074801201",
+                "name": "C.M. LAWRANCE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERAMANGALAM PADINJARU",
+            "person": {
+                "id": "2015074801301",
+                "name": "C. J. ANTO"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PERINGANNUR",
+            "person": {
+                "id": "2015074801401",
+                "name": "SHEELA SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAZHAMUCK",
+            "person": {
+                "id": "2015074801501",
+                "name": "MARY PAULSON"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ANDAPARAMBU",
+            "person": {
+                "id": "2015074801601",
+                "name": "MOHANAN A."
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUTHUVANNUR",
+            "person": {
+                "id": "2015074801701",
+                "name": "KOCHUMARY A.T."
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015074801801",
+                "name": "P.P. VENU"
+            }
+        }
+    ]
+}

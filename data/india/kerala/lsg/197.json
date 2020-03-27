@@ -1,0 +1,236 @@
+{
+    "timeStamp": 1566345584874,
+    "date": "2019-08-21",
+    "name": "Perumbavoor  Municipality, Ernakulam District",
+    "district": "Ernakulam",
+    "area": "13.59km",
+    "localbody_code": "M070700",
+    "no_of_wards": 27,
+    "population": 26550,
+    "male": 13146,
+    "female": 13404,
+    "population_density": 1815,
+    "sex_ratio": 1006,
+    "literacy_rate": 93.06,
+    "literacy_rate_male": 95.92,
+    "literacy_rate_female": 90.24,
+    "chairperson": "SATHYJAYAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLAM NORTH",
+            "person": {
+                "id": "2015019700101",
+                "name": "V P BABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THRIKKAPARAMBU",
+            "person": {
+                "id": "2015019700201",
+                "name": "ALI K M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MASJID",
+            "person": {
+                "id": "2015019700301",
+                "name": "P M BASHEER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHAKKARAKATTU",
+            "person": {
+                "id": "2015019700401",
+                "name": "SATHY JAYAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SASTHAMANGALAM",
+            "person": {
+                "id": "2015019700501",
+                "name": "P MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THURUTHIPARAMBU",
+            "person": {
+                "id": "2015019700601",
+                "name": "ANIL KUMAR ( ANIL SANKARAMANGALAM )"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "TEMPLE WARD",
+            "person": {
+                "id": "2015019700701",
+                "name": "SULEKHA GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "TALUK HOSPITAL",
+            "person": {
+                "id": "2015019700801",
+                "name": "USHA DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOPPANY",
+            "person": {
+                "id": "2015019700901",
+                "name": "VALSALA RAVIKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARATTUPALLIKKARA",
+            "person": {
+                "id": "2015019701001",
+                "name": "LISHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ASRAMAM",
+            "person": {
+                "id": "2015019701101",
+                "name": "MOHAN BABY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KONNANKUDY",
+            "person": {
+                "id": "2015019701201",
+                "name": "RANI VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNNAMPILLY CHIRA",
+            "person": {
+                "id": "2015019701301",
+                "name": "BEENA RAJAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NEELAMKULANGARA",
+            "person": {
+                "id": "2015019701401",
+                "name": "OMANA SUBRAMANIAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NAGANCHERY MANA",
+            "person": {
+                "id": "2015019701501",
+                "name": "JOHN JACOB"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PANKULAM",
+            "person": {
+                "id": "2015019701601",
+                "name": "SANTHA PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PERIYARVALLIE CLUB",
+            "person": {
+                "id": "2015019701701",
+                "name": "BIJU JOHN JACOB"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MARUTH KAVALA",
+            "person": {
+                "id": "2015019701801",
+                "name": "JESSY AGI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "K S R T C",
+            "person": {
+                "id": "2015019701901",
+                "name": "MINI JOSHY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHURCH",
+            "person": {
+                "id": "2015019702001",
+                "name": "MERCY JOHNSON"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "MUNICIPAL OFFICE",
+            "person": {
+                "id": "2015019702101",
+                "name": "REEJA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "LIBRARY",
+            "person": {
+                "id": "2015019702201",
+                "name": "M G JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "KADUVAL",
+            "person": {
+                "id": "2015019702301",
+                "name": "NISHA VINAYAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "VALLAM THODU",
+            "person": {
+                "id": "2015019702401",
+                "name": "SAJEENA HASSAN"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015019702501",
+                "name": "SEENA ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "SOUTH VALLAM",
+            "person": {
+                "id": "2015019702601",
+                "name": "M M IBICHIKOYA"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "RAYONPURAM",
+            "person": {
+                "id": "2015019702701",
+                "name": "MANIKANDAN APPU"
+            }
+        }
+    ]
+}

@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566345036089,
+    "date": "2019-08-21",
+    "name": "Adimaly  Block Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Adimaly",
+    "area": "1062.24km",
+    "localbody_code": "B060100",
+    "no_of_wards": 13,
+    "population": 138349,
+    "male": 70387,
+    "female": 67962,
+    "population_density": 130,
+    "sex_ratio": 966,
+    "literacy_rate": 88,
+    "literacy_rate_male": 91,
+    "literacy_rate_female": 85,
+    "president": "RMURUGESAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALARA",
+            "person": {
+                "id": "2015005800101",
+                "name": "SALI VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MACHIPLAVU",
+            "person": {
+                "id": "2015005800201",
+                "name": "USHA SADANANDHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015005800301",
+                "name": "SHYLA JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALLIVASAL",
+            "person": {
+                "id": "2015005800401",
+                "name": "R MURUGESAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BYSONVALLEY",
+            "person": {
+                "id": "2015005800501",
+                "name": "K N RAJU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "TEA COMPANY",
+            "person": {
+                "id": "2015005800601",
+                "name": "ALOSHI PHILIP"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SENGULAM",
+            "person": {
+                "id": "2015005800701",
+                "name": "LALY SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLATHOOVAL",
+            "person": {
+                "id": "2015005800801",
+                "name": "T M RAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KONNATHADY",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUNIYARA",
+            "person": {
+                "id": "2015005801001",
+                "name": "C K PRASAD"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAMBILIKANDAM",
+            "person": {
+                "id": "2015005801101",
+                "name": "T P MALKA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "200 ACRE",
+            "person": {
+                "id": "2015005801201",
+                "name": "MOLY PETER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "DEVIYAR",
+            "person": {
+                "id": "2015005801301",
+                "name": "SHERLY JOSEPH"
+            }
+        }
+    ]
+}

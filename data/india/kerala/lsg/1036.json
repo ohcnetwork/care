@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566349012343,
+    "date": "2019-08-21",
+    "name": "Chemanchery  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Panthalayani",
+    "area": "16.76km",
+    "localbody_code": "G110801",
+    "no_of_wards": 20,
+    "population": 31326,
+    "male": 14995,
+    "female": 16331,
+    "population_density": 1869,
+    "sex_ratio": 1089,
+    "literacy_rate": 91.9,
+    "literacy_rate_male": 96.64,
+    "literacy_rate_female": 87.62,
+    "president": "ASOKANKOT",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEMANCHERY",
+            "person": {
+                "id": "2015103600101",
+                "name": "N UNNI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMANCHERY EAST",
+            "person": {
+                "id": "2015103600201",
+                "name": "SABITHA MELATHUR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANHILASSERI",
+            "person": {
+                "id": "2015103600301",
+                "name": "E ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THUVVAKKODE",
+            "person": {
+                "id": "2015103600401",
+                "name": "UNNI.M MALAYIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLAKKAD",
+            "person": {
+                "id": "2015103600501",
+                "name": "SHABEER ELAVANAKANDY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POOKKAD EAST",
+            "person": {
+                "id": "2015103600601",
+                "name": "VENU GOPALAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOKKAD",
+            "person": {
+                "id": "2015103600701",
+                "name": "RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VETTILAPARA",
+            "person": {
+                "id": "2015103600801",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THIRUVANGOOR",
+            "person": {
+                "id": "2015103600901",
+                "name": "ASOKAN KOT"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VENGALAM",
+            "person": {
+                "id": "2015103601001",
+                "name": "K.T SABIRA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KORAPUZHA",
+            "person": {
+                "id": "2015103601101",
+                "name": "SOMAN P.T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KATTILAPEEDIKA",
+            "person": {
+                "id": "2015103601201",
+                "name": "SREEJA KANDIYIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNANKADAVU",
+            "person": {
+                "id": "2015103601301",
+                "name": "RASEENA SHAFI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENGALAM WEST",
+            "person": {
+                "id": "2015103601401",
+                "name": "BINDU ELLATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHEENICHERY",
+            "person": {
+                "id": "2015103601501",
+                "name": "SHEEBA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VIKAS NAGAR",
+            "person": {
+                "id": "2015103601601",
+                "name": "SASIDHARAN KUNIYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KAPPAD",
+            "person": {
+                "id": "2015103601701",
+                "name": "SHAHITHA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KAPPAD NORTH",
+            "person": {
+                "id": "2015103601801",
+                "name": "HAFSA MANAF"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "POOKKAD WEST",
+            "person": {
+                "id": "2015103601901",
+                "name": "P.P SREEJA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THUVVAPPARA",
+            "person": {
+                "id": "2015103602001",
+                "name": "MADANCHERY SATHYANADHAN"
+            }
+        }
+    ]
+}

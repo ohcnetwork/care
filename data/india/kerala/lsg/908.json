@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566348557879,
+    "date": "2019-08-21",
+    "name": "Edavanna  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "49.13km",
+    "localbody_code": "G100508",
+    "no_of_wards": 22,
+    "population": 32087,
+    "male": 15764,
+    "female": 16323,
+    "population_density": 653,
+    "sex_ratio": 1036,
+    "literacy_rate": 88.95,
+    "literacy_rate_male": 93.95,
+    "literacy_rate_female": 85.95,
+    "president": "B.V.USHANAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINJARE CHATHALLOOR",
+            "person": {
+                "id": "2015090800101",
+                "name": "UMMUSALMA KT"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIZHAKKE CHATHALLOOR",
+            "person": {
+                "id": "2015090800201",
+                "name": "P.P ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULLIYILPARA",
+            "person": {
+                "id": "2015090800301",
+                "name": "RAZIYA BASHEER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOLAPPAD",
+            "person": {
+                "id": "2015090800401",
+                "name": "B.V. USHA NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUNDENGARA",
+            "person": {
+                "id": "2015090800501",
+                "name": "SUNEERA C.T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUNDUTHODE",
+            "person": {
+                "id": "2015090800601",
+                "name": "SAKKEER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHALIPPADAM",
+            "person": {
+                "id": "2015090800701",
+                "name": "SUNITHA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEMBAKUTH",
+            "person": {
+                "id": "2015090800801",
+                "name": "HAFSATH M.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAVANNA EAST",
+            "person": {
+                "id": "2015090800901",
+                "name": "NUSRATH BEEGUM M.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAVANNA WEST",
+            "person": {
+                "id": "2015090801001",
+                "name": "SOUMYA .N"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNUMMAL",
+            "person": {
+                "id": "2015090801101",
+                "name": "ABDUSSALAM P.C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PATHAPPIRIYAM",
+            "person": {
+                "id": "2015090801201",
+                "name": "AHAMMED KUTTY .A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AINTHOOR",
+            "person": {
+                "id": "2015090801301",
+                "name": "V. LUKMAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PANDIYAD",
+            "person": {
+                "id": "2015090801401",
+                "name": "K.U.SREENIVASAN NAIR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EZHUKALARI",
+            "person": {
+                "id": "2015090801501",
+                "name": "V.P.LUKHMAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KALPPALAM",
+            "person": {
+                "id": "2015090801601",
+                "name": "RANJISHA .A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THUVVAKKAD",
+            "person": {
+                "id": "2015090801701",
+                "name": "ABDURAHIMAN.P.P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PANNIPPARA",
+            "person": {
+                "id": "2015090801801",
+                "name": "MAIMOONA USMAN MADANI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PANNIPPARA EAST",
+            "person": {
+                "id": "2015090801901",
+                "name": "E.A KAREEM"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PALAPATTA",
+            "person": {
+                "id": "2015090802001",
+                "name": "SUMA . A"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KALLIDUMBU",
+            "person": {
+                "id": "2015090802101",
+                "name": "A.T.JALEEL"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "OTHAYI",
+            "person": {
+                "id": "2015090802201",
+                "name": "BABURAJAN"
+            }
+        }
+    ]
+}

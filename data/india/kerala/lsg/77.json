@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345099149,
+    "date": "2019-08-21",
+    "name": "Kothamangalam  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "795.01km",
+    "localbody_code": "B071100",
+    "no_of_wards": 14,
+    "population": 190806,
+    "male": 95252,
+    "female": 95554,
+    "population_density": 219,
+    "sex_ratio": 984,
+    "literacy_rate": 89.6,
+    "literacy_rate_male": 93.38,
+    "literacy_rate_female": 85.79,
+    "president": "RASHEEDAVMRASHEEDASALIM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTAPPADY",
+            "person": {
+                "id": "2015007700101",
+                "name": "SASI NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "BHOOTHATHANKETTU",
+            "person": {
+                "id": "2015007700201",
+                "name": "SUNNY POULOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IDAMALAYAR",
+            "person": {
+                "id": "2015007700301",
+                "name": "SANTHAMMA PIOUS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTAMPUZHA",
+            "person": {
+                "id": "2015007700401",
+                "name": "SHEELA KRISHNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KEERAMPARA",
+            "person": {
+                "id": "2015007700501",
+                "name": "JESSY MOLE JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NERIAMANGALAM",
+            "person": {
+                "id": "2015007700601",
+                "name": "CELIN JOHN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAVANANGAD",
+            "person": {
+                "id": "2015007700701",
+                "name": "RACHEL BABY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAINGOTTOOR",
+            "person": {
+                "id": "2015007700801",
+                "name": "SEBASTIAN AUGUSTHY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POTHANICAD",
+            "person": {
+                "id": "2015007700901",
+                "name": "VINCEN ELLICKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALLARIMANGALAM",
+            "person": {
+                "id": "2015007701001",
+                "name": "ABBAS O E"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VARAPPETTY",
+            "person": {
+                "id": "2015007701101",
+                "name": "ABY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERUVATTOOR",
+            "person": {
+                "id": "2015007701201",
+                "name": "BINDU JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIKUZHI",
+            "person": {
+                "id": "2015007701301",
+                "name": "RASHEEDA V M (RASHEEDA SALIM)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PINDIMANA",
+            "person": {
+                "id": "2015007701401",
+                "name": "RAJESH A V"
+            }
+        }
+    ]
+}

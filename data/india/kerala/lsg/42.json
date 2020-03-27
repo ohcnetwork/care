@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344990010,
+    "date": "2019-08-21",
+    "name": "Chengannur  Block Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Chengannur",
+    "area": "128.17km",
+    "localbody_code": "B040800",
+    "no_of_wards": 13,
+    "population": 170780,
+    "male": 82247,
+    "female": 88533,
+    "population_density": 1332,
+    "sex_ratio": 1076,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "NSUDHAMANI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THIRUVANVANDOOR",
+            "person": {
+                "id": "2015004200101",
+                "name": "SREEKALA (KALA RAMESH)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VANAVATHUKKARA",
+            "person": {
+                "id": "2015004200201",
+                "name": "SREEVIDYA MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MULAKKUZHA",
+            "person": {
+                "id": "2015004200301",
+                "name": "SAMUEL ( SAJI THOTTIYATTU )"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AREEKKARA",
+            "person": {
+                "id": "2015004200401",
+                "name": "T ANITHAKUMARY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VENMONEY EAST",
+            "person": {
+                "id": "2015004200501",
+                "name": "AJITHA P C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VENMONEY WEST",
+            "person": {
+                "id": "2015004200602",
+                "name": "SYAM KUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ALA",
+            "person": {
+                "id": "2015004200701",
+                "name": "SUNIL JOHN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERUVALLUR",
+            "person": {
+                "id": "2015004200801",
+                "name": "SHALINI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHERIYANAD",
+            "person": {
+                "id": "2015004200901",
+                "name": "G VIVEK"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PULIYOOR",
+            "person": {
+                "id": "2015004201001",
+                "name": "KRISHNAKUMARY THEKKEDATHU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ENNAKKADU",
+            "person": {
+                "id": "2015004201101",
+                "name": "N SUDHAMANI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "BUDHANOOR",
+            "person": {
+                "id": "2015004201201",
+                "name": "ANITHA L"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANDANAD",
+            "person": {
+                "id": "2015004201301",
+                "name": "G KRISHNAKUMAR"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346339985,
+    "date": "2019-08-21",
+    "name": "Malayalapuzha  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Konni",
+    "area": "27.53km",
+    "localbody_code": "G030607",
+    "no_of_wards": 14,
+    "population": 17923,
+    "male": 8643,
+    "female": 9280,
+    "population_density": 651,
+    "sex_ratio": 1073,
+    "literacy_rate": 93.65,
+    "literacy_rate_male": 95.96,
+    "literacy_rate_female": 91.53,
+    "president": "JAYALALK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLIYANI",
+            "person": {
+                "id": "2015041200101",
+                "name": "VISALINI R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUKKUZHI",
+            "person": {
+                "id": "2015041200201",
+                "name": "SUJATHA ANIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POTHEEPADU",
+            "person": {
+                "id": "2015041200301",
+                "name": "SANTHAMMA B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHUKKULAM",
+            "person": {
+                "id": "2015041200401",
+                "name": "RADHAMANI BHASI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THOTTAM",
+            "person": {
+                "id": "2015041200501",
+                "name": "KALA BALAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELAKKULAM",
+            "person": {
+                "id": "2015041200601",
+                "name": "SREEKALA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KIZHAKKUPURAM",
+            "person": {
+                "id": "2015041200701",
+                "name": "BENNY E I"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VETTOOR",
+            "person": {
+                "id": "2015041200801",
+                "name": "SANTHOSH KUMAR  V V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VETTOOR TOWN",
+            "person": {
+                "id": "2015041200901",
+                "name": "PRAMEELA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VADAKKUPURAM",
+            "person": {
+                "id": "2015041201001",
+                "name": "MURALIDHARAKURUP"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MALAYALAPUZHA TOWN",
+            "person": {
+                "id": "2015041201101",
+                "name": "M RAJESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MALAYALAPUZHA THAZHAM",
+            "person": {
+                "id": "2015041201201",
+                "name": "MANOJ G PILLAI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERADI",
+            "person": {
+                "id": "2015041201301",
+                "name": "GEORGE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOZHIKUNNAM",
+            "person": {
+                "id": "2015041201401",
+                "name": "JAYALAL K"
+            }
+        }
+    ]
+}

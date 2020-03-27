@@ -1,0 +1,140 @@
+{
+    "timeStamp": 1566346767716,
+    "date": "2019-08-21",
+    "name": "Kidangoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "25.12km",
+    "localbody_code": "G050707",
+    "no_of_wards": 15,
+    "population": 19881,
+    "male": 10048,
+    "female": 9833,
+    "population_density": 791,
+    "sex_ratio": 979,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 95,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINJARE KOODALLOOR",
+            "person": {
+                "id": "2015052200101",
+                "name": "TEENA MALIECKAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIZHAKKE KOODALLOOR",
+            "person": {
+                "id": "2015052200201",
+                "name": "RENI JAYAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015052200301",
+                "name": "P N BINU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAVALIPUZHA",
+            "person": {
+                "id": "2015052200401",
+                "name": "AKHIL K RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUMMANNOOR",
+            "person": {
+                "id": "2015052200501",
+                "name": "BINDU RAMESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERPUNKAL",
+            "person": {
+                "id": "2015052200601",
+                "name": "SEBASTIAN JOHN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERINGOTTY",
+            "person": {
+                "id": "2015052200701",
+                "name": "MINI MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEMPILAVU",
+            "person": {
+                "id": "2015052200801",
+                "name": "JAYACHANDRAN K S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "UTHAMESWARAM",
+            "person": {
+                "id": "2015052200901",
+                "name": "SANTHY GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ENGINEERING COLLEGE WARD",
+            "person": {
+                "id": "2015052201001",
+                "name": "LIZY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KIDANGOOR SOUTH",
+            "person": {
+                "id": "2015052201101",
+                "name": "SHYBY MATHEW"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KIDANGOOR TEMPLE WARD",
+            "person": {
+                "id": "2015052201201",
+                "name": "A N NEELAKANTAN NAMBOOTHIRI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KATTACHIRA",
+            "person": {
+                "id": "2015052201301",
+                "name": "MONEY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SIVAKULANGARA",
+            "person": {
+                "id": "2015052201401",
+                "name": "SHIJI JOMON"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PIRAYAR",
+            "person": {
+                "id": "2015052201501",
+                "name": "BOBY THOMAS"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345278568,
+    "date": "2019-08-21",
+    "name": "Kunnummal  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnummal",
+    "area": "262.52km",
+    "localbody_code": "B110300",
+    "no_of_wards": 13,
+    "population": 174652,
+    "male": 86354,
+    "female": 88298,
+    "population_density": 665,
+    "sex_ratio": 1023,
+    "literacy_rate": 88.14,
+    "literacy_rate_male": 94.19,
+    "literacy_rate_female": 82.29,
+    "president": "SAJITHK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NARIPPATTA",
+            "person": {
+                "id": "2015012700101",
+                "name": "BEENA ELIYARA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MULLAMBATH",
+            "person": {
+                "id": "2015012700201",
+                "name": "VIJAYI C K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAYAKKODY",
+            "person": {
+                "id": "2015012700301",
+                "name": "SHYJU P K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "DEVARKOVIL",
+            "person": {
+                "id": "2015012700401",
+                "name": "V P KUNHABDULLA MASTER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARINGAD",
+            "person": {
+                "id": "2015012700501",
+                "name": "K P SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAVILUMPARA",
+            "person": {
+                "id": "2015012700601",
+                "name": "SAJITH K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MARUTHOMKARA",
+            "person": {
+                "id": "2015012700701",
+                "name": "REENA V P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUTTIADI",
+            "person": {
+                "id": "2015012700801",
+                "name": "SREENIJA K P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELOM",
+            "person": {
+                "id": "2015012700901",
+                "name": "BALAMANI THAYANA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERAPURAM",
+            "person": {
+                "id": "2015012701001",
+                "name": "NAYEEMA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "URATH",
+            "person": {
+                "id": "2015012701101",
+                "name": "KUNNUMMAL KANARAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOKERI",
+            "person": {
+                "id": "2015012701201",
+                "name": "SASINDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATHIRIPPATTA",
+            "person": {
+                "id": "2015012701301",
+                "name": "PRIYA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347220617,
+    "date": "2019-08-21",
+    "name": "Kuzhuppilly  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vypin",
+    "area": "5.76km",
+    "localbody_code": "G070705",
+    "no_of_wards": 13,
+    "population": 11446,
+    "male": 5550,
+    "female": 5896,
+    "population_density": 1987,
+    "sex_ratio": 1062,
+    "literacy_rate": 91.93,
+    "literacy_rate_male": 95.84,
+    "literacy_rate_female": 88.42,
+    "president": "SINDHURAJESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THUNDIPPURAM NORTH",
+            "person": {
+                "id": "2015066400101",
+                "name": "SINDHU BABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYYAMPILLY WEST",
+            "person": {
+                "id": "2015066400201",
+                "name": "ABHEENA SIJIN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "GOVT.HOSPITAL WARD",
+            "person": {
+                "id": "2015066400301",
+                "name": "A. A. ANIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANAPPILLY",
+            "person": {
+                "id": "2015066400401",
+                "name": "SHEEBA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THARAVATTOM",
+            "person": {
+                "id": "2015066400501",
+                "name": "SINDHU RAJESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AYYAMPILLY EAST",
+            "person": {
+                "id": "2015066400601",
+                "name": "K. A. SIVAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERUVYPE",
+            "person": {
+                "id": "2015066400701",
+                "name": "REJITHA SAJEEV"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERUVYPE SOUTH",
+            "person": {
+                "id": "2015066400801",
+                "name": "PRIYADARSAN. V. M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "DHEERAJAVAN",
+            "person": {
+                "id": "2015066400901",
+                "name": "A. P. KISHORE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUZHUPPILLY",
+            "person": {
+                "id": "2015066401001",
+                "name": "M. L. PAULSON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALLATHAMKULANGARA",
+            "person": {
+                "id": "2015066401101",
+                "name": "SINDU RAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "BLOCK OFFICE WARD",
+            "person": {
+                "id": "2015066401201",
+                "name": "VARSHA HAREESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THUNDIPPURAM SOUTH",
+            "person": {
+                "id": "2015066401301",
+                "name": "K. K. CHELLAPPAN"
+            }
+        }
+    ]
+}

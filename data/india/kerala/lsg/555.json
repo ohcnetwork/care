@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346864268,
+    "date": "2019-08-21",
+    "name": "Karukachal  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Madappally",
+    "area": "22.4km",
+    "localbody_code": "G051006",
+    "no_of_wards": 16,
+    "population": 20133,
+    "male": 10045,
+    "female": 10088,
+    "population_density": 899,
+    "sex_ratio": 1004,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "BBIJUKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHAMPAKKARA",
+            "person": {
+                "id": "2015055500101",
+                "name": "B BIJUKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KURUPPAN KAVALA",
+            "person": {
+                "id": "2015055500201",
+                "name": "LETHA SHAJAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANTHURUTHI",
+            "person": {
+                "id": "2015055500301",
+                "name": "MATHEW JOHN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NETHALLOOR",
+            "person": {
+                "id": "2015055500401",
+                "name": "SREEJISHA KIRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARUKACHAL",
+            "person": {
+                "id": "2015055500501",
+                "name": "THANKAPPAN KUMARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PACHILAMAKKAL",
+            "person": {
+                "id": "2015055500601",
+                "name": "SIDHU RAJEEV"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANAYAMPALA",
+            "person": {
+                "id": "2015055500701",
+                "name": "SUNIL EASO"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MAMUNDA",
+            "person": {
+                "id": "2015055500801",
+                "name": "BINDU VIJAYANANDAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NEDUNGADAPPALLY",
+            "person": {
+                "id": "2015055500901",
+                "name": "SHEELA PRASAD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SANTHIPURAM",
+            "person": {
+                "id": "2015055501001",
+                "name": "ADV. AJITH KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MADATHINACHIRA",
+            "person": {
+                "id": "2015055501101",
+                "name": "JOSEPH VARGHESE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOTHRAPPALLY",
+            "person": {
+                "id": "2015055501201",
+                "name": "SUJATHA MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARICKANIRAVU",
+            "person": {
+                "id": "2015055501301",
+                "name": "SAJI NEELATHUMMUKKIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHIRACKAL",
+            "person": {
+                "id": "2015055501401",
+                "name": "THRESSIAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANCHANI",
+            "person": {
+                "id": "2015055501501",
+                "name": "RADHIKA MENON"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "UMBIDI",
+            "person": {
+                "id": "2015055501601",
+                "name": "K JAYAPRASAD"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346266227,
+    "date": "2019-08-21",
+    "name": "Thottappuzhassery  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Koipuram",
+    "area": "14.46km",
+    "localbody_code": "G030304",
+    "no_of_wards": 13,
+    "population": 15618,
+    "male": 7583,
+    "female": 8035,
+    "population_density": 1080,
+    "sex_ratio": 1060,
+    "literacy_rate": 96.79,
+    "literacy_rate_male": 97.74,
+    "literacy_rate_female": 95.92,
+    "president": "ELSY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLIPPARA",
+            "person": {
+                "id": "2015038700101",
+                "name": "SHERIN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHARALKUNNU",
+            "person": {
+                "id": "2015038700201",
+                "name": "ANEESH KUMAR C S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARAMKOLLI",
+            "person": {
+                "id": "2015038700301",
+                "name": "MANJU VARGHESE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PONMALA",
+            "person": {
+                "id": "2015038700401",
+                "name": "AJITHA KUMARI N K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KURIANNOOR",
+            "person": {
+                "id": "2015038700501",
+                "name": "BIJU J GEORGE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KATTEPPURAM",
+            "person": {
+                "id": "2015038700601",
+                "name": "ELSY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NEDUMPRAYAR",
+            "person": {
+                "id": "2015038700701",
+                "name": "MANJU LAKSHMI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MARAMON",
+            "person": {
+                "id": "2015038700801",
+                "name": "GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THOTTAPPUZHASSERY",
+            "person": {
+                "id": "2015038700901",
+                "name": "PRAKASH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLANGOOR",
+            "person": {
+                "id": "2015038701001",
+                "name": "USHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHALAIKKARA",
+            "person": {
+                "id": "2015038701101",
+                "name": "JOY PORONE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHIRAYIRAMPU",
+            "person": {
+                "id": "2015038701201",
+                "name": "LATHA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THONIPPUZHA",
+            "person": {
+                "id": "2015038701301",
+                "name": "SARAMMA"
+            }
+        }
+    ]
+}

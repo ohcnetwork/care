@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566349549418,
+    "date": "2019-08-21",
+    "name": "Chengala  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kasaragod",
+    "area": "53.79km",
+    "localbody_code": "G140301",
+    "no_of_wards": 23,
+    "population": 38550,
+    "male": 19607,
+    "female": 18943,
+    "population_density": 717,
+    "sex_ratio": 966,
+    "literacy_rate": 79.96,
+    "literacy_rate_male": 86.65,
+    "literacy_rate_female": 73.03,
+    "president": "SHAHINASALEEM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLAKATTA",
+            "person": {
+                "id": "2015119100101",
+                "name": "SAFIYA MOHAMMED"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ADUKAM",
+            "person": {
+                "id": "2015119100201",
+                "name": "SHASHIKALA N"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NELLIKATTA",
+            "person": {
+                "id": "2015119100301",
+                "name": "NASAR KATTUKOCHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PILANKATTA",
+            "person": {
+                "id": "2015119100401",
+                "name": "ABDULLA KUNHI K B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NARAMPADY",
+            "person": {
+                "id": "2015119100501",
+                "name": "SHAHINA SALEEM"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ARLADKA",
+            "person": {
+                "id": "2015119100601",
+                "name": "SINDHU C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BALADKA",
+            "person": {
+                "id": "2015119100701",
+                "name": "MANICHANDRA KUMARI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDNEER",
+            "person": {
+                "id": "2015119100801",
+                "name": "E SHANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PADY",
+            "person": {
+                "id": "2015119100901",
+                "name": "JAYASREE K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ALAMPADY",
+            "person": {
+                "id": "2015119101001",
+                "name": "A MAMMINCHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PADINHARMOOLA",
+            "person": {
+                "id": "2015119101101",
+                "name": "A AHAMMED HAJI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THAIVALAPPU",
+            "person": {
+                "id": "2015119101201",
+                "name": "MAHAMOOD THAIVALAP"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERKALA WEST",
+            "person": {
+                "id": "2015119101301",
+                "name": "SUFAIJA MUNEER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHERKALA",
+            "person": {
+                "id": "2015119101401",
+                "name": "ABDULLA KUNHI CHERKALA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "BERKA",
+            "person": {
+                "id": "2015119101501",
+                "name": "M C A FAISAL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULIKUNDU",
+            "person": {
+                "id": "2015119101601",
+                "name": "OMANA T"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "BEVINJE",
+            "person": {
+                "id": "2015119101701",
+                "name": "SAHIDA MOHAMMED KUNHI KADAVATH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHEROOR",
+            "person": {
+                "id": "2015119101801",
+                "name": "HAJARA MOHAMMED KUNHI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHENGALA",
+            "person": {
+                "id": "2015119101901",
+                "name": "RASHEEDA KHADER BADRIYA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PANALAM",
+            "person": {
+                "id": "2015119102001",
+                "name": "ABDUL SALAM PANALAM"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "NAIMARMOOLA",
+            "person": {
+                "id": "2015119102101",
+                "name": "MUHAMMED THAHIR N A"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "CIVIL STATION",
+            "person": {
+                "id": "2015119102201",
+                "name": "SADANANDAN V"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "ERUTHUMKADAVU",
+            "person": {
+                "id": "2015119102301",
+                "name": "MADHU C"
+            }
+        }
+    ]
+}

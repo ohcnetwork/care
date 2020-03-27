@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346097517,
+    "date": "2019-08-21",
+    "name": "East Kallada  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chittumala",
+    "area": "12.2km",
+    "localbody_code": "G020703",
+    "no_of_wards": 15,
+    "population": 20811,
+    "male": 10132,
+    "female": 10679,
+    "population_density": 1706,
+    "sex_ratio": 1054,
+    "literacy_rate": 92.31,
+    "literacy_rate_male": 95.53,
+    "literacy_rate_female": 89.3,
+    "president": "CLEUTSJ",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOICKAL",
+            "person": {
+                "id": "2015034500101",
+                "name": "RATHI VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAZHAYAR",
+            "person": {
+                "id": "2015034500201",
+                "name": "USHA DEVI. P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARAVOOR",
+            "person": {
+                "id": "2015034500301",
+                "name": "ANIL GEORGE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "UPPOODU",
+            "person": {
+                "id": "2015034500401",
+                "name": "N. VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NILAMEL",
+            "person": {
+                "id": "2015034500501",
+                "name": "KUMARI SACHU. R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHITTUMALA",
+            "person": {
+                "id": "2015034500601",
+                "name": "YAMUNA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ONAMBALAM",
+            "person": {
+                "id": "2015034500702",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKEMURI",
+            "person": {
+                "id": "2015034500801",
+                "name": "SUMA P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "TOWN WARD",
+            "person": {
+                "id": "2015034500901",
+                "name": "SASIKALA S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOCHUPLAMOODU",
+            "person": {
+                "id": "2015034501001",
+                "name": "BINU C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUTTOM",
+            "person": {
+                "id": "2015034501101",
+                "name": "RADHAMANI K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARICHERI",
+            "person": {
+                "id": "2015034501201",
+                "name": "KALLADA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SINKARAPPALLY",
+            "person": {
+                "id": "2015034501301",
+                "name": "SATHEESKUMAR B"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KODUVILA",
+            "person": {
+                "id": "2015034501401",
+                "name": "CLEUTS J"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THAZHAM",
+            "person": {
+                "id": "2015034501501",
+                "name": "PACHAN K"
+            }
+        }
+    ]
+}

@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566345038040,
+    "date": "2019-08-21",
+    "name": "Devikulam  Block Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Devikulam",
+    "area": "994.49km",
+    "localbody_code": "B060200",
+    "no_of_wards": 13,
+    "population": 127830,
+    "male": 65453,
+    "female": 62377,
+    "population_density": 129,
+    "sex_ratio": 953,
+    "literacy_rate": 71,
+    "literacy_rate_male": 80,
+    "literacy_rate_female": 61,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MARAYOOR",
+            "person": {
+                "id": "2015005900101",
+                "name": "USHA HENTRY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANTHALLOOR",
+            "person": {
+                "id": "2015005900202",
+                "name": "R RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VATTAVADA",
+            "person": {
+                "id": "2015005900301",
+                "name": "KOKILAVANI GUNASEELAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MATTUPPETTY",
+            "person": {
+                "id": "2015005900401",
+                "name": "P.JAYARAJ"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHINNAKKANAL",
+            "person": {
+                "id": "2015005900501",
+                "name": "SASEENDRAN MUTTUKADU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANAYIRANKAL",
+            "person": {
+                "id": "2015005900601",
+                "name": "GEETHA .G. PATHMANABHAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SANTHANPARA",
+            "person": {
+                "id": "2015005900701",
+                "name": "BIJU VATTAMATTATHIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "DEVIKULAM",
+            "person": {
+                "id": "2015005900801",
+                "name": "VELMAYIL AROKIADAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNNAR",
+            "person": {
+                "id": "2015005900901",
+                "name": "C.NELSON"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SIVANMALA",
+            "person": {
+                "id": "2015005901001",
+                "name": "SELVI P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANKULAM",
+            "person": {
+                "id": "2015005901101",
+                "name": "SHEELADEVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NALLATHANNY",
+            "person": {
+                "id": "2015005901201",
+                "name": "GOMATHY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAMALAKKUDY",
+            "person": {
+                "id": "2015005901301",
+                "name": "C. THAMIZHARASAN"
+            }
+        }
+    ]
+}

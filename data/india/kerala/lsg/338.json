@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346082058,
+    "date": "2019-08-21",
+    "name": "Pooyappally  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "22.28km",
+    "localbody_code": "G020602",
+    "no_of_wards": 16,
+    "population": 21807,
+    "male": 10514,
+    "female": 11293,
+    "population_density": 979,
+    "sex_ratio": 1074,
+    "literacy_rate": 91.76,
+    "literacy_rate_male": 95.22,
+    "literacy_rate_female": 88.59,
+    "president": "HAMSARAWTHERSM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTARA",
+            "person": {
+                "id": "2015033800101",
+                "name": "RAJASEKHARAN PILLAI N"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUNNUMVARAM",
+            "person": {
+                "id": "2015033800201",
+                "name": "SOBHA MADHU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THACHAKODE",
+            "person": {
+                "id": "2015033800301",
+                "name": "P CHANDRAVATHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POOYAPPALLY",
+            "person": {
+                "id": "2015033800401",
+                "name": "SUSAN MANI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANJIRAMPARA",
+            "person": {
+                "id": "2015033800501",
+                "name": "T S PADMAKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MYLODE",
+            "person": {
+                "id": "2015033800601",
+                "name": "MAYA  S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NELLIPARAMPU",
+            "person": {
+                "id": "2015033800701",
+                "name": "SHEELA  M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VENKODE",
+            "person": {
+                "id": "2015033800801",
+                "name": "SHAJI MATHEW"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOZHIKODE",
+            "person": {
+                "id": "2015033800901",
+                "name": "VRINDA SATHYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KATTADI",
+            "person": {
+                "id": "2015033801001",
+                "name": "M  VISHNU NAMBOOTHIRI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PAYYAKODE",
+            "person": {
+                "id": "2015033801101",
+                "name": "HAMSA RAWTHER  S  M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KURISUMOODU",
+            "person": {
+                "id": "2015033801201",
+                "name": "ALIKUTTY SAMUEL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHENKULAM",
+            "person": {
+                "id": "2015033801301",
+                "name": "JESSY  ROY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MARUTHAMONPALLY",
+            "person": {
+                "id": "2015033801401",
+                "name": "R  ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUNNAKODE",
+            "person": {
+                "id": "2015033801501",
+                "name": "PHILIP MATHEW"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NALKAVALA",
+            "person": {
+                "id": "2015033801601",
+                "name": "RAJU MATHAI"
+            }
+        }
+    ]
+}

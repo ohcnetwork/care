@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346836892,
+    "date": "2019-08-21",
+    "name": "Kooroppada  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pampady",
+    "area": "27.42km",
+    "localbody_code": "G050703",
+    "no_of_wards": 17,
+    "population": 22432,
+    "male": 11229,
+    "female": 11203,
+    "population_density": 818,
+    "sex_ratio": 998,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 95,
+    "president": "KUNJUPUTHUSSERY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANNANKUNNU",
+            "person": {
+                "id": "2015054300101",
+                "name": "C.M.MATHAI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUTTIKKADU",
+            "person": {
+                "id": "2015054300201",
+                "name": "P.S.SUJATHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANNADIPPARA",
+            "person": {
+                "id": "2015054300301",
+                "name": "MANJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOOROPPADA",
+            "person": {
+                "id": "2015054300401",
+                "name": "NIDHEESHMON"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ERUTHUPUZHA",
+            "person": {
+                "id": "2015054300501",
+                "name": "VIMALADEVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MADAPPADU",
+            "person": {
+                "id": "2015054300601",
+                "name": "SANDHYA SURESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EDAKKATTUKUNNU",
+            "person": {
+                "id": "2015054300701",
+                "name": "JESSY ZAKHARIA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PANAPPALLY",
+            "person": {
+                "id": "2015054300801",
+                "name": "SHEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHENKANDAM",
+            "person": {
+                "id": "2015054300901",
+                "name": "ASWATHY.T.R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTHALA",
+            "person": {
+                "id": "2015054301001",
+                "name": "SUBHA BINU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHUVAYAL",
+            "person": {
+                "id": "2015054301101",
+                "name": "A.C.PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NADEPEEDIKA",
+            "person": {
+                "id": "2015054301201",
+                "name": "ASHA BINU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOCHUPARAMBU",
+            "person": {
+                "id": "2015054301301",
+                "name": "DEEPHI DILEEP"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUPPATHANAM",
+            "person": {
+                "id": "2015054301401",
+                "name": "KUNJU PUTHUSSERY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANIVAYAL",
+            "person": {
+                "id": "2015054301501",
+                "name": "UMADEVI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHAKKARA",
+            "person": {
+                "id": "2015054301601",
+                "name": "ANTONY THUPPALANJIYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "LAKKATTOOR",
+            "person": {
+                "id": "2015054301701",
+                "name": "SIBIMON"
+            }
+        }
+    ]
+}

@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348626013,
+    "date": "2019-08-21",
+    "name": "Kavanur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Areekkode",
+    "area": "31.3km",
+    "localbody_code": "G100502",
+    "no_of_wards": 19,
+    "population": 25090,
+    "male": 12524,
+    "female": 12566,
+    "population_density": 802,
+    "sex_ratio": 1003,
+    "literacy_rate": 87.27,
+    "literacy_rate_male": 91.5,
+    "literacy_rate_female": 83.08,
+    "president": "SMT.RAMLABIMATHILVALAPPIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ELIYAPARAMB",
+            "person": {
+                "id": "2015092300101",
+                "name": "SRI.UBAIDULLA SHAKIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARIYARAKKAL",
+            "person": {
+                "id": "2015092300201",
+                "name": "SRI.NEELAKANDAN AYYADAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ATHANIKKAL",
+            "person": {
+                "id": "2015092300301",
+                "name": "SRI.SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAVANUR NORTH",
+            "person": {
+                "id": "2015092300401",
+                "name": "SRI.ABDUL KAREEM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKUMURI",
+            "person": {
+                "id": "2015092300501",
+                "name": "SMT.SARABI PUTHALAVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MOZHIPPADAM",
+            "person": {
+                "id": "2015092300601",
+                "name": "SMT.SUNITHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VAKKALOOR",
+            "person": {
+                "id": "2015092300701",
+                "name": "SMT.AMINA THALTHODI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "IRUVETTY WEST",
+            "person": {
+                "id": "2015092300801",
+                "name": "SRI.ABDURAHIMAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IRUVETTY EAST",
+            "person": {
+                "id": "2015092300901",
+                "name": "SRI.MUHAMMED SHEREEF KADOORAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THOTTILANGADI",
+            "person": {
+                "id": "2015092301001",
+                "name": "SRI.NEELAKANDAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VADAKKUMALA",
+            "person": {
+                "id": "2015092301101",
+                "name": "SMT.VIDHYAVATHI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAVANUR SOUTH",
+            "person": {
+                "id": "2015092301201",
+                "name": "SMT.SYAMILI M.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHENGARA NORTH",
+            "person": {
+                "id": "2015092301301",
+                "name": "SRI.DANESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHENGARA MELEMUK",
+            "person": {
+                "id": "2015092301401",
+                "name": "SMT.RIFNA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHENGARA THADATHIL",
+            "person": {
+                "id": "2015092301501",
+                "name": "SMT.RAMLABI MATHILVALAPPIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ELAYUR",
+            "person": {
+                "id": "2015092301602",
+                "name": "SHAHINA PC POTTANAMCHALIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PETTIYATH",
+            "person": {
+                "id": "2015092301701",
+                "name": "SMT.BEENA MANACHIKUNNUMMEL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MAMPUZHA",
+            "person": {
+                "id": "2015092301801",
+                "name": "SMT.KADEEJA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THAVARAPARAMB",
+            "person": {
+                "id": "2015092301901",
+                "name": "SRI.AHAMAD KOLANGARA"
+            }
+        }
+    ]
+}

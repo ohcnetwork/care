@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566347122379,
+    "date": "2019-08-21",
+    "name": "Kadungalloor  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Alangad",
+    "area": "18.06km",
+    "localbody_code": "G070204",
+    "no_of_wards": 21,
+    "population": 30539,
+    "male": 15313,
+    "female": 15226,
+    "population_density": 1691,
+    "sex_ratio": 994,
+    "literacy_rate": 89.55,
+    "literacy_rate_male": 93.86,
+    "literacy_rate_female": 85.24,
+    "president": "RATNAMMASURESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINJARE KADUNGALLOOR NORTH",
+            "person": {
+                "id": "2015063300101",
+                "name": "JYOTHI GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIZHAKKE KADUNGALLOOR WEST",
+            "person": {
+                "id": "2015063300201",
+                "name": "B.JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADAYAPPILLY",
+            "person": {
+                "id": "2015063300301",
+                "name": "T.K.JAYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANIYAMKUNNU",
+            "person": {
+                "id": "2015063300401",
+                "name": "ANILKUMAR.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KIZHAKKE KADUNGALLOOR EAST",
+            "person": {
+                "id": "2015063300501",
+                "name": "HARIDAS.K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELOOKKARA",
+            "person": {
+                "id": "2015063300601",
+                "name": "SHIJI SUBAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUNJUNNIKKARA",
+            "person": {
+                "id": "2015063300701",
+                "name": "K.A SHUHAIB"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ULIYANNOOR",
+            "person": {
+                "id": "2015063300801",
+                "name": "NISHA BIJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ELOOKKARA",
+            "person": {
+                "id": "2015063300901",
+                "name": "SAJITHA V.M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PADINJARE KADUNGALLOOR CENTRAL",
+            "person": {
+                "id": "2015063301001",
+                "name": "GEETHA SALIMKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUPPATHADOM NORTH",
+            "person": {
+                "id": "2015063301101",
+                "name": "V K SHANAVAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUPPATHADAM CENTRAL",
+            "person": {
+                "id": "2015063301201",
+                "name": "TREESA MOLLY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAYANTIKKARA",
+            "person": {
+                "id": "2015063301301",
+                "name": "SABEENA HARIS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUPPATHADAM EAST",
+            "person": {
+                "id": "2015063301401",
+                "name": "C G VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAYANTIKKARA SOUTH",
+            "person": {
+                "id": "2015063301501",
+                "name": "M M ANTONY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUPPATHADAM SOUTH",
+            "person": {
+                "id": "2015063301601",
+                "name": "RATNAMMA SURESH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUPPATHADAM WEST",
+            "person": {
+                "id": "2015063301701",
+                "name": "VIJAYALAKSHMY T S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "EDAYAR",
+            "person": {
+                "id": "2015063301801",
+                "name": "T J TAITUS"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ERAMOM SOUTH",
+            "person": {
+                "id": "2015063301901",
+                "name": "ANITHA MAJEED"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ERAMOM NORTH",
+            "person": {
+                "id": "2015063302001",
+                "name": "SHAJU P G"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PADINJARE KADUNGALLOOR SOUTH",
+            "person": {
+                "id": "2015063302101",
+                "name": "INDIRA KUNNAKKALA"
+            }
+        }
+    ]
+}

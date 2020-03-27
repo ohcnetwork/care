@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347155620,
+    "date": "2019-08-21",
+    "name": "Asamannoor  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Koovappady",
+    "area": "21.27km",
+    "localbody_code": "G070401",
+    "no_of_wards": 14,
+    "population": 16429,
+    "male": 8245,
+    "female": 8184,
+    "population_density": 772,
+    "sex_ratio": 992,
+    "literacy_rate": 88.35,
+    "literacy_rate_male": 93.72,
+    "literacy_rate_female": 82.95,
+    "president": "N.M.SALIM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUKUNNAM",
+            "person": {
+                "id": "2015064300101",
+                "name": "SUNIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUNNAYAM",
+            "person": {
+                "id": "2015064300201",
+                "name": "ADV.CHITRA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ASAMANNOOR",
+            "person": {
+                "id": "2015064300301",
+                "name": "JAMES P.O."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAYYAL",
+            "person": {
+                "id": "2015064300401",
+                "name": "LALITHA KUMARY MOHANAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANICHAYAM",
+            "person": {
+                "id": "2015064300501",
+                "name": "SIVAN N.P."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NOOLELY NORTH",
+            "person": {
+                "id": "2015064300601",
+                "name": "N.M.SALIM"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NOOLELY SOUTH",
+            "person": {
+                "id": "2015064300701",
+                "name": "SAJEESH E.N."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EKKUNNAM",
+            "person": {
+                "id": "2015064300801",
+                "name": "LAILA ABDULKADHER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "METHALA NORTH",
+            "person": {
+                "id": "2015064300901",
+                "name": "BINDU BUSSY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "METHALA SOUTH",
+            "person": {
+                "id": "2015064301001",
+                "name": "ANITHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLIL",
+            "person": {
+                "id": "2015064301101",
+                "name": "BINDU PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THALAPUNCHA",
+            "person": {
+                "id": "2015064301201",
+                "name": "AMBILY RAJAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POOMALA",
+            "person": {
+                "id": "2015064301301",
+                "name": "BINDU NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ODAKKALI",
+            "person": {
+                "id": "2015064301401",
+                "name": "HANITH"
+            }
+        }
+    ]
+}

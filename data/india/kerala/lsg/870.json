@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348378452,
+    "date": "2019-08-21",
+    "name": "Vadavannur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Kollamgode",
+    "area": "17.38km",
+    "localbody_code": "G091005",
+    "no_of_wards": 13,
+    "population": 16010,
+    "male": 7794,
+    "female": 8216,
+    "population_density": 921,
+    "sex_ratio": 1054,
+    "literacy_rate": 76.42,
+    "literacy_rate_male": 85.41,
+    "literacy_rate_female": 68.08,
+    "president": "SYRANTHRIM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MAZHOORKAVU",
+            "person": {
+                "id": "2015087000101",
+                "name": "SYRANTHRI M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PILAPULLY",
+            "person": {
+                "id": "2015087000201",
+                "name": "VENU K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MULLAKKALKULAMBU",
+            "person": {
+                "id": "2015087000301",
+                "name": "MURUKADASAN K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POKKUNNI",
+            "person": {
+                "id": "2015087000401",
+                "name": "GURUVAYURAPPAN V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THANKAYAM",
+            "person": {
+                "id": "2015087000501",
+                "name": "DEEPAK PJ"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOOTHAMPAKU",
+            "person": {
+                "id": "2015087000601",
+                "name": "PRAVEENA MAHESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MENANGATHU",
+            "person": {
+                "id": "2015087000701",
+                "name": "CHANDRAN C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADATHANARA",
+            "person": {
+                "id": "2015087000801",
+                "name": "JAYANTHI A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "V P THARA",
+            "person": {
+                "id": "2015087000901",
+                "name": "PRAMEELA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALLAM",
+            "person": {
+                "id": "2015087001001",
+                "name": "PARVATHY C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KEEZHACHIRA",
+            "person": {
+                "id": "2015087001101",
+                "name": "P A RAJEEV"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PATTATHALACHI",
+            "person": {
+                "id": "2015087001201",
+                "name": "PADMAVATHY T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAKKARAKALAM",
+            "person": {
+                "id": "2015087001301",
+                "name": "VINITHA C"
+            }
+        }
+    ]
+}

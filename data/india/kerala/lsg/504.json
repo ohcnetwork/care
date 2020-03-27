@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346690230,
+    "date": "2019-08-21",
+    "name": "Udayanapuram  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vaikom",
+    "area": "20.15km",
+    "localbody_code": "G050106",
+    "no_of_wards": 17,
+    "population": 27632,
+    "male": 13215,
+    "female": 14417,
+    "population_density": 1193,
+    "sex_ratio": 1014,
+    "literacy_rate": 88,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 90,
+    "president": "P.SMOHANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AKKARAPADOM",
+            "person": {
+                "id": "2015050400101",
+                "name": "PRAVEENA SIBI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKEMURI",
+            "person": {
+                "id": "2015050400201",
+                "name": "SUNIL KUMAR .D"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NANADOM",
+            "person": {
+                "id": "2015050400301",
+                "name": "GEETHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "IRUMPOOZHIKKARA",
+            "person": {
+                "id": "2015050400401",
+                "name": "SANDHYA MOL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VAIKAPRAYAR WEST",
+            "person": {
+                "id": "2015050400501",
+                "name": "P.K SURESH BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VAIKAPRAYAR EAST",
+            "person": {
+                "id": "2015050400601",
+                "name": "P.P DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PADINJAREKKARA",
+            "person": {
+                "id": "2015050400701",
+                "name": "JAMEELA NATARAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHENPALAM",
+            "person": {
+                "id": "2015050400801",
+                "name": "SULOCHANA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VAZHAMANA",
+            "person": {
+                "id": "2015050400902",
+                "name": "RESHMI R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANATHALI",
+            "person": {
+                "id": "2015050401001",
+                "name": "P.S MOHANAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALLAKOM",
+            "person": {
+                "id": "2015050401101",
+                "name": "K.S SAJEEV"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARUTHIMUDI",
+            "person": {
+                "id": "2015050401201",
+                "name": "SASIKALA M.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "UDAYANAPURAM",
+            "person": {
+                "id": "2015050401301",
+                "name": "MAYA SHIBU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PADINJAREMURI",
+            "person": {
+                "id": "2015050401401",
+                "name": "P.D GEORGE"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANAMBUKADU",
+            "person": {
+                "id": "2015050401501",
+                "name": "JAYA SHAJI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VALLYARA",
+            "person": {
+                "id": "2015050401601",
+                "name": "GIRIJA PUSHKARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEREKADAVU",
+            "person": {
+                "id": "2015050401701",
+                "name": "SABU P. MANALODY"
+            }
+        }
+    ]
+}

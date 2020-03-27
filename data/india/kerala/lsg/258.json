@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566345817708,
+    "date": "2019-08-21",
+    "name": "Vithura  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vellanad",
+    "area": "131.56km",
+    "localbody_code": "G010504",
+    "no_of_wards": 17,
+    "population": 26613,
+    "male": 13165,
+    "female": 13448,
+    "population_density": 202,
+    "sex_ratio": 1021,
+    "literacy_rate": 87.7,
+    "literacy_rate_male": 91.34,
+    "literacy_rate_female": 84.05,
+    "president": "S.L.KRISHNAKUMARI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHETTACHAL",
+            "person": {
+                "id": "2015025800101",
+                "name": "S.L.KRISHNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GANAPATHIYAMKODU",
+            "person": {
+                "id": "2015025800201",
+                "name": "THANKAMANI.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PONNAMCHUNDU",
+            "person": {
+                "id": "2015025800301",
+                "name": "MANJUSHA.G"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANALI",
+            "person": {
+                "id": "2015025800401",
+                "name": "SOBHANA.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015025800501",
+                "name": "B.MURALEEDHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANAPPARA",
+            "person": {
+                "id": "2015025800601",
+                "name": "LALY.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BONAKKADU",
+            "person": {
+                "id": "2015025800701",
+                "name": "SATHEESH KUMAR.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MARUTHAMALA",
+            "person": {
+                "id": "2015025800801",
+                "name": "SUBHA.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THEVIYODU",
+            "person": {
+                "id": "2015025800901",
+                "name": "PREMGOPAKUMAR.G.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANITHOOKKI",
+            "person": {
+                "id": "2015025801001",
+                "name": "RADHA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PEPPARA",
+            "person": {
+                "id": "2015025801101",
+                "name": "ANIL KUMAR B"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MEMALA",
+            "person": {
+                "id": "2015025801201",
+                "name": "KUMARIMANJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THALLACHIRA",
+            "person": {
+                "id": "2015025801301",
+                "name": "ANI A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MULAKKOTTUKARA",
+            "person": {
+                "id": "2015025801401",
+                "name": "SAIFINSA A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VITHURA",
+            "person": {
+                "id": "2015025801501",
+                "name": "G.D.SHIBURAJ"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOPPAM",
+            "person": {
+                "id": "2015025801601",
+                "name": "SHAHUL NATH ALI KHAN M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHENNANPARA",
+            "person": {
+                "id": "2015025801701",
+                "name": "JALAJA KUMARI P"
+            }
+        }
+    ]
+}

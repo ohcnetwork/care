@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349182177,
+    "date": "2019-08-21",
+    "name": "Thariode  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Kalpetta",
+    "area": "71.17km",
+    "localbody_code": "G120406",
+    "no_of_wards": 13,
+    "population": 10236,
+    "male": 5200,
+    "female": 5036,
+    "population_density": 144,
+    "sex_ratio": 968,
+    "literacy_rate": 84.41,
+    "literacy_rate_male": 88.61,
+    "literacy_rate_female": 80.1,
+    "president": "REENASUNIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THARIODE",
+            "person": {
+                "id": "2015109100101",
+                "name": "TOM THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARLAD",
+            "person": {
+                "id": "2015109100201",
+                "name": "REENA SUNIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEENGANNUR",
+            "person": {
+                "id": "2015109100301",
+                "name": "CHANDRASEKHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MADATHUVAYAL",
+            "person": {
+                "id": "2015109100401",
+                "name": "SEEMA ALIAS ANCY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHENNALODE",
+            "person": {
+                "id": "2015109100501",
+                "name": "BINDU ALIAS BINDU CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MYLADUMKUNNU",
+            "person": {
+                "id": "2015109100601",
+                "name": "SANTHOSH  K.V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALLANKARI",
+            "person": {
+                "id": "2015109100701",
+                "name": "SINDHU SHIBU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOTTAKKUNNU",
+            "person": {
+                "id": "2015109100801",
+                "name": "GIRIJA SUNDARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAVUMMANNAM",
+            "person": {
+                "id": "2015109100901",
+                "name": "CHACKO S/O THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALIKKUNI",
+            "person": {
+                "id": "2015109101001",
+                "name": "VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEKKANNIKKUNNU",
+            "person": {
+                "id": "2015109101101",
+                "name": "IBRAHIM P A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PAMBUMKUNI",
+            "person": {
+                "id": "2015109101201",
+                "name": "SHEEJA ANTONY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATHAM MILE",
+            "person": {
+                "id": "2015109101301",
+                "name": "ANITHA"
+            }
+        }
+    ]
+}

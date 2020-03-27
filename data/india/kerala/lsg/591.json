@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346979158,
+    "date": "2019-08-21",
+    "name": "Rajakumary  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "38.15km",
+    "localbody_code": "G060307",
+    "no_of_wards": 13,
+    "population": 13245,
+    "male": 6716,
+    "female": 6529,
+    "population_density": 348,
+    "sex_ratio": 972,
+    "literacy_rate": 83,
+    "literacy_rate_male": 86,
+    "literacy_rate_female": 77,
+    "president": "VARGHESE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHAKIL",
+            "person": {
+                "id": "2015059100101",
+                "name": "SUMA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUMBAPPARA",
+            "person": {
+                "id": "2015059100201",
+                "name": "P REVI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAJANAPARA",
+            "person": {
+                "id": "2015059100301",
+                "name": "AMUTHA VALLABHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ARAMANAPPARA",
+            "person": {
+                "id": "2015059100401",
+                "name": "PARIMALAM JAYGANESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "B-DIVISION",
+            "person": {
+                "id": "2015059100501",
+                "name": "AMBILI SUBASH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANJAKUZHI",
+            "person": {
+                "id": "2015059100601",
+                "name": "JISHA GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHAYALPARA",
+            "person": {
+                "id": "2015059100701",
+                "name": "VARGHESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MURIKKUMTHOTTY",
+            "person": {
+                "id": "2015059100801",
+                "name": "JAYAMOL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KULAPPARACHAL",
+            "person": {
+                "id": "2015059100901",
+                "name": "P.T ELDHO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANNIYAR",
+            "person": {
+                "id": "2015059101001",
+                "name": "TISSY M.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "RAJAKUMARY NORTH",
+            "person": {
+                "id": "2015059101101",
+                "name": "AJEESH A.A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "RAJAKUMARY SOUTH",
+            "person": {
+                "id": "2015059101201",
+                "name": "P.P JOY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NADUMATTOM",
+            "person": {
+                "id": "2015059101301",
+                "name": "K.K THANKACHAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346947731,
+    "date": "2019-08-21",
+    "name": "Marayoor  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Devikulam",
+    "area": "108.07km",
+    "localbody_code": "G060201",
+    "no_of_wards": 13,
+    "population": 9590,
+    "male": 4792,
+    "female": 4798,
+    "population_density": 89,
+    "sex_ratio": 1001,
+    "literacy_rate": 62,
+    "literacy_rate_male": 68,
+    "literacy_rate_female": 55,
+    "president": "JOMONTHOMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOODAKKAD",
+            "person": {
+                "id": "2015057800101",
+                "name": "DEEPA ARULJYOTHI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "IRUTTALA",
+            "person": {
+                "id": "2015057800201",
+                "name": "AROCKIADAS N"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "RAJEEV NAGAR",
+            "person": {
+                "id": "2015057800301",
+                "name": "BALAKRISHNAN LOKANAYAKAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "INDIRANAGAR",
+            "person": {
+                "id": "2015057800401",
+                "name": "JOMON THOMAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BABUNAGAR",
+            "person": {
+                "id": "2015057800501",
+                "name": "SANTHI THANKAVEL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHACHIVAYAL",
+            "person": {
+                "id": "2015057800601",
+                "name": "SARANYA RAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "JAWAHARNAGAR",
+            "person": {
+                "id": "2015057800701",
+                "name": "USHAKUMARI THAMPIDURAI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MARAYOOR GRAMAM",
+            "person": {
+                "id": "2015057800801",
+                "name": "MURUKAVELU K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MASIVAYAL",
+            "person": {
+                "id": "2015057800901",
+                "name": "FRANCIS K.V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MELADY",
+            "person": {
+                "id": "2015057801001",
+                "name": "BALAKRISHNAN V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NACHIVAYAL",
+            "person": {
+                "id": "2015057801101",
+                "name": "SANTHI MARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MICHAELGIRI",
+            "person": {
+                "id": "2015057801201",
+                "name": "REJEENA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALLANADU",
+            "person": {
+                "id": "2015057801301",
+                "name": "SAHAYAMARY"
+            }
+        }
+    ]
+}

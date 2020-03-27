@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348043657,
+    "date": "2019-08-21",
+    "name": "Nenmanikkara  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Kodakara",
+    "area": "11.41km",
+    "localbody_code": "G081104",
+    "no_of_wards": 15,
+    "population": 18664,
+    "male": 9150,
+    "female": 9514,
+    "population_density": 1636,
+    "sex_ratio": 1040,
+    "literacy_rate": 88.79,
+    "literacy_rate_male": 93.02,
+    "literacy_rate_female": 84.76,
+    "president": "SHEELAMANOHARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THALORE",
+            "person": {
+                "id": "2015077100101",
+                "name": "JACOB K.A."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THALORE PARAPPURAM",
+            "person": {
+                "id": "2015077100201",
+                "name": "ROSILY RAPPAI KIZHAKKOODAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALIAKKARA",
+            "person": {
+                "id": "2015077100301",
+                "name": "SUDHESH KUMARI C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULAKKATTUKARA",
+            "person": {
+                "id": "2015077100401",
+                "name": "SHEELA MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NENMANIKKARA",
+            "person": {
+                "id": "2015077100501",
+                "name": "SURESH V.R."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAZHAYI",
+            "person": {
+                "id": "2015077100601",
+                "name": "RAJITHA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERUVAL",
+            "person": {
+                "id": "2015077100701",
+                "name": "ANJU CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAZHAYI CENTRE",
+            "person": {
+                "id": "2015077100801",
+                "name": "SANOJ K.V."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAZHAYI WEST",
+            "person": {
+                "id": "2015077100901",
+                "name": "SATHEESAN E.M."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MADAVAKKARA",
+            "person": {
+                "id": "2015077101001",
+                "name": "PREMALATHA BABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHITTISSERY SOUTH",
+            "person": {
+                "id": "2015077101101",
+                "name": "REJANI MURANTHAKAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ERAVAKKAD",
+            "person": {
+                "id": "2015077101201",
+                "name": "ANAND M.P."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHITTISSERY CENTRE",
+            "person": {
+                "id": "2015077101301",
+                "name": "SUGANDHY SHAJU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUNNISSERY",
+            "person": {
+                "id": "2015077101401",
+                "name": "SUNSON C.K."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHITTISSERY NORTH",
+            "person": {
+                "id": "2015077101501",
+                "name": "BABU K.M."
+            }
+        }
+    ]
+}

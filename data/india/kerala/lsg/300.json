@@ -1,0 +1,202 @@
+{
+    "timeStamp": 1566345955812,
+    "date": "2019-08-21",
+    "name": "Parassala  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Parassala",
+    "area": "20.02km",
+    "localbody_code": "G011104",
+    "no_of_wards": 23,
+    "population": 45710,
+    "male": 22716,
+    "female": 22994,
+    "population_density": 2283,
+    "sex_ratio": 1012,
+    "literacy_rate": 89.23,
+    "literacy_rate_male": 92.75,
+    "literacy_rate_female": 85.77,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTAIKKAM",
+            "person": {
+                "id": "2015030000101",
+                "name": "Y.D CHRYSTAL SHEEBA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEDIYAMCODE",
+            "person": {
+                "id": "2015030000201",
+                "name": "R FREEJA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERUVILA",
+            "person": {
+                "id": "2015030000301",
+                "name": "T. R. SAVITHRI KUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLOORKONAM",
+            "person": {
+                "id": "2015030000401",
+                "name": "KENSI LALI S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARASUVAIKKAL",
+            "person": {
+                "id": "2015030000501",
+                "name": "BINU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ADUMANCADU",
+            "person": {
+                "id": "2015030000601",
+                "name": "SUSEELA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "IDICHAKKAPLAMOODU",
+            "person": {
+                "id": "2015030000701",
+                "name": "RAJAMMA A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAVATHIYANVILA",
+            "person": {
+                "id": "2015030000801",
+                "name": "SURENDRAN S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARUMANOOR",
+            "person": {
+                "id": "2015030000901",
+                "name": "C. RAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEDUVANVILA",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KODAVILAKOM",
+            "person": {
+                "id": "2015030001101",
+                "name": "K LAWRENCE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MURIYANKARA",
+            "person": {
+                "id": "2015030001201",
+                "name": "GIRIJA R K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MULLUVILA",
+            "person": {
+                "id": "2015030001301",
+                "name": "SUKUMARI R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "TOWN",
+            "person": {
+                "id": "2015030001401",
+                "name": "NEELA. P. A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NADUTHOTTAM",
+            "person": {
+                "id": "2015030001501",
+                "name": "M SAJIN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "INCHIVILA",
+            "person": {
+                "id": "2015030001601",
+                "name": "M. SYEDALI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AYINKAMAM",
+            "person": {
+                "id": "2015030001701",
+                "name": "SURESH P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VANNIYACODE",
+            "person": {
+                "id": "2015030001801",
+                "name": "USHA SURESH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHERUVARAKONAM",
+            "person": {
+                "id": "2015030001901",
+                "name": "ANI ANTONY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MURIYATHOTTAM",
+            "person": {
+                "id": "2015030002001",
+                "name": "PRABHAKUMARI R"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KEEZHATHOTTAM",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MELEKONAM",
+            "person": {
+                "id": "2015030002201",
+                "name": "MINI VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PONNAMKULAM",
+            "person": {
+                "id": "2015030002301",
+                "name": "V SUNIL KUMAR"
+            }
+        }
+    ]
+}

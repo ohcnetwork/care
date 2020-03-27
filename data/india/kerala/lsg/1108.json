@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349234690,
+    "date": "2019-08-21",
+    "name": "Pattuvam  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "16.85km",
+    "localbody_code": "G130301",
+    "no_of_wards": 13,
+    "population": 14207,
+    "male": 6689,
+    "female": 7518,
+    "population_density": 843,
+    "sex_ratio": 1124,
+    "literacy_rate": 85.8,
+    "literacy_rate_male": 93.45,
+    "literacy_rate_female": 79.09,
+    "president": "ANAKKEELCHANDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTHUKUDA",
+            "person": {
+                "id": "2015110800101",
+                "name": "LALITHA. C.M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAVUNKAL",
+            "person": {
+                "id": "2015110800201",
+                "name": "SASI. V.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANUKKARA",
+            "person": {
+                "id": "2015110800301",
+                "name": "SAJITHA. K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANGALASSERI",
+            "person": {
+                "id": "2015110800401",
+                "name": "SMITHA. A.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURIYATHODE",
+            "person": {
+                "id": "2015110800501",
+                "name": "N. JOY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAPPOOL",
+            "person": {
+                "id": "2015110800601",
+                "name": "V.V. CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VELLIKKEEL",
+            "person": {
+                "id": "2015110800701",
+                "name": "KHADEEJA. K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARIYIL",
+            "person": {
+                "id": "2015110800801",
+                "name": "S.P. ZAINABA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULLOOL",
+            "person": {
+                "id": "2015110800901",
+                "name": "P. SHEEJA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOOTHATT",
+            "person": {
+                "id": "2015110801001",
+                "name": "ADV. RAJEEVAN KAPPACHERI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNARU",
+            "person": {
+                "id": "2015110801101",
+                "name": "ANAKKEEL CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADINHARECHAL",
+            "person": {
+                "id": "2015110801201",
+                "name": "SHEEMA. V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELICHANKEEL",
+            "person": {
+                "id": "2015110801301",
+                "name": "U. MOHANDAS"
+            }
+        }
+    ]
+}

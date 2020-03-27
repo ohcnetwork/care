@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348750843,
+    "date": "2019-08-21",
+    "name": "Parappur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Vengara",
+    "area": "15.11km",
+    "localbody_code": "G101003",
+    "no_of_wards": 19,
+    "population": 26100,
+    "male": 12656,
+    "female": 13444,
+    "population_density": 1727,
+    "sex_ratio": 1062,
+    "literacy_rate": 91.45,
+    "literacy_rate_male": 94.43,
+    "literacy_rate_female": 88.26,
+    "president": "MOHAMMEDKUTTY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ILLIPPULAKKAL",
+            "person": {
+                "id": "2015096000101",
+                "name": "MOHAMMED KUTTY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDAYATTUPARAMBA",
+            "person": {
+                "id": "2015096000201",
+                "name": "RAIHANATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "C.C MADU",
+            "person": {
+                "id": "2015096000301",
+                "name": "ABIDA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTAPPARAMBA",
+            "person": {
+                "id": "2015096000401",
+                "name": "SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULLATTANGADI",
+            "person": {
+                "id": "2015096000501",
+                "name": "HASEENA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALANI",
+            "person": {
+                "id": "2015096000601",
+                "name": "HAMEED AP"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUTTITHARA",
+            "person": {
+                "id": "2015096000701",
+                "name": "RASIYA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MATTANAPPAD",
+            "person": {
+                "id": "2015096000801",
+                "name": "MUHAMMED KUTTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNDOTHUPARAMBU",
+            "person": {
+                "id": "2015096000901",
+                "name": "ABDUL RAHEEM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUZHIPPURAM",
+            "person": {
+                "id": "2015096001001",
+                "name": "MAMMED KUTTY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AZAD NAGAR",
+            "person": {
+                "id": "2015096001101",
+                "name": "RASIYA C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VEENALUKKAL",
+            "person": {
+                "id": "2015096001201",
+                "name": "HARIFABI M.C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KURIKKAL BAZAR",
+            "person": {
+                "id": "2015096001301",
+                "name": "SASI P.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MULLAPPARAMBU",
+            "person": {
+                "id": "2015096001401",
+                "name": "SAIBUNNISA V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THEKKEKULAMBU",
+            "person": {
+                "id": "2015096001501",
+                "name": "T. T BEERAVUNNI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "POTTIPPARA",
+            "person": {
+                "id": "2015096001601",
+                "name": "BASHEER KALADY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHOLAKKUNDU",
+            "person": {
+                "id": "2015096001701",
+                "name": "THAHIRA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PARAKKADAVU",
+            "person": {
+                "id": "2015096001801",
+                "name": "ABDU RAHEEM"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VADAKKUM MURI",
+            "person": {
+                "id": "2015096001901",
+                "name": "NASEERA K"
+            }
+        }
+    ]
+}

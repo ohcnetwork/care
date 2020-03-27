@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348250699,
+    "date": "2019-08-21",
+    "name": "Trikkaderi  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Sreekrishnapuram",
+    "area": "26.28km",
+    "localbody_code": "G090306",
+    "no_of_wards": 16,
+    "population": 21304,
+    "male": 10070,
+    "female": 11234,
+    "population_density": 811,
+    "sex_ratio": 1116,
+    "literacy_rate": 86.65,
+    "literacy_rate_male": 89.92,
+    "literacy_rate_female": 83.77,
+    "president": "NARAYANANKUTTYK.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANGODE",
+            "person": {
+                "id": "2015083100101",
+                "name": "SANKARANARAYANAN A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHAMMANOOR",
+            "person": {
+                "id": "2015083100201",
+                "name": "PRAKASH K.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POOTHAKKAD",
+            "person": {
+                "id": "2015083100301",
+                "name": "HAMSA K.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ATTASSERY",
+            "person": {
+                "id": "2015083100401",
+                "name": "SIVASANKARAN P.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARIYAMUTTI",
+            "person": {
+                "id": "2015083100501",
+                "name": "SAHIRA M.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEZHOOR NORTH",
+            "person": {
+                "id": "2015083100601",
+                "name": "RAJU K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KEZHOOR SOUTH",
+            "person": {
+                "id": "2015083100701",
+                "name": "SREELATHA K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KEZHOOR ROAD",
+            "person": {
+                "id": "2015083100801",
+                "name": "BALKEES.K K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THRIKKADEERI CENTRE",
+            "person": {
+                "id": "2015083100901",
+                "name": "NARAYANANKUTTY K.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THARUVAKONAM",
+            "person": {
+                "id": "2015083101001",
+                "name": "NARAYANAN T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARATTUKURUSSI",
+            "person": {
+                "id": "2015083101101",
+                "name": "KRISHNAKUMAR S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THRIKKADEERI DISPENSARY",
+            "person": {
+                "id": "2015083101201",
+                "name": "RAJANI E"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMBALAVATTAM",
+            "person": {
+                "id": "2015083101301",
+                "name": "SAROJINI K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AMBALAVATTAM KIZHAKKU",
+            "person": {
+                "id": "2015083101401",
+                "name": "JAMEELA K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VEERAMANGALAM",
+            "person": {
+                "id": "2015083101501",
+                "name": "UMMUSALMA P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANGODE MILLUMPADI",
+            "person": {
+                "id": "2015083101601",
+                "name": "GEETHA"
+            }
+        }
+    ]
+}

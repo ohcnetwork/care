@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346500431,
+    "date": "2019-08-21",
+    "name": "Thakazhy  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Champakkulam",
+    "area": "28.01km",
+    "localbody_code": "G040603",
+    "no_of_wards": 14,
+    "population": 19136,
+    "male": 9216,
+    "female": 9920,
+    "population_density": 683,
+    "sex_ratio": 1076,
+    "literacy_rate": 95,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 93,
+    "president": "AMBIKASHIBU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARUMADY",
+            "person": {
+                "id": "2015045400101",
+                "name": "GANESH KUMAR M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PADAHARAM",
+            "person": {
+                "id": "2015045400201",
+                "name": "RENJITH P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHIRAYAKOM",
+            "person": {
+                "id": "2015045400301",
+                "name": "JOMA BIJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THENNADY",
+            "person": {
+                "id": "2015045400401",
+                "name": "GOPALAKRISHNAN K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VEZHAPRAM",
+            "person": {
+                "id": "2015045400502",
+                "name": "P K  VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THAKAZHY",
+            "person": {
+                "id": "2015045400601",
+                "name": "K VIMALAMMA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KELAMANGALAM",
+            "person": {
+                "id": "2015045400701",
+                "name": "JESSY JAMES"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEKKIDIKKADU",
+            "person": {
+                "id": "2015045400801",
+                "name": "ROSE MINI MATHEW"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHEKKIDIKKADU EAST",
+            "person": {
+                "id": "2015045400901",
+                "name": "MARY CYNDRELA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNUMMA SOUTH",
+            "person": {
+                "id": "2015045401001",
+                "name": "AMBIKA SHIBU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNUMMA",
+            "person": {
+                "id": "2015045401102",
+                "name": "GEETHANJALI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNNUMMA NORTH",
+            "person": {
+                "id": "2015045401201",
+                "name": "NISSAR U"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THAKAZHY NORTH",
+            "person": {
+                "id": "2015045401301",
+                "name": "D SUBHASH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALATHIPALAM",
+            "person": {
+                "id": "2015045401402",
+                "name": "SUSHAMA K"
+            }
+        }
+    ]
+}

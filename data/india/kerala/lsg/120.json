@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345248793,
+    "date": "2019-08-21",
+    "name": "Tirurangadi  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Tirurangady",
+    "area": "142.1km",
+    "localbody_code": "B101100",
+    "no_of_wards": 15,
+    "population": 250749,
+    "male": 121760,
+    "female": 128989,
+    "population_density": 1765,
+    "sex_ratio": 1059,
+    "literacy_rate": 87.05,
+    "literacy_rate_male": 92.24,
+    "literacy_rate_female": 81.86,
+    "president": "ABDULKALAMMASTER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADALUNDI NAGARAM",
+            "person": {
+                "id": "2015012000101",
+                "name": "PREETHA RANI BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THENHIPALAM",
+            "person": {
+                "id": "2015012000201",
+                "name": "RAGESH CHAKYADAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "UNIVERSITY",
+            "person": {
+                "id": "2015012000301",
+                "name": "M.VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAKKATHADAM",
+            "person": {
+                "id": "2015012000401",
+                "name": "T P ASSAIN MASTER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLLANCHINA",
+            "person": {
+                "id": "2015012000501",
+                "name": "ABDUL KALAM MASTER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAMBILPEEDIKA",
+            "person": {
+                "id": "2015012000601",
+                "name": "VISWAN PULIYODAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PADIKKAL",
+            "person": {
+                "id": "2015012000701",
+                "name": "PATHOOR JAMEELA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELIMUKKU",
+            "person": {
+                "id": "2015012000801",
+                "name": "V.K ZUBAIDA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARAKADAVU",
+            "person": {
+                "id": "2015012000901",
+                "name": "K. MARIYUMMA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNDOOR",
+            "person": {
+                "id": "2015012001001",
+                "name": "T.T HAMZA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NANNAMBRA",
+            "person": {
+                "id": "2015012001101",
+                "name": "HAFSATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KODINHI",
+            "person": {
+                "id": "2015012001201",
+                "name": "SHAREEFA.M.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALIYATTAMUKKU",
+            "person": {
+                "id": "2015012001301",
+                "name": "FATHIMA LUHLU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KODAKKAD",
+            "person": {
+                "id": "2015012001401",
+                "name": "BINDU PUZHAKKAL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ARIYALLUR",
+            "person": {
+                "id": "2015012001501",
+                "name": "PRABHAKARAN THEKKUMCHERI"
+            }
+        }
+    ]
+}

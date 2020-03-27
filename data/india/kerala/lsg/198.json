@@ -1,0 +1,228 @@
+{
+    "timeStamp": 1566345586779,
+    "date": "2019-08-21",
+    "name": "Aluva  Municipality, Ernakulam District",
+    "district": "Ernakulam",
+    "area": "7.18km",
+    "localbody_code": "M070800",
+    "no_of_wards": 26,
+    "population": 24108,
+    "male": 11756,
+    "female": 12352,
+    "population_density": 3358,
+    "sex_ratio": 1050,
+    "literacy_rate": 96.29,
+    "literacy_rate_male": 97.37,
+    "literacy_rate_female": 95010,
+    "chairperson": "LISSYABRAHAM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANGLAPUZHA SEMINARY",
+            "person": {
+                "id": "2015019800101",
+                "name": "LEENA GEORGE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GURUMANDIRAM",
+            "person": {
+                "id": "2015019800201",
+                "name": "LISSY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "DESAM KADAVU",
+            "person": {
+                "id": "2015019800301",
+                "name": "SAJITHA SAGEER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANA",
+            "person": {
+                "id": "2015019800401",
+                "name": "C OMANA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAPPURAM",
+            "person": {
+                "id": "2015019800501",
+                "name": "MANOJ G KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "GANAPATHI TEMPLE",
+            "person": {
+                "id": "2015019800601",
+                "name": "JEROME MICHAEL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ST: ANNS CHURCH",
+            "person": {
+                "id": "2015019800701",
+                "name": "P C ANTONY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADATHUKADAVU",
+            "person": {
+                "id": "2015019800801",
+                "name": "M T JACOB"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALACE",
+            "person": {
+                "id": "2015019800901",
+                "name": "K V SARALA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "LIBRARY",
+            "person": {
+                "id": "2015019801001",
+                "name": "SEBY V BASTIN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "OOMANKUZHITHADAM",
+            "person": {
+                "id": "2015019801101",
+                "name": "SOUMYA KATTUNGAL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUNICIPAL OFFICE",
+            "person": {
+                "id": "2015019801201",
+                "name": "MINI BAIJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MADRASA",
+            "person": {
+                "id": "2015019801301",
+                "name": "LALITHA GANESAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ASAN KOLANI",
+            "person": {
+                "id": "2015019801401",
+                "name": "OMANA HARI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "TREASURY",
+            "person": {
+                "id": "2015019801501",
+                "name": "LOLITHA SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SNEHALAYAM",
+            "person": {
+                "id": "2015019801601",
+                "name": "TIMMY TEACHER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MADHAVAPURAM",
+            "person": {
+                "id": "2015019801701",
+                "name": "RAJEEV SACHARIA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NAZRATH",
+            "person": {
+                "id": "2015019801801",
+                "name": "TENCY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THRIKKUNNATHU",
+            "person": {
+                "id": "2015019801901",
+                "name": "LIJI JOY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THALUK HOSPITAL",
+            "person": {
+                "id": "2015019802001",
+                "name": "SHAIJI TEACHER"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SASTHA TEMPLE",
+            "person": {
+                "id": "2015019802101",
+                "name": "A C SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PULINCHODE",
+            "person": {
+                "id": "2015019802201",
+                "name": "JEBI MATHER HISHAM"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MARKET",
+            "person": {
+                "id": "2015019802301",
+                "name": "V CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "PRIYADARSINI",
+            "person": {
+                "id": "2015019802401",
+                "name": "SHYAM PADMANABHAN"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "CANAL",
+            "person": {
+                "id": "2015019802501",
+                "name": "K JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "THANDIKKAL",
+            "person": {
+                "id": "2015019802601",
+                "name": "P M MOOSAKUTTY"
+            }
+        }
+    ]
+}

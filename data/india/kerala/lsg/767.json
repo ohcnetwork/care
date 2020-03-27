@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347616989,
+    "date": "2019-08-21",
+    "name": "Vallachira  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Cherpu",
+    "area": "10.19km",
+    "localbody_code": "G081004",
+    "no_of_wards": 14,
+    "population": 15936,
+    "male": 7706,
+    "female": 8230,
+    "population_density": 1564,
+    "sex_ratio": 1068,
+    "literacy_rate": 90.86,
+    "literacy_rate_male": 94.37,
+    "literacy_rate_female": 87.54,
+    "president": "SOPHYFRANCIS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUSSERY",
+            "person": {
+                "id": "2015076700101",
+                "name": "SOPHY FRANCIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SREE KRISHNA PURAM",
+            "person": {
+                "id": "2015076700201",
+                "name": "REMA PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOSCO NAGAR",
+            "person": {
+                "id": "2015076700301",
+                "name": "DELLY ANTONY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHATHAKUDAM",
+            "person": {
+                "id": "2015076700401",
+                "name": "BAIJU T"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADALASSERY",
+            "person": {
+                "id": "2015076700501",
+                "name": "USHA VASU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NJERUVISSERY",
+            "person": {
+                "id": "2015076700601",
+                "name": "SANTHOSH KUMAR T V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARATTUPUZHA NORTH",
+            "person": {
+                "id": "2015076700701",
+                "name": "VISWANATHAN K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARATTUPUZHA SOUTH",
+            "person": {
+                "id": "2015076700801",
+                "name": "LATHA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALLISSERY",
+            "person": {
+                "id": "2015076700901",
+                "name": "GEETHA UDAYASANKAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANDESWARAM",
+            "person": {
+                "id": "2015076701001",
+                "name": "RAVINDRANATHAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ILAMKUNNU",
+            "person": {
+                "id": "2015076701101",
+                "name": "THILAKAN M V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SREE NARAYANA PURAM",
+            "person": {
+                "id": "2015076701201",
+                "name": "RAJAN V K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALLACHIRA",
+            "person": {
+                "id": "2015076701301",
+                "name": "RAMACHANDRAN T K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHUKULANGARA",
+            "person": {
+                "id": "2015076701401",
+                "name": "VIJAYA SURENDRAN"
+            }
+        }
+    ]
+}

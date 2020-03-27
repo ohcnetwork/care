@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349501765,
+    "date": "2019-08-21",
+    "name": "Peravoor  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Peravoor",
+    "area": "34.1km",
+    "localbody_code": "G131107",
+    "no_of_wards": 16,
+    "population": 20618,
+    "male": 10248,
+    "female": 10370,
+    "population_density": 605,
+    "sex_ratio": 1012,
+    "literacy_rate": 91.33,
+    "literacy_rate_male": 95.2,
+    "literacy_rate_female": 87.56,
+    "president": "JIJIJOY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MEL MURINGODI",
+            "person": {
+                "id": "2015117600101",
+                "name": "SUDHA SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MURINGODI",
+            "person": {
+                "id": "2015117600201",
+                "name": "E.SURESH CHALARATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015117600301",
+                "name": "SHEEBA BABU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALAYANGAD",
+            "person": {
+                "id": "2015117600401",
+                "name": "P.PREETHA AJITH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MADAPURACHAL",
+            "person": {
+                "id": "2015117600501",
+                "name": "BINDU M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANATHANA",
+            "person": {
+                "id": "2015117600601",
+                "name": "SUGESH M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALLADI",
+            "person": {
+                "id": "2015117600701",
+                "name": "ELSAMMA DOMINIC"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THONDIYIL",
+            "person": {
+                "id": "2015117600801",
+                "name": "DARLY TOMY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THETTUVAZHY",
+            "person": {
+                "id": "2015117600901",
+                "name": "JOHNSON JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MULLERICKAL",
+            "person": {
+                "id": "2015117601001",
+                "name": "JUBILY CHACKO"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERAVOOR",
+            "person": {
+                "id": "2015117601101",
+                "name": "POOKOTH SIRAJ"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "IRIPRAKKUNNU",
+            "person": {
+                "id": "2015117601201",
+                "name": "V GEETHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNITHALA",
+            "person": {
+                "id": "2015117601301",
+                "name": "V BABUMASTER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THERU",
+            "person": {
+                "id": "2015117601401",
+                "name": "RAJAN NARIKKODAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VELLERVALLY",
+            "person": {
+                "id": "2015117601501",
+                "name": "RATHEESH CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOTTUMANGA",
+            "person": {
+                "id": "2015117601601",
+                "name": "JIJI JOY"
+            }
+        }
+    ]
+}

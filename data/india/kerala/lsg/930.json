@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348648010,
+    "date": "2019-08-21",
+    "name": "Anakkayam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Malappuram",
+    "area": "45.23km",
+    "localbody_code": "G100601",
+    "no_of_wards": 23,
+    "population": 35740,
+    "male": 17648,
+    "female": 18092,
+    "population_density": 790,
+    "sex_ratio": 1025,
+    "literacy_rate": 87.27,
+    "literacy_rate_male": 93.29,
+    "literacy_rate_female": 87.71,
+    "president": "P.TSUNEERAASHRAF",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLIYALIPPADI",
+            "person": {
+                "id": "2015093000101",
+                "name": "FATHIMA. M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAPPINIPPARA",
+            "person": {
+                "id": "2015093000201",
+                "name": "V.ASHRAF A/S KUTTYAPPU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOOLIYODANMUKKU",
+            "person": {
+                "id": "2015093000301",
+                "name": "BUSHRA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLEEYILANGADI",
+            "person": {
+                "id": "2015093000401",
+                "name": "SASI .K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHITTATHUPARA",
+            "person": {
+                "id": "2015093000501",
+                "name": "ABDU RASHEED K.V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBALAVATTAM",
+            "person": {
+                "id": "2015093000601",
+                "name": "M.PRASANTH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANDALLUR",
+            "person": {
+                "id": "2015093000701",
+                "name": "RASIYA C.P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUDIKKODE",
+            "person": {
+                "id": "2015093000801",
+                "name": "SUBAIDA.O.T"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIDANGAYAM",
+            "person": {
+                "id": "2015093000901",
+                "name": "ASMABI. P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NARIYATTUPARA",
+            "person": {
+                "id": "2015093001002",
+                "name": "MUHAMMED HANEEFA V.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KIZHAKKUMPARAMBA",
+            "person": {
+                "id": "2015093001101",
+                "name": "ABDUL SAMAD P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THEKKUMPAD",
+            "person": {
+                "id": "2015093001201",
+                "name": "SEJITHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEPPUR",
+            "person": {
+                "id": "2015093001301",
+                "name": "SAJEENA K.P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANAKKAYAM",
+            "person": {
+                "id": "2015093001401",
+                "name": "P.T SUNEERA ASHRAF"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POTTAMMAL",
+            "person": {
+                "id": "2015093001501",
+                "name": "MOHAMMED ALI ALIAS T.T ALI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERIMBALAM",
+            "person": {
+                "id": "2015093001601",
+                "name": "SAFOORA. T"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PANAYI",
+            "person": {
+                "id": "2015093001701",
+                "name": "SALEENA .K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "IRUMBUZHI",
+            "person": {
+                "id": "2015093001801",
+                "name": "SUBAIDA KAPRAKKADAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VALAPARAMBA",
+            "person": {
+                "id": "2015093001901",
+                "name": "AYISHA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KUNNUMPURAM",
+            "person": {
+                "id": "2015093002001",
+                "name": "MOOSSA UMMAT"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "AMBALATHINGAL",
+            "person": {
+                "id": "2015093002101",
+                "name": "C.K SHIHAB"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PADINHATTUMURI",
+            "person": {
+                "id": "2015093002201",
+                "name": "RAFIQ NUJAID MON"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "KONIKKALLU",
+            "person": {
+                "id": "2015093002301",
+                "name": "RAJANI MOHANDAS"
+            }
+        }
+    ]
+}

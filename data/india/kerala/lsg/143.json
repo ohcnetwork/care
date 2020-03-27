@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345326240,
+    "date": "2019-08-21",
+    "name": "Kannur  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Kannur",
+    "area": "47.72km",
+    "localbody_code": "B130500",
+    "no_of_wards": 13,
+    "population": 146785,
+    "male": 72185,
+    "female": 74600,
+    "population_density": 3076,
+    "sex_ratio": 1033,
+    "literacy_rate": 94.26,
+    "literacy_rate_male": 97.32,
+    "literacy_rate_female": 91.33,
+    "president": "KUDUVANPADMANABHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AZHEEKKAL",
+            "person": {
+                "id": "2015014300101",
+                "name": "SAPNA K M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALAPATTANAM",
+            "person": {
+                "id": "2015014300201",
+                "name": "SHAKEEL K V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ILLIPURAM",
+            "person": {
+                "id": "2015014300301",
+                "name": "K P LEELA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARIKKANKULAM",
+            "person": {
+                "id": "2015014300401",
+                "name": "MOHANAN P V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANKADAVU",
+            "person": {
+                "id": "2015014300501",
+                "name": "T VENUGOPALAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAPPINISSERY CENTRAL",
+            "person": {
+                "id": "2015014300601",
+                "name": "A MAHESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTAMBALLY",
+            "person": {
+                "id": "2015014300701",
+                "name": "GOURI K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHIYA THERU",
+            "person": {
+                "id": "2015014300801",
+                "name": "PRASANTHAN P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHIRAKKAL",
+            "person": {
+                "id": "2015014300901",
+                "name": "LATHA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ALAVIL",
+            "person": {
+                "id": "2015014301001",
+                "name": "SREERATHI P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ARAMKOTTAM",
+            "person": {
+                "id": "2015014301101",
+                "name": "JYOTHI P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MEENKUNNU",
+            "person": {
+                "id": "2015014301201",
+                "name": "KUDUVAN PADMANABHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VANKULATH VAYAL",
+            "person": {
+                "id": "2015014301302",
+                "name": "PRASEETHA P"
+            }
+        }
+    ]
+}

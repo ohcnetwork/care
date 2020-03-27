@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348977735,
+    "date": "2019-08-21",
+    "name": "Koothali  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Perambra",
+    "area": "14.13km",
+    "localbody_code": "G110605",
+    "no_of_wards": 13,
+    "population": 13839,
+    "male": 6923,
+    "female": 6916,
+    "population_density": 979,
+    "sex_ratio": 999,
+    "literacy_rate": 91.93,
+    "literacy_rate_male": 96.15,
+    "literacy_rate_female": 87.73,
+    "president": "K.PASSANKUTTY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MOORIKUTHI",
+            "person": {
+                "id": "2015102500101",
+                "name": "BIJI KANNIPPOYIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAMMOTH",
+            "person": {
+                "id": "2015102500201",
+                "name": "SHIJU PULLIYOTT"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOOTHALI",
+            "person": {
+                "id": "2015102500301",
+                "name": "E.T SATHYAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARIMBILAMOOLA",
+            "person": {
+                "id": "2015102500401",
+                "name": "BINDU.P.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VILAYATTUKANDY",
+            "person": {
+                "id": "2015102500501",
+                "name": "RAHAMATH. MUNDAKKUTTY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNOTH",
+            "person": {
+                "id": "2015102500601",
+                "name": "K.P ASSANKUTTY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THANDORAPPARA",
+            "person": {
+                "id": "2015102500701",
+                "name": "SAVITRI.P.R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KORATTI",
+            "person": {
+                "id": "2015102500801",
+                "name": "E.P SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANAKKAD",
+            "person": {
+                "id": "2015102500901",
+                "name": "E.V MADHU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PULIKKOTT",
+            "person": {
+                "id": "2015102501001",
+                "name": "K.M PUSHPA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PAITHOTH",
+            "person": {
+                "id": "2015102501101",
+                "name": "V.M ANOOPKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOTHALI THERU",
+            "person": {
+                "id": "2015102501201",
+                "name": "E.K SUMA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ERANJIMMAL",
+            "person": {
+                "id": "2015102501301",
+                "name": "RADHA.P"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346661671,
+    "date": "2019-08-21",
+    "name": "Cheppad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Muthukulam",
+    "area": "12.67km",
+    "localbody_code": "G041203",
+    "no_of_wards": 14,
+    "population": 18870,
+    "male": 8914,
+    "female": 9956,
+    "population_density": 1489,
+    "sex_ratio": 1117,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "RADHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NANGIARKULANGARA",
+            "person": {
+                "id": "2015049400101",
+                "name": "M.K SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUTTOM",
+            "person": {
+                "id": "2015049400201",
+                "name": "NISHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALIYAKUZHI",
+            "person": {
+                "id": "2015049400301",
+                "name": "UDAYAKUMAR.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUKKADU",
+            "person": {
+                "id": "2015049400401",
+                "name": "VIJAYAMMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHOONDUPALAKA",
+            "person": {
+                "id": "2015049400501",
+                "name": "RAJESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARIMANAM",
+            "person": {
+                "id": "2015049400601",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANICHANALLOOR",
+            "person": {
+                "id": "2015049400701",
+                "name": "BINDU SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALAMELKKODU",
+            "person": {
+                "id": "2015049400801",
+                "name": "RADHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EVOOR NORTH",
+            "person": {
+                "id": "2015049400901",
+                "name": "RAVEENDRA NATHAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EVOOR NORTH WEST",
+            "person": {
+                "id": "2015049401001",
+                "name": "MADHU DAMODHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTAMKOYICKAL",
+            "person": {
+                "id": "2015049401101",
+                "name": "THULASI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MABRAYALUMMOODU",
+            "person": {
+                "id": "2015049401201",
+                "name": "BINDU (BINDU RAJENDRAN )"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEPPAD",
+            "person": {
+                "id": "2015049401301",
+                "name": "K.REGHU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KANJOOR KOTTACKAKAM",
+            "person": {
+                "id": "2015049401401",
+                "name": "AMBILI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347554019,
+    "date": "2019-08-21",
+    "name": "Tholur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "17.2km",
+    "localbody_code": "G080605",
+    "no_of_wards": 13,
+    "population": 15846,
+    "male": 7716,
+    "female": 8130,
+    "population_density": 921,
+    "sex_ratio": 1053,
+    "literacy_rate": 92.76,
+    "literacy_rate_male": 95.29,
+    "literacy_rate_female": 90.38,
+    "president": "RADHARAVINDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDAKKALATHUR VADAKKUMURY",
+            "person": {
+                "id": "2015075000101",
+                "name": "ANASTHASIYA LOUIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PONNORE VADAKKUMURY",
+            "person": {
+                "id": "2015075000201",
+                "name": "PRASEETHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PONNORE",
+            "person": {
+                "id": "2015075000301",
+                "name": "RADHA RAVINDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PONNORE THEKKUMURY",
+            "person": {
+                "id": "2015075000401",
+                "name": "VISWAMBHARAN.A.S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SHARIYEKKAL",
+            "person": {
+                "id": "2015075000501",
+                "name": "LISA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIZHAKKE ANGADI",
+            "person": {
+                "id": "2015075000601",
+                "name": "VELAYUDHAN C K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAPPUR CENTER",
+            "person": {
+                "id": "2015075000701",
+                "name": "THOMAS C.G"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLATHADU",
+            "person": {
+                "id": "2015075000801",
+                "name": "PRIYA SUNIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULLUR",
+            "person": {
+                "id": "2015075000901",
+                "name": "SEENA SHAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHALAKKAL",
+            "person": {
+                "id": "2015075001001",
+                "name": "C V DAVIS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAGATHANKAVU",
+            "person": {
+                "id": "2015075001101",
+                "name": "ANEESH K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOLUR",
+            "person": {
+                "id": "2015075001201",
+                "name": "LATHA MANI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAKKALATHUR THEKKUMURY",
+            "person": {
+                "id": "2015075001301",
+                "name": "SREEKALA KUNJUNNY"
+            }
+        }
+    ]
+}

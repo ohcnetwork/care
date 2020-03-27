@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348206373,
+    "date": "2019-08-21",
+    "name": "Paruthur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Pattambi",
+    "area": "20.71km",
+    "localbody_code": "G090206",
+    "no_of_wards": 16,
+    "population": 21809,
+    "male": 10536,
+    "female": 11273,
+    "population_density": 1053,
+    "sex_ratio": 1070,
+    "literacy_rate": 88.65,
+    "literacy_rate_male": 90.24,
+    "literacy_rate_female": 83.38,
+    "president": "SANTHAKUMARI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARAMBATHUR",
+            "person": {
+                "id": "2015081700101",
+                "name": "ABDUL BASHEER"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NADAPARAMBU",
+            "person": {
+                "id": "2015081700201",
+                "name": "VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANJUMOOLA",
+            "person": {
+                "id": "2015081700301",
+                "name": "GIRIJA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHEMBULANGADU",
+            "person": {
+                "id": "2015081700401",
+                "name": "MUHAMMEDALI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARUVANPADI",
+            "person": {
+                "id": "2015081700501",
+                "name": "RAIHANATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "URULANPADI",
+            "person": {
+                "id": "2015081700601",
+                "name": "SAJITHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KODUMUNDA",
+            "person": {
+                "id": "2015081700701",
+                "name": "SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KULAMUKKU",
+            "person": {
+                "id": "2015081700801",
+                "name": "AMBIKA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KODANTHUR",
+            "person": {
+                "id": "2015081700901",
+                "name": "HAMSA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANGALAM",
+            "person": {
+                "id": "2015081701001",
+                "name": "SHAMSUDHEEN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KODIKKUNNU",
+            "person": {
+                "id": "2015081701101",
+                "name": "SANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THEKKEKKUNNU",
+            "person": {
+                "id": "2015081701201",
+                "name": "DEVADASAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARUTHUR",
+            "person": {
+                "id": "2015081701301",
+                "name": "SUDHEER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHATHEMPARAKUNNU",
+            "person": {
+                "id": "2015081701401",
+                "name": "M.K SUMATHI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLIPPURAM",
+            "person": {
+                "id": "2015081701501",
+                "name": "JAMEELA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARIYANNOOR",
+            "person": {
+                "id": "2015081701601",
+                "name": "SUHARA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346278893,
+    "date": "2019-08-21",
+    "name": "Elanthoor  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Elanthur",
+    "area": "15.09km",
+    "localbody_code": "G030403",
+    "no_of_wards": 13,
+    "population": 14747,
+    "male": 7060,
+    "female": 7687,
+    "population_density": 977,
+    "sex_ratio": 1089,
+    "literacy_rate": 95.88,
+    "literacy_rate_male": 97.29,
+    "literacy_rate_female": 94.6,
+    "president": "M.SSIJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015039200101",
+                "name": "GEETHA SADASIVAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THUMPOTHARA",
+            "person": {
+                "id": "2015039200201",
+                "name": "M.K SAJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "OLIKAL",
+            "person": {
+                "id": "2015039200301",
+                "name": "M.S SIJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MADHUMALA",
+            "person": {
+                "id": "2015039200401",
+                "name": "SEEMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDAPPARIYARAM",
+            "person": {
+                "id": "2015039200501",
+                "name": "PRISTO P THOMAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BHAGAWATHIKKUNNU",
+            "person": {
+                "id": "2015039200601",
+                "name": "SHEEBI ANNE GRORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VARIYAPURAM",
+            "person": {
+                "id": "2015039200701",
+                "name": "MINI JOHN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AREEKKEL",
+            "person": {
+                "id": "2015039200801",
+                "name": "THULASIYAMMA K . R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANNUMBHAGOM",
+            "person": {
+                "id": "2015039200901",
+                "name": "INDIRA MOHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALIYAVATTOM",
+            "person": {
+                "id": "2015039201001",
+                "name": "BABUJI THARIYAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ELANTHOOR",
+            "person": {
+                "id": "2015039201101",
+                "name": "PONNAMMA C.  K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELANTHOOR WEST",
+            "person": {
+                "id": "2015039201201",
+                "name": "K P MUKUNDAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULINTHITTA",
+            "person": {
+                "id": "2015039201301",
+                "name": "SAMSON THEKKETHIL"
+            }
+        }
+    ]
+}

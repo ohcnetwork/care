@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566347161626,
+    "date": "2019-08-21",
+    "name": "Rayamangalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Koovappady",
+    "area": "36.77km",
+    "localbody_code": "G070404",
+    "no_of_wards": 20,
+    "population": 30259,
+    "male": 15250,
+    "female": 15009,
+    "population_density": 823,
+    "sex_ratio": 984,
+    "literacy_rate": 91.39,
+    "literacy_rate_male": 94.97,
+    "literacy_rate_female": 87.77,
+    "president": "SOUMINIBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "IRINGOLE SOUTH",
+            "person": {
+                "id": "2015064600101",
+                "name": "CIJI SAJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "IRINGOLE NORTH",
+            "person": {
+                "id": "2015064600201",
+                "name": "MARY POULOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUDAKKIRAI",
+            "person": {
+                "id": "2015064600301",
+                "name": "PREETHA ELDHOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "RAYAMANGALAM NORTH",
+            "person": {
+                "id": "2015064600401",
+                "name": "ELSY PAUL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VAIKKARA",
+            "person": {
+                "id": "2015064600501",
+                "name": "BASE PAUL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ATTUPADI",
+            "person": {
+                "id": "2015064600601",
+                "name": "LATHIKA SUDHAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARUNNOTTY AARU",
+            "person": {
+                "id": "2015064600701",
+                "name": "BINEESH M.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KEEZHILLAM EAST",
+            "person": {
+                "id": "2015064600801",
+                "name": "MARY ANIL VARGHESE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KEEZHILLAM WEST",
+            "person": {
+                "id": "2015064600901",
+                "name": "SOBHANA AYYAPPUNNI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KEEZHILLAM NORTH",
+            "person": {
+                "id": "2015064601001",
+                "name": "JYOTHISH KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NELLIMOLAM",
+            "person": {
+                "id": "2015064601101",
+                "name": "ISSAC THURUTHIYIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PULLUVAZHI SOUTH",
+            "person": {
+                "id": "2015064601201",
+                "name": "SHYBY RAJAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALAYANCHIRANGARA",
+            "person": {
+                "id": "2015064601301",
+                "name": "VIJI SHAJEEV"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULLUVAZHI WEST",
+            "person": {
+                "id": "2015064601401",
+                "name": "ELDO MATHEW"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MALAMURI",
+            "person": {
+                "id": "2015064601501",
+                "name": "RAJAN VARGHESE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULLUVAZHI NORTH",
+            "person": {
+                "id": "2015064601601",
+                "name": "ADV. JOY VELLANJIYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PICHANAMMUKAL",
+            "person": {
+                "id": "2015064601701",
+                "name": "MURALIDHARAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KURUPPAMPADY EAST",
+            "person": {
+                "id": "2015064601801",
+                "name": "ANILKUMAR T.A"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VATTACKATTUPADI",
+            "person": {
+                "id": "2015064601901",
+                "name": "P.K ANSE"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PATTASERIMANAPADI",
+            "person": {
+                "id": "2015064602001",
+                "name": "SOUMINI BABU"
+            }
+        }
+    ]
+}

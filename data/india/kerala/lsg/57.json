@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345031108,
+    "date": "2019-08-21",
+    "name": "Kanjirappally  Block Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kanjirappally",
+    "area": "342km",
+    "localbody_code": "B051100",
+    "no_of_wards": 15,
+    "population": 185402,
+    "male": 92883,
+    "female": 92519,
+    "population_density": 542,
+    "sex_ratio": 996,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "ASHAJOY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANAKKALLU",
+            "person": {
+                "id": "2015005700101",
+                "name": "JOLLY MADUKKAKUZHY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANJIRAPPALLY",
+            "person": {
+                "id": "2015005700201",
+                "name": "ADV. P A MOHAMMED SHAMEER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHOTTY",
+            "person": {
+                "id": "2015005700301",
+                "name": "MARIAMMA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOOTTICKAL",
+            "person": {
+                "id": "2015005700401",
+                "name": "SUBHESH SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARATHODE",
+            "person": {
+                "id": "2015005700501",
+                "name": "SOPHY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUNDAKKAYAM",
+            "person": {
+                "id": "2015005700601",
+                "name": "LEELAMMA KUNJUMON"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANDANPATHAL",
+            "person": {
+                "id": "2015005700701",
+                "name": "AJITHA RATHEESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUNCHAVAYAL",
+            "person": {
+                "id": "2015005700801",
+                "name": "P G VASANTHAKUMARY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KORUTHODU",
+            "person": {
+                "id": "2015005700901",
+                "name": "V T AYUBKHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUKKOOTTUTHARA",
+            "person": {
+                "id": "2015005701001",
+                "name": "PRAKASH P S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERUMELY",
+            "person": {
+                "id": "2015005701101",
+                "name": "P K ABDULKARIM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHENAPPADY",
+            "person": {
+                "id": "2015005701201",
+                "name": "ASHA JOY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PONTHENPUZHA",
+            "person": {
+                "id": "2015005701301",
+                "name": "JAMES P SIMON"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANIMALA",
+            "person": {
+                "id": "2015005701401",
+                "name": "ANNAMMA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANNARAKKAYAM",
+            "person": {
+                "id": "2015005701501",
+                "name": "ROSAMMA AUGASTHY"
+            }
+        }
+    ]
+}

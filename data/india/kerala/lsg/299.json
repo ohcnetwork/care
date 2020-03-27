@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566345954386,
+    "date": "2019-08-21",
+    "name": "Kulathoor  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Parassala",
+    "area": "11.24km",
+    "localbody_code": "G011103",
+    "no_of_wards": 20,
+    "population": 29417,
+    "male": 14815,
+    "female": 14602,
+    "population_density": 2617,
+    "sex_ratio": 986,
+    "literacy_rate": 79.74,
+    "literacy_rate_male": 83.11,
+    "literacy_rate_female": 76.35,
+    "president": "MBELSYJAYACHANDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VENKADAMBU",
+            "person": {
+                "id": "2015029900101",
+                "name": "M BELSY JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POOZHIKUNNU",
+            "person": {
+                "id": "2015029900201",
+                "name": "SASIKALA M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NALLOORVATTOM",
+            "person": {
+                "id": "2015029900301",
+                "name": "LETHA K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERUNAL PAZHINJI",
+            "person": {
+                "id": "2015029900401",
+                "name": "N RAVEENDRAKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "HIGHSCHOOL",
+            "person": {
+                "id": "2015029900501",
+                "name": "SAJEEV G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KULATHOOR",
+            "person": {
+                "id": "2015029900601",
+                "name": "AJITH M P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "UCHAKKADA",
+            "person": {
+                "id": "2015029900701",
+                "name": "K RAJA ALLI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PERUMPAZHANJI",
+            "person": {
+                "id": "2015029900801",
+                "name": "R E SUNILA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POZHIYOOR",
+            "person": {
+                "id": "2015029900901",
+                "name": "PZHIYOOR JOHNSON"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "POYPALLIVILAKOM",
+            "person": {
+                "id": "2015029901001",
+                "name": "JOHNBOY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOLLEMKODE",
+            "person": {
+                "id": "2015029901101",
+                "name": "DUNSTAN C SABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MULLASSERY",
+            "person": {
+                "id": "2015029901201",
+                "name": "SELVARANI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARUTHIYOOR",
+            "person": {
+                "id": "2015029901301",
+                "name": "CHRISTADIMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POZHIKKARABEACH",
+            "person": {
+                "id": "2015029901401",
+                "name": "PRAMEELA D"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ATTUPURAM",
+            "person": {
+                "id": "2015029901501",
+                "name": "PRAVEEN PEETER"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VIRALYPURAM",
+            "person": {
+                "id": "2015029901601",
+                "name": "SASEENDRAN H"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ARUVALLOOR",
+            "person": {
+                "id": "2015029901701",
+                "name": "RAJI V"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOTTAKKAKAM",
+            "person": {
+                "id": "2015029901801",
+                "name": "SUDHARJUNAN G"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "OORAMVILA",
+            "person": {
+                "id": "2015029901901",
+                "name": "ANITHA L"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MAVILAKADAVU",
+            "person": {
+                "id": "2015029902001",
+                "name": "THANKESWARI Y"
+            }
+        }
+    ]
+}

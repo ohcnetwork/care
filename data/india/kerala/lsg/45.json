@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344994118,
+    "date": "2019-08-21",
+    "name": "Bharanickavu  Block Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Bharinikavu",
+    "area": "129.94km",
+    "localbody_code": "B041100",
+    "no_of_wards": 13,
+    "population": 161580,
+    "male": 77981,
+    "female": 83599,
+    "population_density": 1243,
+    "sex_ratio": 1072,
+    "literacy_rate": 93,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 90,
+    "president": "RAJINIJAYADEV",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "BHARANIKKAV",
+            "person": {
+                "id": "2015004500101",
+                "name": "C.DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHUNAKKARA",
+            "person": {
+                "id": "2015004500201",
+                "name": "K. SANJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NOORANAD",
+            "person": {
+                "id": "2015004500301",
+                "name": "REMADEVI UNNIKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PADANILAM",
+            "person": {
+                "id": "2015004500401",
+                "name": "NALINI DEVADASAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALAMEL",
+            "person": {
+                "id": "2015004500501",
+                "name": "ANU S. SIVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANAYIL",
+            "person": {
+                "id": "2015004500601",
+                "name": "NOUSHAD ABDUL KHADAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "L.S.WARD",
+            "person": {
+                "id": "2015004500701",
+                "name": "P.P.KOSHY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHARUMMOODU",
+            "person": {
+                "id": "2015004500801",
+                "name": "LILLY GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THAMARAKKULAM",
+            "person": {
+                "id": "2015004500901",
+                "name": "M.K.VIMALAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNANAKUZHY",
+            "person": {
+                "id": "2015004501001",
+                "name": "LEENA R."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALLIKUNNAM",
+            "person": {
+                "id": "2015004501101",
+                "name": "GEETHAKUMARI L."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANACKAD",
+            "person": {
+                "id": "2015004501201",
+                "name": "RASIYA E."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KATTANAM",
+            "person": {
+                "id": "2015004501301",
+                "name": "RAJINI JAYADEV"
+            }
+        }
+    ]
+}

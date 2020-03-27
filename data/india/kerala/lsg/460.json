@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346523795,
+    "date": "2019-08-21",
+    "name": "Neelamperoor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Veliyanad",
+    "area": "22.22km",
+    "localbody_code": "G040703",
+    "no_of_wards": 13,
+    "population": 13921,
+    "male": 7044,
+    "female": 6877,
+    "population_density": 627,
+    "sex_ratio": 976,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "RAJANIBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULLAYAM",
+            "person": {
+                "id": "2015046000101",
+                "name": "KUNJUMOL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEELAMPEROOR NORTH",
+            "person": {
+                "id": "2015046000201",
+                "name": "SOMOL BIJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NEELAMPEROOR SOUTH",
+            "person": {
+                "id": "2015046000301",
+                "name": "PRINO UTHUPPAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EARA NORTH",
+            "person": {
+                "id": "2015046000401",
+                "name": "GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHAKKACHAMPAKKA",
+            "person": {
+                "id": "2015046000501",
+                "name": "SHIVADASAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "EARA SOUTH",
+            "person": {
+                "id": "2015046000601",
+                "name": "RAJIMOL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAYATTUPAKKA",
+            "person": {
+                "id": "2015046000701",
+                "name": "SINDHU K KURUP"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VALADY",
+            "person": {
+                "id": "2015046000801",
+                "name": "SURESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NARAKATHARA",
+            "person": {
+                "id": "2015046000901",
+                "name": "SABITHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EAST CHENNAMKARU",
+            "person": {
+                "id": "2015046001001",
+                "name": "JAYASREE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERUKARA EAST",
+            "person": {
+                "id": "2015046001101",
+                "name": "VINAYAN P M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERUKARA WEST",
+            "person": {
+                "id": "2015046001201",
+                "name": "BINEESH P HARIDAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAINADY",
+            "person": {
+                "id": "2015046001301",
+                "name": "RAJANI BABU"
+            }
+        }
+    ]
+}

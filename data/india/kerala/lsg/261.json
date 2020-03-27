@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345827294,
+    "date": "2019-08-21",
+    "name": "Tholicode  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vellanad",
+    "area": "22.37km",
+    "localbody_code": "G010507",
+    "no_of_wards": 16,
+    "population": 23056,
+    "male": 11159,
+    "female": 11897,
+    "population_density": 1031,
+    "sex_ratio": 1066,
+    "literacy_rate": 89.12,
+    "literacy_rate_male": 93.49,
+    "literacy_rate_female": 85.07,
+    "president": "SHAMNANAVAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULICHAMALA",
+            "person": {
+                "id": "2015026100101",
+                "name": "R. C VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAPPARA",
+            "person": {
+                "id": "2015026100201",
+                "name": "T. NALINAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHAYAM",
+            "person": {
+                "id": "2015026100301",
+                "name": "BIJU. B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THOTTUMUKKU",
+            "person": {
+                "id": "2015026100402",
+                "name": "SAJITHA M P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIMOODU",
+            "person": {
+                "id": "2015026100501",
+                "name": "SHAMNA NAVAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALAYADI",
+            "person": {
+                "id": "2015026100601",
+                "name": "G. JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VINOBANIKETHAN",
+            "person": {
+                "id": "2015026100701",
+                "name": "BINITHA MOL. S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHETTIYAMPARA",
+            "person": {
+                "id": "2015026100801",
+                "name": "LIJI L.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THACHANCODE",
+            "person": {
+                "id": "2015026100901",
+                "name": "RETHIKALA R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANIYARAMCODE",
+            "person": {
+                "id": "2015026101001",
+                "name": "S. SHEELA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANACODE",
+            "person": {
+                "id": "2015026101101",
+                "name": "V. VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOLICODE",
+            "person": {
+                "id": "2015026101201",
+                "name": "SHIBU. K. V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THOLICODE TOWN",
+            "person": {
+                "id": "2015026101301",
+                "name": "SHAMNAD.  A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANAPPETTY",
+            "person": {
+                "id": "2015026101401",
+                "name": "ASHKAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THEVANPARA",
+            "person": {
+                "id": "2015026101501",
+                "name": "N. S. HASHIM"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THURUTHY",
+            "person": {
+                "id": "2015026101601",
+                "name": "B. SUSEELA"
+            }
+        }
+    ]
+}

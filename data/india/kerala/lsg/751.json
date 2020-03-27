@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347556382,
+    "date": "2019-08-21",
+    "name": "Elavally  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mullassery",
+    "area": "16.28km",
+    "localbody_code": "G080701",
+    "no_of_wards": 16,
+    "population": 21872,
+    "male": 10262,
+    "female": 11610,
+    "population_density": 1343,
+    "sex_ratio": 1131,
+    "literacy_rate": 91.6,
+    "literacy_rate_male": 95.46,
+    "literacy_rate_female": 88.3,
+    "president": "U.K.LATHIKA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "BRAHMAKULAM",
+            "person": {
+                "id": "2015075100101",
+                "name": "T.S.VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITTATTUKARA",
+            "person": {
+                "id": "2015075100201",
+                "name": "ALICE PAUL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KIZHAKKETHALA",
+            "person": {
+                "id": "2015075100301",
+                "name": "U.K.LATHIKA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADAVALLUR",
+            "person": {
+                "id": "2015075100401",
+                "name": "RENJITH.K.R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAKKAD",
+            "person": {
+                "id": "2015075100502",
+                "name": "LAYESH P S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHELOOR",
+            "person": {
+                "id": "2015075100601",
+                "name": "T.D.SUNIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VAKA",
+            "person": {
+                "id": "2015075100701",
+                "name": "BABU.K.O"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANICHAL",
+            "person": {
+                "id": "2015075100801",
+                "name": "T.R.LEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ELAVALLY",
+            "person": {
+                "id": "2015075100901",
+                "name": "T.C.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANDARAKKAD",
+            "person": {
+                "id": "2015075101001",
+                "name": "NALINI JAYAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THAMARAPPILLY",
+            "person": {
+                "id": "2015075101101",
+                "name": "K.S.SADANANDHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KATTERY",
+            "person": {
+                "id": "2015075101201",
+                "name": "SHINY SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POOVATHUR",
+            "person": {
+                "id": "2015075101301",
+                "name": "C.F.RAJAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAKKASSERY",
+            "person": {
+                "id": "2015075101401",
+                "name": "THULASI RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PULINCHERY",
+            "person": {
+                "id": "2015075101501",
+                "name": "P.S.OMANA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "JANASAKTHI",
+            "person": {
+                "id": "2015075101601",
+                "name": "LISSY VARGHESE"
+            }
+        }
+    ]
+}

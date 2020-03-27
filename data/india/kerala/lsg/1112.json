@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566349250717,
+    "date": "2019-08-21",
+    "name": "Pappinisseri  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "15.24km",
+    "localbody_code": "G130506",
+    "no_of_wards": 20,
+    "population": 30754,
+    "male": 15186,
+    "female": 15568,
+    "population_density": 2018,
+    "sex_ratio": 1025,
+    "literacy_rate": 91.74,
+    "literacy_rate_male": 96.52,
+    "literacy_rate_female": 87.08,
+    "president": "K.NARAYANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTAPALAM",
+            "person": {
+                "id": "2015111200101",
+                "name": "C. REENA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIKKANKULAM",
+            "person": {
+                "id": "2015111200201",
+                "name": "C. RAJAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "DHARMAKINAR",
+            "person": {
+                "id": "2015111200302",
+                "name": "SEEMA M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAZHANCHIRA",
+            "person": {
+                "id": "2015111200401",
+                "name": "EACHA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANHAKULAM",
+            "person": {
+                "id": "2015111200501",
+                "name": "APPINI KAMALAKSHY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AROLI HIGH SCHOOL",
+            "person": {
+                "id": "2015111200601",
+                "name": "K. NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KEECHERIKUNNU",
+            "person": {
+                "id": "2015111200701",
+                "name": "T.V. RAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALLOORI",
+            "person": {
+                "id": "2015111200801",
+                "name": "M. USHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KATTYAM",
+            "person": {
+                "id": "2015111200901",
+                "name": "REENA. P.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANGADAVU",
+            "person": {
+                "id": "2015111201001",
+                "name": "SALEENA. C.H"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AROLI",
+            "person": {
+                "id": "2015111201101",
+                "name": "KOTTUR UTHAMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THURUTHI",
+            "person": {
+                "id": "2015111201201",
+                "name": "KOYON SARASWATHI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MORONNUMMAL",
+            "person": {
+                "id": "2015111201301",
+                "name": "UPPERI VALSALAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PAPPINISSERI CENTRAL",
+            "person": {
+                "id": "2015111201401",
+                "name": "PREMEELA. K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VILAKANDAM",
+            "person": {
+                "id": "2015111201501",
+                "name": "POLA RAJAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARATHIL",
+            "person": {
+                "id": "2015111201601",
+                "name": "P.T.P. SABIRA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "BAPPIKAN THODE",
+            "person": {
+                "id": "2015111201701",
+                "name": "C. SHAFI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PODIKKALAM",
+            "person": {
+                "id": "2015111201801",
+                "name": "REENA. O.V"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ILLIPURAM",
+            "person": {
+                "id": "2015111201901",
+                "name": "NADEERA. P.P"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PUTHIYAKAVU",
+            "person": {
+                "id": "2015111202001",
+                "name": "T.K. PRAMOD"
+            }
+        }
+    ]
+}

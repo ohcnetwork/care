@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349385171,
+    "date": "2019-08-21",
+    "name": "Eranholi  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thalassery",
+    "area": "10.08km",
+    "localbody_code": "G130702",
+    "no_of_wards": 16,
+    "population": 23584,
+    "male": 11118,
+    "female": 12466,
+    "population_density": 2340,
+    "sex_ratio": 1121,
+    "literacy_rate": 95.69,
+    "literacy_rate_male": 98.01,
+    "literacy_rate_female": 93.64,
+    "president": "REMYAAK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALIYIL",
+            "person": {
+                "id": "2015114600101",
+                "name": "P NIRMALA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOOLIBAZAR",
+            "person": {
+                "id": "2015114600201",
+                "name": "BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THOTTUMMAL",
+            "person": {
+                "id": "2015114600301",
+                "name": "SHEEBA A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PERUNTHATTIL",
+            "person": {
+                "id": "2015114600401",
+                "name": "P SADANANDAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MALAL",
+            "person": {
+                "id": "2015114600501",
+                "name": "M LEENA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUDAKKALAM",
+            "person": {
+                "id": "2015114600601",
+                "name": "V K SREEVIDHYA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAPPARATTI",
+            "person": {
+                "id": "2015114600701",
+                "name": "REMYA A K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHUNGAM",
+            "person": {
+                "id": "2015114600801",
+                "name": "SASI K K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHONADAM",
+            "person": {
+                "id": "2015114600901",
+                "name": "NARANGAT VINOD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARAGETTU PARAMBU",
+            "person": {
+                "id": "2015114601001",
+                "name": "KANDIYAM SHEEBA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ELAYADATH",
+            "person": {
+                "id": "2015114601101",
+                "name": "P PREETHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARAKETTU",
+            "person": {
+                "id": "2015114601201",
+                "name": "SURAJ C V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MADATHUMBHAGAM",
+            "person": {
+                "id": "2015114601301",
+                "name": "PRASANNA TEACHER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PANNIYOTTU",
+            "person": {
+                "id": "2015114601401",
+                "name": "C SHEEJA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHANDROTH",
+            "person": {
+                "id": "2015114601501",
+                "name": "FAZEELA N"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VALIYATHODU",
+            "person": {
+                "id": "2015114601601",
+                "name": "P SANEESH"
+            }
+        }
+    ]
+}

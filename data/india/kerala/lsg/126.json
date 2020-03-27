@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345271025,
+    "date": "2019-08-21",
+    "name": "Tuneri  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Thuneri",
+    "area": "143.97km",
+    "localbody_code": "B110200",
+    "no_of_wards": 13,
+    "population": 126479,
+    "male": 60947,
+    "female": 65532,
+    "population_density": 879,
+    "sex_ratio": 1075,
+    "literacy_rate": 85.48,
+    "literacy_rate_male": 92.56,
+    "literacy_rate_female": 79.03,
+    "president": "C.H.BALAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "IRINGANNUR",
+            "person": {
+                "id": "2015012600101",
+                "name": "C.H. BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAKKADAVU",
+            "person": {
+                "id": "2015012600201",
+                "name": "AMINA TEACHER.A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLUNIRA",
+            "person": {
+                "id": "2015012600301",
+                "name": "REENA V P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NEDUMPARAMB",
+            "person": {
+                "id": "2015012600401",
+                "name": "K.CHANDU MASTER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VANIMAL",
+            "person": {
+                "id": "2015012600501",
+                "name": "ABDULLA THENGALAKKANDI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERUMOTH",
+            "person": {
+                "id": "2015012600601",
+                "name": "K.P.KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NADAPURAM",
+            "person": {
+                "id": "2015012600701",
+                "name": "MANDODI BASHEER MASTER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALLACHI",
+            "person": {
+                "id": "2015012600801",
+                "name": "REENA.C.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMMAMKODE",
+            "person": {
+                "id": "2015012600901",
+                "name": "SHAHINA KUNNATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AROOR",
+            "person": {
+                "id": "2015012601001",
+                "name": "ADV: MANOJ AROOR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PURAMERI",
+            "person": {
+                "id": "2015012601101",
+                "name": "PANKAJAM. V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "TUNERI",
+            "person": {
+                "id": "2015012601201",
+                "name": "T.M. CHANDRI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDACHERI",
+            "person": {
+                "id": "2015012601301",
+                "name": "T.K.LISA"
+            }
+        }
+    ]
+}

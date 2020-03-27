@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348704318,
+    "date": "2019-08-21",
+    "name": "Makkaraparamba  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "11.17km",
+    "localbody_code": "G100803",
+    "no_of_wards": 13,
+    "population": 13792,
+    "male": 6738,
+    "female": 7054,
+    "population_density": 1235,
+    "sex_ratio": 1047,
+    "literacy_rate": 92.7,
+    "literacy_rate_male": 95.33,
+    "literacy_rate_female": 90.07,
+    "president": "HABEEBAKARUVALLY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KACHINIKKAD WEST",
+            "person": {
+                "id": "2015094400101",
+                "name": "HABEEBA KARUVALLY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KACHINIKKAD EAST",
+            "person": {
+                "id": "2015094400201",
+                "name": "MUMTHAS KUNNATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELLATTUPRAMBU",
+            "person": {
+                "id": "2015094400301",
+                "name": "SHINIMOL. KK"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POTHUKUNDU",
+            "person": {
+                "id": "2015094400401",
+                "name": "ABDUL SHUKOOR. E"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKANGARA VADAKKEKULAMBU",
+            "person": {
+                "id": "2015094400501",
+                "name": "FEBIN VENGASSERI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VADAKKANGARA EAST",
+            "person": {
+                "id": "2015094400601",
+                "name": "HANSHILA MP"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VADAKKANGARA WEST",
+            "person": {
+                "id": "2015094400701",
+                "name": "ASHRAF. TK"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THADATHILKUNDU",
+            "person": {
+                "id": "2015094400801",
+                "name": "ANEESHA MELEVILAKKATHIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALAVU",
+            "person": {
+                "id": "2015094400901",
+                "name": "K.P.FIROSEKHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTAKUNNU",
+            "person": {
+                "id": "2015094401001",
+                "name": "SAJU MAMBRATHODI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAKKARAPARAMBA TOWN WEST",
+            "person": {
+                "id": "2015094401101",
+                "name": "REMYA. PG"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAKKARAPARAMBA TOWN SOUTH",
+            "person": {
+                "id": "2015094401201",
+                "name": "MUSTHAFA THAYYIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MAKKARAPARAMBA TOWN NORTH",
+            "person": {
+                "id": "2015094401301",
+                "name": "LATHA. P"
+            }
+        }
+    ]
+}

@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566347188972,
+    "date": "2019-08-21",
+    "name": "Edathala  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "15.98km",
+    "localbody_code": "G070505",
+    "no_of_wards": 21,
+    "population": 29948,
+    "male": 15110,
+    "female": 14838,
+    "population_density": 1874,
+    "sex_ratio": 982,
+    "literacy_rate": 85.79,
+    "literacy_rate_male": 90.89,
+    "literacy_rate_female": 80.63,
+    "president": "SAJITHAABBAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "GANDHI NAGAR",
+            "person": {
+                "id": "2015065300101",
+                "name": "M.P ABDU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOONDY",
+            "person": {
+                "id": "2015065300201",
+                "name": "JOHNSON JACOB"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "SOS GRAMAM",
+            "person": {
+                "id": "2015065300301",
+                "name": "K.K RAFEEK"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PENGATTUSSERY",
+            "person": {
+                "id": "2015065300401",
+                "name": "AISHA BEEVI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NALAMMILE",
+            "person": {
+                "id": "2015065300501",
+                "name": "SHAHANA SHAJEER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBEDKAR GRAMAM",
+            "person": {
+                "id": "2015065300601",
+                "name": "C.M ASHARAF"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUKKATTUMUKAL",
+            "person": {
+                "id": "2015065300701",
+                "name": "V.M ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUKKATTUPADY",
+            "person": {
+                "id": "2015065300801",
+                "name": "ANILA AYYAPPANKUTTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNJATTUKARA",
+            "person": {
+                "id": "2015065300901",
+                "name": "C.K RAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALEKKAPADY",
+            "person": {
+                "id": "2015065301001",
+                "name": "LALITHA GOPINATH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHIVELIPADY",
+            "person": {
+                "id": "2015065301101",
+                "name": "ASMA HAMSA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAILAS NAGAR",
+            "person": {
+                "id": "2015065301201",
+                "name": "K.S SAREENA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SIVAGIRI",
+            "person": {
+                "id": "2015065301301",
+                "name": "JINILA RASHEED"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ERUMATHALAMOOLA",
+            "person": {
+                "id": "2015065301401",
+                "name": "SHAHINA KAREEM"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUTHIRAKATTUMUKAL",
+            "person": {
+                "id": "2015065301501",
+                "name": "A.K MAYADHASAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EDATHALA NORTH",
+            "person": {
+                "id": "2015065301601",
+                "name": "REJI PRAKASH K.R"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MALEPPALLY",
+            "person": {
+                "id": "2015065301701",
+                "name": "M.P KUNJUMUHAMMED"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MAJORMILTON",
+            "person": {
+                "id": "2015065301801",
+                "name": "SAJITHA ABBAS"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PULLALIKKARA",
+            "person": {
+                "id": "2015065301901",
+                "name": "RUKKIYA RASHEED"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "NOCHIMA",
+            "person": {
+                "id": "2015065302001",
+                "name": "ABIDA SHEREEF"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "NELLIKKATHUKAD",
+            "person": {
+                "id": "2015065302101",
+                "name": "A.A MAYIN"
+            }
+        }
+    ]
+}

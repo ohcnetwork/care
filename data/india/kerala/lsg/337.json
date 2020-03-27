@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346079822,
+    "date": "2019-08-21",
+    "name": "Veliyam  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "30.28km",
+    "localbody_code": "G020601",
+    "no_of_wards": 19,
+    "population": 29056,
+    "male": 14167,
+    "female": 14889,
+    "population_density": 360,
+    "sex_ratio": 1051,
+    "literacy_rate": 93.04,
+    "literacy_rate_male": 95.97,
+    "literacy_rate_female": 90.29,
+    "president": "SHYLASALIMLAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTTARA",
+            "person": {
+                "id": "2015033700101",
+                "name": "RAJU MEKKONAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANIKANDESWARAM",
+            "person": {
+                "id": "2015033700201",
+                "name": "SURYA SAJAYAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ODANAVATTOM",
+            "person": {
+                "id": "2015033700301",
+                "name": "M.S PETER"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VAPPALA",
+            "person": {
+                "id": "2015033700401",
+                "name": "SHYLA SALIM LAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHEPRA",
+            "person": {
+                "id": "2015033700501",
+                "name": "RENJITH U"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALAPPILA",
+            "person": {
+                "id": "2015033700601",
+                "name": "MANOHARAN R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MALAYIL",
+            "person": {
+                "id": "2015033700701",
+                "name": "LATHA RAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAYILA",
+            "person": {
+                "id": "2015033700801",
+                "name": "VASANTHA KUMARY.G"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELIYAM TOWN",
+            "person": {
+                "id": "2015033700901",
+                "name": "ANUROOP J"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELIYAM COLONY",
+            "person": {
+                "id": "2015033701001",
+                "name": "KAVITHA V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AROORKONAM",
+            "person": {
+                "id": "2015033701101",
+                "name": "PAVIZHAVALLY K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADIJATTINKARA",
+            "person": {
+                "id": "2015033701201",
+                "name": "AJEESHA B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTARA",
+            "person": {
+                "id": "2015033701301",
+                "name": "BENCY KUNJACHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALAYACODU",
+            "person": {
+                "id": "2015033701401",
+                "name": "OMANA SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARUTHIYARA",
+            "person": {
+                "id": "2015033701501",
+                "name": "AJAYAKUMAR R"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KATTAYIL",
+            "person": {
+                "id": "2015033701601",
+                "name": "VIJAYAPRAKASH ODANAVATTOM"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUDAVATTOOR",
+            "person": {
+                "id": "2015033701701",
+                "name": "REMANY"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AMBALATHUMKALA",
+            "person": {
+                "id": "2015033701801",
+                "name": "REJANI RAJEEV"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MAROOR",
+            "person": {
+                "id": "2015033701901",
+                "name": "ANIRUDHAN K"
+            }
+        }
+    ]
+}

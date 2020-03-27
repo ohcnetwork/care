@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566347180993,
+    "date": "2019-08-21",
+    "name": "Kizhakkambalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "31.57km",
+    "localbody_code": "G070503",
+    "no_of_wards": 19,
+    "population": 27843,
+    "male": 13803,
+    "female": 14040,
+    "population_density": 882,
+    "sex_ratio": 1017,
+    "literacy_rate": 89.2,
+    "literacy_rate_male": 92.78,
+    "literacy_rate_female": 85.54,
+    "president": "KVJACOB",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMBUNADU",
+            "person": {
+                "id": "2015065100101",
+                "name": "MINI RATHEESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MALAYIDAMTHURTH",
+            "person": {
+                "id": "2015065100201",
+                "name": "GINCY BIJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MAKKINIKKARA",
+            "person": {
+                "id": "2015065100301",
+                "name": "CHINNAMMA PAULOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARUKULAM",
+            "person": {
+                "id": "2015065100401",
+                "name": "K P VINOD"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAVUNGAPARAMBU",
+            "person": {
+                "id": "2015065100501",
+                "name": "ABDUL RAHMAN P M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHELAKULAM",
+            "person": {
+                "id": "2015065100601",
+                "name": "ANOOP P H"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUMMANODE",
+            "person": {
+                "id": "2015065100701",
+                "name": "HAFIS HYDERALI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHOORAKKODE",
+            "person": {
+                "id": "2015065100801",
+                "name": "SHIBU PAUL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NJARALLOOR",
+            "person": {
+                "id": "2015065100901",
+                "name": "VALSA M V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNATHUKUDY",
+            "person": {
+                "id": "2015065101001",
+                "name": "PRASEELA ELDO"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VILANGU",
+            "person": {
+                "id": "2015065101101",
+                "name": "LALU VARGHESE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POYYAKKUNNAM",
+            "person": {
+                "id": "2015065101201",
+                "name": "TISHIYOLA VARGHESE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KIZHAKKAMBALAM",
+            "person": {
+                "id": "2015065101301",
+                "name": "JINCY AJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THAMARACHAL",
+            "person": {
+                "id": "2015065101401",
+                "name": "DEEPA PAUL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAZHANGANAD",
+            "person": {
+                "id": "2015065101501",
+                "name": "M V GEORGE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MALEKKAMOLAM",
+            "person": {
+                "id": "2015065101601",
+                "name": "RADHAMANI DHARANEENDRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KANAMPURAM",
+            "person": {
+                "id": "2015065101701",
+                "name": "SURESH  M P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "OORAKKADU",
+            "person": {
+                "id": "2015065101801",
+                "name": "SEENA REJI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUKKATTUPADY",
+            "person": {
+                "id": "2015065101901",
+                "name": "K V JACOB"
+            }
+        }
+    ]
+}

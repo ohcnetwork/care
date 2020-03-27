@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345316965,
+    "date": "2019-08-21",
+    "name": "Payyannur  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "471.9km",
+    "localbody_code": "B130100",
+    "no_of_wards": 13,
+    "population": 269604,
+    "male": 130694,
+    "female": 138910,
+    "population_density": 571,
+    "sex_ratio": 1063,
+    "literacy_rate": 89.03,
+    "literacy_rate_male": 94.27,
+    "literacy_rate_female": 84.17,
+    "president": "SATHYAPALANC",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARIVELLUR",
+            "person": {
+                "id": "2015014000101",
+                "name": "SARADA V.P."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERALAM",
+            "person": {
+                "id": "2015014000201",
+                "name": "ANEESH E"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHOORAL",
+            "person": {
+                "id": "2015014000301",
+                "name": "NOORUDHEEN M.T.P."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PADIYOTCHAL",
+            "person": {
+                "id": "2015014000401",
+                "name": "KOMALAVALLI K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULINGOME",
+            "person": {
+                "id": "2015014000501",
+                "name": "MARIYAMMA VARGHEESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PRAPPOIL",
+            "person": {
+                "id": "2015014000601",
+                "name": "JOSEPH MULLANMADA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERITHATTA",
+            "person": {
+                "id": "2015014000701",
+                "name": "SATHYAPALAN C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLORA",
+            "person": {
+                "id": "2015014000801",
+                "name": "LAKSHMIKUTTY C.P."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MATHAMANGALAM",
+            "person": {
+                "id": "2015014000901",
+                "name": "JISHA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANKOL",
+            "person": {
+                "id": "2015014001001",
+                "name": "SUNILKUMAR M.V."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNHIMANGALAM",
+            "person": {
+                "id": "2015014001101",
+                "name": "SASEENDRAN M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNNARU",
+            "person": {
+                "id": "2015014001201",
+                "name": "VENKITESHWARI N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RAMANTHALI",
+            "person": {
+                "id": "2015014001301",
+                "name": "BINDU V.V."
+            }
+        }
+    ]
+}

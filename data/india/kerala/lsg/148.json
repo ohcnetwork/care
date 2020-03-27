@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345344596,
+    "date": "2019-08-21",
+    "name": "Peravoor  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Peravoor",
+    "area": "425.42km",
+    "localbody_code": "B131100",
+    "no_of_wards": 13,
+    "population": 124588,
+    "male": 62121,
+    "female": 62467,
+    "population_density": 293,
+    "sex_ratio": 1006,
+    "literacy_rate": 90.82,
+    "literacy_rate_male": 94.22,
+    "literacy_rate_female": 87.46,
+    "president": "T.PRASANNA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALA",
+            "person": {
+                "id": "2015014800101",
+                "name": "SAJITHA.C.V."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ADAKKATHODU",
+            "person": {
+                "id": "2015014800201",
+                "name": "VARGHEES JOSEPH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBAYATHODU",
+            "person": {
+                "id": "2015014800301",
+                "name": "USHA ASHOKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTIYOOR",
+            "person": {
+                "id": "2015014800401",
+                "name": "MATHEW PARAMBAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KELAKAM",
+            "person": {
+                "id": "2015014800501",
+                "name": "VIJAYAN MANAGADAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOLAKKADU",
+            "person": {
+                "id": "2015014800601",
+                "name": "SHINY BRITTO"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERAVOOR",
+            "person": {
+                "id": "2015014800701",
+                "name": "SHAJI.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLAYAD",
+            "person": {
+                "id": "2015014800801",
+                "name": "SREEJA PRADEEPAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALACHEREI",
+            "person": {
+                "id": "2015014800901",
+                "name": "K.E.SUDHEESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANHILERI",
+            "person": {
+                "id": "2015014801001",
+                "name": "HYMAVATHI.V."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MALUR",
+            "person": {
+                "id": "2015014801101",
+                "name": "VIJITH.K.V."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MURINGODI",
+            "person": {
+                "id": "2015014801201",
+                "name": "NISHA BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUZHAKKUNNU",
+            "person": {
+                "id": "2015014801301",
+                "name": "T.PRASANNA"
+            }
+        }
+    ]
+}

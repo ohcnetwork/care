@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346583813,
+    "date": "2019-08-21",
+    "name": "Karuvatta  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Harippad",
+    "area": "17.68km",
+    "localbody_code": "G040904",
+    "no_of_wards": 15,
+    "population": 21002,
+    "male": 10128,
+    "female": 10874,
+    "population_density": 1188,
+    "sex_ratio": 1074,
+    "literacy_rate": 93,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 89,
+    "president": "C.SUJATHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARAMUTTU",
+            "person": {
+                "id": "2015047700101",
+                "name": "LEKHA P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KURICHIKAL",
+            "person": {
+                "id": "2015047700201",
+                "name": "SUMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "S.K.V.N.S.S U.P.S",
+            "person": {
+                "id": "2015047700301",
+                "name": "MADHURI T"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015047700401",
+                "name": "SURESH KALARICKAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "T.B CLINIC",
+            "person": {
+                "id": "2015047700501",
+                "name": "CHANDRAVATHY J"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHAKITTAYIL",
+            "person": {
+                "id": "2015047700601",
+                "name": "RADHAMMA D"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "N.S.S.H.S",
+            "person": {
+                "id": "2015047700701",
+                "name": "NANDAKUMAR S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ST.JAMES.U.P.S",
+            "person": {
+                "id": "2015047700801",
+                "name": "SULOCHANA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SAMUDAYATHIL",
+            "person": {
+                "id": "2015047700901",
+                "name": "MOHANAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "S.N.D.P.U.P.S",
+            "person": {
+                "id": "2015047701001",
+                "name": "C.SUJATHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "E.A.L.P.S KUZHIKADU",
+            "person": {
+                "id": "2015047701101",
+                "name": "K.R.RAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NARAYANAVILASAM",
+            "person": {
+                "id": "2015047701203",
+                "name": "SUKUMARI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "HASKAPURAM",
+            "person": {
+                "id": "2015047701301",
+                "name": "T.PONNAMMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANGALABHARATHI",
+            "person": {
+                "id": "2015047701401",
+                "name": "SHEELA RAJAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VILLEGE OFFICE",
+            "person": {
+                "id": "2015047701501",
+                "name": "MOHANKUMAR"
+            }
+        }
+    ]
+}

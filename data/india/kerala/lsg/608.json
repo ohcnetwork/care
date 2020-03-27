@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347037959,
+    "date": "2019-08-21",
+    "name": "Kanchiyar  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Kattappana",
+    "area": "64.65km",
+    "localbody_code": "G060604",
+    "no_of_wards": 16,
+    "population": 21023,
+    "male": 10619,
+    "female": 10404,
+    "population_density": 325,
+    "sex_ratio": 980,
+    "literacy_rate": 92,
+    "literacy_rate_male": 94,
+    "literacy_rate_female": 89,
+    "president": "MATHEWGEORGE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOVILMALA",
+            "person": {
+                "id": "2015060800101",
+                "name": "ENDHU SABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAMBADIKUZHY",
+            "person": {
+                "id": "2015060800201",
+                "name": "V R SASI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THOPPIPALA",
+            "person": {
+                "id": "2015060800301",
+                "name": "THANKAMANY SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "LABBAKADA",
+            "person": {
+                "id": "2015060800401",
+                "name": "DOMINIC SAVIO"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PEZHUMKANDAM",
+            "person": {
+                "id": "2015060800501",
+                "name": "LISSY SUNNY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHUKADAU",
+            "person": {
+                "id": "2015060800601",
+                "name": "MATHEW GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANCHURALI",
+            "person": {
+                "id": "2015060800701",
+                "name": "SHEENA JACOB"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NARIYAMPARA",
+            "person": {
+                "id": "2015060800801",
+                "name": "BINDHUMOL MADHUKUTTAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANCHIYAR",
+            "person": {
+                "id": "2015060800901",
+                "name": "SIBY MALAVANA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VENGALOORKADA",
+            "person": {
+                "id": "2015060801001",
+                "name": "SUJITH SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SWARNAVILASAM",
+            "person": {
+                "id": "2015060801101",
+                "name": "SANISH SREEDHRAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MEPPARA",
+            "person": {
+                "id": "2015060801201",
+                "name": "SURESH ( K N BINU)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KIZHAKKE MATTUKATTA",
+            "person": {
+                "id": "2015060801301",
+                "name": "VIJAYAKUMARIAMMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALTHOTTY",
+            "person": {
+                "id": "2015060801401",
+                "name": "MERCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KODALIPPARA",
+            "person": {
+                "id": "2015060801501",
+                "name": "SUSHAMA SASI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MURIKKATTUKUDY",
+            "person": {
+                "id": "2015060801601",
+                "name": "JALAJA VINOD"
+            }
+        }
+    ]
+}

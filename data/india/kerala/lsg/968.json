@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348778805,
+    "date": "2019-08-21",
+    "name": "Moonniyur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Tirurangady",
+    "area": "22.4km",
+    "localbody_code": "G101105",
+    "no_of_wards": 23,
+    "population": 38688,
+    "male": 19008,
+    "female": 19680,
+    "population_density": 1727,
+    "sex_ratio": 1035,
+    "literacy_rate": 86.18,
+    "literacy_rate_male": 91.84,
+    "literacy_rate_female": 80.53,
+    "president": "KUTTASSERYSHAREEFA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THAYYILAKKADAVU",
+            "person": {
+                "id": "2015096800101",
+                "name": "JAMSHEENA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLAYIPPADAM",
+            "person": {
+                "id": "2015096800201",
+                "name": "GEETHA SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHELARI WEST",
+            "person": {
+                "id": "2015096800301",
+                "name": "NANDANAN THEKKEPURAKKAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHELARI EAST",
+            "person": {
+                "id": "2015096800401",
+                "name": "ABDUL AZEEZ. M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PADIKKAL NORTH",
+            "person": {
+                "id": "2015096800501",
+                "name": "MUSTHAFA CHONARI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PADIKKAL SOUTH",
+            "person": {
+                "id": "2015096800601",
+                "name": "KUTTASSERY SHAREEFA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VELIMUKKU",
+            "person": {
+                "id": "2015096800701",
+                "name": "ALI ASHAR. M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THALAPPARA",
+            "person": {
+                "id": "2015096800801",
+                "name": "VASU. K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "A.C BAZAR",
+            "person": {
+                "id": "2015096800901",
+                "name": "ANWAR SADHATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ODUNGATTUCHINA",
+            "person": {
+                "id": "2015096801001",
+                "name": "N.M SUHARABI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PARAKKADAVU",
+            "person": {
+                "id": "2015096801101",
+                "name": "KHADEEJA. V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHINAKKAL",
+            "person": {
+                "id": "2015096801201",
+                "name": "USMAN CHONARI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHUZHALI",
+            "person": {
+                "id": "2015096801301",
+                "name": "HYDROS.K.CHUZHALI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARAKKAVU",
+            "person": {
+                "id": "2015096801401",
+                "name": "SAKEENA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNNATH PARAMBU",
+            "person": {
+                "id": "2015096801501",
+                "name": "FAISAL. K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SALAMATH NAGAR",
+            "person": {
+                "id": "2015096801601",
+                "name": "NUSRATH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "M.H NAGAR",
+            "person": {
+                "id": "2015096801701",
+                "name": "MUNEERA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KALIYATTAMUKKU",
+            "person": {
+                "id": "2015096801801",
+                "name": "BALKEES POOKKADAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VELIMUKKU WEST",
+            "person": {
+                "id": "2015096801901",
+                "name": "C.P SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PALAKKAL",
+            "person": {
+                "id": "2015096802001",
+                "name": "ABDURAHIMAN ERAKKOOTH"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ALUNGAL",
+            "person": {
+                "id": "2015096802101",
+                "name": "C. KUNHI BAVA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PADIKKAL WEST",
+            "person": {
+                "id": "2015096802201",
+                "name": "KHAIRUNNISA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PAPPANOOR",
+            "person": {
+                "id": "2015096802301",
+                "name": "PUSHPA NECHKKATT"
+            }
+        }
+    ]
+}

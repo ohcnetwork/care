@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348853008,
+    "date": "2019-08-21",
+    "name": "Nannammukku  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perumpadappu",
+    "area": "19.36km",
+    "localbody_code": "G101503",
+    "no_of_wards": 17,
+    "population": 25108,
+    "male": 12055,
+    "female": 13053,
+    "population_density": 1297,
+    "sex_ratio": 1083,
+    "literacy_rate": 86.53,
+    "literacy_rate_male": 90.82,
+    "literacy_rate_female": 82.25,
+    "president": "ABDULKAREEM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHELAKKADAVU",
+            "person": {
+                "id": "2015099100101",
+                "name": "VANAJA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANNENKAVU",
+            "person": {
+                "id": "2015099100201",
+                "name": "USHA C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOOKKUTHALA",
+            "person": {
+                "id": "2015099100301",
+                "name": "KOMALAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANJITOOR",
+            "person": {
+                "id": "2015099100401",
+                "name": "REENA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHANGARAMKULAM",
+            "person": {
+                "id": "2015099100501",
+                "name": "SUHARA CHITTAYIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALLIKKARA",
+            "person": {
+                "id": "2015099100601",
+                "name": "DIVYA MALAYAM PARAMBIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLIKKARA THEKKUMURI",
+            "person": {
+                "id": "2015099100701",
+                "name": "SHAHANA BEEVI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AYINICHODE",
+            "person": {
+                "id": "2015099100801",
+                "name": "MUHAMMED ASHARAF"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NANNAMMUKKU",
+            "person": {
+                "id": "2015099100901",
+                "name": "SUDHA NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THARIYATH",
+            "person": {
+                "id": "2015099101001",
+                "name": "MADHUSOODANAN EDATHIKKAVIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLOORMA",
+            "person": {
+                "id": "2015099101101",
+                "name": "MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERUMBAL",
+            "person": {
+                "id": "2015099101201",
+                "name": "SAFEENA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MOOKKUTHALA SOUTH",
+            "person": {
+                "id": "2015099101301",
+                "name": "VINAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PIDAVANNOOR",
+            "person": {
+                "id": "2015099101401",
+                "name": "SATHYAN THIRUMANGALATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PIDAVANNOOR WEST",
+            "person": {
+                "id": "2015099101501",
+                "name": "MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NARANIPUZHA",
+            "person": {
+                "id": "2015099101601",
+                "name": "MOHAMEDALI KURUTTIKKAL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOLENCHERI",
+            "person": {
+                "id": "2015099101701",
+                "name": "ABDUL KAREEM"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347054242,
+    "date": "2019-08-21",
+    "name": "Muttom  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Thodupuzha",
+    "area": "25.44km",
+    "localbody_code": "G060701",
+    "no_of_wards": 13,
+    "population": 10228,
+    "male": 5083,
+    "female": 5145,
+    "population_density": 402,
+    "sex_ratio": 1012,
+    "literacy_rate": 96,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 96,
+    "president": "KUTTYAMMAMICHAEL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KODATHI",
+            "person": {
+                "id": "2015061200101",
+                "name": "JOSEPH (OUSEPPACHEN CHARAKUNNATHU)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MATHAPPARA",
+            "person": {
+                "id": "2015061200201",
+                "name": "BEJOY JOHN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUNJANATTUKUNNU",
+            "person": {
+                "id": "2015061200301",
+                "name": "SHAIJA JOMON"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SANKARAPPALLY",
+            "person": {
+                "id": "2015061200401",
+                "name": "SUMOL JOYSON"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUTTOM",
+            "person": {
+                "id": "2015061200501",
+                "name": "MARYKUTTY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAKKOMBU",
+            "person": {
+                "id": "2015061200601",
+                "name": "BEENA GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "I.T.C",
+            "person": {
+                "id": "2015061200701",
+                "name": "BAIJU KURIAN (SEBAN)"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ELLUMPURAM",
+            "person": {
+                "id": "2015061200801",
+                "name": "P.S SATHEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THUDANGANADU",
+            "person": {
+                "id": "2015061200901",
+                "name": "KUTTYAMMA MICHAEL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PAZHAYAMATTOM",
+            "person": {
+                "id": "2015061201001",
+                "name": "AUGSTINE K.T (AUGSTINE KALLIKATTU)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNYAMALA",
+            "person": {
+                "id": "2015061201101",
+                "name": "RENCY SUNISH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOTTUMKARA",
+            "person": {
+                "id": "2015061201201",
+                "name": "T.K MOHANAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUTTOM GOVT. HIGH SCHOOL",
+            "person": {
+                "id": "2015061201301",
+                "name": "SHEELA SANTHOSH"
+            }
+        }
+    ]
+}

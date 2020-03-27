@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346761099,
+    "date": "2019-08-21",
+    "name": "Kadaplamattom  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "12.98km",
+    "localbody_code": "G050401",
+    "no_of_wards": 13,
+    "population": 13093,
+    "male": 6555,
+    "female": 6538,
+    "population_density": 1009,
+    "sex_ratio": 997,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 93,
+    "president": "LISSYTHOMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NECHIMATTOM",
+            "person": {
+                "id": "2015051800101",
+                "name": "K.R. SASIDHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ELACKAD",
+            "person": {
+                "id": "2015051800201",
+                "name": "SREEJA HARICHANDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MYLADUMPARA",
+            "person": {
+                "id": "2015051800301",
+                "name": "MARYKKUTTY THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADAPLAMATTOM",
+            "person": {
+                "id": "2015051800401",
+                "name": "PAULINE TOMY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ITTIYAPPARA",
+            "person": {
+                "id": "2015051800501",
+                "name": "ZACHARIAS JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIZHAKKEMARIYIDOM",
+            "person": {
+                "id": "2015051800601",
+                "name": "LISSY THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MARIYIDOM",
+            "person": {
+                "id": "2015051800701",
+                "name": "RAJU M.P."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MOONNUTHODU",
+            "person": {
+                "id": "2015051800801",
+                "name": "THOMAS PULIKKEEL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NJARALAPPUZHA",
+            "person": {
+                "id": "2015051800901",
+                "name": "MINI GOPINATHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "L.P. SCHOOL WARD",
+            "person": {
+                "id": "2015051801001",
+                "name": "ELSAMMA SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VAYALA",
+            "person": {
+                "id": "2015051801101",
+                "name": "JOSEPH P.M."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VAYALA TOWN",
+            "person": {
+                "id": "2015051801201",
+                "name": "VALSAMMA GOPI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIKKUNNU",
+            "person": {
+                "id": "2015051801301",
+                "name": "SEBASTIAN JOSEPH"
+            }
+        }
+    ]
+}
