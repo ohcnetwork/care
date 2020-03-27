@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_extra_fields",
     "location_field.apps.DefaultConfig",
     "django_filters",
+    "axes",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -97,6 +98,7 @@ MIGRATION_MODULES = {"sites": "care.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -142,6 +144,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 # STATIC
@@ -300,3 +303,5 @@ LOCATION_FIELD = {
     "map.provider": "openstreetmap",
     "provider.openstreetmap.max_zoom": 18,
 }
+
+AXES_FAILURE_LIMIT = 5
