@@ -28,18 +28,6 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityFilter
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_superuser:
-            return self.queryset
-        return self.queryset.filter(created_by=user)
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(created_by=self.request.user)
-
     def list(self, request, *args, **kwargs):
         """
         Facility List

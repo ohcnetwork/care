@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
+from partial_index import PQ, PartialIndex
 
 from care.users.models import DISTRICT_CHOICES, District, LocalBody
 
@@ -131,7 +132,7 @@ class HospitalDoctors(FacilityBaseModel):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        unique_together = ["facility", "area", "deleted"]
+        indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
 
 
 class FacilityCapacity(FacilityBaseModel):
@@ -141,7 +142,7 @@ class FacilityCapacity(FacilityBaseModel):
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
-        unique_together = ["facility", "room_type", "deleted"]
+        indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
 
 
 class FacilityStaff(FacilityBaseModel):

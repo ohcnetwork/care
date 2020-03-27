@@ -38,8 +38,4 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-
-
-print("Test Environment Detected..Switch to in memory SQLLITE")
-DATABASES = {}
-DATABASES["default"] = {"ENGINE": "django.contrib.gis.db.backends.spatialite"}
+DATABASES["default"] = env.db("TEST_POSTGIS_URL")

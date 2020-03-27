@@ -3,7 +3,7 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 
 from care.users.forms import UserChangeForm, UserCreationForm
-from care.users.models import District, Skill, State
+from care.users.models import District, LocalBody, Skill, State
 
 User = get_user_model()
 
@@ -24,6 +24,11 @@ class StateAdmin(admin.ModelAdmin):
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(LocalBody)
+class LocalBodyAdmin(admin.ModelAdmin):
     pass
 
 

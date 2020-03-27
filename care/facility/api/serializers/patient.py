@@ -1,6 +1,10 @@
-from rest_framework import serializers, fields
+from rest_framework import fields, serializers
 
-from care.facility.models import PatientRegistration, MEDICAL_HISTORY_CHOICES, PatientTeleConsultation
+from care.facility.models import (
+    MEDICAL_HISTORY_CHOICES,
+    PatientRegistration,
+    PatientTeleConsultation,
+)
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -8,16 +12,14 @@ class PatientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = '__all__'
+        exclude = ("created_by", "deleted")
 
 
 class PatientTeleConsultationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientTeleConsultation
-        fields = '__all__'
+        fields = "__all__"
 
 
 class PatientDetailSerializer(PatientSerializer):
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True)
-
+    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)

@@ -4,11 +4,14 @@ import pytest
 from django.contrib.gis.geos import Point
 
 from care.facility.models import Facility, FacilityCapacity, FacilityLocalGovtBody
+from care.users.models import User
 from config.tests.helper import mock_equal
+
+# flake8: noqa
 
 
 @pytest.fixture()
-def data():
+def facility_data():
     return {
         "name": "Foo",
         "district": 13,
@@ -22,7 +25,7 @@ def data():
 
 @pytest.fixture()
 def facility():
-    f = Facility(
+    f = Facility.objects.create(
         name="Foo",
         district=13,
         facility_type=1,
@@ -31,10 +34,7 @@ def facility():
         oxygen_capacity=10,
         phone_number="9998887776",
     )
-    f.save()
-    lgb = FacilityLocalGovtBody(facility=f, local_body=None, district_id=13)
-    lgb.save()
-
+    FacilityLocalGovtBody.objects.create(facility=f, local_body=None, district_id=13)
     return f
 
 
@@ -45,20 +45,9 @@ class TestFacility:
         response = client.post("/api/v1/facility/", {},)
         assert response.status_code == 403
 
-    def test_create(self, client, user, data):
+    def test_create(self, client, user, facility_data):
         client.force_authenticate(user=user)
-        response = client.post(
-            "/api/v1/facility/",
-            {
-                "name": data["name"],
-                "district": data["district"],
-                "facility_type": data["facility_type"],
-                "address": data["address"],
-                "location": data["location"],
-                "oxygen_capacity": data["oxygen_capacity"],
-                "phone_number": data["phone_number"],
-            },
-        )
+        response = client.post("/api/v1/facility/", facility_data,)
 
         assert response.status_code == 201
         response_json = response.json()
@@ -80,16 +69,19 @@ class TestFacility:
         }
 
         facility = Facility.objects.get(
-            name=data["name"],
-            district=data["district"],
-            facility_type=data["facility_type"],
-            address=data["address"],
-            oxygen_capacity=data["oxygen_capacity"],
-            phone_number=data["phone_number"],
+            name=facility_data["name"],
+            district=facility_data["district"],
+            facility_type=facility_data["facility_type"],
+            address=facility_data["address"],
+            oxygen_capacity=facility_data["oxygen_capacity"],
+            phone_number=facility_data["phone_number"],
             created_by=user,
         )
         assert facility
-        assert facility.location.tuple == (data["location"]["longitude"], data["location"]["latitude"],)
+        assert facility.location.tuple == (
+            facility_data["location"]["longitude"],
+            facility_data["location"]["latitude"],
+        )
 
     def test_active_check(self, client, user, facility):
         client.force_authenticate(user=user)
@@ -132,7 +124,7 @@ class TestFacility:
             f"/api/v1/facility/{facility.id}/",
             {
                 "name": "Another name",
-                "district": 12,
+                "district": facility.district,
                 "facility_type": facility.facility_type,
                 "address": facility.address,
             },
@@ -156,6 +148,20 @@ class TestFacility:
         }
         facility.refresh_from_db()
         assert facility.name == "Another name"
+
+    def test_update_doesnt_change_creator(self, client, user, user_data, facility, facility_data):
+        facility.created_by = User.objects.create(**user_data)
+        facility.save()
+        original_creator = facility.created_by
+
+        user.is_superuser = True
+        user.save()
+        client.force_authenticate(user=user)
+
+        response = client.put(f"/api/v1/facility/{facility.id}/", facility_data)
+        assert response.status_code == 200
+        facility.refresh_from_db()
+        assert facility.created_by == original_creator
 
     def test_destroy(self, client, user, facility):
         client.force_authenticate(user=user)

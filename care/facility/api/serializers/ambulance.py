@@ -39,6 +39,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             drivers = validated_data.pop("drivers", [])
+            validated_data.pop("created_by", None)
 
             validated_data["primary_district_obj_id"] = validated_data.get("primary_district")
             validated_data["secondary_district_obj_id"] = validated_data.get("secondary_district")

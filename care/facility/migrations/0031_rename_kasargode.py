@@ -17,7 +17,7 @@ def reverse_change_kasargode_name(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0027_auto_20200327_0619'),
+        ('facility', '0030_auto_20200327_0619'),
     ]
 
     operations = [

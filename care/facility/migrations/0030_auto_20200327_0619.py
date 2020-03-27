@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('users', '0013_auto_20200327_0437'),
-        ('facility', '0026_map_to_district'),
+        ('facility', '0029_auto_20200326_1706'),
     ]
 
     operations = [

@@ -126,7 +126,7 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
     def validate_local_body(self, value):
         if value is not None:
             try:
-                value = LocalBody.objects.get(pk=value)
+                value = LocalBody.objects.get(id=value)
             except LocalBody.DoesNotExist:
                 raise serializers.ValidationError({"local_body": "Not found"})
         return value
@@ -149,22 +149,20 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
         if not facility:
             validated_data["created_by"] = user
             facility = Facility.objects.create(**validated_data)
-            facility.local_govt_body = FacilityLocalGovtBody.objects.create(
-                local_body=local_body, district_id=validated_data["district"]
-            )
         else:
             if facility.created_by != user and not user.is_superuser:
                 raise PermissionDenied(f"{facility} is owned by another user")
-            if facility.local_govt_body is None:
-                facility.local_govt_body = FacilityLocalGovtBody()
-
-            facility.local_govt_body.local_body = local_body
-            facility.local_govt_body.district_id = validated_data["district"]
-            facility.local_govt_body.save()
 
             for k, v in validated_data.items():
                 setattr(facility, k, v)
             facility.save()
+
+        if facility.local_govt_body is None:
+            facility.local_govt_body = FacilityLocalGovtBody(facility=facility)
+
+        facility.local_govt_body.local_body = local_body
+        facility.local_govt_body.district_id = validated_data["district"]
+        facility.local_govt_body.save()
 
         for ca in capacities:
             facility.facilitycapacity_set.update_or_create(room_type=ca["room_type"], defaults=ca)
