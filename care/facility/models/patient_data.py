@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.db import models
 from multiselectfield import MultiSelectField
+from partial_index import PQ, PartialIndex
 
 from care.facility.models import SoftDeleteManager
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
@@ -48,3 +51,19 @@ class PatientTeleConsultation(models.Model):
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class PatientAdmission(models.Model):
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE)
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE)
+    admission_date = models.DateTimeField(default=datetime.now)
+    is_active = models.BooleanField()
+    discharge_date = models.DateTimeField(null=True)
+
+    class Meta:
+        indexes = [PartialIndex(fields=["patient"], unique=True, where=PQ(is_active=True))]
+        constraints = [
+            models.CheckConstraint(
+                name="active_or_discharged", check=models.Q(is_active=True) | models.Q(discharge_date__isnull=False),
+            )
+        ]
