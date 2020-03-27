@@ -3,7 +3,6 @@
 import pytest
 
 from care.facility.models import PatientRegistration
-from config.tests.helper import client, user
 
 
 @pytest.fixture()

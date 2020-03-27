@@ -1,6 +1,5 @@
 import pytest
 
-from config.tests.helper import client, user
 from care.users.models import User
 
 
@@ -14,8 +13,9 @@ def data():
         "gender": 1,
         "district": 11,
         "username": "foo",
-        "password": "bar"
+        "password": "bar",
     }
+
 
 @pytest.mark.django_db(transaction=True)
 class TestUser:
@@ -41,22 +41,18 @@ class TestUser:
         password = data.pop("password")
         assert res_data == {
             **data,
-            'district': 'Kozhikode',
-            'gender': 'Male',
-            'user_type': 'Doctor',
-            'first_name': '',
-            'last_name': '',
-            'skill': None
+            "district": 11,
+            "gender": "Male",
+            "user_type": "Doctor",
+            "first_name": "",
+            "last_name": "",
+            "skill": None,
         }
 
-        response = client.put(f"/api/v1/users/{data['username']}/", {
-            **data,
-            "age": 31,
-            "password": password,
-        })
+        response = client.put(f"/api/v1/users/{data['username']}/", {**data, "age": 31, "password": password,})
         assert response.status_code == 200
         assert response.json()["age"] == 31
-        assert User.objects.only('age').get(username=data["username"]).age == 31
+        assert User.objects.only("age").get(username=data["username"]).age == 31
 
         response = client.delete(f"/api/v1/users/{data['username']}/")
         assert response.status_code == 204
@@ -99,13 +95,10 @@ class TestUser:
         response = client.get(f"/api/v1/users/{user.username}/")
         assert response.status_code == 200
 
-        response = client.put(f"/api/v1/users/{user.username}/", {
-            **data,
-            "age": 31,
-        })
+        response = client.put(f"/api/v1/users/{user.username}/", {**data, "age": 31,})
         assert response.status_code == 200
         assert response.json()["age"] == 31
-        assert User.objects.only('age').get(username=data["username"]).age == 31
+        assert User.objects.only("age").get(username=data["username"]).age == 31
 
         response = client.delete(f"/api/v1/users/{user.username}/")
         assert response.status_code == 204

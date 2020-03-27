@@ -17,7 +17,7 @@ DISTRICT_CHOICES = [
     (11, "Kozhikode"),
     (12, "Wayanad"),
     (13, "Kannur"),
-    (14, "Kasaragod"),
+    (14, "Kasargode"),
 ]
 
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
@@ -45,17 +45,32 @@ class District(models.Model):
 
 
 LOCAL_BODY_CHOICES = (
-    (1, "Panchayath"),
-    (2, "Municipality"),
-    (3, "Corporation"),
-    (25, "Others"),
+    # Panchayath levels
+    (1, "Grama Panchayath"),
+    (2, "Block Panchayath"),
+    (3, "District Panchayath"),
+    # Municipality levels
+    (10, "Municipality"),
+    # Corporation levels
+    (20, "Corporation"),
+    # Unknown
+    (50, "Others"),
 )
 
 
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
+
     name = models.CharField(max_length=255)
     body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    localbody_code = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        unique_together = (
+            "district",
+            "body_type",
+            "name",
+        )
 
     def __str__(self):
         return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
@@ -104,7 +119,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
 

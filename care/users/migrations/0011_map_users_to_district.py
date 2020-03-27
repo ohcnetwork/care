@@ -10,11 +10,13 @@ def map_users_to_districts(apps, *args):
     districts = District.objects.all()
     district_map = {d.id: d for d in districts}
 
-    for user in User.objects.filter(deleted=False):
-        d = district_map.get(user.district)
-        if d is not None:
-            user.new_district_id = d.id
-            user.save()
+    dummy_user = User()
+    if hasattr(dummy_user, 'new_district'):
+        for user in User.objects.filter(deleted=False):
+            d = district_map.get(user.district)
+            if d is not None:
+                user.new_district_id = d.id
+                user.save()
 
 
 class Migration(migrations.Migration):

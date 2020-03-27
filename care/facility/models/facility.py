@@ -64,8 +64,6 @@ class Facility(FacilityBaseModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
@@ -74,11 +72,55 @@ class Facility(FacilityBaseModel):
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.name}, {DISTRICT_CHOICES[self.district - 1][1]}"
-
     class Meta:
         verbose_name_plural = "Facilities"
+
+    @property
+    def local_govt_body(self):
+        return getattr(self, "facilitylocalgovtbody", None)
+
+    @local_govt_body.setter
+    def local_govt_body(self, value):
+        self.facilitylocalgovtbody = value
+
+    def __str__(self):
+        return f"{self.name} - {self.local_govt_body}"
+
+
+class FacilityLocalGovtBody(models.Model):
+    """
+    Model to relate a Facility to a local self governing body
+    In ideal cases, the facility will be related to a local governing body.
+    But in other cases, and in cases of incomplete data, we will only have information till a district level
+    """
+
+    facility = models.OneToOneField(Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL)
+    local_body = models.ForeignKey(LocalBody, null=True, blank=True, on_delete=models.SET_NULL)
+    district = models.ForeignKey(District, null=True, blank=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="cons_facilitylocalgovtbody_only_one_null",
+                check=models.Q(local_body__isnull=False) | models.Q(district__isnull=False),
+            )
+        ]
+
+    def __str__(self):
+        return (
+            f"{getattr(self.local_body, 'name', '-')} "
+            f"({getattr(self.local_body, 'localbody_type', '-')})"
+            f" / {getattr(self.district, 'name', '-')}"
+        )
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        While saving, if the local body is not null, then district will be local body's district
+        Overriding save will help in a collision where the local body's district and district fields are different.
+        """
+        if self.local_body is not None:
+            self.district = self.local_body.district
+        super().save(*args, **kwargs)
 
 
 class HospitalDoctors(FacilityBaseModel):
@@ -228,13 +270,13 @@ class Ambulance(FacilityBaseModel):
     secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
     third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
-    new_primary_district = models.ForeignKey(
+    primary_district_obj = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
-    new_secondary_district = models.ForeignKey(
+    secondary_district_obj = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
     )
-    new_third_district = models.ForeignKey(
+    third_district_obj = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
     )
 
