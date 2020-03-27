@@ -30,3 +30,4 @@ class PatientAdmissionSerializer(serializers.Serializer):
     patient_id = serializers.IntegerField()
     admission_date = serializers.DateTimeField(required=False)
     discharge_date = serializers.DateTimeField(required=False)
+    is_active = serializers.BooleanField(read_only=True)
