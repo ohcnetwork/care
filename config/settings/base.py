@@ -83,6 +83,7 @@ THIRD_PARTY_APPS = [
     "location_field.apps.DefaultConfig",
     "django_filters",
     "axes",
+    "simple_history",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -143,6 +144,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 # STATIC

@@ -1,7 +1,11 @@
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 
-from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
+from care.facility.api.serializers.facility_capacity import (
+    FacilityCapacityHistorySerializer,
+    FacilityCapacitySerializer,
+)
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, FacilityCapacity
 
@@ -29,3 +33,12 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+    @action(detail=True, methods=["get"])
+    def history(self, request, *args, **kwargs):
+        obj = self.get_object()
+        page = self.paginate_queryset(obj.history.all())
+        model = obj.history.__dict__["model"]
+        serializer = FacilityCapacityHistorySerializer(model, page, many=True)
+        serializer.is_valid()
+        return self.get_paginated_response(serializer.data)
