@@ -289,6 +289,8 @@ class Ambulance(FacilityBaseModel):
 
     ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
 
+    service_charge = models.IntegerField(default=0)
+
     @property
     def drivers(self):
         return self.ambulancedriver_set.filter(deleted=False)
