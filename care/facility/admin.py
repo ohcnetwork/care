@@ -12,6 +12,7 @@ from .models import (
     InventoryItem,
     InventoryLog,
     PatientRegistration,
+    PatientSample,
     PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
@@ -85,3 +86,4 @@ admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration)
 admin.site.register(PatientTeleConsultation)
+admin.site.register(PatientSample)

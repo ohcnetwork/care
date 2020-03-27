@@ -1,7 +1,9 @@
+import datetime
+
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import SoftDeleteManager
+from care.facility.models import FacilityBaseModel, SoftDeleteManager
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 MEDICAL_HISTORY_CHOICES = [
@@ -13,6 +15,9 @@ MEDICAL_HISTORY_CHOICES = [
 ]
 
 SYMPTOM_CHOICES = [(1, "NO"), (2, "FEVER"), (3, "SORE THROAT"), (4, "COUGH"), (5, "BREATHLESSNESS")]
+
+SAMPLE_TEST_RESULT_MAP = {"Positive": 1, "Negative": 2, "Awaiting": 3}
+SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
 
 
 class PatientRegistration(models.Model):
@@ -48,3 +53,11 @@ class PatientTeleConsultation(models.Model):
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class PatientSample(FacilityBaseModel):
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
+    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
+    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["Awaiting"])
+    date_of_sample = models.DateTimeField(default=datetime.datetime.now)
+    date_of_result = models.DateTimeField(null=True, blank=True)

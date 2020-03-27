@@ -11,6 +11,7 @@ from care.facility.api.viewsets.facility import FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import PatientViewSet
+from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -24,6 +25,7 @@ router.register("facility", FacilityViewSet)
 router.register("ambulance", AmbulanceViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("patient", PatientViewSet)
+router.register("patient_sample", PatientSampleViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
