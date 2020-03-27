@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import SoftDeleteManager
+from care.facility.models import FacilityBaseModel, SoftDeleteManager
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 MEDICAL_HISTORY_CHOICES = [
@@ -48,3 +48,18 @@ class PatientTeleConsultation(models.Model):
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class FacilityPatientStatsHistory(FacilityBaseModel):
+    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
+    entry_date = models.DateField()
+    num_patients_visited = models.IntegerField(default=0)
+    num_patients_home_quarantine = models.IntegerField(default=0)
+    num_patients_isolation = models.IntegerField(default=0)
+    num_patient_referred = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = (
+            "facility",
+            "entry_date",
+        )
