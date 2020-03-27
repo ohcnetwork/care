@@ -52,14 +52,8 @@ class TestFacility:
         assert response.status_code == 201
         response_json = response.json()
         assert response_json == {
-            "id": mock_equal,
-            "name": data["name"],
-            "district": 13,
+            **facility_data,
             "facility_type": "Educational Inst",
-            "address": data["address"],
-            "location": data["location"],
-            "oxygen_capacity": data["oxygen_capacity"],
-            "phone_number": data["phone_number"],
             "local_govt_body": {
                 "id": mock_equal,
                 "facility": mock_equal,
@@ -101,7 +95,7 @@ class TestFacility:
         assert response.json() == {
             "id": facility.id,
             "name": facility.name,
-            "district": 13,
+            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -133,7 +127,7 @@ class TestFacility:
         assert response.json() == {
             "id": facility.id,
             "name": "Another name",
-            "district": 12,
+            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -187,7 +181,7 @@ class TestFacility:
                 {
                     "id": facility.id,
                     "name": facility.name,
-                    "district": 13,
+                    "district": facility.district,
                     "facility_type": "Educational Inst",
                     "address": facility.address,
                     "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
