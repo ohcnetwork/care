@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346344051,
+    "date": "2019-08-21",
+    "name": "Pandalam Thekkekara  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Pandalam",
+    "area": "19.39km",
+    "localbody_code": "G030701",
+    "no_of_wards": 14,
+    "population": 16526,
+    "male": 7846,
+    "female": 8680,
+    "population_density": 852,
+    "sex_ratio": 1106,
+    "literacy_rate": 93.11,
+    "literacy_rate_male": 95.4,
+    "literacy_rate_female": 91.07,
+    "president": "JAYANTHYKUMARY.S",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERUMPULICKAL",
+            "person": {
+                "id": "2015041300101",
+                "name": "G. LEELA DEVI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANNAMNAGAR",
+            "person": {
+                "id": "2015041300201",
+                "name": "SURESH KUMAR(A.K. SURESH)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PADUKOTTUKAL",
+            "person": {
+                "id": "2015041300301",
+                "name": "ANUJA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KEERUKUZHI",
+            "person": {
+                "id": "2015041300401",
+                "name": "JAYANTHYKUMARY.S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BHAGAVATHIKKUM PADINJARU",
+            "person": {
+                "id": "2015041300501",
+                "name": "BINDHU.S.PILLAI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "IDAMALI",
+            "person": {
+                "id": "2015041300601",
+                "name": "RAJAMMA.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAKKARA",
+            "person": {
+                "id": "2015041300701",
+                "name": "MOHANAKUMAR.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANKUZHY",
+            "person": {
+                "id": "2015041300801",
+                "name": "V.P. VIDHYADHARA PANICKER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THATTAYIL",
+            "person": {
+                "id": "2015041300901",
+                "name": "RADHAMANI.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALLIKA",
+            "person": {
+                "id": "2015041301001",
+                "name": "JAYADEVI.V.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAMMODU",
+            "person": {
+                "id": "2015041301101",
+                "name": "ANU GEORGE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PONGALADY",
+            "person": {
+                "id": "2015041301202",
+                "name": "KRISHNAKUMAR S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERILAYAM",
+            "person": {
+                "id": "2015041301301",
+                "name": "N. RAVEENDRAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARANTHAL",
+            "person": {
+                "id": "2015041301401",
+                "name": "P.P.ROY"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347021931,
+    "date": "2019-08-21",
+    "name": "Mariyapuram  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Idukki",
+    "area": "32.18km",
+    "localbody_code": "G060506",
+    "no_of_wards": 13,
+    "population": 12640,
+    "male": 6489,
+    "female": 6151,
+    "population_density": 393,
+    "sex_ratio": 948,
+    "literacy_rate": 94,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 92,
+    "president": "DOLLYJOSE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARIMPAN",
+            "person": {
+                "id": "2015060400101",
+                "name": "SOLLY SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "UDAYACITY",
+            "person": {
+                "id": "2015060400201",
+                "name": "JUBY PHILIP"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "UPPUTHODU",
+            "person": {
+                "id": "2015060400301",
+                "name": "THOMASKUTTY OUSEPH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHITTADIKKAVALA",
+            "person": {
+                "id": "2015060400401",
+                "name": "SEEMON VASU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHATTIKKUZHY",
+            "person": {
+                "id": "2015060400501",
+                "name": "MANI RAMAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "DOUBLECUTTING",
+            "person": {
+                "id": "2015060400601",
+                "name": "MINI SHAJI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NARAKAKKANAM",
+            "person": {
+                "id": "2015060400701",
+                "name": "JOSEPH JOSEPH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MINIDAM",
+            "person": {
+                "id": "2015060400801",
+                "name": "ELSAMMA LUKOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IDUKKI",
+            "person": {
+                "id": "2015060400901",
+                "name": "CICILY MATHEW"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MARIYAPURAM",
+            "person": {
+                "id": "2015060401001",
+                "name": "DOLLY JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUTHIRAKKALLU",
+            "person": {
+                "id": "2015060401101",
+                "name": "JESSY BIJU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARIKKINTHOLAM",
+            "person": {
+                "id": "2015060401201",
+                "name": "SEENA JACOB"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VIMALAGIRI",
+            "person": {
+                "id": "2015060401301",
+                "name": "JOJO THOMAS"
+            }
+        }
+    ]
+}

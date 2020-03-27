@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347288195,
+    "date": "2019-08-21",
+    "name": "Varappetty  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "21.5km",
+    "localbody_code": "G071106",
+    "no_of_wards": 13,
+    "population": 15285,
+    "male": 7705,
+    "female": 7580,
+    "population_density": 711,
+    "sex_ratio": 983,
+    "literacy_rate": 91.01,
+    "literacy_rate_male": 94.54,
+    "literacy_rate_female": 87.44,
+    "president": "NIRMALAMOHANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOZHIPPILLY",
+            "person": {
+                "id": "2015068600101",
+                "name": "DIANA NOBY KOTTAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUDAMUNDA",
+            "person": {
+                "id": "2015068600201",
+                "name": "CHERIAN DEVASSY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOZHIPPLIIY EAST",
+            "person": {
+                "id": "2015068600301",
+                "name": "ANGEL MARY JOBY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PIDAVOOR",
+            "person": {
+                "id": "2015068600401",
+                "name": "ANCY HARIS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VARAPPETTY EAST",
+            "person": {
+                "id": "2015068600501",
+                "name": "K.A BINOD"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MYLOOR",
+            "person": {
+                "id": "2015068600601",
+                "name": "UMAIBA NASSER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKATTOOR",
+            "person": {
+                "id": "2015068600701",
+                "name": "BINDHU SASI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ELANGAVAM",
+            "person": {
+                "id": "2015068600801",
+                "name": "SAVITHA SREEKANTH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VARAPPETTY SOUTH",
+            "person": {
+                "id": "2015068600901",
+                "name": "BALAKRISHNAN NAIR(BALAKRISHNAN A.S.)"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VARAPPETTY NORTH",
+            "person": {
+                "id": "2015068601001",
+                "name": "SREEKALA.C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "INCHOOR EAST",
+            "person": {
+                "id": "2015068601101",
+                "name": "NIRMALA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "INCHOOR",
+            "person": {
+                "id": "2015068601201",
+                "name": "MATHEW.K.ISSAC"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOZHIPPILLY SOUTH",
+            "person": {
+                "id": "2015068601301",
+                "name": "MOHANAN VELAYUDHAN(P.V .MOHANAN))"
+            }
+        }
+    ]
+}

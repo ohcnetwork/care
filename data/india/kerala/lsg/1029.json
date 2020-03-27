@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348991629,
+    "date": "2019-08-21",
+    "name": "Naduvannur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Balussery",
+    "area": "22.2km",
+    "localbody_code": "G110702",
+    "no_of_wards": 16,
+    "population": 22258,
+    "male": 11103,
+    "female": 11155,
+    "population_density": 1003,
+    "sex_ratio": 1005,
+    "literacy_rate": 89.28,
+    "literacy_rate_male": 95.33,
+    "literacy_rate_female": 83.37,
+    "president": "YESODATHENGIDA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAVIL WEST",
+            "person": {
+                "id": "2015102900101",
+                "name": "P. KUMARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAVIL",
+            "person": {
+                "id": "2015102900201",
+                "name": "BALAKRISHNAN C.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAVUMTHARA",
+            "person": {
+                "id": "2015102900301",
+                "name": "P. ACHUTHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARUVANNUR SOUTH",
+            "person": {
+                "id": "2015102900401",
+                "name": "SUDHAKARAN T V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARUVANNUR",
+            "person": {
+                "id": "2015102900501",
+                "name": "SAJITHA V K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALLORA MALA",
+            "person": {
+                "id": "2015102900601",
+                "name": "BINDU V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NADUVANNUR",
+            "person": {
+                "id": "2015102900701",
+                "name": "GEETHA V P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAVUMTHARA EAST",
+            "person": {
+                "id": "2015102900801",
+                "name": "KRISHNADAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NADUVANNUR SOUTH",
+            "person": {
+                "id": "2015102900901",
+                "name": "ASHRAF MANGARA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NADUVANNUR EAST",
+            "person": {
+                "id": "2015102901001",
+                "name": "LATHA NALLIYIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANKAKALARI",
+            "person": {
+                "id": "2015102901101",
+                "name": "PRAKASINI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARUMBAPOYIL",
+            "person": {
+                "id": "2015102901201",
+                "name": "SOUDHA K.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANDHANKAVU",
+            "person": {
+                "id": "2015102901301",
+                "name": "SHAHINA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THURUTHIMUKK",
+            "person": {
+                "id": "2015102901401",
+                "name": "PRADEEPAN C P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAVUMTHARAN SOUTH",
+            "person": {
+                "id": "2015102901501",
+                "name": "YESODA THENGIDA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ELANGAMAL",
+            "person": {
+                "id": "2015102901601",
+                "name": "SAMEERA P"
+            }
+        }
+    ]
+}

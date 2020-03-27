@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349053569,
+    "date": "2019-08-21",
+    "name": "Madavoor  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Koduvaliy",
+    "area": "19.24km",
+    "localbody_code": "G111004",
+    "no_of_wards": 17,
+    "population": 22565,
+    "male": 11256,
+    "female": 11309,
+    "population_density": 1173,
+    "sex_ratio": 1005,
+    "literacy_rate": 91.57,
+    "literacy_rate_male": 96.29,
+    "literacy_rate_female": 86.89,
+    "president": "PANKAJAKSHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANKATHAYI",
+            "person": {
+                "id": "2015105000101",
+                "name": "SINDUMOHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERAVANNUR NORTH",
+            "person": {
+                "id": "2015105000201",
+                "name": "P.SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ERAVANNUR SOUTH",
+            "person": {
+                "id": "2015105000301",
+                "name": "BINDU.M.B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NARYACHAL",
+            "person": {
+                "id": "2015105000401",
+                "name": "PANKAJAKSHAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULLALOOR",
+            "person": {
+                "id": "2015105000501",
+                "name": "HASEENA.K.T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ERANJUKUNNU",
+            "person": {
+                "id": "2015105000601",
+                "name": "SYAMALA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "RAMPOYIL",
+            "person": {
+                "id": "2015105000701",
+                "name": "SHAMSIYA.M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADAVOOR",
+            "person": {
+                "id": "2015105000801",
+                "name": "A.P.NASTHAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MADAVOORMUKKU",
+            "person": {
+                "id": "2015105000901",
+                "name": "V.C.ABDUL HAMEED MASTER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PYBALUSSERY",
+            "person": {
+                "id": "2015105001001",
+                "name": "SABIRA.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTAKKAVAYAL",
+            "person": {
+                "id": "2015105001101",
+                "name": "A.P.ABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ARAMBRAM",
+            "person": {
+                "id": "2015105001201",
+                "name": "RIYAS.E"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULLIKKOTH",
+            "person": {
+                "id": "2015105001301",
+                "name": "SAKEENA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ARANKILTHAZHAM",
+            "person": {
+                "id": "2015105001401",
+                "name": "MANJULA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUTTANCHERY",
+            "person": {
+                "id": "2015105001501",
+                "name": "MUHAMMED RIYASKHAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULLORAMMAL",
+            "person": {
+                "id": "2015105001601",
+                "name": "SHAINI.K.T"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHATHANAMBU",
+            "person": {
+                "id": "2015105001701",
+                "name": "E.AMBUJAM"
+            }
+        }
+    ]
+}

@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566349350745,
+    "date": "2019-08-21",
+    "name": "Chirakkal  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Kannur",
+    "area": "13.56km",
+    "localbody_code": "G130501",
+    "no_of_wards": 23,
+    "population": 39838,
+    "male": 19370,
+    "female": 20468,
+    "population_density": 2938,
+    "sex_ratio": 1057,
+    "literacy_rate": 93.8,
+    "literacy_rate_male": 97.4,
+    "literacy_rate_female": 90.44,
+    "president": "SOMANA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RAILWAY CUTTING",
+            "person": {
+                "id": "2015113100101",
+                "name": "MANOJ K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANNA",
+            "person": {
+                "id": "2015113100201",
+                "name": "SINDHU K V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTUVATHERU",
+            "person": {
+                "id": "2015113100301",
+                "name": "RAMESH K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUZHATHI",
+            "person": {
+                "id": "2015113100401",
+                "name": "VALSALA  N"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KEERIYAD",
+            "person": {
+                "id": "2015113100501",
+                "name": "JALALUDHEEN C P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BALAN KINAR",
+            "person": {
+                "id": "2015113100601",
+                "name": "SOMAN A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTAMPALLY",
+            "person": {
+                "id": "2015113100701",
+                "name": "SAJI K V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOTTAKKUNNU",
+            "person": {
+                "id": "2015113100801",
+                "name": "A V SHYAMALA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUZHATHI AMBALAM",
+            "person": {
+                "id": "2015113100901",
+                "name": "SATHI V  K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ONAPARAMBA",
+            "person": {
+                "id": "2015113101001",
+                "name": "K PRASANNA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANHIRATHARA",
+            "person": {
+                "id": "2015113101101",
+                "name": "N PRAKASHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ARAYAMBETH",
+            "person": {
+                "id": "2015113101201",
+                "name": "SULOCHANA  P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANANKAVU",
+            "person": {
+                "id": "2015113101301",
+                "name": "KAPPALLY SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUKKILE PEEDIKA",
+            "person": {
+                "id": "2015113101401",
+                "name": "LALIMAN K V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHIYATHERU",
+            "person": {
+                "id": "2015113101501",
+                "name": "SANTHOSH KUMAR T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHALUVAYAL",
+            "person": {
+                "id": "2015113101601",
+                "name": "K PAVITHRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PUTHIYATHERU MANDAPAM",
+            "person": {
+                "id": "2015113101701",
+                "name": "A BINDU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KADALAYI",
+            "person": {
+                "id": "2015113101801",
+                "name": "THODEN MOHANAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ARPANTHODE",
+            "person": {
+                "id": "2015113101901",
+                "name": "JISHA K C"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ALAVIL SOUTH",
+            "person": {
+                "id": "2015113102001",
+                "name": "BINDU M"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ARAMKOTTAM",
+            "person": {
+                "id": "2015113102101",
+                "name": "K P  RAJESH"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ALAVIL NORTH",
+            "person": {
+                "id": "2015113102201",
+                "name": "LEEMA VIVEK"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PUTHIYAPARAMBA",
+            "person": {
+                "id": "2015113102301",
+                "name": "ROOPA GOPALAN"
+            }
+        }
+    ]
+}

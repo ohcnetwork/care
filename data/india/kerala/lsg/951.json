@@ -1,0 +1,196 @@
+{
+    "timeStamp": 1566348725652,
+    "date": "2019-08-21",
+    "name": "Athavanad  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Kuttipuram",
+    "area": "26.77km",
+    "localbody_code": "G100901",
+    "no_of_wards": 22,
+    "population": 30707,
+    "male": 14771,
+    "female": 15936,
+    "population_density": 1147,
+    "sex_ratio": 1079,
+    "literacy_rate": 85.14,
+    "literacy_rate_male": 89.22,
+    "literacy_rate_female": 81.06,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHANATHANI",
+            "person": {
+                "id": "2015095100101",
+                "name": "MOHAMMED KOTTAKKULATH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUNNATHALA",
+            "person": {
+                "id": "2015095100201",
+                "name": "SUHARA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERAKKAL",
+            "person": {
+                "id": "2015095100301",
+                "name": "ABDUL KAREEM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VETTICHIRA",
+            "person": {
+                "id": "2015095100401",
+                "name": "BALANKRISHNAN VAIDYAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAMBIVALAPP",
+            "person": {
+                "id": "2015095100501",
+                "name": "BASHEER THIRUTHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARIPPOL",
+            "person": {
+                "id": "2015095100601",
+                "name": "SAJIDA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATTARKALLU",
+            "person": {
+                "id": "2015095100701",
+                "name": "SALAM T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHOTTOOR",
+            "person": {
+                "id": "2015095100801",
+                "name": "MOHAMMED ISMAIL THAIKULATHIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015095100901",
+                "name": "IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARITHI",
+            "person": {
+                "id": "2015095101001",
+                "name": "NASEEMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVUNGAL",
+            "person": {
+                "id": "2015095101101",
+                "name": "SHEMEERA KAYALMADATHIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KATTILANGADI",
+            "person": {
+                "id": "2015095101201",
+                "name": "SURESH.M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANNEKKARA",
+            "person": {
+                "id": "2015095101301",
+                "name": "FAISAL K.T"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "A.K.K.NAGAR",
+            "person": {
+                "id": "2015095101401",
+                "name": "KUNHIKAMMU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "YATHEEMKHANA NAGAR",
+            "person": {
+                "id": "2015095101501",
+                "name": "ZEENATH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KURUMBATHUR",
+            "person": {
+                "id": "2015095101601",
+                "name": "ANITHA NAIR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KATTAMKUNNU",
+            "person": {
+                "id": "2015095101701",
+                "name": "ANITHA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOODASSERY",
+            "person": {
+                "id": "2015095101801",
+                "name": "THAHIRA BANU"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KARUVAMPADI",
+            "person": {
+                "id": "2015095101901",
+                "name": "MUNEERA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHELOOR",
+            "person": {
+                "id": "2015095102001",
+                "name": "KUNHAHAMMED"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KUTTIKALATHANI",
+            "person": {
+                "id": "2015095102101",
+                "name": "KADEEJA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PALLIPPARA",
+            "person": {
+                "id": "2015095102201",
+                "name": "MARIYAMU KARINGAPPARA"
+            }
+        }
+    ]
+}

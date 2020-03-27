@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346742623,
+    "date": "2019-08-21",
+    "name": "Neendoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Ettumanoor",
+    "area": "26km",
+    "localbody_code": "G050305",
+    "no_of_wards": 15,
+    "population": 20289,
+    "male": 10197,
+    "female": 10092,
+    "population_density": 780,
+    "sex_ratio": 990,
+    "literacy_rate": 95,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 93,
+    "president": "AGVIMALAKUTTYAMMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KURUMULLOOR",
+            "person": {
+                "id": "2015051700101",
+                "name": "THOMAS JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MOOZHIKULANGARA",
+            "person": {
+                "id": "2015051700201",
+                "name": "P B REMESAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAIRATHAPURAM",
+            "person": {
+                "id": "2015051700301",
+                "name": "VIJAYAPPAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "S K V NORTH",
+            "person": {
+                "id": "2015051700401",
+                "name": "SULABHA GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "S K V SOUTH",
+            "person": {
+                "id": "2015051700501",
+                "name": "M N UNNIKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ONAMTHURUTHU",
+            "person": {
+                "id": "2015051700601",
+                "name": "KUNJUMOL JOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUTTYANIKULANGARA",
+            "person": {
+                "id": "2015051700701",
+                "name": "BINDHU K S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAIPUZHA HOSPITAL WARD",
+            "person": {
+                "id": "2015051700801",
+                "name": "SINDHU K B"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAIPUZHA POSTOFFICE WARD",
+            "person": {
+                "id": "2015051700903",
+                "name": "SHIBU CHACKO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MEKKAVU",
+            "person": {
+                "id": "2015051701001",
+                "name": "A G VIMALAKUTTYAMMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SASTHANKAL",
+            "person": {
+                "id": "2015051701101",
+                "name": "N J ROSAMMA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUTTOMPURAM",
+            "person": {
+                "id": "2015051701201",
+                "name": "SAVITHA JOMON"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALATHURUTHU",
+            "person": {
+                "id": "2015051701301",
+                "name": "MINI KUNJUMON"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PRAVATTOM",
+            "person": {
+                "id": "2015051701401",
+                "name": "V K PRADEEPKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ST.MICHEL",
+            "person": {
+                "id": "2015051701501",
+                "name": "A C JACOB"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566345857656,
+    "date": "2019-08-21",
+    "name": "Andoorkonam  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Kzhakuttam",
+    "area": "13.96km",
+    "localbody_code": "G010701",
+    "no_of_wards": 18,
+    "population": 26201,
+    "male": 13783,
+    "female": 12418,
+    "population_density": 1877,
+    "sex_ratio": 901,
+    "literacy_rate": 89.78,
+    "literacy_rate_male": 94.9,
+    "literacy_rate_female": 84.07,
+    "president": "USHAKUMARIAMMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARICHARA",
+            "person": {
+                "id": "2015026800101",
+                "name": "KRISHNAN C"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLOOR",
+            "person": {
+                "id": "2015026800201",
+                "name": "JAYACHANDRAN V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOITHOORKONAM",
+            "person": {
+                "id": "2015026800301",
+                "name": "SEENATHUL MASEEDA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIRUVELLOOR",
+            "person": {
+                "id": "2015026800401",
+                "name": "USHAKUMARI AMMA R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANDOORKONAM",
+            "person": {
+                "id": "2015026800501",
+                "name": "MUHAMMED SHAFI M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEEZHAVOOR",
+            "person": {
+                "id": "2015026800601",
+                "name": "JAYAKUMARI S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAMBILPALAM",
+            "person": {
+                "id": "2015026800701",
+                "name": "SHIJI S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAICHIRA",
+            "person": {
+                "id": "2015026800801",
+                "name": "RAMESAN R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALLICHAVEEDU",
+            "person": {
+                "id": "2015026800901",
+                "name": "SIVAPRASAD B"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNINAKAM",
+            "person": {
+                "id": "2015026801001",
+                "name": "SHEEJA R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANIYAPURAM",
+            "person": {
+                "id": "2015026801101",
+                "name": "PRADEEP V KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ALUMMOODU",
+            "person": {
+                "id": "2015026801201",
+                "name": "BUSHRA NAVAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEKKEVILA",
+            "person": {
+                "id": "2015026801301",
+                "name": "KRISHNAN KUTTY A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VALIYAVEEDU",
+            "person": {
+                "id": "2015026801401",
+                "name": "MOHAMMED ASHARAF M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLIPPURAM",
+            "person": {
+                "id": "2015026801501",
+                "name": "VIJAYAKUMAR K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANDAL",
+            "person": {
+                "id": "2015026801601",
+                "name": "RASIYA VAHID"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "SREEPADAM",
+            "person": {
+                "id": "2015026801701",
+                "name": "SUNITHA M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MAITHANI",
+            "person": {
+                "id": "2015026801801",
+                "name": "PRABHA N"
+            }
+        }
+    ]
+}

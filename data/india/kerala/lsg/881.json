@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348421234,
+    "date": "2019-08-21",
+    "name": "Puducode  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "16.29km",
+    "localbody_code": "G091205",
+    "no_of_wards": 15,
+    "population": 18683,
+    "male": 9069,
+    "female": 9614,
+    "population_density": 1147,
+    "sex_ratio": 1060,
+    "literacy_rate": 78.37,
+    "literacy_rate_male": 86.57,
+    "literacy_rate_female": 7.85,
+    "president": "ISMAILP.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THIRUVADI",
+            "person": {
+                "id": "2015088100101",
+                "name": "SAJITHA N"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANAKKANNUR",
+            "person": {
+                "id": "2015088100201",
+                "name": "BINU K.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTOLA",
+            "person": {
+                "id": "2015088100301",
+                "name": "VIJAYAN N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHANDHAPPURA",
+            "person": {
+                "id": "2015088100401",
+                "name": "ISMAIL P.A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAPPADAM",
+            "person": {
+                "id": "2015088100501",
+                "name": "BALKIS A.M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THERUVU",
+            "person": {
+                "id": "2015088100601",
+                "name": "KANNAN K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THACHANADI",
+            "person": {
+                "id": "2015088100701",
+                "name": "SULFIKKAR ALI M.A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANJUMURI",
+            "person": {
+                "id": "2015088100801",
+                "name": "NILAVARNEESA V.A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GRAMAM",
+            "person": {
+                "id": "2015088100901",
+                "name": "DEVAKY R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "APPAKKAD",
+            "person": {
+                "id": "2015088101001",
+                "name": "RASIYA S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KEEZHA",
+            "person": {
+                "id": "2015088101101",
+                "name": "RAJANI MUKUNDHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALAMCODE",
+            "person": {
+                "id": "2015088101201",
+                "name": "SUMALA P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTARASSERY",
+            "person": {
+                "id": "2015088101301",
+                "name": "UDAYAN K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THEKKEPPOTTA",
+            "person": {
+                "id": "2015088101401",
+                "name": "KRISHNADAS M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AYYAPPANKUNNU",
+            "person": {
+                "id": "2015088101501",
+                "name": "SARITHA V.R"
+            }
+        }
+    ]
+}

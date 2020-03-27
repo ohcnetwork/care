@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566346179363,
+    "date": "2019-08-21",
+    "name": "Chithara  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chadayamanagalam",
+    "area": "57.7km",
+    "localbody_code": "G021101",
+    "no_of_wards": 23,
+    "population": 42206,
+    "male": 20449,
+    "female": 21757,
+    "population_density": 731,
+    "sex_ratio": 1064,
+    "literacy_rate": 88.16,
+    "literacy_rate_male": 92.77,
+    "literacy_rate_female": 83.88,
+    "president": "SUJITHAKAILAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AYIRAKUZHY",
+            "person": {
+                "id": "2015036500101",
+                "name": "SUJITHA KAILAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITHARA",
+            "person": {
+                "id": "2015036500201",
+                "name": "B.GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VENKODU",
+            "person": {
+                "id": "2015036500301",
+                "name": "PEZHUMMOODU SUNNY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALAVUPACHA",
+            "person": {
+                "id": "2015036500401",
+                "name": "RANJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARIPPAL",
+            "person": {
+                "id": "2015036500501",
+                "name": "SANDHYA S.U"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARARA",
+            "person": {
+                "id": "2015036500601",
+                "name": "A.ASLAM"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADATHARA",
+            "person": {
+                "id": "2015036500701",
+                "name": "NASEERA BEEVI M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MULLIKKADU",
+            "person": {
+                "id": "2015036500801",
+                "name": "UMAIBA SALAM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOLLAYIL",
+            "person": {
+                "id": "2015036500901",
+                "name": "SAIFUDEEN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SATHYAMANGALAM",
+            "person": {
+                "id": "2015036501001",
+                "name": "K.P.GAGARIN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAKKAMALA",
+            "person": {
+                "id": "2015036501101",
+                "name": "RASHEEDA BEEVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KILITHATTU",
+            "person": {
+                "id": "2015036501201",
+                "name": "LIMSY RAMANAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KURAKKODU",
+            "person": {
+                "id": "2015036501301",
+                "name": "P.SHEEJA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHIRAVOOR",
+            "person": {
+                "id": "2015036501401",
+                "name": "KULATHARA SHYJU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANCODE",
+            "person": {
+                "id": "2015036501501",
+                "name": "LEENA OMANADEVAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ERAPPIL",
+            "person": {
+                "id": "2015036501601",
+                "name": "V.R.MANJU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VATTAMUTTAM",
+            "person": {
+                "id": "2015036501701",
+                "name": "VIJAYAN.B"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015036501801",
+                "name": "SUDHAKARAN.V"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MATHIRA",
+            "person": {
+                "id": "2015036501901",
+                "name": "B.ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MANDIRAMKUNNU",
+            "person": {
+                "id": "2015036502001",
+                "name": "KOTTAPPURAM SASI"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KANAKAMALA",
+            "person": {
+                "id": "2015036502101",
+                "name": "SINI.S"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THOOTTIKKAL",
+            "person": {
+                "id": "2015036502201",
+                "name": "MANOJKUMAR.R.S"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MUTHAYIL",
+            "person": {
+                "id": "2015036502301",
+                "name": "FASEELA BEEVI.A"
+            }
+        }
+    ]
+}

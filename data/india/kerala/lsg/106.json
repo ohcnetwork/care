@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345206481,
+    "date": "2019-08-21",
+    "name": "Chittur  Block Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Chittur",
+    "area": "261.24km",
+    "localbody_code": "B090900",
+    "no_of_wards": 14,
+    "population": 149821,
+    "male": 74042,
+    "female": 75779,
+    "population_density": 574,
+    "sex_ratio": 1023,
+    "literacy_rate": 68.5,
+    "literacy_rate_male": 77.9,
+    "literacy_rate_female": 59.39,
+    "president": "MADHURIPADMANABHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLATHERI",
+            "person": {
+                "id": "2015010600101",
+                "name": "M NAZEEMA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEYTHALA",
+            "person": {
+                "id": "2015010600201",
+                "name": "RAMESHAN D"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOZHIPARA",
+            "person": {
+                "id": "2015010600301",
+                "name": "M PUSHPA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OZHALAPATHY",
+            "person": {
+                "id": "2015010600401",
+                "name": "N ANANDA KUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ERUTHENPATHY",
+            "person": {
+                "id": "2015010600501",
+                "name": "VIJAYAKUMARI C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOZHINJAMPARA",
+            "person": {
+                "id": "2015010600601",
+                "name": "S VIMOCHINI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANNAMADA",
+            "person": {
+                "id": "2015010600701",
+                "name": "M GEETHARAJU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MEENAKSHIPURAM",
+            "person": {
+                "id": "2015010600801",
+                "name": "R PANKAJAKSHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VANDITHAVALAM",
+            "person": {
+                "id": "2015010600901",
+                "name": "MADHURI PADMANABHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANAKKAMPARA",
+            "person": {
+                "id": "2015010601001",
+                "name": "JAYA SURESH M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NATTUKAL",
+            "person": {
+                "id": "2015010601101",
+                "name": "N K MANIKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NALLEPILLY",
+            "person": {
+                "id": "2015010601201",
+                "name": "DHANYA M V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALUKOOTTIYAL",
+            "person": {
+                "id": "2015010601301",
+                "name": "SWAMINATHAN K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ELAPPULLY",
+            "person": {
+                "id": "2015010601401",
+                "name": "K HARIDAS"
+            }
+        }
+    ]
+}

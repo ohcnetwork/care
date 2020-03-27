@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348181730,
+    "date": "2019-08-21",
+    "name": "Koppam  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Pattambi",
+    "area": "25.85km",
+    "localbody_code": "G090201",
+    "no_of_wards": 17,
+    "population": 22286,
+    "male": 10680,
+    "female": 11606,
+    "population_density": 862,
+    "sex_ratio": 1087,
+    "literacy_rate": 88.69,
+    "literacy_rate_male": 92.34,
+    "literacy_rate_female": 85.43,
+    "president": "SUMITHA.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SOUTH PULASSERI",
+            "person": {
+                "id": "2015081100101",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PULASSERI",
+            "person": {
+                "id": "2015081100201",
+                "name": "SOUMYA.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOPPAM",
+            "person": {
+                "id": "2015081100301",
+                "name": "T.P NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOPPAM NORTH",
+            "person": {
+                "id": "2015081100401",
+                "name": "RAHIMA NAHAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PRABHAPURAM",
+            "person": {
+                "id": "2015081100501",
+                "name": "SAIFUNNEESA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANNENGODE",
+            "person": {
+                "id": "2015081100601",
+                "name": "GOPALA KRISHNAN. K.C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ERAYUR",
+            "person": {
+                "id": "2015081100701",
+                "name": "VANAJA.N"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEDUMBRAKKAD",
+            "person": {
+                "id": "2015081100801",
+                "name": "RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIZHAKKEKARA",
+            "person": {
+                "id": "2015081100901",
+                "name": "MARAKKAR. N.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMAYUR",
+            "person": {
+                "id": "2015081101001",
+                "name": "MOHAMMED KUTTY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VETTIKKAD",
+            "person": {
+                "id": "2015081101101",
+                "name": "FOUSIYA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THRITHALAKOPPAM",
+            "person": {
+                "id": "2015081101201",
+                "name": "KRISHNADASAN.P.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANSAR NAGAR",
+            "person": {
+                "id": "2015081101301",
+                "name": "DHANYA.K.P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MELMURI",
+            "person": {
+                "id": "2015081101401",
+                "name": "SAJITHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KIZHUMURI",
+            "person": {
+                "id": "2015081101501",
+                "name": "ABDU SAMAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOPPAM SOUTH",
+            "person": {
+                "id": "2015081101601",
+                "name": "SUMITHA. P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VIYATNAMPADI",
+            "person": {
+                "id": "2015081101701",
+                "name": "IBRAHIM KUTTY"
+            }
+        }
+    ]
+}

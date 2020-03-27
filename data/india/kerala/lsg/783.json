@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566348089374,
+    "date": "2019-08-21",
+    "name": "Vellangallur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vellangallur",
+    "area": "26.61km",
+    "localbody_code": "G081304",
+    "no_of_wards": 21,
+    "population": 32846,
+    "male": 15599,
+    "female": 17247,
+    "population_density": 1234,
+    "sex_ratio": 1105,
+    "literacy_rate": 88.19,
+    "literacy_rate_male": 93.22,
+    "literacy_rate_female": 83.76,
+    "president": "PRASANNAANILKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNNATHUR",
+            "person": {
+                "id": "2015078300101",
+                "name": "REKHA SURESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELAYANAD",
+            "person": {
+                "id": "2015078300201",
+                "name": "RENUKA SUBHASH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ETTANGADI",
+            "person": {
+                "id": "2015078300301",
+                "name": "SHAMSU.V.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VELLAKKAD",
+            "person": {
+                "id": "2015078300401",
+                "name": "RAMYA.P.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAKKALAPPADI",
+            "person": {
+                "id": "2015078300501",
+                "name": "MINI RAJAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KONATHUKUNNU",
+            "person": {
+                "id": "2015078300601",
+                "name": "M.K.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUNCHAPARAMBU",
+            "person": {
+                "id": "2015078300701",
+                "name": "JAYAN KAYYALAKAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALAPRAKUNNU",
+            "person": {
+                "id": "2015078300801",
+                "name": "NISHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARUMATHRA",
+            "person": {
+                "id": "2015078300901",
+                "name": "SEEMANDINI SUNDARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEDUNGANATHUKUNNU",
+            "person": {
+                "id": "2015078301001",
+                "name": "NASEEMA NAZAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADALAYI",
+            "person": {
+                "id": "2015078301101",
+                "name": "KADEEJA ALAVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARUPPADANNA",
+            "person": {
+                "id": "2015078301201",
+                "name": "SULEKHA ABDULLAKUTTY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PEZHUMKADU",
+            "person": {
+                "id": "2015078301301",
+                "name": "AMINABI.T.U"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOVATHUMKADAVU",
+            "person": {
+                "id": "2015078301401",
+                "name": "K.H.ABDUL NAZAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "BRALAM",
+            "person": {
+                "id": "2015078301501",
+                "name": "SHIBIN.A.T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AMARIPPADAM",
+            "person": {
+                "id": "2015078301601",
+                "name": "K.S.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VALLIVATTOM EAST",
+            "person": {
+                "id": "2015078301701",
+                "name": "A.K.ABDUL MAJEED"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHIRATTAKUNNU",
+            "person": {
+                "id": "2015078301801",
+                "name": "PRASANNA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PAINGODU",
+            "person": {
+                "id": "2015078301901",
+                "name": "UNNIKRISHNAN KUTTIPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ALUKKATHARA",
+            "person": {
+                "id": "2015078302001",
+                "name": "MANI MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VELLANGALLUR",
+            "person": {
+                "id": "2015078302101",
+                "name": "SHAMMY JOSEPH"
+            }
+        }
+    ]
+}

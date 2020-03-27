@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346781757,
+    "date": "2019-08-21",
+    "name": "Bharananganam  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Lalam",
+    "area": "27.04km",
+    "localbody_code": "G050501",
+    "no_of_wards": 13,
+    "population": 16005,
+    "male": 7949,
+    "female": 8056,
+    "population_density": 592,
+    "sex_ratio": 1013,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "MATHEWKUTTYMATHEW",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PRAVITHANAM",
+            "person": {
+                "id": "2015052600101",
+                "name": "JESSY JOSE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ULLANAD",
+            "person": {
+                "id": "2015052600201",
+                "name": "SABU A THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ALAMATTOM",
+            "person": {
+                "id": "2015052600301",
+                "name": "MOLLY BABY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAYYOOR",
+            "person": {
+                "id": "2015052600401",
+                "name": "C.R. NARAYANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANJIRAMATTOM",
+            "person": {
+                "id": "2015052600501",
+                "name": "SAROJINI RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHOONDACHERRY",
+            "person": {
+                "id": "2015052600601",
+                "name": "JOSEPH SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BHARANANGANAM",
+            "person": {
+                "id": "2015052600701",
+                "name": "MATHEWKUTTY MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARAVAKULAM",
+            "person": {
+                "id": "2015052600801",
+                "name": "ALPHONSA JOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAPPADY",
+            "person": {
+                "id": "2015052600901",
+                "name": "BEENA SAJI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AREEPARA",
+            "person": {
+                "id": "2015052601001",
+                "name": "TREESA SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PAMBOORAMPARA",
+            "person": {
+                "id": "2015052601101",
+                "name": "ANUMOL MATHEW"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELAMTHOTTAM",
+            "person": {
+                "id": "2015052601201",
+                "name": "VALSAMMA JOHN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ALANAD",
+            "person": {
+                "id": "2015052601301",
+                "name": "VINOD CHERIAN"
+            }
+        }
+    ]
+}

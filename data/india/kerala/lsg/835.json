@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348270828,
+    "date": "2019-08-21",
+    "name": "Karimba  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "69.22km",
+    "localbody_code": "G090502",
+    "no_of_wards": 17,
+    "population": 22483,
+    "male": 11066,
+    "female": 11417,
+    "population_density": 325,
+    "sex_ratio": 1032,
+    "literacy_rate": 86.62,
+    "literacy_rate_male": 91.37,
+    "literacy_rate_female": 82.03,
+    "president": "JAYASREE.C.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAPPADAM",
+            "person": {
+                "id": "2015083500101",
+                "name": "RAJI PAZHAYAKALAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MARUTHAMKAD",
+            "person": {
+                "id": "2015083500201",
+                "name": "THANKACHAN .M.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAKKODE",
+            "person": {
+                "id": "2015083500301",
+                "name": "SUMALATHA.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLADIKODE",
+            "person": {
+                "id": "2015083500401",
+                "name": "PRIYA.T"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALIPARAMBU",
+            "person": {
+                "id": "2015083500501",
+                "name": "BEENA CHANDHRAKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOORIKKUNNU",
+            "person": {
+                "id": "2015083500601",
+                "name": "GIREESH.K.C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHOORAKKODE",
+            "person": {
+                "id": "2015083500701",
+                "name": "MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAKKAD",
+            "person": {
+                "id": "2015083500801",
+                "name": "MANIKANDAN.K.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MELAMADAM",
+            "person": {
+                "id": "2015083500901",
+                "name": "NISHA MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANJIRANI",
+            "person": {
+                "id": "2015083501001",
+                "name": "JAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUTTIYODE",
+            "person": {
+                "id": "2015083501101",
+                "name": "SREEJA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VETTOM",
+            "person": {
+                "id": "2015083501201",
+                "name": "MUHAMMED HARIS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERULLY",
+            "person": {
+                "id": "2015083501301",
+                "name": "HASEENA RAFEEK"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PANAYANPADAM",
+            "person": {
+                "id": "2015083501401",
+                "name": "JAYASREE.C.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALIYODE",
+            "person": {
+                "id": "2015083501501",
+                "name": "BINDU PREMAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EDAKKURUSSI",
+            "person": {
+                "id": "2015083501601",
+                "name": "ANTONY MATHIPPURAM"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALALAM",
+            "person": {
+                "id": "2015083501701",
+                "name": "JIMMI MATHEW"
+            }
+        }
+    ]
+}

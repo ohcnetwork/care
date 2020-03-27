@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345710134,
+    "date": "2019-08-21",
+    "name": "Ottoor  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Varkala",
+    "area": "9.47km",
+    "localbody_code": "G010105",
+    "no_of_wards": 13,
+    "population": 13142,
+    "male": 6088,
+    "female": 7054,
+    "population_density": 1388,
+    "sex_ratio": 1159,
+    "literacy_rate": 89.44,
+    "literacy_rate_male": 94.48,
+    "literacy_rate_female": 85.16,
+    "president": "SUBHASHR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NJEKKADE",
+            "person": {
+                "id": "2015022900101",
+                "name": "AJI N"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MATHURAKODE",
+            "person": {
+                "id": "2015022900201",
+                "name": "DEEPA S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHENNANKODE",
+            "person": {
+                "id": "2015022900301",
+                "name": "PRAMEELA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLAMBALAM",
+            "person": {
+                "id": "2015022900401",
+                "name": "REHANA NAZEER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MULLARAMKODE",
+            "person": {
+                "id": "2015022900501",
+                "name": "SREEKUMAR B"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VETTIMANKONAM",
+            "person": {
+                "id": "2015022900601",
+                "name": "DAISY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THOPPUVILA",
+            "person": {
+                "id": "2015022900701",
+                "name": "RATHEESH G"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NELLIKODE",
+            "person": {
+                "id": "2015022900801",
+                "name": "SYAM KUMAR S S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015022900901",
+                "name": "SANTHOSH C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "OTTOOR KRISHIBHAVAN",
+            "person": {
+                "id": "2015022901001",
+                "name": "SUBHASH R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THOPPIL",
+            "person": {
+                "id": "2015022901101",
+                "name": "SUNITHAKUMARI S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOONGODE",
+            "person": {
+                "id": "2015022901201",
+                "name": "SUCHITHRA B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015022901301",
+                "name": "AJITHA RAJAMANY"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566348338973,
+    "date": "2019-08-21",
+    "name": "Eruthenpathy  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Chittur",
+    "area": "36.93km",
+    "localbody_code": "G090901",
+    "no_of_wards": 14,
+    "population": 16684,
+    "male": 8304,
+    "female": 8380,
+    "population_density": 452,
+    "sex_ratio": 1009,
+    "literacy_rate": 63.26,
+    "literacy_rate_male": 73.95,
+    "literacy_rate_female": 52.66,
+    "president": "P.RAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERUTHENPATHY",
+            "person": {
+                "id": "2015086000101",
+                "name": "MADHU.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYYAMMARKALAI",
+            "person": {
+                "id": "2015086000201",
+                "name": "K.KAVITHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VILLOONNI",
+            "person": {
+                "id": "2015086000301",
+                "name": "SARASWATHY.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANGAPPALLAM",
+            "person": {
+                "id": "2015086000401",
+                "name": "K.BABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NADUPPUNI",
+            "person": {
+                "id": "2015086000501",
+                "name": "R.JAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARUMANDAKOUNDANOOR",
+            "person": {
+                "id": "2015086000601",
+                "name": "P.RAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MOONGILMADA",
+            "person": {
+                "id": "2015086000701",
+                "name": "M.SARASWATHY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUMARANOOR",
+            "person": {
+                "id": "2015086000801",
+                "name": "R.KARTHIKEYANI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SANJAY NAGAR",
+            "person": {
+                "id": "2015086000901",
+                "name": "R.SHIVAKAMI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VANNAMADA",
+            "person": {
+                "id": "2015086001001",
+                "name": "P.KRISHNARAJ"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MALAYANDIKOUNDANOOR",
+            "person": {
+                "id": "2015086001101",
+                "name": "S.RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KULAPPURA",
+            "person": {
+                "id": "2015086001201",
+                "name": "KALAIVANI.A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RVP.PUDUR",
+            "person": {
+                "id": "2015086001301",
+                "name": "R.C.SAMBATH KUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PIDARIMEDU",
+            "person": {
+                "id": "2015086001401",
+                "name": "JAINE ROSALI .A"
+            }
+        }
+    ]
+}

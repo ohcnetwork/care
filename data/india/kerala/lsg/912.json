@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348573156,
+    "date": "2019-08-21",
+    "name": "Tuvvur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "31.38km",
+    "localbody_code": "G100206",
+    "no_of_wards": 17,
+    "population": 26786,
+    "male": 12975,
+    "female": 13811,
+    "population_density": 882,
+    "sex_ratio": 1064,
+    "literacy_rate": 80.24,
+    "literacy_rate_male": 75.76,
+    "literacy_rate_female": 84.45,
+    "president": "T.BALAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARIKUZHI",
+            "person": {
+                "id": "2015091200101",
+                "name": "AKBAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALAKKALVETTA",
+            "person": {
+                "id": "2015091200201",
+                "name": "E.PRASANNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMAPOYIL",
+            "person": {
+                "id": "2015091200301",
+                "name": "T. BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NARIYAKKAMPOYIL",
+            "person": {
+                "id": "2015091200401",
+                "name": "GIREESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NEELANCHERY",
+            "person": {
+                "id": "2015091200501",
+                "name": "T. MUHAMMED SHIHABUDHEEN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "OOTHALAKKUNNU",
+            "person": {
+                "id": "2015091200601",
+                "name": "THASLEENA V."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KILIKKUNNU",
+            "person": {
+                "id": "2015091200701",
+                "name": "RAMLATH N."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAKKARA",
+            "person": {
+                "id": "2015091200801",
+                "name": "OV. ABDUL BASHEER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THARIPRAMUNDA",
+            "person": {
+                "id": "2015091200901",
+                "name": "RAJANI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MEMPUZHA",
+            "person": {
+                "id": "2015091201001",
+                "name": "SALIYA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AKKARAPPURAM",
+            "person": {
+                "id": "2015091201101",
+                "name": "VIMALAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MATHOTH",
+            "person": {
+                "id": "2015091201201",
+                "name": "PA.MAJEED"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEKKUMPURAM",
+            "person": {
+                "id": "2015091201301",
+                "name": "ABDUL MAJEED"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MARUTHATH",
+            "person": {
+                "id": "2015091201401",
+                "name": "UMMUSALMA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THUVVUR",
+            "person": {
+                "id": "2015091201501",
+                "name": "MOHAMMED C."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PAYIPPULL",
+            "person": {
+                "id": "2015091201601",
+                "name": "GIRIJA C.M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AKKARAKKULAM",
+            "person": {
+                "id": "2015091201701",
+                "name": "JYOTHI"
+            }
+        }
+    ]
+}

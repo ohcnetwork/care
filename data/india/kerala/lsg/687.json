@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347303350,
+    "date": "2019-08-21",
+    "name": "Keerampara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "28.74km",
+    "localbody_code": "G071107",
+    "no_of_wards": 13,
+    "population": 12905,
+    "male": 6472,
+    "female": 6433,
+    "population_density": 449,
+    "sex_ratio": 993,
+    "literacy_rate": 88.13,
+    "literacy_rate_male": 92.35,
+    "literacy_rate_female": 83.9,
+    "president": "BENNYPAUL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHENKARA",
+            "person": {
+                "id": "2015068700101",
+                "name": "SINI YACOB"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUNNEKKAD NORTH",
+            "person": {
+                "id": "2015068700201",
+                "name": "JESSY JOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOORIKULAM",
+            "person": {
+                "id": "2015068700301",
+                "name": "BINDU MOHANDAS (TRESA JULIE)"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VELIELCHAL",
+            "person": {
+                "id": "2015068700401",
+                "name": "BIJU CHERIAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALAMATTAM",
+            "person": {
+                "id": "2015068700501",
+                "name": "BENNY PAUL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTTATHUKANDAM",
+            "person": {
+                "id": "2015068700601",
+                "name": "LISSIE JOHN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUNNEKKAD SOUTH",
+            "person": {
+                "id": "2015068700701",
+                "name": "BINOY  C  PULLAN CHACKO"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NADUKANI",
+            "person": {
+                "id": "2015068700801",
+                "name": "BEENA JOSHY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHEMBIKKOD",
+            "person": {
+                "id": "2015068700901",
+                "name": "BIJI JOHNY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARAD",
+            "person": {
+                "id": "2015068701001",
+                "name": "VARGHESE.V.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "OONJAPPARA",
+            "person": {
+                "id": "2015068701101",
+                "name": "AYYAPPAN M.C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KEERAMPARA",
+            "person": {
+                "id": "2015068701201",
+                "name": "DIVYA NAIJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARIYILAPPARA",
+            "person": {
+                "id": "2015068701301",
+                "name": "SABU VARGHESE"
+            }
+        }
+    ]
+}

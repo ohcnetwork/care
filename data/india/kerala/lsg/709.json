@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347395096,
+    "date": "2019-08-21",
+    "name": "Ayavana  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Muvattupuzha",
+    "area": "29.47km",
+    "localbody_code": "G071406",
+    "no_of_wards": 14,
+    "population": 17856,
+    "male": 8986,
+    "female": 8870,
+    "population_density": 606,
+    "sex_ratio": 987,
+    "literacy_rate": 90.48,
+    "literacy_rate_male": 93.95,
+    "literacy_rate_female": 87.34,
+    "president": "M.M.ALIYAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUNNAMATTAM",
+            "person": {
+                "id": "2015070900101",
+                "name": "AJEESH PALLIPPATTU PUTHENPURA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADUMPIDI",
+            "person": {
+                "id": "2015070900201",
+                "name": "DEEPA GIGIMON"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANCHELPETTY",
+            "person": {
+                "id": "2015070900301",
+                "name": "SINDHU BENNY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALAMBOOR",
+            "person": {
+                "id": "2015070900401",
+                "name": "M.M.ALIYAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SIDHANPADI",
+            "person": {
+                "id": "2015070900501",
+                "name": "JULI SUNIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERAMANGALAM",
+            "person": {
+                "id": "2015070900601",
+                "name": "BABY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAVAKKAD",
+            "person": {
+                "id": "2015070900701",
+                "name": "SABU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANAPPUZHA",
+            "person": {
+                "id": "2015070900801",
+                "name": "JIJI BIJO"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AYAVANA",
+            "person": {
+                "id": "2015070900901",
+                "name": "PAUL KOTTANCHARI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ENANALLOOR",
+            "person": {
+                "id": "2015070901001",
+                "name": "MERCY GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULLAPPUZHACHAL",
+            "person": {
+                "id": "2015070901101",
+                "name": "REBY JOSE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ENANALLOOR WEST",
+            "person": {
+                "id": "2015070901201",
+                "name": "SIVADAS K.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADUKKANCHIRA",
+            "person": {
+                "id": "2015070901301",
+                "name": "GRACY SUNNY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTANCHERY",
+            "person": {
+                "id": "2015070901401",
+                "name": "RANI REJI"
+            }
+        }
+    ]
+}

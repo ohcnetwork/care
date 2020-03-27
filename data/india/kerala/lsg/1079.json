@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566349145773,
+    "date": "2019-08-21",
+    "name": "Nenmeni  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Sulthanbathery",
+    "area": "69.38km",
+    "localbody_code": "G120302",
+    "no_of_wards": 23,
+    "population": 37045,
+    "male": 18448,
+    "female": 18597,
+    "population_density": 534,
+    "sex_ratio": 1008,
+    "literacy_rate": 83.92,
+    "literacy_rate_male": 88.59,
+    "literacy_rate_female": 79.29,
+    "president": "KCPATHMANABAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMBUKUTHY",
+            "person": {
+                "id": "2015107900101",
+                "name": "U K PREMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MALAVAYAL",
+            "person": {
+                "id": "2015107900201",
+                "name": "M M GEORGE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUNTHANI",
+            "person": {
+                "id": "2015107900301",
+                "name": "P K SATHAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MALANKARA",
+            "person": {
+                "id": "2015107900401",
+                "name": "SUJA JAMES"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHANKUNNU",
+            "person": {
+                "id": "2015107900501",
+                "name": "P K RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOLIYADI",
+            "person": {
+                "id": "2015107900601",
+                "name": "RAGHU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERUMADU",
+            "person": {
+                "id": "2015107900701",
+                "name": "BINDU MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAZHOOR",
+            "person": {
+                "id": "2015107900801",
+                "name": "LALITHA KUNJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNDAKOLLY",
+            "person": {
+                "id": "2015107900901",
+                "name": "MALIKA SOMASEKHARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EAST CHEERAL",
+            "person": {
+                "id": "2015107901001",
+                "name": "MINI THOMAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAMBIARKUNNU",
+            "person": {
+                "id": "2015107901101",
+                "name": "K RAJAGOPALAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEERAL",
+            "person": {
+                "id": "2015107901201",
+                "name": "SARALA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALLINKARA",
+            "person": {
+                "id": "2015107901301",
+                "name": "SATHI REJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THAZHATHOOR",
+            "person": {
+                "id": "2015107901401",
+                "name": "K C KUNHIKOYA THANGAL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANGALAM",
+            "person": {
+                "id": "2015107901502",
+                "name": "K C PATHMANABAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MADAKKARA",
+            "person": {
+                "id": "2015107901601",
+                "name": "SHAJI PADIPARAMB"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALAKKUNI",
+            "person": {
+                "id": "2015107901701",
+                "name": "SUSAN ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHULLIYODE",
+            "person": {
+                "id": "2015107901801",
+                "name": "ANITHA KOTTAYIL"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THALOOR",
+            "person": {
+                "id": "2015107901901",
+                "name": "SABU KUZHIMALAM"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KARADIPPARA",
+            "person": {
+                "id": "2015107902001",
+                "name": "P M RAFEEQUE"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "THOVARIMALA",
+            "person": {
+                "id": "2015107902101",
+                "name": "SWAPNA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MALIKA",
+            "person": {
+                "id": "2015107902201",
+                "name": "MARY TEACHER"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "EDAKKAL",
+            "person": {
+                "id": "2015107902301",
+                "name": "GEETHA SATHYANATHAN"
+            }
+        }
+    ]
+}

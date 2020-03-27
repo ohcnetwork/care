@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346293874,
+    "date": "2019-08-21",
+    "name": "Ranni Pazhavangadi  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Ranni",
+    "area": "53.38km",
+    "localbody_code": "G030501",
+    "no_of_wards": 17,
+    "population": 24334,
+    "male": 11974,
+    "female": 12360,
+    "population_density": 456,
+    "sex_ratio": 1032,
+    "literacy_rate": 96.18,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 95.39,
+    "president": "JOSEPHKURIAKOSE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANAVELIKUZHI",
+            "person": {
+                "id": "2015039700101",
+                "name": "JOEMON C A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MAKKAPUZHA",
+            "person": {
+                "id": "2015039700201",
+                "name": "LALY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAKATHANAM",
+            "person": {
+                "id": "2015039700301",
+                "name": "K N RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNAMKARA",
+            "person": {
+                "id": "2015039700401",
+                "name": "T G THANKAPPANPILLAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHETHACKAL",
+            "person": {
+                "id": "2015039700501",
+                "name": "ABRAHAM (ANIL THUNDIYIL)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEERATTUKAV",
+            "person": {
+                "id": "2015039700601",
+                "name": "JOSEPH KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARIKULAM",
+            "person": {
+                "id": "2015039700701",
+                "name": "LIJI CHACKO"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANJIRATHAMALA",
+            "person": {
+                "id": "2015039700801",
+                "name": "BETTSY K OOMMEN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OZHUVANPARA",
+            "person": {
+                "id": "2015039700901",
+                "name": "ELSY MATHEW"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUKKALUMON",
+            "person": {
+                "id": "2015039701001",
+                "name": "ANITHA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOTHIRAVAYAL",
+            "person": {
+                "id": "2015039701101",
+                "name": "SHYNI RAJEEV"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "IYTHALA",
+            "person": {
+                "id": "2015039701201",
+                "name": "BOBBY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "COLLEGETHADOM",
+            "person": {
+                "id": "2015039701301",
+                "name": "ANI SURESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ATTINBHAGAM",
+            "person": {
+                "id": "2015039701401",
+                "name": "BINIT MATHEW"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ITTIYAPPARA",
+            "person": {
+                "id": "2015039701501",
+                "name": "PONNI THOMAS"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "POOZHIKUNNU",
+            "person": {
+                "id": "2015039701601",
+                "name": "ANU T SAMUEL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MANNAMARUTHY",
+            "person": {
+                "id": "2015039701701",
+                "name": "BINU C MATHEW"
+            }
+        }
+    ]
+}

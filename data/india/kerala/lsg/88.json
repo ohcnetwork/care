@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345137420,
+    "date": "2019-08-21",
+    "name": "Thalikulam  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Thalikkulam",
+    "area": "65.68km",
+    "localbody_code": "B080800",
+    "no_of_wards": 13,
+    "population": 123228,
+    "male": 57766,
+    "female": 65462,
+    "population_density": 1876,
+    "sex_ratio": 1133,
+    "literacy_rate": 90.4,
+    "literacy_rate_male": 94.14,
+    "literacy_rate_female": 87.18,
+    "president": "SUBASHINIMAHADEVAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHETTUVA",
+            "person": {
+                "id": "2015008800102",
+                "name": "NOUSHAD KOTTILINGAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYIRAMKANNI",
+            "person": {
+                "id": "2015008800201",
+                "name": "LEENA RAMANATHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VATANAPPALLY",
+            "person": {
+                "id": "2015008800301",
+                "name": "SULEKHA JAMALU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "TALIKULAM",
+            "person": {
+                "id": "2015008800401",
+                "name": "SASIKUMAR E P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THRIPRAYAR",
+            "person": {
+                "id": "2015008800501",
+                "name": "REJINI BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALAPPAD",
+            "person": {
+                "id": "2015008800601",
+                "name": "SUBASHINI MAHADEVAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EDAMUTTAM",
+            "person": {
+                "id": "2015008800701",
+                "name": "SARATH KUMAR P M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAZHIMBRAM",
+            "person": {
+                "id": "2015008800801",
+                "name": "YADUKRISHNA K J"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUTHAKUNNAM",
+            "person": {
+                "id": "2015008800901",
+                "name": "GEETHA P K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NAMBIKKADAVU",
+            "person": {
+                "id": "2015008801001",
+                "name": "SHINE T V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PATTILAGADI",
+            "person": {
+                "id": "2015008801101",
+                "name": "VASANTHI K B"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POKKACHERI",
+            "person": {
+                "id": "2015008801201",
+                "name": "SARADA PARAMESWARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIRUMAGALAM",
+            "person": {
+                "id": "2015008801301",
+                "name": "PARATHAN DASAN"
+            }
+        }
+    ]
+}

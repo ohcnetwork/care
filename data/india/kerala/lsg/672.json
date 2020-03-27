@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347242771,
+    "date": "2019-08-21",
+    "name": "Chottanikkara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Mullamthuruthy",
+    "area": "12.68km",
+    "localbody_code": "G070903",
+    "no_of_wards": 14,
+    "population": 16109,
+    "male": 8063,
+    "female": 8046,
+    "population_density": 1270,
+    "sex_ratio": 997,
+    "literacy_rate": 93.19,
+    "literacy_rate_male": 96.84,
+    "literacy_rate_female": 89.57,
+    "president": "RAMANIJANAKAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADUNGAMANGALAM",
+            "person": {
+                "id": "2015067200101",
+                "name": "PUSHPA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALLIMALA",
+            "person": {
+                "id": "2015067200201",
+                "name": "JOHNSON THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBADIMALA",
+            "person": {
+                "id": "2015067200301",
+                "name": "JULIET T.BABY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHOTTANIKKARA",
+            "person": {
+                "id": "2015067200401",
+                "name": "LATHA SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEKKINETHUNIRAPPU",
+            "person": {
+                "id": "2015067200501",
+                "name": "ELIYAS JOHN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIDANGAYAM",
+            "person": {
+                "id": "2015067200601",
+                "name": "JAYA SIVARAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THALACODE",
+            "person": {
+                "id": "2015067200701",
+                "name": "DILEEP V.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALACE",
+            "person": {
+                "id": "2015067200801",
+                "name": "ADV.REEZ PUTHENVEETTIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ERUVELI",
+            "person": {
+                "id": "2015067200901",
+                "name": "RAMANI JANAKAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VATTUKKUNNU",
+            "person": {
+                "id": "2015067201001",
+                "name": "SHAJI GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANJAKKAD",
+            "person": {
+                "id": "2015067201101",
+                "name": "PRADEEP KUMAR M.K."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANICHIRA",
+            "person": {
+                "id": "2015067201201",
+                "name": "KARTHIYAYANI VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHANTHAPARAMBU",
+            "person": {
+                "id": "2015067201301",
+                "name": "OMANA SASI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUREEKKAD",
+            "person": {
+                "id": "2015067201401",
+                "name": "BIJU CHERIAN"
+            }
+        }
+    ]
+}

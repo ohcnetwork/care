@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345084009,
+    "date": "2019-08-21",
+    "name": "Edappally  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Edappally",
+    "area": "50.97km",
+    "localbody_code": "B070600",
+    "no_of_wards": 13,
+    "population": 87241,
+    "male": 43686,
+    "female": 43555,
+    "population_density": 1712,
+    "sex_ratio": 997,
+    "literacy_rate": 92.49,
+    "literacy_rate_male": 95.49,
+    "literacy_rate_female": 89.5,
+    "president": "MRANTONY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADAPPURAM",
+            "person": {
+                "id": "2015007100101",
+                "name": "SYAMALA SHIBU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARTTHEDAM",
+            "person": {
+                "id": "2015007100201",
+                "name": "LILLY ALBERT"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALIYAKADAMAKUDY",
+            "person": {
+                "id": "2015007100301",
+                "name": "SEENA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTHAD",
+            "person": {
+                "id": "2015007100401",
+                "name": "E K PUSHKARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "HEALTH CENTRE",
+            "person": {
+                "id": "2015007100501",
+                "name": "AUGUSTINE JOHNSON"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALAM",
+            "person": {
+                "id": "2015007100601",
+                "name": "M R ANTONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHITTOOR",
+            "person": {
+                "id": "2015007100701",
+                "name": "ROSEY VINCY DERIS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MULAVUKAD NORTH",
+            "person": {
+                "id": "2015007100801",
+                "name": "SELIN CHARLES"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PONNARIMANGALAM",
+            "person": {
+                "id": "2015007100901",
+                "name": "K G MANOJ"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALLARPADAM",
+            "person": {
+                "id": "2015007101001",
+                "name": "BINDU SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "LIGHT HOUSE",
+            "person": {
+                "id": "2015007101101",
+                "name": "V A JOSEPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHUVYPE",
+            "person": {
+                "id": "2015007101201",
+                "name": "NAFEESA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MALIPPURAM BEACH",
+            "person": {
+                "id": "2015007101301",
+                "name": "K G DONO"
+            }
+        }
+    ]
+}

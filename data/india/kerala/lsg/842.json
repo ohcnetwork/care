@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566348290962,
+    "date": "2019-08-21",
+    "name": "Agali  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Attappady",
+    "area": "139km",
+    "localbody_code": "G090601",
+    "no_of_wards": 21,
+    "population": 32738,
+    "male": 16433,
+    "female": 16305,
+    "population_density": 236,
+    "sex_ratio": 992,
+    "literacy_rate": 69.45,
+    "literacy_rate_male": 74.84,
+    "literacy_rate_female": 64.08,
+    "president": "SREELAKSHMISREEKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHINDAKKI",
+            "person": {
+                "id": "2015084200101",
+                "name": "C.K.MANI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMMANNUR",
+            "person": {
+                "id": "2015084200201",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAKKULAM",
+            "person": {
+                "id": "2015084200302",
+                "name": "JAYARAM A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THAVALAM",
+            "person": {
+                "id": "2015084200401",
+                "name": "SANDHA VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAPPANTHARA",
+            "person": {
+                "id": "2015084200501",
+                "name": "KAVITHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PATTIMALAM",
+            "person": {
+                "id": "2015084200601",
+                "name": "SANTHAMANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTTATHARA",
+            "person": {
+                "id": "2015084200701",
+                "name": "RENUGA MURUGADAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BHOOTHIVAZHY",
+            "person": {
+                "id": "2015084200801",
+                "name": "MUHAMMAED JAKKEER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AGALI",
+            "person": {
+                "id": "2015084200901",
+                "name": "A.PARAMESWARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GOOLIKKADAVU",
+            "person": {
+                "id": "2015084201001",
+                "name": "JAISON JAMES"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVUNDIKKAL",
+            "person": {
+                "id": "2015084201101",
+                "name": "NANCHI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NELLIPPATHY",
+            "person": {
+                "id": "2015084201201",
+                "name": "MURUKI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHITTURE",
+            "person": {
+                "id": "2015084201301",
+                "name": "RATHEESHKUMAR .R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARARA",
+            "person": {
+                "id": "2015084201401",
+                "name": "SANTHOSH KUMAR N.M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "GUDDAYUR",
+            "person": {
+                "id": "2015084201501",
+                "name": "SELVAN.K.G"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANDIYURE",
+            "person": {
+                "id": "2015084201601",
+                "name": "RAJAMMA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "JELLIPPARA",
+            "person": {
+                "id": "2015084201701",
+                "name": "SREELAKSHMI SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "OMMALA",
+            "person": {
+                "id": "2015084201801",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KALLAMALA",
+            "person": {
+                "id": "2015084201901",
+                "name": "C.P.BABU"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHINNAPPARAMBU",
+            "person": {
+                "id": "2015084202001",
+                "name": "SUBIN XAVIER"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KALKKANDY",
+            "person": {
+                "id": "2015084202101",
+                "name": "SAJEENA NAVAS"
+            }
+        }
+    ]
+}

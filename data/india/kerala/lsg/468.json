@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346548607,
+    "date": "2019-08-21",
+    "name": "Puliyoor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Chengannur",
+    "area": "11.92km",
+    "localbody_code": "G040805",
+    "no_of_wards": 13,
+    "population": 16011,
+    "male": 7775,
+    "female": 8236,
+    "population_density": 1343,
+    "sex_ratio": 1059,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 95,
+    "president": "TTSHYLAJA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALCHUVADU",
+            "person": {
+                "id": "2015046800101",
+                "name": "P C KARUNAKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAZHAYATTIL",
+            "person": {
+                "id": "2015046800201",
+                "name": "REMYA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERISSERY",
+            "person": {
+                "id": "2015046800301",
+                "name": "JESSY PAUL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NOOTAVANPARA",
+            "person": {
+                "id": "2015046800401",
+                "name": "M G SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THINKALAMUTTAM",
+            "person": {
+                "id": "2015046800501",
+                "name": "JACOB P C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MADATHUMPADI",
+            "person": {
+                "id": "2015046800601",
+                "name": "RADHAMANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULIYOOR EAST",
+            "person": {
+                "id": "2015046800701",
+                "name": "L MURALEEDHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KULIKKAMPALAM",
+            "person": {
+                "id": "2015046800801",
+                "name": "BABU KALOOTHARA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PULIYOOR CENTRAL",
+            "person": {
+                "id": "2015046800901",
+                "name": "LEKHA AJITH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THONAKKADU",
+            "person": {
+                "id": "2015046801001",
+                "name": "AMBILY BABU RAJEEV"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ELANJIMEL",
+            "person": {
+                "id": "2015046801101",
+                "name": "RESMI S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELANJIMEL KADANMAVU",
+            "person": {
+                "id": "2015046801201",
+                "name": "PRADEEP K P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIYOOR WEST",
+            "person": {
+                "id": "2015046801301",
+                "name": "T T SHYLAJA"
+            }
+        }
+    ]
+}

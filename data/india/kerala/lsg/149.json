@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345347483,
+    "date": "2019-08-21",
+    "name": "Manjeshwar  Block Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "544.95km",
+    "localbody_code": "B140100",
+    "no_of_wards": 15,
+    "population": 261940,
+    "male": 130331,
+    "female": 131633,
+    "population_density": 481,
+    "sex_ratio": 1010,
+    "literacy_rate": 78.85,
+    "literacy_rate_male": 87.17,
+    "literacy_rate_female": 70.72,
+    "president": "AKMASHRAF",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNJATHUR",
+            "person": {
+                "id": "2015014900101",
+                "name": "SRI. MUHAMMED MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "BADAJE",
+            "person": {
+                "id": "2015014900201",
+                "name": "HASEENA K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VORKADY",
+            "person": {
+                "id": "2015014900301",
+                "name": "FATHIMATH ZOHARA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MULIGADDE",
+            "person": {
+                "id": "2015014900401",
+                "name": "SADASHIVA U"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERMUDE",
+            "person": {
+                "id": "2015014900501",
+                "name": "K R JAYANANDA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ENMAKAJE",
+            "person": {
+                "id": "2015014900601",
+                "name": "SAPRINA A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERLA",
+            "person": {
+                "id": "2015014900701",
+                "name": "SAVITHA BALIKA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHIGE",
+            "person": {
+                "id": "2015014900801",
+                "name": "PRADEEP KUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ICHILANGODU",
+            "person": {
+                "id": "2015014900901",
+                "name": "ANANTHA RAMA RAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BANDIYODU",
+            "person": {
+                "id": "2015014901001",
+                "name": "MISBANA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAYABAZAR",
+            "person": {
+                "id": "2015014901101",
+                "name": "BAHARIN MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAJEERPALLA",
+            "person": {
+                "id": "2015014901201",
+                "name": "MAMATHA DIVAKAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADAMBAR",
+            "person": {
+                "id": "2015014901301",
+                "name": "ASHALATHA B M"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UPPALA",
+            "person": {
+                "id": "2015014901401",
+                "name": "SAIRA BANU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANJESHWAR",
+            "person": {
+                "id": "2015014901501",
+                "name": "A K M ASHRAF"
+            }
+        }
+    ]
+}

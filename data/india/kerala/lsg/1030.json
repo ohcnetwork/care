@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348996274,
+    "date": "2019-08-21",
+    "name": "Atholi  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Balussery",
+    "area": "21.06km",
+    "localbody_code": "G110805",
+    "no_of_wards": 17,
+    "population": 24055,
+    "male": 11631,
+    "female": 12424,
+    "population_density": 1142,
+    "sex_ratio": 1068,
+    "literacy_rate": 91.43,
+    "literacy_rate_male": 96.12,
+    "literacy_rate_female": 86.73,
+    "president": "RAVEENDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MODAKKALLUR",
+            "person": {
+                "id": "2015103000101",
+                "name": "GEETHA MAPPURATH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOOMULLI",
+            "person": {
+                "id": "2015103000201",
+                "name": "RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTHANKAL",
+            "person": {
+                "id": "2015103000301",
+                "name": "VALSALA VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNIPPOYIL",
+            "person": {
+                "id": "2015103000401",
+                "name": "USHA . K . GOPALAM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KODASSERI",
+            "person": {
+                "id": "2015103000501",
+                "name": "BINDU MADATHIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POOKOD",
+            "person": {
+                "id": "2015103000601",
+                "name": "K. KARTHYAYANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOLAKKAD",
+            "person": {
+                "id": "2015103000701",
+                "name": "RIJESH . C . K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ATHOLIKKAVE",
+            "person": {
+                "id": "2015103000801",
+                "name": "RAJAN .N.M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ATHANI",
+            "person": {
+                "id": "2015103000901",
+                "name": "PUSHPARAJAN .P .M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KONGANNUR EAST",
+            "person": {
+                "id": "2015103001001",
+                "name": "A M SARITHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KONGANNUR",
+            "person": {
+                "id": "2015103001101",
+                "name": "JAISAL . K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNIYIL KADAVE",
+            "person": {
+                "id": "2015103001201",
+                "name": "RAMLA PAYYAM PUNATHIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ATHOLI",
+            "person": {
+                "id": "2015103001301",
+                "name": "SHEEJARAJAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUDAKKALLU",
+            "person": {
+                "id": "2015103001401",
+                "name": "SHEEBARAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VELUR",
+            "person": {
+                "id": "2015103001501",
+                "name": "MINI VADAKKE AZHAYIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VELUR WEST",
+            "person": {
+                "id": "2015103001601",
+                "name": "BINDURAJAN MALAYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THORAYI",
+            "person": {
+                "id": "2015103001701",
+                "name": "N. V. MOHANAN"
+            }
+        }
+    ]
+}

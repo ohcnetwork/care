@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345213133,
+    "date": "2019-08-21",
+    "name": "Nenmara  Block Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Nenmara",
+    "area": "741.35km",
+    "localbody_code": "B091100",
+    "no_of_wards": 13,
+    "population": 130450,
+    "male": 63476,
+    "female": 66974,
+    "population_density": 176,
+    "sex_ratio": 1059,
+    "literacy_rate": 76.25,
+    "literacy_rate_male": 84.45,
+    "literacy_rate_female": 68.6,
+    "president": "P.V.RAMAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUDAPPALLUR",
+            "person": {
+                "id": "2015010800101",
+                "name": "K. MANOJ"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITTILANCHERI",
+            "person": {
+                "id": "2015010800201",
+                "name": "R. VENU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERAMANGALAM",
+            "person": {
+                "id": "2015010800301",
+                "name": "K. SREENA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALLAVUR",
+            "person": {
+                "id": "2015010800401",
+                "name": "C. LEELAMANI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALLASSANA",
+            "person": {
+                "id": "2015010800501",
+                "name": "M. SURESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VATTEKKAD",
+            "person": {
+                "id": "2015010800601",
+                "name": "V. LATHA PARAMESWARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELAVANCHERI",
+            "person": {
+                "id": "2015010800701",
+                "name": "SREEJA RAJEEV"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEMMARA",
+            "person": {
+                "id": "2015010800801",
+                "name": "K. DEVADASAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VITHINASSERI",
+            "person": {
+                "id": "2015010800901",
+                "name": "SATHI UNII"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NELLIYAMPATHY",
+            "person": {
+                "id": "2015010801001",
+                "name": "SHEELA SHAJU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AYILOOR",
+            "person": {
+                "id": "2015010801101",
+                "name": "P.V. RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAYARADI",
+            "person": {
+                "id": "2015010801201",
+                "name": "DOMINI .K.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANGALAMDAM",
+            "person": {
+                "id": "2015010801301",
+                "name": "BINDHU SATHEESH"
+            }
+        }
+    ]
+}

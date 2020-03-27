@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347580339,
+    "date": "2019-08-21",
+    "name": "Vatanapally  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Thalikkulam",
+    "area": "13.18km",
+    "localbody_code": "G080802",
+    "no_of_wards": 18,
+    "population": 27003,
+    "male": 12639,
+    "female": 14364,
+    "population_density": 2049,
+    "sex_ratio": 1136,
+    "literacy_rate": 89.98,
+    "literacy_rate_male": 94.13,
+    "literacy_rate_female": 86.43,
+    "president": "SHIJITHV.R.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POKKANCHERY",
+            "person": {
+                "id": "2015075600101",
+                "name": "A.A. ABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "TIPPUSULTHAN WEST",
+            "person": {
+                "id": "2015075600201",
+                "name": "HEMALATHA PRATHAPAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THRITHALLUR WEST",
+            "person": {
+                "id": "2015075600301",
+                "name": "SHIJITH V.R."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EZHAM KALLU",
+            "person": {
+                "id": "2015075600401",
+                "name": "REENA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "HEALTH CENTRE",
+            "person": {
+                "id": "2015075600501",
+                "name": "SABITH A.S."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "GANESAMANGALAM",
+            "person": {
+                "id": "2015075600601",
+                "name": "C.B. SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANAPPAD",
+            "person": {
+                "id": "2015075600701",
+                "name": "OMANA MADHUSUDHANAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THRITHALLUR EAST",
+            "person": {
+                "id": "2015075600801",
+                "name": "REENA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NADUVILKKARA WEST",
+            "person": {
+                "id": "2015075600902",
+                "name": "ANILLAL V G"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VATANAPPALLY EAST",
+            "person": {
+                "id": "2015075601001",
+                "name": "GEETHA ANANDAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NADUVILKKARA EAST",
+            "person": {
+                "id": "2015075601101",
+                "name": "BINDHU SASIKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POLICE STATION",
+            "person": {
+                "id": "2015075601201",
+                "name": "KANCHANA RAJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATTILANGADI",
+            "person": {
+                "id": "2015075601301",
+                "name": "SUDHEESH I.N."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANCHANGADI",
+            "person": {
+                "id": "2015075601401",
+                "name": "SAMBAJI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VATANAPPALLY WEST",
+            "person": {
+                "id": "2015075601502",
+                "name": "C V ANANDHAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "DUBAI",
+            "person": {
+                "id": "2015075601601",
+                "name": "BABY BABU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "FISHERIES",
+            "person": {
+                "id": "2015075601701",
+                "name": "SREEJITH K.B"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MULLANGARA",
+            "person": {
+                "id": "2015075601801",
+                "name": "SHAKEELA USMAN"
+            }
+        }
+    ]
+}

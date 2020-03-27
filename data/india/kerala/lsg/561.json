@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566346889159,
+    "date": "2019-08-21",
+    "name": "Vazhappally  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Madappally",
+    "area": "21.73km",
+    "localbody_code": "G050905",
+    "no_of_wards": 21,
+    "population": 32118,
+    "male": 15911,
+    "female": 16207,
+    "population_density": 1478,
+    "sex_ratio": 1019,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 95,
+    "president": "VARGHESEANTONY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MULAKKAMTHURUTHY",
+            "person": {
+                "id": "2015056100101",
+                "name": "SYAMALA PONNAPPAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHETTISSERRY",
+            "person": {
+                "id": "2015056100201",
+                "name": "SHAIJU KUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THURUTHY",
+            "person": {
+                "id": "2015056100301",
+                "name": "OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUNNAMOODU",
+            "person": {
+                "id": "2015056100401",
+                "name": "SHEELA THOMAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKEKKARA",
+            "person": {
+                "id": "2015056100501",
+                "name": "ROSAMMA GEORGE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VEROORCHIRA",
+            "person": {
+                "id": "2015056100601",
+                "name": "VARGHESE ANTONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOONAMTHANAM",
+            "person": {
+                "id": "2015056100701",
+                "name": "FASEELA ASHRAF"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHUCHIRAKUZHI",
+            "person": {
+                "id": "2015056100801",
+                "name": "LEENAMOL JOSEPH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ENACHIRA",
+            "person": {
+                "id": "2015056100901",
+                "name": "BEENA TOMSON"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHEERANCHIRA",
+            "person": {
+                "id": "2015056101001",
+                "name": "SARAMMA SABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHUCHIRA",
+            "person": {
+                "id": "2015056101101",
+                "name": "MINI VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANNATHIPARA",
+            "person": {
+                "id": "2015056101201",
+                "name": "SUNNY MATHEW"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "INDUSTRIAL NAGAR",
+            "person": {
+                "id": "2015056101301",
+                "name": "ROSAMMA DEVASIA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADAMANCHIRA",
+            "person": {
+                "id": "2015056101401",
+                "name": "THOMAS MATHEW"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VALIYAKULAM",
+            "person": {
+                "id": "2015056101501",
+                "name": "LISSAMMA GEORGE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KURISUMMOODU",
+            "person": {
+                "id": "2015056101601",
+                "name": "LALIMMA TOMY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VAKKACHANPADI",
+            "person": {
+                "id": "2015056101701",
+                "name": "SHAJAHAN P.S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHETHIPPUZHAKADAVU",
+            "person": {
+                "id": "2015056101801",
+                "name": "JOSEPH M.ANTONY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUTHENKULANGARA",
+            "person": {
+                "id": "2015056101901",
+                "name": "THULASI BABU"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VETTITHURUTHU",
+            "person": {
+                "id": "2015056102001",
+                "name": "ABRAHAM K.O"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PARAL",
+            "person": {
+                "id": "2015056102101",
+                "name": "P.R ANIL KUMAR"
+            }
+        }
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348494934,
+    "date": "2019-08-21",
+    "name": "Karulai  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Nilambur",
+    "area": "131.31km",
+    "localbody_code": "G100202",
+    "no_of_wards": 15,
+    "population": 17698,
+    "male": 8600,
+    "female": 9098,
+    "population_density": 135,
+    "sex_ratio": 1058,
+    "literacy_rate": 83.9,
+    "literacy_rate_male": 88.41,
+    "literacy_rate_female": 79.39,
+    "president": "ASAINARVISHARIYIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MARUTHANGADU",
+            "person": {
+                "id": "2015089800101",
+                "name": "USHA KOLATHUR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTUPARA",
+            "person": {
+                "id": "2015089800201",
+                "name": "KADEEJA USMAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NARIYALAMKUNNU",
+            "person": {
+                "id": "2015089800301",
+                "name": "SARAFUDHEEN KOLAPPATTA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMBALAKUNNU",
+            "person": {
+                "id": "2015089800401",
+                "name": "KADEEJA PARAMBIL PEEDIKA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BHOOMIKUTH",
+            "person": {
+                "id": "2015089800501",
+                "name": "MANOJ K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MAILAMPARA",
+            "person": {
+                "id": "2015089800601",
+                "name": "LISSY JOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MULLAPPALLY",
+            "person": {
+                "id": "2015089800701",
+                "name": "SHEEBA POOZHIKKUTH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUTTIMALA",
+            "person": {
+                "id": "2015089800801",
+                "name": "ASAINAR VISHARIYIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALAMKUNNU",
+            "person": {
+                "id": "2015089800901",
+                "name": "MINI KARERAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THEKKINKUNNU",
+            "person": {
+                "id": "2015089801001",
+                "name": "MUHAMMADALI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARULAI",
+            "person": {
+                "id": "2015089801101",
+                "name": "SUNEER POTTENGARA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHAKKITTAMALA",
+            "person": {
+                "id": "2015089801201",
+                "name": "AYISHA P H"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALAMBURAM",
+            "person": {
+                "id": "2015089801301",
+                "name": "NAMBOLA SUBAIR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTAPPOYIL",
+            "person": {
+                "id": "2015089801401",
+                "name": "BINESH M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PILAKKOTTUPADAM",
+            "person": {
+                "id": "2015089801501",
+                "name": "SHEREEFA K"
+            }
+        }
+    ]
+}

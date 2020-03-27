@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349248150,
+    "date": "2019-08-21",
+    "name": "Kannapuram  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "14.39km",
+    "localbody_code": "G130207",
+    "no_of_wards": 14,
+    "population": 18568,
+    "male": 8564,
+    "female": 10004,
+    "population_density": 1262,
+    "sex_ratio": 1158,
+    "literacy_rate": 91.3,
+    "literacy_rate_male": 95.91,
+    "literacy_rate_female": 87.35,
+    "president": "RAMAKRISHNANK.V",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AMBALAPURAM",
+            "person": {
+                "id": "2015111100101",
+                "name": "SHYNA K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANNAPURAM TOWN",
+            "person": {
+                "id": "2015111100201",
+                "name": "LAJITHA K.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANNAPURAM CENTRE",
+            "person": {
+                "id": "2015111100301",
+                "name": "ROJA P.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHUNDAVAYAL",
+            "person": {
+                "id": "2015111100401",
+                "name": "RAJAMANI T.V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHUNDA",
+            "person": {
+                "id": "2015111100501",
+                "name": "SREEMATHI T.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAYATTEEL",
+            "person": {
+                "id": "2015111100602",
+                "name": "DAMODARAN PV"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KEEZHARA",
+            "person": {
+                "id": "2015111100701",
+                "name": "RAMAKRISHNAN K.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEMMARAVAYAL",
+            "person": {
+                "id": "2015111100801",
+                "name": "RAJESH K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOTTAMMAL",
+            "person": {
+                "id": "2015111100902",
+                "name": "MOHANAN U"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THRIKOTH",
+            "person": {
+                "id": "2015111101001",
+                "name": "LEENA K.V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNAPURAM SOUTH",
+            "person": {
+                "id": "2015111101101",
+                "name": "MOHANAN K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAKKEPPURAM KIZHAKKE",
+            "person": {
+                "id": "2015111101201",
+                "name": "BALAN M.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAKKEPPURAM THEKKU",
+            "person": {
+                "id": "2015111101301",
+                "name": "ANITHA K.C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AYYOTH",
+            "person": {
+                "id": "2015111101401",
+                "name": "SUNIL KUMAR V"
+            }
+        }
+    ]
+}

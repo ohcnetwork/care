@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348422890,
+    "date": "2019-08-21",
+    "name": "Tarur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "34.27km",
+    "localbody_code": "G091206",
+    "no_of_wards": 16,
+    "population": 23046,
+    "male": 11066,
+    "female": 11980,
+    "population_density": 672,
+    "sex_ratio": 1083,
+    "literacy_rate": 78.46,
+    "literacy_rate_male": 86.18,
+    "literacy_rate_female": 71.42,
+    "president": "MANOJKUMAR.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THOTTUMPALLA",
+            "person": {
+                "id": "2015088200101",
+                "name": "SHAFEEK MON H"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAZHAMAPALAKKODE",
+            "person": {
+                "id": "2015088200201",
+                "name": "R.NATARAJAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERIKKAL",
+            "person": {
+                "id": "2015088200301",
+                "name": "JOSHY K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTANCODE",
+            "person": {
+                "id": "2015088200401",
+                "name": "BEENAJOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NECHUR",
+            "person": {
+                "id": "2015088200501",
+                "name": "VALSALAKUMARI.M.R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBATTUPARAMBU",
+            "person": {
+                "id": "2015088200601",
+                "name": "SANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THODUKAD",
+            "person": {
+                "id": "2015088200701",
+                "name": "A.A KABEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ALINKALPARAMABU",
+            "person": {
+                "id": "2015088200801",
+                "name": "A.MUHAMMEDEHANEEFA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNDUKADU",
+            "person": {
+                "id": "2015088200901",
+                "name": "RAMLATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAVULLIAPURAM",
+            "person": {
+                "id": "2015088201001",
+                "name": "SUNITHALAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVUNGAL",
+            "person": {
+                "id": "2015088201101",
+                "name": "MANOJKUMAR.P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ATHIPOTTA",
+            "person": {
+                "id": "2015088201201",
+                "name": "PRINCY.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "TARUR",
+            "person": {
+                "id": "2015088201301",
+                "name": "K.KRISHANAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VALAKKARA",
+            "person": {
+                "id": "2015088201401",
+                "name": "RAJESH.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ARIYASSERY",
+            "person": {
+                "id": "2015088201501",
+                "name": "PRAKASINI SUNDARAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KURUTHIKODE",
+            "person": {
+                "id": "2015088201601",
+                "name": "G.CHENTHAMARAKSHAN"
+            }
+        }
+    ]
+}

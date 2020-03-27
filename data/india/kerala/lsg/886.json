@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348446912,
+    "date": "2019-08-21",
+    "name": "Akathethara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Malampuzha",
+    "area": "23km",
+    "localbody_code": "G091301",
+    "no_of_wards": 17,
+    "population": 21514,
+    "male": 10664,
+    "female": 10850,
+    "population_density": 935,
+    "sex_ratio": 1017,
+    "literacy_rate": 86.61,
+    "literacy_rate_male": 92.52,
+    "literacy_rate_female": 80.83,
+    "president": "DSADASIVAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "DHONI",
+            "person": {
+                "id": "2015088600101",
+                "name": "KUNJULAKSHMI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ENGINEERING COLLEGE",
+            "person": {
+                "id": "2015088600201",
+                "name": "K JAYAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKETHARA",
+            "person": {
+                "id": "2015088600301",
+                "name": "P PARVATHY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THEKKETHARA",
+            "person": {
+                "id": "2015088600401",
+                "name": "SURESHKUMAR K K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ITHINGAPARAMBU",
+            "person": {
+                "id": "2015088600501",
+                "name": "SUBHADRA V R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NADAKKAVU",
+            "person": {
+                "id": "2015088600601",
+                "name": "SHIJU S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KORATHODI",
+            "person": {
+                "id": "2015088600701",
+                "name": "SUNITHA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANDIMADOM",
+            "person": {
+                "id": "2015088600801",
+                "name": "MALLIKA A M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNNAMPARA",
+            "person": {
+                "id": "2015088600901",
+                "name": "GAYATHRI D"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALLEKULANGARA",
+            "person": {
+                "id": "2015088601001",
+                "name": "UDAYAKUMARI P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "HEMAMBIKA SANSKRIT SCHOOL",
+            "person": {
+                "id": "2015088601101",
+                "name": "T P SREEDEVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNNUKAD",
+            "person": {
+                "id": "2015088601201",
+                "name": "BINDU P A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KONGAPADAM",
+            "person": {
+                "id": "2015088601301",
+                "name": "C CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUNNAKULAM",
+            "person": {
+                "id": "2015088601401",
+                "name": "MANJULA M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "RAILWAY COLONY",
+            "person": {
+                "id": "2015088601501",
+                "name": "K KOYAKUTTY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAKKANNI",
+            "person": {
+                "id": "2015088601601",
+                "name": "SUMESH K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "UMMINI",
+            "person": {
+                "id": "2015088601701",
+                "name": "D SADASIVAN"
+            }
+        }
+    ]
+}

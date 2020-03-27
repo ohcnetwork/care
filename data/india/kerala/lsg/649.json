@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566347165850,
+    "date": "2019-08-21",
+    "name": "Vengola  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "35.65km",
+    "localbody_code": "G070501",
+    "no_of_wards": 23,
+    "population": 36116,
+    "male": 18576,
+    "female": 17540,
+    "population_density": 1013,
+    "sex_ratio": 944,
+    "literacy_rate": 88.49,
+    "literacy_rate_male": 93.21,
+    "literacy_rate_female": 83.48,
+    "president": "SWATHYREJIKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PONJASSERY",
+            "person": {
+                "id": "2015064900101",
+                "name": "ANEESA ISMAIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VETTIKKATUKUNNU",
+            "person": {
+                "id": "2015064900201",
+                "name": "SOUDHA SAJEEV"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THANDEKAD",
+            "person": {
+                "id": "2015064900301",
+                "name": "MUKTHAR P.A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MALAYAMPURATHUPADI",
+            "person": {
+                "id": "2015064900401",
+                "name": "RAHIMA JALAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERIYAR NAGAR",
+            "person": {
+                "id": "2015064900501",
+                "name": "SWATHY REJIKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEDUMTHODU",
+            "person": {
+                "id": "2015064900601",
+                "name": "RAHIM M.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANDANTHARA",
+            "person": {
+                "id": "2015064900701",
+                "name": "SHAMEEDA SHEREEF"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THOTTAPPADANPADI",
+            "person": {
+                "id": "2015064900801",
+                "name": "MUHAMMADALI C.V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATHIPALAM",
+            "person": {
+                "id": "2015064900901",
+                "name": "SHAMSUDIN K.M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ALLAPRA",
+            "person": {
+                "id": "2015064901001",
+                "name": "MERLY ROY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALAKKARA",
+            "person": {
+                "id": "2015064901101",
+                "name": "SUBASH BABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VARIKKAD",
+            "person": {
+                "id": "2015064901201",
+                "name": "SHYLAJA K PILLAI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VENGOLA",
+            "person": {
+                "id": "2015064901301",
+                "name": "JOY M.B"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "TANK CITY",
+            "person": {
+                "id": "2015064901401",
+                "name": "ASOKAN K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AYYANCHIRANGARA",
+            "person": {
+                "id": "2015064901501",
+                "name": "JISHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERUMANI",
+            "person": {
+                "id": "2015064901601",
+                "name": "ELDHO MOSSAS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ARACKAPADI",
+            "person": {
+                "id": "2015064901701",
+                "name": "SHIBI ELDHO"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "POOMALA",
+            "person": {
+                "id": "2015064901801",
+                "name": "SALIM M.A"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MINIKKAVALA",
+            "person": {
+                "id": "2015064901901",
+                "name": "SUBAIDA JALEEL"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MAROTTICHUVADU",
+            "person": {
+                "id": "2015064902001",
+                "name": "RAMLA SHAMEER"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SALEM",
+            "person": {
+                "id": "2015064902101",
+                "name": "RAMAKRISHNAN K.N"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PALAYIKUNNU",
+            "person": {
+                "id": "2015064902201",
+                "name": "DHANYA LEJU"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "CHUNDAMALAPPURAM",
+            "person": {
+                "id": "2015064902301",
+                "name": "SANI AUGEN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346965028,
+    "date": "2019-08-21",
+    "name": "Senapathy  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "31.28km",
+    "localbody_code": "G060302",
+    "no_of_wards": 13,
+    "population": 12113,
+    "male": 6141,
+    "female": 5972,
+    "population_density": 388,
+    "sex_ratio": 959,
+    "literacy_rate": 83,
+    "literacy_rate_male": 87,
+    "literacy_rate_female": 79,
+    "president": "JOHNYJACOB",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANAKAPUZHA",
+            "person": {
+                "id": "2015058600101",
+                "name": "MARGRAT SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANGATHOTTY",
+            "person": {
+                "id": "2015058600201",
+                "name": "K P SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AVANAKKUMCHAL",
+            "person": {
+                "id": "2015058600301",
+                "name": "GEORGE KURIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SENAPATHY",
+            "person": {
+                "id": "2015058600401",
+                "name": "P P ELDHOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SWARGAMMEDU",
+            "person": {
+                "id": "2015058600501",
+                "name": "THULASI BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VATTAPPARA",
+            "person": {
+                "id": "2015058600601",
+                "name": "SARASAMMA SISUPALAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THALAYANKAVU",
+            "person": {
+                "id": "2015058600701",
+                "name": "MOLLY SAJEEV"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MELECHEMMANNAR",
+            "person": {
+                "id": "2015058600801",
+                "name": "SYAMALA SAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENKALAPPARA",
+            "person": {
+                "id": "2015058600901",
+                "name": "JOHNY JACOB"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EZHARAYEKKAR",
+            "person": {
+                "id": "2015058601001",
+                "name": "OMANA BENNY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUKKUDIL",
+            "person": {
+                "id": "2015058601101",
+                "name": "DAISY SAIMON"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANTHIPPARA",
+            "person": {
+                "id": "2015058601201",
+                "name": "JAMES MATHAI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUTHUMKAL",
+            "person": {
+                "id": "2015058601301",
+                "name": "JOSE THOMAS"
+            }
+        }
+    ]
+}

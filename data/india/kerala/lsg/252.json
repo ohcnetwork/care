@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566345795056,
+    "date": "2019-08-21",
+    "name": "Nanniyode  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vamanpuram",
+    "area": "38.85km",
+    "localbody_code": "G010406",
+    "no_of_wards": 18,
+    "population": 26064,
+    "male": 12589,
+    "female": 13475,
+    "population_density": 670,
+    "sex_ratio": 1070,
+    "literacy_rate": 90.66,
+    "literacy_rate_male": 93.9,
+    "literacy_rate_female": 87.66,
+    "president": "DEEPASURESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANAKULAM",
+            "person": {
+                "id": "2015025200101",
+                "name": "G R PRASAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MEENMUTTI",
+            "person": {
+                "id": "2015025200202",
+                "name": "R PUSHPAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANDYANPARA",
+            "person": {
+                "id": "2015025200301",
+                "name": "GIRIJAKUMARI.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLIPPARA",
+            "person": {
+                "id": "2015025200401",
+                "name": "BINDHU.G"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KURUNTHALI",
+            "person": {
+                "id": "2015025200501",
+                "name": "ANITHA KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALODE",
+            "person": {
+                "id": "2015025200601",
+                "name": "K.CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULIYOOR",
+            "person": {
+                "id": "2015025200701",
+                "name": "RADHAJAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NANNIYODE",
+            "person": {
+                "id": "2015025200801",
+                "name": "P.RAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAVODAYA",
+            "person": {
+                "id": "2015025200901",
+                "name": "JYOTHISHA.A.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VATTAPPANKADU",
+            "person": {
+                "id": "2015025201001",
+                "name": "PACHA RAVI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PACHA",
+            "person": {
+                "id": "2015025201101",
+                "name": "K.SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ALUMKUZHI",
+            "person": {
+                "id": "2015025201201",
+                "name": "DEEPA JOSE .G"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KURUPUZHA",
+            "person": {
+                "id": "2015025201301",
+                "name": "M.UDAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ELAVATTOM",
+            "person": {
+                "id": "2015025201401",
+                "name": "SHEELA MADHUKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERAYAM",
+            "person": {
+                "id": "2015025201501",
+                "name": "SUJITH.S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THANNIMOODU",
+            "person": {
+                "id": "2015025201601",
+                "name": "DEEPA SURESH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ALAMPARA",
+            "person": {
+                "id": "2015025201701",
+                "name": "SHEEJA PRASAD"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PALUVALLI",
+            "person": {
+                "id": "2015025201801",
+                "name": "C.SIGNI"
+            }
+        }
+    ]
+}

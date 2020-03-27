@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347448921,
+    "date": "2019-08-21",
+    "name": "Porkulam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chowwannur",
+    "area": "14.49km",
+    "localbody_code": "G080206",
+    "no_of_wards": 13,
+    "population": 14224,
+    "male": 6840,
+    "female": 7384,
+    "population_density": 982,
+    "sex_ratio": 1080,
+    "literacy_rate": 91.9,
+    "literacy_rate_male": 95.03,
+    "literacy_rate_female": 89.06,
+    "president": "OMANABABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MALORKKADAVU",
+            "person": {
+                "id": "2015072400101",
+                "name": "K. M PRAMOD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PONNAM",
+            "person": {
+                "id": "2015072400201",
+                "name": "RENUKA GANESAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PORKULAM CENTRE",
+            "person": {
+                "id": "2015072400301",
+                "name": "JISHA SASI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PORKULAM NORTH",
+            "person": {
+                "id": "2015072400401",
+                "name": "AJEESH V. A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KONGANOOR",
+            "person": {
+                "id": "2015072400501",
+                "name": "JAYAPRAKASH K. P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AKKIKAVU WEST",
+            "person": {
+                "id": "2015072400601",
+                "name": "KAVITHA PREMRAJ"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AKKIKAVU EAST",
+            "person": {
+                "id": "2015072400701",
+                "name": "RANJITH K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AKATHIYOOR NORTH",
+            "person": {
+                "id": "2015072400801",
+                "name": "K SHYLAJA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AKATHIYOOR CENTRE",
+            "person": {
+                "id": "2015072400901",
+                "name": "K. M NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALLAZHIKUNNU",
+            "person": {
+                "id": "2015072401001",
+                "name": "SEENA WILSON"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VEDHAKKAD",
+            "person": {
+                "id": "2015072401101",
+                "name": "MADHU PUNNATHUR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PORKULAM POST OFFICE",
+            "person": {
+                "id": "2015072401201",
+                "name": "OMANA BABU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VETTIKKADAVU",
+            "person": {
+                "id": "2015072401301",
+                "name": "AMBIKA MANIYAN"
+            }
+        }
+    ]
+}

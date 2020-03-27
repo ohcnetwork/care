@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347097189,
+    "date": "2019-08-21",
+    "name": "Chendamangalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Paravur",
+    "area": "10.83km",
+    "localbody_code": "G070101",
+    "no_of_wards": 18,
+    "population": 26825,
+    "male": 12901,
+    "female": 13924,
+    "population_density": 2477,
+    "sex_ratio": 1079,
+    "literacy_rate": 95.63,
+    "literacy_rate_male": 97.96,
+    "literacy_rate_female": 93.52,
+    "president": "ANOOBT.G",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "GOTHURUTHU- VADAKKETHURUTHU",
+            "person": {
+                "id": "2015062400101",
+                "name": "P. A` RAJESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GOTHURUTHU",
+            "person": {
+                "id": "2015062400201",
+                "name": "NITHA STALIN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHATHEDAM- KURUMBATHURUTHU",
+            "person": {
+                "id": "2015062400301",
+                "name": "RAJU T. S."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KURUMBATHURUTHU - C P THURUTHU",
+            "person": {
+                "id": "2015062400401",
+                "name": "SHIBU CHERAMANTHURUTHY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUNJAVARATHURUTHU",
+            "person": {
+                "id": "2015062400501",
+                "name": "UNNIKRISHNAN K. A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHENDAMANGALAM",
+            "person": {
+                "id": "2015062400601",
+                "name": "RESHMY AJITHKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALIYA PAZHAMPILLY THURUTHU",
+            "person": {
+                "id": "2015062400701",
+                "name": "RINU GILEESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KIZHAKKUMPURAM",
+            "person": {
+                "id": "2015062400801",
+                "name": "ANILKUMAR M. N"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTAYIL KOVILAKAM",
+            "person": {
+                "id": "2015062400901",
+                "name": "SHEELA JOHN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALATHURUTHU",
+            "person": {
+                "id": "2015062401001",
+                "name": "ISMAIL A. M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THEKKUMPURAM",
+            "person": {
+                "id": "2015062401101",
+                "name": "BABITHA DILEEP"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARIMPAADAM",
+            "person": {
+                "id": "2015062401201",
+                "name": "ANOOB T. G"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANAKKODAM",
+            "person": {
+                "id": "2015062401301",
+                "name": "JAIHIND T. V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VADAKKUMPURAM",
+            "person": {
+                "id": "2015062401401",
+                "name": "LEENA VISWAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOOTTUKADU",
+            "person": {
+                "id": "2015062401501",
+                "name": "JUSTIN T. P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOCHANGADI",
+            "person": {
+                "id": "2015062401601",
+                "name": "VENU K VALAPPIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "GOTHURUTHU- THEKKETHURUTHU",
+            "person": {
+                "id": "2015062401701",
+                "name": "SANGEETHA RAJU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KADALVATHURUTHU",
+            "person": {
+                "id": "2015062401801",
+                "name": "BINCY SOLOMAN"
+            }
+        }
+    ]
+}

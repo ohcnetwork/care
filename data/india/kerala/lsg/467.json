@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346547049,
+    "date": "2019-08-21",
+    "name": "Ala  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Chengannur",
+    "area": "10.44km",
+    "localbody_code": "G040804",
+    "no_of_wards": 13,
+    "population": 13087,
+    "male": 6283,
+    "female": 6804,
+    "population_density": 1254,
+    "sex_ratio": 1083,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "VKSOBHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ALA",
+            "person": {
+                "id": "2015046700101",
+                "name": "REMA RAMCHANDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "UMMATH",
+            "person": {
+                "id": "2015046700201",
+                "name": "SUMA ASHOK"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POOMALA",
+            "person": {
+                "id": "2015046700301",
+                "name": "SUNITHA RAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MALAMODI",
+            "person": {
+                "id": "2015046700401",
+                "name": "K R MURALIDHARAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KINARUVILA",
+            "person": {
+                "id": "2015046700501",
+                "name": "LEELAMMA C N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALAPPUZHA",
+            "person": {
+                "id": "2015046700601",
+                "name": "ANISHA BIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THEVARACODE",
+            "person": {
+                "id": "2015046700701",
+                "name": "T K SOMAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KODUKULANJI",
+            "person": {
+                "id": "2015046700801",
+                "name": "MAHENDRA DAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAMMATH",
+            "person": {
+                "id": "2015046700901",
+                "name": "BEENA MATHEW"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PENNUKKARA",
+            "person": {
+                "id": "2015046701001",
+                "name": "V K SOBHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULLAMTHAZHAM",
+            "person": {
+                "id": "2015046701101",
+                "name": "SEEMA SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "UTHARAPALLY",
+            "person": {
+                "id": "2015046701201",
+                "name": "SAJIKUMAR V N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEDUVARAMCODE",
+            "person": {
+                "id": "2015046701301",
+                "name": "PALLATHU VASUDEVAN"
+            }
+        }
+    ]
+}

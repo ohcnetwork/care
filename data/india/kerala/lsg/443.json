@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566346456117,
+    "date": "2019-08-21",
+    "name": "Cherthala South  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Kanjikuzhy",
+    "area": "18.34km",
+    "localbody_code": "G040304",
+    "no_of_wards": 22,
+    "population": 34884,
+    "male": 17328,
+    "female": 17556,
+    "population_density": 1902,
+    "sex_ratio": 1013,
+    "literacy_rate": 94,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 92,
+    "president": "SETHULEKSHMI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "FISHLANDING CENTRE",
+            "person": {
+                "id": "2015044300101",
+                "name": "HERBIN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THAICKAL",
+            "person": {
+                "id": "2015044300201",
+                "name": "BABU ANTONY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AAYIRAMTHAI",
+            "person": {
+                "id": "2015044300301",
+                "name": "IRVIN SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ARAVUKADU",
+            "person": {
+                "id": "2015044300401",
+                "name": "PHILOMINA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARUTHYAMPALLY",
+            "person": {
+                "id": "2015044300501",
+                "name": "AMBIKA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBEDKAR WARD",
+            "person": {
+                "id": "2015044300601",
+                "name": "SARASWATHY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADACKAL",
+            "person": {
+                "id": "2015044300701",
+                "name": "JAIMON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MATTAVANA",
+            "person": {
+                "id": "2015044300801",
+                "name": "KAMALADHARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THRIPPURAKKULAM",
+            "person": {
+                "id": "2015044300901",
+                "name": "SUDHEESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AREEPARAMBU",
+            "person": {
+                "id": "2015044301001",
+                "name": "SETHULEKSHMI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015044301101",
+                "name": "VIJAYAMMA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAYITHARA",
+            "person": {
+                "id": "2015044301201",
+                "name": "REJIMOL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIRUVIZHA",
+            "person": {
+                "id": "2015044301301",
+                "name": "ROSE MARY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULLAMKULAM",
+            "person": {
+                "id": "2015044301401",
+                "name": "MAHILAMANI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHAKKANATTU",
+            "person": {
+                "id": "2015044301501",
+                "name": "SALIM"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHENNAVELI",
+            "person": {
+                "id": "2015044301601",
+                "name": "RAMESAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "REETHAPURAM",
+            "person": {
+                "id": "2015044301701",
+                "name": "SINIMOL V.S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KALARICKAL",
+            "person": {
+                "id": "2015044301802",
+                "name": "MINI KUNJAPPAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ARTHUNKAL BEACH",
+            "person": {
+                "id": "2015044301901",
+                "name": "SIBI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ARTHUNKAL CHURCH",
+            "person": {
+                "id": "2015044302001",
+                "name": "SOMAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHAMBAKKAD",
+            "person": {
+                "id": "2015044302101",
+                "name": "LEELAMMA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ARTHUNKAL",
+            "person": {
+                "id": "2015044302201",
+                "name": "JOS BENNET"
+            }
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347518630,
+    "date": "2019-08-21",
+    "name": "Madakkathara  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Ollukkara",
+    "area": "25.04km",
+    "localbody_code": "G080501",
+    "no_of_wards": 16,
+    "population": 20964,
+    "male": 10176,
+    "female": 10788,
+    "population_density": 837,
+    "sex_ratio": 1060,
+    "literacy_rate": 89.34,
+    "literacy_rate_male": 93.53,
+    "literacy_rate_female": 85.42,
+    "president": "P.S.VINAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MATTAMPURAM",
+            "person": {
+                "id": "2015074100101",
+                "name": "SUKANYA BAIJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARUVANKAD",
+            "person": {
+                "id": "2015074100201",
+                "name": "SUNDARAN KUNNATHULLY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUTTIKKAL",
+            "person": {
+                "id": "2015074100301",
+                "name": "JOHNSON MALLIYATH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KATTILAPOOVAM",
+            "person": {
+                "id": "2015074100401",
+                "name": "SUNNY V.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHIRAKKAKODE",
+            "person": {
+                "id": "2015074100501",
+                "name": "MANJULA P.V."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "400 K V SUB STATION",
+            "person": {
+                "id": "2015074100601",
+                "name": "INDIRA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANDIPARAMBU",
+            "person": {
+                "id": "2015074100701",
+                "name": "ADV. SHINY THARUNKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULLANIKKAD",
+            "person": {
+                "id": "2015074100801",
+                "name": "P.S. VINAYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIZHAKKE VELLANIKKARA",
+            "person": {
+                "id": "2015074100901",
+                "name": "M.S SREEJITH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTEPADAM",
+            "person": {
+                "id": "2015074101001",
+                "name": "BINDU SIVADAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANANJAKAM",
+            "person": {
+                "id": "2015074101101",
+                "name": "SURESH KUMAR P.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PADINJARE VELLANIKKARA",
+            "person": {
+                "id": "2015074101201",
+                "name": "V.S GOPI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MADAKKATHARA",
+            "person": {
+                "id": "2015074101301",
+                "name": "V.P. SAVITHRI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLANISSERY",
+            "person": {
+                "id": "2015074101401",
+                "name": "MINI SURESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THANIKUDAM",
+            "person": {
+                "id": "2015074101501",
+                "name": "SUJATHA BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PONGANAMKAD",
+            "person": {
+                "id": "2015074101601",
+                "name": "O.S RAVEENDRAN"
+            }
+        }
+    ]
+}

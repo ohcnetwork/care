@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348301916,
+    "date": "2019-08-21",
+    "name": "Keralassery  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Palakkad",
+    "area": "23.87km",
+    "localbody_code": "G090701",
+    "no_of_wards": 13,
+    "population": 13048,
+    "male": 6041,
+    "female": 7007,
+    "population_density": 547,
+    "sex_ratio": 1160,
+    "literacy_rate": 81.07,
+    "literacy_rate_male": 86.39,
+    "literacy_rate_female": 76.59,
+    "president": "BINDUKRISHNADAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANJAPARA",
+            "person": {
+                "id": "2015084600101",
+                "name": "SATHYAN K P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADASSERY",
+            "person": {
+                "id": "2015084600201",
+                "name": "VIJAYAKUMAR P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUNDALASSERY",
+            "person": {
+                "id": "2015084600301",
+                "name": "HARIDASAN V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KIZHAKEKARA",
+            "person": {
+                "id": "2015084600401",
+                "name": "SREELATHA M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VELLARA",
+            "person": {
+                "id": "2015084600501",
+                "name": "PREMAJAYAN. P.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KERALASSERY(KIZHAKKUMURI)",
+            "person": {
+                "id": "2015084600601",
+                "name": "SANTHAKUMARI .M.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KERALASSERY",
+            "person": {
+                "id": "2015084600701",
+                "name": "NANDINI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AYANARI",
+            "person": {
+                "id": "2015084600801",
+                "name": "SOBHANA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALLIPARA",
+            "person": {
+                "id": "2015084600901",
+                "name": "SHAJAHAN C.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANIYAMKUNNU",
+            "person": {
+                "id": "2015084601001",
+                "name": "BINDU KRISHNADAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THADUKKASSERY",
+            "person": {
+                "id": "2015084601101",
+                "name": "INDIRA .M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALIYAPARAMB",
+            "person": {
+                "id": "2015084601201",
+                "name": "GIRIJA K.C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PADINJAREMURI",
+            "person": {
+                "id": "2015084601301",
+                "name": "RAMACHANDRAN .P.C"
+            }
+        }
+    ]
+}

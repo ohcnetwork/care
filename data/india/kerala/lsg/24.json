@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344920555,
+    "date": "2019-08-21",
+    "name": "Ithikkara  Block Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Ithikkara",
+    "area": "134.8km",
+    "localbody_code": "B021000",
+    "no_of_wards": 13,
+    "population": 185008,
+    "male": 89239,
+    "female": 95769,
+    "population_density": 1372,
+    "sex_ratio": 1073,
+    "literacy_rate": 89.2,
+    "literacy_rate_male": 93.99,
+    "literacy_rate_female": 85.99,
+    "president": "LAILAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ADICHANALLOOR",
+            "person": {
+                "id": "2015002400101",
+                "name": "SHERLY STEPHEN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDANADU",
+            "person": {
+                "id": "2015002400201",
+                "name": "SREEJA HARISH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHATHANNOOR NORTH",
+            "person": {
+                "id": "2015002400302",
+                "name": "JAYALEKSHMI R.S."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLUVATHUKKAL",
+            "person": {
+                "id": "2015002400401",
+                "name": "JOHN MATHEW"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VELAMANOOR",
+            "person": {
+                "id": "2015002400501",
+                "name": "SUNDARASAN A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MEENAMBALAM",
+            "person": {
+                "id": "2015002400601",
+                "name": "SINDHU ANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIRAKKARA",
+            "person": {
+                "id": "2015002400701",
+                "name": "LAILA S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHENKULAM",
+            "person": {
+                "id": "2015002400801",
+                "name": "PROF.V.S. LEE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOTHAKKULAM",
+            "person": {
+                "id": "2015002400901",
+                "name": "ASADEVI A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALAKKODU",
+            "person": {
+                "id": "2015002401001",
+                "name": "VIJAYASREE SUBHASH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NEDUNGOLAM",
+            "person": {
+                "id": "2015002401101",
+                "name": "MAYA SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHATHANNOOR",
+            "person": {
+                "id": "2015002401201",
+                "name": "GIRIKUMAR D"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTIYAM",
+            "person": {
+                "id": "2015002401301",
+                "name": "MYLAKKADU SUNIL"
+            }
+        }
+    ]
+}

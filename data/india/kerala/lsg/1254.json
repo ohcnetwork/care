@@ -1,0 +1,132 @@
+{
+    "timeStamp": 1566349759832,
+    "date": "2019-08-21",
+    "name": "Kalliasseri\n  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "area": null,
+    "localbody_code": "B130200",
+    "no_of_wards": 14,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "V.V.PREETHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MADAYI",
+            "person": {
+                "id": "2015125400101",
+                "name": "KAMALAKSHI .K.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERUTHAZHAM",
+            "person": {
+                "id": "2015125400201",
+                "name": "UNNI KRISHNAN .T.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PILATHARA",
+            "person": {
+                "id": "2015125400301",
+                "name": "V.V. PREETHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EZHOME",
+            "person": {
+                "id": "2015125400401",
+                "name": "S.V. ABDUL RASHEED"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAZHAYANGADI",
+            "person": {
+                "id": "2015125400501",
+                "name": "E. KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERUKUNNU",
+            "person": {
+                "id": "2015125400601",
+                "name": "P.V. BABU RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANNAPURAM",
+            "person": {
+                "id": "2015125400701",
+                "name": "SREEKANDAN .P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "IRINAVE",
+            "person": {
+                "id": "2015125400801",
+                "name": "P. GOVINDAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALLIASSERI",
+            "person": {
+                "id": "2015125400901",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NARATH",
+            "person": {
+                "id": "2015125401001",
+                "name": "NISHA .K.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNADIPARAMBA",
+            "person": {
+                "id": "2015125401101",
+                "name": "MUHAMMED ALI ARAMPEEDIKA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MATTOOL SOUTH",
+            "person": {
+                "id": "2015125401201",
+                "name": "C. SAINABA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MATTOOL NORTH",
+            "person": {
+                "id": "2015125401301",
+                "name": "ROSARIA DANIEL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHIYANGADI",
+            "person": {
+                "id": "2015125401401",
+                "name": "SOUDHA .C.H"
+            }
+        }
+    ]
+}

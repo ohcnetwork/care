@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345218240,
+    "date": "2019-08-21",
+    "name": "Malampuzha  Block Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Malampuzha",
+    "area": "468.04km",
+    "localbody_code": "B091300",
+    "no_of_wards": 13,
+    "population": 200289,
+    "male": 99020,
+    "female": 101269,
+    "population_density": 428,
+    "sex_ratio": 1023,
+    "literacy_rate": 78,
+    "literacy_rate_male": 85.79,
+    "literacy_rate_female": 70.42,
+    "president": "K.P.SHYJA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTTIKULANGARA",
+            "person": {
+                "id": "2015011000101",
+                "name": "K.JAHAFAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "RAILWAY COLONY",
+            "person": {
+                "id": "2015011000201",
+                "name": "C GEETHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AKATHETHARA",
+            "person": {
+                "id": "2015011000301",
+                "name": "PREETHA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANTHAKKAD",
+            "person": {
+                "id": "2015011000401",
+                "name": "V SUBRAMANIAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MALAMPUZHA",
+            "person": {
+                "id": "2015011000501",
+                "name": "KANCHANA SUDEVAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNOD",
+            "person": {
+                "id": "2015011000601",
+                "name": "ANITHA.S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALAYAR",
+            "person": {
+                "id": "2015011000701",
+                "name": "V.C.UDAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUDUSSERY",
+            "person": {
+                "id": "2015011000801",
+                "name": "K.P.SHYJA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTEKKAD",
+            "person": {
+                "id": "2015011000901",
+                "name": "VINESH.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MARUTHARODE",
+            "person": {
+                "id": "2015011001001",
+                "name": "RADHA RAMANI.P.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARINKARAPULLY",
+            "person": {
+                "id": "2015011001101",
+                "name": "HARIDASAN.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KODUMBU",
+            "person": {
+                "id": "2015011001201",
+                "name": "SUNIL.T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUDUPARIYARAM",
+            "person": {
+                "id": "2015011001301",
+                "name": "HARILAKSHMI.T"
+            }
+        }
+    ]
+}

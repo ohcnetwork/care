@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346305035,
+    "date": "2019-08-21",
+    "name": "Vadaserikara  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Ranni",
+    "area": "59.57km",
+    "localbody_code": "G030505",
+    "no_of_wards": 15,
+    "population": 21853,
+    "male": 10789,
+    "female": 11064,
+    "population_density": 369,
+    "sex_ratio": 1025,
+    "literacy_rate": 95.36,
+    "literacy_rate_male": 96.53,
+    "literacy_rate_female": 94.22,
+    "president": "MANIYARRADHAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUKULANJI",
+            "person": {
+                "id": "2015040100101",
+                "name": "SANDHYAKUMARY B"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIMPANAMKUZHI",
+            "person": {
+                "id": "2015040100201",
+                "name": "THOMASKUTTY N J"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALIYAKULAM",
+            "person": {
+                "id": "2015040100301",
+                "name": "SWAPNA SUSAN JACOB"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADASSERIKKARA",
+            "person": {
+                "id": "2015040100401",
+                "name": "SHAJI MANAPPALLIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BOUNDARY",
+            "person": {
+                "id": "2015040100501",
+                "name": "SALY MATHEW"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PEZHUMPARA",
+            "person": {
+                "id": "2015040100601",
+                "name": "ABRAHAM K M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AREEKKAKAVU",
+            "person": {
+                "id": "2015040100701",
+                "name": "SAINABA T P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANIYAR",
+            "person": {
+                "id": "2015040100801",
+                "name": "MANIYAR RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMPALATHAMON",
+            "person": {
+                "id": "2015040100901",
+                "name": "AJESH MANAPPATTU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THALACHIRA",
+            "person": {
+                "id": "2015040101001",
+                "name": "BALAN N V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THEKKUMALA",
+            "person": {
+                "id": "2015040101101",
+                "name": "BINDHU PRADEEP"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDATHARA",
+            "person": {
+                "id": "2015040101201",
+                "name": "MANIYAMMA YESODHARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NARIKKUZHI",
+            "person": {
+                "id": "2015040101301",
+                "name": "REENA JAMES"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUMPALAMPOIKA",
+            "person": {
+                "id": "2015040101401",
+                "name": "K E THOMAS"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAKKULAM",
+            "person": {
+                "id": "2015040101501",
+                "name": "USHA SAJI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345058405,
+    "date": "2019-08-21",
+    "name": "Azhutha  Block Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Azhutta",
+    "area": "1236.32km",
+    "localbody_code": "B060800",
+    "no_of_wards": 13,
+    "population": 162869,
+    "male": 82056,
+    "female": 80813,
+    "population_density": 132,
+    "sex_ratio": 985,
+    "literacy_rate": 83,
+    "literacy_rate_male": 89,
+    "literacy_rate_female": 77,
+    "president": "JESSYJACOB",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAGAMON",
+            "person": {
+                "id": "2015006500101",
+                "name": "SUDHAKARAN NEELAMBARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ELAPPARA",
+            "person": {
+                "id": "2015006500201",
+                "name": "JAYA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THENGAKKAL",
+            "person": {
+                "id": "2015006500301",
+                "name": "LISSY JOY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHENKARA",
+            "person": {
+                "id": "2015006500401",
+                "name": "JESSY JACOB"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUMILY",
+            "person": {
+                "id": "2015006500501",
+                "name": "ABDUL RAZAK.K.A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SPRING VALLEY",
+            "person": {
+                "id": "2015006500601",
+                "name": "ALICE SUNNY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANDIPERIYAR",
+            "person": {
+                "id": "2015006500701",
+                "name": "SELVATHAI.R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANCHUMALA",
+            "person": {
+                "id": "2015006500801",
+                "name": "SHAJI PYNADATH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATTUMALA",
+            "person": {
+                "id": "2015006500901",
+                "name": "NIXON GEORGE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PEERMADE",
+            "person": {
+                "id": "2015006501001",
+                "name": "DINESAN.R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AMALAGIRI",
+            "person": {
+                "id": "2015006501101",
+                "name": "LIZYAMMA JOSE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERUVANTHANAM",
+            "person": {
+                "id": "2015006501201",
+                "name": "SANDHYAMOL SUBASH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOKKAYAR",
+            "person": {
+                "id": "2015006501301",
+                "name": "JIJO.M.R (BIJOPPA)"
+            }
+        }
+    ]
+}

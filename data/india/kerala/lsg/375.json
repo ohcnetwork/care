@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566346219411,
+    "date": "2019-08-21",
+    "name": "Kottangal  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "23.08km",
+    "localbody_code": "G030104",
+    "no_of_wards": 13,
+    "population": 16953,
+    "male": 8404,
+    "female": 8549,
+    "population_density": 735,
+    "sex_ratio": 1017,
+    "literacy_rate": 96.51,
+    "literacy_rate_male": 97.71,
+    "literacy_rate_female": 95.33,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MELEPADIMON",
+            "person": {
+                "id": "2015037500101",
+                "name": "ELSY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SASTHAMKOICKAL",
+            "person": {
+                "id": "2015037500201",
+                "name": "JOSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAIPUR",
+            "person": {
+                "id": "2015037500301",
+                "name": "DEEPTHI DAMODARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KULATHOOR",
+            "person": {
+                "id": "2015037500401",
+                "name": "BINDHU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MALAMPARA",
+            "person": {
+                "id": "2015037500501",
+                "name": "AJIMON"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTTANGAL PADINJARU",
+            "person": {
+                "id": "2015037500601",
+                "name": "VIJAYAN T. N"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTTANGAL KIZHAKKU",
+            "person": {
+                "id": "2015037500702",
+                "name": "ABIN BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHUNKAPPARA VADAKKU",
+            "person": {
+                "id": "2015037500801",
+                "name": "SHAHIDHA BEEVI T. I"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHUNKAPPARA THEKKU",
+            "person": {
+                "id": "2015037500901",
+                "name": "FRANCIS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KERALAPURAM",
+            "person": {
+                "id": "2015037501001",
+                "name": "ALICE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUMBILUVELIL",
+            "person": {
+                "id": "2015037501101",
+                "name": "MUHAMMED SALIM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "OOTTUKULAM",
+            "person": {
+                "id": "2015037501201",
+                "name": "C.R VIJAYAMMA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERUMPARA",
+            "person": {
+                "id": "2015037501301",
+                "name": "ANNIE RAJU"
+            }
+        }
+    ]
+}

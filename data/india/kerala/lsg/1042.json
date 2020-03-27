@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349032799,
+    "date": "2019-08-21",
+    "name": "Kakkur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Chelannur",
+    "area": "20.36km",
+    "localbody_code": "G110903",
+    "no_of_wards": 15,
+    "population": 19358,
+    "male": 9467,
+    "female": 9891,
+    "population_density": 951,
+    "sex_ratio": 1045,
+    "literacy_rate": 92.64,
+    "literacy_rate_male": 96.76,
+    "literacy_rate_female": 88.77,
+    "president": "JAMEELAK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NADUVALLUR",
+            "person": {
+                "id": "2015104200101",
+                "name": "MADHURI T K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THEERTHANKARA",
+            "person": {
+                "id": "2015104200201",
+                "name": "BINDU P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "RAMALLUR",
+            "person": {
+                "id": "2015104200301",
+                "name": "SHEEBA P K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AROLIPOYIL",
+            "person": {
+                "id": "2015104200401",
+                "name": "ABDUL SALAM V K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAYALAD",
+            "person": {
+                "id": "2015104200501",
+                "name": "VISWAMBARAN K K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUTTAMBOOR",
+            "person": {
+                "id": "2015104200601",
+                "name": "VELAYUDHAN NAIR P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKUNNAM CHALIL",
+            "person": {
+                "id": "2015104200701",
+                "name": "LATHA C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUNNASSERI",
+            "person": {
+                "id": "2015104200801",
+                "name": "NARENDRANATH.C.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANDOTHPARA",
+            "person": {
+                "id": "2015104200901",
+                "name": "JISHA P K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUNNUR CHERUPALAM",
+            "person": {
+                "id": "2015104201001",
+                "name": "JAMEELA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ALAYAD",
+            "person": {
+                "id": "2015104201101",
+                "name": "NITHESH K M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAKKUR",
+            "person": {
+                "id": "2015104201201",
+                "name": "DASITHA K O"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIKKUNNU",
+            "person": {
+                "id": "2015104201301",
+                "name": "BILISHA BHASKAR K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ENTHAD",
+            "person": {
+                "id": "2015104201401",
+                "name": "RATHEESH K M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAVANDOOR",
+            "person": {
+                "id": "2015104201501",
+                "name": "JAYARAJAN T"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345097154,
+    "date": "2019-08-21",
+    "name": "Vadavucode  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vadavucode",
+    "area": "185.95km",
+    "localbody_code": "B071000",
+    "no_of_wards": 13,
+    "population": 138974,
+    "male": 70245,
+    "female": 68729,
+    "population_density": 747,
+    "sex_ratio": 978,
+    "literacy_rate": 90.83,
+    "literacy_rate_male": 94.58,
+    "literacy_rate_female": 82.01,
+    "president": "GOURIVELAYUDHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLIKKARA",
+            "person": {
+                "id": "2015007600101",
+                "name": "K.K.RAMESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VEMBILLY",
+            "person": {
+                "id": "2015007600201",
+                "name": "GOURI VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTIMATTOM",
+            "person": {
+                "id": "2015007600301",
+                "name": "SHYJA ANIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AIRAPURAM",
+            "person": {
+                "id": "2015007600401",
+                "name": "VINODKUMAR K.P."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAZHUVANNOOR",
+            "person": {
+                "id": "2015007600501",
+                "name": "LATHA SOMAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KADAYIRIPPU",
+            "person": {
+                "id": "2015007600601",
+                "name": "ADV.SHIJI SIVAJI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANCODE",
+            "person": {
+                "id": "2015007600701",
+                "name": "BINISH PULLIATTEL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLENCHERY",
+            "person": {
+                "id": "2015007600801",
+                "name": "N.N.RAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOTHRIKKA",
+            "person": {
+                "id": "2015007600901",
+                "name": "ANI BEN KUNNATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THIRUVANIYOOR",
+            "person": {
+                "id": "2015007601001",
+                "name": "BINU T.D"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MATTAKUZHI",
+            "person": {
+                "id": "2015007601101",
+                "name": "AMBILI SHIBU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHENCRUZ",
+            "person": {
+                "id": "2015007601201",
+                "name": "BEENA KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMBALAMEDU",
+            "person": {
+                "id": "2015007601301",
+                "name": "GEETHA SUKUMARAN"
+            }
+        }
+    ]
+}

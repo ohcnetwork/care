@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346421199,
+    "date": "2019-08-21",
+    "name": "Thycattussery  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Thycattussery",
+    "area": "13.82km",
+    "localbody_code": "G040105",
+    "no_of_wards": 15,
+    "population": 19287,
+    "male": 9609,
+    "female": 9678,
+    "population_density": 1396,
+    "sex_ratio": 1007,
+    "literacy_rate": 93,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 89,
+    "president": "SANTHAMMAPRAKASH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ULAVAIPU",
+            "person": {
+                "id": "2015043000101",
+                "name": "VIMAL RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHUDUKATTUPURAM",
+            "person": {
+                "id": "2015043000201",
+                "name": "AMBIKA SHASHIDHARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THEVARVATTOM",
+            "person": {
+                "id": "2015043000301",
+                "name": "VIJAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POOCHAKKAL",
+            "person": {
+                "id": "2015043000401",
+                "name": "VINOD KUMAR KANNATTU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PONPURAM",
+            "person": {
+                "id": "2015043000501",
+                "name": "MINI RAMESAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NAGARI",
+            "person": {
+                "id": "2015043000601",
+                "name": "PRAMOD (PRADEEP)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AATTUPURAM",
+            "person": {
+                "id": "2015043000701",
+                "name": "SAJI MANAPPURAM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANAPPURAM",
+            "person": {
+                "id": "2015043000801",
+                "name": "AMBILY THILAKAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SUB STATION",
+            "person": {
+                "id": "2015043000901",
+                "name": "PUSHKARAN.K.R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHEERATHUKAADU",
+            "person": {
+                "id": "2015043001001",
+                "name": "SANTHAMMA PRAKASH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANIYATHU",
+            "person": {
+                "id": "2015043001101",
+                "name": "BIJIMOL SAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SHRAMBIKKAL",
+            "person": {
+                "id": "2015043001201",
+                "name": "P.V.REJIMON"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THYCATTUSSERY",
+            "person": {
+                "id": "2015043001301",
+                "name": "MAMACHAN KALAPPURAKKAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANIYATHRIKKAL",
+            "person": {
+                "id": "2015043001401",
+                "name": "GANGADEVI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015043001501",
+                "name": "SASIKALA"
+            }
+        }
+    ]
+}

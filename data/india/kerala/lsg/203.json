@@ -1,0 +1,348 @@
+{
+    "timeStamp": 1566345607096,
+    "date": "2019-08-21",
+    "name": "Irinjalakuda  Municipality, Thrissur District",
+    "district": "Thrissur",
+    "area": "11.24km",
+    "localbody_code": "M080500",
+    "no_of_wards": 41,
+    "population": 51585,
+    "male": 24396,
+    "female": 27189,
+    "population_density": 2446,
+    "sex_ratio": 1048,
+    "literacy_rate": 94.47,
+    "literacy_rate_male": 96.97,
+    "literacy_rate_female": 92.12,
+    "chairperson": "NIMYASHIJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MOORKANAD",
+            "person": {
+                "id": "2015020300101",
+                "name": "K K ABDULLAKUTTY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "BANGLAVU",
+            "person": {
+                "id": "2015020300201",
+                "name": "V K SARALA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUTHENTHODE",
+            "person": {
+                "id": "2015020300301",
+                "name": "RAJESWARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARUVANNUR SOUTH",
+            "person": {
+                "id": "2015020300401",
+                "name": "ALPHONSA THOMAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PEECHAMPILLYKONAM",
+            "person": {
+                "id": "2015020300501",
+                "name": "JINI MATHEW"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "HOLY CROSS CHURCH",
+            "person": {
+                "id": "2015020300601",
+                "name": "BIJI AJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAPRANAM",
+            "person": {
+                "id": "2015020300701",
+                "name": "P C MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADAYIKONAM SCHOOL",
+            "person": {
+                "id": "2015020300801",
+                "name": "AMBIKA PALLIPURATH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAMBIANKAVU KSHETHRAM",
+            "person": {
+                "id": "2015020300901",
+                "name": "P M RAMESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUZHIKKATTUKONAM",
+            "person": {
+                "id": "2015020301001",
+                "name": "PRAJEESH P V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POLICE STATION",
+            "person": {
+                "id": "2015020301101",
+                "name": "K V AMBIKA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "BOYS HIGH SCHOOL",
+            "person": {
+                "id": "2015020301201",
+                "name": "BABY JOSE KATTLA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AZAD ROAD",
+            "person": {
+                "id": "2015020301301",
+                "name": "MEENAKSHY JOSHY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "GANDHIGRAM",
+            "person": {
+                "id": "2015020301401",
+                "name": "KURIAN JOSEPH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "GANDHIGRAM EAST",
+            "person": {
+                "id": "2015020301501",
+                "name": "DHANYA GIJU KOTTOLY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "GOVT HOSPITAL",
+            "person": {
+                "id": "2015020301601",
+                "name": "SANGEETHA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MADATHIKARA",
+            "person": {
+                "id": "2015020301701",
+                "name": "BIJU LAZAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHALAMPADAM",
+            "person": {
+                "id": "2015020301801",
+                "name": "NIMYA SHIJU"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MARKET",
+            "person": {
+                "id": "2015020301901",
+                "name": "ROCKY ALOOKARAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "COLONY",
+            "person": {
+                "id": "2015020302001",
+                "name": "P V SIVAKUMAR"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CANAL BASE",
+            "person": {
+                "id": "2015020302101",
+                "name": "V C VARGHEESE"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MUNICIPAL OFFICE",
+            "person": {
+                "id": "2015020302201",
+                "name": "SONIA GIRI"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "CHRIST COLLEGE",
+            "person": {
+                "id": "2015020302301",
+                "name": "PHILOMINA JOY"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "BUS STAND",
+            "person": {
+                "id": "2015020302401",
+                "name": "SREEJA SURESH"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "KOODALMANIKYAM",
+            "person": {
+                "id": "2015020302501",
+                "name": "SANTHOSH BOBAN"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "UNNAYIVARRIAYAR KALANILAYAM",
+            "person": {
+                "id": "2015020302601",
+                "name": "AMBILY JAYAN"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "CHELOORKAVU",
+            "person": {
+                "id": "2015020302701",
+                "name": "M C RAMANAN"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "POOCHAKULAM",
+            "person": {
+                "id": "2015020302801",
+                "name": "LISSY KURUTHUKULANGARA KOOLA"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "KSRTC",
+            "person": {
+                "id": "2015020302901",
+                "name": "SREEJITH K K"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "KORUMBISSERY",
+            "person": {
+                "id": "2015020303001",
+                "name": "K GIRIJA"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "KARUKULANGARA",
+            "person": {
+                "id": "2015020303101",
+                "name": "SUJA SANJEEVKUMAR"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "CIVIL STATION",
+            "person": {
+                "id": "2015020303201",
+                "name": "M R SHAJU"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "PORATHISSERY POST OFFICE",
+            "person": {
+                "id": "2015020303301",
+                "name": "PRAJITHA SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "34",
+            "name": "PORATHISSERY",
+            "person": {
+                "id": "2015020303401",
+                "name": "SHEEBA SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "35",
+            "name": "MAHATHMA SCHOOL",
+            "person": {
+                "id": "2015020303501",
+                "name": "VALSALA K G"
+            }
+        },
+        {
+            "ward_number": "36",
+            "name": "FIRE STATION",
+            "person": {
+                "id": "2015020303601",
+                "name": "SHABU K D"
+            }
+        },
+        {
+            "ward_number": "37",
+            "name": "BLOCK OFFICE",
+            "person": {
+                "id": "2015020303701",
+                "name": "P A ABDUL BASHEER"
+            }
+        },
+        {
+            "ward_number": "38",
+            "name": "THALIYAKONAM",
+            "person": {
+                "id": "2015020303801",
+                "name": "C C SHIBIN"
+            }
+        },
+        {
+            "ward_number": "39",
+            "name": "KALLADA",
+            "person": {
+                "id": "2015020303901",
+                "name": "BINDU SUDHODHANAN"
+            }
+        },
+        {
+            "ward_number": "40",
+            "name": "THALIYAKONAM NORTH",
+            "person": {
+                "id": "2015020304001",
+                "name": "SINDHU BAIJAN"
+            }
+        },
+        {
+            "ward_number": "41",
+            "name": "PURATHAD",
+            "person": {
+                "id": "2015020304101",
+                "name": "A R SAHADEVAN"
+            }
+        }
+    ]
+}

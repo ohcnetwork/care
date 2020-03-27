@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349375216,
+    "date": "2019-08-21",
+    "name": "Muzhappilangad  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "7.19km",
+    "localbody_code": "G130705",
+    "no_of_wards": 15,
+    "population": 18812,
+    "male": 9072,
+    "female": 9740,
+    "population_density": 2616,
+    "sex_ratio": 1074,
+    "literacy_rate": 93.06,
+    "literacy_rate_male": 95.99,
+    "literacy_rate_female": 90.4,
+    "president": "HABEESMP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PACHAKKARA",
+            "person": {
+                "id": "2015114000101",
+                "name": "HAMEED P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MALAKKUTHAZHE",
+            "person": {
+                "id": "2015114000201",
+                "name": "K SINDHU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "DHARMAKULAM",
+            "person": {
+                "id": "2015114000301",
+                "name": "AJITHKUMAR K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNANVAYAL",
+            "person": {
+                "id": "2015114000401",
+                "name": "BABU M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAMMAKKUNNU",
+            "person": {
+                "id": "2015114000501",
+                "name": "A C NASEER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKEKUNNUMBRAM",
+            "person": {
+                "id": "2015114000601",
+                "name": "LATHA K P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SREEKOORMBAKAVU",
+            "person": {
+                "id": "2015114000701",
+                "name": "LAKSHMI K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SREENARAYANAMADAM",
+            "person": {
+                "id": "2015114000801",
+                "name": "SMITHA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULLAPRAM",
+            "person": {
+                "id": "2015114000901",
+                "name": "KAMALAKSHI K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNHIPPUZHA",
+            "person": {
+                "id": "2015114001001",
+                "name": "USHA P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "DEEPTHI",
+            "person": {
+                "id": "2015114001101",
+                "name": "ROJA T V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SURABHI",
+            "person": {
+                "id": "2015114001201",
+                "name": "SANTHA C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEEROZHUKKU",
+            "person": {
+                "id": "2015114001301",
+                "name": "KARTHIYANI K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KETTINAKAM",
+            "person": {
+                "id": "2015114001401",
+                "name": "HABEES M P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "DISPENSARY",
+            "person": {
+                "id": "2015114001501",
+                "name": "BABU KUNOTH"
+            }
+        }
+    ]
+}

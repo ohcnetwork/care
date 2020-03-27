@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349244576,
+    "date": "2019-08-21",
+    "name": "Kalliasseri  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "15.73km",
+    "localbody_code": "G130206",
+    "no_of_wards": 18,
+    "population": 25005,
+    "male": 12016,
+    "female": 12989,
+    "population_density": 1590,
+    "sex_ratio": 1081,
+    "literacy_rate": 93,
+    "literacy_rate_male": 97.25,
+    "literacy_rate_female": 89.14,
+    "president": "EPOMANA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "IRINAVU NORTH",
+            "person": {
+                "id": "2015111000101",
+                "name": "K JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KALLIASSERI KANNAPURAM",
+            "person": {
+                "id": "2015111000201",
+                "name": "E P OMANA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015111000301",
+                "name": "MANI GOVINDAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLIASSERI CENTRAL",
+            "person": {
+                "id": "2015111000401",
+                "name": "SAJINI K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAKKADAVU",
+            "person": {
+                "id": "2015111000501",
+                "name": "M V RAJAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANCHAMPEEDIKA",
+            "person": {
+                "id": "2015111000602",
+                "name": "RAMA D"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANNUR UNIVERSITY",
+            "person": {
+                "id": "2015111000701",
+                "name": "V C PAVITHRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KELTRON NAGAR",
+            "person": {
+                "id": "2015111000801",
+                "name": "PADMINI MUNDA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KRISHNAPILLA NAGAR",
+            "person": {
+                "id": "2015111000901",
+                "name": "K LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANGAD",
+            "person": {
+                "id": "2015111001001",
+                "name": "VIDHYA P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLIASSERI",
+            "person": {
+                "id": "2015111001101",
+                "name": "SOPNA KUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALLIASSERI WEST",
+            "person": {
+                "id": "2015111001201",
+                "name": "C P VANAJA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOLATHUVAYAL",
+            "person": {
+                "id": "2015111001301",
+                "name": "K BHARGAVAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOLATHUVAYAL WEST",
+            "person": {
+                "id": "2015111001401",
+                "name": "C NISHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VELLANCHIRA",
+            "person": {
+                "id": "2015111001502",
+                "name": "K  MOHANAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PAYYATTAM",
+            "person": {
+                "id": "2015111001601",
+                "name": "C. PUSHPAVALLY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PUTHARIPPURAM",
+            "person": {
+                "id": "2015111001701",
+                "name": "GOWRI. P.V"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "IRINAVU DAM",
+            "person": {
+                "id": "2015111001801",
+                "name": "PADAPPIL SAKKARIYA"
+            }
+        }
+    ]
+}

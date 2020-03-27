@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346913870,
+    "date": "2019-08-21",
+    "name": "Manimala  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kanjirappally",
+    "area": "37.53km",
+    "localbody_code": "G051104",
+    "no_of_wards": 15,
+    "population": 21504,
+    "male": 10614,
+    "female": 10890,
+    "population_density": 525,
+    "sex_ratio": 1011,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "ANCYSEBASTIAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANIMALA",
+            "person": {
+                "id": "2015057000101",
+                "name": "ANCY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POOVATHOLY",
+            "person": {
+                "id": "2015057000202",
+                "name": "M C JACOB"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIKKATTOOR CENTRE",
+            "person": {
+                "id": "2015057000301",
+                "name": "MICHAEL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KONNAKKULAM",
+            "person": {
+                "id": "2015057000401",
+                "name": "LEETHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHARUVELI",
+            "person": {
+                "id": "2015057000501",
+                "name": "VASANTHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUKKADA",
+            "person": {
+                "id": "2015057000601",
+                "name": "REJANIMOL T.R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AALAYAMKAVALA",
+            "person": {
+                "id": "2015057000701",
+                "name": "SANTHAMMA A.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PONTHENPUZHA",
+            "person": {
+                "id": "2015057000801",
+                "name": "JAYASREE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARIMPANAKKULAM",
+            "person": {
+                "id": "2015057000901",
+                "name": "SHERLY THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ALAPARA",
+            "person": {
+                "id": "2015057001001",
+                "name": "VALSALA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VECHOOKUNNU",
+            "person": {
+                "id": "2015057001101",
+                "name": "JAMEELA P S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MELEKAVALA",
+            "person": {
+                "id": "2015057001201",
+                "name": "SHAKEELA SALIM"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIKALLU",
+            "person": {
+                "id": "2015057001301",
+                "name": "SABU THOMAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARIKKATTOOR",
+            "person": {
+                "id": "2015057001401",
+                "name": "SHINY SHAJI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NELLITTHANAM",
+            "person": {
+                "id": "2015057001501",
+                "name": "JONYKUTTY THOMAS"
+            }
+        }
+    ]
+}

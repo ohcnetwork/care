@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346962160,
+    "date": "2019-08-21",
+    "name": "Pampadumpara  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "44.64km",
+    "localbody_code": "G060301",
+    "no_of_wards": 16,
+    "population": 19308,
+    "male": 9854,
+    "female": 9454,
+    "population_density": 432,
+    "sex_ratio": 959,
+    "literacy_rate": 72,
+    "literacy_rate_male": 94,
+    "literacy_rate_female": 89,
+    "president": "MINITOMY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015058500101",
+                "name": "AAYISHA (AARIFA AYOOB)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THANNIMOODU",
+            "person": {
+                "id": "2015058500201",
+                "name": "A.J. SEBASTIAN (JOSE AMMANCHERIL)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUNDIYERUMA",
+            "person": {
+                "id": "2015058500301",
+                "name": "THANKAMMA RAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THOOKKUPALAM",
+            "person": {
+                "id": "2015058500401",
+                "name": "USHA SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BALAGRAM",
+            "person": {
+                "id": "2015058500501",
+                "name": "P. AJIKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THIRDCAMP",
+            "person": {
+                "id": "2015058500601",
+                "name": "LATHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUMARAKAMMETTU",
+            "person": {
+                "id": "2015058500701",
+                "name": "S. MOHANAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDATHWAMETTU",
+            "person": {
+                "id": "2015058500801",
+                "name": "HARILAL P."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANYARTHOLU",
+            "person": {
+                "id": "2015058500901",
+                "name": "SARITHA RAJESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SANNIYASIODA",
+            "person": {
+                "id": "2015058501001",
+                "name": "RADHAKRISHNAPILLAI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AADIYARPURAM",
+            "person": {
+                "id": "2015058501101",
+                "name": "SUDHA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHUKKADU",
+            "person": {
+                "id": "2015058501201",
+                "name": "SARITHA SURESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALIYATHOVALA",
+            "person": {
+                "id": "2015058501301",
+                "name": "SHAJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANNAKKUDY",
+            "person": {
+                "id": "2015058501401",
+                "name": "JOSEKUTTY VARKEY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAMPADUMPARA",
+            "person": {
+                "id": "2015058501501",
+                "name": "SHIJIMON IYPE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VATTAPPARA",
+            "person": {
+                "id": "2015058501601",
+                "name": "MINI TOMY"
+            }
+        }
+    ]
+}

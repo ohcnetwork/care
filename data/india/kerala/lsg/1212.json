@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349615766,
+    "date": "2019-08-21",
+    "name": "Kinanoor - Karinthalam  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Neeleswaram",
+    "area": "77.49km",
+    "localbody_code": "G140507",
+    "no_of_wards": 17,
+    "population": 22219,
+    "male": 10935,
+    "female": 11284,
+    "population_density": 287,
+    "sex_ratio": 1032,
+    "literacy_rate": 84.53,
+    "literacy_rate_male": 89.94,
+    "literacy_rate_female": 79.31,
+    "president": "VIDHUBALA.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHAYOTH",
+            "person": {
+                "id": "2015121200101",
+                "name": "VIDHUBALA .A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOOVATTY",
+            "person": {
+                "id": "2015121200201",
+                "name": "BEENAKUMARI.P.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NELLIYADUKKAM",
+            "person": {
+                "id": "2015121200301",
+                "name": "ELIZABETH.K.I"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHUKKUNNU",
+            "person": {
+                "id": "2015121200401",
+                "name": "P.PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARALAM",
+            "person": {
+                "id": "2015121200501",
+                "name": "REMA.C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BIRIKKULAM",
+            "person": {
+                "id": "2015121200601",
+                "name": "CHITHRALEKHA.K.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAMMADAM",
+            "person": {
+                "id": "2015121200701",
+                "name": "KARTHYAYANI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAPPA",
+            "person": {
+                "id": "2015121200801",
+                "name": "V BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARATTU",
+            "person": {
+                "id": "2015121200901",
+                "name": "RAMANI.K.A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOORAMKUNDU",
+            "person": {
+                "id": "2015121201001",
+                "name": "P.V .RAVI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOLAMKULAM",
+            "person": {
+                "id": "2015121201101",
+                "name": "C.V.BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERIYANGANAM",
+            "person": {
+                "id": "2015121201201",
+                "name": "LICY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUMBALAPPALLY",
+            "person": {
+                "id": "2015121201301",
+                "name": "SINDHU.N"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULIYANNUR",
+            "person": {
+                "id": "2015121201401",
+                "name": "ANITHA.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KARINTHALAM",
+            "person": {
+                "id": "2015121201501",
+                "name": "USHA.E"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOLLAMPARA",
+            "person": {
+                "id": "2015121201601",
+                "name": "P.CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KINANOOR",
+            "person": {
+                "id": "2015121201701",
+                "name": "K.SREEDHARAN"
+            }
+        }
+    ]
+}

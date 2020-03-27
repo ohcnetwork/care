@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348118804,
+    "date": "2019-08-21",
+    "name": "Annamanada  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mala",
+    "area": "25.08km",
+    "localbody_code": "G081502",
+    "no_of_wards": 18,
+    "population": 26448,
+    "male": 12984,
+    "female": 13464,
+    "population_density": 1054,
+    "sex_ratio": 1037,
+    "literacy_rate": 90.34,
+    "literacy_rate_male": 94.24,
+    "literacy_rate_female": 86.58,
+    "president": "TESSYTITUS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ALATHUR",
+            "person": {
+                "id": "2015079400101",
+                "name": "T K GOPI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VENNOOR NORTH",
+            "person": {
+                "id": "2015079400201",
+                "name": "U A GEORGE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VENNOOR SOUTH",
+            "person": {
+                "id": "2015079400301",
+                "name": "P O POULOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ANNAMANADA WEST",
+            "person": {
+                "id": "2015079400401",
+                "name": "SREEDEVI VIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANNAMANADA TOWN",
+            "person": {
+                "id": "2015079400501",
+                "name": "K K RAVI NAMPOOTHIRI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALLOOR",
+            "person": {
+                "id": "2015079400601",
+                "name": "M S VIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "WEST KORATTY",
+            "person": {
+                "id": "2015079400701",
+                "name": "M U KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VAPARAMB",
+            "person": {
+                "id": "2015079400801",
+                "name": "RAMA NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MAMBRA",
+            "person": {
+                "id": "2015079400901",
+                "name": "T V BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ERAYAMKUDY",
+            "person": {
+                "id": "2015079401001",
+                "name": "MINITHA BABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALLISSERY NORTH",
+            "person": {
+                "id": "2015079401101",
+                "name": "GEETHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLISSERY SOUTH",
+            "person": {
+                "id": "2015079401201",
+                "name": "P K THILAKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POOVATHUSSERY",
+            "person": {
+                "id": "2015079401301",
+                "name": "USHA P K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUMBIDY",
+            "person": {
+                "id": "2015079401401",
+                "name": "LALY PAPPACHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAYATTOOR",
+            "person": {
+                "id": "2015079401501",
+                "name": "N K JOSHY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KEEZHADOOR",
+            "person": {
+                "id": "2015079401601",
+                "name": "TESSY TITUS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MELADOOR",
+            "person": {
+                "id": "2015079401701",
+                "name": "SYAMALA AYYAPPAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MALAYAMKUNNU",
+            "person": {
+                "id": "2015079401801",
+                "name": "BABY POULOSE"
+            }
+        }
+    ]
+}

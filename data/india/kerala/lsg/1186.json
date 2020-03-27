@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349536006,
+    "date": "2019-08-21",
+    "name": "Enmakaje  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "78.23km",
+    "localbody_code": "G140107",
+    "no_of_wards": 17,
+    "population": 24166,
+    "male": 12305,
+    "female": 11861,
+    "population_density": 309,
+    "sex_ratio": 964,
+    "literacy_rate": 75.99,
+    "literacy_rate_male": 84.39,
+    "literacy_rate_female": 67.35,
+    "president": "ROOPAVANI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SAYA",
+            "person": {
+                "id": "2015118600101",
+                "name": "JAYASHREE A KULAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHAWARKAD",
+            "person": {
+                "id": "2015118600201",
+                "name": "AITHAPPA KULAL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "BALEMOOLE",
+            "person": {
+                "id": "2015118600301",
+                "name": "MAMATHA U RAI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KATUKUKKE",
+            "person": {
+                "id": "2015118600401",
+                "name": "MALLIKA JAYARAM RAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SHIVAGIRI",
+            "person": {
+                "id": "2015118600501",
+                "name": "PUTTAPPA K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SWARGA",
+            "person": {
+                "id": "2015118600601",
+                "name": "CHANDRAVATHI M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANINAGAR",
+            "person": {
+                "id": "2015118600701",
+                "name": "SHASHIKALA Y"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAJAMPADI",
+            "person": {
+                "id": "2015118600801",
+                "name": "ROOPAVANI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERLA EAST",
+            "person": {
+                "id": "2015118600901",
+                "name": "AYISHA A A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERLA WEST",
+            "person": {
+                "id": "2015118601001",
+                "name": "ABOOBAKER SIDDIQUE KANDIGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "BEDRAMPALLA",
+            "person": {
+                "id": "2015118601101",
+                "name": "PREMA M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "BANPUTHADKA",
+            "person": {
+                "id": "2015118601201",
+                "name": "SHARADA Y"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "GUNAJE",
+            "person": {
+                "id": "2015118601301",
+                "name": "SIDDIQUE VOLAMUGAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SHENI",
+            "person": {
+                "id": "2015118601401",
+                "name": "PUSHPA V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ENMAKAJE",
+            "person": {
+                "id": "2015118601501",
+                "name": "B UDAYA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BAJAKUDLU",
+            "person": {
+                "id": "2015118601601",
+                "name": "HANEEF NADUBAIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ADKASTHALA",
+            "person": {
+                "id": "2015118601701",
+                "name": "SATHEESH KULAL"
+            }
+        }
+    ]
+}

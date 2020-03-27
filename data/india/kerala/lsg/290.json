@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566345929011,
+    "date": "2019-08-21",
+    "name": "Amboori  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Perumkadavila",
+    "area": "49.47km",
+    "localbody_code": "G010908",
+    "no_of_wards": 13,
+    "population": 16335,
+    "male": 8117,
+    "female": 8218,
+    "population_density": 330,
+    "sex_ratio": 1012,
+    "literacy_rate": 84.41,
+    "literacy_rate_male": 88.77,
+    "literacy_rate_female": 80.17,
+    "president": "SHAJI.B",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MAYAM",
+            "person": {
+                "id": "2015029000101",
+                "name": "AMBILI. T. PUTHOOR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANCHAYAT OFFICE WARD",
+            "person": {
+                "id": "2015029000201",
+                "name": "LALI JOHN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THODUMALA",
+            "person": {
+                "id": "2015029000301",
+                "name": "SHIBU. V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMBOORI",
+            "person": {
+                "id": "2015029000402",
+                "name": "NAINAN P.S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOOTTAPPU",
+            "person": {
+                "id": "2015029000501",
+                "name": "SHAJI. B"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKUPARA",
+            "person": {
+                "id": "2015029000601",
+                "name": "LATHA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANNANNOOR",
+            "person": {
+                "id": "2015029000701",
+                "name": "KUMARI SHEEBA. S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUDAPPANAMOODU",
+            "person": {
+                "id": "2015029000801",
+                "name": "SULAYYABANU. S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THUDIYAMKONAM",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PURUTHIPPARA",
+            "person": {
+                "id": "2015029001001",
+                "name": "BINU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHIRAYAKODE",
+            "person": {
+                "id": "2015029001102",
+                "name": "BABU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUTTAMALA",
+            "person": {
+                "id": "2015029001201",
+                "name": "VALSALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANDAMTHITTA",
+            "person": {
+                "id": "2015029001301",
+                "name": "ANITHA"
+            }
+        }
+    ]
+}

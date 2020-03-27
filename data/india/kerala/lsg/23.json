@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566344919216,
+    "date": "2019-08-21",
+    "name": "Mukhathala  Block Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Mukathala",
+    "area": "80.11km",
+    "localbody_code": "B020900",
+    "no_of_wards": 15,
+    "population": 254143,
+    "male": 126324,
+    "female": 127819,
+    "population_density": 3172,
+    "sex_ratio": 1012,
+    "literacy_rate": 90.82,
+    "literacy_rate_male": 94.61,
+    "literacy_rate_female": 87.11,
+    "president": "SRI.S.RAJEEV",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PEROOR",
+            "person": {
+                "id": "2015002300101",
+                "name": "SMT.SOBHANA SUNIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTAMKARA",
+            "person": {
+                "id": "2015002300201",
+                "name": "SMT.K.GIRIJAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KERALAPURAM",
+            "person": {
+                "id": "2015002300301",
+                "name": "SMT.REMANI.G"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ELAMPALLOOR",
+            "person": {
+                "id": "2015002300401",
+                "name": "SRI.K.C.VARDHARAJAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERUMPUZHA",
+            "person": {
+                "id": "2015002300501",
+                "name": "SMT.JAYAKUMARI.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAZHANGALAM",
+            "person": {
+                "id": "2015002300601",
+                "name": "SRI.R.BIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLIMON",
+            "person": {
+                "id": "2015002300701",
+                "name": "SRI.PALLIMON SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEDUMPANA",
+            "person": {
+                "id": "2015002300801",
+                "name": "SMT.SHAHIDA SHANAVAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUREEPPALLY",
+            "person": {
+                "id": "2015002300901",
+                "name": "SRI.GEORGE MATHEW"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNANALLOOR",
+            "person": {
+                "id": "2015002301001",
+                "name": "SMT.GEETHA DEVI .P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTIYAM",
+            "person": {
+                "id": "2015002301101",
+                "name": "SMT.AMBILI BABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PULLICHIRA",
+            "person": {
+                "id": "2015002301201",
+                "name": "SRI.S.RAJEEV"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MAYYANAD",
+            "person": {
+                "id": "2015002301301",
+                "name": "SRI.V.S.VIPIN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UMAYANALLOOR",
+            "person": {
+                "id": "2015002301401",
+                "name": "SRI.D.PUSHPARAJAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THRIKKOVILVATTOM",
+            "person": {
+                "id": "2015002301501",
+                "name": "SRI.VALSALA"
+            }
+        }
+    ]
+}

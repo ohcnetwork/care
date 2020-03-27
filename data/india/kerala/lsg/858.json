@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348330054,
+    "date": "2019-08-21",
+    "name": "Thenkurissi  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Kuzhalmannam",
+    "area": "29.92km",
+    "localbody_code": "G090806",
+    "no_of_wards": 17,
+    "population": 25307,
+    "male": 12261,
+    "female": 13046,
+    "population_density": 846,
+    "sex_ratio": 1064,
+    "literacy_rate": 77.49,
+    "literacy_rate_male": 84.66,
+    "literacy_rate_female": 67.27,
+    "president": "INDIRA.CWOKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ANCHATHANI-PAZHATHARA",
+            "person": {
+                "id": "2015085800101",
+                "name": "K.P.SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADUNGAM",
+            "person": {
+                "id": "2015085800201",
+                "name": "SANTHA.K.V W/O SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ELAMANNAM",
+            "person": {
+                "id": "2015085800301",
+                "name": "R. RAVINDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANAMKULAMBU",
+            "person": {
+                "id": "2015085800401",
+                "name": "N.RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAHALIKUDAM",
+            "person": {
+                "id": "2015085800501",
+                "name": "K.USHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THENKURISSITHARA",
+            "person": {
+                "id": "2015085800601",
+                "name": "LEELAVATHY.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VILAYANCHATHANUR",
+            "person": {
+                "id": "2015085800701",
+                "name": "RATHEESH.R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANNIYODE",
+            "person": {
+                "id": "2015085800801",
+                "name": "SUSEELA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VEMBALLUR",
+            "person": {
+                "id": "2015085800901",
+                "name": "SOWMYA.G"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MURINGAMALA",
+            "person": {
+                "id": "2015085801001",
+                "name": "M.VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANNALUR",
+            "person": {
+                "id": "2015085801101",
+                "name": "SREEJA .N"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAPARAMBU",
+            "person": {
+                "id": "2015085801201",
+                "name": "INDIRA.C W/O KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VETTUKADU",
+            "person": {
+                "id": "2015085801301",
+                "name": "CHAMU.V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOTTADI",
+            "person": {
+                "id": "2015085801401",
+                "name": "RASHEEDA. A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANAKUTTIPARA",
+            "person": {
+                "id": "2015085801501",
+                "name": "V.GOPI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERUKODE",
+            "person": {
+                "id": "2015085801601",
+                "name": "USHARANI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KAYARAMKULAM",
+            "person": {
+                "id": "2015085801701",
+                "name": "V.P.M.MUSTAFA"
+            }
+        }
+    ]
+}

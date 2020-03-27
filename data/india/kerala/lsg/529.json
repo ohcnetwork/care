@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346788286,
+    "date": "2019-08-21",
+    "name": "Kadanad  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Lalam",
+    "area": "40.19km",
+    "localbody_code": "G050504",
+    "no_of_wards": 14,
+    "population": 18024,
+    "male": 9003,
+    "female": 9021,
+    "population_density": 448,
+    "sex_ratio": 1002,
+    "literacy_rate": 95,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 94,
+    "president": "JAISONGEORGE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANATHOOR",
+            "person": {
+                "id": "2015052900101",
+                "name": "ANTONEY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MATTATHIPPARA",
+            "person": {
+                "id": "2015052900201",
+                "name": "SALY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NEELOOR",
+            "person": {
+                "id": "2015052900301",
+                "name": "TREESAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANDATHIMAV",
+            "person": {
+                "id": "2015052900401",
+                "name": "REJIMON"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MARYLAND",
+            "person": {
+                "id": "2015052900501",
+                "name": "JOSEPH BENADICT"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KURUMANNU",
+            "person": {
+                "id": "2015052900601",
+                "name": "SOMAN V.G"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELIVALI",
+            "person": {
+                "id": "2015052900701",
+                "name": "PAULINE TOMY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KODUMPIDY",
+            "person": {
+                "id": "2015052900801",
+                "name": "JAISON GEORGE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOLLAPPALLY",
+            "person": {
+                "id": "2015052900901",
+                "name": "BINDU BINU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AIMCOMBU",
+            "person": {
+                "id": "2015052901001",
+                "name": "LISSY SUNNY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADANAD",
+            "person": {
+                "id": "2015052901101",
+                "name": "USHA RAJU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAVUMKANDAM",
+            "person": {
+                "id": "2015052901201",
+                "name": "BABY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALYATHU",
+            "person": {
+                "id": "2015052901301",
+                "name": "BINDU SATHISHKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PIZHAKU",
+            "person": {
+                "id": "2015052901401",
+                "name": "SHILU K.P"
+            }
+        }
+    ]
+}

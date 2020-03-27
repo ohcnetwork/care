@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346444233,
+    "date": "2019-08-21",
+    "name": "Ezhupunna  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "14.08km",
+    "localbody_code": "G040206",
+    "no_of_wards": 16,
+    "population": 22633,
+    "male": 1115,
+    "female": 11518,
+    "population_density": 1607,
+    "sex_ratio": 1036,
+    "literacy_rate": 91,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 85,
+    "president": "SYAMALAKUMARI.S.T.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLUPURACKAL",
+            "person": {
+                "id": "2015043700101",
+                "name": "JULIET (JULIE THOMAS)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKAKATH",
+            "person": {
+                "id": "2015043700201",
+                "name": "SYAMALAKUMARI.S.T."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015043700301",
+                "name": "V.M.JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VATHARA",
+            "person": {
+                "id": "2015043700401",
+                "name": "RENUKA AJAYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANJIRATHUNKAL",
+            "person": {
+                "id": "2015043700501",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KONNANATTU",
+            "person": {
+                "id": "2015043700601",
+                "name": "MAYA.R."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ERAMALLOOR",
+            "person": {
+                "id": "2015043700701",
+                "name": "GEETHA DINESAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THOTTAPPALLY",
+            "person": {
+                "id": "2015043700801",
+                "name": "DINESAN.V.M."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOVILAKAM",
+            "person": {
+                "id": "2015043700901",
+                "name": "BINUMOL.A.P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015043701001",
+                "name": "SHABUMON (SHABURAJ)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNUKULANGARA",
+            "person": {
+                "id": "2015043701101",
+                "name": "N.K.RAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MARKET",
+            "person": {
+                "id": "2015043701201",
+                "name": "SHAJI KUREETHARA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KONKERIL",
+            "person": {
+                "id": "2015043701301",
+                "name": "BINDU SHAJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ST. RAPHAELS",
+            "person": {
+                "id": "2015043701401",
+                "name": "JOHN (M.K.JOHNAPPAN)"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NEENDAKARA",
+            "person": {
+                "id": "2015043701501",
+                "name": "JOJAN RAPHAEL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUMARAPURAM",
+            "person": {
+                "id": "2015043701603",
+                "name": "JEEVAN R"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348092186,
+    "date": "2019-08-21",
+    "name": "Edathiruthy  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mathilakam",
+    "area": "16.63km",
+    "localbody_code": "G081401",
+    "no_of_wards": 18,
+    "population": 27457,
+    "male": 12858,
+    "female": 14599,
+    "population_density": 1651,
+    "sex_ratio": 1135,
+    "literacy_rate": 93.08,
+    "literacy_rate_male": 96.2,
+    "literacy_rate_female": 90.42,
+    "president": "BYNAPRADEEP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAINOOR",
+            "person": {
+                "id": "2015078500101",
+                "name": "USHA VELAYUDHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUTTAMANGALAM",
+            "person": {
+                "id": "2015078500201",
+                "name": "P.S.SAINUDEEN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUNAYAM",
+            "person": {
+                "id": "2015078500301",
+                "name": "AMBILY PRINCE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EDATHIRUTHY SOUTH",
+            "person": {
+                "id": "2015078500401",
+                "name": "RANJINI SATHYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHENTHRAPPINNI EAST",
+            "person": {
+                "id": "2015078500501",
+                "name": "SREEDEVI DINESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOZHITHUMBU",
+            "person": {
+                "id": "2015078500601",
+                "name": "A.K.JAMAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIRAKKAL",
+            "person": {
+                "id": "2015078500701",
+                "name": "ABDUL JALEEL P A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANDALAKKAL",
+            "person": {
+                "id": "2015078500801",
+                "name": "UMARUL FAROOK M U"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAMAKKALA",
+            "person": {
+                "id": "2015078500901",
+                "name": "SHEREENA HAMZA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THALAPURAM",
+            "person": {
+                "id": "2015078501001",
+                "name": "GEETHA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHENTHRAPPINNI SOUTH",
+            "person": {
+                "id": "2015078501101",
+                "name": "SHIHAS M A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHENTHRAPPINNI NORTH",
+            "person": {
+                "id": "2015078501201",
+                "name": "RAJITHA T P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNAMPULLIPPURAM",
+            "person": {
+                "id": "2015078501301",
+                "name": "MANOHARAN T A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EDATHIRUTHY",
+            "person": {
+                "id": "2015078501401",
+                "name": "NOUMY PRASAD"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERUMPADAPPU",
+            "person": {
+                "id": "2015078501501",
+                "name": "HENA REMESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BALABODHINI",
+            "person": {
+                "id": "2015078501601",
+                "name": "BYNA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EDATHIRUTHY WEST",
+            "person": {
+                "id": "2015078501701",
+                "name": "A V SATHEESH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHULOOR",
+            "person": {
+                "id": "2015078501801",
+                "name": "SALEEM VALIYAKATH"
+            }
+        }
+    ]
+}

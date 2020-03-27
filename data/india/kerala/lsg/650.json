@@ -1,0 +1,180 @@
+{
+    "timeStamp": 1566347174328,
+    "date": "2019-08-21",
+    "name": "Vazhakulam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "19.64km",
+    "localbody_code": "G070502",
+    "no_of_wards": 20,
+    "population": 28591,
+    "male": 14591,
+    "female": 14000,
+    "population_density": 1156,
+    "sex_ratio": 959,
+    "literacy_rate": 88.26,
+    "literacy_rate_male": 93.15,
+    "literacy_rate_female": 83.22,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNNATHUKARA",
+            "person": {
+                "id": "2015065000101",
+                "name": "SAROJINI.K.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MARAMPALLY",
+            "person": {
+                "id": "2015065000201",
+                "name": "SAMIJA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANAMPARAMBU",
+            "person": {
+                "id": "2015065000301",
+                "name": "MANI.P.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTHIRAPARAMBU",
+            "person": {
+                "id": "2015065000401",
+                "name": "NASEER KAKKANATTIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANJAPPETTY",
+            "person": {
+                "id": "2015065000501",
+                "name": "PATHUMMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERUVELIKUNNU",
+            "person": {
+                "id": "2015065000601",
+                "name": "NISHA ALIYAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANCHINAD",
+            "person": {
+                "id": "2015065000701",
+                "name": "V.C.CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUDICKAL",
+            "person": {
+                "id": "2015065000801",
+                "name": "SANITHA RAHIM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALLIPRAM",
+            "person": {
+                "id": "2015065000901",
+                "name": "SHEREENA BASHEER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALLIKAVALA",
+            "person": {
+                "id": "2015065001001",
+                "name": "SAFIYA RAHMAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOULOODPURA",
+            "person": {
+                "id": "2015065001101",
+                "name": "SAJEENA SIDHIQUE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MULLANKUNNU",
+            "person": {
+                "id": "2015065001201",
+                "name": "SHAMNAD V.M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAIPOORIKKARA",
+            "person": {
+                "id": "2015065001301",
+                "name": "A.S.KHADER KUNJU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLELI",
+            "person": {
+                "id": "2015065001401",
+                "name": "FAISAL C.A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHEMBARAKY",
+            "person": {
+                "id": "2015065001501",
+                "name": "KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SOUTH VAZHAKULAM",
+            "person": {
+                "id": "2015065001601",
+                "name": "SREEDEVI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "SOUTH EZHIPRAM",
+            "person": {
+                "id": "2015065001701",
+                "name": "P.M.NAZAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NADAKKAVU",
+            "person": {
+                "id": "2015065001801",
+                "name": "A.M.MUHAMMED KUNJU"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MANAKKAMOOLA",
+            "person": {
+                "id": "2015065001901",
+                "name": "K.S.JAYAPRASAD"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THADIYITTAPARAMBU",
+            "person": {
+                "id": "2015065002001",
+                "name": "VIJI SUNNY"
+            }
+        }
+    ]
+}

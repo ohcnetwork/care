@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566346166433,
+    "date": "2019-08-21",
+    "name": "Kalluvathukkal  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Ithikkara",
+    "area": "35.57km",
+    "localbody_code": "G021002",
+    "no_of_wards": 23,
+    "population": 42238,
+    "male": 20387,
+    "female": 21851,
+    "population_density": 1187,
+    "sex_ratio": 1072,
+    "literacy_rate": 89.31,
+    "literacy_rate_male": 93.45,
+    "literacy_rate_female": 85.47,
+    "president": "AMBIKAKUMARI.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VARINJAM",
+            "person": {
+                "id": "2015036100101",
+                "name": "T. S. PRADEESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ADUTHALA",
+            "person": {
+                "id": "2015036100201",
+                "name": "K. JOYKUTTY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VILAVOORKKONAM",
+            "person": {
+                "id": "2015036100301",
+                "name": "CHINCHU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VATTAKKUZHIKKAL",
+            "person": {
+                "id": "2015036100401",
+                "name": "KRISHNALEKHA. T.R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ELAMKULAM",
+            "person": {
+                "id": "2015036100501",
+                "name": "AMBIKAKUMARI. P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VELAMANOOR",
+            "person": {
+                "id": "2015036100601",
+                "name": "R. D. LAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KIZHAKKANELA",
+            "person": {
+                "id": "2015036100701",
+                "name": "K. MURALEEDHARAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KULAMADA",
+            "person": {
+                "id": "2015036100801",
+                "name": "D. SUBHADRA AMMA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHIYAPALAM",
+            "person": {
+                "id": "2015036100901",
+                "name": "SANTHOSHKUMAR. S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTAKKERAM",
+            "person": {
+                "id": "2015036101001",
+                "name": "ADV. SIMMILAL. S.S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADAMPATTUKONAM",
+            "person": {
+                "id": "2015036101101",
+                "name": "A. SOMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHAVARCODE",
+            "person": {
+                "id": "2015036101201",
+                "name": "JAYASREE SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EZHIPPURAM",
+            "person": {
+                "id": "2015036101301",
+                "name": "SHYLA ASOKADAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARIPPALLY",
+            "person": {
+                "id": "2015036101401",
+                "name": "MANIKANDAN. A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ESI",
+            "person": {
+                "id": "2015036101501",
+                "name": "N. SANTHINI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MEENAMBALAM",
+            "person": {
+                "id": "2015036101601",
+                "name": "SAJEEV SAJIGATHIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARIMPALOOR",
+            "person": {
+                "id": "2015036101701",
+                "name": "R.M. SHIBU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KULATHOORKONAM",
+            "person": {
+                "id": "2015036101801",
+                "name": "JYOTHY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHIRAKKARA",
+            "person": {
+                "id": "2015036101901",
+                "name": "SINDHU. K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PAMPURAM",
+            "person": {
+                "id": "2015036102001",
+                "name": "REJANI. L"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "MEVANAKONAM",
+            "person": {
+                "id": "2015036102101",
+                "name": "S.R. ROHINI"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "NADAKKAL",
+            "person": {
+                "id": "2015036102201",
+                "name": "B.R. DEEPA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "KALLUVATHUKKAL",
+            "person": {
+                "id": "2015036102301",
+                "name": "VISHNU. V"
+            }
+        }
+    ]
+}

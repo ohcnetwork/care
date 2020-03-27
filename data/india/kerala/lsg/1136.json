@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349364791,
+    "date": "2019-08-21",
+    "name": "Anjarakandy  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "15.47km",
+    "localbody_code": "G130706",
+    "no_of_wards": 15,
+    "population": 20683,
+    "male": 10086,
+    "female": 10597,
+    "population_density": 1337,
+    "sex_ratio": 1051,
+    "literacy_rate": 93.8,
+    "literacy_rate_male": 97.57,
+    "literacy_rate_female": 90.24,
+    "president": "TVSEETHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUZHAPPALA",
+            "person": {
+                "id": "2015113600101",
+                "name": "MADHUSOODANAN P V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANNADIVELICHAM",
+            "person": {
+                "id": "2015113600201",
+                "name": "SURESHAN V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAMBUKKARI",
+            "person": {
+                "id": "2015113600301",
+                "name": "OMANA A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AALAKKAL",
+            "person": {
+                "id": "2015113600401",
+                "name": "SANTHOSH T V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURINGERI",
+            "person": {
+                "id": "2015113600501",
+                "name": "SHEEJA K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUZHIMBALODE",
+            "person": {
+                "id": "2015113600601",
+                "name": "SURENDRAN P P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EKKAL",
+            "person": {
+                "id": "2015113600701",
+                "name": "P K SEENA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAMETH",
+            "person": {
+                "id": "2015113600801",
+                "name": "PRASANNA T"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALAYAM",
+            "person": {
+                "id": "2015113600901",
+                "name": "RUHANA C MOOSA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALERI",
+            "person": {
+                "id": "2015113601001",
+                "name": "SHOBHANA T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVINMOOLA",
+            "person": {
+                "id": "2015113601101",
+                "name": "SREELATHA K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ODATHILPEEDIKA",
+            "person": {
+                "id": "2015113601201",
+                "name": "PREMAN K M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "UCHULIKKUNNU",
+            "person": {
+                "id": "2015113601301",
+                "name": "P P RAJAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHAKKARAKAL",
+            "person": {
+                "id": "2015113601401",
+                "name": "P MOHANAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AANENIMETTA",
+            "person": {
+                "id": "2015113601501",
+                "name": "T V SEETHA"
+            }
+        }
+    ]
+}

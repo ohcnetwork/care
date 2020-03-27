@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348158424,
+    "date": "2019-08-21",
+    "name": "Chalissery  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Thrithala",
+    "area": "19.2km",
+    "localbody_code": "G090102",
+    "no_of_wards": 15,
+    "population": 20415,
+    "male": 9738,
+    "female": 10677,
+    "population_density": 1063,
+    "sex_ratio": 1096,
+    "literacy_rate": 87.28,
+    "literacy_rate_male": 91.12,
+    "literacy_rate_female": 83.84,
+    "president": "TKSUNILKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADATTUKUNNU",
+            "person": {
+                "id": "2015080500101",
+                "name": "MOHAMMED ALI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THANNEERCODE",
+            "person": {
+                "id": "2015080500201",
+                "name": "KARTHIAYANI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTISSERY",
+            "person": {
+                "id": "2015080500301",
+                "name": "RAMLA VEERANKUTTY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHOWCHERY",
+            "person": {
+                "id": "2015080500401",
+                "name": "SAJITHA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERUMANNUR",
+            "person": {
+                "id": "2015080500501",
+                "name": "VENU KURUPPATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOOTTANAD",
+            "person": {
+                "id": "2015080500601",
+                "name": "KOYAKUTTY M P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUNNATHERY",
+            "person": {
+                "id": "2015080500701",
+                "name": "SUNITHA K P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ALIKKARA",
+            "person": {
+                "id": "2015080500801",
+                "name": "K V RATHNAM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHALISSERI MAIN ROAD",
+            "person": {
+                "id": "2015080500901",
+                "name": "T K SUNIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MAYILADIKUNNU",
+            "person": {
+                "id": "2015080501001",
+                "name": "SAJITHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CIVIL STATION",
+            "person": {
+                "id": "2015080501101",
+                "name": "SINDHU M K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THEKKEKARA",
+            "person": {
+                "id": "2015080501201",
+                "name": "SUDHEESH KUMAR T K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHALISSERI TOWN",
+            "person": {
+                "id": "2015080501301",
+                "name": "ANNIE VINU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUKKILPEEDIKA",
+            "person": {
+                "id": "2015080501401",
+                "name": "AKBAR FAISAL P A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAVUKKODE",
+            "person": {
+                "id": "2015080501501",
+                "name": "PRADEEP C"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348637347,
+    "date": "2019-08-21",
+    "name": "Kuzhimanna  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Areekkode",
+    "area": "22.05km",
+    "localbody_code": "G100506",
+    "no_of_wards": 18,
+    "population": 32500,
+    "male": 15925,
+    "female": 16575,
+    "population_density": 1475,
+    "sex_ratio": 1028,
+    "literacy_rate": 87.7,
+    "literacy_rate_male": 92.05,
+    "literacy_rate_female": 83.31,
+    "president": "P.K.MOOSSA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KIZHISSERI NORTH",
+            "person": {
+                "id": "2015092700101",
+                "name": "P.K.MOOSSA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEERUTTIKKAL",
+            "person": {
+                "id": "2015092700201",
+                "name": "KADEEJA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUNDAMPARAMBA WEST",
+            "person": {
+                "id": "2015092700301",
+                "name": "AYISHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUNDAMPARAMBA",
+            "person": {
+                "id": "2015092700401",
+                "name": "KRISHNAN.C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADUNGALLOOR",
+            "person": {
+                "id": "2015092700501",
+                "name": "V.T.ABDURAZAK"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHIRAPPALAM",
+            "person": {
+                "id": "2015092700601",
+                "name": "ABDUL JALEEL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AKKAPPARAMBA",
+            "person": {
+                "id": "2015092700701",
+                "name": "SALINI.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULIYAKKODE",
+            "person": {
+                "id": "2015092700801",
+                "name": "DIVYA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MELMURI",
+            "person": {
+                "id": "2015092700901",
+                "name": "ABOOBACKER SIDHIQUE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUZHIYAMPARAMBA",
+            "person": {
+                "id": "2015092701001",
+                "name": "SAKEENA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHIMANNA",
+            "person": {
+                "id": "2015092701101",
+                "name": "UMMUSALMA.A.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUZHIMANNA SOUTH",
+            "person": {
+                "id": "2015092701201",
+                "name": "RUKKIYA.P.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULLANCHERY",
+            "person": {
+                "id": "2015092701301",
+                "name": "BHANUMATHY.M"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EKKAPPARAMBA",
+            "person": {
+                "id": "2015092701401",
+                "name": "MUHAMMED MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MELE KIZHISSERI",
+            "person": {
+                "id": "2015092701501",
+                "name": "E.M.ISMAIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KIZHISSERI TOWN",
+            "person": {
+                "id": "2015092701601",
+                "name": "MAMMADUNNI.V.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KIZHISSERI WEST",
+            "person": {
+                "id": "2015092701701",
+                "name": "PULIKKAL MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KUZHINHOLAM",
+            "person": {
+                "id": "2015092701801",
+                "name": "MEHARUNNEESA"
+            }
+        }
+    ]
+}

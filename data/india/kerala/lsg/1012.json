@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348919375,
+    "date": "2019-08-21",
+    "name": "Ayancheri  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Thodannur",
+    "area": "20.81km",
+    "localbody_code": "G110401",
+    "no_of_wards": 17,
+    "population": 23425,
+    "male": 11520,
+    "female": 11905,
+    "population_density": 1126,
+    "sex_ratio": 1033,
+    "literacy_rate": 87.74,
+    "literacy_rate_male": 94.16,
+    "literacy_rate_female": 81.63,
+    "president": "NASHEEDA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MIDIYERI",
+            "person": {
+                "id": "2015101200101",
+                "name": "REEJA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ANCHUKANDAM",
+            "person": {
+                "id": "2015101200201",
+                "name": "SOUDA PUTHIYEDUTH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEERIYANGADI",
+            "person": {
+                "id": "2015101200301",
+                "name": "KHOULATH THANIVAYAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THANEERPANTHAL",
+            "person": {
+                "id": "2015101200401",
+                "name": "RASIYA VELLILATT"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADAMERI",
+            "person": {
+                "id": "2015101200501",
+                "name": "CHANDRAN. N. K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAMICHERI",
+            "person": {
+                "id": "2015101200601",
+                "name": "SHIJITH PADINHARE MALAMAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MOOKKADATHUM VAYAL",
+            "person": {
+                "id": "2015101200701",
+                "name": "ROOPA KELOTH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THAROPOYIL",
+            "person": {
+                "id": "2015101200801",
+                "name": "NOCHATT KUNHABDULLA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANTHAPPOYIL",
+            "person": {
+                "id": "2015101200901",
+                "name": "SHAJI. A. K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUTTIYADI POYIL",
+            "person": {
+                "id": "2015101201001",
+                "name": "T V KUNHIRAMAN MASTER"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NALOM KOROL",
+            "person": {
+                "id": "2015101201101",
+                "name": "BABU KULANGARATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADAMERI WEST",
+            "person": {
+                "id": "2015101201201",
+                "name": "SOUMYA VALIYA VEETTIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANGALAD",
+            "person": {
+                "id": "2015101201301",
+                "name": "NASHEEDA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POYILPARA",
+            "person": {
+                "id": "2015101201402",
+                "name": "SUNITHA MALAYIL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUTTIVAYAL",
+            "person": {
+                "id": "2015101201501",
+                "name": "SREELATHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KACHERIPARAMBU",
+            "person": {
+                "id": "2015101201601",
+                "name": "REENA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PONMERI",
+            "person": {
+                "id": "2015101201701",
+                "name": "BALAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349545425,
+    "date": "2019-08-21",
+    "name": "Karadka  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kasaragod",
+    "area": "41.17km",
+    "localbody_code": "G140204",
+    "no_of_wards": 15,
+    "population": 18067,
+    "male": 9154,
+    "female": 8913,
+    "population_density": 439,
+    "sex_ratio": 974,
+    "literacy_rate": 77.86,
+    "literacy_rate_male": 86.04,
+    "literacy_rate_female": 69.4,
+    "president": "ANASOOYARAI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANIYA",
+            "person": {
+                "id": "2015118900101",
+                "name": "GOPALAKRISHNA M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNDOL",
+            "person": {
+                "id": "2015118900201",
+                "name": "BALAKRISHNAN A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MULLERIA",
+            "person": {
+                "id": "2015118900301",
+                "name": "RENUKADEVI K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ALANTHADKA",
+            "person": {
+                "id": "2015118900401",
+                "name": "JANANI M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUCHILOT",
+            "person": {
+                "id": "2015118900501",
+                "name": "SWAPNA G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALLAVARA",
+            "person": {
+                "id": "2015118900601",
+                "name": "ANASOOYA RAI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MINCHIPADAVU",
+            "person": {
+                "id": "2015118900701",
+                "name": "SHREE VIDYA B"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNTAR",
+            "person": {
+                "id": "2015118900801",
+                "name": "MUHAMMAD M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANHAMPARA",
+            "person": {
+                "id": "2015118900901",
+                "name": "SOUDABI K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ADHUR",
+            "person": {
+                "id": "2015118901001",
+                "name": "THASNI A S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "BALAKKA",
+            "person": {
+                "id": "2015118901101",
+                "name": "SMITHA P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOODAMKULAM",
+            "person": {
+                "id": "2015118901201",
+                "name": "SUJALA K P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTAMKUZHY",
+            "person": {
+                "id": "2015118901301",
+                "name": "VIJAYA KUMAR A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARADKA",
+            "person": {
+                "id": "2015118901401",
+                "name": "THAMBAN M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "BERLAM",
+            "person": {
+                "id": "2015118901501",
+                "name": "VINODAN NAMBIAR B K"
+            }
+        }
+    ]
+}

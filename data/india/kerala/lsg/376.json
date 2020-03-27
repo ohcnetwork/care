@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346227984,
+    "date": "2019-08-21",
+    "name": "Kallooppara  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "16.86km",
+    "localbody_code": "G030105",
+    "no_of_wards": 14,
+    "population": 17624,
+    "male": 8461,
+    "female": 9163,
+    "population_density": 1045,
+    "sex_ratio": 1083,
+    "literacy_rate": 96.53,
+    "literacy_rate_male": 97.48,
+    "literacy_rate_female": 95.87,
+    "president": "REJICHACKOVAKKAYIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHENGAROOR",
+            "person": {
+                "id": "2015037600101",
+                "name": "REJI CHACKO VAKKAYIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANJIRATHINKAL",
+            "person": {
+                "id": "2015037600201",
+                "name": "NJANAMANI MOHANAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MADUKKOLI",
+            "person": {
+                "id": "2015037600301",
+                "name": "ABY MEKKARINGATTU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THUNDIYAMKULAM",
+            "person": {
+                "id": "2015037600401",
+                "name": "SHYLAMMA MATHEW"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THURUTHICAD",
+            "person": {
+                "id": "2015037600501",
+                "name": "MARIYAMMA VARGHESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUMBHAMALA",
+            "person": {
+                "id": "2015037600601",
+                "name": "GIRI KUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AMBATTUBHAGOM",
+            "person": {
+                "id": "2015037600701",
+                "name": "ANNAMMA PAUL (JOLLY REJI)"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADATHUMBHAGOM NORTH",
+            "person": {
+                "id": "2015037600801",
+                "name": "SOSSAMMA EASO (MOLLYKUTTY SHAJI)"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHERUMATHA",
+            "person": {
+                "id": "2015037600901",
+                "name": "SUSAN THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALLOOR",
+            "person": {
+                "id": "2015037601001",
+                "name": "ANILKUMAR PICHAKAPPALLIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHACKOM BHAGOM",
+            "person": {
+                "id": "2015037601101",
+                "name": "MANU T.T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADAMANKULAM",
+            "person": {
+                "id": "2015037601201",
+                "name": "CHERIAN.J.MANNANCHERY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SASTHAMGAL",
+            "person": {
+                "id": "2015037601301",
+                "name": "AJITHA VILKY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHUSSERRY",
+            "person": {
+                "id": "2015037601401",
+                "name": "DAISY VARGHESE"
+            }
+        }
+    ]
+}

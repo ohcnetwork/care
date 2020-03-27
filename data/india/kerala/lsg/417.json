@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346362898,
+    "date": "2019-08-21",
+    "name": "Erathu  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Parakkode",
+    "area": "21.74km",
+    "localbody_code": "G030802",
+    "no_of_wards": 17,
+    "population": 23296,
+    "male": 11246,
+    "female": 12050,
+    "population_density": 1072,
+    "sex_ratio": 1071,
+    "literacy_rate": 91.5,
+    "literacy_rate_male": 93.81,
+    "literacy_rate_female": 89.38,
+    "president": "SHYLAREJI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANAKALA",
+            "person": {
+                "id": "2015041700101",
+                "name": "SHELLY G JOHN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLARAMKUNNU",
+            "person": {
+                "id": "2015041700201",
+                "name": "T.C RAMAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYYANKOICKAL",
+            "person": {
+                "id": "2015041700301",
+                "name": "VALSAMMA SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARUTHIPPARA",
+            "person": {
+                "id": "2015041700401",
+                "name": "RAJESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURUKANKUNNU",
+            "person": {
+                "id": "2015041700501",
+                "name": "SHYLA REJI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KILIVAYAL",
+            "person": {
+                "id": "2015041700601",
+                "name": "J. SHYLENDRANATH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VAYALA",
+            "person": {
+                "id": "2015041700701",
+                "name": "SUJA SABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULIMALA",
+            "person": {
+                "id": "2015041700801",
+                "name": "SARASWATHY R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHUSSERIBHAGOM",
+            "person": {
+                "id": "2015041700901",
+                "name": "BIJI S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MAHARSHIKAVU",
+            "person": {
+                "id": "2015041701001",
+                "name": "T. SARASWATHY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHATHANUPUZHA",
+            "person": {
+                "id": "2015041701101",
+                "name": "RAJIMOL.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VADAKKADATHUKAVU",
+            "person": {
+                "id": "2015041701201",
+                "name": "PRESANNA VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHOORAKODE",
+            "person": {
+                "id": "2015041701301",
+                "name": "T.D. SAJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015041701401",
+                "name": "AJITH KUMAR.D"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANTHICHIRA",
+            "person": {
+                "id": "2015041701501",
+                "name": "AJI KUMAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THUVAYOOR NORTH",
+            "person": {
+                "id": "2015041701601",
+                "name": "BABUCHANDRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "JANASAKTHI",
+            "person": {
+                "id": "2015041701701",
+                "name": "ROSAMMA DANIEL"
+            }
+        }
+    ]
+}

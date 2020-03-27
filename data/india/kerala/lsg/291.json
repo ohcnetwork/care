@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566345931346,
+    "date": "2019-08-21",
+    "name": "Athiyannoor  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Athiyannoor",
+    "area": "12.44km",
+    "localbody_code": "G011001",
+    "no_of_wards": 17,
+    "population": 23515,
+    "male": 11508,
+    "female": 12007,
+    "population_density": 1890,
+    "sex_ratio": 1043,
+    "literacy_rate": 92.99,
+    "literacy_rate_male": 95.68,
+    "literacy_rate_female": 90.42,
+    "president": "BEENAB.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RAMAPURAM",
+            "person": {
+                "id": "2015029100101",
+                "name": "ANITHA P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ATHIYANNOOR",
+            "person": {
+                "id": "2015029100201",
+                "name": "KAVITHA L"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARANGAMUGAL",
+            "person": {
+                "id": "2015029100301",
+                "name": "S ASOKKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OORUTTUKALA",
+            "person": {
+                "id": "2015029100401",
+                "name": "SINDHU R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KODANGAVILA",
+            "person": {
+                "id": "2015029100501",
+                "name": "AMBILI R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAMUKINCODE",
+            "person": {
+                "id": "2015029100601",
+                "name": "SREEKUMARAN ASARI A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SASTHAMTHALA",
+            "person": {
+                "id": "2015029100701",
+                "name": "SUDHAMONY C.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VENPAKAL",
+            "person": {
+                "id": "2015029100801",
+                "name": "MANOJKUMAR M.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "BHASKERNAGER",
+            "person": {
+                "id": "2015029100901",
+                "name": "BEENA B.T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARANGAL",
+            "person": {
+                "id": "2015029101001",
+                "name": "A SHIBU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PONGIL",
+            "person": {
+                "id": "2015029101101",
+                "name": "SHIJU C.NAIR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NELLIMOODU",
+            "person": {
+                "id": "2015029101202",
+                "name": "CHANDRIKA L"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNARAVILA",
+            "person": {
+                "id": "2015029101301",
+                "name": "USHAKUMARI A.R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOTHAMCODE",
+            "person": {
+                "id": "2015029101401",
+                "name": "V SAJIKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MARUTHAMCODE",
+            "person": {
+                "id": "2015029101502",
+                "name": "SUNITHARANI B B"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SABARIMUTTAM",
+            "person": {
+                "id": "2015029101601",
+                "name": "V.P SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THANNIMOODU",
+            "person": {
+                "id": "2015029101701",
+                "name": "JALAJA G"
+            }
+        }
+    ]
+}

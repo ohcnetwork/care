@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349540925,
+    "date": "2019-08-21",
+    "name": "Muliyar  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kasaragod",
+    "area": "34.27km",
+    "localbody_code": "G140203",
+    "no_of_wards": 15,
+    "population": 19881,
+    "male": 9931,
+    "female": 9950,
+    "population_density": 580,
+    "sex_ratio": 1002,
+    "literacy_rate": 81.78,
+    "literacy_rate_male": 88.55,
+    "literacy_rate_female": 75.05,
+    "president": "KHALIDBELLIPPADY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHOORIMOOLA",
+            "person": {
+                "id": "2015118800101",
+                "name": "JASEELA ASLAM KUNJAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POVVAL",
+            "person": {
+                "id": "2015118800201",
+                "name": "ASIYA HAMEED"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MALLAM",
+            "person": {
+                "id": "2015118800301",
+                "name": "ANEESA MANSOOR MALLATH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SREEGIRI",
+            "person": {
+                "id": "2015118800401",
+                "name": "GANESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATHANADUKAM",
+            "person": {
+                "id": "2015118800501",
+                "name": "P. BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANOOR",
+            "person": {
+                "id": "2015118800601",
+                "name": "MINI. P .V."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTOOR",
+            "person": {
+                "id": "2015118800701",
+                "name": "GEETHA GOPALAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANATHUR",
+            "person": {
+                "id": "2015118800801",
+                "name": "SHOBHA PAYOLAM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IRIYANNI",
+            "person": {
+                "id": "2015118800901",
+                "name": "SURENDRAN. K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BEPU",
+            "person": {
+                "id": "2015118801001",
+                "name": "PRABHAKARAN. K."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULIYAR",
+            "person": {
+                "id": "2015118801101",
+                "name": "M. MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "BOVIKANAM",
+            "person": {
+                "id": "2015118801201",
+                "name": "KHALID BELLIPPADY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "BALANADUKAM",
+            "person": {
+                "id": "2015118801301",
+                "name": "NASEEMA. A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MOOLADUKAM",
+            "person": {
+                "id": "2015118801401",
+                "name": "AZIZ. M. A."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NELLIKAD",
+            "person": {
+                "id": "2015118801501",
+                "name": "NAFEESA MUHAMMED KUNHI"
+            }
+        }
+    ]
+}

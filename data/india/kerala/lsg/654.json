@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566347194779,
+    "date": "2019-08-21",
+    "name": "Keezhmad  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "17.79km",
+    "localbody_code": "G070506",
+    "no_of_wards": 19,
+    "population": 27821,
+    "male": 13740,
+    "female": 14081,
+    "population_density": 1564,
+    "sex_ratio": 1025,
+    "literacy_rate": 89.18,
+    "literacy_rate_male": 93.41,
+    "literacy_rate_female": 85.08,
+    "president": "K.A.RAMESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THOTTUMUGHAM WEST",
+            "person": {
+                "id": "2015065400101",
+                "name": "KUNJUMUHAMMAD SAIDALY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THOTTUMUGHAM",
+            "person": {
+                "id": "2015065400201",
+                "name": "SATHI LALU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEERAMKUNNU",
+            "person": {
+                "id": "2015065400301",
+                "name": "M.I.ISMAIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTAMASSERY",
+            "person": {
+                "id": "2015065400401",
+                "name": "K.A.RAMESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUTTAMASSERY EAST",
+            "person": {
+                "id": "2015065400501",
+                "name": "V.V.MANMADHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHALACKAL",
+            "person": {
+                "id": "2015065400601",
+                "name": "SOUJATH JALEEL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHALACKAL EAST",
+            "person": {
+                "id": "2015065400701",
+                "name": "SHAHIRA.K.E."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NALAMMILE",
+            "person": {
+                "id": "2015065400801",
+                "name": "JISHA RIJO"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAKKANKULANGARA",
+            "person": {
+                "id": "2015065400901",
+                "name": "ANUKUTTAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KEEZHMAD",
+            "person": {
+                "id": "2015065401001",
+                "name": "PREETHA REJIKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNUMPURAM",
+            "person": {
+                "id": "2015065401101",
+                "name": "ABU.K.M."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KEEZHMAD CENTRE",
+            "person": {
+                "id": "2015065401201",
+                "name": "BEENA BABU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHUNANGAMVELY",
+            "person": {
+                "id": "2015065401301",
+                "name": "ELSY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHUNANGAMVELY CENTER",
+            "person": {
+                "id": "2015065401401",
+                "name": "SAJU MATHAI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHUNANGAMVELY WEST",
+            "person": {
+                "id": "2015065401501",
+                "name": "POULY JOHNY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ASOKAPURAM NORTH",
+            "person": {
+                "id": "2015065401601",
+                "name": "LISSY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ERUMATHALA",
+            "person": {
+                "id": "2015065401701",
+                "name": "ABHILASH ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "EDAYAPPURAM",
+            "person": {
+                "id": "2015065401801",
+                "name": "MUHAMMED KHAJA MOOSA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "EDAYAPPURAM WEST",
+            "person": {
+                "id": "2015065401901",
+                "name": "SAHIDA ABDULSALAM"
+            }
+        }
+    ]
+}
