@@ -14,7 +14,6 @@ User = get_user_model()
 class FacilitySerializer(serializers.ModelSerializer):
     """Serializer for facility.models.Facility."""
 
-    district = ChoiceField(choices=DISTRICT_CHOICES)
     facility_type = ChoiceField(choices=FACILITY_TYPES)
     # A valid location => {
     #     "latitude": 49.8782482189424,

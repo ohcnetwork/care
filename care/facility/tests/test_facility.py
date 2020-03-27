@@ -49,7 +49,6 @@ class TestFacility:
         response.data.pop("id")
         assert response.data == {
             **facility_data,
-            "district": "Kannur",
             "facility_type": "Educational Inst",
         }
 
@@ -85,7 +84,7 @@ class TestFacility:
         assert response.data == {
             "id": facility.id,
             "name": facility.name,
-            "district": "Kannur",
+            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -111,7 +110,7 @@ class TestFacility:
         assert response.data == {
             "id": facility.id,
             "name": "Another name",
-            "district": "Kannur",
+            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -159,7 +158,7 @@ class TestFacility:
                 {
                     "id": facility.id,
                     "name": facility.name,
-                    "district": "Kannur",
+                    "district": facility.district,
                     "facility_type": "Educational Inst",
                     "address": facility.address,
                     "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
@@ -242,7 +241,7 @@ class TestFacilityBulkUpsert:
         assert response.data == {
             "id": facility.id,
             "name": facility.name,
-            "district": "Kannur",
+            "district": 13,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
