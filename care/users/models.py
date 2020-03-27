@@ -20,7 +20,7 @@ DISTRICT_CHOICES = [
     (14, "Kasargode"),
 ]
 
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -62,18 +62,18 @@ class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
 
     name = models.CharField(max_length=255)
-    type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
     localbody_code = models.CharField(max_length=20, blank=True)
 
     class Meta:
         unique_together = (
             "district",
-            "type",
+            "body_type",
             "name",
         )
 
     def __str__(self):
-        return f"LocalBody: {self.name} ({self.type}) / {self.district}"
+        return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
 
 
 class CustomUserManager(UserManager):
