@@ -41,7 +41,7 @@ class District(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name} - {self.state.name}"
+        return f"{self.name}"
 
 
 LOCAL_BODY_CHOICES = (
@@ -73,7 +73,7 @@ class LocalBody(models.Model):
         )
 
     def __str__(self):
-        return f"{self.name} ({self.body_type}) / {self.district}"
+        return f"{self.name} ({self.body_type}) "
 
 
 class CustomUserManager(UserManager):
@@ -91,7 +91,13 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-    TYPE_VALUE_MAP = {"Doctor": 5, "Staff": 10, "Patient": 15, "Volunteer": 20, "DistrictAdmin": 30}
+    TYPE_VALUE_MAP = {
+        "Doctor": 5,
+        "Staff": 10,
+        "Patient": 15,
+        "Volunteer": 20,
+        "DistrictAdmin": 30,
+    }
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
