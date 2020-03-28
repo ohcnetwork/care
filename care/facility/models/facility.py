@@ -96,7 +96,7 @@ class Facility(FacilityBaseModel):
         verbose_name_plural = "Facilities"
 
     def __str__(self):
-        return f"{self.name}({self.local_body or self.district or self.state})"
+        return f"{self.name}"
 
     def save(self, *args, **kwargs) -> None:
         """
