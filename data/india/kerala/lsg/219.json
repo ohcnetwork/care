@@ -1,0 +1,243 @@
+{
+    "timeStamp": 1566345674794,
+    "date": "2019-08-21",
+    "name": "Kuthuparamba  Municipality, Kannur District",
+    "district": "Kannur",
+    "area": "16.76km",
+    "localbody_code": "M130300",
+    "no_of_wards": 28,
+    "population": 28907,
+    "male": 13806,
+    "female": 15101,
+    "population_density": 1725,
+    "sex_ratio": 1094,
+    "literacy_rate": 94.08,
+    "literacy_rate_male": 96.85,
+    "literacy_rate_female": 91.6,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAKKUMMAL",
+            "person": {
+                "id": "2015021900101",
+                "name": "THANKAMANI K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHORAKKULAM",
+            "person": {
+                "id": "2015021900201",
+                "name": "AJITHA N"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NIRMALAGIRI",
+            "person": {
+                "id": "2015021900301",
+                "name": "PRAMOD KUMAR P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NOONHUMBAYI",
+            "person": {
+                "id": "2015021900401",
+                "name": "SYAMALA C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALAPARAMBA",
+            "person": {
+                "id": "2015021900501",
+                "name": "RAJITHA V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ADIYARAPPARA",
+            "person": {
+                "id": "2015021900601",
+                "name": "SHAMEER P C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MOORIYAD NORTH",
+            "person": {
+                "id": "2015021900701",
+                "name": "KAKKOTH GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MOORIYAD EAST",
+            "person": {
+                "id": "2015021900801",
+                "name": "VACHALI VASU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUNCHAKKALAYI",
+            "person": {
+                "id": "2015021900901",
+                "name": "NISHA T ."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLUTHUPARAMBA",
+            "person": {
+                "id": "2015021901001",
+                "name": "V CHANDRAN ."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOORIYAD CENTRAL",
+            "person": {
+                "id": "2015021901101",
+                "name": "MARIYAM BEEBI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NARAVOOR SOUTH",
+            "person": {
+                "id": "2015021901201",
+                "name": "SINDHU N K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUTTIKKAD",
+            "person": {
+                "id": "2015021901301",
+                "name": "V RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "TOWN",
+            "person": {
+                "id": "2015021901401",
+                "name": "MUHAMMED RAFI V P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAKKAD",
+            "person": {
+                "id": "2015021901501",
+                "name": "SAFAREENA P K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NARAVOOR CENTRAL",
+            "person": {
+                "id": "2015021901601",
+                "name": "M SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THRIKKANNAPURAM",
+            "person": {
+                "id": "2015021901701",
+                "name": "AJITHA K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THRIKKANNAPURAM SOUTH",
+            "person": {
+                "id": "2015021901801",
+                "name": "ADV. SUPRIYA PURUSHOTHAM"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THRIKKANNAPURAM WEST",
+            "person": {
+                "id": "2015021901901",
+                "name": "UTHAMAN M K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PARAL",
+            "person": {
+                "id": "2015021902001",
+                "name": "ARUNA K"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "POOKODE",
+            "person": {
+                "id": "2015021902101",
+                "name": "GEETHA P"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "NARAVOOR",
+            "person": {
+                "id": "2015021902201",
+                "name": "T LATHESH"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "VALIYAPARA",
+            "person": {
+                "id": "2015021902301",
+                "name": "BIJU MON A"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "ELIPPATTACHIRA",
+            "person": {
+                "id": "2015021902401",
+                "name": "REEJA K"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "MOOLAKKULAM",
+            "person": {
+                "id": "2015021902501",
+                "name": "RAJEESH K V"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "PAZHAYANIRATH",
+            "person": {
+                "id": "2015021902601",
+                "name": "ANANDAVALLI U"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "PANNIYORA",
+            "person": {
+                "id": "2015021902701",
+                "name": "JISHA RAJANEESH"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "EDAYILPEEDIKA",
+            "person": {
+                "id": "2015021902801",
+                "name": "CHANDRIKA CHEMBADATH"
+            }
+        }
+    ]
+}

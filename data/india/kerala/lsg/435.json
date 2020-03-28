@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346438201,
+    "date": "2019-08-21",
+    "name": "Kuthiathod  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "9.8km",
+    "localbody_code": "G040204",
+    "no_of_wards": 16,
+    "population": 21590,
+    "male": 10658,
+    "female": 10932,
+    "population_density": 2203,
+    "sex_ratio": 1026,
+    "literacy_rate": 91,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 87,
+    "president": "PREMARAJAPPAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLITHODU",
+            "person": {
+                "id": "2015043500101",
+                "name": "MARY(KUNJUMOL)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PONPURAM",
+            "person": {
+                "id": "2015043500201",
+                "name": "MALATHY K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAYAKAD WEST",
+            "person": {
+                "id": "2015043500301",
+                "name": "K.K.SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAYAKAD EAST",
+            "person": {
+                "id": "2015043500401",
+                "name": "ASHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAZUPPU",
+            "person": {
+                "id": "2015043500501",
+                "name": "HAREESH.R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NAALIKATTU",
+            "person": {
+                "id": "2015043500601",
+                "name": "N.K.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUTHIATHODE TOWN",
+            "person": {
+                "id": "2015043500701",
+                "name": "LAILA VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OFFICE WARD",
+            "person": {
+                "id": "2015043500801",
+                "name": "K.DHANESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATTUKULANGARA",
+            "person": {
+                "id": "2015043500901",
+                "name": "VALSALA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THATTAPARAMBU",
+            "person": {
+                "id": "2015043501001",
+                "name": "LATHA SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "HOSPITAL WARD",
+            "person": {
+                "id": "2015043501101",
+                "name": "RUPESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUTHUPARAMBU",
+            "person": {
+                "id": "2015043501202",
+                "name": "SHIYAD K S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NALUKULANGARA",
+            "person": {
+                "id": "2015043501301",
+                "name": "VIPIN.B"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THIRUMALA EAST",
+            "person": {
+                "id": "2015043501401",
+                "name": "PREMA RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THIRUMALA WEST",
+            "person": {
+                "id": "2015043501501",
+                "name": "GEETHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "P H C WARD",
+            "person": {
+                "id": "2015043501601",
+                "name": "FRANCIS OBIN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566348472537,
+    "date": "2019-08-21",
+    "name": "Elappully  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Malampuzha",
+    "area": "49.07km",
+    "localbody_code": "G090906",
+    "no_of_wards": 22,
+    "population": 35509,
+    "male": 17431,
+    "female": 18078,
+    "population_density": 724,
+    "sex_ratio": 1037,
+    "literacy_rate": 73.62,
+    "literacy_rate_male": 82.79,
+    "literacy_rate_female": 64.81,
+    "president": "ATHANKAMANI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOLLAMPALLAM",
+            "person": {
+                "id": "2015089200101",
+                "name": "VINOD V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "RAMASSERY",
+            "person": {
+                "id": "2015089200201",
+                "name": "BHAGYAVATHY S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOVILPALAYAM",
+            "person": {
+                "id": "2015089200301",
+                "name": "HABEEBA S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENGODY",
+            "person": {
+                "id": "2015089200401",
+                "name": "RENUKA V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARA",
+            "person": {
+                "id": "2015089200501",
+                "name": "A THANKAMANI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHUTTIPPARA",
+            "person": {
+                "id": "2015089200601",
+                "name": "E.T ASSANAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NOMBIKKODE",
+            "person": {
+                "id": "2015089200701",
+                "name": "PRAMOD V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDUPPUKULAM",
+            "person": {
+                "id": "2015089200801",
+                "name": "GEETHA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POKKAMTHODE",
+            "person": {
+                "id": "2015089200901",
+                "name": "BIJU C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VENTHAPALAYAM",
+            "person": {
+                "id": "2015089201001",
+                "name": "SAROJA K.G"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAITHALA",
+            "person": {
+                "id": "2015089201101",
+                "name": "SREERAM P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHETTIKALAM",
+            "person": {
+                "id": "2015089201201",
+                "name": "SUNILKUMAR S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARAMKODE",
+            "person": {
+                "id": "2015089201301",
+                "name": "KUNHILAKSHMI C.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THENARI",
+            "person": {
+                "id": "2015089201401",
+                "name": "SURESH M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THOTTUMPULLY",
+            "person": {
+                "id": "2015089201501",
+                "name": "M HARIDAS"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUTHIRAMPALLAM",
+            "person": {
+                "id": "2015089201601",
+                "name": "SWARNALATHA A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KAKKATHODE",
+            "person": {
+                "id": "2015089201701",
+                "name": "RAJAKUMARI R"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ELAPPULLY",
+            "person": {
+                "id": "2015089201801",
+                "name": "RAVI K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PETTA",
+            "person": {
+                "id": "2015089201901",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "ENNAPPADAM",
+            "person": {
+                "id": "2015089202001",
+                "name": "YESODA P.V"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "THUVARAKKADU",
+            "person": {
+                "id": "2015089202101",
+                "name": "NIMMATHY K"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PALLATHERI",
+            "person": {
+                "id": "2015089202201",
+                "name": "MOHANKUMAR C"
+            }
+        }
+    ]
+}

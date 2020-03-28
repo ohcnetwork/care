@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566348543386,
+    "date": "2019-08-21",
+    "name": "Karuvarakundu  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "64.2km",
+    "localbody_code": "G100205",
+    "no_of_wards": 21,
+    "population": 32812,
+    "male": 16086,
+    "female": 16726,
+    "population_density": 511,
+    "sex_ratio": 1038,
+    "literacy_rate": 89.76,
+    "literacy_rate_male": 93.62,
+    "literacy_rate_female": 85.9,
+    "president": "K.MOHAMMEDMASTER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAKKODE",
+            "person": {
+                "id": "2015090600101",
+                "name": "A T ALAVI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUTTATHI",
+            "person": {
+                "id": "2015090600201",
+                "name": "KURIACHAN KOLENCHERY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARIMANAL",
+            "person": {
+                "id": "2015090600301",
+                "name": "RUKHIYA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KERALA",
+            "person": {
+                "id": "2015090600401",
+                "name": "ABDUL LATHEEF"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANJALPARA",
+            "person": {
+                "id": "2015090600501",
+                "name": "ROSHNI SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PANDRA",
+            "person": {
+                "id": "2015090600601",
+                "name": "M. MURALI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALKUNDU",
+            "person": {
+                "id": "2015090600701",
+                "name": "SHEENA  JILLS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THURUMBODA",
+            "person": {
+                "id": "2015090600801",
+                "name": "UNNEENKUTTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANNATH",
+            "person": {
+                "id": "2015090600901",
+                "name": "JAMEELA ASHRAF"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KIZHAKKETHALA",
+            "person": {
+                "id": "2015090601001",
+                "name": "K. MOHAMMEDMASTER"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARUVARAKUNDU",
+            "person": {
+                "id": "2015090601101",
+                "name": "FATHIMATH SUHARA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THARISH",
+            "person": {
+                "id": "2015090601201",
+                "name": "SAINABA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAKKARA",
+            "person": {
+                "id": "2015090601301",
+                "name": "BIJINA C K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULVETTA",
+            "person": {
+                "id": "2015090601401",
+                "name": "NISATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAYYAKODE",
+            "person": {
+                "id": "2015090601501",
+                "name": "SAJITHA I.T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHULLIYODE",
+            "person": {
+                "id": "2015090601601",
+                "name": "SHEEBA PALLIKKUTH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PANANCHOLA",
+            "person": {
+                "id": "2015090601701",
+                "name": "SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHANAZHI",
+            "person": {
+                "id": "2015090601801",
+                "name": "DEEPA. P"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "IRINGATTIRI",
+            "person": {
+                "id": "2015090601901",
+                "name": "V. SHABEERALI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PUNNAKKADU",
+            "person": {
+                "id": "2015090602001",
+                "name": "SHOUKATHALI P"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHEMBANKUNNU",
+            "person": {
+                "id": "2015090602101",
+                "name": "V.ABIDALI"
+            }
+        }
+    ]
+}

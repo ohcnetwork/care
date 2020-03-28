@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566345771510,
+    "date": "2019-08-21",
+    "name": "Kizhuvilam  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Chirayinkeezhu",
+    "area": "14.74km",
+    "localbody_code": "G010304",
+    "no_of_wards": 20,
+    "population": 29314,
+    "male": 13661,
+    "female": 15653,
+    "population_density": 1989,
+    "sex_ratio": 1146,
+    "literacy_rate": 88.65,
+    "literacy_rate_male": 93.93,
+    "literacy_rate_female": 85.16,
+    "president": "A.ANSAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PURAVOOR",
+            "person": {
+                "id": "2015024400101",
+                "name": "UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAVOORKONAM",
+            "person": {
+                "id": "2015024400201",
+                "name": "G.GIREESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KATTUMPURAM",
+            "person": {
+                "id": "2015024400301",
+                "name": "BIJUKUMAR.B.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VELLOORKONAM",
+            "person": {
+                "id": "2015024400401",
+                "name": "A.CHANDRASEKHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIYOORKONAM",
+            "person": {
+                "id": "2015024400501",
+                "name": "SREEKANDAN.A.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MAMAMNADA",
+            "person": {
+                "id": "2015024400601",
+                "name": "VANAJAKUMARI.S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARIKATHWAR",
+            "person": {
+                "id": "2015024400701",
+                "name": "MOHAMMED FAIZAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KURAKKADA",
+            "person": {
+                "id": "2015024400801",
+                "name": "REKHA.V.R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAINAMKONAM",
+            "person": {
+                "id": "2015024400901",
+                "name": "B.SYAMALA AMMA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUDAPURAM",
+            "person": {
+                "id": "2015024401001",
+                "name": "THARA THANKAN.A.R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THENNOORKONAM",
+            "person": {
+                "id": "2015024401101",
+                "name": "SREELATHA.R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KIZHUVILAM",
+            "person": {
+                "id": "2015024401201",
+                "name": "SHAJAHAN.A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHUMADUTHANGI",
+            "person": {
+                "id": "2015024401301",
+                "name": "LIPIMOL.C"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KATTUMURAKKAL",
+            "person": {
+                "id": "2015024401401",
+                "name": "G.GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNNUVARAM",
+            "person": {
+                "id": "2015024401501",
+                "name": "A.ANSAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULIMOODU",
+            "person": {
+                "id": "2015024401601",
+                "name": "SUJA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOONTHALLOOR",
+            "person": {
+                "id": "2015024401701",
+                "name": "SAMBASIVAN.C"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VAIDHYANTEMUKKU",
+            "person": {
+                "id": "2015024401801",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THOTTAVARAM",
+            "person": {
+                "id": "2015024401901",
+                "name": "SUJATHA.V"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VALIYA ELA",
+            "person": {
+                "id": "2015024402001",
+                "name": "SAINA BEEVI"
+            }
+        }
+    ]
+}

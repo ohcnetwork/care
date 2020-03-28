@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345220301,
+    "date": "2019-08-21",
+    "name": "Nilambur  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Nilambur",
+    "area": "1080.57km",
+    "localbody_code": "B100100",
+    "no_of_wards": 13,
+    "population": 277999,
+    "male": 136204,
+    "female": 141795,
+    "population_density": 257,
+    "sex_ratio": 1041,
+    "literacy_rate": 88,
+    "literacy_rate_male": 91.56,
+    "literacy_rate_female": 84.43,
+    "president": "PPSUGHATHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDIVANNA",
+            "person": {
+                "id": "2015011100101",
+                "name": "MOHAMMED ABDUL RAHIMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANANKAYAM",
+            "person": {
+                "id": "2015011100201",
+                "name": "P P SUGHATHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POTHUKAL",
+            "person": {
+                "id": "2015011100301",
+                "name": "SAJEENA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALEMADU",
+            "person": {
+                "id": "2015011100401",
+                "name": "ANNAMMA WILLIAMS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MARUTHA",
+            "person": {
+                "id": "2015011100501",
+                "name": "SALAHUDHEEN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VAZHIKKADAVU",
+            "person": {
+                "id": "2015011100601",
+                "name": "USHA PT"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANIMOOLI",
+            "person": {
+                "id": "2015011100701",
+                "name": "BAIJU TN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDAKKARA",
+            "person": {
+                "id": "2015011100801",
+                "name": "UNNI P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARAPPURAM",
+            "person": {
+                "id": "2015011100901",
+                "name": "USHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALAKKARA",
+            "person": {
+                "id": "2015011101001",
+                "name": "ILMUNNEESA P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALLIKKUTH",
+            "person": {
+                "id": "2015011101101",
+                "name": "VALSAMMA SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHUNGATHARA",
+            "person": {
+                "id": "2015011101201",
+                "name": "PARAPPAN HAMZA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ERANHIMANGADU",
+            "person": {
+                "id": "2015011101301",
+                "name": "SHEENA A"
+            }
+        }
+    ]
+}

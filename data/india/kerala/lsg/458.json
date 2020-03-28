@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566346517248,
+    "date": "2019-08-21",
+    "name": "Muttar  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Veliyanad",
+    "area": "10.48km",
+    "localbody_code": "G040701",
+    "no_of_wards": 13,
+    "population": 10400,
+    "male": 5134,
+    "female": 5266,
+    "population_density": 992,
+    "sex_ratio": 1026,
+    "literacy_rate": 98,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 97,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MITHRAKARY WEST",
+            "person": {
+                "id": "2015045800101",
+                "name": "M K JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MITHRAKARY NORTH",
+            "person": {
+                "id": "2015045800201",
+                "name": "REJIMOL PURUSHOTHAMAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MITHRAKARY EAST",
+            "person": {
+                "id": "2015045800301",
+                "name": "BOBAN JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUMARAMCHIRA",
+            "person": {
+                "id": "2015045800401",
+                "name": "BAIJU K ARUPARA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NALUTHODU",
+            "person": {
+                "id": "2015045800501",
+                "name": "SOBHA MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTTAR NORTH",
+            "person": {
+                "id": "2015045800601",
+                "name": "LALITHAMMA RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUTTAR EAST",
+            "person": {
+                "id": "2015045800701",
+                "name": "D JOSEPH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUTTAR CENTRAL",
+            "person": {
+                "id": "2015045800801",
+                "name": "TESSYMOL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUTTAR SOUTH",
+            "person": {
+                "id": "2015045800901",
+                "name": "MATHEW VARGHESE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GOVENDA",
+            "person": {
+                "id": "2015045801001",
+                "name": "ANCY THOMAS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHOORAKUTTI",
+            "person": {
+                "id": "2015045801101",
+                "name": "MATHUKUTTY EAPEN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MITHRAMADAM",
+            "person": {
+                "id": "2015045801201",
+                "name": "THANKAMMA SOMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ALAPPURATHUKADU",
+            "person": {
+                "id": "2015045801301",
+                "name": "JALAJAMOL MAHESWARAN"
+            }
+        }
+    ]
+}

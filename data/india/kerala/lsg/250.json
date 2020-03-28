@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345788802,
+    "date": "2019-08-21",
+    "name": "Vamanapuram  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vamanpuram",
+    "area": "23.87km",
+    "localbody_code": "G010404",
+    "no_of_wards": 15,
+    "population": 20114,
+    "male": 9574,
+    "female": 10540,
+    "population_density": 842,
+    "sex_ratio": 1100,
+    "literacy_rate": 89.34,
+    "literacy_rate_male": 94.14,
+    "literacy_rate_female": 85.04,
+    "president": "DEVADASANK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANTHUVILA",
+            "person": {
+                "id": "2015025000101",
+                "name": "LENIN S K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ANACHAL",
+            "person": {
+                "id": "2015025000201",
+                "name": "DEEPU V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAZHVELIKONAM",
+            "person": {
+                "id": "2015025000301",
+                "name": "JAYAKUMAR B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VAMANAPURAM",
+            "person": {
+                "id": "2015025000401",
+                "name": "RAJEEV P NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARUVAYAL",
+            "person": {
+                "id": "2015025000501",
+                "name": "USHA O"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANAKUDY",
+            "person": {
+                "id": "2015025000601",
+                "name": "MANIKANTAN R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANJIRAMPARA",
+            "person": {
+                "id": "2015025000701",
+                "name": "MINI MUMTHAS R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUTTIMOODU",
+            "person": {
+                "id": "2015025000801",
+                "name": "SREEJA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MEETHOOR",
+            "person": {
+                "id": "2015025000901",
+                "name": "SREEVIDYA G O"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THOONGAYIL",
+            "person": {
+                "id": "2015025001001",
+                "name": "SATHIRAJ O M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "IRULOOR",
+            "person": {
+                "id": "2015025001101",
+                "name": "SUDHARMMA D"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POOVATHOOR",
+            "person": {
+                "id": "2015025001201",
+                "name": "DEVADASAN K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MELATTUMOOZHY",
+            "person": {
+                "id": "2015025001301",
+                "name": "SHIJI POOVATHUR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EETTIMOODU",
+            "person": {
+                "id": "2015025001401",
+                "name": "SHEEJA T S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALAMACHAL",
+            "person": {
+                "id": "2015025001501",
+                "name": "SAKUNTHALA A"
+            }
+        }
+    ]
+}

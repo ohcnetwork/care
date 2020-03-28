@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345091099,
+    "date": "2019-08-21",
+    "name": "Palluruthy  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Palluruthy",
+    "area": "33.37km",
+    "localbody_code": "B070800",
+    "no_of_wards": 13,
+    "population": 57579,
+    "male": 28335,
+    "female": 29244,
+    "population_density": 1725,
+    "sex_ratio": 1032,
+    "literacy_rate": 93.55,
+    "literacy_rate_male": 96.1,
+    "literacy_rate_female": 91.16,
+    "president": "CSPEETHAMBARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KATTIPARAMBU",
+            "person": {
+                "id": "2015007300101",
+                "name": "LISSY NELSON"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUMBALANGHI NORTH",
+            "person": {
+                "id": "2015007300201",
+                "name": "USHA PRADEEP"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ST.JOSEPH CHAPPEL",
+            "person": {
+                "id": "2015007300301",
+                "name": "NELSON KOCHERY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUMBALAM NORTH",
+            "person": {
+                "id": "2015007300401",
+                "name": "SHYLAJA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERUMANA",
+            "person": {
+                "id": "2015007300501",
+                "name": "ADV.DIVYA MIDHUN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHEPPANAM",
+            "person": {
+                "id": "2015007300601",
+                "name": "C S PEETHAMBARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANANGAD SOUTH",
+            "person": {
+                "id": "2015007300701",
+                "name": "LEELA PADMADASAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUMBALANGHI SOUTH",
+            "person": {
+                "id": "2015007300801",
+                "name": "SOUMYA SUBIN EDEZHATH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMBALANGHI CENTRAL",
+            "person": {
+                "id": "2015007300901",
+                "name": "SAJEEV ANTONY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHELLANAM DIVISION",
+            "person": {
+                "id": "2015007301001",
+                "name": "GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "AMBEDKAR COLONY",
+            "person": {
+                "id": "2015007301101",
+                "name": "A K VISWAMBHARAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANDAKADAVU",
+            "person": {
+                "id": "2015007301201",
+                "name": "PUSHPY PONNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNAMALI",
+            "person": {
+                "id": "2015007301301",
+                "name": "JOSEPH P X"
+            }
+        }
+    ]
+}

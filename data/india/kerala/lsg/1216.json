@@ -1,0 +1,148 @@
+{
+    "timeStamp": 1566349630604,
+    "date": "2019-08-21",
+    "name": "Chirakkara  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Ithikkara",
+    "area": "11km",
+    "localbody_code": "G021005",
+    "no_of_wards": 16,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOCHALUMMOODU",
+            "person": {
+                "id": "2015121600101",
+                "name": "BINDU SUNIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ULIYANADU",
+            "person": {
+                "id": "2015121600201",
+                "name": "RAJITHA RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "COLLEGE WARD",
+            "person": {
+                "id": "2015121600301",
+                "name": "DIPU T.R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNETA",
+            "person": {
+                "id": "2015121600401",
+                "name": "SREEDEVI P.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EARAM THEKKU",
+            "person": {
+                "id": "2015121600501",
+                "name": "VINOD KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHIRAKKARA",
+            "person": {
+                "id": "2015121600601",
+                "name": "B. MADHUSOODHANAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KULATHOORKONAM",
+            "person": {
+                "id": "2015121600701",
+                "name": "OMANA TEACHER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHIRAKKARAKSHETRAM",
+            "person": {
+                "id": "2015121600801",
+                "name": "REEJA S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAVATTOM",
+            "person": {
+                "id": "2015121600901",
+                "name": "ULLASKRISHNAN U.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHIRAKKARATHAZHAM",
+            "person": {
+                "id": "2015121601001",
+                "name": "SUSEELADEVI C"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHUPPIL",
+            "person": {
+                "id": "2015121601101",
+                "name": "RAMKUMAR RAMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POLACHIRA",
+            "person": {
+                "id": "2015121601201",
+                "name": "SINDHUMOL S.B"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "OZHUKUPARA",
+            "person": {
+                "id": "2015121601301",
+                "name": "K. SREELATHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NEDUNGOLAM",
+            "person": {
+                "id": "2015121601401",
+                "name": "C. SAKUNTHALA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MALAKKAYAL",
+            "person": {
+                "id": "2015121601501",
+                "name": "G. PREMACHANDRANASAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NEDUNGOLAM WEST",
+            "person": {
+                "id": "2015121601601",
+                "name": "SUNITHA K"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347332639,
+    "date": "2019-08-21",
+    "name": "Palakuzha  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Pampakuda",
+    "area": "22.27km",
+    "localbody_code": "G071205",
+    "no_of_wards": 13,
+    "population": 13468,
+    "male": 6628,
+    "female": 6840,
+    "population_density": 605,
+    "sex_ratio": 1031,
+    "literacy_rate": 92.81,
+    "literacy_rate_male": 95.2,
+    "literacy_rate_female": 90.43,
+    "president": "JOSHYSCARIA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NORTH PALAKUZHA",
+            "person": {
+                "id": "2015069500101",
+                "name": "GOPI N.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALAKUZHA KAVUM BHAGAM",
+            "person": {
+                "id": "2015069500201",
+                "name": "JOSE N.K."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ILLIKKUNNU",
+            "person": {
+                "id": "2015069500301",
+                "name": "SOBHANA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MARIKA NORTH",
+            "person": {
+                "id": "2015069500401",
+                "name": "ALICE SHAJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MARIKA SOUTH",
+            "person": {
+                "id": "2015069500501",
+                "name": "MERCY JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANGALASSERITHAZHAM",
+            "person": {
+                "id": "2015069500601",
+                "name": "JAISON GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARAMALA",
+            "person": {
+                "id": "2015069500701",
+                "name": "DILSHA MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOZHIPPILLY",
+            "person": {
+                "id": "2015069500801",
+                "name": "NIBU GEORGE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALAKUZHA SOUTH",
+            "person": {
+                "id": "2015069500901",
+                "name": "T.N SUNIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALAKUZHA NORTH",
+            "person": {
+                "id": "2015069501001",
+                "name": "JOSHY SCARIA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAKUZHA CENTRAL",
+            "person": {
+                "id": "2015069501101",
+                "name": "JIBY SABU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "UPPUKANDOM",
+            "person": {
+                "id": "2015069501201",
+                "name": "SALY GEORGE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARIMPANA",
+            "person": {
+                "id": "2015069501301",
+                "name": "SOBHANA MURALEEDHARAN"
+            }
+        }
+    ]
+}

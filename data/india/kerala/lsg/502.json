@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346682017,
+    "date": "2019-08-21",
+    "name": "TV Puram  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vaikom",
+    "area": "17.03km",
+    "localbody_code": "G050104",
+    "no_of_wards": 14,
+    "population": 18857,
+    "male": 9226,
+    "female": 9631,
+    "population_density": 1107,
+    "sex_ratio": 1044,
+    "literacy_rate": 92,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 89,
+    "president": "SEBASTIANANTONY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLIPRATHUSSERI",
+            "person": {
+                "id": "2015050200101",
+                "name": "ANIYAMMA ASOKAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMMANATHUKARA NORTH",
+            "person": {
+                "id": "2015050200201",
+                "name": "KAVITHA REJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEMMANATHUKARA EAST",
+            "person": {
+                "id": "2015050200301",
+                "name": "VISHNU ULLAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERIKAL",
+            "person": {
+                "id": "2015050200401",
+                "name": "BEENA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHEMMANATHUKARA SOUTH",
+            "person": {
+                "id": "2015050200501",
+                "name": "S BIJU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTTARAPALLI",
+            "person": {
+                "id": "2015050200601",
+                "name": "SEBASTIAN ANTONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "APPACKAL",
+            "person": {
+                "id": "2015050200701",
+                "name": "T S SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MOOTHEDATHUKAVU",
+            "person": {
+                "id": "2015050200801",
+                "name": "SANDHYA ASOKAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "T V PURAM",
+            "person": {
+                "id": "2015050200901",
+                "name": "SHEELA SURESAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTACHIRA",
+            "person": {
+                "id": "2015050201001",
+                "name": "GEETHA JOSHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THRINAYAMKUDAM",
+            "person": {
+                "id": "2015050201101",
+                "name": "T ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANNUKETTUSSERI",
+            "person": {
+                "id": "2015050201201",
+                "name": "RAKHI SAJESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MATTAPALLI",
+            "person": {
+                "id": "2015050201301",
+                "name": "REMA SIVADAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANNATHANAM",
+            "person": {
+                "id": "2015050201401",
+                "name": "JEENA THOMAS"
+            }
+        }
+    ]
+}

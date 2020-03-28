@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344882197,
+    "date": "2019-08-21",
+    "name": "Athiyannoor  Block Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Athiyannoor",
+    "area": "60.13km",
+    "localbody_code": "B011000",
+    "no_of_wards": 13,
+    "population": 166549,
+    "male": 83712,
+    "female": 82837,
+    "population_density": 2770,
+    "sex_ratio": 990,
+    "literacy_rate": 84.48,
+    "literacy_rate_male": 87.39,
+    "literacy_rate_female": 81.56,
+    "president": "BINDHUS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTTACAUD",
+            "person": {
+                "id": "2015001100101",
+                "name": "LEELA BAI P S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERINGAMMALA",
+            "person": {
+                "id": "2015001100201",
+                "name": "N J PRABHULLACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAYATTUVILA",
+            "person": {
+                "id": "2015001100301",
+                "name": "VIJAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AVANAKUZHI",
+            "person": {
+                "id": "2015001100401",
+                "name": "MARIAMMA KESARI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAMUKINCODE",
+            "person": {
+                "id": "2015001100501",
+                "name": "K P REJITHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VENPAKAL",
+            "person": {
+                "id": "2015001100601",
+                "name": "K PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NELLIMOODU",
+            "person": {
+                "id": "2015001100701",
+                "name": "JOHNY J"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANJIRAMKULAM",
+            "person": {
+                "id": "2015001100801",
+                "name": "BINDHU S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "LOURDIPURAM",
+            "person": {
+                "id": "2015001100901",
+                "name": "SYLAJA D"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARUMKULAM",
+            "person": {
+                "id": "2015001101001",
+                "name": "FRANKLIN A"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULLUVILA",
+            "person": {
+                "id": "2015001101101",
+                "name": "RAJI SILVAPICHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTUKAL",
+            "person": {
+                "id": "2015001101201",
+                "name": "K S RAJAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VENGANOOR",
+            "person": {
+                "id": "2015001101301",
+                "name": "SHEELA BHADRAN"
+            }
+        }
+    ]
+}

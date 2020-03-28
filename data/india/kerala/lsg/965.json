@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348767743,
+    "date": "2019-08-21",
+    "name": "Thenhipalam  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Tirurangady",
+    "area": "17.32km",
+    "localbody_code": "G101102",
+    "no_of_wards": 17,
+    "population": 27270,
+    "male": 13288,
+    "female": 13982,
+    "population_density": 1342,
+    "sex_ratio": 1016,
+    "literacy_rate": 87.37,
+    "literacy_rate_male": 92.3,
+    "literacy_rate_female": 80.43,
+    "president": "SAFIYARAZAQUE.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADAKKATTUPARA",
+            "person": {
+                "id": "2015096500101",
+                "name": "ANILADEVI  P.M ."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANIKULATHU PARAMBU",
+            "person": {
+                "id": "2015096500201",
+                "name": "BIJITHA M ."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ILLATH",
+            "person": {
+                "id": "2015096500301",
+                "name": "ASALATHA .K ."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ELAMBULASSERI",
+            "person": {
+                "id": "2015096500401",
+                "name": "MUHAMMED BASHEER .K ."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "UNIVERSITY",
+            "person": {
+                "id": "2015096500501",
+                "name": "ARUNA P ."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOHINOOR",
+            "person": {
+                "id": "2015096500601",
+                "name": "SHIJU .K ."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "DEVATHIYAL",
+            "person": {
+                "id": "2015096500701",
+                "name": "LIJA RAVIKUMAR ."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEEROLPALAM",
+            "person": {
+                "id": "2015096500801",
+                "name": "MOIDEEN KUTTY  KOZHITHODI ."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHULLOTTUPARAMBU",
+            "person": {
+                "id": "2015096500901",
+                "name": "SATHI .V ."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANAMBRA",
+            "person": {
+                "id": "2015096501001",
+                "name": "SALEEM ACHAPARAMBIL ."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NETHAJI",
+            "person": {
+                "id": "2015096501101",
+                "name": "SAFIYA RAZAQUE ."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ALUNGAL",
+            "person": {
+                "id": "2015096501201",
+                "name": "MOHAMMED KATTUKUZHI ."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PADATTAL",
+            "person": {
+                "id": "2015096501301",
+                "name": "NAFEESA .A ."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHENAKKALANGADI",
+            "person": {
+                "id": "2015096501401",
+                "name": "SAFARI MAJEED PORAKKADU ."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MATHAPUZHA",
+            "person": {
+                "id": "2015096501501",
+                "name": "SAVAD K ."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOLATHODU",
+            "person": {
+                "id": "2015096501601",
+                "name": "AFSATH BEEVI ."
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AREEPARA",
+            "person": {
+                "id": "2015096501701",
+                "name": "K.E UNNIKAMMU"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345167170,
+    "date": "2019-08-21",
+    "name": "Mala  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mala",
+    "area": "126.71km",
+    "localbody_code": "B081500",
+    "no_of_wards": 13,
+    "population": 149355,
+    "male": 72369,
+    "female": 76986,
+    "population_density": 1055,
+    "sex_ratio": 1065,
+    "literacy_rate": 91.52,
+    "literacy_rate_male": 94.84,
+    "literacy_rate_female": 88.45,
+    "president": "KESAVANKUTTY.E",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLETTUMKARA",
+            "person": {
+                "id": "2015009600101",
+                "name": "SHAINY SANTO"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALOOR",
+            "person": {
+                "id": "2015009600201",
+                "name": "SHANMUGHAN P.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAROOR",
+            "person": {
+                "id": "2015009600301",
+                "name": "BIJI JOHNY KANOOKKADAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHAKKAMPARAMBU",
+            "person": {
+                "id": "2015009600401",
+                "name": "SHEEBA PAUL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANNAMANADA",
+            "person": {
+                "id": "2015009600501",
+                "name": "INDIRA DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALISSERY",
+            "person": {
+                "id": "2015009600601",
+                "name": "VARGHESE KACHAPPILLY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUZHUR",
+            "person": {
+                "id": "2015009600701",
+                "name": "BIJI WILSON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNDUR",
+            "person": {
+                "id": "2015009600801",
+                "name": "KESAVANKUTTY.E"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOPPATHI",
+            "person": {
+                "id": "2015009600901",
+                "name": "M.B.SURESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "POYYA",
+            "person": {
+                "id": "2015009601001",
+                "name": "JAYA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MALA",
+            "person": {
+                "id": "2015009601101",
+                "name": "SONA K.KAREEM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ASHTAMICHIRA",
+            "person": {
+                "id": "2015009601201",
+                "name": "T.P.RAVINDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOMBODINJAMAKKAL",
+            "person": {
+                "id": "2015009601301",
+                "name": "ADV.M.S. VINAYAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566349058669,
+    "date": "2019-08-21",
+    "name": "Thamarassery  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Koduvaliy",
+    "area": "55.17km",
+    "localbody_code": "G111007",
+    "no_of_wards": 19,
+    "population": 45444,
+    "male": 22746,
+    "female": 22698,
+    "population_density": 824,
+    "sex_ratio": 998,
+    "literacy_rate": 90.95,
+    "literacy_rate_male": 95.19,
+    "literacy_rate_female": 86.72,
+    "president": "SARASWATHYK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEKKUMTHOTTAM",
+            "person": {
+                "id": "2015105300101",
+                "name": "ABDUL GAFOOR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VATTAKKORU",
+            "person": {
+                "id": "2015105300201",
+                "name": "V.P.ANDY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KORANGAD",
+            "person": {
+                "id": "2015105300301",
+                "name": "MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHUNGAM NORTH",
+            "person": {
+                "id": "2015105300401",
+                "name": "JAYESH P.M."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHUNGAM SOUTH",
+            "person": {
+                "id": "2015105300501",
+                "name": "JESSY SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VEZHUPUR",
+            "person": {
+                "id": "2015105300601",
+                "name": "BINDU ANAND"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THAMARASSERY",
+            "person": {
+                "id": "2015105300701",
+                "name": "SARASWATHY K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARADI",
+            "person": {
+                "id": "2015105300801",
+                "name": "MANJITHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUDUKKILUMMARAM",
+            "person": {
+                "id": "2015105300901",
+                "name": "K.V.MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANDONA",
+            "person": {
+                "id": "2015105301001",
+                "name": "RASEENA SIYYALI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "RAROTH",
+            "person": {
+                "id": "2015105301101",
+                "name": "RATHNAVALLY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARAPPANPOYIL EAST",
+            "person": {
+                "id": "2015105301201",
+                "name": "HAJARA KOLLARU KANDY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAPPANPOYIL WEST",
+            "person": {
+                "id": "2015105301301",
+                "name": "VASANTHA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEMBRA",
+            "person": {
+                "id": "2015105301401",
+                "name": "ANJU O.K."
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KEDAVOOR",
+            "person": {
+                "id": "2015105301501",
+                "name": "SHYLAJA P."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EARPONA",
+            "person": {
+                "id": "2015105301601",
+                "name": "NAVAS MASTER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THACHAMPOYIL",
+            "person": {
+                "id": "2015105301701",
+                "name": "SAINUL ABIDEEN THANGAL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PALLIPPURAM",
+            "person": {
+                "id": "2015105301802",
+                "name": "N.P.MUHAMMEDALI MASTER"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AVELAM",
+            "person": {
+                "id": "2015105301901",
+                "name": "P.S.MUHAMMEDALI"
+            }
+        }
+    ]
+}

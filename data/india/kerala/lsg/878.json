@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348415752,
+    "date": "2019-08-21",
+    "name": "Erimayur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "33.67km",
+    "localbody_code": "G091202",
+    "no_of_wards": 18,
+    "population": 27841,
+    "male": 13531,
+    "female": 14310,
+    "population_density": 827,
+    "sex_ratio": 1058,
+    "literacy_rate": 75.3,
+    "literacy_rate_male": 82.39,
+    "literacy_rate_female": 68.69,
+    "president": "VASANTHAKUMARI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARIYAKKODE",
+            "person": {
+                "id": "2015087800101",
+                "name": "REMYA.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERANADU",
+            "person": {
+                "id": "2015087800201",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARUTHAKKODE",
+            "person": {
+                "id": "2015087800301",
+                "name": "SUDARSAN.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOLAKKAPADAM",
+            "person": {
+                "id": "2015087800401",
+                "name": "SAJEEV.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOOTTALA",
+            "person": {
+                "id": "2015087800501",
+                "name": "NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNAMPULLI",
+            "person": {
+                "id": "2015087800601",
+                "name": "P.N.MURALIDHARAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUTHIRAPPARA",
+            "person": {
+                "id": "2015087800701",
+                "name": "KALAVATHY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHENKARAM",
+            "person": {
+                "id": "2015087800801",
+                "name": "USHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOLEPPADAM",
+            "person": {
+                "id": "2015087800901",
+                "name": "KABEER.M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNISSERY",
+            "person": {
+                "id": "2015087801001",
+                "name": "VASANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THEKKETHARA",
+            "person": {
+                "id": "2015087801101",
+                "name": "SUMATHY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VADAKKETHARA",
+            "person": {
+                "id": "2015087801201",
+                "name": "KRISHNADAS..K.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANTHALAMKODE",
+            "person": {
+                "id": "2015087801301",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULLODE",
+            "person": {
+                "id": "2015087801401",
+                "name": "MAYANDI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THRIPPALUR",
+            "person": {
+                "id": "2015087801501",
+                "name": "SANTHI.U"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHULLIMADA",
+            "person": {
+                "id": "2015087801601",
+                "name": "RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ERIMAYUR",
+            "person": {
+                "id": "2015087801701",
+                "name": "THANKA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MARAKKAVU",
+            "person": {
+                "id": "2015087801801",
+                "name": "SUNITHA.A"
+            }
+        }
+    ]
+}

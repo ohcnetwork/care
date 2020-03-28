@@ -17,16 +17,63 @@ DISTRICT_CHOICES = [
     (11, "Kozhikode"),
     (12, "Wayanad"),
     (13, "Kannur"),
-    (14, "Kasaragod"),
+    (14, "Kasargode"),
 ]
 
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Other")]
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
     message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
     code="invalid_mobile",
 )
+
+
+class State(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"State: {self.name}"
+
+
+class District(models.Model):
+    state = models.ForeignKey(State, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"District: {self.name} - {self.state.name}"
+
+
+LOCAL_BODY_CHOICES = (
+    # Panchayath levels
+    (1, "Grama Panchayath"),
+    (2, "Block Panchayath"),
+    (3, "District Panchayath"),
+    # Municipality levels
+    (10, "Municipality"),
+    # Corporation levels
+    (20, "Corporation"),
+    # Unknown
+    (50, "Others"),
+)
+
+
+class LocalBody(models.Model):
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+
+    name = models.CharField(max_length=255)
+    body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    localbody_code = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        unique_together = (
+            "district",
+            "body_type",
+            "name",
+        )
+
+    def __str__(self):
+        return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
 
 
 class CustomUserManager(UserManager):
@@ -54,6 +101,7 @@ class User(AbstractUser):
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
     district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
@@ -71,7 +119,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
 

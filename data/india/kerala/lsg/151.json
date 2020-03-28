@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345357705,
+    "date": "2019-08-21",
+    "name": "Kanhangad  Block Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kanhangad",
+    "area": "534.8km",
+    "localbody_code": "B140400",
+    "no_of_wards": 13,
+    "population": 236705,
+    "male": 115908,
+    "female": 120797,
+    "population_density": 443,
+    "sex_ratio": 1042,
+    "literacy_rate": 81.18,
+    "literacy_rate_male": 87.29,
+    "literacy_rate_female": 75.4,
+    "president": "GOWRIM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "UDUMA",
+            "person": {
+                "id": "2015015100101",
+                "name": "INDIRA BALAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIPODY",
+            "person": {
+                "id": "2015015100201",
+                "name": "AYSHABI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANAYAL",
+            "person": {
+                "id": "2015015100301",
+                "name": "GOWRI M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAKKAM",
+            "person": {
+                "id": "2015015100401",
+                "name": "K BHANUMATHI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERIYA",
+            "person": {
+                "id": "2015015100501",
+                "name": "USHA P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULLUR",
+            "person": {
+                "id": "2015015100601",
+                "name": "NARAYANAN P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADIKAI",
+            "person": {
+                "id": "2015015100701",
+                "name": "KUNHAMBU M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALATHUKARA",
+            "person": {
+                "id": "2015015100801",
+                "name": "YAMUNA N"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELLIKOTH",
+            "person": {
+                "id": "2015015100901",
+                "name": "SAINABA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AJANUR",
+            "person": {
+                "id": "2015015101001",
+                "name": "KUNHIRAMAN V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHITHARI",
+            "person": {
+                "id": "2015015101101",
+                "name": "KARUNAKARAN KUNNATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLIKARE",
+            "person": {
+                "id": "2015015101201",
+                "name": "ASURABI CV"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALAKUNNU",
+            "person": {
+                "id": "2015015101301",
+                "name": "ANWAR SADIQUE"
+            }
+        }
+    ]
+}

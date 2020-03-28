@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346899519,
+    "date": "2019-08-21",
+    "name": "Nedumkunnam  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vazhoor",
+    "area": "24.17km",
+    "localbody_code": "G051003",
+    "no_of_wards": 15,
+    "population": 20024,
+    "male": 9870,
+    "female": 10154,
+    "population_density": 828,
+    "sex_ratio": 1029,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 97,
+    "president": "BEENANAUSHAD",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANTHURUTHY",
+            "person": {
+                "id": "2015056400101",
+                "name": "JO JOSEPH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARACKAL",
+            "person": {
+                "id": "2015056400201",
+                "name": "MATHEW JOHN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALLIMALA",
+            "person": {
+                "id": "2015056400301",
+                "name": "S SAILAJAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAVUNNADA",
+            "person": {
+                "id": "2015056400401",
+                "name": "REVI V SOMAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MYLADI",
+            "person": {
+                "id": "2015056400501",
+                "name": "N LALITHA BAI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NILAMPODINJA",
+            "person": {
+                "id": "2015056400601",
+                "name": "ELSAMMA PETER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "DEVAGIRI",
+            "person": {
+                "id": "2015056400701",
+                "name": "GOPAKUMAR V.M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEDUMANNI",
+            "person": {
+                "id": "2015056400801",
+                "name": "BEENA NAUSHAD"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MULAYAMVELY",
+            "person": {
+                "id": "2015056400901",
+                "name": "PHILOMINA JAMES"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARANAPPARA",
+            "person": {
+                "id": "2015056401001",
+                "name": "JOHN M.J"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUMBIKKAPUZHA",
+            "person": {
+                "id": "2015056401101",
+                "name": "SOBHA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHATHANPARA",
+            "person": {
+                "id": "2015056401201",
+                "name": "MINI JOJI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHELACOMBU",
+            "person": {
+                "id": "2015056401301",
+                "name": "RAJAMMA RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUTHIRAMALA",
+            "person": {
+                "id": "2015056401401",
+                "name": "JOSEPH DEVASIA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NETHALLOOR",
+            "person": {
+                "id": "2015056401501",
+                "name": "LETHA UNNIKRISHNAN"
+            }
+        }
+    ]
+}

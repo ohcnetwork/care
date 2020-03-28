@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345127121,
+    "date": "2019-08-21",
+    "name": "Pazhayannur  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Pazhayannur",
+    "area": "236.95km",
+    "localbody_code": "B080400",
+    "no_of_wards": 13,
+    "population": 155421,
+    "male": 73833,
+    "female": 81588,
+    "population_density": 656,
+    "sex_ratio": 1105,
+    "literacy_rate": 83.3,
+    "literacy_rate_male": 88.21,
+    "literacy_rate_female": 78.94,
+    "president": "VTHANKAMMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLATHOLE NAGAR",
+            "person": {
+                "id": "2015008400101",
+                "name": "M R JAYAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PAINKULAM",
+            "person": {
+                "id": "2015008400201",
+                "name": "V THANKAMMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MAYANNUR",
+            "person": {
+                "id": "2015008400301",
+                "name": "VASANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANIYARKODE",
+            "person": {
+                "id": "2015008400401",
+                "name": "N KUMARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THIRUVILWAMALA",
+            "person": {
+                "id": "2015008400501",
+                "name": "K R SATHYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAZHAYANNUR",
+            "person": {
+                "id": "2015008400601",
+                "name": "KURSHID V A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELANAD",
+            "person": {
+                "id": "2015008400701",
+                "name": "THANKAPPAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VADAKKETHARA",
+            "person": {
+                "id": "2015008400801",
+                "name": "M PADMAKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PULAKODE",
+            "person": {
+                "id": "2015008400901",
+                "name": "VALSALA SIVADAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHELAKODE",
+            "person": {
+                "id": "2015008401001",
+                "name": "V P PARUKUTTY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHELAKKARA",
+            "person": {
+                "id": "2015008401101",
+                "name": "T M KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANJAL",
+            "person": {
+                "id": "2015008401201",
+                "name": "NIRMALA RAVIKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEDUMPURA",
+            "person": {
+                "id": "2015008401301",
+                "name": "SUMITRA UNNIKRISHNAN"
+            }
+        }
+    ]
+}

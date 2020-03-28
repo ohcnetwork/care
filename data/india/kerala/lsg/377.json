@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346238339,
+    "date": "2019-08-21",
+    "name": "Kunnamthanam  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "17.57km",
+    "localbody_code": "G030106",
+    "no_of_wards": 15,
+    "population": 18489,
+    "male": 8858,
+    "female": 9631,
+    "population_density": 1052,
+    "sex_ratio": 1087,
+    "literacy_rate": 96.43,
+    "literacy_rate_male": 97.96,
+    "literacy_rate_female": 95.03,
+    "president": "KKRADHAKRISHNAKURUP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLIKKAD",
+            "person": {
+                "id": "2015037700101",
+                "name": "K K RADHAKRISHNA KURUP"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALLOKKUNNU",
+            "person": {
+                "id": "2015037700201",
+                "name": "SETHU BAI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALACKATHAKIDI",
+            "person": {
+                "id": "2015037700301",
+                "name": "RADHAMANIAMMA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARACKADU",
+            "person": {
+                "id": "2015037700401",
+                "name": "SREELEKHA BABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUKKOOR",
+            "person": {
+                "id": "2015037700501",
+                "name": "P.T SUBHASH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULINTHANAM",
+            "person": {
+                "id": "2015037700601",
+                "name": "SETHULEKSHMI K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NADACKAL",
+            "person": {
+                "id": "2015037700701",
+                "name": "MATHEW(BABU KOODATHIL)"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNNANTHANAM",
+            "person": {
+                "id": "2015037700801",
+                "name": "RAJANI RATHEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNDACKAMON",
+            "person": {
+                "id": "2015037700901",
+                "name": "SUSAMMA VARGHESE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALAKUZHY",
+            "person": {
+                "id": "2015037701001",
+                "name": "T.N SANTHAMMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOLATHU",
+            "person": {
+                "id": "2015037701101",
+                "name": "T.R RAJU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ANJILITHANAM",
+            "person": {
+                "id": "2015037701201",
+                "name": "GRACY MATHEW"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MYLAMON",
+            "person": {
+                "id": "2015037701301",
+                "name": "C.N MOHANAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTAPADY",
+            "person": {
+                "id": "2015037701401",
+                "name": "G SASIKUMAR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANTHANAM",
+            "person": {
+                "id": "2015037701501",
+                "name": "SREEDEVI SATHEESH BABU"
+            }
+        }
+    ]
+}

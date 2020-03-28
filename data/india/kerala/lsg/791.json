@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348112894,
+    "date": "2019-08-21",
+    "name": "Eriyad  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Kodungallur",
+    "area": "16.75km",
+    "localbody_code": "G081407",
+    "no_of_wards": 23,
+    "population": 42011,
+    "male": 20184,
+    "female": 21827,
+    "population_density": 2508,
+    "sex_ratio": 1081,
+    "literacy_rate": 88.07,
+    "literacy_rate_male": 93.03,
+    "literacy_rate_female": 83.58,
+    "president": "PRASADINI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MARKETWEST",
+            "person": {
+                "id": "2015079100101",
+                "name": "V.G.KUNJIKUTTAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MARKET EAST",
+            "person": {
+                "id": "2015079100201",
+                "name": "FATHIMA NOUSHAD"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "BLOCK",
+            "person": {
+                "id": "2015079100301",
+                "name": "BABY JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIRUVALLUR",
+            "person": {
+                "id": "2015079100401",
+                "name": "SHEELA BHASI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KATAKULAM",
+            "person": {
+                "id": "2015079100501",
+                "name": "PRASADINI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ATHANI",
+            "person": {
+                "id": "2015079100601",
+                "name": "PANKAJAKSHAN T.A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADAVANA",
+            "person": {
+                "id": "2015079100701",
+                "name": "A.K.ABDULAZEEZ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ERIYAD",
+            "person": {
+                "id": "2015079100801",
+                "name": "SUGATHAKUMARI SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "INDUSTRIAL",
+            "person": {
+                "id": "2015079100901",
+                "name": "SINDHU VIBEESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERAMAN",
+            "person": {
+                "id": "2015079101001",
+                "name": "SIDDIQUE.M.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KRISHIBHAVAN",
+            "person": {
+                "id": "2015079101101",
+                "name": "SANDHYA LIBIN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "TEMPLE",
+            "person": {
+                "id": "2015079101201",
+                "name": "ANILAN.K.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SOCIETY",
+            "person": {
+                "id": "2015079101301",
+                "name": "JYOTHI LAKSHMI SUNIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "T.T.I",
+            "person": {
+                "id": "2015079101401",
+                "name": "WILSY BAIJU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHURCH",
+            "person": {
+                "id": "2015079101501",
+                "name": "MOHAMED.K.A"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AZHICODE JETTY",
+            "person": {
+                "id": "2015079101601",
+                "name": "PRASEENA RAFI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUNAKKAL",
+            "person": {
+                "id": "2015079101701",
+                "name": "ABDULLA.P.M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VAKACHAL",
+            "person": {
+                "id": "2015079101801",
+                "name": "K.M.SADATH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MENONBAZAR",
+            "person": {
+                "id": "2015079101901",
+                "name": "AMBIKA DEVI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "LIGHT HOUSE",
+            "person": {
+                "id": "2015079102001",
+                "name": "FATHIMA SHERIF"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "HOSPITAL",
+            "person": {
+                "id": "2015079102101",
+                "name": "ADV.V.A.SABAH"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "DISPENSARY",
+            "person": {
+                "id": "2015079102201",
+                "name": "JIJI SABU"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "ARATTUVAZHI",
+            "person": {
+                "id": "2015079102301",
+                "name": "V.R.BABU"
+            }
+        }
+    ]
+}

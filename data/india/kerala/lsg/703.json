@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566347364941,
+    "date": "2019-08-21",
+    "name": "Kunnukara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Parakkadavu",
+    "area": "21.25km",
+    "localbody_code": "G071305",
+    "no_of_wards": 15,
+    "population": 19742,
+    "male": 9653,
+    "female": 10089,
+    "population_density": 929,
+    "sex_ratio": 1045,
+    "literacy_rate": 89.85,
+    "literacy_rate_male": 93.17,
+    "literacy_rate_female": 86.69,
+    "president": "FRANCISTHARAYILMATHAI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUTHIYATHODE NORTH",
+            "person": {
+                "id": "2015070300101",
+                "name": "FRANCIS THARAYIL MATHAI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ATTUPURAM",
+            "person": {
+                "id": "2015070300201",
+                "name": "P.V. THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYIROOR",
+            "person": {
+                "id": "2015070300301",
+                "name": "C.M VARGHESE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADAKKE ADUVASSERY",
+            "person": {
+                "id": "2015070300401",
+                "name": "RATHI SABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MALAYIKUNNU",
+            "person": {
+                "id": "2015070300501",
+                "name": "SHIJI JOSHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SOUTH ADUVASSERY",
+            "person": {
+                "id": "2015070300601",
+                "name": "SEENA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUTTIPUZHA",
+            "person": {
+                "id": "2015070300701",
+                "name": "SHEEJA SHAJI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNNUKARA SOUTH",
+            "person": {
+                "id": "2015070300801",
+                "name": "THOMAS MADANY POULOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNNUKARA EAST",
+            "person": {
+                "id": "2015070300902",
+                "name": "LIGI JOSE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNUKARA WEST",
+            "person": {
+                "id": "2015070301001",
+                "name": "SHANIBA MAJEED"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VAYALKARA EAST",
+            "person": {
+                "id": "2015070301101",
+                "name": "P.A KUNJUMOHAMMED"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VAYALKARA WEST",
+            "person": {
+                "id": "2015070301201",
+                "name": "JABBAR C.U UMMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERIYATHEYKKANAM",
+            "person": {
+                "id": "2015070301301",
+                "name": "SHEEBA KUTTAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHALAKKA",
+            "person": {
+                "id": "2015070301401",
+                "name": "AJIKUMAR T.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUTHIYATHODE SOUTH",
+            "person": {
+                "id": "2015070301501",
+                "name": "SHIJI PRINCE"
+            }
+        }
+    ]
+}

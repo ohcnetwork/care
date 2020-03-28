@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346527206,
+    "date": "2019-08-21",
+    "name": "Pulincunnoo  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Veliyanad",
+    "area": "31.53km",
+    "localbody_code": "G040705",
+    "no_of_wards": 16,
+    "population": 23667,
+    "male": 11645,
+    "female": 12022,
+    "population_density": 751,
+    "sex_ratio": 1032,
+    "literacy_rate": 98,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 97,
+    "president": "JOSEPHXAVIER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VENATTUKADU",
+            "person": {
+                "id": "2015046200101",
+                "name": "K.C.MADHUSOODANAN (CHAKOPPY)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "COLLEGE",
+            "person": {
+                "id": "2015046200201",
+                "name": "JOSEPH XAVIER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANNADY",
+            "person": {
+                "id": "2015046200301",
+                "name": "SUBEESH K.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALANCHERY",
+            "person": {
+                "id": "2015046200401",
+                "name": "AMBILI. T. JOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MARADA",
+            "person": {
+                "id": "2015046200501",
+                "name": "JANCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBANAPALLY",
+            "person": {
+                "id": "2015046200601",
+                "name": "PUSHPA BIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KIZHAKKETHALAKKAL",
+            "person": {
+                "id": "2015046200701",
+                "name": "SUJA (KUNJUMOL)"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLLAMUTTOM",
+            "person": {
+                "id": "2015046200801",
+                "name": "MARIYAMMA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHOOLAYIL",
+            "person": {
+                "id": "2015046200901",
+                "name": "NISHA BIJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALAKANDAM",
+            "person": {
+                "id": "2015046201001",
+                "name": "V. T. SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULINCUNNOO",
+            "person": {
+                "id": "2015046201101",
+                "name": "JOLLY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAYALPURAM",
+            "person": {
+                "id": "2015046201201",
+                "name": "FRANCIS (BABU KURUPPACHERRY)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "HOSPITAL WARD",
+            "person": {
+                "id": "2015046201301",
+                "name": "BINDHU SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MONCOMPU TEMPLE",
+            "person": {
+                "id": "2015046201401",
+                "name": "SANITHA (VIDHU PRASAD)"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MONCOMPU STATUE",
+            "person": {
+                "id": "2015046201501",
+                "name": "G. PRASAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHATHURTHYAKARY",
+            "person": {
+                "id": "2015046201601",
+                "name": "K. JAYAKUMAR"
+            }
+        }
+    ]
+}

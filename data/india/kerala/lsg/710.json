@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347403695,
+    "date": "2019-08-21",
+    "name": "Manjalloor  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Muvattupuzha",
+    "area": "23.02km",
+    "localbody_code": "G071407",
+    "no_of_wards": 13,
+    "population": 13792,
+    "male": 6825,
+    "female": 6967,
+    "population_density": 599,
+    "sex_ratio": 1021,
+    "literacy_rate": 94.41,
+    "literacy_rate_male": 95.89,
+    "literacy_rate_female": 92.96,
+    "president": "N.JGEORGEGEORGEJOSEPH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAZHAKULAM NORTH",
+            "person": {
+                "id": "2015071000101",
+                "name": "JOSE THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANJALLOOR",
+            "person": {
+                "id": "2015071000201",
+                "name": "JESSY JAMES"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKODE",
+            "person": {
+                "id": "2015071000301",
+                "name": "MINI JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENGACHUVAD",
+            "person": {
+                "id": "2015071000401",
+                "name": "TOM LUCKOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANIYANTHADAM WEST",
+            "person": {
+                "id": "2015071000501",
+                "name": "RUBY THOMAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANIYANTHADAM EAST",
+            "person": {
+                "id": "2015071000601",
+                "name": "SINDHU MANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADAKKATHANAM",
+            "person": {
+                "id": "2015071000701",
+                "name": "RENEESH REGIMON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAPPU NORTH",
+            "person": {
+                "id": "2015071000801",
+                "name": "SABU BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAPPU EAST",
+            "person": {
+                "id": "2015071000901",
+                "name": "NIRMALA ANIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAPPU WEST",
+            "person": {
+                "id": "2015071001001",
+                "name": "RAJASREE ANIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADALIKKAD",
+            "person": {
+                "id": "2015071001101",
+                "name": "N.J GEORGE( GEORGE JOSEPH)"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADALIKKAD WEST",
+            "person": {
+                "id": "2015071001201",
+                "name": "E.K SURESH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAZHAKULAM SOUTH",
+            "person": {
+                "id": "2015071001301",
+                "name": "LISSY JOHNY"
+            }
+        }
+    ]
+}

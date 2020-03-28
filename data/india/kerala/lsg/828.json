@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348241095,
+    "date": "2019-08-21",
+    "name": "Karimpuzha  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Sreekrishnapuram",
+    "area": "47.39km",
+    "localbody_code": "G090403",
+    "no_of_wards": 18,
+    "population": 26104,
+    "male": 12504,
+    "female": 13600,
+    "population_density": 551,
+    "sex_ratio": 1088,
+    "literacy_rate": 85.06,
+    "literacy_rate_male": 88.79,
+    "literacy_rate_female": 81.7,
+    "president": "SHEEBAP.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNNATHUPEEDIKA",
+            "person": {
+                "id": "2015082800101",
+                "name": "SHEEJA T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KULIKKILIYAD",
+            "person": {
+                "id": "2015082800201",
+                "name": "SHAMSIYA UMMER KUNNATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015082800301",
+                "name": "SHOBANA S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAVUNDA",
+            "person": {
+                "id": "2015082800401",
+                "name": "UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THOTTARA",
+            "person": {
+                "id": "2015082800501",
+                "name": "SHEEBA P.T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBALAMPADAM",
+            "person": {
+                "id": "2015082800601",
+                "name": "HAMZA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POMBRA",
+            "person": {
+                "id": "2015082800701",
+                "name": "LALITHA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ELAMBULASSERY",
+            "person": {
+                "id": "2015082800801",
+                "name": "SUNDARAN A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KURAVANKUNNU",
+            "person": {
+                "id": "2015082800901",
+                "name": "SUNITHA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAKKADAPPURAM",
+            "person": {
+                "id": "2015082801001",
+                "name": "RADHAKRISHNAN R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PEZHUMATTA",
+            "person": {
+                "id": "2015082801101",
+                "name": "CHANDRIKA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOTTILAKKADAVU",
+            "person": {
+                "id": "2015082801201",
+                "name": "SANTHI N P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARIMPUZHA",
+            "person": {
+                "id": "2015082801301",
+                "name": "RAJARATHNAM P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THOTTARA 2",
+            "person": {
+                "id": "2015082801401",
+                "name": "CHADRAMOHANAN M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNNAKKAD",
+            "person": {
+                "id": "2015082801501",
+                "name": "REHNA T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARIPPAMANNA",
+            "person": {
+                "id": "2015082801601",
+                "name": "RADHAKRISHNAN K.P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AATTASSERY",
+            "person": {
+                "id": "2015082801701",
+                "name": "THANGAL P.A"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHOLAKKURUSSI",
+            "person": {
+                "id": "2015082801801",
+                "name": "KUNHIRAMAN P.C"
+            }
+        }
+    ]
+}

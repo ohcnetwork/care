@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349171290,
+    "date": "2019-08-21",
+    "name": "Vythiri  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Kalpetta",
+    "area": "47.84km",
+    "localbody_code": "G120403",
+    "no_of_wards": 14,
+    "population": 14459,
+    "male": 7202,
+    "female": 7257,
+    "population_density": 302,
+    "sex_ratio": 1007,
+    "literacy_rate": 86.7,
+    "literacy_rate_male": 91.85,
+    "literacy_rate_female": 81.67,
+    "president": "V.USHAKUMARI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SREEPURAM",
+            "person": {
+                "id": "2015108800101",
+                "name": "PRASAD. K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUNHAMKODE",
+            "person": {
+                "id": "2015108800201",
+                "name": "SAFIYA. O.A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHUNDALE",
+            "person": {
+                "id": "2015108800301",
+                "name": "SHINY DEVASI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THALIMALA",
+            "person": {
+                "id": "2015108800401",
+                "name": "U.C GOPI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NARANGAKUNNU",
+            "person": {
+                "id": "2015108800501",
+                "name": "SHYNI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHARITY",
+            "person": {
+                "id": "2015108800601",
+                "name": "DOLLY JOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MULLAMPARA",
+            "person": {
+                "id": "2015108800701",
+                "name": "MANIKANDAN C.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "LAKKIDI",
+            "person": {
+                "id": "2015108800801",
+                "name": "V. USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THALIPPUZHA",
+            "person": {
+                "id": "2015108800901",
+                "name": "BASHEER POOKKODAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLICHAL",
+            "person": {
+                "id": "2015108801001",
+                "name": "BEENA PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VYTHIRI TOWN",
+            "person": {
+                "id": "2015108801101",
+                "name": "VIJESH M.V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANTHRANDAMPALAM",
+            "person": {
+                "id": "2015108801201",
+                "name": "SALEEM MEMANA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VATTAVAYAL",
+            "person": {
+                "id": "2015108801301",
+                "name": "ELSY GEORGE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLAMKOLLY",
+            "person": {
+                "id": "2015108801401",
+                "name": "P.T VSRGHESE"
+            }
+        }
+    ]
+}

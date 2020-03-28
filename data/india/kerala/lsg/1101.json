@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349208950,
+    "date": "2019-08-21",
+    "name": "Ramanthali  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "29.99km",
+    "localbody_code": "G130102",
+    "no_of_wards": 15,
+    "population": 21325,
+    "male": 10081,
+    "female": 11244,
+    "population_density": 711,
+    "sex_ratio": 1115,
+    "literacy_rate": 87.72,
+    "literacy_rate_male": 93.47,
+    "literacy_rate_female": 82.64,
+    "president": "GOVINDANMV",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKUMBAD NORTH",
+            "person": {
+                "id": "2015110100101",
+                "name": "ABIDA K V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMBAD EAST",
+            "person": {
+                "id": "2015110100201",
+                "name": "JAYARAJAN C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOVVAPPURAM KIZHAKKU",
+            "person": {
+                "id": "2015110100301",
+                "name": "KRISHNAN KOOLIYADATH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNNATHERU RAMANTHALI",
+            "person": {
+                "id": "2015110100401",
+                "name": "GOVINDAN M V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLETTINKADAVU",
+            "person": {
+                "id": "2015110100501",
+                "name": "SUNITHA A V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARANTHAD",
+            "person": {
+                "id": "2015110100601",
+                "name": "JANARDHANAN T"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EZHIMALA",
+            "person": {
+                "id": "2015110100701",
+                "name": "DAMODARAN P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNNARU CENTRAL",
+            "person": {
+                "id": "2015110100801",
+                "name": "ANIL KUMAR K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALAKKODE CENTRAL",
+            "person": {
+                "id": "2015110100901",
+                "name": "SHARAFUNNISA M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALIYA KADAPPURAM",
+            "person": {
+                "id": "2015110101001",
+                "name": "BINDU K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ETTIKULAM BEACH",
+            "person": {
+                "id": "2015110101101",
+                "name": "KUNHIBEEVI N P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ETTIKULAM MOTTAKKUNNU",
+            "person": {
+                "id": "2015110101201",
+                "name": "HASEENA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RAMANTHALI CENTRAL",
+            "person": {
+                "id": "2015110101302",
+                "name": "RAJENDRA KUMAR K P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "RAMANTHALI WEST",
+            "person": {
+                "id": "2015110101401",
+                "name": "VALSALA A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOVVAPPURAM PADINHARU",
+            "person": {
+                "id": "2015110101501",
+                "name": "SAJINI K"
+            }
+        }
+    ]
+}

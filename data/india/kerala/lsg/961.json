@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348752278,
+    "date": "2019-08-21",
+    "name": "Thennala  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Vengara",
+    "area": "14.32km",
+    "localbody_code": "G101004",
+    "no_of_wards": 17,
+    "population": 21846,
+    "male": 10420,
+    "female": 11426,
+    "population_density": 1526,
+    "sex_ratio": 1097,
+    "literacy_rate": 84.57,
+    "literacy_rate_male": 89,
+    "literacy_rate_female": 80.13,
+    "president": "KUNHIMOIDEEN.M.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KODAKKALLU",
+            "person": {
+                "id": "2015096100101",
+                "name": "MAJEED KALAMVALAPPIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUTTIKKATTUPARA",
+            "person": {
+                "id": "2015096100201",
+                "name": "RABIYA VAKKAMPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THACHAMMAD",
+            "person": {
+                "id": "2015096100301",
+                "name": "KUNHIMOIDEEN.M.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "APLA",
+            "person": {
+                "id": "2015096100401",
+                "name": "MUHAMMED ASHRAF PARAMBIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POOKKIPPARAMBA",
+            "person": {
+                "id": "2015096100501",
+                "name": "KRISHNAN MUKKOZHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMBUZHA",
+            "person": {
+                "id": "2015096100601",
+                "name": "SUMAYYA OLIYIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KULANGARA",
+            "person": {
+                "id": "2015096100701",
+                "name": "SALEENA KARUMBIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VALAKKULAM",
+            "person": {
+                "id": "2015096100801",
+                "name": "ABDUL GAFOOR KURUKKAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THOOMBATHPARAMBA",
+            "person": {
+                "id": "2015096100901",
+                "name": "MUHAMMED SUHAIL ATHANIKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNDUKULAM",
+            "person": {
+                "id": "2015096101001",
+                "name": "SAMEERA KURUKKAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOZHICHENA",
+            "person": {
+                "id": "2015096101101",
+                "name": "SULAIKHA PERINGODAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARTHAL",
+            "person": {
+                "id": "2015096101201",
+                "name": "MUHAMMED NOUSHAD. T.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ARAKKAL",
+            "person": {
+                "id": "2015096101301",
+                "name": "SALEENA KURUPPATH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "WEST BAZAR",
+            "person": {
+                "id": "2015096101401",
+                "name": "FATHIMA KOTTUVALA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "APPIYATH",
+            "person": {
+                "id": "2015096101501",
+                "name": "ARIFA VENKADATHIYIL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THENNALA",
+            "person": {
+                "id": "2015096101601",
+                "name": "NASEEMA. C.P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ALUNGAL",
+            "person": {
+                "id": "2015096101701",
+                "name": "SAIDALIKUTTY KALAMVALAPPIL"
+            }
+        }
+    ]
+}

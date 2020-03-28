@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566346615022,
+    "date": "2019-08-21",
+    "name": "Thazhakara  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Mavelikkara",
+    "area": "25.26km",
+    "localbody_code": "G041004",
+    "no_of_wards": 21,
+    "population": 35126,
+    "male": 16780,
+    "female": 18346,
+    "population_density": 1391,
+    "sex_ratio": 1093,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "VALSALASOMAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAZHUVADI",
+            "person": {
+                "id": "2015048500101",
+                "name": "SALLY REJI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THAZHAKKARA B",
+            "person": {
+                "id": "2015048500201",
+                "name": "T.K MATHAI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THAZHAKKARA A",
+            "person": {
+                "id": "2015048500301",
+                "name": "VIDHYADHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNNAM",
+            "person": {
+                "id": "2015048500401",
+                "name": "JIJITH KUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUNNAM H.S",
+            "person": {
+                "id": "2015048500501",
+                "name": "SURIYAKUMARI VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOCHALUMMOODU",
+            "person": {
+                "id": "2015048500601",
+                "name": "MANU PHILIP"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALLIMEL",
+            "person": {
+                "id": "2015048500701",
+                "name": "AMBILY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANKAMKUZHY TOWN",
+            "person": {
+                "id": "2015048500801",
+                "name": "SHEENA KUTTIPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ERATTAPPALLIKUDAM",
+            "person": {
+                "id": "2015048500901",
+                "name": "THULASIBAI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VETTIYAR",
+            "person": {
+                "id": "2015048501001",
+                "name": "PUSHPALETHA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTEMALA",
+            "person": {
+                "id": "2015048501101",
+                "name": "DEEPA VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VETTIYAR H.S",
+            "person": {
+                "id": "2015048501201",
+                "name": "SUNIL RAMANALLOOR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THANNIKUNNU",
+            "person": {
+                "id": "2015048501301",
+                "name": "S.ASHARAF"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARAKKULANGARA",
+            "person": {
+                "id": "2015048501401",
+                "name": "S.ANIRUDHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MURIVAYIKKARA",
+            "person": {
+                "id": "2015048501501",
+                "name": "VALSALA SOMAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARUNNOOTTIMANGALAM",
+            "person": {
+                "id": "2015048501601",
+                "name": "YESHODHARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "P.H.C WARD",
+            "person": {
+                "id": "2015048501701",
+                "name": "K.RAVI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ERAVANKARA",
+            "person": {
+                "id": "2015048501801",
+                "name": "SHEEBA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "SEED FARM",
+            "person": {
+                "id": "2015048501901",
+                "name": "SUNILA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "AAKKANATTUKARA",
+            "person": {
+                "id": "2015048502001",
+                "name": "KRISHNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KALLUMALA",
+            "person": {
+                "id": "2015048502101",
+                "name": "DAVID.K SOLOMAN"
+            }
+        }
+    ]
+}

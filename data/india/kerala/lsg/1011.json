@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348916099,
+    "date": "2019-08-21",
+    "name": "Narippatta  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnummal",
+    "area": "50.63km",
+    "localbody_code": "G110307",
+    "no_of_wards": 17,
+    "population": 24393,
+    "male": 12179,
+    "female": 12214,
+    "population_density": 481,
+    "sex_ratio": 1003,
+    "literacy_rate": 88.63,
+    "literacy_rate_male": 94.73,
+    "literacy_rate_female": 82.57,
+    "president": "NARAYANIA.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAYYEKKANDI",
+            "person": {
+                "id": "2015101100101",
+                "name": "VALSALA T .RAMANILAYAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUMBALACHOLA",
+            "person": {
+                "id": "2015101100201",
+                "name": "PAVITHRAN T.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALOOK",
+            "person": {
+                "id": "2015101100301",
+                "name": "BINEESH ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MULLAMBATH",
+            "person": {
+                "id": "2015101100401",
+                "name": "RASI K.T KOODOMTHARAMAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NADUTHARA",
+            "person": {
+                "id": "2015101100501",
+                "name": "GOPALAN P.P PONNAMPARAMBATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THAVULLAKOLLY",
+            "person": {
+                "id": "2015101100601",
+                "name": "SHEEJA T.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUNDYODE",
+            "person": {
+                "id": "2015101100701",
+                "name": "KUNHIRAMAN C.P VALLILTHARA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAIVELI",
+            "person": {
+                "id": "2015101100801",
+                "name": "CHANDRI K. CHAMBILOREMMAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAMBILORA",
+            "person": {
+                "id": "2015101100901",
+                "name": "NARAYANI A.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAYAKKOL",
+            "person": {
+                "id": "2015101101001",
+                "name": "PRABHAKARAN PUTHANPURAYIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANDOTHKUNI",
+            "person": {
+                "id": "2015101101101",
+                "name": "KUNHAMMAD PALOL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANNIYUR",
+            "person": {
+                "id": "2015101101201",
+                "name": "BEENA V.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THAZHE NARIPPATTA",
+            "person": {
+                "id": "2015101101301",
+                "name": "ARAVINDAKSHAN POOVARAKKAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEVITTUPARA",
+            "person": {
+                "id": "2015101101401",
+                "name": "SOUDA M.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOYYAL",
+            "person": {
+                "id": "2015101101501",
+                "name": "GANGADHARAN T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAKKUZHIPEEDIKA",
+            "person": {
+                "id": "2015101101601",
+                "name": "SOUDHA K.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THINOOR",
+            "person": {
+                "id": "2015101101701",
+                "name": "VIJAYALAKSHMI PADIKKALAKKANDI"
+            }
+        }
+    ]
+}

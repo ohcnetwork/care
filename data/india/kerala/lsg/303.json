@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566345965362,
+    "date": "2019-08-21",
+    "name": "Oachira  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Oachira",
+    "area": "12.86km",
+    "localbody_code": "G020101",
+    "no_of_wards": 17,
+    "population": 24325,
+    "male": 11816,
+    "female": 12509,
+    "population_density": 1892,
+    "sex_ratio": 1059,
+    "literacy_rate": 89.61,
+    "literacy_rate_male": 94.22,
+    "literacy_rate_female": 85.31,
+    "president": "AYYANICKALABDULMAJEED",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAYIKUZHY",
+            "person": {
+                "id": "2015030300101",
+                "name": "RASIYA SADIQUE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "OACHIRA",
+            "person": {
+                "id": "2015030300201",
+                "name": "MANJU PACHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MEMANA NORTH",
+            "person": {
+                "id": "2015030300301",
+                "name": "LATHEEFA BEEVI. E"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MEMANA",
+            "person": {
+                "id": "2015030300401",
+                "name": "AYYANICKAL ABDUL MAJEED"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VAYANAKAM",
+            "person": {
+                "id": "2015030300501",
+                "name": "SINDHU. V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NJAKKANAL",
+            "person": {
+                "id": "2015030300601",
+                "name": "V.N BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADATHILKARAZHMA NORTH",
+            "person": {
+                "id": "2015030300701",
+                "name": "ELAMPADATHU RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADATHILKARAZHMA",
+            "person": {
+                "id": "2015030300801",
+                "name": "MALU SATHEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTAMPALLY",
+            "person": {
+                "id": "2015030300901",
+                "name": "S. MAHILAMANI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MEMANA SOUTH",
+            "person": {
+                "id": "2015030301001",
+                "name": "S. GEETHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHANGANKULANGARA NORTH",
+            "person": {
+                "id": "2015030301101",
+                "name": "RAJESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHANGANKULANGARA",
+            "person": {
+                "id": "2015030301201",
+                "name": "JOLLY. J"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHANGANKULANGARA SOUTH",
+            "person": {
+                "id": "2015030301301",
+                "name": "RADHAMANIAMMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHANGANKULANGARA WEST",
+            "person": {
+                "id": "2015030301401",
+                "name": "SUKUMARI. L"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VALIYAKULANGARA",
+            "person": {
+                "id": "2015030301501",
+                "name": "THULASI CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VALIYAKULANGARA NORTH",
+            "person": {
+                "id": "2015030301601",
+                "name": "R.D PADMAKUMAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAYIKUZHY SOUTH",
+            "person": {
+                "id": "2015030301701",
+                "name": "G. VIKRAMAN"
+            }
+        }
+    ]
+}

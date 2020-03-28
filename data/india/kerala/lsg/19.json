@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344906079,
+    "date": "2019-08-21",
+    "name": "Kottarakara  Block Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "133.1km",
+    "localbody_code": "B020600",
+    "no_of_wards": 13,
+    "population": 154080,
+    "male": 75013,
+    "female": 79067,
+    "population_density": 1158,
+    "sex_ratio": 1054,
+    "literacy_rate": 93.03,
+    "literacy_rate_male": 96.11,
+    "literacy_rate_female": 90.15,
+    "president": "S.SASIKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEVALAPPURAM",
+            "person": {
+                "id": "2015001900101",
+                "name": "S.SASIKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEDUVATHUR",
+            "person": {
+                "id": "2015001900201",
+                "name": "SHEEBA SURESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUTTARA",
+            "person": {
+                "id": "2015001900301",
+                "name": "CHITHRAVALSALA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ODANAVATTOM",
+            "person": {
+                "id": "2015001900401",
+                "name": "L. BALAGOPAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VELIYAM",
+            "person": {
+                "id": "2015001900501",
+                "name": "B.MADHU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MYLODU",
+            "person": {
+                "id": "2015001900601",
+                "name": "Y.RAJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOYAPPALLY",
+            "person": {
+                "id": "2015001900701",
+                "name": "R. VENUGOPALAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOTTARA",
+            "person": {
+                "id": "2015001900801",
+                "name": "SHYLAJA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NEDUMONKAVU",
+            "person": {
+                "id": "2015001900901",
+                "name": "AMBILY.J.R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAREEPRA",
+            "person": {
+                "id": "2015001901001",
+                "name": "K. SUMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THRIPPALAZHIKAM",
+            "person": {
+                "id": "2015001901101",
+                "name": "ALEYKUTTY.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EZHUKONE",
+            "person": {
+                "id": "2015001901201",
+                "name": "RATHEESH KILITHATTIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "IRUMPANANGADU",
+            "person": {
+                "id": "2015001901301",
+                "name": "RENJINI AJAYAN"
+            }
+        }
+    ]
+}

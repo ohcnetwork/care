@@ -1,0 +1,156 @@
+{
+    "timeStamp": 1566345405944,
+    "date": "2019-08-21",
+    "name": "Kasaragod  District Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "area": "1992km",
+    "localbody_code": "D140000",
+    "no_of_wards": 17,
+    "population": 1203342,
+    "male": 587763,
+    "female": 615579,
+    "population_density": 538,
+    "sex_ratio": 1026,
+    "literacy_rate": 82.51,
+    "literacy_rate_male": 88.97,
+    "literacy_rate_female": 76.29,
+    "president": "AGCBASHEER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VORKADY",
+            "person": {
+                "id": "2015016600101",
+                "name": "ALI HARSHAD VORKADY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUTHIGE",
+            "person": {
+                "id": "2015016600201",
+                "name": "PUSHPA AMEKKALA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDANEER",
+            "person": {
+                "id": "2015016600301",
+                "name": "K.SHREEKANTH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "DELAMPADY",
+            "person": {
+                "id": "2015016600401",
+                "name": "ADV. USHA A.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BEDAKAM",
+            "person": {
+                "id": "2015016600501",
+                "name": "M .NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015016600601",
+                "name": "E. PADMAVATHY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHITTARIKKAL",
+            "person": {
+                "id": "2015016600701",
+                "name": "SANTHAMMA PHILIP"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARINTHALAM",
+            "person": {
+                "id": "2015016600801",
+                "name": "JOSE PATHALIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PILICODE",
+            "person": {
+                "id": "2015016600901",
+                "name": "PADMAJA.P.V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUVATHUR",
+            "person": {
+                "id": "2015016601001",
+                "name": "P.C SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MADIKKAI",
+            "person": {
+                "id": "2015016601101",
+                "name": "M..KELU PANIKKAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERIYA",
+            "person": {
+                "id": "2015016601201",
+                "name": "DR. V.P.P MUSTAFA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "UDUMA",
+            "person": {
+                "id": "2015016601302",
+                "name": "SHANAVAS PADHOOR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHENGALA",
+            "person": {
+                "id": "2015016601401",
+                "name": "SUFAIJA TEACHER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CIVIL STATION",
+            "person": {
+                "id": "2015016601501",
+                "name": "MUMTHAZ SAMEERA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUMBALA",
+            "person": {
+                "id": "2015016601601",
+                "name": "A G C BASHEER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MANJESWARAM",
+            "person": {
+                "id": "2015016601701",
+                "name": "FAREEDA ZAKEER AHAMED"
+            }
+        }
+    ]
+}

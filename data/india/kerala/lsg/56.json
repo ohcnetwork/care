@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345026769,
+    "date": "2019-08-21",
+    "name": "Vazhoor  Block Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vazhoor",
+    "area": "142.24km",
+    "localbody_code": "B051000",
+    "no_of_wards": 13,
+    "population": 108876,
+    "male": 54079,
+    "female": 54797,
+    "population_density": 765,
+    "sex_ratio": 1013,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "KPBALAGOPALANNAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARUKACHAL",
+            "person": {
+                "id": "2015005600101",
+                "name": "K P BALAGOPALAN NAIR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NEDUMKUNNAM",
+            "person": {
+                "id": "2015005600201",
+                "name": "RAJESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULICKALKAVALA",
+            "person": {
+                "id": "2015005600301",
+                "name": "GEETHA S PILLAI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KODUNGOOR",
+            "person": {
+                "id": "2015005600401",
+                "name": "K S VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PONKUNNAM",
+            "person": {
+                "id": "2015005600501",
+                "name": "A R SAGAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHIRAKKADAVU",
+            "person": {
+                "id": "2015005600601",
+                "name": "AMMINIAMMA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERUVALLY",
+            "person": {
+                "id": "2015005600701",
+                "name": "JAYA A M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANIMALA",
+            "person": {
+                "id": "2015005600801",
+                "name": "JOSEKUTTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELLAVOOR",
+            "person": {
+                "id": "2015005600901",
+                "name": "SUMA DEVI G"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANAM",
+            "person": {
+                "id": "2015005601001",
+                "name": "SURESH K GOPAL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PATHANAD",
+            "person": {
+                "id": "2015005601101",
+                "name": "SUSHAMA SIVADAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHELAKOMPU",
+            "person": {
+                "id": "2015005601201",
+                "name": "ROSAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOOTHRAPPALLY",
+            "person": {
+                "id": "2015005601301",
+                "name": "KUSUMAM GEORGE"
+            }
+        }
+    ]
+}

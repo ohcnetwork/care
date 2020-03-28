@@ -1,0 +1,164 @@
+{
+    "timeStamp": 1566347184367,
+    "date": "2019-08-21",
+    "name": "Choornikkara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vazhakkulam",
+    "area": "11.01km",
+    "localbody_code": "G070504",
+    "no_of_wards": 18,
+    "population": 26457,
+    "male": 13335,
+    "female": 13122,
+    "population_density": 2403,
+    "sex_ratio": 984,
+    "literacy_rate": 90.9,
+    "literacy_rate_male": 94.75,
+    "literacy_rate_female": 87,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "BANGLAMPARMABU",
+            "person": {
+                "id": "2015065200101",
+                "name": "SATI GOPI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PATTERIPURAM",
+            "person": {
+                "id": "2015065200201",
+                "name": "LISSY SAJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALLIKUNNU",
+            "person": {
+                "id": "2015065200301",
+                "name": "BABU PUTHENANGADI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SREENARAYANAPURAM",
+            "person": {
+                "id": "2015065200401",
+                "name": "SINDU RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAIKATTUKARA",
+            "person": {
+                "id": "2015065200501",
+                "name": "ADV. SHIRAS ALIYAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUNNUMPURAM",
+            "person": {
+                "id": "2015065200601",
+                "name": "BEENA ALI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTEPADAM",
+            "person": {
+                "id": "2015065200701",
+                "name": "RAJI SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ASHOKAPURAM",
+            "person": {
+                "id": "2015065200801",
+                "name": "LINESH VARGHESE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KODIKUTHUMALA",
+            "person": {
+                "id": "2015065200901",
+                "name": "RAMLA AMEER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNATHERY",
+            "person": {
+                "id": "2015065201001",
+                "name": "JASMIN SHEREEF"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAMBYARAM",
+            "person": {
+                "id": "2015065201101",
+                "name": "SHYNI SHIVANANDAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "DARUSSALAM",
+            "person": {
+                "id": "2015065201201",
+                "name": "FEMEENA HARIS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMBATTUKAVU",
+            "person": {
+                "id": "2015065201301",
+                "name": "A.P.UDAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUTTOM",
+            "person": {
+                "id": "2015065201401",
+                "name": "SATHEESH KUMAR P.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHOORNIKKARA",
+            "person": {
+                "id": "2015065201501",
+                "name": "SAFIYA ALIYAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "COMPANYPADI",
+            "person": {
+                "id": "2015065201601",
+                "name": "K.A.HARIS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "POYYAKARA",
+            "person": {
+                "id": "2015065201701",
+                "name": "P.K.YOUSAF"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "GYAREJ",
+            "person": {
+                "id": "2015065201801",
+                "name": "JOSEPH VADAKKAL(MANOJ PATTAD)"
+            }
+        }
+    ]
+}

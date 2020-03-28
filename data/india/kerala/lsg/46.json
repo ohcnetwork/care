@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566344996968,
+    "date": "2019-08-21",
+    "name": "Muthukulam  Block Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Muthukulam",
+    "area": "90.67km",
+    "localbody_code": "B041200",
+    "no_of_wards": 14,
+    "population": 162128,
+    "male": 77795,
+    "female": 84333,
+    "population_density": 1788,
+    "sex_ratio": 1084,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 91,
+    "president": "ADV.BIPINCBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANGALAM",
+            "person": {
+                "id": "2015004600101",
+                "name": "SHAMSUDEEN KAYIPPURAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHINGOLI",
+            "person": {
+                "id": "2015004600201",
+                "name": "RANJITH CHINGOLI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEPPAD",
+            "person": {
+                "id": "2015004600301",
+                "name": "MANILEKHA.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EVOOR",
+            "person": {
+                "id": "2015004600401",
+                "name": "INDU SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATHIYOOR EAST",
+            "person": {
+                "id": "2015004600501",
+                "name": "ANANDAN R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULLIKKANAKKU",
+            "person": {
+                "id": "2015004600601",
+                "name": "SOMALETHA. N"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KRISHNAPURAM",
+            "person": {
+                "id": "2015004600701",
+                "name": "AJAYAN AMMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "DEVIKULANGARA",
+            "person": {
+                "id": "2015004600801",
+                "name": "SREEKUMARI  T"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANDALLOOR SOUTH",
+            "person": {
+                "id": "2015004600901",
+                "name": "SHAIMOL NANDAKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PATHIYOOR WEST",
+            "person": {
+                "id": "2015004601001",
+                "name": "ADV.BIPIN C BABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHOOLATHERUVE",
+            "person": {
+                "id": "2015004601101",
+                "name": "SUJITH S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUTHUKULAM",
+            "person": {
+                "id": "2015004601201",
+                "name": "B.VENUPRASAD"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANDALLOOR",
+            "person": {
+                "id": "2015004601301",
+                "name": "AMBUJAKSHY TEACHER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ARATTUPUZHA SOUTH",
+            "person": {
+                "id": "2015004601401",
+                "name": "SARI PODIYAN"
+            }
+        }
+    ]
+}

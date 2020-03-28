@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566348053916,
+    "date": "2019-08-21",
+    "name": "Varandarappilly  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Kodakara",
+    "area": "102.82km",
+    "localbody_code": "G081107",
+    "no_of_wards": 22,
+    "population": 37771,
+    "male": 18371,
+    "female": 19400,
+    "population_density": 367,
+    "sex_ratio": 1056,
+    "literacy_rate": 87.04,
+    "literacy_rate_male": 91.1,
+    "literacy_rate_female": 83.22,
+    "president": "UMMER.E.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADANTHOL",
+            "person": {
+                "id": "2015077400102",
+                "name": "GIGI JUSTIN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KORANODY",
+            "person": {
+                "id": "2015077400201",
+                "name": "OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKUMURY",
+            "person": {
+                "id": "2015077400301",
+                "name": "SWAPNA JOSE PONNARY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VELUPADAM MADAM",
+            "person": {
+                "id": "2015077400401",
+                "name": "SUDHINI RAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIKKANNY",
+            "person": {
+                "id": "2015077400501",
+                "name": "UMMER.E.M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALAPPILLY",
+            "person": {
+                "id": "2015077400601",
+                "name": "SHABEERA HUSSAIN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ECHIPPARA",
+            "person": {
+                "id": "2015077400701",
+                "name": "SAJEENA MUJEEB"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNDAYI",
+            "person": {
+                "id": "2015077400801",
+                "name": "SADASIVAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANNATTUPADAM",
+            "person": {
+                "id": "2015077400901",
+                "name": "MOHAMMEDALI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "INCHAKUNDU",
+            "person": {
+                "id": "2015077401001",
+                "name": "OUSEPH CHARADAYI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUPLIYAM",
+            "person": {
+                "id": "2015077401101",
+                "name": "BENNY CHAKKAPPAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POUND KARIKULAM KADAVU",
+            "person": {
+                "id": "2015077401201",
+                "name": "PUSHPA KRISHNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELUPADAM",
+            "person": {
+                "id": "2015077401301",
+                "name": "BIJU KUNNEL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PIDIKKAPARAMBU",
+            "person": {
+                "id": "2015077401401",
+                "name": "KRISHNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNJAKKARA",
+            "person": {
+                "id": "2015077401501",
+                "name": "SHEENA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANJOOR",
+            "person": {
+                "id": "2015077401601",
+                "name": "V.B.ARUN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARAYAMPADAM",
+            "person": {
+                "id": "2015077401701",
+                "name": "PARAMESWARAN VETTIYADAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NANDIPULAM",
+            "person": {
+                "id": "2015077401801",
+                "name": "JAYASREE KOCHUGOVINDAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ATTAPPILLY",
+            "person": {
+                "id": "2015077401901",
+                "name": "RAJANI SIVARAMAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MATTUMALA",
+            "person": {
+                "id": "2015077402001",
+                "name": "SAROJINI VASU"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VARANDARAPPILLY",
+            "person": {
+                "id": "2015077402101",
+                "name": "BINDU PRIYAN"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MATTILDESAM",
+            "person": {
+                "id": "2015077402201",
+                "name": "RAJANI THILAKAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346426883,
+    "date": "2019-08-21",
+    "name": "Vayalar  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "14.44km",
+    "localbody_code": "G040201",
+    "no_of_wards": 16,
+    "population": 22384,
+    "male": 10933,
+    "female": 11451,
+    "population_density": 1550,
+    "sex_ratio": 1047,
+    "literacy_rate": 94,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 91,
+    "president": "BAHULEYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAVIL",
+            "person": {
+                "id": "2015043200101",
+                "name": "SUJATHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ETTUPURAKKAL",
+            "person": {
+                "id": "2015043200201",
+                "name": "KAVITHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "RAMAVARMMA HIGH SCHOOL",
+            "person": {
+                "id": "2015043200301",
+                "name": "S.V.BABU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NAGAMKULANGARA",
+            "person": {
+                "id": "2015043200401",
+                "name": "TESSYAMMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "P.H.C.",
+            "person": {
+                "id": "2015043200501",
+                "name": "INDIRA.K."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KERALADITHYAPURAM",
+            "person": {
+                "id": "2015043200601",
+                "name": "MOOSAKUTTY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "RAMAVARMMA SMARAKAM",
+            "person": {
+                "id": "2015043200701",
+                "name": "U.G.UNNI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANDAPAM",
+            "person": {
+                "id": "2015043200801",
+                "name": "REMANI PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SAKTHEESWARAM",
+            "person": {
+                "id": "2015043200901",
+                "name": "SEENA PREM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALAVAMKODAM",
+            "person": {
+                "id": "2015043201001",
+                "name": "ANI KUREEKKATTU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARAPPURAM",
+            "person": {
+                "id": "2015043201101",
+                "name": "SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOLLAPPALLI",
+            "person": {
+                "id": "2015043201201",
+                "name": "SARASWATHY GOPI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEELIMANGALAM",
+            "person": {
+                "id": "2015043201301",
+                "name": "SOBHANA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "A.K.G.GRANDHASALA",
+            "person": {
+                "id": "2015043201401",
+                "name": "GEETHA VISWAMBARAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHATHANCHIRA",
+            "person": {
+                "id": "2015043201501",
+                "name": "BAHULEYAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "OLATHALA",
+            "person": {
+                "id": "2015043201601",
+                "name": "PURUSHOTHAMAN.K.P.(OMANAKKUTTAN)"
+            }
+        }
+    ]
+}

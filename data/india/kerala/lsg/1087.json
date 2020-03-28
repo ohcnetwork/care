@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349169910,
+    "date": "2019-08-21",
+    "name": "Vengappally  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Kalpetta",
+    "area": "21.16km",
+    "localbody_code": "G120402",
+    "no_of_wards": 13,
+    "population": 9114,
+    "male": 4550,
+    "female": 4564,
+    "population_density": 431,
+    "sex_ratio": 1003,
+    "literacy_rate": 81.34,
+    "literacy_rate_male": 86.01,
+    "literacy_rate_female": 76.68,
+    "president": "PMNASAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ORUVUMMAL",
+            "person": {
+                "id": "2015108700101",
+                "name": "JINI ARAKKAPPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THEKKUMTHARA",
+            "person": {
+                "id": "2015108700201",
+                "name": "UNNIKRISHNAN ALIAS BABU VADAKKEDATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOKKUZHI",
+            "person": {
+                "id": "2015108700301",
+                "name": "RAJAN K V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHUKKUDI",
+            "person": {
+                "id": "2015108700401",
+                "name": "O B VASANTHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURIKKAPPU",
+            "person": {
+                "id": "2015108700501",
+                "name": "P V BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VAVADY",
+            "person": {
+                "id": "2015108700601",
+                "name": "NIJIKUMARI M K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VENGAPPALLY",
+            "person": {
+                "id": "2015108700701",
+                "name": "JESSY JOHNY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHUSSERIKKUNNU",
+            "person": {
+                "id": "2015108700801",
+                "name": "JOISY ALIAS JAYA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KODANCHERIKKUNNU",
+            "person": {
+                "id": "2015108700901",
+                "name": "P USMAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PINANGODE",
+            "person": {
+                "id": "2015108701001",
+                "name": "PANANTHARA MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MH NAGAR",
+            "person": {
+                "id": "2015108701101",
+                "name": "SAMEERA RAFEEK"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "HIGHSCHOOLKUNNU",
+            "person": {
+                "id": "2015108701201",
+                "name": "SUJATHA A R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHOLAPPURAM",
+            "person": {
+                "id": "2015108701301",
+                "name": "P M NASAR"
+            }
+        }
+    ]
+}

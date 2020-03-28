@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346502504,
+    "date": "2019-08-21",
+    "name": "Nedumudi  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Champakkulam",
+    "area": "25.98km",
+    "localbody_code": "G040604",
+    "no_of_wards": 15,
+    "population": 21771,
+    "male": 10706,
+    "female": 11065,
+    "population_density": 838,
+    "sex_ratio": 1034,
+    "literacy_rate": 97,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 96,
+    "president": "CHACKOM.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PONGA SOUTH",
+            "person": {
+                "id": "2015045500101",
+                "name": "SREEDEVI C"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PONGA",
+            "person": {
+                "id": "2015045500201",
+                "name": "YASHODA SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHENNAMKARY",
+            "person": {
+                "id": "2015045500301",
+                "name": "SUDHA JACOB"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NEDUMUDY",
+            "person": {
+                "id": "2015045500401",
+                "name": "JAMEELA MAHANDAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NEDUMUDY SOUTH",
+            "person": {
+                "id": "2015045500501",
+                "name": "A.K RADHAKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKEMURY NORTH",
+            "person": {
+                "id": "2015045500601",
+                "name": "M.HEMALATHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THEKKEMURY",
+            "person": {
+                "id": "2015045500701",
+                "name": "MARIAMMA JOLLY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHAMPAKKULAM NORTH",
+            "person": {
+                "id": "2015045500801",
+                "name": "V SASI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHAMPAKKULAM",
+            "person": {
+                "id": "2015045500901",
+                "name": "CHACKO M.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANAPRA",
+            "person": {
+                "id": "2015045501001",
+                "name": "JAMES THIRUNILAM"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NADUBHAGOM",
+            "person": {
+                "id": "2015045501101",
+                "name": "BINU SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VYSYAMBHABOM SOUTH",
+            "person": {
+                "id": "2015045501201",
+                "name": "K.P ANIYAPPAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VYSYAMBHAGOM NORTH",
+            "person": {
+                "id": "2015045501301",
+                "name": "MURALEEDHARAN A.V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEMPUMPURAM",
+            "person": {
+                "id": "2015045501401",
+                "name": "PUSHPA PANICKER S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAZHAYAKARY",
+            "person": {
+                "id": "2015045501501",
+                "name": "RUBY ANTONY"
+            }
+        }
+    ]
+}

@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566346445634,
+    "date": "2019-08-21",
+    "name": "Aroor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "15.14km",
+    "localbody_code": "G040207",
+    "no_of_wards": 22,
+    "population": 32662,
+    "male": 16161,
+    "female": 16501,
+    "population_density": 2154,
+    "sex_ratio": 1021,
+    "literacy_rate": 91,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 87,
+    "president": "B.RETHAMMA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHANANGADI",
+            "person": {
+                "id": "2015043800101",
+                "name": "MOLLY JUSTINE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MULTIPURPOSE SOCIETY WARD",
+            "person": {
+                "id": "2015043800201",
+                "name": "ALEXANDER (A. A ALEX)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "GOVT FISHERIES SCHOOL WARD",
+            "person": {
+                "id": "2015043800301",
+                "name": "RETNAMMA VELAPPAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015043800401",
+                "name": "N. M SAJITHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KELTESS WARD",
+            "person": {
+                "id": "2015043800501",
+                "name": "B. RETHAMMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHETTUTHARA WARD",
+            "person": {
+                "id": "2015043800601",
+                "name": "SEENA ARAVINDAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AROOR GOVT HIGH SCHOOL WARD",
+            "person": {
+                "id": "2015043800701",
+                "name": "T.B UNNI KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VATTAKKERI",
+            "person": {
+                "id": "2015043800801",
+                "name": "V K MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMBANJI",
+            "person": {
+                "id": "2015043800901",
+                "name": "E.E ISHAD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARABIC COLLEGE",
+            "person": {
+                "id": "2015043801001",
+                "name": "C K PUSHPAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULAKKAL PARAMBU",
+            "person": {
+                "id": "2015043801101",
+                "name": "JASMIN RISVAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ST FRANCIS SCHOOL",
+            "person": {
+                "id": "2015043801201",
+                "name": "GOPALAKAN (T K GOPALAN)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "DHAIVAVELI KSHETHRAM",
+            "person": {
+                "id": "2015043801301",
+                "name": "MARY (TREESA)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANJILIKKAD",
+            "person": {
+                "id": "2015043801401",
+                "name": "E.V AMBUJAKSHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AYURVEDA HOSPITAL",
+            "person": {
+                "id": "2015043801501",
+                "name": "CHANDRIKA SURESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "GURUMANDIRAM",
+            "person": {
+                "id": "2015043801601",
+                "name": "SREEJI SHAJI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VIJAYAMBIKA",
+            "person": {
+                "id": "2015043801701",
+                "name": "USHA AUGUSTINE"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "GOVT HOSPITAL WARD",
+            "person": {
+                "id": "2015043801801",
+                "name": "SHYAM K. S"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "HIGH SCHOOL WARD",
+            "person": {
+                "id": "2015043801901",
+                "name": "K. A JOLY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CONVENT WARD",
+            "person": {
+                "id": "2015043802001",
+                "name": "PADMAKUMAR (VINAPPAN)"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "AMMANEZHAM",
+            "person": {
+                "id": "2015043802101",
+                "name": "K R NANDAKUMAR"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PROJECT COLONY",
+            "person": {
+                "id": "2015043802201",
+                "name": "MARY MANJU"
+            }
+        }
+    ]
+}

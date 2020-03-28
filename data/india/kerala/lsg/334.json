@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346072027,
+    "date": "2019-08-21",
+    "name": "Karavaloor  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Anchal",
+    "area": "23.64km",
+    "localbody_code": "G020506",
+    "no_of_wards": 16,
+    "population": 21727,
+    "male": 10500,
+    "female": 11227,
+    "population_density": 919,
+    "sex_ratio": 1069,
+    "literacy_rate": 90.13,
+    "literacy_rate_male": 93.21,
+    "literacy_rate_female": 87.28,
+    "president": "V.RAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAZHAVILA",
+            "person": {
+                "id": "2015033400101",
+                "name": "K.JAYALEKSHMI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NARICKAL",
+            "person": {
+                "id": "2015033400201",
+                "name": "ANI.J.BABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MATHRA",
+            "person": {
+                "id": "2015033400301",
+                "name": "ASHA.L"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ADUKKALAMOOLA",
+            "person": {
+                "id": "2015033400401",
+                "name": "SARATH CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VATTAMAN",
+            "person": {
+                "id": "2015033400501",
+                "name": "ASRAMATHU GOPALA KRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NIRAPPATHU",
+            "person": {
+                "id": "2015033400601",
+                "name": "C.RAVEENDRAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POYKAMUKKU",
+            "person": {
+                "id": "2015033400701",
+                "name": "MURUKESHAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEELAMMAL",
+            "person": {
+                "id": "2015033400801",
+                "name": "RAJESWARI.C"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KURIYILUM MUKAL",
+            "person": {
+                "id": "2015033400901",
+                "name": "V.RAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARAVALOOR TOWN",
+            "person": {
+                "id": "2015033401001",
+                "name": "BINDHU.S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNDUMAN",
+            "person": {
+                "id": "2015033401101",
+                "name": "RAJAN PILLAI.V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NEDUMALA",
+            "person": {
+                "id": "2015033401201",
+                "name": "A.GOPI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AYANIKODU",
+            "person": {
+                "id": "2015033401301",
+                "name": "C.SREELATHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENCHEMPU",
+            "person": {
+                "id": "2015033401401",
+                "name": "VIDHYA.S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHETTUKUZHI",
+            "person": {
+                "id": "2015033401501",
+                "name": "NAZEERA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THEVIYODU",
+            "person": {
+                "id": "2015033401601",
+                "name": "JAYASREE.K"
+            }
+        }
+    ]
+}

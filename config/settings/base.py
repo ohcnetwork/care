@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_extra_fields",
     "location_field.apps.DefaultConfig",
     "django_filters",
+    "axes",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -300,3 +301,5 @@ LOCATION_FIELD = {
     "map.provider": "openstreetmap",
     "provider.openstreetmap.max_zoom": 18,
 }
+
+AXES_FAILURE_LIMIT = 5

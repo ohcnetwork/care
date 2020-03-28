@@ -1,0 +1,180 @@
+{
+    "timeStamp": 1566345863682,
+    "date": "2019-08-21",
+    "name": "Mangalapuram  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Kzhakuttam",
+    "area": "21.66km",
+    "localbody_code": "G010703",
+    "no_of_wards": 20,
+    "population": 32919,
+    "male": 15842,
+    "female": 17077,
+    "population_density": 1520,
+    "sex_ratio": 1078,
+    "literacy_rate": 87.28,
+    "literacy_rate_male": 92.58,
+    "literacy_rate_female": 82.44,
+    "president": "C.MADHUSOODANANPILLAI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAILATHUKONAM",
+            "person": {
+                "id": "2015027100101",
+                "name": "GOPINATHAN. K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMPAKAMANGALAM",
+            "person": {
+                "id": "2015027100201",
+                "name": "AJIKUMAR. V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POIKAYIL",
+            "person": {
+                "id": "2015027100301",
+                "name": "JAYAMON. C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUNNAIKKUNNAM",
+            "person": {
+                "id": "2015027100401",
+                "name": "C. MADHUSOODANAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUDAVOOR",
+            "person": {
+                "id": "2015027100501",
+                "name": "UDAYAKUMARI. M. S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MURINGAMON",
+            "person": {
+                "id": "2015027100601",
+                "name": "P VENUGOPALAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATTAM",
+            "person": {
+                "id": "2015027100701",
+                "name": "S. JAYA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THONNAKKAL",
+            "person": {
+                "id": "2015027100801",
+                "name": "SUDHEESHKUMAR. S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANGALAPURAM",
+            "person": {
+                "id": "2015027100901",
+                "name": "MUMTHAS. L"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARAMOODU",
+            "person": {
+                "id": "2015027101001",
+                "name": "SHAFI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EDAVILAKAM",
+            "person": {
+                "id": "2015027101101",
+                "name": "SUMA. V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VARIKAMUKKU",
+            "person": {
+                "id": "2015027101201",
+                "name": "SINDHU. S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MURUKKUMPUZHA",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOZHIMZDA",
+            "person": {
+                "id": "2015027101401",
+                "name": "JULIET PAUL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUNDAKKAL",
+            "person": {
+                "id": "2015027101501",
+                "name": "KAVITHA. S. R"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VALIKONAM",
+            "person": {
+                "id": "2015027101601",
+                "name": "THANKACHI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MULLASSERI",
+            "person": {
+                "id": "2015027101701",
+                "name": "K. S. AJITH KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOTTARAKKARI",
+            "person": {
+                "id": "2015027101801",
+                "name": "AMRITHA. A"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VEILOOR",
+            "person": {
+                "id": "2015027101901",
+                "name": "DEEPA SURESH"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "SASTHAVATTAM",
+            "person": {
+                "id": "2015027102001",
+                "name": "LALITHAMBIKA. B"
+            }
+        }
+    ]
+}

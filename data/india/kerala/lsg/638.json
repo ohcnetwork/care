@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347136384,
+    "date": "2019-08-21",
+    "name": "Ayyampuzha  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Angamally",
+    "area": "43.88km",
+    "localbody_code": "G070305",
+    "no_of_wards": 13,
+    "population": 15620,
+    "male": 8002,
+    "female": 7618,
+    "population_density": 356,
+    "sex_ratio": 952,
+    "literacy_rate": 89.12,
+    "literacy_rate_male": 92.8,
+    "literacy_rate_female": 85.33,
+    "president": "NEETHUANU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VETTILAPPARA",
+            "person": {
+                "id": "2015063800101",
+                "name": "ASHOKAN E.S."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ATHIRAPPILLY",
+            "person": {
+                "id": "2015063800201",
+                "name": "ANJU SUDHEER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLALA",
+            "person": {
+                "id": "2015063800301",
+                "name": "NEETHU ANU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNDIRI",
+            "person": {
+                "id": "2015063800401",
+                "name": "NIJA THALIYAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANNIMANGALAM",
+            "person": {
+                "id": "2015063800501",
+                "name": "SURENDRAN K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "UPPUKALLU",
+            "person": {
+                "id": "2015063800601",
+                "name": "JOY K.A."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHATHAKULAM",
+            "person": {
+                "id": "2015063800701",
+                "name": "JOMON P.U."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMALAPURAM",
+            "person": {
+                "id": "2015063800801",
+                "name": "SHAJU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOLLAKODE",
+            "person": {
+                "id": "2015063800901",
+                "name": "SHELBY BENNY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUTTIPPARA",
+            "person": {
+                "id": "2015063801001",
+                "name": "SILVY ANTONY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHULLY",
+            "person": {
+                "id": "2015063801101",
+                "name": "SHEEBA THOMAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "OLIVELY",
+            "person": {
+                "id": "2015063801201",
+                "name": "JANCY POULOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AYYAMPUZHA",
+            "person": {
+                "id": "2015063801301",
+                "name": "TIJO JOSEPH"
+            }
+        }
+    ]
+}

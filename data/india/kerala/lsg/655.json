@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347196150,
+    "date": "2019-08-21",
+    "name": "Kadamakudy  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Edappally",
+    "area": "12.92km",
+    "localbody_code": "G070601",
+    "no_of_wards": 13,
+    "population": 14668,
+    "male": 7349,
+    "female": 7319,
+    "population_density": 1135,
+    "sex_ratio": 996,
+    "literacy_rate": 95.75,
+    "literacy_rate_male": 98.1,
+    "literacy_rate_female": 93.69,
+    "president": "SALINIBABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALIYA KADAMAKUDY",
+            "person": {
+                "id": "2015065500101",
+                "name": "DESSY JIJO VALIYAPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHARIYAMTHURUTH",
+            "person": {
+                "id": "2015065500201",
+                "name": "LEELA ROSE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHENNUR",
+            "person": {
+                "id": "2015065500301",
+                "name": "SHEEJA JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARIKKATTUTHURUTH",
+            "person": {
+                "id": "2015065500401",
+                "name": "SINDHU SHALJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANDANAD",
+            "person": {
+                "id": "2015065500501",
+                "name": "SALINI BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KORAMPADAM",
+            "person": {
+                "id": "2015065500601",
+                "name": "M.A.SUNNOPAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTHAD",
+            "person": {
+                "id": "2015065500701",
+                "name": "M.F.PRASAD"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MOOLAMPILLY EAST",
+            "person": {
+                "id": "2015065500801",
+                "name": "TRESA MANUEL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOOLAMPILLY WEST",
+            "person": {
+                "id": "2015065500901",
+                "name": "MATHEW ATTULLY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PIZHALA SOUTH",
+            "person": {
+                "id": "2015065501001",
+                "name": "CERINE XAVIER .P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PIZHALA NORTH",
+            "person": {
+                "id": "2015065501101",
+                "name": "BENNY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALIYAMTHURUTH",
+            "person": {
+                "id": "2015065501201",
+                "name": "V.K.PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADAMAKUDY MURIKKAL",
+            "person": {
+                "id": "2015065501301",
+                "name": "INDIRA RAVI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344951615,
+    "date": "2019-08-21",
+    "name": "Elanthoor  Block Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Elanthur",
+    "area": "106.22km",
+    "localbody_code": "B030400",
+    "no_of_wards": 13,
+    "population": 105476,
+    "male": 50509,
+    "female": 54967,
+    "population_density": 993,
+    "sex_ratio": 1088,
+    "literacy_rate": 95.64,
+    "literacy_rate_male": 97.05,
+    "literacy_rate_female": 94.38,
+    "president": "SATHYANM.B.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOZHENCHERRY",
+            "person": {
+                "id": "2015002900101",
+                "name": "JERRY MATHEW SAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERUKOLE",
+            "person": {
+                "id": "2015002900201",
+                "name": "BIJILI P. EASOW"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEEKOZHOOR",
+            "person": {
+                "id": "2015002900301",
+                "name": "JESSY THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADAMMANITTA",
+            "person": {
+                "id": "2015002900401",
+                "name": "DEEPA A.N."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NARANGANAM",
+            "person": {
+                "id": "2015002900501",
+                "name": "JOHN V.THOAMS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015002900601",
+                "name": "SATHYAN M.B."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PRAKKANAM",
+            "person": {
+                "id": "2015002900701",
+                "name": "PAPPACHAN K.S."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHENPEEDIKA",
+            "person": {
+                "id": "2015002900801",
+                "name": "SIVARAMAN N."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OMALLOOR",
+            "person": {
+                "id": "2015002900901",
+                "name": "INDIRADEVI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHENNEERKARA",
+            "person": {
+                "id": "2015002901001",
+                "name": "ALICE RAVI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ELANTHOOR",
+            "person": {
+                "id": "2015002901101",
+                "name": "REMADEVI P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUZHIKKALA",
+            "person": {
+                "id": "2015002901201",
+                "name": "SALY THOMAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MALLAPUZHASSERY",
+            "person": {
+                "id": "2015002901301",
+                "name": "VALSAMMA MATHEW"
+            }
+        }
+    ]
+}

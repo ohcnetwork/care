@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566348624339,
+    "date": "2019-08-21",
+    "name": "Urangattiri  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Areekkode",
+    "area": "76.09km",
+    "localbody_code": "G100501",
+    "no_of_wards": 21,
+    "population": 28878,
+    "male": 14340,
+    "female": 14538,
+    "population_density": 380,
+    "sex_ratio": 1014,
+    "literacy_rate": 87.91,
+    "literacy_rate_male": 91.54,
+    "literacy_rate_female": 84.27,
+    "president": "NKSHOUKATHALI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHUNDATHUMPOYIL",
+            "person": {
+                "id": "2015092200101",
+                "name": "P M JHONY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ODAKKAYAM",
+            "person": {
+                "id": "2015092200201",
+                "name": "SUNITHA MANOJ"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VETTILAPPARA",
+            "person": {
+                "id": "2015092200301",
+                "name": "BERNAD MARIYA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THACHAMPARAMBA",
+            "person": {
+                "id": "2015092200401",
+                "name": "PRASANNA KUNNATH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VEZHAKKODE",
+            "person": {
+                "id": "2015092200501",
+                "name": "K GEETHA KAMBALATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POOVATHIKKAL",
+            "person": {
+                "id": "2015092200601",
+                "name": "SHAHEENA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THENCHEERI",
+            "person": {
+                "id": "2015092200701",
+                "name": "UBAIDULLA KARALIKKADAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAVANNA",
+            "person": {
+                "id": "2015092200801",
+                "name": "RASEENA MANNAYIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUTHUPARAMBA",
+            "person": {
+                "id": "2015092200901",
+                "name": "MASHOOD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THACHANNA",
+            "person": {
+                "id": "2015092201001",
+                "name": "KUNCHAN ATHRANGADAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNDUVAZHI",
+            "person": {
+                "id": "2015092201101",
+                "name": "ANOOB KORALIYADAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAITHRA",
+            "person": {
+                "id": "2015092201201",
+                "name": "CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MOORKANAD",
+            "person": {
+                "id": "2015092201301",
+                "name": "HAFSATH MUNDODAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLARATTIKKAL",
+            "person": {
+                "id": "2015092201401",
+                "name": "MIRSHAD MADATHUMPATT"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THERATTAMMAL",
+            "person": {
+                "id": "2015092201501",
+                "name": "N K SHOUKATHALI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EAST VADAKKUMMURI",
+            "person": {
+                "id": "2015092201601",
+                "name": "EDAKKAMCHERI SOUJATH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VADAKKUMMURI",
+            "person": {
+                "id": "2015092201701",
+                "name": "RUBEENA KIZHAKKETHODI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KALAPPARA",
+            "person": {
+                "id": "2015092201802",
+                "name": "SHAHARBAN V"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KINARADAPPAN",
+            "person": {
+                "id": "2015092201901",
+                "name": "ABDUSALEEM V T"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "EDAKKATTUPARAMBA",
+            "person": {
+                "id": "2015092202001",
+                "name": "SHIJI PUNNAKKAL"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PANAMPILAVU",
+            "person": {
+                "id": "2015092202101",
+                "name": "BEENA VINCENT"
+            }
+        }
+    ]
+}

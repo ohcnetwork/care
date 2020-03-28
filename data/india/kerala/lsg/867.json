@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348370689,
+    "date": "2019-08-21",
+    "name": "Koduvayur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Kollamgode",
+    "area": "20.61km",
+    "localbody_code": "G091002",
+    "no_of_wards": 18,
+    "population": 25927,
+    "male": 12658,
+    "female": 13269,
+    "population_density": 1258,
+    "sex_ratio": 1048,
+    "literacy_rate": 80.13,
+    "literacy_rate_male": 86.07,
+    "literacy_rate_female": 74.5,
+    "president": "GKRISHNAPRASAD",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULLA ROAD",
+            "person": {
+                "id": "2015086700101",
+                "name": "G KRISHNAPRASAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "UMMATHUMTHOPPU",
+            "person": {
+                "id": "2015086700201",
+                "name": "PRIYA.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHANDIRITHI",
+            "person": {
+                "id": "2015086700302",
+                "name": "PADMAKRISHNAN C M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KERALAPURAM",
+            "person": {
+                "id": "2015086700401",
+                "name": "UMAIBA.A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARUVANNURTHARA",
+            "person": {
+                "id": "2015086700501",
+                "name": "NILAVARNEESA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VADAKKUMPADAM",
+            "person": {
+                "id": "2015086700601",
+                "name": "SARITHA.B"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VEETIYODE",
+            "person": {
+                "id": "2015086700701",
+                "name": "C.ARUMUGHAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NOCHUR",
+            "person": {
+                "id": "2015086700801",
+                "name": "USHA.N"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARNAKINAGAR",
+            "person": {
+                "id": "2015086700901",
+                "name": "SREEJA SUNIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOIMARPADAM",
+            "person": {
+                "id": "2015086701001",
+                "name": "A.SUNIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VETTUMPULLY",
+            "person": {
+                "id": "2015086701101",
+                "name": "V. RAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PEZHUMKADU",
+            "person": {
+                "id": "2015086701201",
+                "name": "C.SWAMINATHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOLODE",
+            "person": {
+                "id": "2015086701301",
+                "name": "THANKAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KANNANKODE",
+            "person": {
+                "id": "2015086701401",
+                "name": "CHANDRIKA.N"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VAKKODE",
+            "person": {
+                "id": "2015086701501",
+                "name": "BABU.K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAKKAYUR",
+            "person": {
+                "id": "2015086701601",
+                "name": "INDIRA.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VRINDHAVANAM",
+            "person": {
+                "id": "2015086701701",
+                "name": "UNNIKRISHNAN.A"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ETHANUR",
+            "person": {
+                "id": "2015086701801",
+                "name": "M.SUDHEER"
+            }
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348222461,
+    "date": "2019-08-21",
+    "name": "Ambalappara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Ottappalam",
+    "area": "50.08km",
+    "localbody_code": "G090301",
+    "no_of_wards": 20,
+    "population": 31525,
+    "male": 14830,
+    "female": 16695,
+    "population_density": 630,
+    "sex_ratio": 1126,
+    "literacy_rate": 84.91,
+    "literacy_rate_male": 88.88,
+    "literacy_rate_female": 81.46,
+    "president": "KKKUNHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MELUR",
+            "person": {
+                "id": "2015082100101",
+                "name": "CHAMI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOONANMALA",
+            "person": {
+                "id": "2015082100201",
+                "name": "REMADEVI PK"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARAVAKKAD",
+            "person": {
+                "id": "2015082100301",
+                "name": "SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMBALAPPARA",
+            "person": {
+                "id": "2015082100401",
+                "name": "RAGESH P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADAMBUR",
+            "person": {
+                "id": "2015082100501",
+                "name": "VIJITHA A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNAMANGALAM",
+            "person": {
+                "id": "2015082100601",
+                "name": "SADANANDAN O"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALARI",
+            "person": {
+                "id": "2015082100701",
+                "name": "LATHA M G"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AKAVANDA",
+            "person": {
+                "id": "2015082100801",
+                "name": "SUBRAHMANYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENGASSERY",
+            "person": {
+                "id": "2015082100901",
+                "name": "P P SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUMUNDASSERY",
+            "person": {
+                "id": "2015082101001",
+                "name": "T VISALAKSHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULAPATTASSERY",
+            "person": {
+                "id": "2015082101101",
+                "name": "KANCHANA SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MALAPPURAM",
+            "person": {
+                "id": "2015082101201",
+                "name": "KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MURIKKUMPATTA",
+            "person": {
+                "id": "2015082101301",
+                "name": "DHANALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KASTHURBA CHUNANGAD",
+            "person": {
+                "id": "2015082101401",
+                "name": "K SANKARANARAYANAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PILATHARA",
+            "person": {
+                "id": "2015082101501",
+                "name": "V SAINUDEEN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULINCHODU",
+            "person": {
+                "id": "2015082101601",
+                "name": "K K KUNHAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MAYILUMPURAM",
+            "person": {
+                "id": "2015082101701",
+                "name": "KOMALAM"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MUTTIPPALAM",
+            "person": {
+                "id": "2015082101801",
+                "name": "PREMAKUMARI A"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VARIYATHKUNNU",
+            "person": {
+                "id": "2015082101901",
+                "name": "RAJASREE M K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VANIVILASINI",
+            "person": {
+                "id": "2015082102001",
+                "name": "BINDU V"
+            }
+        }
+    ]
+}

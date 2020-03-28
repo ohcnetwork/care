@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348524781,
+    "date": "2019-08-21",
+    "name": "Mampad  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "67.93km",
+    "localbody_code": "G100301",
+    "no_of_wards": 19,
+    "population": 25711,
+    "male": 12771,
+    "female": 12940,
+    "population_density": 378,
+    "sex_ratio": 1013,
+    "literacy_rate": 88.77,
+    "literacy_rate_male": 93.1,
+    "literacy_rate_female": 84.44,
+    "president": "RUKKIYA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARIKKATTUMANNA",
+            "person": {
+                "id": "2015090500101",
+                "name": "BIJU. K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THALIPPOYIL",
+            "person": {
+                "id": "2015090500201",
+                "name": "ABDUSAMAD P.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAPURAM",
+            "person": {
+                "id": "2015090500301",
+                "name": "ABDUNAZAR. V.T"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALAPARAMBU",
+            "person": {
+                "id": "2015090500401",
+                "name": "UMAIMATH T.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VALLIKKETTU",
+            "person": {
+                "id": "2015090500501",
+                "name": "GOPIKA. E"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THRIKKAIKUTH",
+            "person": {
+                "id": "2015090500601",
+                "name": "KABEER. K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTUMUNDA",
+            "person": {
+                "id": "2015090500701",
+                "name": "RUKKIYA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULIKKALODI",
+            "person": {
+                "id": "2015090500801",
+                "name": "SHIFNA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NADUVAKKAD",
+            "person": {
+                "id": "2015090500901",
+                "name": "M.R. SUBRAMANIAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "TANA",
+            "person": {
+                "id": "2015090501001",
+                "name": "BUSHRA. M.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "IPPOTTINGAL",
+            "person": {
+                "id": "2015090501101",
+                "name": "SHAHINA. P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAMPAD NORTH",
+            "person": {
+                "id": "2015090501201",
+                "name": "SHAMEENA KANHIRALA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MAMPAD SOUTH",
+            "person": {
+                "id": "2015090501301",
+                "name": "SUHRA PANANILATH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KATTUPOYIL",
+            "person": {
+                "id": "2015090501401",
+                "name": "M.T. AHAMMED"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANTHALINGAL",
+            "person": {
+                "id": "2015090501501",
+                "name": "SALEENA. K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MEPPADAM",
+            "person": {
+                "id": "2015090501601",
+                "name": "RASIYA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PONGALLOOR",
+            "person": {
+                "id": "2015090501701",
+                "name": "SAROJINI. N"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PULLIPPADAM",
+            "person": {
+                "id": "2015090501801",
+                "name": "PANDAR MUHAMED"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KARACHAL",
+            "person": {
+                "id": "2015090501901",
+                "name": "CHENGASSERI BALAN"
+            }
+        }
+    ]
+}

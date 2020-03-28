@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344980814,
+    "date": "2019-08-21",
+    "name": "Ambalapuzha  Block Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Ambalapuzha",
+    "area": "68.63km",
+    "localbody_code": "B040500",
+    "no_of_wards": 13,
+    "population": 119065,
+    "male": 58332,
+    "female": 60733,
+    "population_density": 1735,
+    "sex_ratio": 1041,
+    "literacy_rate": 93,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 90,
+    "president": "KMJUNAID",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADACKAL",
+            "person": {
+                "id": "2015003900101",
+                "name": "MURALEEDHARAN N"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "BLOCK OFFICE",
+            "person": {
+                "id": "2015003900201",
+                "name": "BIBI  U  VIDYA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARAVUKADU",
+            "person": {
+                "id": "2015003900301",
+                "name": "GEETHA BABU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VANDANAM",
+            "person": {
+                "id": "2015003900401",
+                "name": "REJITHA A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAKKAZHAM",
+            "person": {
+                "id": "2015003900501",
+                "name": "PRAJITH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBALAPUZHA",
+            "person": {
+                "id": "2015003900601",
+                "name": "BINDU BYJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THOTTAPPALLY",
+            "person": {
+                "id": "2015003900701",
+                "name": "RAJESWARI KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PURAKKAD",
+            "person": {
+                "id": "2015003900801",
+                "name": "P . SABU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAROOR",
+            "person": {
+                "id": "2015003900901",
+                "name": "V . S . MAYADEVI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMBALAPUZHA GOV. COLLEGE",
+            "person": {
+                "id": "2015003901001",
+                "name": "ANITHA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "M C H",
+            "person": {
+                "id": "2015003901101",
+                "name": "MUHAMMED KABEER ( U M KABEER )"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUNNAPRA",
+            "person": {
+                "id": "2015003901201",
+                "name": "K M JUNAID"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POLYTECHNIC",
+            "person": {
+                "id": "2015003901301",
+                "name": "ROSE DELEEMA"
+            }
+        }
+    ]
+}

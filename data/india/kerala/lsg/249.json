@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345786757,
+    "date": "2019-08-21",
+    "name": "Pullampara  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Vamanpuram",
+    "area": "25.9km",
+    "localbody_code": "G010403",
+    "no_of_wards": 15,
+    "population": 21673,
+    "male": 10682,
+    "female": 10991,
+    "population_density": 836,
+    "sex_ratio": 1029,
+    "literacy_rate": 86.39,
+    "literacy_rate_male": 91.5,
+    "literacy_rate_female": 81.49,
+    "president": "ASEENABEEVI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANTHAPLAVIKONAM",
+            "person": {
+                "id": "2015024900101",
+                "name": "PREETHA P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLUMANNADY",
+            "person": {
+                "id": "2015024900201",
+                "name": "AJITH K S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERUMALA",
+            "person": {
+                "id": "2015024900301",
+                "name": "MINI M ANIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUTHIPPARA",
+            "person": {
+                "id": "2015024900401",
+                "name": "SREEKANTAN NAIR B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULLAMPARA",
+            "person": {
+                "id": "2015024900501",
+                "name": "SUJATHA P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOONANVENGA",
+            "person": {
+                "id": "2015024900601",
+                "name": "LATHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANAYAM",
+            "person": {
+                "id": "2015024900701",
+                "name": "RAJENDRAN B"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHULLALAM",
+            "person": {
+                "id": "2015024900801",
+                "name": "SAJITHA S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUKKUDIL",
+            "person": {
+                "id": "2015024900901",
+                "name": "SAJJU C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANKUZHI",
+            "person": {
+                "id": "2015024901001",
+                "name": "THEMPAMMOODU HUSSAIN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THEMPAMMOODU",
+            "person": {
+                "id": "2015024901101",
+                "name": "REEJA A S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ATTUKAL",
+            "person": {
+                "id": "2015024901201",
+                "name": "CHANDRIKA A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALAMKONAM",
+            "person": {
+                "id": "2015024901301",
+                "name": "AJI P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NAGARUKUZHI",
+            "person": {
+                "id": "2015024901401",
+                "name": "G PURUSHOTHAMAN NAIR"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUTTIMMOODU",
+            "person": {
+                "id": "2015024901501",
+                "name": "ASEENA BEEVI"
+            }
+        }
+    ]
+}

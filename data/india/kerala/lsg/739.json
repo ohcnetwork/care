@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347511682,
+    "date": "2019-08-21",
+    "name": "Thiruvilwamala  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Pazhayannur",
+    "area": "37.94km",
+    "localbody_code": "G080406",
+    "no_of_wards": 17,
+    "population": 24175,
+    "male": 11484,
+    "female": 12691,
+    "population_density": 637,
+    "sex_ratio": 1105,
+    "literacy_rate": 83.85,
+    "literacy_rate_male": 88.57,
+    "literacy_rate_female": 79.64,
+    "president": "MANI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUTHAMPULLY",
+            "person": {
+                "id": "2015073900101",
+                "name": "LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAKKOTUPADAM",
+            "person": {
+                "id": "2015073900201",
+                "name": "MADHU ANAND"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAYARAMPARA",
+            "person": {
+                "id": "2015073900301",
+                "name": "B SMITHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOODARAMKUNNU",
+            "person": {
+                "id": "2015073900401",
+                "name": "K BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAMPADI",
+            "person": {
+                "id": "2015073900501",
+                "name": "MANOJKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOLLAIKKAL",
+            "person": {
+                "id": "2015073900601",
+                "name": "R VINI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MALESHAMANGALAM",
+            "person": {
+                "id": "2015073900701",
+                "name": "P KUTTAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KIZHAKKUMURY",
+            "person": {
+                "id": "2015073900801",
+                "name": "MANI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATTIPARAMBU",
+            "person": {
+                "id": "2015073900901",
+                "name": "VALSALA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ORALASSERY",
+            "person": {
+                "id": "2015073901001",
+                "name": "C P BINDU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAKKAPARAMBU",
+            "person": {
+                "id": "2015073901101",
+                "name": "JAYALALITHA S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ERAVATHODY",
+            "person": {
+                "id": "2015073901201",
+                "name": "RAJESHWARI G"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THIRUVILWAMALA",
+            "person": {
+                "id": "2015073901301",
+                "name": "RAGINI C P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MALAVATTOM",
+            "person": {
+                "id": "2015073901401",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POOTHANAKKARA",
+            "person": {
+                "id": "2015073901501",
+                "name": "NISHAKUMARI K S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AKKAARAMBU",
+            "person": {
+                "id": "2015073901601",
+                "name": "A B RAMARAJ"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUNDUKAD",
+            "person": {
+                "id": "2015073901701",
+                "name": "V KUMARAN"
+            }
+        }
+    ]
+}

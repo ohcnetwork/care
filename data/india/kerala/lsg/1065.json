@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566349101599,
+    "date": "2019-08-21",
+    "name": "Kadalundi  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kozhikode",
+    "area": "11.83km",
+    "localbody_code": "G111201",
+    "no_of_wards": 22,
+    "population": 35171,
+    "male": 17084,
+    "female": 18087,
+    "population_density": 2973,
+    "sex_ratio": 1059,
+    "literacy_rate": 89.81,
+    "literacy_rate_male": 95.26,
+    "literacy_rate_female": 84.75,
+    "president": "BHAKTAVALSALANO",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHALIYAM  BEACH NORTH",
+            "person": {
+                "id": "2015106500101",
+                "name": "JAMAL V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "HIGH SCHOOL",
+            "person": {
+                "id": "2015106500201",
+                "name": "SHAHINA V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHALIYAM ANGADI",
+            "person": {
+                "id": "2015106500301",
+                "name": "SHAHARBAN M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MURUKALLINGAL WEST",
+            "person": {
+                "id": "2015106500401",
+                "name": "USHA  M.P PULLISSERY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURUKALLINGAL EAST",
+            "person": {
+                "id": "2015106500501",
+                "name": "VALSALA C.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VADAKKUMBAD",
+            "person": {
+                "id": "2015106500601",
+                "name": "SINDHU PRADEEP"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARAKALI",
+            "person": {
+                "id": "2015106500701",
+                "name": "BHAKTAVALSALAN O"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANNUR NORTH",
+            "person": {
+                "id": "2015106500801",
+                "name": "VINEESH P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PRABODHINI",
+            "person": {
+                "id": "2015106500901",
+                "name": "SHANMUGHAN PILAKKAT"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNUR VALAVU",
+            "person": {
+                "id": "2015106501001",
+                "name": "BHASKARAN NAIR.N"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ALUNKAL",
+            "person": {
+                "id": "2015106501101",
+                "name": "KONATH BALAN ALIAS VELAYUDHAN K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KEEZHKKOD",
+            "person": {
+                "id": "2015106501201",
+                "name": "HEBISH M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAITHAVALAPPU",
+            "person": {
+                "id": "2015106501301",
+                "name": "AJAYAKUMAR C.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADALUNDI EAST",
+            "person": {
+                "id": "2015106501401",
+                "name": "RAMESHAN C"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDACHIRA",
+            "person": {
+                "id": "2015106501501",
+                "name": "DINACHANDRAN K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MANNUR CENTRAL",
+            "person": {
+                "id": "2015106501601",
+                "name": "SHEEJA O"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAZHANCHANNUR",
+            "person": {
+                "id": "2015106501701",
+                "name": "LIJUNA K.P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KADALUNDIWEST",
+            "person": {
+                "id": "2015106501801",
+                "name": "ADV.P.V.MOHAMMEDSHAHID"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VAKKADAVU",
+            "person": {
+                "id": "2015106501901",
+                "name": "UMMUL HAKEEMA BEEVI N.K.C"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KAPPALANGADI",
+            "person": {
+                "id": "2015106502001",
+                "name": "NISHA M"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KADUKKA BAZAR",
+            "person": {
+                "id": "2015106502101",
+                "name": "LUBAINA P"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "CHALIYAM KADUKKA BAZAR",
+            "person": {
+                "id": "2015106502201",
+                "name": "AYISHABEEVI"
+            }
+        }
+    ]
+}

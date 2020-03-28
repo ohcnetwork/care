@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346076604,
+    "date": "2019-08-21",
+    "name": "Aryankavu  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Anchal",
+    "area": "198.84km",
+    "localbody_code": "G020508",
+    "no_of_wards": 13,
+    "population": 16660,
+    "male": 8448,
+    "female": 8212,
+    "population_density": 83,
+    "sex_ratio": 972,
+    "literacy_rate": 71.53,
+    "literacy_rate_male": 70.89,
+    "literacy_rate_female": 68.9,
+    "president": "R.PRADEEP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ACHANCOVIL KSHETHRAM",
+            "person": {
+                "id": "2015033600101",
+                "name": "C.SURESH BABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ACHANCOVIL",
+            "person": {
+                "id": "2015033600201",
+                "name": "GEETHA SUKUNATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBANAD EAST",
+            "person": {
+                "id": "2015033600301",
+                "name": "R.PRADEEP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ARYANKAVU",
+            "person": {
+                "id": "2015033600401",
+                "name": "THRESIAMMA(JESSY)"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARYANKAVU KSHETHRAM",
+            "person": {
+                "id": "2015033600501",
+                "name": "VIJAYAMMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALARUVI",
+            "person": {
+                "id": "2015033600601",
+                "name": "SUNNY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EDAPPALAYAM",
+            "person": {
+                "id": "2015033600701",
+                "name": "BINU MATHEW.G"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "FLORENCE",
+            "person": {
+                "id": "2015033600801",
+                "name": "GEETHA OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAZHUTHURUTTY",
+            "person": {
+                "id": "2015033600901",
+                "name": "PRIYA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEDUMPARA",
+            "person": {
+                "id": "2015033601002",
+                "name": "MANSOOR I"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VENTURE",
+            "person": {
+                "id": "2015033601101",
+                "name": "MINI MOL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POOTHOTTAM",
+            "person": {
+                "id": "2015033601201",
+                "name": "M.S.MURUGESHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMBANAD WEST",
+            "person": {
+                "id": "2015033601301",
+                "name": "SARASWATHY SUNDARAM"
+            }
+        }
+    ]
+}

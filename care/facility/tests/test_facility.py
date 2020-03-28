@@ -1,13 +1,24 @@
+import re
+
 import pytest
 from django.contrib.gis.geos import Point
-from rest_framework.test import APIClient
 
-from config.tests.helper import client, user
-from care.facility.models import Facility, FacilityCapacity
+from care.facility.models import Facility, FacilityCapacity, FacilityLocalGovtBody
+from care.users.models import User
+from config.tests.helper import mock_equal
+
+# flake8: noqa
 
 
 @pytest.fixture()
-def data():
+def user_data():
+    return dict(
+        username="bar", user_type=5, district=13, phone_number="8887776664", gender=1, age=30, email="bar@foobar.com",
+    )
+
+
+@pytest.fixture()
+def facility_data():
     return {
         "name": "Foo",
         "district": 13,
@@ -21,7 +32,7 @@ def data():
 
 @pytest.fixture()
 def facility():
-    return Facility.objects.create(
+    f = Facility.objects.create(
         name="Foo",
         district=13,
         facility_type=1,
@@ -30,54 +41,48 @@ def facility():
         oxygen_capacity=10,
         phone_number="9998887776",
     )
+    FacilityLocalGovtBody.objects.create(facility=f, local_body=None, district_id=13)
+    return f
 
 
+@pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)
 class TestFacility:
     def test_login_required(self, client):
         response = client.post("/api/v1/facility/", {},)
         assert response.status_code == 403
 
-    def test_create(self, client, user, data):
+    def test_create(self, client, user, facility_data):
         client.force_authenticate(user=user)
-        response = client.post(
-            "/api/v1/facility/",
-            {
-                "name": data["name"],
-                "district": data["district"],
-                "facility_type": data["facility_type"],
-                "address": data["address"],
-                "location": data["location"],
-                "oxygen_capacity": data["oxygen_capacity"],
-                "phone_number": data["phone_number"],
-            },
-        )
+        response = client.post("/api/v1/facility/", facility_data,)
 
         assert response.status_code == 201
-        response.data.pop("id")
-        assert response.data == {
-            "name": data["name"],
-            "district": "Kannur",
+        response_json = response.json()
+        assert response_json == {
+            **facility_data,
+            "id": mock_equal,
             "facility_type": "Educational Inst",
-            "address": data["address"],
-            "location": data["location"],
-            "oxygen_capacity": data["oxygen_capacity"],
-            "phone_number": data["phone_number"],
+            "local_govt_body": {
+                "id": mock_equal,
+                "facility": mock_equal,
+                "local_body": None,
+                "district": {"id": 13, "name": "Kannur", "state": 1},
+            },
         }
 
         facility = Facility.objects.get(
-            name=data["name"],
-            district=data["district"],
-            facility_type=data["facility_type"],
-            address=data["address"],
-            oxygen_capacity=data["oxygen_capacity"],
-            phone_number=data["phone_number"],
+            name=facility_data["name"],
+            district=facility_data["district"],
+            facility_type=facility_data["facility_type"],
+            address=facility_data["address"],
+            oxygen_capacity=facility_data["oxygen_capacity"],
+            phone_number=facility_data["phone_number"],
             created_by=user,
         )
         assert facility
         assert facility.location.tuple == (
-            data["location"]["longitude"],
-            data["location"]["latitude"],
+            facility_data["location"]["longitude"],
+            facility_data["location"]["latitude"],
         )
 
     def test_active_check(self, client, user, facility):
@@ -94,15 +99,19 @@ class TestFacility:
         facility.save()
         response = client.get(f"/api/v1/facility/{facility.id}/")
         assert response.status_code == 200
-        assert response.data == {
+
+        assert response.json() == {
             "id": facility.id,
             "name": facility.name,
-            "district": "Kannur",
+            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_govt_body": {
+                "id": mock_equal,
+                "facility": facility.id,
+                "local_body": None,
+                "district": {"id": 13, "name": "Kannur", "state": mock_equal},
             },
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
@@ -113,31 +122,50 @@ class TestFacility:
         facility.created_by = user
         facility.save()
 
+        new_district = {"id": 12, "name": "Wayanad"}
+
         response = client.put(
             f"/api/v1/facility/{facility.id}/",
             {
                 "name": "Another name",
-                "district": facility.district,
+                "district": new_district["id"],
                 "facility_type": facility.facility_type,
                 "address": facility.address,
             },
         )
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "id": facility.id,
             "name": "Another name",
-            "district": "Kannur",
+            "district": new_district["id"],
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_govt_body": {
+                "id": mock_equal,
+                "facility": facility.id,
+                "local_body": None,
+                "district": {"id": new_district["id"], "name": new_district["name"], "state": mock_equal},
             },
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
         facility.refresh_from_db()
         assert facility.name == "Another name"
+
+    def test_update_doesnt_change_creator(self, client, user, user_data, facility, facility_data):
+        facility.created_by = User.objects.create(**user_data)
+        facility.save()
+        original_creator = facility.created_by
+
+        user.is_superuser = True
+        user.save()
+        client.force_authenticate(user=user)
+
+        response = client.put(f"/api/v1/facility/{facility.id}/", facility_data)
+        assert response.status_code == 200
+        facility.refresh_from_db()
+        assert facility.created_by == original_creator
 
     def test_destroy(self, client, user, facility):
         client.force_authenticate(user=user)
@@ -155,7 +183,7 @@ class TestFacility:
         facility.save()
         response = client.get(f"/api/v1/facility/")
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "count": 1,
             "next": None,
             "previous": None,
@@ -163,12 +191,15 @@ class TestFacility:
                 {
                     "id": facility.id,
                     "name": facility.name,
-                    "district": "Kannur",
+                    "district": facility.district,
                     "facility_type": "Educational Inst",
                     "address": facility.address,
-                    "location": {
-                        "latitude": facility.location.tuple[1],
-                        "longitude": facility.location.tuple[0],
+                    "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+                    "local_govt_body": {
+                        "id": mock_equal,
+                        "facility": facility.id,
+                        "local_body": None,
+                        "district": {"id": 13, "name": "Kannur", "state": mock_equal},
                     },
                     "oxygen_capacity": facility.oxygen_capacity,
                     "phone_number": facility.phone_number,
@@ -177,6 +208,7 @@ class TestFacility:
         }
 
 
+@pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)
 class TestFacilityBulkUpsert:
     def test_success(self, client, user, facility):
@@ -198,9 +230,7 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
                 {
                     "name": name,
@@ -209,16 +239,8 @@ class TestFacilityBulkUpsert:
                     "address": address,
                     "phone_number": phone_number,
                     "capacity": [
-                        {
-                            "room_type": 0,
-                            "total_capacity": 350,
-                            "current_capacity": 150,
-                        },
-                        {
-                            "room_type": 1,
-                            "total_capacity": 200,
-                            "current_capacity": 100,
-                        },
+                        {"room_type": 0, "total_capacity": 350, "current_capacity": 150,},
+                        {"room_type": 1, "total_capacity": 200, "current_capacity": 100,},
                     ],
                 },
             ],
@@ -235,12 +257,7 @@ class TestFacilityBulkUpsert:
         assert len(capacities) == 1
 
         new_facility = Facility.objects.get(
-            created_by=user,
-            name=name,
-            district=1,
-            facility_type=2,
-            address=address,
-            phone_number=phone_number,
+            created_by=user, name=name, district=1, facility_type=2, address=address, phone_number=phone_number,
         )
         assert new_facility
         capacities = new_facility.facilitycapacity_set.all()
@@ -261,15 +278,18 @@ class TestFacilityBulkUpsert:
         user.save()
         response = client.get(f"/api/v1/facility/{facility.id}/")
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "id": facility.id,
             "name": facility.name,
-            "district": "Kannur",
+            "district": 13,
             "facility_type": "Educational Inst",
             "address": facility.address,
-            "location": {
-                "latitude": facility.location.tuple[1],
-                "longitude": facility.location.tuple[0],
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_govt_body": {
+                "id": mock_equal,
+                "facility": facility.id,
+                "local_body": None,
+                "district": {"id": 13, "name": "Kannur", "state": mock_equal},
             },
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
@@ -285,14 +305,12 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
             ],
         )
         assert response.status_code == 403
-        assert response.json()["detail"] == "Foo, Kannur is owned by another user"
+        assert re.match(r"[\w, ()-/]+ is owned by another user", response.json()["detail"]) is not None
 
     def test_admins_can_update_ones_facility(self, client, user, facility):
         client.force_authenticate(user=user)
@@ -306,9 +324,7 @@ class TestFacilityBulkUpsert:
                     "district": facility.district,
                     "facility_type": 3,
                     "address": facility.address,
-                    "capacity": [
-                        {"room_type": 1, "total_capacity": 100, "current_capacity": 48,}
-                    ],
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
             ],
         )

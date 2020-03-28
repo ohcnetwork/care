@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566345054519,
+    "date": "2019-08-21",
+    "name": "Thodupuzha  Block Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Thodupuzha",
+    "area": "130.05km",
+    "localbody_code": "B060700",
+    "no_of_wards": 13,
+    "population": 71316,
+    "male": 35983,
+    "female": 35333,
+    "population_density": 548,
+    "sex_ratio": 982,
+    "literacy_rate": 94,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 92,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUMARAMANGALAM",
+            "person": {
+                "id": "2015006400101",
+                "name": "K.V. JOSE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EZHALLOOR",
+            "person": {
+                "id": "2015006400201",
+                "name": "SINOJ"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDAVETTY",
+            "person": {
+                "id": "2015006400301",
+                "name": "SEENA ISMAIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THEKKUMBHAGAM",
+            "person": {
+                "id": "2015006400401",
+                "name": "JIMMY PAUL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUTTOM",
+            "person": {
+                "id": "2015006400501",
+                "name": "ANNAMMA CHERIAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THUDANGANADU",
+            "person": {
+                "id": "2015006400601",
+                "name": "PRINCY SOY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARIMKUNNAM",
+            "person": {
+                "id": "2015006400701",
+                "name": "SATHEESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MRALA",
+            "person": {
+                "id": "2015006400801",
+                "name": "JACOB MATHAI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PURAPUZHA",
+            "person": {
+                "id": "2015006400901",
+                "name": "JIMMY MATTATHIPARA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAZHITHALA",
+            "person": {
+                "id": "2015006401001",
+                "name": "BABY TOM NANDALATHU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NEDIYASALA",
+            "person": {
+                "id": "2015006401101",
+                "name": "LEELAMMA JOSE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ARIKUZHA",
+            "person": {
+                "id": "2015006401201",
+                "name": "SHINY SHAJI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANAKKAD",
+            "person": {
+                "id": "2015006401302",
+                "name": "SHEENA HARIDAS"
+            }
+        }
+    ]
+}

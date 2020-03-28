@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346646504,
+    "date": "2019-08-21",
+    "name": "Chunakara  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Bharinikavu",
+    "area": "17.32km",
+    "localbody_code": "G041105",
+    "no_of_wards": 15,
+    "population": 21129,
+    "male": 10113,
+    "female": 11016,
+    "population_density": 1220,
+    "sex_ratio": 1089,
+    "literacy_rate": 93,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 90,
+    "president": "SANTHAGOPALAKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHUNAKARA NORTH",
+            "person": {
+                "id": "2015049000101",
+                "name": "SAVITHA SUDHI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AMBALAWARD",
+            "person": {
+                "id": "2015049000201",
+                "name": "SUMA DEVI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHUNAKARA EAST",
+            "person": {
+                "id": "2015049000301",
+                "name": "SURESH PULARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHUNAKARA NADUVIL EAST",
+            "person": {
+                "id": "2015049000401",
+                "name": "SOBHA KUMARI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOTTAWARD",
+            "person": {
+                "id": "2015049000501",
+                "name": "SABEENA RAHIM"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "HOSPITAL WARD",
+            "person": {
+                "id": "2015049000601",
+                "name": "B.FAHAD"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHARUMMOODU",
+            "person": {
+                "id": "2015049000701",
+                "name": "MAJEEDA SADIQ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALOOTHARA",
+            "person": {
+                "id": "2015049000801",
+                "name": "SWAPNA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARIMULACKAL SOUTH",
+            "person": {
+                "id": "2015049000901",
+                "name": "PADMAKUMARI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARIMULACKAL NORTH",
+            "person": {
+                "id": "2015049001001",
+                "name": "NISHA UNNI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOMALLOOR WEST",
+            "person": {
+                "id": "2015049001101",
+                "name": "V.R.RAJESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOMALLOOR EAST",
+            "person": {
+                "id": "2015049001201",
+                "name": "K.G. GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THERUVILMUKKU",
+            "person": {
+                "id": "2015049001301",
+                "name": "SHARAFUDEEN.R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHUNAKARA NADUVIL WEST",
+            "person": {
+                "id": "2015049001401",
+                "name": "P.M.RAVI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOTTAMUKKU",
+            "person": {
+                "id": "2015049001501",
+                "name": "SANTHA GOPALAKRISHNAN"
+            }
+        }
+    ]
+}

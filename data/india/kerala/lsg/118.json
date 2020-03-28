@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345236008,
+    "date": "2019-08-21",
+    "name": "Kuttippuram  Block Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Kuttipuram",
+    "area": "162.43km",
+    "localbody_code": "B100900",
+    "no_of_wards": 16,
+    "population": 173643,
+    "male": 83886,
+    "female": 89757,
+    "population_density": 1069,
+    "sex_ratio": 1069,
+    "literacy_rate": 87.55,
+    "literacy_rate_male": 91.39,
+    "literacy_rate_female": 83.7,
+    "president": "ATHAVANADMOHAMMADKUTTY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RANDATHANI",
+            "person": {
+                "id": "2015011800101",
+                "name": "ABDU THAIKKADAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHELAKKUTH",
+            "person": {
+                "id": "2015011800201",
+                "name": "SAFIYA K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MELMURI",
+            "person": {
+                "id": "2015011800301",
+                "name": "KHADEEJA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAREKKAD",
+            "person": {
+                "id": "2015011800401",
+                "name": "AYISHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKUMPURAM",
+            "person": {
+                "id": "2015011800501",
+                "name": "PAREED KAREKKAD"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "EDAYUR",
+            "person": {
+                "id": "2015011800601",
+                "name": "MANIKKAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOKKATTIRI",
+            "person": {
+                "id": "2015011800701",
+                "name": "MOIDU EDAYUR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VALIYAKUNNU",
+            "person": {
+                "id": "2015011800801",
+                "name": "FAZEELA TEACHER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENDALLUR",
+            "person": {
+                "id": "2015011800901",
+                "name": "SHAMLA P T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLAKKAD",
+            "person": {
+                "id": "2015011801001",
+                "name": "KAIPALLY ABDULLAKUTTY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAZHUTHALLOOR",
+            "person": {
+                "id": "2015011801101",
+                "name": "RASEENA T K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NADUVATTAM",
+            "person": {
+                "id": "2015011801201",
+                "name": "K T SIDHEEK"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ATHAVANAD",
+            "person": {
+                "id": "2015011801301",
+                "name": "K K  RAHNA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KURUMBATHOOR",
+            "person": {
+                "id": "2015011801401",
+                "name": "ATHAVANAD MOHAMMAD KUTTY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHANATHANI",
+            "person": {
+                "id": "2015011801501",
+                "name": "SINOBIYA T P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KADUNGATHUKUNDU",
+            "person": {
+                "id": "2015011801601",
+                "name": "SABAH"
+            }
+        }
+    ]
+}

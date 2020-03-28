@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347285638,
+    "date": "2019-08-21",
+    "name": "Kavalangad  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "59.91km",
+    "localbody_code": "G071105",
+    "no_of_wards": 18,
+    "population": 27430,
+    "male": 13972,
+    "female": 13458,
+    "population_density": 457,
+    "sex_ratio": 963,
+    "literacy_rate": 90.79,
+    "literacy_rate_male": 94.05,
+    "literacy_rate_female": 87.44,
+    "president": "BEENABENNY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NELLIMATTOM NORTH",
+            "person": {
+                "id": "2015068500101",
+                "name": "VARGHESE ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERUMANNOOR",
+            "person": {
+                "id": "2015068500201",
+                "name": "JOBY JACOB"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "UPPUKULAM",
+            "person": {
+                "id": "2015068500301",
+                "name": "VALSA JOHN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OONNUKAL",
+            "person": {
+                "id": "2015068500401",
+                "name": "JOSHY KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THADIKKULAM",
+            "person": {
+                "id": "2015068500501",
+                "name": "JUSTINE JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VILLANCHIRA",
+            "person": {
+                "id": "2015068500601",
+                "name": "ANCY BINOY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AVOLICHAL",
+            "person": {
+                "id": "2015068500701",
+                "name": "ABYMON MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NERIAMANGALAM NORTH",
+            "person": {
+                "id": "2015068500801",
+                "name": "ULAHANNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHEMBANKUZHY",
+            "person": {
+                "id": "2015068500901",
+                "name": "ASHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEENDAPARA",
+            "person": {
+                "id": "2015068501001",
+                "name": "JIBIN P GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NERIAMANGALAM SOUTH",
+            "person": {
+                "id": "2015068501101",
+                "name": "ANEESH MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THALAKODE",
+            "person": {
+                "id": "2015068501201",
+                "name": "SAIJANT CHACKO"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ALLUNGAL",
+            "person": {
+                "id": "2015068501301",
+                "name": "JANCY THOMAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THENKODE",
+            "person": {
+                "id": "2015068501401",
+                "name": "LISSY JOY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAREEKKANNY",
+            "person": {
+                "id": "2015068501501",
+                "name": "BEENA BENNY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAVALANGAD SOUTH",
+            "person": {
+                "id": "2015068501601",
+                "name": "REENA ELDHO"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NELLIMATTAM SOUTH",
+            "person": {
+                "id": "2015068501701",
+                "name": "SOUMYA SANALKUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MARAMANGALAM",
+            "person": {
+                "id": "2015068501801",
+                "name": "SHIJI ALEX"
+            }
+        }
+    ]
+}

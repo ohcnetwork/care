@@ -1,0 +1,276 @@
+{
+    "timeStamp": 1566345392716,
+    "date": "2019-08-21",
+    "name": "Malappuram  District Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "area": "3550km",
+    "localbody_code": "D100000",
+    "no_of_wards": 32,
+    "population": 3629640,
+    "male": 1759479,
+    "female": 1870161,
+    "population_density": 1022,
+    "sex_ratio": 1063,
+    "literacy_rate": 88.61,
+    "literacy_rate_male": 91.46,
+    "literacy_rate_female": 85.96,
+    "president": "APUNNIKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAZHIKKADAVU",
+            "person": {
+                "id": "2015016200101",
+                "name": "O T JAMES"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOKKAD",
+            "person": {
+                "id": "2015016200201",
+                "name": "SAREENA MUHAMMEDALI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARUVARAKKUNDU",
+            "person": {
+                "id": "2015016200301",
+                "name": "T P ASHRAFALI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "WANDOOR",
+            "person": {
+                "id": "2015016200401",
+                "name": "ALIPATTA JAMEELA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANDIKKAD",
+            "person": {
+                "id": "2015016200501",
+                "name": "V SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELAMKULAM",
+            "person": {
+                "id": "2015016200601",
+                "name": "HAJARUMMA  TEACHER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANGADIPURAM",
+            "person": {
+                "id": "2015016200701",
+                "name": "ADV  T K RASHEEDALI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANAKKAYAM",
+            "person": {
+                "id": "2015016200801",
+                "name": "UMMER ARAKKAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MAKKARAPARAMBHA",
+            "person": {
+                "id": "2015016200901",
+                "name": "M T SALEENA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAYUR",
+            "person": {
+                "id": "2015016201001",
+                "name": "RAFEEKHA M K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ATHAVANAD",
+            "person": {
+                "id": "2015016201101",
+                "name": "FATHIMATH SUHRA K M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAPPAL",
+            "person": {
+                "id": "2015016201201",
+                "name": "K DEVIKKUTTY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHANGARAMKULAM",
+            "person": {
+                "id": "2015016201301",
+                "name": "ADV M B FAISAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MARANCHERY",
+            "person": {
+                "id": "2015016201401",
+                "name": "SAMEERA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANGALAM",
+            "person": {
+                "id": "2015016201501",
+                "name": "ANITHA KISHOR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THIRUNAVAYA",
+            "person": {
+                "id": "2015016201601",
+                "name": "A T SAJITHA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NIRAMARUTHUR",
+            "person": {
+                "id": "2015016201701",
+                "name": "V P SULAIKHA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "RANDATHANI",
+            "person": {
+                "id": "2015016201801",
+                "name": "ALIKOYA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PONMUNDAM",
+            "person": {
+                "id": "2015016201901",
+                "name": "HANEEFA PUTHUPARAMB"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "NANNAMBRA",
+            "person": {
+                "id": "2015016202001",
+                "name": "A P UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "EDARIKODE",
+            "person": {
+                "id": "2015016202101",
+                "name": "C JAMEELA ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "OTHUKKUNGAL",
+            "person": {
+                "id": "2015016202201",
+                "name": "SAID PULLANI"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "POOKKOTTUR",
+            "person": {
+                "id": "2015016202301",
+                "name": "SAKEENA PULPADAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "VENGARA",
+            "person": {
+                "id": "2015016202401",
+                "name": "SALEEM KURUVAMBALAM"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "VELIMUKKU",
+            "person": {
+                "id": "2015016202501",
+                "name": "BAKKAR CHERNNOOR"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "THENJIPALAM",
+            "person": {
+                "id": "2015016202601",
+                "name": "A K ABDURAHMAN"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "KARIPPOOR",
+            "person": {
+                "id": "2015016202701",
+                "name": "SAREENA HASEEB"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "VAZHAKKAD",
+            "person": {
+                "id": "2015016202801",
+                "name": "P R ROHILNATH"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "AREACODE",
+            "person": {
+                "id": "2015016202901",
+                "name": "ADV  P V MANAF"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "EDAVANNA",
+            "person": {
+                "id": "2015016203001",
+                "name": "ISMAYIL MUTHEDAM"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "THRIKKALANGODE",
+            "person": {
+                "id": "2015016203101",
+                "name": "VIMALA"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "CHUNGATHARA",
+            "person": {
+                "id": "2015016203201",
+                "name": "SHERLI VARGIS"
+            }
+        }
+    ]
+}

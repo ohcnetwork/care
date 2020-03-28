@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566347524832,
+    "date": "2019-08-21",
+    "name": "Pananchery  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Ollukkara",
+    "area": "141.71km",
+    "localbody_code": "G080503",
+    "no_of_wards": 23,
+    "population": 37116,
+    "male": 18283,
+    "female": 18833,
+    "population_density": 2642,
+    "sex_ratio": 1030,
+    "literacy_rate": 87.87,
+    "literacy_rate_male": 91.72,
+    "literacy_rate_female": 84.17,
+    "president": "ANITHAKV",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANANCHERY",
+            "person": {
+                "id": "2015074300101",
+                "name": "VINEETHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMBUTRA",
+            "person": {
+                "id": "2015074300201",
+                "name": "SUMESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTIKAD",
+            "person": {
+                "id": "2015074300301",
+                "name": "DEVASSY P J"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THANIPPADAM",
+            "person": {
+                "id": "2015074300401",
+                "name": "SHINY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POOVANCHIRA",
+            "person": {
+                "id": "2015074300501",
+                "name": "JAYA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHUVANNAMANNU",
+            "person": {
+                "id": "2015074300601",
+                "name": "DAISY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VANIYAMPARA",
+            "person": {
+                "id": "2015074300701",
+                "name": "ABOOBACKAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOMBAZHA",
+            "person": {
+                "id": "2015074300801",
+                "name": "VIJAYANKUTTY N K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VAZHAKKUMPARA",
+            "person": {
+                "id": "2015074300901",
+                "name": "SALY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THEKKUMPADAM",
+            "person": {
+                "id": "2015074301001",
+                "name": "PRIYA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EDAPPALAM",
+            "person": {
+                "id": "2015074301101",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAILATTUMPARA",
+            "person": {
+                "id": "2015074301201",
+                "name": "ELDOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PEECHI",
+            "person": {
+                "id": "2015074301301",
+                "name": "FOUSIA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THAMARAVELLACHAL",
+            "person": {
+                "id": "2015074301401",
+                "name": "MANOJ E M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VILANGANNOOR",
+            "person": {
+                "id": "2015074301501",
+                "name": "JISHA VASU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANNARA",
+            "person": {
+                "id": "2015074301601",
+                "name": "BABU THOMAS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VEENDASSERY",
+            "person": {
+                "id": "2015074301701",
+                "name": "ACHAMMA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PAYYANAM",
+            "person": {
+                "id": "2015074301801",
+                "name": "ANITHA K V"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MARAKKAL",
+            "person": {
+                "id": "2015074301901",
+                "name": "GEORGEKUTTY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KOOTTALA",
+            "person": {
+                "id": "2015074302001",
+                "name": "FRANCINA"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ALPPARA",
+            "person": {
+                "id": "2015074302101",
+                "name": "OUSEPH P T"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "CHIRAKKUNNU",
+            "person": {
+                "id": "2015074302201",
+                "name": "JOHNY"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MUDIKODE",
+            "person": {
+                "id": "2015074302301",
+                "name": "KUNJAPPAN"
+            }
+        }
+    ]
+}

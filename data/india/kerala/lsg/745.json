@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347532014,
+    "date": "2019-08-21",
+    "name": "Adat  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "23.02km",
+    "localbody_code": "G080601",
+    "no_of_wards": 18,
+    "population": 23441,
+    "male": 11155,
+    "female": 12286,
+    "population_density": 1018,
+    "sex_ratio": 1101,
+    "literacy_rate": 92.7,
+    "literacy_rate_male": 94.4,
+    "literacy_rate_female": 91.19,
+    "president": "TRJAYACHANDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHITTILAPPILLY PADINJATTUMURI",
+            "person": {
+                "id": "2015074500101",
+                "name": "BABY STEPHEN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITTILAPPILLY KIZHAKKUMURI",
+            "person": {
+                "id": "2015074500201",
+                "name": "SUNILKUMAR K P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHITTILAPPILLY GROUND",
+            "person": {
+                "id": "2015074500301",
+                "name": "RAJANI P C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNIKULAM",
+            "person": {
+                "id": "2015074500401",
+                "name": "LIJI PRATHAPAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHOORAKATTUKARA",
+            "person": {
+                "id": "2015074500501",
+                "name": "C R RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "RAMANCHIRA",
+            "person": {
+                "id": "2015074500601",
+                "name": "MAYA MANOJ"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUTHUVARA",
+            "person": {
+                "id": "2015074500701",
+                "name": "T R JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBAKKAD",
+            "person": {
+                "id": "2015074500801",
+                "name": "T D WILSON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHISSERY",
+            "person": {
+                "id": "2015074500901",
+                "name": "USHA SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VILANGAN",
+            "person": {
+                "id": "2015074501001",
+                "name": "SHOBA JAYADASAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PURANATTUKARA",
+            "person": {
+                "id": "2015074501101",
+                "name": "DOJU CHERUVATHUR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PARIKKAD",
+            "person": {
+                "id": "2015074501201",
+                "name": "VASANTHY DAMODHARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MOORPARA",
+            "person": {
+                "id": "2015074501301",
+                "name": "PUSHPALATHA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SANSKRIT COLLEGE",
+            "person": {
+                "id": "2015074501401",
+                "name": "SHYLAJA SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANIDAM",
+            "person": {
+                "id": "2015074501501",
+                "name": "V O CHUMMAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "UDALAKKAVU",
+            "person": {
+                "id": "2015074501601",
+                "name": "MURALI ADAT"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AMBALAMKAVU",
+            "person": {
+                "id": "2015074501701",
+                "name": "P RAJESWARAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ADAT",
+            "person": {
+                "id": "2015074501801",
+                "name": "P J DEVASSY (SUNNY)"
+            }
+        }
+    ]
+}

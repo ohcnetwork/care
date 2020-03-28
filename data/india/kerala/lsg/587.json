@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346972197,
+    "date": "2019-08-21",
+    "name": "Karunapuram  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "53.21km",
+    "localbody_code": "G060303",
+    "no_of_wards": 17,
+    "population": 25582,
+    "male": 12943,
+    "female": 12639,
+    "population_density": 572,
+    "sex_ratio": 977,
+    "literacy_rate": 94,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 93,
+    "president": "SIVAPRASADTHANNIPPARA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THOOKKUPALAM",
+            "person": {
+                "id": "2015058700101",
+                "name": "VIJI SHAJI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PRAKASHGRAM",
+            "person": {
+                "id": "2015058700201",
+                "name": "M.A.SIDHIQUE MUHAMMED KUNJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHOTTUPARA",
+            "person": {
+                "id": "2015058700301",
+                "name": "BIJU THAKIDIYIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHAKKAKANAM",
+            "person": {
+                "id": "2015058700401",
+                "name": "SINDU MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "RAMAKKALMEDU",
+            "person": {
+                "id": "2015058700501",
+                "name": "P.S.SHAMSUDHEEN MUHAMMED SAYED"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KURUVIKKANAM",
+            "person": {
+                "id": "2015058700601",
+                "name": "ANITHA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KATTEKANAM",
+            "person": {
+                "id": "2015058700701",
+                "name": "SIVAPRASAD THANNIPPARA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARUNAPURAM",
+            "person": {
+                "id": "2015058700801",
+                "name": "VINEETHA KUNNATHU CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENNAKULAM",
+            "person": {
+                "id": "2015058700901",
+                "name": "TOMY PLAVUVACHATHIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CUMBAMMETTU",
+            "person": {
+                "id": "2015058701001",
+                "name": "RENUKA GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SULTHANMEDU",
+            "person": {
+                "id": "2015058701101",
+                "name": "XAVIER JOHN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHALAKKUDIMEDU",
+            "person": {
+                "id": "2015058701201",
+                "name": "C.M.BALAKRISHNAN AZHAKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KULATHUMMEDU",
+            "person": {
+                "id": "2015058701301",
+                "name": "JOHN. KAKKANATTU GEORGE"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POTHINKANDOM",
+            "person": {
+                "id": "2015058701401",
+                "name": "RENJU MOL THANNICKAL NIRMALAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUZHITHOLU",
+            "person": {
+                "id": "2015058701501",
+                "name": "AMBILY SIBI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUZHIKKANDOM",
+            "person": {
+                "id": "2015058701601",
+                "name": "JESSYMOL KURIAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOOTTAR",
+            "person": {
+                "id": "2015058701701",
+                "name": "BINUTHA CHANDRAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347583942,
+    "date": "2019-08-21",
+    "name": "Thalikulam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Thalikkulam",
+    "area": "10.89km",
+    "localbody_code": "G080803",
+    "no_of_wards": 16,
+    "population": 24180,
+    "male": 11139,
+    "female": 13041,
+    "population_density": 2065,
+    "sex_ratio": 1171,
+    "literacy_rate": 91.59,
+    "literacy_rate_male": 94.7,
+    "literacy_rate_female": 88.9,
+    "president": "SAJITHAPI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLIKKADAVU",
+            "person": {
+                "id": "2015075700101",
+                "name": "PRAMILA SUDARSANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THRIVENY",
+            "person": {
+                "id": "2015075700201",
+                "name": "SINDHU SHAJIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUTHUKKULAM",
+            "person": {
+                "id": "2015075700301",
+                "name": "SHIHAB P A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULIYAMTHURUTH",
+            "person": {
+                "id": "2015075700401",
+                "name": "RAJANI K K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULAMPUZHA",
+            "person": {
+                "id": "2015075700501",
+                "name": "M K BABU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "HIGH SCHOOL",
+            "person": {
+                "id": "2015075700601",
+                "name": "SUBHASHITHAN E P K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015075700701",
+                "name": "RAMESH P R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHANTHODE",
+            "person": {
+                "id": "2015075700801",
+                "name": "SAJITHA P I"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAMBIKKADAVU",
+            "person": {
+                "id": "2015075700901",
+                "name": "SANDHYA RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARYAMPAADAM",
+            "person": {
+                "id": "2015075701001",
+                "name": "KRISHNA GOSH E V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAITHAKKAL SOUTH",
+            "person": {
+                "id": "2015075701101",
+                "name": "A T NENA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POOSARITHODU",
+            "person": {
+                "id": "2015075701201",
+                "name": "HAROON RASHEED K A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAITHAKKAL",
+            "person": {
+                "id": "2015075701301",
+                "name": "P S SULFIKAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PATHAMKALLU WEST",
+            "person": {
+                "id": "2015075701401",
+                "name": "SUMANA JOSHY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THARISU",
+            "person": {
+                "id": "2015075701501",
+                "name": "P I SHOUKATHALI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THAMBANKADAVU",
+            "person": {
+                "id": "2015075701601",
+                "name": "SINDHU BALAN"
+            }
+        }
+    ]
+}

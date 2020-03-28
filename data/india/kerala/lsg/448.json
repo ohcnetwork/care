@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346479745,
+    "date": "2019-08-21",
+    "name": "Ambalapuzha South  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Ambalapuzha",
+    "area": "13.29km",
+    "localbody_code": "G040502",
+    "no_of_wards": 15,
+    "population": 22593,
+    "male": 11070,
+    "female": 11523,
+    "population_density": 1866,
+    "sex_ratio": 1034,
+    "literacy_rate": 92,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 89,
+    "president": "G.VENULAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAKKAZHAM WEST",
+            "person": {
+                "id": "2015044800101",
+                "name": "RASEENA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAKKAZHAM EAST",
+            "person": {
+                "id": "2015044800201",
+                "name": "SABITHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KATTAKKUZHI",
+            "person": {
+                "id": "2015044800301",
+                "name": "INDIRA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANJIPADAM",
+            "person": {
+                "id": "2015044800401",
+                "name": "RATHIAMMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SAKTHISWARY",
+            "person": {
+                "id": "2015044800501",
+                "name": "SOBHA BALAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARUMADY WEST",
+            "person": {
+                "id": "2015044800602",
+                "name": "JITHU KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARUMADY",
+            "person": {
+                "id": "2015044800701",
+                "name": "KARUMADY MURALI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMAYIDA",
+            "person": {
+                "id": "2015044800801",
+                "name": "MAYA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AMAYIDA WEST",
+            "person": {
+                "id": "2015044800901",
+                "name": "MANOJ KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMBALAPUZHA",
+            "person": {
+                "id": "2015044801001",
+                "name": "SUSHAMA RAJEEV"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOMANA NORTH",
+            "person": {
+                "id": "2015044801101",
+                "name": "ADV.R.SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOMANA",
+            "person": {
+                "id": "2015044801201",
+                "name": "RAMADEVI.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015044801301",
+                "name": "G.VENULAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOMANA SOUTH",
+            "person": {
+                "id": "2015044801401",
+                "name": "SYAMLAL.B"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOMANA WEST",
+            "person": {
+                "id": "2015044801501",
+                "name": "SREEJA RATHEESH"
+            }
+        }
+    ]
+}

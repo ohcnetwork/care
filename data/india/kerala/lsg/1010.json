@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566348910233,
+    "date": "2019-08-21",
+    "name": "Velom  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnummal",
+    "area": "25.8km",
+    "localbody_code": "G110306",
+    "no_of_wards": 17,
+    "population": 22888,
+    "male": 11237,
+    "female": 11651,
+    "population_density": 887,
+    "sex_ratio": 1037,
+    "literacy_rate": 85.34,
+    "literacy_rate_male": 92.29,
+    "literacy_rate_female": 78.72,
+    "president": "ABDULLAV.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAKKUNI",
+            "person": {
+                "id": "2015101000101",
+                "name": "KUNHAYISHA KUNINGARATH THAZHAKKUNI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THEEKKUNI",
+            "person": {
+                "id": "2015101000201",
+                "name": "ABDULLA V.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THOOVAMALA",
+            "person": {
+                "id": "2015101000301",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALAKETTU",
+            "person": {
+                "id": "2015101000401",
+                "name": "SALEEMA K.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAPPUMALA",
+            "person": {
+                "id": "2015101000501",
+                "name": "MANOJAN K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERUKUNNU",
+            "person": {
+                "id": "2015101000601",
+                "name": "M.GOPALAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SANTHINAGAR",
+            "person": {
+                "id": "2015101000701",
+                "name": "FOUSIYA PAIKKATT"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOOLIKKUNNU",
+            "person": {
+                "id": "2015101000801",
+                "name": "SHIJINA M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ARAMBOL",
+            "person": {
+                "id": "2015101000901",
+                "name": "AMMAD HAJI NELLIKUNNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERUVAYAL",
+            "person": {
+                "id": "2015101001001",
+                "name": "SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KURICHAKAM",
+            "person": {
+                "id": "2015101001101",
+                "name": "SITHARA K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLIYATH",
+            "person": {
+                "id": "2015101001201",
+                "name": "K.K ANDRU MASTER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "GULIKAPPUZHA",
+            "person": {
+                "id": "2015101001301",
+                "name": "BEENA K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANIMALA",
+            "person": {
+                "id": "2015101001401",
+                "name": "O.P RAGHAVAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POOLAKKOOL",
+            "person": {
+                "id": "2015101001501",
+                "name": "BASHEER MANIKKOTH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOYURA",
+            "person": {
+                "id": "2015101001601",
+                "name": "LEELA N.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALODIKKUNNU",
+            "person": {
+                "id": "2015101001701",
+                "name": "MOLI MUYYOTTUMMAL"
+            }
+        }
+    ]
+}

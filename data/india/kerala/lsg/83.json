@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345117516,
+    "date": "2019-08-21",
+    "name": "Wadakanchery  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vadakkamchery",
+    "area": "296.96km",
+    "localbody_code": "B080300",
+    "no_of_wards": 13,
+    "population": 203544,
+    "male": 97126,
+    "female": 106418,
+    "population_density": 685,
+    "sex_ratio": 1095,
+    "literacy_rate": 86.34,
+    "literacy_rate_male": 90.41,
+    "literacy_rate_female": 82.7,
+    "president": "SBASANTHLAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KONDAYOOR",
+            "person": {
+                "id": "2015008300101",
+                "name": "VINEETH U V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "DESAMANGALAM",
+            "person": {
+                "id": "2015008300201",
+                "name": "BUSHARA T C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VARAVOOR",
+            "person": {
+                "id": "2015008300301",
+                "name": "SUNITHA P P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MULLURKKARA",
+            "person": {
+                "id": "2015008300401",
+                "name": "M P KUNHIKOYA THANGAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ATTOOR",
+            "person": {
+                "id": "2015008300501",
+                "name": "P V SULAIMAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VAZHANI",
+            "person": {
+                "id": "2015008300601",
+                "name": "A K SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MALAKKA",
+            "person": {
+                "id": "2015008300701",
+                "name": "M GIRIJADEVI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKUMKARA",
+            "person": {
+                "id": "2015008300801",
+                "name": "ALEYAMA JOHNSON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHITTANDA",
+            "person": {
+                "id": "2015008300901",
+                "name": "S BASANTHLAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANGAD",
+            "person": {
+                "id": "2015008301001",
+                "name": "SIJI JOHN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERUMAPETTY",
+            "person": {
+                "id": "2015008301101",
+                "name": "SAFEENA ASEES"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THALI",
+            "person": {
+                "id": "2015008301201",
+                "name": "K M HANEEFA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THALASSERY",
+            "person": {
+                "id": "2015008301301",
+                "name": "SALINI VINOD"
+            }
+        }
+    ]
+}

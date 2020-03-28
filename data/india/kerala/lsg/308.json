@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566345990327,
+    "date": "2019-08-21",
+    "name": "Alappad  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Karunagappally",
+    "area": "7.38km",
+    "localbody_code": "G020105",
+    "no_of_wards": 16,
+    "population": 24576,
+    "male": 12526,
+    "female": 12050,
+    "population_density": 3300,
+    "sex_ratio": 962,
+    "literacy_rate": 92.09,
+    "literacy_rate_male": 93.62,
+    "literacy_rate_female": 90.5,
+    "president": "P.SALEENA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AZHEEKAL-A",
+            "person": {
+                "id": "2015030800101",
+                "name": "M. B. SANJEEV"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AZHEEKAL-B",
+            "person": {
+                "id": "2015030800201",
+                "name": "SALINA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AZHEEKAL-C",
+            "person": {
+                "id": "2015030800301",
+                "name": "BABY. R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AZHEEKAL-D",
+            "person": {
+                "id": "2015030800401",
+                "name": "KAMALAM. S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AZHEEKAL-E",
+            "person": {
+                "id": "2015030800501",
+                "name": "RAMLA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SRAYIKKAD",
+            "person": {
+                "id": "2015030800601",
+                "name": "SAJIMOL. R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAYAKADAVU",
+            "person": {
+                "id": "2015030800701",
+                "name": "PRIYAMALINI. R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUZHITHURA",
+            "person": {
+                "id": "2015030800801",
+                "name": "N. BINUMON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALAPPAD",
+            "person": {
+                "id": "2015030800901",
+                "name": "JAYAKUMAR. P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERIAZHEEKAL-A",
+            "person": {
+                "id": "2015030801001",
+                "name": "SUHASINI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERIAZHEEKAL-B",
+            "person": {
+                "id": "2015030801101",
+                "name": "CIBI BONY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERIAZHEEKAL-C",
+            "person": {
+                "id": "2015030801201",
+                "name": "RAJESHLAL. K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOCHU OACHIRA",
+            "person": {
+                "id": "2015030801301",
+                "name": "RAMKUMAR. R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PANDARATURUTH-A",
+            "person": {
+                "id": "2015030801401",
+                "name": "SHEEBA BABU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MOOKKUMPUZHA",
+            "person": {
+                "id": "2015030801501",
+                "name": "P. SALEENA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VELLANATHURUTHU",
+            "person": {
+                "id": "2015030801601",
+                "name": "UNNIKRISHNAN. K"
+            }
+        }
+    ]
+}

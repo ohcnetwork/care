@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347035073,
+    "date": "2019-08-21",
+    "name": "Vandanmedu  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Kattappana",
+    "area": "68.18km",
+    "localbody_code": "G060603",
+    "no_of_wards": 18,
+    "population": 26629,
+    "male": 13424,
+    "female": 13205,
+    "population_density": 391,
+    "sex_ratio": 984,
+    "literacy_rate": 77,
+    "literacy_rate_male": 83,
+    "literacy_rate_female": 71,
+    "president": "JANCYREGI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MALI",
+            "person": {
+                "id": "2015060700101",
+                "name": "ARUMUGAM KANNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "HEMAKKADAVU",
+            "person": {
+                "id": "2015060700201",
+                "name": "REKHA S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PULIYANMALA",
+            "person": {
+                "id": "2015060700301",
+                "name": "JAGADHESAN ARUMUGAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMAYAR",
+            "person": {
+                "id": "2015060700401",
+                "name": "SURESH SREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VELLIMALA",
+            "person": {
+                "id": "2015060700502",
+                "name": "AJO VARGHESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHETTUKUZHI",
+            "person": {
+                "id": "2015060700601",
+                "name": "RAJI SANTHOSHKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOCHARA",
+            "person": {
+                "id": "2015060700701",
+                "name": "JANCY REGI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "RAJAKANDOM",
+            "person": {
+                "id": "2015060700801",
+                "name": "GIRISH C.G"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NETTITHOZHU",
+            "person": {
+                "id": "2015060700901",
+                "name": "ANNAMMA JOHNSON"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MYLADUMPARA",
+            "person": {
+                "id": "2015060701001",
+                "name": "ANTONY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ACHANKANAM",
+            "person": {
+                "id": "2015060701101",
+                "name": "TONY JAMES"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTTADY",
+            "person": {
+                "id": "2015060701201",
+                "name": "SANDHYA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANAKKARA",
+            "person": {
+                "id": "2015060701301",
+                "name": "RAJA MATTUKKARAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADASSIKKADAVU",
+            "person": {
+                "id": "2015060701401",
+                "name": "SOUNDHARYA JOHNSON"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "INCHAPPADAPPU",
+            "person": {
+                "id": "2015060701501",
+                "name": "CINIMOL GEORGE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "SASTHANADA",
+            "person": {
+                "id": "2015060701601",
+                "name": "CHITHRA DEVI S"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARUVAKULAM",
+            "person": {
+                "id": "2015060701701",
+                "name": "BHANUMATHY KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VANDANMEDU",
+            "person": {
+                "id": "2015060701801",
+                "name": "CHITHRA SIVAKUMAR"
+            }
+        }
+    ]
+}

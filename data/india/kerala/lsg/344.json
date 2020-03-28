@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566346095374,
+    "date": "2019-08-21",
+    "name": "Kundara  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chittumala",
+    "area": "11.07km",
+    "localbody_code": "G020702",
+    "no_of_wards": 14,
+    "population": 17644,
+    "male": 8656,
+    "female": 8988,
+    "population_density": 1594,
+    "sex_ratio": 1038,
+    "literacy_rate": 92.36,
+    "literacy_rate_male": 95.64,
+    "literacy_rate_female": 89.24,
+    "president": "K.BABURAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MULAVANA",
+            "person": {
+                "id": "2015034400101",
+                "name": "SINDHU RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIPPURAM",
+            "person": {
+                "id": "2015034400201",
+                "name": "S.SATHEESHKUMAR UNNITHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUKKOODU",
+            "person": {
+                "id": "2015034400301",
+                "name": "USHA SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PALANIRAPPU",
+            "person": {
+                "id": "2015034400401",
+                "name": "ROSE GEORGE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIPRA",
+            "person": {
+                "id": "2015034400501",
+                "name": "K. BABURAJAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THANNICODU",
+            "person": {
+                "id": "2015034400601",
+                "name": "MINI THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKOLIL",
+            "person": {
+                "id": "2015034400701",
+                "name": "ANEESH.A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THETTIKKUNNU",
+            "person": {
+                "id": "2015034400801",
+                "name": "SIVA PRASAD. V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUNDARA",
+            "person": {
+                "id": "2015034400901",
+                "name": "G. VINOD KUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ROADKADAVU",
+            "person": {
+                "id": "2015034401001",
+                "name": "RUDOLFUS ANTONY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANJIRACODU",
+            "person": {
+                "id": "2015034401101",
+                "name": "JAYALEKSHMI.G"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "M.G.D.H.S",
+            "person": {
+                "id": "2015034401201",
+                "name": "BETSY ROY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KATAKKASSERI",
+            "person": {
+                "id": "2015034401301",
+                "name": "SREEKALA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NELLIVILA",
+            "person": {
+                "id": "2015034401401",
+                "name": "SUDHARMMA.P"
+            }
+        }
+    ]
+}

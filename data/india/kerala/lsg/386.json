@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346263414,
+    "date": "2019-08-21",
+    "name": "Koipuram  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Koipuram",
+    "area": "22.26km",
+    "localbody_code": "G030303",
+    "no_of_wards": 17,
+    "population": 25517,
+    "male": 12203,
+    "female": 13314,
+    "population_density": 1146,
+    "sex_ratio": 1091,
+    "literacy_rate": 96.14,
+    "literacy_rate_male": 97.39,
+    "literacy_rate_female": 95,
+    "president": "MONCYKIZHAKKEDATHU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUMBANADU VADAKKU",
+            "person": {
+                "id": "2015038600101",
+                "name": "LILLYKUTTY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "IYRAKKAVU",
+            "person": {
+                "id": "2015038600201",
+                "name": "ROY EAPEN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANJIRAPPARA",
+            "person": {
+                "id": "2015038600301",
+                "name": "JOBY VARUGHESE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KURAVANKUZHY",
+            "person": {
+                "id": "2015038600401",
+                "name": "RENY RAJU KUZHIKALA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULLAD KIZHAKKU",
+            "person": {
+                "id": "2015038600501",
+                "name": "SREEKUMARY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULLAD VADAKKU",
+            "person": {
+                "id": "2015038600601",
+                "name": "P.G ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULLAD",
+            "person": {
+                "id": "2015038600701",
+                "name": "GEORGE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VARAYANNOOR",
+            "person": {
+                "id": "2015038600801",
+                "name": "SREELEKHA VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOVATHOOR",
+            "person": {
+                "id": "2015038600901",
+                "name": "SUMA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KADAPRA",
+            "person": {
+                "id": "2015038601001",
+                "name": "ADV.JESSY SAJAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NELLICKAL",
+            "person": {
+                "id": "2015038601101",
+                "name": "BINI SHAJI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOIPURAM",
+            "person": {
+                "id": "2015038601201",
+                "name": "K.R PRASANNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THATTAKKADU",
+            "person": {
+                "id": "2015038601301",
+                "name": "JOHN CHANDY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THATTAKKADU KIZHAKKU",
+            "person": {
+                "id": "2015038601401",
+                "name": "JOLLY MATHEW"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUTTUMON",
+            "person": {
+                "id": "2015038601501",
+                "name": "MONCY KIZHAKKEDATHU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUMBANADU KIZHAKKU",
+            "person": {
+                "id": "2015038601601",
+                "name": "VARUGHESE EAPEN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NELLIMALA",
+            "person": {
+                "id": "2015038601701",
+                "name": "GOPIKUTTAN"
+            }
+        }
+    ]
+}

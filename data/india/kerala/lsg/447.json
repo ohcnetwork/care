@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346477423,
+    "date": "2019-08-21",
+    "name": "Purakkad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Ambalapuzha",
+    "area": "23.19km",
+    "localbody_code": "G040501",
+    "no_of_wards": 18,
+    "population": 27912,
+    "male": 13751,
+    "female": 14161,
+    "population_density": 1204,
+    "sex_ratio": 1030,
+    "literacy_rate": 93,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 90,
+    "president": "RAHUMATH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAYALKULANGARA",
+            "person": {
+                "id": "2015044700101",
+                "name": "PRASAD"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAROOR NORTH",
+            "person": {
+                "id": "2015044700201",
+                "name": "PRIYA.B"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAROOR EAST",
+            "person": {
+                "id": "2015044700301",
+                "name": "JAYASREE(JAYASREE CHANDU)"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAROOR",
+            "person": {
+                "id": "2015044700401",
+                "name": "SAJI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAZHAYANGADI",
+            "person": {
+                "id": "2015044700501",
+                "name": "PRABHA RAVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THYCHIRA",
+            "person": {
+                "id": "2015044700601",
+                "name": "AD:V.S.JINURAJ"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NALUCHIRA",
+            "person": {
+                "id": "2015044700701",
+                "name": "PRABALENDREN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THOTTAPPALLY",
+            "person": {
+                "id": "2015044700801",
+                "name": "R.SUNI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THOTTAPPALLY WEST",
+            "person": {
+                "id": "2015044700901",
+                "name": "P.P.NIJI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "HARBOUR",
+            "person": {
+                "id": "2015044701001",
+                "name": "P.AROMAL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SPILLWAY EAST",
+            "person": {
+                "id": "2015044701101",
+                "name": "R.RAJI(UNNI)"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHENNANGARA",
+            "person": {
+                "id": "2015044701201",
+                "name": "LIJIDEVADATHAN(MANIKUTTY)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANANDESWARAM",
+            "person": {
+                "id": "2015044701302",
+                "name": "NIJA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUNDHALA",
+            "person": {
+                "id": "2015044701401",
+                "name": "SASIKANTHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHENNADA",
+            "person": {
+                "id": "2015044701501",
+                "name": "SUJATHANKAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015044701601",
+                "name": "RAHUMATH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PURAKKAD",
+            "person": {
+                "id": "2015044701701",
+                "name": "SULEKHA BABU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PAZHAYA PURAKKAD",
+            "person": {
+                "id": "2015044701801",
+                "name": "BINDHU SHAJI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346996768,
+    "date": "2019-08-21",
+    "name": "Kudayathoor  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Elamdesom",
+    "area": "27.64km",
+    "localbody_code": "G060407",
+    "no_of_wards": 13,
+    "population": 10929,
+    "male": 5426,
+    "female": 5503,
+    "population_density": 395,
+    "sex_ratio": 1014,
+    "literacy_rate": 95,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 93,
+    "president": "PUSHPAVIJAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUDAYATHOOR NORTH",
+            "person": {
+                "id": "2015059800101",
+                "name": "SABU AUGUSTINE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAIPA",
+            "person": {
+                "id": "2015059800202",
+                "name": "SASI P K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NJARALAMPUZHA",
+            "person": {
+                "id": "2015059800301",
+                "name": "VALSAMMA BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANJAR",
+            "person": {
+                "id": "2015059800401",
+                "name": "ANAS T.A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOOVAPPALLY",
+            "person": {
+                "id": "2015059800501",
+                "name": "MURALEEDHARAN K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHAKKIKAVU",
+            "person": {
+                "id": "2015059800601",
+                "name": "GEENA BAIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MORKADU",
+            "person": {
+                "id": "2015059800701",
+                "name": "USHA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUDAYATHOOR EAST",
+            "person": {
+                "id": "2015059800801",
+                "name": "PUSHPA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUDAYATHOOR CENTRAL",
+            "person": {
+                "id": "2015059800901",
+                "name": "NIZA SHAJI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUDAYATHOOR WEST",
+            "person": {
+                "id": "2015059801001",
+                "name": "BINDU SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ADOORMALA",
+            "person": {
+                "id": "2015059801101",
+                "name": "SHEEBA CHANDRASEKHARA PILLAI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOLAPRA SOUTH",
+            "person": {
+                "id": "2015059801201",
+                "name": "SUMA ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOLAPRA THALAYANADU",
+            "person": {
+                "id": "2015059801301",
+                "name": "ROSAMMA FRANCIS"
+            }
+        }
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346241394,
+    "date": "2019-08-21",
+    "name": "Kadapra  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Pulikezhu",
+    "area": "14.74km",
+    "localbody_code": "G030201",
+    "no_of_wards": 15,
+    "population": 21800,
+    "male": 10529,
+    "female": 11271,
+    "population_density": 1479,
+    "sex_ratio": 1070,
+    "literacy_rate": 95.69,
+    "literacy_rate_male": 97.35,
+    "literacy_rate_female": 94.16,
+    "president": "SHIBUVARGHESE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALANJAVATTOM",
+            "person": {
+                "id": "2015037900101",
+                "name": "KURUVILLA (MOHAN THYKADAVIL)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SUGAR FACTORY",
+            "person": {
+                "id": "2015037900201",
+                "name": "PRASANNA KUMARY P.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ALUMTHURUTHY EAST",
+            "person": {
+                "id": "2015037900301",
+                "name": "K.V VIJAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALANJAVATTOM EAST",
+            "person": {
+                "id": "2015037900401",
+                "name": "SALI MATHAI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THIKKAPUZHA",
+            "person": {
+                "id": "2015037900501",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "UPADESIKADAVU",
+            "person": {
+                "id": "2015037900601",
+                "name": "LIJI R PANICKER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ILLIMALA",
+            "person": {
+                "id": "2015037900701",
+                "name": "ANIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "UZHATHIL",
+            "person": {
+                "id": "2015037900801",
+                "name": "MARRYKUTTY JOHNSON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "HOSPITAL WARD",
+            "person": {
+                "id": "2015037900901",
+                "name": "SHIBU VARGHESE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KADAPRA",
+            "person": {
+                "id": "2015037901001",
+                "name": "V K MADHU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADAPRA SOUTH",
+            "person": {
+                "id": "2015037901101",
+                "name": "RAJESHWARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADAPRA MANNAR",
+            "person": {
+                "id": "2015037901201",
+                "name": "SURESH P THOMAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEVERI",
+            "person": {
+                "id": "2015037901301",
+                "name": "SHEEBA CHACKO"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADAPRA WEST",
+            "person": {
+                "id": "2015037901401",
+                "name": "JOSE V CHERRY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ALUMTHURUTHY",
+            "person": {
+                "id": "2015037901501",
+                "name": "SHANTY ABRAHAM"
+            }
+        }
+    ]
+}

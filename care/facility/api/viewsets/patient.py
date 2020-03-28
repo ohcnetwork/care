@@ -2,8 +2,11 @@ from django_filters import rest_framework as filters
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from care.facility.api.serializers.patient import PatientSerializer, PatientDetailSerializer
-from care.facility.api.viewsets.user_access_mixin import UserAccessMixin
+from care.facility.api.mixins import UserAccessMixin
+from care.facility.api.serializers.patient import (
+    PatientDetailSerializer,
+    PatientSerializer,
+)
 from care.facility.models import PatientRegistration
 
 
@@ -19,7 +22,7 @@ class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
     filterset_class = PatientFilterSet
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return PatientDetailSerializer
         else:
             return self.serializer_class

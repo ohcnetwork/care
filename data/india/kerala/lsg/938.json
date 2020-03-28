@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348671359,
+    "date": "2019-08-21",
+    "name": "Melattur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perinthalmanna",
+    "area": "27.24km",
+    "localbody_code": "G100703",
+    "no_of_wards": 16,
+    "population": 19990,
+    "male": 9707,
+    "female": 10283,
+    "population_density": 734,
+    "sex_ratio": 1059,
+    "literacy_rate": 88.7,
+    "literacy_rate_male": 92.7,
+    "literacy_rate_female": 84.71,
+    "president": "V.KAMALAM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDAYATTUR",
+            "person": {
+                "id": "2015093800101",
+                "name": "SAJITHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANAZHI",
+            "person": {
+                "id": "2015093800201",
+                "name": "MOHAMMED TWAIB"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "OLIPPUZHA",
+            "person": {
+                "id": "2015093800301",
+                "name": "SAINABA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLIKUTH",
+            "person": {
+                "id": "2015093800401",
+                "name": "SASIDHARAN. V.E"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KIZHAKKUMPADAM",
+            "person": {
+                "id": "2015093800501",
+                "name": "SIDHEEQ. K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MELATTUR",
+            "person": {
+                "id": "2015093800601",
+                "name": "UDAYAVARMANUNNI. K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHANTHAPPADI",
+            "person": {
+                "id": "2015093800701",
+                "name": "AYISHA SHEMI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "UCHARAKKADAVU",
+            "person": {
+                "id": "2015093800801",
+                "name": "V. KAMALAM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANHIRAMPARA",
+            "person": {
+                "id": "2015093800901",
+                "name": "UMAIMATH. K.T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AYILAKKARA",
+            "person": {
+                "id": "2015093801001",
+                "name": "MOHAMMEDALI. P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VENGOOR",
+            "person": {
+                "id": "2015093801101",
+                "name": "MANI VADAKKEKKARA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALAYAPPURAM",
+            "person": {
+                "id": "2015093801201",
+                "name": "UMAIMATH. K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KODAKKADANCHERY",
+            "person": {
+                "id": "2015093801301",
+                "name": "RUGMINI. K.V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEMMANIYODE",
+            "person": {
+                "id": "2015093801401",
+                "name": "AJITH PRASAD. A"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "POOKKUNNU",
+            "person": {
+                "id": "2015093801501",
+                "name": "SREEDEVI. P.P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KATTUCHIRA",
+            "person": {
+                "id": "2015093801601",
+                "name": "UMMER. K.P"
+            }
+        }
+    ]
+}

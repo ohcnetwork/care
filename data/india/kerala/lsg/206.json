@@ -1,0 +1,284 @@
+{
+    "timeStamp": 1566345615493,
+    "date": "2019-08-21",
+    "name": "Shoranur  Municipality, Palakkad District",
+    "district": "Palakkad",
+    "area": "32.28km",
+    "localbody_code": "M090200",
+    "no_of_wards": 33,
+    "population": 42022,
+    "male": 19995,
+    "female": 22027,
+    "population_density": 1302,
+    "sex_ratio": 1096,
+    "literacy_rate": 83.62,
+    "literacy_rate_male": 85.3,
+    "literacy_rate_female": 82.09,
+    "chairperson": "VVIMALA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANAYAM WEST",
+            "person": {
+                "id": "2015020600101",
+                "name": "V T ALI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANAYAM EAST",
+            "person": {
+                "id": "2015020600201",
+                "name": "SINI MANOJ"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THRIPATTA",
+            "person": {
+                "id": "2015020600301",
+                "name": "N JAYAPAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KULAPPULLY U P SCHOOL",
+            "person": {
+                "id": "2015020600401",
+                "name": "V VIMALA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MELMURY",
+            "person": {
+                "id": "2015020600501",
+                "name": "VIPIN NATH M K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "S N COLLEGE",
+            "person": {
+                "id": "2015020600601",
+                "name": "V M UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PARAKUTTYKKAVU",
+            "person": {
+                "id": "2015020600701",
+                "name": "A GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARANI",
+            "person": {
+                "id": "2015020600801",
+                "name": "SUNU R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAVALAPARA",
+            "person": {
+                "id": "2015020600901",
+                "name": "JAYESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARAKKAD",
+            "person": {
+                "id": "2015020601001",
+                "name": "MANIKANDAN K P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THATHAMKODU",
+            "person": {
+                "id": "2015020601101",
+                "name": "C K SUNIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHUDUVALATHUR SOUTH",
+            "person": {
+                "id": "2015020601201",
+                "name": "K N ANIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHUDUVALATHUR",
+            "person": {
+                "id": "2015020601301",
+                "name": "K SHEEBA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ARIYANCHIRA U P SCHOOL",
+            "person": {
+                "id": "2015020601401",
+                "name": "DIVYA P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "TECHNICAL HIGH SCHOOL",
+            "person": {
+                "id": "2015020601501",
+                "name": "RAJULA P A"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUNICIPAL OFFICE",
+            "person": {
+                "id": "2015020601601",
+                "name": "MUSTHAFA T M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "SHORANUR TOWN",
+            "person": {
+                "id": "2015020601701",
+                "name": "V K SREEKANDAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHUDUVALATHUR WEST",
+            "person": {
+                "id": "2015020601801",
+                "name": "V K SREEKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "RAILWAY JUNCTION",
+            "person": {
+                "id": "2015020601901",
+                "name": "T BINDHU"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "TOWN WEST",
+            "person": {
+                "id": "2015020602001",
+                "name": "ADV. KRISHNAVENI"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "ANTHURKUNNU",
+            "person": {
+                "id": "2015020602101",
+                "name": "V N MANOJ KUMAR"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MUTHUKURUSSI",
+            "person": {
+                "id": "2015020602201",
+                "name": "E K JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "GANESHGIRI",
+            "person": {
+                "id": "2015020602301",
+                "name": "K SOBHANAKUMARI"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "MUNDAYA SOUTH",
+            "person": {
+                "id": "2015020602401",
+                "name": "JISHA P"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "MUNDAYA NORTH",
+            "person": {
+                "id": "2015020602501",
+                "name": "SINDHU V C"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "NEDUGOTTUR",
+            "person": {
+                "id": "2015020602601",
+                "name": "M NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "PARUTHYPRA WEST",
+            "person": {
+                "id": "2015020602701",
+                "name": "PUSHPALATHA"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "PARUTHYPRA EAST",
+            "person": {
+                "id": "2015020602801",
+                "name": "LATHA JOBY M"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "MANJAKKAD",
+            "person": {
+                "id": "2015020602901",
+                "name": "NIRMALA P"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "GOV. HOSPITAL",
+            "person": {
+                "id": "2015020603001",
+                "name": "AJITHA D"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "ANTHIMAHAKALANCHIRA",
+            "person": {
+                "id": "2015020603101",
+                "name": "SANDHYA C"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "HEALTH CENTRE",
+            "person": {
+                "id": "2015020603201",
+                "name": "GEETHA K"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "CHUVANA GATE",
+            "person": {
+                "id": "2015020603301",
+                "name": "NISHA M N"
+            }
+        }
+    ]
+}

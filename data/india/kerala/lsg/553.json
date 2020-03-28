@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346860278,
+    "date": "2019-08-21",
+    "name": "Vijayapuram  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pallom",
+    "area": "29.7km",
+    "localbody_code": "G050804",
+    "no_of_wards": 19,
+    "population": 50417,
+    "male": 25225,
+    "female": 25192,
+    "population_density": 1698,
+    "sex_ratio": 999,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "SISIBOBI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NATTASSERY",
+            "person": {
+                "id": "2015055300101",
+                "name": "E P  NALINAKSHAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NALPAMATTOM",
+            "person": {
+                "id": "2015055300201",
+                "name": "GEETHA  SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAMPUZHA",
+            "person": {
+                "id": "2015055300301",
+                "name": "LALITHA  SURESH BABU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PERINGALLOOR",
+            "person": {
+                "id": "2015055300402",
+                "name": "GEORGE M PHILIP"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BLOCK WARD",
+            "person": {
+                "id": "2015055300501",
+                "name": "SOMANKUTTY  V  T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VADAVATHOOR",
+            "person": {
+                "id": "2015055300601",
+                "name": "N C CHACKO"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NAVODAYA",
+            "person": {
+                "id": "2015055300701",
+                "name": "BIJU AMBALATHINKAL (THOMAS JOHN)"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANDIRAM",
+            "person": {
+                "id": "2015055300801",
+                "name": "BAIJU CHERUKOTTAYIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHEMMARAPPALLY",
+            "person": {
+                "id": "2015055300901",
+                "name": "SHEEBA  BIJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANGANAM",
+            "person": {
+                "id": "2015055301001",
+                "name": "UNNIKRISHNAN  B"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ASRAMAM",
+            "person": {
+                "id": "2015055301101",
+                "name": "V R SOMINI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THAMARASSERY",
+            "person": {
+                "id": "2015055301201",
+                "name": "DEEPA JESUS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHUSSERY",
+            "person": {
+                "id": "2015055301301",
+                "name": "ELAMMA  ANDREWS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALATHIPADY",
+            "person": {
+                "id": "2015055301401",
+                "name": "SUJA  GEORGE"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "GIRIDEEPAM",
+            "person": {
+                "id": "2015055301501",
+                "name": "REJANI  SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "M R F",
+            "person": {
+                "id": "2015055301601",
+                "name": "ANSU  SUNNY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PONPALLY",
+            "person": {
+                "id": "2015055301701",
+                "name": "PRATHEESH MAMPOZHY (PRATHEESH KUMAR P J)"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MADHURAMCHERY",
+            "person": {
+                "id": "2015055301801",
+                "name": "SISI BOBI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MEENAMTHARA",
+            "person": {
+                "id": "2015055301901",
+                "name": "USHA  VENUGOPAL"
+            }
+        }
+    ]
+}

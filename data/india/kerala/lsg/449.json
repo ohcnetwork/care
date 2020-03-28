@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346482628,
+    "date": "2019-08-21",
+    "name": "Punnapra South  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Ambalapuzha",
+    "area": "9.153km",
+    "localbody_code": "G040504",
+    "no_of_wards": 17,
+    "population": 22916,
+    "male": 10865,
+    "female": 12051,
+    "population_density": 2504,
+    "sex_ratio": 1109,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 92,
+    "president": "MSHEEJA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SAMARABHUMI WARD",
+            "person": {
+                "id": "2015044900101",
+                "name": "K.F THOBIAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POLITECHNIC WARD",
+            "person": {
+                "id": "2015044900201",
+                "name": "SUDHARMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARAVUKADU WARD",
+            "person": {
+                "id": "2015044900301",
+                "name": "T PRADEEP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ERETHODU WARD",
+            "person": {
+                "id": "2015044900401",
+                "name": "SINDHUMOL T B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARIMBAVALAVU WARD",
+            "person": {
+                "id": "2015044900501",
+                "name": "K. UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARUTHAMADAM WARD",
+            "person": {
+                "id": "2015044900601",
+                "name": "SULABHA SHAJI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VETTIKKARI WARD",
+            "person": {
+                "id": "2015044900701",
+                "name": "R RAJIMON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POTHASSERI WARD",
+            "person": {
+                "id": "2015044900801",
+                "name": "SALEENA A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "J.B.S SCHOOL WARD",
+            "person": {
+                "id": "2015044900901",
+                "name": "M SHEEJA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "POWER HOUSE WARD",
+            "person": {
+                "id": "2015044901002",
+                "name": "SEENATH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANCHAYAT OFFICE WARD",
+            "person": {
+                "id": "2015044901101",
+                "name": "INDULEKHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "S.M.C WARD",
+            "person": {
+                "id": "2015044901201",
+                "name": "FOUSIYA NIZAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RAILWAY STATION WARD",
+            "person": {
+                "id": "2015044901301",
+                "name": "LATHA K K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "FISHLAND CENTER WARD",
+            "person": {
+                "id": "2015044901401",
+                "name": "KRISHNAPRIYA P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANJILIPARAMBU WARD",
+            "person": {
+                "id": "2015044901501",
+                "name": "BINDU BIJU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VIJAYANI PRADAYANI GRANDHASALA WARD",
+            "person": {
+                "id": "2015044901601",
+                "name": "MERCY ALOSIOUS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "C.Y.M.A WARD",
+            "person": {
+                "id": "2015044901701",
+                "name": "USHA FRANCIS"
+            }
+        }
+    ]
+}

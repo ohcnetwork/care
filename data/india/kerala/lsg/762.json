@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347597022,
+    "date": "2019-08-21",
+    "name": "Chazhur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Anthikkad",
+    "area": "25.54km",
+    "localbody_code": "G080903",
+    "no_of_wards": 18,
+    "population": 27610,
+    "male": 12996,
+    "female": 14614,
+    "population_density": 1081,
+    "sex_ratio": 1124,
+    "literacy_rate": 91.07,
+    "literacy_rate_male": 94.91,
+    "literacy_rate_female": 87.7,
+    "president": "JYOTHIKANAKARAJ",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VAPPUZHA",
+            "person": {
+                "id": "2015076200101",
+                "name": "BINDHU PREMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHAZHUR NORTH",
+            "person": {
+                "id": "2015076200201",
+                "name": "V.V.SURESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHAZHUR  EAST",
+            "person": {
+                "id": "2015076200301",
+                "name": "SUJATHA ARAVINDAKSHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLU",
+            "person": {
+                "id": "2015076200401",
+                "name": "K.PARAMESWARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ALAPAD",
+            "person": {
+                "id": "2015076200501",
+                "name": "SHAJITHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PURATHUR",
+            "person": {
+                "id": "2015076200601",
+                "name": "V.R.BIJU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOTTAM",
+            "person": {
+                "id": "2015076200701",
+                "name": "SIMI MANOJ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "INCHAMUDI",
+            "person": {
+                "id": "2015076200801",
+                "name": "AMBILI SUNIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAROOPADAM",
+            "person": {
+                "id": "2015076200901",
+                "name": "E.C.RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHIRAKKAL",
+            "person": {
+                "id": "2015076201001",
+                "name": "IBRAHIM P.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOLOTHUMKADAVU",
+            "person": {
+                "id": "2015076201102",
+                "name": "ANUSHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PAZHUVIL CENTRE",
+            "person": {
+                "id": "2015076201201",
+                "name": "SHAIJI SUNIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAZHUVIL WEST",
+            "person": {
+                "id": "2015076201301",
+                "name": "VIJI SHANMUGHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PAZHUVIL",
+            "person": {
+                "id": "2015076201401",
+                "name": "GOPI M.R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAZHUVIL  EAST",
+            "person": {
+                "id": "2015076201501",
+                "name": "RAMACHANDRAN K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "JANATHA",
+            "person": {
+                "id": "2015076201601",
+                "name": "JYOTHI KANAKARAJ"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAZHUVIL NORTH",
+            "person": {
+                "id": "2015076201702",
+                "name": "DEEPA VASANTHAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHAZHUR WEST",
+            "person": {
+                "id": "2015076201801",
+                "name": "SHINI RAJILAL"
+            }
+        }
+    ]
+}

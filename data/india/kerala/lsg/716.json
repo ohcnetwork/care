@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566347422595,
+    "date": "2019-08-21",
+    "name": "Punnayurkulam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chavakkad",
+    "area": "18.71km",
+    "localbody_code": "G080104",
+    "no_of_wards": 19,
+    "population": 29795,
+    "male": 13965,
+    "female": 15830,
+    "population_density": 1592,
+    "sex_ratio": 1133,
+    "literacy_rate": 85.57,
+    "literacy_rate_male": 90.38,
+    "literacy_rate_female": 81.47,
+    "president": "A.DDHANEEP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THANGALPADI",
+            "person": {
+                "id": "2015071600101",
+                "name": "ABID.K.H"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NAKKOLA",
+            "person": {
+                "id": "2015071600201",
+                "name": "BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERAYI",
+            "person": {
+                "id": "2015071600301",
+                "name": "A.D DHANEEP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THRIPPAT",
+            "person": {
+                "id": "2015071600401",
+                "name": "SHAJI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAVINCHODE",
+            "person": {
+                "id": "2015071600501",
+                "name": "HASEENA ABUTHAHIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUNNAYOORKULAM",
+            "person": {
+                "id": "2015071600601",
+                "name": "HASEENA SAINUDHEEN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHEMMANNOOR NORTH",
+            "person": {
+                "id": "2015071600701",
+                "name": "JASMIN SHAHEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEMMANNOOR SOUTH",
+            "person": {
+                "id": "2015071600801",
+                "name": "JAYALAKSHMI RAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARUR",
+            "person": {
+                "id": "2015071600901",
+                "name": "FARIKH U.M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ATTUPURAM",
+            "person": {
+                "id": "2015071601001",
+                "name": "ANITHA DARMAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ALTHARA",
+            "person": {
+                "id": "2015071601101",
+                "name": "LASITHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUNNOOKAVU",
+            "person": {
+                "id": "2015071601201",
+                "name": "MAIMOONA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADIKKAD",
+            "person": {
+                "id": "2015071601301",
+                "name": "INDIRA PRABHULAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUZHIKKALA",
+            "person": {
+                "id": "2015071601401",
+                "name": "MANOJ"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAKKARA",
+            "person": {
+                "id": "2015071601501",
+                "name": "ABIDA SAHAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PAPPALI",
+            "person": {
+                "id": "2015071601601",
+                "name": "A.M ALAVUDHEEN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUMARANPADI",
+            "person": {
+                "id": "2015071601701",
+                "name": "NOUSHAD V"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ANDATHODE",
+            "person": {
+                "id": "2015071601801",
+                "name": "SALEENA MOIDHEEN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PERIYAMBALAM",
+            "person": {
+                "id": "2015071601901",
+                "name": "JAYANTHI SASIDHARAN"
+            }
+        }
+    ]
+}

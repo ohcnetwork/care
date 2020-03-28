@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348706603,
+    "date": "2019-08-21",
+    "name": "Pulamanthole  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "32.1km",
+    "localbody_code": "G100707",
+    "no_of_wards": 20,
+    "population": 29603,
+    "male": 14156,
+    "female": 15447,
+    "population_density": 922,
+    "sex_ratio": 1091,
+    "literacy_rate": 88.98,
+    "literacy_rate_male": 93,
+    "literacy_rate_female": 84.9,
+    "president": "MUHAMMEDHANEEFAV.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POOSALIKKULAMBU",
+            "person": {
+                "id": "2015094500101",
+                "name": "ELSAMMA CHERIYAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MALAPARAMBU",
+            "person": {
+                "id": "2015094500201",
+                "name": "THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHELAKKAD",
+            "person": {
+                "id": "2015094500301",
+                "name": "MUHAMMED IKBAL K.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KATTUPPARA",
+            "person": {
+                "id": "2015094500401",
+                "name": "SAIFUNNISA KAKKAT"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKEKKARA",
+            "person": {
+                "id": "2015094500501",
+                "name": "KHAIRINNISA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THIRUNARAYANAPURAM",
+            "person": {
+                "id": "2015094500601",
+                "name": "USHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHOLAPPARAMB",
+            "person": {
+                "id": "2015094500701",
+                "name": "PATHUMMA.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULAMANTHOLE",
+            "person": {
+                "id": "2015094500801",
+                "name": "SHANA. K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALOOR KIZHAKKEKKARA",
+            "person": {
+                "id": "2015094500901",
+                "name": "E. RAJESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALOOR",
+            "person": {
+                "id": "2015094501001",
+                "name": "UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VADAKKAN PALOOR",
+            "person": {
+                "id": "2015094501101",
+                "name": "UMMUSALMA .P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEMMALASSERI",
+            "person": {
+                "id": "2015094501201",
+                "name": "MANIKANDAN. O"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "RANDAMMAIL",
+            "person": {
+                "id": "2015094501301",
+                "name": "KALYANI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEMMALA",
+            "person": {
+                "id": "2015094501401",
+                "name": "SHAHINA. K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANANGANAD",
+            "person": {
+                "id": "2015094501501",
+                "name": "MUHAMMED HANEEFA V.P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAVUVATTAM",
+            "person": {
+                "id": "2015094501601",
+                "name": "RAGHU. C"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "VALAPURAM",
+            "person": {
+                "id": "2015094501701",
+                "name": "ISSUDHEEN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KUNNATH PALLIYALILKULAMB",
+            "person": {
+                "id": "2015094501801",
+                "name": "RAJEENA MADATHIL"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KURUVAMBALAM THAZHATHETHILPADI",
+            "person": {
+                "id": "2015094501901",
+                "name": "UMMER P.P"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KURUVAMBALAM",
+            "person": {
+                "id": "2015094502001",
+                "name": "MUHAMMEDALI. M"
+            }
+        }
+    ]
+}

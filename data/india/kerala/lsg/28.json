@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344946770,
+    "date": "2019-08-21",
+    "name": "Koipuram  Block Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Koipuram",
+    "area": "123.67km",
+    "localbody_code": "B030300",
+    "no_of_wards": 13,
+    "population": 121630,
+    "male": 58468,
+    "female": 63162,
+    "population_density": 984,
+    "sex_ratio": 1080,
+    "literacy_rate": 96.27,
+    "literacy_rate_male": 97.62,
+    "literacy_rate_female": 95.04,
+    "president": "NIRAMALAMATHEWS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERAVIPEROOR",
+            "person": {
+                "id": "2015002800101",
+                "name": "K. C. SAJIKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PURAMATTOM",
+            "person": {
+                "id": "2015002800201",
+                "name": "GIJI MATHEW"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THELLIYOOR",
+            "person": {
+                "id": "2015002800301",
+                "name": "SUSAN GEORGE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EZHUMATTOOR",
+            "person": {
+                "id": "2015002800401",
+                "name": "VALSALA K. K."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDACKADU",
+            "person": {
+                "id": "2015002800501",
+                "name": "JOHNSON MATHEW"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PLANKAMON",
+            "person": {
+                "id": "2015002800601",
+                "name": "ACKAMMA JOHNSON"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AYROOR",
+            "person": {
+                "id": "2015002800701",
+                "name": "MOLLY BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHARALKKUNNU",
+            "person": {
+                "id": "2015002800801",
+                "name": "RETNAKUMARIAMMA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MARAMON",
+            "person": {
+                "id": "2015002800901",
+                "name": "ADV. R. KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PULLAD",
+            "person": {
+                "id": "2015002801001",
+                "name": "AJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POOVATHOOR",
+            "person": {
+                "id": "2015002801101",
+                "name": "NIRAMALA MATHEWS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "OTHERA",
+            "person": {
+                "id": "2015002801201",
+                "name": "JOSEPH MATHEW"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NANNOOR",
+            "person": {
+                "id": "2015002801301",
+                "name": "SABITHA KUNNATHETTU"
+            }
+        }
+    ]
+}

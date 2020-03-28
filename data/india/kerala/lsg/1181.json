@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349521152,
+    "date": "2019-08-21",
+    "name": "Puthige  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "39.61km",
+    "localbody_code": "G140103",
+    "no_of_wards": 14,
+    "population": 16486,
+    "male": 8175,
+    "female": 8311,
+    "population_density": 416,
+    "sex_ratio": 1017,
+    "literacy_rate": 79.47,
+    "literacy_rate_male": 86.95,
+    "literacy_rate_female": 72.13,
+    "president": "ARUNA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHENNIKODI",
+            "person": {
+                "id": "2015118100101",
+                "name": "SHANTHI Y"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "DHARMATHADKA",
+            "person": {
+                "id": "2015118100201",
+                "name": "CHANIYA P A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "DERADKA",
+            "person": {
+                "id": "2015118100301",
+                "name": "HEMAVATHI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "BADOOR",
+            "person": {
+                "id": "2015118100401",
+                "name": "MUHAMMED P B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUGU",
+            "person": {
+                "id": "2015118100501",
+                "name": "ARUNA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "URMI",
+            "person": {
+                "id": "2015118100601",
+                "name": "ABDULLA MUGU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "UJAMPDAVU",
+            "person": {
+                "id": "2015118100701",
+                "name": "JAYANTHI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SEETHANGOLI",
+            "person": {
+                "id": "2015118100801",
+                "name": "MUHAMMAD KUNHI E K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANNUR",
+            "person": {
+                "id": "2015118100901",
+                "name": "UMMAL FAYIZA M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDANAD",
+            "person": {
+                "id": "2015118101001",
+                "name": "VARAPRASAD P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUKARIKANDA",
+            "person": {
+                "id": "2015118101101",
+                "name": "CHANDRA M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHIGE",
+            "person": {
+                "id": "2015118101201",
+                "name": "CHANDRAVATHI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KATHIBNAGAR",
+            "person": {
+                "id": "2015118101301",
+                "name": "NAFEESA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANGADIMOGAR",
+            "person": {
+                "id": "2015118101401",
+                "name": "ANANDA"
+            }
+        }
+    ]
+}

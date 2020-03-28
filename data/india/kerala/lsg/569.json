@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346910741,
+    "date": "2019-08-21",
+    "name": "Koottickal  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kanjirappally",
+    "area": "33.82km",
+    "localbody_code": "G051103",
+    "no_of_wards": 13,
+    "population": 13949,
+    "male": 7059,
+    "female": 6890,
+    "population_density": 412,
+    "sex_ratio": 976,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 91,
+    "president": "BINDHU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARATHANAM",
+            "person": {
+                "id": "2015056900101",
+                "name": "JANCY JAMES"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THALUMKAL",
+            "person": {
+                "id": "2015056900201",
+                "name": "SHEELA RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PLAPPALLY",
+            "person": {
+                "id": "2015056900301",
+                "name": "JESSY JOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHATHANPLAPPALLY",
+            "person": {
+                "id": "2015056900401",
+                "name": "K BALAKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ELAMKADU TOWN",
+            "person": {
+                "id": "2015056900501",
+                "name": "ANTONY KADAPLACKAL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KODUNGA",
+            "person": {
+                "id": "2015056900601",
+                "name": "M P CHANDRADAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ELAMKADU TOP",
+            "person": {
+                "id": "2015056900701",
+                "name": "BINDHU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OLAYANADU",
+            "person": {
+                "id": "2015056900801",
+                "name": "C G MADHU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "YENDAYAR TOWN",
+            "person": {
+                "id": "2015056900901",
+                "name": "K R RAJI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THENPUZHA EAST",
+            "person": {
+                "id": "2015056901001",
+                "name": "LAISAMMA JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOOTTICKAL TOWN",
+            "person": {
+                "id": "2015056901101",
+                "name": "SUSHAMA P S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOOTTICKAL CHAPPATHU",
+            "person": {
+                "id": "2015056901201",
+                "name": "NIYAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALLEETTA",
+            "person": {
+                "id": "2015056901301",
+                "name": "VIJAYAMMA M G"
+            }
+        }
+    ]
+}

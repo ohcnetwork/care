@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346530677,
+    "date": "2019-08-21",
+    "name": "Ramankary  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Veliyanad",
+    "area": "16.17km",
+    "localbody_code": "G040706",
+    "no_of_wards": 13,
+    "population": 14026,
+    "male": 7029,
+    "female": 6997,
+    "population_density": 867,
+    "sex_ratio": 995,
+    "literacy_rate": 98,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 97,
+    "president": "MANJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANALADY",
+            "person": {
+                "id": "2015046300101",
+                "name": "SIBI MOOLAMKUNNAM"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NORTH OF RAMANKARY",
+            "person": {
+                "id": "2015046300201",
+                "name": "ANIYAMMA XAVIER"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "RAMANKARY TOWN",
+            "person": {
+                "id": "2015046300301",
+                "name": "JOSEPH CHECKODEN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MAMPUZHAKARY WEST",
+            "person": {
+                "id": "2015046300401",
+                "name": "BINNIMOL (MOLAMMA)"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAMPUZHAKARY CENTRE",
+            "person": {
+                "id": "2015046300501",
+                "name": "SAJEEV OTHUMTHARA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MAMPUZHAKARY EAST",
+            "person": {
+                "id": "2015046300601",
+                "name": "SUSEELA BABU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAMPUZHAKARY SOUTH",
+            "person": {
+                "id": "2015046300701",
+                "name": "VISHNU VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OORUKARY NORTH",
+            "person": {
+                "id": "2015046300801",
+                "name": "BIJU C K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHUKARY",
+            "person": {
+                "id": "2015046300901",
+                "name": "MANJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "OORUKARY",
+            "person": {
+                "id": "2015046301001",
+                "name": "NALINI T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VEZHAPRA EAST",
+            "person": {
+                "id": "2015046301101",
+                "name": "ASHOK KUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VEZHAPRA CENTRE",
+            "person": {
+                "id": "2015046301201",
+                "name": "ANNAMMA (SALIMMA)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VEZHAPRA WEST",
+            "person": {
+                "id": "2015046301301",
+                "name": "SUMA SATHYAN"
+            }
+        }
+    ]
+}
