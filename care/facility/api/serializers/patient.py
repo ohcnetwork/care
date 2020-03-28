@@ -6,13 +6,14 @@ from rest_framework import serializers
 
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
-    FacilityPatientStatsHistory,
     DISEASE_CHOICES,
     Disease,
+    FacilityPatientStatsHistory,
     PatientConsultation,
     PatientRegistration,
     PatientTeleConsultation,
 )
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from config.serializers import ChoiceField
 
 
@@ -23,6 +24,10 @@ class PatientSerializer(serializers.ModelSerializer):
 
     medical_history = MedicalHistorySerializer(many=True, required=False)
     last_consultation = serializers.SerializerMethodField()
+
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    district_object = DistrictSerializer(source="district", read_only=True)
+    state_object = StateSerializer(source="state", read_only=True)
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()

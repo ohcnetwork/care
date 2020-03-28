@@ -4,15 +4,17 @@ import pytest
 from django.contrib.gis.geos import Point
 from rest_framework import status
 
-from care.facility.models import Facility, FacilityPatientStatsHistory
+from care.facility.models import District, Facility, FacilityPatientStatsHistory, State
 from config.tests.helper import mock_equal
 
 
 @pytest.fixture()
 def facility():
+    s = State.objects.create(name="KL")
+    d = District.objects.create(name="Kannur", state=s)
     return Facility.objects.create(
         name="Foo",
-        district=13,
+        district=d,
         facility_type=1,
         address="8/88, 1st Cross, 1st Main, Boo Layout",
         location=Point(24.452545, 49.878248),
@@ -90,6 +92,7 @@ class TestPatientStatsHistory:
     def test_list(self, client, user, facility, facility_data, stats_data):
         client.force_authenticate(user=user)
         location = facility_data.pop("location", None)
+        facility_data.pop("district")
         facility_2 = Facility.objects.create(
             **{**facility_data, "location": Point(location["latitude"], location["longitude"])}
         )
