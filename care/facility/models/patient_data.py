@@ -14,7 +14,13 @@ MEDICAL_HISTORY_CHOICES = [
     (5, "Kidney Diseases"),
 ]
 
-SYMPTOM_CHOICES = [(1, "NO"), (2, "FEVER"), (3, "SORE THROAT"), (4, "COUGH"), (5, "BREATHLESSNESS")]
+SYMPTOM_CHOICES = [
+    (1, "NO"),
+    (2, "FEVER"),
+    (3, "SORE THROAT"),
+    (4, "COUGH"),
+    (5, "BREATHLESSNESS"),
+]
 
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
@@ -42,7 +48,9 @@ class PatientRegistration(models.Model):
     medical_history = MultiSelectField(choices=MEDICAL_HISTORY_CHOICES, blank=False)
     medical_history_details = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    is_active = models.BooleanField(default=True, help_text="Not active when discharged, or removed from the watchlist")
+    is_active = models.BooleanField(
+        default=True, help_text="Not active when discharged, or removed from the watchlist",
+    )
     deleted = models.BooleanField(default=False)
 
     objects = SoftDeleteManager()
@@ -66,6 +74,21 @@ class PatientTeleConsultation(models.Model):
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+
+class FacilityPatientStatsHistory(FacilityBaseModel):
+    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
+    entry_date = models.DateField()
+    num_patients_visited = models.IntegerField(default=0)
+    num_patients_home_quarantine = models.IntegerField(default=0)
+    num_patients_isolation = models.IntegerField(default=0)
+    num_patient_referred = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = (
+            "facility",
+            "entry_date",
+        )
 
 
 class PatientSample(FacilityBaseModel):
@@ -101,7 +124,7 @@ class PatientConsultation(models.Model):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
     suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients"
+        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
     admission_date = models.DateTimeField(null=True, blank=True)
