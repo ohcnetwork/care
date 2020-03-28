@@ -48,7 +48,7 @@ class TokenObtainSerializer(serializers.Serializer):
             authenticate_kwargs["request"] = self.context["request"]
         except KeyError:
             pass
-        if ratelimit(self.context["request"], "login", ["ip", authenticate_kwargs[self.username_field]]):
+        if ratelimit(self.context["request"], "login", [ authenticate_kwargs[self.username_field]]):
             raise CaptchaRequiredException()
         self.user = authenticate(**authenticate_kwargs)
 
