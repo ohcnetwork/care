@@ -27,6 +27,52 @@ Set up Local environment
 Install PostgreSQL.
 If you are installing PostgreSQL for the first time, follow the steps given in this answer_ to setup password based authentication.
 
+Setting up postgres for the first time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+After installation of Postgresql
+
+Run
+
+`sudo psql -U postgres`
+
+If you see error
+
+FATAL: Peer authentication failed for user "postgres"FATAL: Peer authentication failed for user "postgres"
+
+Do the following steps to set up password authentication.
+
+`sudo -u postgres psql`
+
+In the postgres# shell type `\\password postgres` to change the password
+
+Exit psql
+
+`\\q`
+
+Edit `/etc/postgresql/9.6/main/pg_hba.conf` and change:
+
+::
+
+
+ local    all        postgres                               peer
+
+To::
+
+ local    all        postgres                               md5
+
+Restart postgresql
+
+ `sudo service postgresql restart`
+
+
+Login to the postgres shell and run:
+
+::
+
+ CREATE DATABASE care;
+ GRANT ALL PRIVILEGES ON DATABASE care TO postgres;
+ \q;
+
 You also might have to install PostGIS scripts.
 
 * Linux users can install PostGIS scripts by running ::
@@ -84,6 +130,34 @@ Setting Up Your Users
     $ python manage.py createsuperuser
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+
+If the command prompts for username only and after entering if it goes to error
+do make sure that you have done the following 
+
+Note: Make sure that you have created a database named `care` with privileges set for the user `postgres`
+
+In the virtualenv shell type the following commands also.
+
+`export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/care`
+
+`export TEST_POSTGIS_URL="postgis://postgres:<password>@127.0.0.1:5432/care"`
+
+`python manage.py migrate`
+
+and after you make sure everything is ok
+
+run this command again
+
+`python manage.py createsuperuser`
+
+This will now prompt for the following details - Ignore any warnings.
+
+- username: give the username here
+- usertype:Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
+- gender: 1 for male, 2 for female, 3 for other
+- email: give e-mailid
+- phonenumber
+- password
 
 Type checks
 ^^^^^^^^^^^
