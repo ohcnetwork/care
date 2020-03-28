@@ -64,7 +64,6 @@ class SigninView(View):
             return HttpResponseRedirect("/500")
 
     def post(self, request):
-
         form = AuthenticationForm(request=request, data=request.POST)
         if ratelimit(request, "login", ["ip", request.POST["username"]]):
             return render(request, self.template, {"form": form, "rate": True})
