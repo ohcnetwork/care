@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_extra_fields",
     "location_field.apps.DefaultConfig",
     "django_filters",
+    "simple_history",
     "ratelimit",
 ]
 
@@ -145,6 +146,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 # STATIC

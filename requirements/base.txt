@@ -26,6 +26,7 @@ drf-nested-routers==0.91
 django-multiselectfield==0.1.12 # https://github.com/goinnn/django-multiselectfield
 django-partial-index==0.6.0 # https://github.com/mattiaslinnap/django-partial-index/blob/master/README.md
 django-axes==5.3.1  # https://github.com/jazzband/django-axes
+django-simple-history==2.8.0  # https://django-simple-history.readthedocs.io/en/latest/quick_start.html
 django-ratelimit==2.0.0 # Limiting Requests
 
 # Testing

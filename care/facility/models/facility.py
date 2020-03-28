@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
+from simple_history.models import HistoricalRecords
 
 from care.users.models import DISTRICT_CHOICES, District, LocalBody
 
@@ -166,6 +167,8 @@ class FacilityCapacity(FacilityBaseModel):
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+
+    history = HistoricalRecords()
 
     class Meta:
         indexes = [
