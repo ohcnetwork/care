@@ -40,6 +40,7 @@ class TestPatient:
             **patient_data,
             "medical_history_details": None,
             "is_active": True,
+            "last_consultation": None,
         }
 
         assert PatientRegistration.objects.get(
@@ -71,6 +72,7 @@ class TestPatient:
             "medical_history_details": patient.medical_history_details,
             "tele_consultation_history": [],
             "is_active": True,
+            "last_consultation": None,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -93,6 +95,7 @@ class TestPatient:
             "medical_history_details": patient.medical_history_details,
             "tele_consultation_history": [],
             "is_active": True,
+            "last_consultation": None,
         }
 
     def test_update(self, client, user, patient):
@@ -124,6 +127,7 @@ class TestPatient:
             "medical_history": {2, 4},
             "medical_history_details": patient.medical_history_details,
             "is_active": True,
+            "last_consultation": None,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -159,6 +163,7 @@ class TestPatient:
                     "medical_history": {2, 4},
                     "medical_history_details": patient.medical_history_details,
                     "is_active": True,
+                    "last_consultation": None,
                 },
             ],
         }
