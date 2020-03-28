@@ -6,7 +6,7 @@ from multiselectfield import MultiSelectField
 from care.facility.models import FacilityBaseModel, SoftDeleteManager
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
-MEDICAL_HISTORY_CHOICES = [
+DISEASE_CHOICES = [
     (1, "NO"),
     (2, "Diabetes"),
     (3, "Heart Disease"),
@@ -29,18 +29,11 @@ class PatientRegistration(models.Model):
     name = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], db_index=True
-    )
-    contact_with_carrier = models.BooleanField(
-        verbose_name="Contact with a Covid19 carrier"
-    )
-    medical_history = MultiSelectField(choices=MEDICAL_HISTORY_CHOICES, blank=False)
-    medical_history_details = models.TextField(blank=True, null=True)
+    phone_number = models.CharField(max_length=14, validators=[phone_number_regex], db_index=True)
+    contact_with_carrier = models.BooleanField(verbose_name="Contact with a Covid19 carrier")
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
-        default=True,
-        help_text="Not active when discharged, or removed from the watchlist",
+        default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
     deleted = models.BooleanField(default=False)
 
@@ -56,6 +49,12 @@ class PatientRegistration(models.Model):
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
+
+
+class Disease(models.Model):
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
+    disease = models.IntegerField(choices=DISEASE_CHOICES)
+    details = models.TextField(blank=True, null=True)
 
 
 class PatientTeleConsultation(models.Model):
@@ -89,36 +88,24 @@ class PatientConsultation(models.Model):
         (SuggestionChoices.R, "REFERRAL"),
     ]
 
-    patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.CASCADE, related_name="consultations"
-    )
-    facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, related_name="consultations"
-    )
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
     suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        "Facility",
-        null=True,
-        blank=True,
-        on_delete=models.PROTECT,
-        related_name="referred_patients",
+        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         constraints = [
             models.CheckConstraint(
                 name="if_referral_suggested",
-                check=~models.Q(suggestion=SuggestionChoices.R)
-                | models.Q(referred_to__isnull=False),
+                check=~models.Q(suggestion=SuggestionChoices.R) | models.Q(referred_to__isnull=False),
             ),
             models.CheckConstraint(
-                name="if_admitted",
-                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+                name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]

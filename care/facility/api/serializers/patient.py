@@ -1,22 +1,27 @@
 import datetime
 
+from django.db import transaction
 from django.utils.timezone import make_aware
-from rest_framework import fields, serializers
+from rest_framework import serializers
 
-from care.facility.api.serializers.patient_consultation import (
-    PatientConsultationSerializer,
-)
+from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
-    MEDICAL_HISTORY_CHOICES,
     FacilityPatientStatsHistory,
+    DISEASE_CHOICES,
+    Disease,
     PatientConsultation,
     PatientRegistration,
     PatientTeleConsultation,
 )
+from config.serializers import ChoiceField
 
 
 class PatientSerializer(serializers.ModelSerializer):
-    medical_history = fields.MultipleChoiceField(choices=MEDICAL_HISTORY_CHOICES)
+    class MedicalHistorySerializer(serializers.Serializer):
+        disease = ChoiceField(choices=DISEASE_CHOICES)
+        details = serializers.CharField()
+
+    medical_history = MedicalHistorySerializer(many=True, required=False)
     last_consultation = serializers.SerializerMethodField()
 
     def get_last_consultation(self, obj):
@@ -29,6 +34,25 @@ class PatientSerializer(serializers.ModelSerializer):
         model = PatientRegistration
         exclude = ("created_by", "deleted")
 
+    def create(self, validated_data):
+        with transaction.atomic():
+            medical_history = validated_data.pop("medical_history", [])
+            patient = super().create(validated_data)
+            diseases = []
+            for disease in medical_history:
+                diseases.append(Disease(patient=patient, **disease))
+            if diseases:
+                Disease.objects.bulk_create(diseases)
+            return patient
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            medical_history = validated_data.pop("medical_history", [])
+            patient = super().update(instance, validated_data)
+            for disease in medical_history:
+                patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
+            return patient
+
 
 class PatientTeleConsultationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,15 +61,11 @@ class PatientTeleConsultationSerializer(serializers.ModelSerializer):
 
 
 class PatientDetailSerializer(PatientSerializer):
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True
-    )
+    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
 
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
-    entry_date = serializers.DateField(
-        default=make_aware(datetime.datetime.today()).date()
-    )
+    entry_date = serializers.DateField(default=make_aware(datetime.datetime.today()).date())
 
     class Meta:
         model = FacilityPatientStatsHistory
