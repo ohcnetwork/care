@@ -46,7 +46,6 @@ class TestUser:
             "user_type": "Doctor",
             "first_name": "",
             "last_name": "",
-            "skill": None,
         }
 
         response = client.put(f"/api/v1/users/{data['username']}/", {**data, "age": 31, "password": password,})
