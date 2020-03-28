@@ -3,6 +3,7 @@
 import pytest
 
 from care.facility.models import Disease, PatientRegistration
+from config.tests.helper import mock_equal
 
 
 @pytest.fixture()
@@ -26,6 +27,7 @@ def patient():
     return patient
 
 
+@pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)
 class TestPatient:
     def test_login_required(self, client):
@@ -43,6 +45,12 @@ class TestPatient:
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "is_active": True,
             "last_consultation": None,
+            "local_body": mock_equal,
+            "local_body_object": mock_equal,
+            "district": mock_equal,
+            "district_object": mock_equal,
+            "state": mock_equal,
+            "state_object": mock_equal,
         }
 
         patient = PatientRegistration.objects.get(
@@ -73,6 +81,12 @@ class TestPatient:
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
+            "local_body": mock_equal,
+            "local_body_object": mock_equal,
+            "district": mock_equal,
+            "district_object": mock_equal,
+            "state": mock_equal,
+            "state_object": mock_equal,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -95,6 +109,12 @@ class TestPatient:
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
+            "local_body": mock_equal,
+            "local_body_object": mock_equal,
+            "district": mock_equal,
+            "district_object": mock_equal,
+            "state": mock_equal,
+            "state_object": mock_equal,
         }
 
     def test_update(self, client, user, patient):
@@ -128,6 +148,12 @@ class TestPatient:
             ],
             "is_active": True,
             "last_consultation": None,
+            "local_body": mock_equal,
+            "local_body_object": mock_equal,
+            "district": mock_equal,
+            "district_object": mock_equal,
+            "state": mock_equal,
+            "state_object": mock_equal,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -163,6 +189,12 @@ class TestPatient:
                     "medical_history": [{"disease": "NO", "details": "Quite bad"}],
                     "is_active": True,
                     "last_consultation": None,
+                    "local_body": mock_equal,
+                    "local_body_object": mock_equal,
+                    "district": mock_equal,
+                    "district_object": mock_equal,
+                    "state": mock_equal,
+                    "state_object": mock_equal,
                 },
             ],
         }

@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import FacilityBaseModel, SoftDeleteManager
+from care.facility.models import District, FacilityBaseModel, LocalBody, SoftDeleteManager, State
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 DISEASE_CHOICES = [
@@ -31,6 +31,11 @@ class PatientRegistration(models.Model):
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex], db_index=True)
     contact_with_carrier = models.BooleanField(verbose_name="Contact with a Covid19 carrier")
+
+    local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
+
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
@@ -49,6 +54,17 @@ class PatientRegistration(models.Model):
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        While saving, if the local body is not null, then district will be local body's district
+        Overriding save will help in a collision where the local body's district and district fields are different.
+        """
+        if self.local_body is not None:
+            self.district = self.local_body.district
+        if self.district is not None:
+            self.state = self.district.state
+        super().save(*args, **kwargs)
 
 
 class Disease(models.Model):

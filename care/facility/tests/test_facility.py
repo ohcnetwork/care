@@ -3,9 +3,9 @@ import re
 import pytest
 from django.contrib.gis.geos import Point
 
-from care.facility.models import Facility, FacilityCapacity, FacilityLocalGovtBody
+from care.facility.models import District, Facility, FacilityCapacity, FacilityLocalGovtBody, State
 from care.users.models import User
-from config.tests.helper import mock_equal
+from config.tests.helper import assert_equal_dicts, mock_equal
 
 # flake8: noqa
 
@@ -21,7 +21,7 @@ def user_data():
 def facility():
     f = Facility.objects.create(
         name="Foo",
-        district=13,
+        district=District(id=13, name="Kannur", state=State(id=1, name="KL")),
         facility_type=1,
         address="8/88, 1st Cross, 1st Main, Boo Layout",
         location=Point(24.452545, 49.878248),
@@ -44,18 +44,21 @@ class TestFacility:
         response = client.post("/api/v1/facility/", facility_data,)
 
         assert response.status_code == 201
-        response_json = response.json()
-        assert response_json == {
-            **facility_data,
-            "id": mock_equal,
-            "facility_type": "Educational Inst",
-            "local_govt_body": {
+
+        assert assert_equal_dicts(
+            response.json(),
+            {
+                **facility_data,
                 "id": mock_equal,
-                "facility": mock_equal,
+                "facility_type": "Educational Inst",
                 "local_body": None,
-                "district": {"id": 13, "name": "Kannur", "state": 1},
+                "local_body_object": None,
+                "district": 13,
+                "district_object": {"id": 13, "name": "Kannur", "state": 1},
+                "state": mock_equal,
+                "state_object": {"id": mock_equal, "name": "KL"},
             },
-        }
+        )
 
         facility = Facility.objects.get(
             name=facility_data["name"],
@@ -90,16 +93,15 @@ class TestFacility:
         assert response.json() == {
             "id": facility.id,
             "name": facility.name,
-            "district": facility.district,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-            "local_govt_body": {
-                "id": mock_equal,
-                "facility": facility.id,
-                "local_body": None,
-                "district": {"id": 13, "name": "Kannur", "state": mock_equal},
-            },
+            "local_body": None,
+            "local_body_object": None,
+            "district": 13,
+            "district_object": {"id": 13, "name": "Kannur", "state": 1},
+            "state": mock_equal,
+            "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -124,16 +126,15 @@ class TestFacility:
         assert response.json() == {
             "id": facility.id,
             "name": "Another name",
-            "district": new_district["id"],
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-            "local_govt_body": {
-                "id": mock_equal,
-                "facility": facility.id,
-                "local_body": None,
-                "district": {"id": new_district["id"], "name": new_district["name"], "state": mock_equal},
-            },
+            "local_body": None,
+            "local_body_object": None,
+            "district": new_district["id"],
+            "district_object": {"id": new_district["id"], "name": new_district["name"], "state": 1},
+            "state": mock_equal,
+            "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -178,16 +179,19 @@ class TestFacility:
                 {
                     "id": facility.id,
                     "name": facility.name,
-                    "district": facility.district,
                     "facility_type": "Educational Inst",
                     "address": facility.address,
                     "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                    "local_govt_body": {
-                        "id": mock_equal,
-                        "facility": facility.id,
-                        "local_body": None,
-                        "district": {"id": 13, "name": "Kannur", "state": mock_equal},
+                    "local_body": None,
+                    "local_body_object": None,
+                    "district": facility.district.id,
+                    "district_object": {
+                        "id": facility.district.id,
+                        "name": facility.district.name,
+                        "state": facility.district.state.id,
                     },
+                    "state": facility.state.id,
+                    "state_object": {"id": facility.state.id, "name": facility.state.name},
                     "oxygen_capacity": facility.oxygen_capacity,
                     "phone_number": facility.phone_number,
                 },
@@ -214,7 +218,7 @@ class TestFacilityBulkUpsert:
             data=[
                 {
                     "name": facility.name,
-                    "district": facility.district,
+                    "district": facility.district.id,
                     "facility_type": 3,
                     "address": facility.address,
                     "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
@@ -244,7 +248,7 @@ class TestFacilityBulkUpsert:
         assert len(capacities) == 1
 
         new_facility = Facility.objects.get(
-            created_by=user, name=name, district=1, facility_type=2, address=address, phone_number=phone_number,
+            created_by=user, name=name, district_id=1, facility_type=2, address=address, phone_number=phone_number,
         )
         assert new_facility
         capacities = new_facility.facilitycapacity_set.all()
@@ -268,16 +272,19 @@ class TestFacilityBulkUpsert:
         assert response.json() == {
             "id": facility.id,
             "name": facility.name,
-            "district": 13,
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-            "local_govt_body": {
-                "id": mock_equal,
-                "facility": facility.id,
-                "local_body": None,
-                "district": {"id": 13, "name": "Kannur", "state": mock_equal},
+            "local_body": None,
+            "local_body_object": None,
+            "district": facility.district.id,
+            "district_object": {
+                "id": facility.district.id,
+                "name": facility.district.name,
+                "state": facility.district.state.id,
             },
+            "state": facility.state.id,
+            "state_object": {"id": facility.state.id, "name": facility.state.name},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -289,7 +296,7 @@ class TestFacilityBulkUpsert:
             data=[
                 {
                     "name": facility.name,
-                    "district": facility.district,
+                    "district": facility.district.id,
                     "facility_type": 3,
                     "address": facility.address,
                     "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
@@ -308,7 +315,7 @@ class TestFacilityBulkUpsert:
             data=[
                 {
                     "name": facility.name,
-                    "district": facility.district,
+                    "district": facility.district.id,
                     "facility_type": 3,
                     "address": facility.address,
                     "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],

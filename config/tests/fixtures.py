@@ -27,9 +27,11 @@ def district_data():
 
 @pytest.fixture()
 def facility_data():
+    s = State.objects.create(name="KL")
+    d = District.objects.create(name="Kannur", state=s)
     return {
         "name": "Foo",
-        "district": 13,
+        "district": d,
         "facility_type": 1,
         "address": "8/88, 1st Cross, 1st Main, Boo Layout",
         "location": {"latitude": 49.878248, "longitude": 24.452545},

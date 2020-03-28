@@ -33,7 +33,7 @@ class State(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"State: {self.name}"
+        return f"{self.name}"
 
 
 class District(models.Model):
@@ -41,7 +41,7 @@ class District(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"District: {self.name} - {self.state.name}"
+        return f"{self.name} - {self.state.name}"
 
 
 LOCAL_BODY_CHOICES = (
@@ -73,7 +73,7 @@ class LocalBody(models.Model):
         )
 
     def __str__(self):
-        return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
+        return f"{self.name} ({self.body_type}) / {self.district}"
 
 
 class CustomUserManager(UserManager):
