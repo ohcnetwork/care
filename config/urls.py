@@ -16,7 +16,6 @@ from rest_framework_simplejwt.views import (
 from .auth_views import TokenObtainPairView
 
 from config import api_router
-from .views import home_view
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -33,7 +32,7 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path("", home_view, name="home"),
+    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
         "ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"
     ),
