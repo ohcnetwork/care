@@ -18,19 +18,6 @@ def user_data():
 
 
 @pytest.fixture()
-def facility_data():
-    return {
-        "name": "Foo",
-        "district": 13,
-        "facility_type": 1,
-        "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-        "location": {"latitude": 49.878248, "longitude": 24.452545},
-        "oxygen_capacity": 10,
-        "phone_number": "9998887776",
-    }
-
-
-@pytest.fixture()
 def facility():
     f = Facility.objects.create(
         name="Foo",

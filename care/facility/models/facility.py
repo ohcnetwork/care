@@ -25,7 +25,7 @@ class FacilityBaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def delete(self):
+    def delete(self, *args):
         self.deleted = True
         self.save()
 
