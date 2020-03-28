@@ -92,6 +92,7 @@ class TestPatientStatsHistory:
     def test_list(self, client, user, facility, facility_data, stats_data):
         client.force_authenticate(user=user)
         location = facility_data.pop("location", None)
+        facility_data.pop("district")
         facility_2 = Facility.objects.create(
             **{**facility_data, "location": Point(location["latitude"], location["longitude"])}
         )
