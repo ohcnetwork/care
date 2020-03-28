@@ -13,7 +13,13 @@ from config.tests.helper import assert_equal_dicts, mock_equal
 @pytest.fixture()
 def user_data():
     return dict(
-        username="bar", user_type=5, district=13, phone_number="8887776664", gender=1, age=30, email="bar@foobar.com",
+        username="bar",
+        user_type=5,
+        district_id=13,
+        phone_number="8887776664",
+        gender=1,
+        age=30,
+        email="bar@foobar.com",
     )
 
 
