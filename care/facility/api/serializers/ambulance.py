@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models import Ambulance, AmbulanceDriver
@@ -35,6 +36,12 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             DistrictSerializer().to_representation(instance.third_district_obj) if instance.third_district_obj else None
         )
         return data
+
+    def validate(self, obj):
+        validated = super().validate(obj)
+        if not validated.get("price_per_km") and not validated.get("has_free_service"):
+            raise ValidationError("The ambulance must provide a price or be marked as free")
+        return validated
 
     def create(self, validated_data):
         with transaction.atomic():

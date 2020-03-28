@@ -39,6 +39,5 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-DATABASES["default"] = env.db("TEST_POSTGIS_URL")
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+DATABASES = {}
+DATABASES["default"] = {"ENGINE": "django.contrib.gis.db.backends.spatialite"}

@@ -29,3 +29,57 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+    def create(self, request, *args, **kwargs):
+        """
+        Facility Capacity Create
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).create(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        """
+        Facility Capacity List
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Facility Capacity Retrieve
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Facility Capacity Updates
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Facility Capacity Updates
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Facility Capacity Delete
+
+        /facility/{facility_pk}/capacity/{pk}
+        `pk` in the API refers to the room_type.
+        """
+        return super(FacilityCapacityViewSet, self).destroy(request, *args, **kwargs)

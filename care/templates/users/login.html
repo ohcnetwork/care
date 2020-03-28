@@ -9,16 +9,19 @@
 {% block inner %}
 
 <section>
-    <h1 class="text-2xl font-bold text-center">{% trans "Sign In As A Hospital Administrator" %}</h1>
-    <p class="text-gray-700 mt-3">
-    If you already have an account, then you can sign in directly    </p>
-    <div class="mt-4">
-        <form class="login" method="POST" action="">
-            {% csrf_token %}
-            {{ form | crispy }}
-          <button class="mt-4 btn btn-primary w-full" type="submit">{% trans "SIGN IN" %} &raquo;</button>
-        </form>
-    </div>
+  <h1 class="text-2xl font-bold text-center">{% trans "Sign In As A Hospital Administrator" %}</h1>
+  <p class="text-gray-700 mt-3">
+    If you already have an account, then you can sign in directly </p>
+  <div class="mt-4">
+    <form class="login" method="POST" action="">
+      {% csrf_token %}
+      {{ form | crispy }}
+      {% if rate %}
+      <div class="g-recaptcha" data-sitekey="{{settings.GOOGLE_RECAPTCHA_SITE_KEY}}"></div>
+      {% endif %}
+      <button class="mt-4 btn btn-primary w-full" type="submit">{% trans "SIGN IN" %} &raquo;</button>
+    </form>
+  </div>
 </section>
 
 {% endblock %}
