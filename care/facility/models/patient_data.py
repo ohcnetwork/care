@@ -64,11 +64,13 @@ class PatientConsultation(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
     suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
-    referred_to = models.ForeignKey("Facility", null=True, on_delete=models.PROTECT, related_name="referred_patients")
+    referred_to = models.ForeignKey(
+        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients"
+    )
     admitted = models.BooleanField(default=False)
-    admission_date = models.DateTimeField(null=True)
-    discharge_date = models.DateTimeField(null=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    admission_date = models.DateTimeField(null=True, blank=True)
+    discharge_date = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         constraints = [
