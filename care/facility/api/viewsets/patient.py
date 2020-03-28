@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters
 from rest_framework import viewsets
-from rest_framework.generics import get_object_or_404
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -11,19 +11,8 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientSerializer,
 )
-from care.facility.models import (
-    Facility,
-    FacilityPatientStatsHistory,
-    PatientRegistration,
-)
-from care.facility.api.serializers.patient import (
-    PatientDetailSerializer,
-    PatientSerializer,
-)
-from care.facility.api.serializers.patient_consultation import (
-    PatientConsultationSerializer,
-)
-from care.facility.models import PatientConsultation, PatientRegistration
+from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
+from care.facility.models import Facility, FacilityPatientStatsHistory, PatientConsultation, PatientRegistration
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -89,6 +78,4 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         - entry_date_before: date in YYYY-MM-DD format, inclusive of this date
 
         """
-        return super(FacilityPatientStatsHistoryViewSet, self).list(
-            request, *args, **kwargs
-        )
+        return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
