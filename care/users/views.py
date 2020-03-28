@@ -67,7 +67,7 @@ class SigninView(View):
 
     def post(self, request):
         form = AuthenticationForm(request=request, data=request.POST)
-        if ratelimit(request, "login", ["ip", request.POST["username"]]):
+        if ratelimit(request, "login", [request.POST["username"]]):
             return render(request, self.template, {"form": form, "rate": True})
         form = AuthenticationForm(request=request, data=request.POST)
         next_url = request.GET.get("next", False)
