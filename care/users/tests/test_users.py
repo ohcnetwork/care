@@ -17,6 +17,7 @@ def data():
     }
 
 
+@pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)
 class TestUser:
     def test_superuser_can_read_modify_delete_all(self, client, user, data):
