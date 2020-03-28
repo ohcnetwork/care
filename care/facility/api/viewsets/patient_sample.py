@@ -3,12 +3,12 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.mixins import UserAccessMixin
-from care.facility.api.serializers.patient_sample import PatientSampleSerializer
+from care.facility.api.serializers.patient_sample import PatientSampleDetailSerializer, PatientSampleSerializer
 from care.facility.models import PatientSample
 
 
 class PatientSampleFilterSet(filters.FilterSet):
-    district = filters.NumberFilter(field_name="facility__district")
+    district = filters.NumberFilter(field_name="facility__district_id")
     district_name = filters.CharFilter(
         field_name="facility__facilitylocalgovtbody__district__name", lookup_expr="icontains"
     )
@@ -21,6 +21,12 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientSampleFilterSet
 
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.action == "retrieve":
+            serializer_class = PatientSampleDetailSerializer
+        return serializer_class
+
     def list(self, request, *args, **kwargs):
         """
         Patient Sample List
@@ -30,3 +36,6 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         - district_name - District name - case insensitive match
         """
         return super(PatientSampleViewSet, self).list(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        pass

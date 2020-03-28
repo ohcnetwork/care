@@ -78,12 +78,16 @@ class PatientSample(FacilityBaseModel):
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
 
+    @property
+    def flow(self):
+        return self.patientsampleflow_set.order_by("-created_date")
 
-# class PatientSampleFlow(FacilityBaseModel):
-#     patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
-#     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES)
-#     notes = models.CharField(max_length=255)
-#     created_by = models.ForeignKey(User, on_delete=models.SET_NULL)
+
+class PatientSampleFlow(FacilityBaseModel):
+    patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
+    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES)
+    notes = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
 class PatientConsultation(models.Model):
