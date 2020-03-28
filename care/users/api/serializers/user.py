@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from care.users.models import GENDER_CHOICES
@@ -29,3 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {"url": {"lookup_field": "username"}}
+
+    def create(self, validated_data):
+        validated_data["password"] = make_password(validated_data.get("password"))
+        return super().create(validated_data)
