@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349331918,
+    "date": "2019-08-21",
+    "name": "Kuttiattoor  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Irikkur",
+    "area": "35.1km",
+    "localbody_code": "G130405",
+    "no_of_wards": 16,
+    "population": 22501,
+    "male": 11195,
+    "female": 11306,
+    "population_density": 641,
+    "sex_ratio": 1010,
+    "literacy_rate": 89.88,
+    "literacy_rate_male": 95.11,
+    "literacy_rate_female": 84.75,
+    "president": "N.PADMANABHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAZHASSI",
+            "person": {
+                "id": "2015112600101",
+                "name": "K.K.USHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOYOTUMOOLA",
+            "person": {
+                "id": "2015112600201",
+                "name": "RIJESH .K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAVANNOOR",
+            "person": {
+                "id": "2015112600301",
+                "name": "A.ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NIDUKULAM",
+            "person": {
+                "id": "2015112600401",
+                "name": "JAYADEVAN  V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUTTIATTOOR",
+            "person": {
+                "id": "2015112600501",
+                "name": "C.C.JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VADUVANKULAM",
+            "person": {
+                "id": "2015112600601",
+                "name": "REJY P.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KURUVOTTUMOOLA",
+            "person": {
+                "id": "2015112600701",
+                "name": "N.PADMANABHAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOMAKKARI",
+            "person": {
+                "id": "2015112600801",
+                "name": "K.V.USHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VESALA",
+            "person": {
+                "id": "2015112600901",
+                "name": "M.P.REVATHI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KATTOLI",
+            "person": {
+                "id": "2015112601001",
+                "name": "SUMATHI  T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THANDAPURAM",
+            "person": {
+                "id": "2015112601101",
+                "name": "JUVAIRIYA K.V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEMMADAM",
+            "person": {
+                "id": "2015112601201",
+                "name": "SAROJINI  K.T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEKKIKULAM",
+            "person": {
+                "id": "2015112601301",
+                "name": "KUTHIRAYODAN RAJAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANIYOOR CENTRAL",
+            "person": {
+                "id": "2015112601401",
+                "name": "VIJAYA LAKSHMI V.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHATUKAPPARA",
+            "person": {
+                "id": "2015112601501",
+                "name": "R.V.RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "POROLAM",
+            "person": {
+                "id": "2015112601601",
+                "name": "T.R.CHANDRAN"
+            }
+        }
+    ]
+}

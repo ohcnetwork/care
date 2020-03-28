@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566347015639,
+    "date": "2019-08-21",
+    "name": "Arakulam  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Idukki",
+    "area": "192.64km",
+    "localbody_code": "G060503",
+    "no_of_wards": 15,
+    "population": 23892,
+    "male": 11962,
+    "female": 11930,
+    "population_density": 124,
+    "sex_ratio": 997,
+    "literacy_rate": 93,
+    "literacy_rate_male": 94,
+    "literacy_rate_female": 91,
+    "president": "TOMJOSETOMYKUNNEL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARAKULAM",
+            "person": {
+                "id": "2015060100101",
+                "name": "SIJUMON"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAVUMPADY",
+            "person": {
+                "id": "2015060100201",
+                "name": "NIROSHA ANISH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIPPALANGADU",
+            "person": {
+                "id": "2015060100301",
+                "name": "SREEKALA GOPI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KULAMAVU",
+            "person": {
+                "id": "2015060100401",
+                "name": "CELINE MANUEL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "URUMBULLU",
+            "person": {
+                "id": "2015060100501",
+                "name": "JOSEPH LUKA(KL JOSEPH)"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "JALANDHAR",
+            "person": {
+                "id": "2015060100601",
+                "name": "REMA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATHIPPALLY",
+            "person": {
+                "id": "2015060100701",
+                "name": "LEELA GOPALAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDADU",
+            "person": {
+                "id": "2015060100801",
+                "name": "BINDHU ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ELAPPALLY",
+            "person": {
+                "id": "2015060100901",
+                "name": "SHIBU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANNICKAL",
+            "person": {
+                "id": "2015060101001",
+                "name": "ELIZABETH JOHNSON(LEELAMMA)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "K.S.E.B COLONY",
+            "person": {
+                "id": "2015060101101",
+                "name": "TOMY DEVASIA (TOMY VALIKULAM)"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOOLAMATTOM",
+            "person": {
+                "id": "2015060101201",
+                "name": "A.D MATHEW (MATHAICHAN ANCHANICKAL)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "A.K.G NAGAR",
+            "person": {
+                "id": "2015060101301",
+                "name": "USHA GOPINATH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "12TH MILE",
+            "person": {
+                "id": "2015060101401",
+                "name": "BIJI VELUKUTTAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MOONNUKAVAYAL",
+            "person": {
+                "id": "2015060101501",
+                "name": "TOM JOSE( TOMY KUNNEL)"
+            }
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346073411,
+    "date": "2019-08-21",
+    "name": "Thenmala  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Anchal",
+    "area": "162.34km",
+    "localbody_code": "G020507",
+    "no_of_wards": 16,
+    "population": 24214,
+    "male": 12061,
+    "female": 12153,
+    "population_density": 149,
+    "sex_ratio": 1008,
+    "literacy_rate": 89.35,
+    "literacy_rate_male": 92.84,
+    "literacy_rate_female": 85.9,
+    "president": "LAILAJAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHERUKADAVU",
+            "person": {
+                "id": "2015033500101",
+                "name": "LAISY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NAGAMALA",
+            "person": {
+                "id": "2015033500201",
+                "name": "SAKUNTHALA CHADRASEKHARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THENMALA",
+            "person": {
+                "id": "2015033500301",
+                "name": "SUJATHA S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PATHEKKER",
+            "person": {
+                "id": "2015033500401",
+                "name": "R SURESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "OTTAKKAL",
+            "person": {
+                "id": "2015033500501",
+                "name": "K SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "URUKUNNU",
+            "person": {
+                "id": "2015033500601",
+                "name": "ARIFABEEVI ASHARAF"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "INDIRANAGAR",
+            "person": {
+                "id": "2015033500701",
+                "name": "BINCY KUNJUMON REJI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANAPETTAKONKAL",
+            "person": {
+                "id": "2015033500801",
+                "name": "S SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ANDOORPACHA",
+            "person": {
+                "id": "2015033500901",
+                "name": "SAJIKUMARI SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THEKKINKOOPPU",
+            "person": {
+                "id": "2015033501001",
+                "name": "A JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "UDAYAGIRI",
+            "person": {
+                "id": "2015033501101",
+                "name": "RANJITH PULARIMALA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAMON",
+            "person": {
+                "id": "2015033501201",
+                "name": "L GOPINATHAPILLAI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEVARKUNNU",
+            "person": {
+                "id": "2015033501301",
+                "name": "MUMTHAS SHAJAHAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLIMALA",
+            "person": {
+                "id": "2015033501401",
+                "name": "JAMES MATHEWS"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHERUTHANNOOR",
+            "person": {
+                "id": "2015033501501",
+                "name": "RAJEEV THEKKUVILA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHALIAKKARA",
+            "person": {
+                "id": "2015033501601",
+                "name": "LAILAJA R"
+            }
+        }
+    ]
+}

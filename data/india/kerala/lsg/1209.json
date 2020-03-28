@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349606500,
+    "date": "2019-08-21",
+    "name": "East Eleri  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Neeleswaram",
+    "area": "62.52km",
+    "localbody_code": "G140505",
+    "no_of_wards": 16,
+    "population": 22738,
+    "male": 11525,
+    "female": 11213,
+    "population_density": 364,
+    "sex_ratio": 973,
+    "literacy_rate": 93.51,
+    "literacy_rate_male": 95.12,
+    "literacy_rate_female": 91.86,
+    "president": "PHILOMINAJOHNYAKKATTU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANDAPAM",
+            "person": {
+                "id": "2015120900101",
+                "name": "SUNNY KOYITHURUTHIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHITTARIKKAL",
+            "person": {
+                "id": "2015120900201",
+                "name": "LINCYKUTTY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALLIKKUNNU",
+            "person": {
+                "id": "2015120900301",
+                "name": "DETTY FRANCIS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KAVUNTHALA",
+            "person": {
+                "id": "2015120900401",
+                "name": "SATHEESH P P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THAYYENI",
+            "person": {
+                "id": "2015120900501",
+                "name": "SEEMA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALANKADAVU",
+            "person": {
+                "id": "2015120900601",
+                "name": "JOHN PENDANATHU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALAVAYAL",
+            "person": {
+                "id": "2015120900701",
+                "name": "PUSHPAMMA BABY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EANICHAL",
+            "person": {
+                "id": "2015120900801",
+                "name": "PHILOMINA JOHNY AKKATTU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANNIVAYAL",
+            "person": {
+                "id": "2015120900901",
+                "name": "JAMES PANTHAMMAKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NALLOMPUZHA",
+            "person": {
+                "id": "2015120901001",
+                "name": "SHERLY CHEENKALLEL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PONKAL",
+            "person": {
+                "id": "2015120901101",
+                "name": "TOMI ANTONY PUTHUPPALLIYEL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VELLARIKUNDU",
+            "person": {
+                "id": "2015120901201",
+                "name": "THOMAS MATHEW"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOLLADA",
+            "person": {
+                "id": "2015120901301",
+                "name": "K P MATHEW"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAMBALLUR",
+            "person": {
+                "id": "2015120901401",
+                "name": "SULOCHANA M M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADUMENI",
+            "person": {
+                "id": "2015120901501",
+                "name": "BABY KUNNEL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARA",
+            "person": {
+                "id": "2015120901601",
+                "name": "JESSY TOM"
+            }
+        }
+    ]
+}

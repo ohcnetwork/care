@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566345191481,
+    "date": "2019-08-21",
+    "name": "Mannarkkad  Block Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "482.35km",
+    "localbody_code": "B090500",
+    "no_of_wards": 17,
+    "population": 246877,
+    "male": 120308,
+    "female": 126569,
+    "population_density": 512,
+    "sex_ratio": 1055,
+    "literacy_rate": 84.45,
+    "literacy_rate_male": 89.21,
+    "literacy_rate_female": 80,
+    "president": "YOOSUFPALAKKAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDATHANATTUKARA",
+            "person": {
+                "id": "2015010200101",
+                "name": "P.RAFEEKA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THIRUVIZHAMKUNNU",
+            "person": {
+                "id": "2015010200201",
+                "name": "V .PREETHA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTOPPADAM",
+            "person": {
+                "id": "2015010200301",
+                "name": "SREEVIDYA.N.R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAYYANADAM",
+            "person": {
+                "id": "2015010200401",
+                "name": "RAJAN AMBADATH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THENKARA",
+            "person": {
+                "id": "2015010200501",
+                "name": "P.ALAVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANJIRAPPUZHA",
+            "person": {
+                "id": "2015010200601",
+                "name": "SHEREEF.O.P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALAKKAYAM",
+            "person": {
+                "id": "2015010200701",
+                "name": "CHANDRIKA RAJESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MEENVALLAM",
+            "person": {
+                "id": "2015010200801",
+                "name": "SANTHAKUMARI.A.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARIMBA",
+            "person": {
+                "id": "2015010200901",
+                "name": "YOOSUF PALAKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THACHAMPARA",
+            "person": {
+                "id": "2015010201001",
+                "name": "K.P.MOIDU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTTIYODE",
+            "person": {
+                "id": "2015010201101",
+                "name": "RUGMINI.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHANGALEERI",
+            "person": {
+                "id": "2015010201201",
+                "name": "JAMSHEENA.A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ARIYOOR",
+            "person": {
+                "id": "2015010201301",
+                "name": "M.AVARA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHETHALLUR",
+            "person": {
+                "id": "2015010201401",
+                "name": "RAMAKRISHNAN.N"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THACHANATTUKARA",
+            "person": {
+                "id": "2015010201501",
+                "name": "N.SAITHALAVI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "BHEEMANAD",
+            "person": {
+                "id": "2015010201601",
+                "name": "AMMU.P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ALANALLUR",
+            "person": {
+                "id": "2015010201701",
+                "name": "RADHA.P"
+            }
+        }
+    ]
+}

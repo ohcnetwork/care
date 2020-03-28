@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346440004,
+    "date": "2019-08-21",
+    "name": "Kodamthuruth  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "10.81km",
+    "localbody_code": "G040205",
+    "no_of_wards": 15,
+    "population": 18124,
+    "male": 8935,
+    "female": 9189,
+    "population_density": 1677,
+    "sex_ratio": 1028,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 90,
+    "president": "SHYNIPERINGATTSUSANSEBASTIAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NEENDAKARA",
+            "person": {
+                "id": "2015043600101",
+                "name": "RUGMINI BOBAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAILASAM",
+            "person": {
+                "id": "2015043600201",
+                "name": "BIJU JOSEY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUZHUVELI",
+            "person": {
+                "id": "2015043600301",
+                "name": "LINCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUREETHARA",
+            "person": {
+                "id": "2015043600401",
+                "name": "SALINI BAIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHAMMANAD",
+            "person": {
+                "id": "2015043600501",
+                "name": "MALLIKA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MONTHACHAL",
+            "person": {
+                "id": "2015043600601",
+                "name": "DILEEP KUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIRACKAL",
+            "person": {
+                "id": "2015043600701",
+                "name": "AMBIKA BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANATHODAM",
+            "person": {
+                "id": "2015043600801",
+                "name": "V. N RETHEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANCHAYATH",
+            "person": {
+                "id": "2015043600901",
+                "name": "P. G SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KELAMKULANGARA",
+            "person": {
+                "id": "2015043601001",
+                "name": "P. P MADHU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOYICKAL",
+            "person": {
+                "id": "2015043601101",
+                "name": "BABY TEACHER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUTTATHIL",
+            "person": {
+                "id": "2015043601201",
+                "name": "USHA SOMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALLETHODE",
+            "person": {
+                "id": "2015043601301",
+                "name": "SHYNI PERINGATT (SUSAN SEBASTIAN)"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MOORTHINKAL",
+            "person": {
+                "id": "2015043601401",
+                "name": "BINEESH H"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHANGARAM",
+            "person": {
+                "id": "2015043601501",
+                "name": "PARVATHY RATHEESH"
+            }
+        }
+    ]
+}

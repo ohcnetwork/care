@@ -1,0 +1,204 @@
+{
+    "timeStamp": 1566345372072,
+    "date": "2019-08-21",
+    "name": "Alappuzha  District Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "area": "1361.24km",
+    "localbody_code": "D040000",
+    "no_of_wards": 23,
+    "population": 2105349,
+    "male": 1012572,
+    "female": 1092777,
+    "population_density": 1470,
+    "sex_ratio": 1051,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 91,
+    "president": "GVENUGOPAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AROOR",
+            "person": {
+                "id": "2015015600101",
+                "name": "DALEEMA JOJO"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POOCHAKKAL",
+            "person": {
+                "id": "2015015600201",
+                "name": "P M PRAMOD"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PALLIPPURAM",
+            "person": {
+                "id": "2015015600301",
+                "name": "SINDHU VINU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANJIKKUZHI",
+            "person": {
+                "id": "2015015600401",
+                "name": "JAMEELA K R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARYAD",
+            "person": {
+                "id": "2015015600501",
+                "name": "P A JUMAILATH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VELIYANAD",
+            "person": {
+                "id": "2015015600601",
+                "name": "K K ASOKAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHAMPAKKULAM",
+            "person": {
+                "id": "2015015600701",
+                "name": "BINU ISSAC RAJU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALLIPPAD",
+            "person": {
+                "id": "2015015600801",
+                "name": "JOHN THOMAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENNITHALA",
+            "person": {
+                "id": "2015015600901",
+                "name": "JACOB OOMMEN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNAR",
+            "person": {
+                "id": "2015015601001",
+                "name": "JOGY CHERIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULAKKUZHA",
+            "person": {
+                "id": "2015015601101",
+                "name": "V VENU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VENMONY",
+            "person": {
+                "id": "2015015601201",
+                "name": "JEBIN P VARGHESE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NOORANAD",
+            "person": {
+                "id": "2015015601301",
+                "name": "VISWAN PADANILAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "BHARANIKKAVU",
+            "person": {
+                "id": "2015015601401",
+                "name": "K SUMA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KRISHNAPURAM",
+            "person": {
+                "id": "2015015601501",
+                "name": "ARITHA BABU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PATHIYOOR",
+            "person": {
+                "id": "2015015601601",
+                "name": "MANI VISWANATH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUTHUKULAM",
+            "person": {
+                "id": "2015015601701",
+                "name": "BABITHA JAYAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KARUVATTA",
+            "person": {
+                "id": "2015015601801",
+                "name": "REMYA RAMANAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AMBALAPPUZHA",
+            "person": {
+                "id": "2015015601901",
+                "name": "A R KANNAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PUNNAPRA",
+            "person": {
+                "id": "2015015602001",
+                "name": "G VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "MARARIKKULAM",
+            "person": {
+                "id": "2015015602101",
+                "name": "K T MATHEW"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "VAYALAR",
+            "person": {
+                "id": "2015015602201",
+                "name": "JOTHMOL (SANDHYA BENNY)"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MANAKKODAM",
+            "person": {
+                "id": "2015015602301",
+                "name": "SAJIMOL FRANCIS"
+            }
+        }
+    ]
+}

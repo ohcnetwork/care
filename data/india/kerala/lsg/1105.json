@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349217844,
+    "date": "2019-08-21",
+    "name": "Eramam Kuttur  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "75.14km",
+    "localbody_code": "G130105",
+    "no_of_wards": 17,
+    "population": 25036,
+    "male": 12238,
+    "female": 12798,
+    "population_density": 333,
+    "sex_ratio": 1046,
+    "literacy_rate": 88,
+    "literacy_rate_male": 93.97,
+    "literacy_rate_female": 82.38,
+    "president": "SATHYABHAMAK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERAMAM",
+            "person": {
+                "id": "2015110500101",
+                "name": "RAMESAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "RAMAPURAM",
+            "person": {
+                "id": "2015110500201",
+                "name": "M V CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUTTUR",
+            "person": {
+                "id": "2015110500301",
+                "name": "SINDHU P P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OLAYAMBADI",
+            "person": {
+                "id": "2015110500401",
+                "name": "BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHATTIYOL",
+            "person": {
+                "id": "2015110500501",
+                "name": "P PADMAKSHI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUVAMBA",
+            "person": {
+                "id": "2015110500601",
+                "name": "SHYNI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKARA",
+            "person": {
+                "id": "2015110500701",
+                "name": "SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAYAPPOYIL",
+            "person": {
+                "id": "2015110500801",
+                "name": "SATHYABHAMA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELLORA",
+            "person": {
+                "id": "2015110500901",
+                "name": "RAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERUMBADAVU",
+            "person": {
+                "id": "2015110501001",
+                "name": "JOSEPH KATTATHARA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KARIPPAL",
+            "person": {
+                "id": "2015110501101",
+                "name": "T V ANEESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOYIPRA",
+            "person": {
+                "id": "2015110501201",
+                "name": "RAJANI K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NELLIYAD",
+            "person": {
+                "id": "2015110501301",
+                "name": "PADMAKSHI K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THUMBATHADAM",
+            "person": {
+                "id": "2015110501401",
+                "name": "BHARGHAVAN NALUPURAPPATTIL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MATHAMANGALAM",
+            "person": {
+                "id": "2015110501501",
+                "name": "SUDHAMANI K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERUL",
+            "person": {
+                "id": "2015110501601",
+                "name": "CHANDRIKA M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ERAMAM PULLUKKARA",
+            "person": {
+                "id": "2015110501701",
+                "name": "JISHA E C K"
+            }
+        }
+    ]
+}

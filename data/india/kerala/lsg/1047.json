@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349048389,
+    "date": "2019-08-21",
+    "name": "Thiruvambadi  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Koduvaliy",
+    "area": "83.96km",
+    "localbody_code": "G111001",
+    "no_of_wards": 17,
+    "population": 23968,
+    "male": 12094,
+    "female": 11874,
+    "population_density": 285,
+    "sex_ratio": 982,
+    "literacy_rate": 92.85,
+    "literacy_rate_male": 94.92,
+    "literacy_rate_female": 91.8,
+    "president": "PTAUGUSTINE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUTHAPPANPUZHA",
+            "person": {
+                "id": "2015104700101",
+                "name": "TOMY KONNACKAL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAVUKALLEL",
+            "person": {
+                "id": "2015104700201",
+                "name": "POULIN MATHEW"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANACKAMPOYIL",
+            "person": {
+                "id": "2015104700301",
+                "name": "BINDU JAMES"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KODAKKATTUPARA",
+            "person": {
+                "id": "2015104700401",
+                "name": "SABITHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PONNAMKAYAM",
+            "person": {
+                "id": "2015104700501",
+                "name": "OMANA VISWAMBHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "URUMI",
+            "person": {
+                "id": "2015104700601",
+                "name": "ROBERT N S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUNNAKKAL",
+            "person": {
+                "id": "2015104700701",
+                "name": "WILSON T MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAMBIZHANHAPARA",
+            "person": {
+                "id": "2015104700801",
+                "name": "SUHARA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MARIYAPPURAM",
+            "person": {
+                "id": "2015104700902",
+                "name": "RAMLA CHOLAKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MARAKKATTUPURAM",
+            "person": {
+                "id": "2015104701001",
+                "name": "SMITHA BABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THONDIMMAL",
+            "person": {
+                "id": "2015104701101",
+                "name": "GOPALAN K R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THAZHETHIRUVAMBADY",
+            "person": {
+                "id": "2015104701201",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AMBALAPPARA",
+            "person": {
+                "id": "2015104701301",
+                "name": "HAJIRA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THIRUVAMBADY TOWN",
+            "person": {
+                "id": "2015104701401",
+                "name": "BOSE JACOB"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALAKKADAVE",
+            "person": {
+                "id": "2015104701501",
+                "name": "P  T AUGUSTINE"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THAMBALAMANNA",
+            "person": {
+                "id": "2015104701601",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PULLOORAMPARA",
+            "person": {
+                "id": "2015104701701",
+                "name": "KURIACHAN"
+            }
+        }
+    ]
+}

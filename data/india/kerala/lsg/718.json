@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347430931,
+    "date": "2019-08-21",
+    "name": "Vadakkekkad  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chavakkad",
+    "area": "13.72km",
+    "localbody_code": "G080105",
+    "no_of_wards": 16,
+    "population": 23575,
+    "male": 11048,
+    "female": 12527,
+    "population_density": 1718,
+    "sex_ratio": 1134,
+    "literacy_rate": 91.17,
+    "literacy_rate_male": 95.09,
+    "literacy_rate_female": 87.85,
+    "president": "MARIYUMUSTAFHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERINJIPPADI",
+            "person": {
+                "id": "2015071800101",
+                "name": "BALAKRISHNAN KANHINGAT"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KALLINGAL",
+            "person": {
+                "id": "2015071800201",
+                "name": "ASHRAF PAVOORAYIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAYANGAD",
+            "person": {
+                "id": "2015071800301",
+                "name": "SHALIYA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOWKKANAPETTY",
+            "person": {
+                "id": "2015071800401",
+                "name": "SHANITHA ABDUL KAREEM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOCHANNOOR",
+            "person": {
+                "id": "2015071800501",
+                "name": "U.M. KUNJIMOHAMED"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NHAMANGHAT",
+            "person": {
+                "id": "2015071800602",
+                "name": "SINDHU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHAKKITHARA",
+            "person": {
+                "id": "2015071800701",
+                "name": "SREEDHARAN MAKKALIKKAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANJOOR",
+            "person": {
+                "id": "2015071800801",
+                "name": "SHINY MICHAEL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VYLATHUR",
+            "person": {
+                "id": "2015071800901",
+                "name": "NABEEL.T.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NAYARANGADI",
+            "person": {
+                "id": "2015071801001",
+                "name": "VINOD. V.V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PADINJAKKARA VYLATHUR",
+            "person": {
+                "id": "2015071801101",
+                "name": "AMINU KAREEM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALLOOR",
+            "person": {
+                "id": "2015071801201",
+                "name": "SABIRA RANGHATH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VATTAMPADAM",
+            "person": {
+                "id": "2015071801301",
+                "name": "APPU. K.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOMBANTHARA",
+            "person": {
+                "id": "2015071801401",
+                "name": "SUMATHY RAJAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THEKKEKAD",
+            "person": {
+                "id": "2015071801501",
+                "name": "MARIYU MUSTAFHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THIRUVALAYANNUR",
+            "person": {
+                "id": "2015071801601",
+                "name": "JOHNSON. M.K"
+            }
+        }
+    ]
+}

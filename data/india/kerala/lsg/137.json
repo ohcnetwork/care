@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345306030,
+    "date": "2019-08-21",
+    "name": "Mananthavady  Block Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Mananthavady",
+    "area": "747.41km",
+    "localbody_code": "B120100",
+    "no_of_wards": 13,
+    "population": 205838,
+    "male": 104039,
+    "female": 101799,
+    "population_density": 275,
+    "sex_ratio": 978,
+    "literacy_rate": 81.22,
+    "literacy_rate_male": 86.6,
+    "literacy_rate_female": 75.74,
+    "president": "GEETHABABU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERIYA",
+            "person": {
+                "id": "2015013700101",
+                "name": "N.M.ANTONY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALAD",
+            "person": {
+                "id": "2015013700201",
+                "name": "DINESH BABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THALAPUZHA",
+            "person": {
+                "id": "2015013700301",
+                "name": "THANKAMMA YESUDAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARTIKULAM",
+            "person": {
+                "id": "2015013700401",
+                "name": "DANIEL GEORGE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THIRUNELLY",
+            "person": {
+                "id": "2015013700502",
+                "name": "M. SATHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THONICHAL",
+            "person": {
+                "id": "2015013700601",
+                "name": "M.P.VALSAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLIKKAL",
+            "person": {
+                "id": "2015013700701",
+                "name": "FATHIMA BEEGUM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALLODY",
+            "person": {
+                "id": "2015013700801",
+                "name": "BINDU JOHN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THARUVANA",
+            "person": {
+                "id": "2015013700901",
+                "name": "K.K.C.MAIMOONA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KATTAYAD",
+            "person": {
+                "id": "2015013701001",
+                "name": "KAMER LAILA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELLAMUNDA",
+            "person": {
+                "id": "2015013701101",
+                "name": "K.J.PAILY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THETTAMALA",
+            "person": {
+                "id": "2015013701201",
+                "name": "GEETHA BABU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THONDERNAD",
+            "person": {
+                "id": "2015013701301",
+                "name": "PREETHA RAMAN"
+            }
+        }
+    ]
+}

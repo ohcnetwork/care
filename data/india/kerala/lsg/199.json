@@ -1,0 +1,364 @@
+{
+    "timeStamp": 1566345590709,
+    "date": "2019-08-21",
+    "name": "Guruvayur  Municipality, Thrissur District",
+    "district": "Thrissur",
+    "area": "6.49km",
+    "localbody_code": "M080100",
+    "no_of_wards": 43,
+    "population": 38138,
+    "male": 17702,
+    "female": 20436,
+    "population_density": 3115,
+    "sex_ratio": 1158,
+    "literacy_rate": 92.52,
+    "literacy_rate_male": 94.71,
+    "literacy_rate_female": 90.67,
+    "chairperson": "REVATHYV.S",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THOZHIYOOR",
+            "person": {
+                "id": "2015019900101",
+                "name": "SHAHINA M.A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PILLAKKAD",
+            "person": {
+                "id": "2015019900201",
+                "name": "HABEEB"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POOKODE EAST",
+            "person": {
+                "id": "2015019900301",
+                "name": "RAMITHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "IRINGAPPURAM EAST",
+            "person": {
+                "id": "2015019900401",
+                "name": "SHENIL T.S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANIGRAMAM",
+            "person": {
+                "id": "2015019900501",
+                "name": "SAVITHA SUNI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHOWALLORPADI",
+            "person": {
+                "id": "2015019900601",
+                "name": "JALEEL PANIKKAVEETTIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "BRAHMAKULAM",
+            "person": {
+                "id": "2015019900701",
+                "name": "SUMATHY GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALABAZAR",
+            "person": {
+                "id": "2015019900801",
+                "name": "C.JOY CHERIYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VILAKKUPADAM",
+            "person": {
+                "id": "2015019900901",
+                "name": "BINDU AJITHKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALUVAI",
+            "person": {
+                "id": "2015019901001",
+                "name": "NIRMALA KERALAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAKKUMKANDAM",
+            "person": {
+                "id": "2015019901101",
+                "name": "MEENA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALAYOOR",
+            "person": {
+                "id": "2015019901201",
+                "name": "R V ABDUL MAJEED"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAPPULLY",
+            "person": {
+                "id": "2015019901301",
+                "name": "SUSHA C.S"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "HIGHSCHOOL",
+            "person": {
+                "id": "2015019901401",
+                "name": "SURESH WARRIER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MAMMIYOOR",
+            "person": {
+                "id": "2015019901501",
+                "name": "C ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "COLLEGE",
+            "person": {
+                "id": "2015019901601",
+                "name": "PROF. P.K SANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHAMUNDESWARI",
+            "person": {
+                "id": "2015019901701",
+                "name": "RETHI M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "GURUPAVANAPURI",
+            "person": {
+                "id": "2015019901801",
+                "name": "SOBHA HARINARAYANAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KARAKKAD",
+            "person": {
+                "id": "2015019901901",
+                "name": "RETHI JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PANCHARAMUCKU",
+            "person": {
+                "id": "2015019902001",
+                "name": "LATHA PREMAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PUTHUSSERYPADFAM",
+            "person": {
+                "id": "2015019902101",
+                "name": "RAJAN P.S"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MANIKKATHPADI",
+            "person": {
+                "id": "2015019902201",
+                "name": "REVATHY V.S"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "NENMINI",
+            "person": {
+                "id": "2015019902301",
+                "name": "PRIYA RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "THAIKKAD",
+            "person": {
+                "id": "2015019902401",
+                "name": "A.P BABU"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "SUBSTATION",
+            "person": {
+                "id": "2015019902501",
+                "name": "ABDUL RASHEED KUNNIKKAL"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "IRINGAPPURAM SOUTH",
+            "person": {
+                "id": "2015019902601",
+                "name": "ABHILASH V CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "THIRUVENKIDAM",
+            "person": {
+                "id": "2015019902701",
+                "name": "SREEDEVI BALAN"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "MANJULAL",
+            "person": {
+                "id": "2015019902801",
+                "name": "SHYLAJA DEVAN"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "KANDAMKULAM",
+            "person": {
+                "id": "2015019902901",
+                "name": "P.S PRASAD"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "IRINGAPRAM NORTH",
+            "person": {
+                "id": "2015019903001",
+                "name": "VIVID"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "CHOOLPURAM WEST",
+            "person": {
+                "id": "2015019903101",
+                "name": "HAMSA"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "KOTTAPADI",
+            "person": {
+                "id": "2015019903201",
+                "name": "MAGGIE ALBERT"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "POOKODE WEST",
+            "person": {
+                "id": "2015019903301",
+                "name": "ANEESHMA M.P"
+            }
+        },
+        {
+            "ward_number": "34",
+            "name": "KAPPIYOOR",
+            "person": {
+                "id": "2015019903401",
+                "name": "BASHEER POOKODE"
+            }
+        },
+        {
+            "ward_number": "35",
+            "name": "KOTTA NORTH",
+            "person": {
+                "id": "2015019903501",
+                "name": "T.T SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "36",
+            "name": "CHOOLPURAM EAST",
+            "person": {
+                "id": "2015019903601",
+                "name": "VARGHESE CHEERAN"
+            }
+        },
+        {
+            "ward_number": "37",
+            "name": "KOTTA SOUTH",
+            "person": {
+                "id": "2015019903701",
+                "name": "K.P VINOD"
+            }
+        },
+        {
+            "ward_number": "38",
+            "name": "THAMARAYOOR",
+            "person": {
+                "id": "2015019903801",
+                "name": "T.K VINODKUMAR"
+            }
+        },
+        {
+            "ward_number": "39",
+            "name": "PERAKAM",
+            "person": {
+                "id": "2015019903901",
+                "name": "PRASITHA MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "40",
+            "name": "VAZHAPPULLY",
+            "person": {
+                "id": "2015019904001",
+                "name": "ANTO THOMAS"
+            }
+        },
+        {
+            "ward_number": "41",
+            "name": "KAVEED SOUTH",
+            "person": {
+                "id": "2015019904101",
+                "name": "T.K SWARAJ"
+            }
+        },
+        {
+            "ward_number": "42",
+            "name": "KARAYOOR",
+            "person": {
+                "id": "2015019904201",
+                "name": "KARAYUR SUNITHA ARAVINDAN"
+            }
+        },
+        {
+            "ward_number": "43",
+            "name": "KAVEED NORTH",
+            "person": {
+                "id": "2015019904301",
+                "name": "P.K SREENA"
+            }
+        }
+    ]
+}

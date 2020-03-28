@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345067835,
+    "date": "2019-08-21",
+    "name": "Angamaly  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Angamally",
+    "area": "203.19km",
+    "localbody_code": "B070300",
+    "no_of_wards": 13,
+    "population": 179660,
+    "male": 90448,
+    "female": 89212,
+    "population_density": 884,
+    "sex_ratio": 986,
+    "literacy_rate": 89.81,
+    "literacy_rate_male": 93.26,
+    "literacy_rate_female": 86.33,
+    "president": "PAULP.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALISSERY",
+            "person": {
+                "id": "2015006800101",
+                "name": "AYYAPPAN K.P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THABORE",
+            "person": {
+                "id": "2015006800201",
+                "name": "VARGHESE T.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYYAMPUZHA",
+            "person": {
+                "id": "2015006800301",
+                "name": "ALPHONSA PAPPACHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MALAYATTOOR",
+            "person": {
+                "id": "2015006800401",
+                "name": "VANAJA SADANANDAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NADUVATTOM",
+            "person": {
+                "id": "2015006800501",
+                "name": "SHERLY JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANJAPRA",
+            "person": {
+                "id": "2015006800601",
+                "name": "SIJU ERALY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALADY",
+            "person": {
+                "id": "2015006800701",
+                "name": "GEORGE T.P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015006800801",
+                "name": "VALSA XAVIER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANJOOR",
+            "person": {
+                "id": "2015006800901",
+                "name": "SANTHOSH A.A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MATTOOR",
+            "person": {
+                "id": "2015006801001",
+                "name": "RENNY JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THURAVOOR",
+            "person": {
+                "id": "2015006801101",
+                "name": "ELSY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOOKKANNUR",
+            "person": {
+                "id": "2015006801201",
+                "name": "GRACY RAPHEL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARUKUTTY",
+            "person": {
+                "id": "2015006801301",
+                "name": "PAUL P.T"
+            }
+        }
+    ]
+}

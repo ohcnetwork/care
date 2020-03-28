@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566348491013,
+    "date": "2019-08-21",
+    "name": "Chaliyar  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Nilambur",
+    "area": "124.28km",
+    "localbody_code": "G100101",
+    "no_of_wards": 14,
+    "population": 16476,
+    "male": 8073,
+    "female": 8403,
+    "population_density": 133,
+    "sex_ratio": 1041,
+    "literacy_rate": 82.25,
+    "literacy_rate_male": 84.59,
+    "literacy_rate_female": 79.7,
+    "president": "P.T.USMAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALAMTHODE",
+            "person": {
+                "id": "2015089600101",
+                "name": "ANEESH AUGUSTINE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDIVANNA",
+            "person": {
+                "id": "2015089600201",
+                "name": "KRISHNANKUTTY PALAKKAYAM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAREKKAD",
+            "person": {
+                "id": "2015089600301",
+                "name": "NOUSHAD"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUTTIYEL",
+            "person": {
+                "id": "2015089600401",
+                "name": "M.T LASNA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PERUMBATHOOR",
+            "person": {
+                "id": "2015089600501",
+                "name": "AJITH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELAMBILAKKODE",
+            "person": {
+                "id": "2015089600601",
+                "name": "BALACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ERANHIMANGAD",
+            "person": {
+                "id": "2015089600701",
+                "name": "THONIKKADAVAN SHOUKATH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MYLADI",
+            "person": {
+                "id": "2015089600801",
+                "name": "BINDU SURESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANNUPPADAM",
+            "person": {
+                "id": "2015089600901",
+                "name": "REENA RAGHAVAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MODAVANNA",
+            "person": {
+                "id": "2015089601001",
+                "name": "P.T. USMAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALAKKUNNU",
+            "person": {
+                "id": "2015089601101",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ANAPPARA",
+            "person": {
+                "id": "2015089601201",
+                "name": "PRAMEELA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AKAMPADAM",
+            "person": {
+                "id": "2015089601301",
+                "name": "PADMAJA PRAKASH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PERUVAMPADAM",
+            "person": {
+                "id": "2015089601401",
+                "name": "ACHAMA JOSEPH"
+            }
+        }
+    ]
+}

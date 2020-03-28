@@ -1,0 +1,132 @@
+{
+    "timeStamp": 1566348121072,
+    "date": "2019-08-21",
+    "name": "Kuzhur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mala",
+    "area": "19.11km",
+    "localbody_code": "G081503",
+    "no_of_wards": 14,
+    "population": 18569,
+    "male": 9010,
+    "female": 9559,
+    "population_density": 972,
+    "sex_ratio": 1061,
+    "literacy_rate": 90.97,
+    "literacy_rate_male": 94.3,
+    "literacy_rate_female": 87.86,
+    "president": "SILVYXAVIER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THANISSERY",
+            "person": {
+                "id": "2015079500101",
+                "name": "K.K RAJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAKKULISSERY",
+            "person": {
+                "id": "2015079500201",
+                "name": "ANTHONY  V.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THUMBARASSERY",
+            "person": {
+                "id": "2015079500301",
+                "name": "USHA SADANANDHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUZHUR",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEKKUMCHERRY",
+            "person": {
+                "id": "2015079500501",
+                "name": "N.D PAULSON"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ERAVATHUR",
+            "person": {
+                "id": "2015079500601",
+                "name": "DAVIS M.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOCHUKADAVU",
+            "person": {
+                "id": "2015079500701",
+                "name": "T.A SHAMEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNDOOR",
+            "person": {
+                "id": "2015079500801",
+                "name": "MUHAMED FOWSI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VAYALAR",
+            "person": {
+                "id": "2015079500901",
+                "name": "GEETHA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ALAMATTOM",
+            "person": {
+                "id": "2015079501001",
+                "name": "PRABHAVATHY V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUTHA",
+            "person": {
+                "id": "2015079501101",
+                "name": "NANDITHA VINOD"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THIRUMUKKULAM",
+            "person": {
+                "id": "2015079501201",
+                "name": "BIJU THOTTAPPILLY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015079501301",
+                "name": "SILVY XAVIER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "IRANIKKULAM",
+            "person": {
+                "id": "2015079501401",
+                "name": "SHEEBA SHAJU"
+            }
+        }
+    ]
+}

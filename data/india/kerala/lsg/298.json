@@ -1,0 +1,172 @@
+{
+    "timeStamp": 1566345952997,
+    "date": "2019-08-21",
+    "name": "Karode  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Parassala",
+    "area": "15.67km",
+    "localbody_code": "G011102",
+    "no_of_wards": 19,
+    "population": 27490,
+    "male": 13734,
+    "female": 13756,
+    "population_density": 1754,
+    "sex_ratio": 1002,
+    "literacy_rate": 84.07,
+    "literacy_rate_male": 89.78,
+    "literacy_rate_female": 78.44,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKEPUTHUVEEDU",
+            "person": {
+                "id": "2015029800101",
+                "name": "SURESH G"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PLAMOOTUKADA",
+            "person": {
+                "id": "2015029800201",
+                "name": "SYAM S B"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYIRA",
+            "person": {
+                "id": "2015029800301",
+                "name": "T THANKARAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADOORKONAM",
+            "person": {
+                "id": "2015029800401",
+                "name": "LATHA SHIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHUPURAIKAL",
+            "person": {
+                "id": "2015029800501",
+                "name": "SOUMYA UDHAYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHENKAVILA",
+            "person": {
+                "id": "2015029800601",
+                "name": "CHANDRIKA E"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AMBILIKONAM",
+            "person": {
+                "id": "2015029800701",
+                "name": "AUGNUS T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANTHALLOOR",
+            "person": {
+                "id": "2015029800801",
+                "name": "BINU C B"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MARADY",
+            "person": {
+                "id": "2015029800901",
+                "name": "NIRMALA KUMARI AMMA M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARODE",
+            "person": {
+                "id": "2015029801001",
+                "name": "BINDHU P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHINJANVILA",
+            "person": {
+                "id": "2015029801101",
+                "name": "DHANESH D G"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AMBANAVILA",
+            "person": {
+                "id": "2015029801201",
+                "name": "SURAJA KUMARI O C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNNIYODE",
+            "person": {
+                "id": "2015029801301",
+                "name": "SUNI J"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAKKAVILA",
+            "person": {
+                "id": "2015029801401",
+                "name": "ANITHA E"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHUSHERI",
+            "person": {
+                "id": "2015029801501",
+                "name": "ANITHA B"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PUTHIYA UCHAKKADA",
+            "person": {
+                "id": "2015029801601",
+                "name": "AJEESH A"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAZHAYA UCHAKKADA",
+            "person": {
+                "id": "2015029801701",
+                "name": "C RABI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VENKULAM",
+            "person": {
+                "id": "2015029801801",
+                "name": "MARY JAYANTHI S"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHAROTTUKONAM",
+            "person": {
+                "id": "2015029801901",
+                "name": "PADMA CHRISTAL K"
+            }
+        }
+    ]
+}

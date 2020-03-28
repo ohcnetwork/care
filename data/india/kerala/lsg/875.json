@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348399889,
+    "date": "2019-08-21",
+    "name": "Melarcode  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Nenmara",
+    "area": "25.52km",
+    "localbody_code": "G091105",
+    "no_of_wards": 16,
+    "population": 23706,
+    "male": 11497,
+    "female": 12209,
+    "population_density": 929,
+    "sex_ratio": 1062,
+    "literacy_rate": 76.8,
+    "literacy_rate_male": 75.78,
+    "literacy_rate_female": 68.54,
+    "president": "MAYANM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOZHIPPADAM",
+            "person": {
+                "id": "2015087500101",
+                "name": "MANSOOR ALI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KONNALLUR",
+            "person": {
+                "id": "2015087500201",
+                "name": "GEETHA P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHITTILANCHERY",
+            "person": {
+                "id": "2015087500301",
+                "name": "SANTHAKUMARI V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KALLAMBADU",
+            "person": {
+                "id": "2015087500401",
+                "name": "PREMALATHA P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEKKETHARA",
+            "person": {
+                "id": "2015087500501",
+                "name": "PRABHAKARAN K.V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAPPUKAD",
+            "person": {
+                "id": "2015087500601",
+                "name": "AJITHA A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHETTIYARKAD",
+            "person": {
+                "id": "2015087500701",
+                "name": "DEVI P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERAMANGALAM",
+            "person": {
+                "id": "2015087500801",
+                "name": "MAYAN M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KILIYALLUR",
+            "person": {
+                "id": "2015087500901",
+                "name": "SUDHA C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANTHAZHI",
+            "person": {
+                "id": "2015087501001",
+                "name": "MUHAMMED SHEREEF"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHANTHARA",
+            "person": {
+                "id": "2015087501101",
+                "name": "SURESH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALATHALA",
+            "person": {
+                "id": "2015087501201",
+                "name": "MOHANAN K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADAMBIDI",
+            "person": {
+                "id": "2015087501301",
+                "name": "SAJITHA P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUTHUKUNNI",
+            "person": {
+                "id": "2015087501401",
+                "name": "KANNAN K.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VATTOMBADAM",
+            "person": {
+                "id": "2015087501501",
+                "name": "USHAGOPINATHAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KATHAMPOTTA",
+            "person": {
+                "id": "2015087501601",
+                "name": "RAGHAVAN A"
+            }
+        }
+    ]
+}

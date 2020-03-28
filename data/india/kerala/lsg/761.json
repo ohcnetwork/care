@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347595057,
+    "date": "2019-08-21",
+    "name": "Thanniyam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Anthikkad",
+    "area": "17.53km",
+    "localbody_code": "G080902",
+    "no_of_wards": 18,
+    "population": 27265,
+    "male": 12597,
+    "female": 14668,
+    "population_density": 1555,
+    "sex_ratio": 1164,
+    "literacy_rate": 92.36,
+    "literacy_rate_male": 95.89,
+    "literacy_rate_female": 89.4,
+    "president": "C.P.JOSE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEMMAPPILLY NORTH",
+            "person": {
+                "id": "2015076100101",
+                "name": "K.S SHIBHU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMURY",
+            "person": {
+                "id": "2015076100201",
+                "name": "SHIMA AKHIL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VADAKKUMURY NORTH",
+            "person": {
+                "id": "2015076100301",
+                "name": "PREETHA SIVADAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADAKKUMURY SOUTH",
+            "person": {
+                "id": "2015076100401",
+                "name": "RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KIZHAKKUMURY",
+            "person": {
+                "id": "2015076100501",
+                "name": "SUBHADRA RAVI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIZHAKKUMURY SOUTH",
+            "person": {
+                "id": "2015076100601",
+                "name": "K.S. SATHIAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SOMASEKHARA NAGAR",
+            "person": {
+                "id": "2015076100701",
+                "name": "SUJIN VAILOPPILLY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARUVAMKULAM",
+            "person": {
+                "id": "2015076100801",
+                "name": "C.P.JOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIZHUPPILLIKKARA",
+            "person": {
+                "id": "2015076100901",
+                "name": "SHEEBA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AZHIMAVU",
+            "person": {
+                "id": "2015076101001",
+                "name": "MINI JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THANNIYAM SOUTH",
+            "person": {
+                "id": "2015076101101",
+                "name": "C.A VINU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VENDARA",
+            "person": {
+                "id": "2015076101201",
+                "name": "MEENA SUNIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KIZHAKKUMURI WEST",
+            "person": {
+                "id": "2015076101301",
+                "name": "RATHI ANIKUMAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THANNIYAM",
+            "person": {
+                "id": "2015076101401",
+                "name": "SUBHA SURESH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THANNIYAM NORTH",
+            "person": {
+                "id": "2015076101501",
+                "name": "SOBHA RAJEEV"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERINGOTTUKARAPADAM",
+            "person": {
+                "id": "2015076101601",
+                "name": "OMANA SIVASANKARAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAINOOR",
+            "person": {
+                "id": "2015076101701",
+                "name": "V.I ABOOBAKKAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "BOAT KADAVU",
+            "person": {
+                "id": "2015076101801",
+                "name": "O.S ASHARAF"
+            }
+        }
+    ]
+}

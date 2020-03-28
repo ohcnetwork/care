@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346007115,
+    "date": "2019-08-21",
+    "name": "Kunnathoor  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Sasthamcotta",
+    "area": "21.44km",
+    "localbody_code": "G020205",
+    "no_of_wards": 17,
+    "population": 22946,
+    "male": 11267,
+    "female": 11679,
+    "population_density": 1070,
+    "sex_ratio": 1037,
+    "literacy_rate": 90.97,
+    "literacy_rate_male": 94.18,
+    "literacy_rate_female": 87.91,
+    "president": "KUNNATHOORPRASAD",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EZHAMMILE",
+            "person": {
+                "id": "2015031500101",
+                "name": "RENUKA O"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANAMPUZHA",
+            "person": {
+                "id": "2015031500201",
+                "name": "SREEDEVI AMMA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NILACKAL",
+            "person": {
+                "id": "2015031500301",
+                "name": "A. DILEEP"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THALAYATTU",
+            "person": {
+                "id": "2015031500401",
+                "name": "RENJINI.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THETTIMURY",
+            "person": {
+                "id": "2015031500501",
+                "name": "VASANTHAKUMARI. K. G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEECHAPPALLIL",
+            "person": {
+                "id": "2015031500601",
+                "name": "SREEKALA. S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "IVERKALA NADUVIL",
+            "person": {
+                "id": "2015031500701",
+                "name": "T.K PUSHPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHANAMPALAM EAST",
+            "person": {
+                "id": "2015031500801",
+                "name": "RAJASEKHARAN PILLAI. P .S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHANAMPALAM",
+            "person": {
+                "id": "2015031500901",
+                "name": "RAVEENDRAN. C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NATTISSERY",
+            "person": {
+                "id": "2015031501001",
+                "name": "SATHIUDAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NEDIYAVILA EAST",
+            "person": {
+                "id": "2015031501101",
+                "name": "REMESAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AATTUKADAVU",
+            "person": {
+                "id": "2015031501201",
+                "name": "REVEENDRAN.R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEDIYAVILA TOWN",
+            "person": {
+                "id": "2015031501301",
+                "name": "KUNNATHOOR PRASAD"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THURUTHIKKARA EAST",
+            "person": {
+                "id": "2015031501401",
+                "name": "V. RADHAKRISHNA PILLAI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THURUTHIKKARA WEST",
+            "person": {
+                "id": "2015031501501",
+                "name": "GEETHAKUMARY.  P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUNNATHOOR WEST",
+            "person": {
+                "id": "2015031501601",
+                "name": "SHEEJA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "BHOOTHAKUZHY",
+            "person": {
+                "id": "2015031501701",
+                "name": "BEENA. V"
+            }
+        }
+    ]
+}

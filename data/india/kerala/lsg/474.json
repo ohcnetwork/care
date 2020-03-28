@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346566709,
+    "date": "2019-08-21",
+    "name": "Karthikappally  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Harippad",
+    "area": "8.73km",
+    "localbody_code": "G040901",
+    "no_of_wards": 13,
+    "population": 18092,
+    "male": 8714,
+    "female": 9378,
+    "population_density": 2072,
+    "sex_ratio": 1076,
+    "literacy_rate": 92,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 88,
+    "president": "JIMMIVKAIPPALLI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULIKKEZHU VADAKKU",
+            "person": {
+                "id": "2015047400101",
+                "name": "AMPILY R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANDARACHIRA",
+            "person": {
+                "id": "2015047400201",
+                "name": "PINKI C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MAHATHMAGANDHI SMARAKA VAYANASALA",
+            "person": {
+                "id": "2015047400301",
+                "name": "ULLAS.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THOTTUKADAVU",
+            "person": {
+                "id": "2015047400401",
+                "name": "ROSHIN R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PHC WARD",
+            "person": {
+                "id": "2015047400501",
+                "name": "ALLIRANI S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHUKKUNDAM",
+            "person": {
+                "id": "2015047400601",
+                "name": "AJITHKUMAR R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VATHALLOORKOYIKKAL",
+            "person": {
+                "id": "2015047400701",
+                "name": "JIMMI V KAIPPALLI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARTHIKAPPALLY",
+            "person": {
+                "id": "2015047400801",
+                "name": "SUSAN JOHN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALIYAKULANGARA",
+            "person": {
+                "id": "2015047400901",
+                "name": "UNNIKRISHNAN C.N"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THOTTUKADAVU UPS",
+            "person": {
+                "id": "2015047401001",
+                "name": "BINU SHAMJI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "S.N.D.P.H.S",
+            "person": {
+                "id": "2015047401101",
+                "name": "SOBHA S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "HOMOEO AASUPATHRI WARD",
+            "person": {
+                "id": "2015047401201",
+                "name": "RAMANI.R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MAHAKAVI KUMARANASAN SMARAKA VAYANASALA",
+            "person": {
+                "id": "2015047401301",
+                "name": "SABU.M"
+            }
+        }
+    ]
+}

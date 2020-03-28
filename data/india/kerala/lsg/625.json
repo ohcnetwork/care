@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566347098586,
+    "date": "2019-08-21",
+    "name": "Kottuvally  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Paravur",
+    "area": "20.82km",
+    "localbody_code": "G070102",
+    "no_of_wards": 22,
+    "population": 34352,
+    "male": 16739,
+    "female": 17613,
+    "population_density": 1658,
+    "sex_ratio": 1052,
+    "literacy_rate": 92.46,
+    "literacy_rate_male": 95.86,
+    "literacy_rate_female": 89.27,
+    "president": "K.KSANTHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "WEST KAITHARAM",
+            "person": {
+                "id": "2015062500101",
+                "name": "LISSI  RAPHAEL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EAST KAITHARAM",
+            "person": {
+                "id": "2015062500201",
+                "name": "SANDHYA KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KIZHAKKEPPRAM",
+            "person": {
+                "id": "2015062500301",
+                "name": "MAJUMOL T A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTANTHURUTH",
+            "person": {
+                "id": "2015062500401",
+                "name": "C M RAJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANNAM",
+            "person": {
+                "id": "2015062500501",
+                "name": "C.K ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "DR.AMBEDKAR",
+            "person": {
+                "id": "2015062500601",
+                "name": "SHEREENA ABDULKAREEM"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THATHAPPILLY",
+            "person": {
+                "id": "2015062500701",
+                "name": "P N SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SOUTH THATHAPPILLY",
+            "person": {
+                "id": "2015062500801",
+                "name": "ADARSH L"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EAST VALLUVALLY",
+            "person": {
+                "id": "2015062500901",
+                "name": "RINI MILTON"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOCHAL",
+            "person": {
+                "id": "2015062501001",
+                "name": "JESSY LALU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOONAMMAVU",
+            "person": {
+                "id": "2015062501101",
+                "name": "DELEENA BIJU PAZHAMPILLY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "WEST KOONAMMAVU",
+            "person": {
+                "id": "2015062501201",
+                "name": "SREEJA PRAMOD"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTUVALLYKKAVU",
+            "person": {
+                "id": "2015062501301",
+                "name": "BIJU PULICKAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "WEST VALLUVALLY",
+            "person": {
+                "id": "2015062501401",
+                "name": "VANAJA ASOKAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANCHAYATH",
+            "person": {
+                "id": "2015062501501",
+                "name": "V.H JAMAL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "EAST CHERIYAPPILLY",
+            "person": {
+                "id": "2015062501601",
+                "name": "O.M JOBY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EAST KOTTUVALLY",
+            "person": {
+                "id": "2015062501701",
+                "name": "PREETHY NELSON"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "SOUTH KOTTUVALLY",
+            "person": {
+                "id": "2015062501801",
+                "name": "SAJANA GIREESH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "THRIKKAPURAM",
+            "person": {
+                "id": "2015062501901",
+                "name": "M.D VENU"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KAITHARAM",
+            "person": {
+                "id": "2015062502001",
+                "name": "P.C.BABU"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SOUTH KAITHARAM",
+            "person": {
+                "id": "2015062502101",
+                "name": "K.K SANTHA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "CHERIYAPPILLY",
+            "person": {
+                "id": "2015062502202",
+                "name": "ASHA SINTHIL"
+            }
+        }
+    ]
+}

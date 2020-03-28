@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566349001695,
+    "date": "2019-08-21",
+    "name": "Kottur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Balussery",
+    "area": "28.98km",
+    "localbody_code": "G110704",
+    "no_of_wards": 19,
+    "population": 27682,
+    "male": 14026,
+    "female": 13656,
+    "population_density": 955,
+    "sex_ratio": 974,
+    "literacy_rate": 91.7,
+    "literacy_rate_male": 96.16,
+    "literacy_rate_female": 87.15,
+    "president": "SHEEJAMP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MOOLAD",
+            "person": {
+                "id": "2015103200101",
+                "name": "USHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NARAYAMKULAM",
+            "person": {
+                "id": "2015103200202",
+                "name": "SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOLIKADAVU",
+            "person": {
+                "id": "2015103200301",
+                "name": "DAMODARAN K P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHEDIKULAM",
+            "person": {
+                "id": "2015103200401",
+                "name": "RAMYA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AVITANALLUR",
+            "person": {
+                "id": "2015103200501",
+                "name": "SHEEJA M P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMAYATTUVAYAL",
+            "person": {
+                "id": "2015103200601",
+                "name": "SHEENA U M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POONATH",
+            "person": {
+                "id": "2015103200701",
+                "name": "BASHEER M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEEROTH",
+            "person": {
+                "id": "2015103200801",
+                "name": "SUJITH KK"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAVUKANDI",
+            "person": {
+                "id": "2015103200901",
+                "name": "BALAN KK"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THRIKUTTISERI",
+            "person": {
+                "id": "2015103201001",
+                "name": "PREMALATHA V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "IDINJAKADAVU",
+            "person": {
+                "id": "2015103201101",
+                "name": "MAMMU KUTTI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PATHINONNUKANDI",
+            "person": {
+                "id": "2015103201201",
+                "name": "SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAKAYAD",
+            "person": {
+                "id": "2015103201301",
+                "name": "SOMAN P V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THIRUVODE",
+            "person": {
+                "id": "2015103201401",
+                "name": "SIJI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALOLI",
+            "person": {
+                "id": "2015103201501",
+                "name": "HAMEED K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOOTALIDA",
+            "person": {
+                "id": "2015103201601",
+                "name": "AJITHA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PADIYAKANDI",
+            "person": {
+                "id": "2015103201701",
+                "name": "GIRIJA C"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOTTUR",
+            "person": {
+                "id": "2015103201801",
+                "name": "VILASINI M K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KUNNARAMVALLI",
+            "person": {
+                "id": "2015103201901",
+                "name": "BABY"
+            }
+        }
+    ]
+}

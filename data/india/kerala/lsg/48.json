@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566345003792,
+    "date": "2019-08-21",
+    "name": "Kaduthuruthy  Block Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kaduthuruthy",
+    "area": "188km",
+    "localbody_code": "B050200",
+    "no_of_wards": 13,
+    "population": 155676,
+    "male": 77822,
+    "female": 77854,
+    "population_density": 188,
+    "sex_ratio": 1000,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 92,
+    "president": "PADMACHANDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKARA",
+            "person": {
+                "id": "2015004800101",
+                "name": "K M SUDHARMAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLOOR",
+            "person": {
+                "id": "2015004800201",
+                "name": "SAROJINI THANKAPPAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MULAKULAM",
+            "person": {
+                "id": "2015004800301",
+                "name": "PADMA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KEEZHOOR",
+            "person": {
+                "id": "2015004800401",
+                "name": "JANCY MATHEW"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NJEEZHOOR",
+            "person": {
+                "id": "2015004800501",
+                "name": "NAYANA BIJU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KATTAMPACK",
+            "person": {
+                "id": "2015004800601",
+                "name": "LUSAMMA JAMES(RANI)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUTTUCHIRA",
+            "person": {
+                "id": "2015004800701",
+                "name": "LILLYKUTTY MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADUTHURUTHY",
+            "person": {
+                "id": "2015004800801",
+                "name": "JOSE  P J"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AYAMKUDY",
+            "person": {
+                "id": "2015004800901",
+                "name": "PRAMOD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MADHURAVELI",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLARA",
+            "person": {
+                "id": "2015004801101",
+                "name": "P K UTHAMAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THALAYOLAPARAMBU",
+            "person": {
+                "id": "2015004801201",
+                "name": "C N SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "POTHY",
+            "person": {
+                "id": "2015004801301",
+                "name": "K A THOMAS"
+            }
+        }
+    ]
+}

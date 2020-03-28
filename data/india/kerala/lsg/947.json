@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348716220,
+    "date": "2019-08-21",
+    "name": "Koottilangadi  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "20.92km",
+    "localbody_code": "G100805",
+    "no_of_wards": 19,
+    "population": 26010,
+    "male": 12878,
+    "female": 13132,
+    "population_density": 1243,
+    "sex_ratio": 1020,
+    "literacy_rate": 87.64,
+    "literacy_rate_male": 95.15,
+    "literacy_rate_female": 80.13,
+    "president": "ZUHRABIP.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINHATTUMMURI",
+            "person": {
+                "id": "2015094700101",
+                "name": "V.K. SAFIYA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PADINHATTUMMURI TOWN",
+            "person": {
+                "id": "2015094700201",
+                "name": "ZUHRABI P.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "UPPARAPARAMBU",
+            "person": {
+                "id": "2015094700301",
+                "name": "ABDUL SALEEM C.H."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PATTIYILPARAMBU",
+            "person": {
+                "id": "2015094700401",
+                "name": "BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIYAPARAMBU",
+            "person": {
+                "id": "2015094700501",
+                "name": "SAIFUDHEEN K.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NELLIPPARAMBU",
+            "person": {
+                "id": "2015094700601",
+                "name": "K. MUHAMMED SALIM"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALLIKKAPATTA",
+            "person": {
+                "id": "2015094700701",
+                "name": "T SALEENA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POOZHIKKUNNU",
+            "person": {
+                "id": "2015094700801",
+                "name": "GEETHA K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANKADA PALLIPPURAM",
+            "person": {
+                "id": "2015094700901",
+                "name": "MUNEERA P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLAPPARAMBU",
+            "person": {
+                "id": "2015094701001",
+                "name": "RASNA M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERINTHATTIRI",
+            "person": {
+                "id": "2015094701101",
+                "name": "SURENDRAN T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHELOOR",
+            "person": {
+                "id": "2015094701201",
+                "name": "SABIRA KARUVANTHODI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADOOPURAM",
+            "person": {
+                "id": "2015094701301",
+                "name": "SUBAIDA N.K."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARADI",
+            "person": {
+                "id": "2015094701401",
+                "name": "K.P BHARGAVI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADUNGOOTH",
+            "person": {
+                "id": "2015094701501",
+                "name": "SAJEER C"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KADUKOOR",
+            "person": {
+                "id": "2015094701601",
+                "name": "P.K UMMER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOOTTILANGADI",
+            "person": {
+                "id": "2015094701701",
+                "name": "ELACHOLA HAMZA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MOTTAMMAL",
+            "person": {
+                "id": "2015094701801",
+                "name": "E.C. SAIFUNNEESA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "UNNAMTHALA",
+            "person": {
+                "id": "2015094701901",
+                "name": "T JASMIN SALEEM"
+            }
+        }
+    ]
+}

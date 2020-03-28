@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348722247,
+    "date": "2019-08-21",
+    "name": "Angadippuram  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Mankada",
+    "area": "36.94km",
+    "localbody_code": "G100708",
+    "no_of_wards": 23,
+    "population": 41464,
+    "male": 20249,
+    "female": 21215,
+    "population_density": 1129,
+    "sex_ratio": 1048,
+    "literacy_rate": 91,
+    "literacy_rate_male": 93.08,
+    "literacy_rate_female": 88.32,
+    "president": "O.KESAVAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANNARAMBU",
+            "person": {
+                "id": "2015095000101",
+                "name": "P.K ZAKIRHUSSAIN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MELE ARIPRA",
+            "person": {
+                "id": "2015095000201",
+                "name": "ANEES"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THIRURKKAD TOWN",
+            "person": {
+                "id": "2015095000301",
+                "name": "P.K.RAHEENA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PEECHANIPARAMBU",
+            "person": {
+                "id": "2015095000401",
+                "name": "RAJU.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VALAMBOOR",
+            "person": {
+                "id": "2015095000501",
+                "name": "SUBRAHMANIAN.P.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHENGODE",
+            "person": {
+                "id": "2015095000601",
+                "name": "V.P. AZEEZ"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOPPALAM",
+            "person": {
+                "id": "2015095000701",
+                "name": "JULIE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHATHANALLOOR",
+            "person": {
+                "id": "2015095000801",
+                "name": "SATHIRATNAM.E.V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ERANTHODE",
+            "person": {
+                "id": "2015095000901",
+                "name": "CHANDRAMATHI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ORADAMPALAM",
+            "person": {
+                "id": "2015095001001",
+                "name": "SAHIDA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRURKKAD PARA",
+            "person": {
+                "id": "2015095001101",
+                "name": "MOHAMMED SHABEER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTAPARAMBU",
+            "person": {
+                "id": "2015095001201",
+                "name": "O. KESAVAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANGADIPPURAM NORTH",
+            "person": {
+                "id": "2015095001301",
+                "name": "RAVEENDRANADHAN U"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANGADIPPURAM SOUTH",
+            "person": {
+                "id": "2015095001401",
+                "name": "SHOBHANA P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KAYAKKUNDU",
+            "person": {
+                "id": "2015095001501",
+                "name": "NASEERA.K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THATTARAKKADU",
+            "person": {
+                "id": "2015095001601",
+                "name": "ABDUL SALAM .A ARANGODAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PARIYAPURAM",
+            "person": {
+                "id": "2015095001701",
+                "name": "ALEYAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHANANGADI TOWN",
+            "person": {
+                "id": "2015095001801",
+                "name": "FEBILA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUTHANANGADI PALLIPADI",
+            "person": {
+                "id": "2015095001901",
+                "name": "HAJARUMMA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VAILONGARA",
+            "person": {
+                "id": "2015095002001",
+                "name": "SHAREEF"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHERAKKAPARAMBU",
+            "person": {
+                "id": "2015095002101",
+                "name": "SUBIDA.P"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "VAZHIPARA",
+            "person": {
+                "id": "2015095002201",
+                "name": "ABOOTHAHIR"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "THAZHE ARIPRA",
+            "person": {
+                "id": "2015095002301",
+                "name": "RENUKA.P"
+            }
+        }
+    ]
+}

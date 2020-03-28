@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346408474,
+    "date": "2019-08-21",
+    "name": "Kulanada  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Kulanada",
+    "area": "21.57km",
+    "localbody_code": "G030706",
+    "no_of_wards": 16,
+    "population": 23083,
+    "male": 11009,
+    "female": 12074,
+    "population_density": 1070,
+    "sex_ratio": 1097,
+    "literacy_rate": 95.58,
+    "literacy_rate_male": 97.33,
+    "literacy_rate_female": 94.02,
+    "president": "ASHOKANKULANADA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANTHUKA",
+            "person": {
+                "id": "2015042500101",
+                "name": "K.R.JAYACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANTHUKA EAST",
+            "person": {
+                "id": "2015042500201",
+                "name": "VISWAKALA.M.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ULLANNOOR",
+            "person": {
+                "id": "2015042500301",
+                "name": "SUSAN THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ULLANNOOR EAST",
+            "person": {
+                "id": "2015042500401",
+                "name": "RAJI.T.V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADALIKKUNNU",
+            "person": {
+                "id": "2015042500501",
+                "name": "SOBHANA ACHUTHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHUVAKKAL",
+            "person": {
+                "id": "2015042500601",
+                "name": "SASIKALA SURESH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANIL",
+            "person": {
+                "id": "2015042500701",
+                "name": "SANTHOSH.M.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUNNAKKUNNU",
+            "person": {
+                "id": "2015042500801",
+                "name": "SAJI.P.JOHN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THUMPAMON NORTH",
+            "person": {
+                "id": "2015042500901",
+                "name": "GIJI GEORGE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THUMPAMON THAZHAM",
+            "person": {
+                "id": "2015042501001",
+                "name": "SREELATHA MOHAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ULANADU",
+            "person": {
+                "id": "2015042501101",
+                "name": "PAUL RAJAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANANGADU",
+            "person": {
+                "id": "2015042501201",
+                "name": "SURESH.M.S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAIPUZHA",
+            "person": {
+                "id": "2015042501301",
+                "name": "SATHI.M.NAIR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KULANADA",
+            "person": {
+                "id": "2015042501401",
+                "name": "ASHOKAN KULANADA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KULANADA NORTH",
+            "person": {
+                "id": "2015042501501",
+                "name": "ELCY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NJETTOOR",
+            "person": {
+                "id": "2015042501601",
+                "name": "P.R.MOHAN DAS"
+            }
+        }
+    ]
+}

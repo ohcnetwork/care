@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349573372,
+    "date": "2019-08-21",
+    "name": "Balal  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kanhangad",
+    "area": "93.2km",
+    "localbody_code": "G140501",
+    "no_of_wards": 16,
+    "population": 20433,
+    "male": 10321,
+    "female": 10112,
+    "population_density": 219,
+    "sex_ratio": 980,
+    "literacy_rate": 84.63,
+    "literacy_rate_male": 87.48,
+    "literacy_rate_female": 81.74,
+    "president": "RADHAMANI.M.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDATHODE",
+            "person": {
+                "id": "2015119900101",
+                "name": "RADHAMANI. M."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ATHIKKADAVU",
+            "person": {
+                "id": "2015119900201",
+                "name": "K. MADHAVAN NAIR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "BALAL",
+            "person": {
+                "id": "2015119900301",
+                "name": "JACOB.E.J"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MARUTHUMKULAM",
+            "person": {
+                "id": "2015119900401",
+                "name": "A.V.MATHEW"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHULLY",
+            "person": {
+                "id": "2015119900501",
+                "name": "SUMATHI.C.V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "DARKKAS",
+            "person": {
+                "id": "2015119900601",
+                "name": "JAYANTHI BALAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUNCHA",
+            "person": {
+                "id": "2015119900701",
+                "name": "BINDU SABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MAIKKAYAM",
+            "person": {
+                "id": "2015119900801",
+                "name": "SILVY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KONNAKKADU",
+            "person": {
+                "id": "2015119900901",
+                "name": "RAJU KATTAKKAYAM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUTTOMKADAVU",
+            "person": {
+                "id": "2015119901001",
+                "name": "KRISHNAN.K.V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MALOM",
+            "person": {
+                "id": "2015119901101",
+                "name": "MICHAEL PENDANATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARIYOTCHAL",
+            "person": {
+                "id": "2015119901201",
+                "name": "SATHYAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANAMANJAL",
+            "person": {
+                "id": "2015119901301",
+                "name": "ROSAMMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VELLARIKUNDU",
+            "person": {
+                "id": "2015119901401",
+                "name": "REENA THOMAS"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALLANCHIRA",
+            "person": {
+                "id": "2015119901501",
+                "name": "TOMY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANAKAPPALLY",
+            "person": {
+                "id": "2015119901601",
+                "name": "REMYA.K.K"
+            }
+        }
+    ]
+}

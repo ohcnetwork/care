@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344932774,
+    "date": "2019-08-21",
+    "name": "Mallappally  Block Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "126.24km",
+    "localbody_code": "B030100",
+    "no_of_wards": 13,
+    "population": 115229,
+    "male": 56025,
+    "female": 59204,
+    "population_density": 913,
+    "sex_ratio": 1057,
+    "literacy_rate": 96.37,
+    "literacy_rate_male": 97.49,
+    "literacy_rate_female": 95.32,
+    "president": "SOSAMMATHOMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUKKOOR",
+            "person": {
+                "id": "2015002600101",
+                "name": "SREELEKHA. S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ANIKAD",
+            "person": {
+                "id": "2015002600201",
+                "name": "KUNJUKOSHI PAUL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUNNAVELI",
+            "person": {
+                "id": "2015002600301",
+                "name": "MINU SAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTANGAL",
+            "person": {
+                "id": "2015002600401",
+                "name": "SATHEESH. K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOTTANADU",
+            "person": {
+                "id": "2015002600501",
+                "name": "T.K. OMANA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHALAPPALLY",
+            "person": {
+                "id": "2015002600601",
+                "name": "SOSAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KEEZHVAIPUR",
+            "person": {
+                "id": "2015002600701",
+                "name": "BINU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALLAPPALLY",
+            "person": {
+                "id": "2015002600801",
+                "name": "UNNIKRISHNAN NADUVILEMURI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MADUKOLI",
+            "person": {
+                "id": "2015002600901",
+                "name": "KOSHY.P ZACHARIAH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALLOOPPARA",
+            "person": {
+                "id": "2015002601001",
+                "name": "MANUBAI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAVIYOOR",
+            "person": {
+                "id": "2015002601101",
+                "name": "DINESH. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTOOR",
+            "person": {
+                "id": "2015002601201",
+                "name": "C.K. LETHAKUMARY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUNNAMTHANAM",
+            "person": {
+                "id": "2015002601301",
+                "name": "SHINI KALESH KUMAR"
+            }
+        }
+    ]
+}

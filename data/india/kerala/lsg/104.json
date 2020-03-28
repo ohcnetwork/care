@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345197469,
+    "date": "2019-08-21",
+    "name": "Palakkad  Block Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Palakkad",
+    "area": "205.88km",
+    "localbody_code": "B090700",
+    "no_of_wards": 14,
+    "population": 174065,
+    "male": 84296,
+    "female": 89769,
+    "population_density": 845,
+    "sex_ratio": 1065,
+    "literacy_rate": 80.63,
+    "literacy_rate_male": 87.68,
+    "literacy_rate_female": 74.11,
+    "president": "BINDHUM.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARASSERY",
+            "person": {
+                "id": "2015010400101",
+                "name": "PADMAJA .S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KONGAD",
+            "person": {
+                "id": "2015010400201",
+                "name": "BINDHU M.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELIKKAD",
+            "person": {
+                "id": "2015010400301",
+                "name": "V LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUNDUR",
+            "person": {
+                "id": "2015010400401",
+                "name": "DINESHAN.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KINAVALLUR",
+            "person": {
+                "id": "2015010400501",
+                "name": "KISHOR KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIZHAKKANCHERIKAVU",
+            "person": {
+                "id": "2015010400601",
+                "name": "S.SADHIK BASHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PIRAYIRI",
+            "person": {
+                "id": "2015010400701",
+                "name": "PADMAVATHI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KODUNTHIRAPPULLY",
+            "person": {
+                "id": "2015010400801",
+                "name": "SINU.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PARLI",
+            "person": {
+                "id": "2015010400901",
+                "name": "SASHIJA .K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THENUR",
+            "person": {
+                "id": "2015010401001",
+                "name": "GOKUL DAS M.N"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANKARA",
+            "person": {
+                "id": "2015010401101",
+                "name": "SUBHADRA.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANNUR",
+            "person": {
+                "id": "2015010401201",
+                "name": "REKHA P.M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KERALASSERY",
+            "person": {
+                "id": "2015010401301",
+                "name": "P K RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VADASSERY",
+            "person": {
+                "id": "2015010401401",
+                "name": "JAYADASAN . P"
+            }
+        }
+    ]
+}

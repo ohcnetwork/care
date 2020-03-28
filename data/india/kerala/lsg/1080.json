@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566349149566,
+    "date": "2019-08-21",
+    "name": "Ambalavayal  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Sulthanbathery",
+    "area": "60.65km",
+    "localbody_code": "G120303",
+    "no_of_wards": 20,
+    "population": 30442,
+    "male": 15281,
+    "female": 15161,
+    "population_density": 502,
+    "sex_ratio": 992,
+    "literacy_rate": 84.83,
+    "literacy_rate_male": 88.99,
+    "literacy_rate_female": 80.62,
+    "president": "SEETHAVIJAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARACHAL",
+            "person": {
+                "id": "2015108000101",
+                "name": "SUMA. V.V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUMBALERI",
+            "person": {
+                "id": "2015108000201",
+                "name": "VENU K.G"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYIRAMKOLLY",
+            "person": {
+                "id": "2015108000301",
+                "name": "KURIAKOSE N.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUPPAMUDI",
+            "person": {
+                "id": "2015108000401",
+                "name": "SHYLA JOY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AMBALAVAYAL EAST",
+            "person": {
+                "id": "2015108000501",
+                "name": "MOLLY ASHOK"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "AMBALAVAYAL WEST",
+            "person": {
+                "id": "2015108000601",
+                "name": "SHAMEER K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NEERCHAL",
+            "person": {
+                "id": "2015108000701",
+                "name": "KUTTIKRISHNAN V.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANDOOR",
+            "person": {
+                "id": "2015108000801",
+                "name": "ANITHA MANIKANDAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAMBALA",
+            "person": {
+                "id": "2015108000901",
+                "name": "HAFSATH C.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOTTOOR",
+            "person": {
+                "id": "2015108001001",
+                "name": "JAYAPRAVEEN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAMBALAKOLLY",
+            "person": {
+                "id": "2015108001101",
+                "name": "SUBAIDA A.K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THOMATTUCHAL",
+            "person": {
+                "id": "2015108001201",
+                "name": "VALSA THANKACHAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEENAPULLU",
+            "person": {
+                "id": "2015108001301",
+                "name": "SEETHA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PERUMBADIKUNNU",
+            "person": {
+                "id": "2015108001401",
+                "name": "SUNITHA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTTAD",
+            "person": {
+                "id": "2015108001501",
+                "name": "SUNITHA DASAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NELLARACHAL",
+            "person": {
+                "id": "2015108001601",
+                "name": "RAMANADHAN N.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHEENGAVALLAM",
+            "person": {
+                "id": "2015108001701",
+                "name": "SUCHITHA VASU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MANJAPPARA",
+            "person": {
+                "id": "2015108001801",
+                "name": "THOMAS P.M"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KALATHUVAYAL",
+            "person": {
+                "id": "2015108001901",
+                "name": "PREKASH K.G"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "POTHUKETTY",
+            "person": {
+                "id": "2015108002001",
+                "name": "SUDHA KRISHNAN"
+            }
+        }
+    ]
+}

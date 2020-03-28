@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344840375,
+    "date": "2019-08-21",
+    "name": "Chirayinkeezhu  Block Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Chirayinkeezhu",
+    "area": "84.64km",
+    "localbody_code": "B010300",
+    "no_of_wards": 13,
+    "population": 173663,
+    "male": 81755,
+    "female": 91908,
+    "population_density": 2052,
+    "sex_ratio": 1124,
+    "literacy_rate": 74.04,
+    "literacy_rate_male": 77.38,
+    "literacy_rate_female": 71.07,
+    "president": "RSUBHASH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAYIKKARA",
+            "person": {
+                "id": "2015000300101",
+                "name": "SANDHYA D"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VAKKOM",
+            "person": {
+                "id": "2015000300201",
+                "name": "GEETHA SURESH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NILAKKAMUKKU",
+            "person": {
+                "id": "2015000300301",
+                "name": "ADV. S. FIROZ LAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KEEZHATTINGAL",
+            "person": {
+                "id": "2015000300401",
+                "name": "DEVE N"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUDAKKAL",
+            "person": {
+                "id": "2015000300501",
+                "name": "SINDHUKUMARY M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALAKKAD",
+            "person": {
+                "id": "2015000300601",
+                "name": "ELAMPA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EDACKODE",
+            "person": {
+                "id": "2015000300701",
+                "name": "B RAMABAI AMMA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PURAVOOR",
+            "person": {
+                "id": "2015000300801",
+                "name": "MANJU PRADEEP"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KIZHUVILAM",
+            "person": {
+                "id": "2015000300901",
+                "name": "CHANDRAN S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHIRAYINKEEZHU",
+            "person": {
+                "id": "2015000301001",
+                "name": "SINDHU S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SARKARA",
+            "person": {
+                "id": "2015000301101",
+                "name": "SULEKHA C P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADAKKAVOOR",
+            "person": {
+                "id": "2015000301201",
+                "name": "R SUBHASH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ANCHUTHENGU",
+            "person": {
+                "id": "2015000301301",
+                "name": "ANCHUTHENGU SURENDRAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347229925,
+    "date": "2019-08-21",
+    "name": "Kumbalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vyttila",
+    "area": "20.79km",
+    "localbody_code": "G070803",
+    "no_of_wards": 18,
+    "population": 24143,
+    "male": 11973,
+    "female": 12170,
+    "population_density": 1161,
+    "sex_ratio": 1016,
+    "literacy_rate": 94.22,
+    "literacy_rate_male": 97.43,
+    "literacy_rate_female": 91.08,
+    "president": "SEETHACHAKRAPANI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUMBALAM NORTH",
+            "person": {
+                "id": "2015066800101",
+                "name": "V. A. PONNAPPAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "UDAYATHUM VATHIL",
+            "person": {
+                "id": "2015066800201",
+                "name": "KALESWARI SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANCHAYATH WARD",
+            "person": {
+                "id": "2015066800301",
+                "name": "RASEENA SALAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANANGAD CENTRE",
+            "person": {
+                "id": "2015066800401",
+                "name": "RAHUL. T. R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHEPPANAM",
+            "person": {
+                "id": "2015066800501",
+                "name": "ANISH. C. T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHATHAMMA",
+            "person": {
+                "id": "2015066800601",
+                "name": "SHEEBA SUNIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VIDYABHAVAN",
+            "person": {
+                "id": "2015066800701",
+                "name": "SHEEJA PRASAD"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OLLARIL",
+            "person": {
+                "id": "2015066800801",
+                "name": "RAJESWARI SATHYAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANANGAD SOUTH",
+            "person": {
+                "id": "2015066800901",
+                "name": "HARIDAS. M. V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOOMBAYIL",
+            "person": {
+                "id": "2015066801001",
+                "name": "SHERLY GEORGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERUMANA",
+            "person": {
+                "id": "2015066801101",
+                "name": "K. R. PRASAD"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUNDEMPILLY",
+            "person": {
+                "id": "2015066801201",
+                "name": "MINI PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHIYAPALAM JETTY",
+            "person": {
+                "id": "2015066801301",
+                "name": "P. S. HARIDAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUMBALAM WEST",
+            "person": {
+                "id": "2015066801401",
+                "name": "SREEJITH PARAKKADAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "SCHOOL WARD",
+            "person": {
+                "id": "2015066801501",
+                "name": "T. S. SAJITHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUMBALAM CENTRE",
+            "person": {
+                "id": "2015066801601",
+                "name": "RENUKA BABU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PRANAVAM",
+            "person": {
+                "id": "2015066801701",
+                "name": "RATHEESH. C. P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AMBEDKER WARD",
+            "person": {
+                "id": "2015066801801",
+                "name": "SEETHA CHAKRAPANI"
+            }
+        }
+    ]
+}

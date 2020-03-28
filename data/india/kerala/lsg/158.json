@@ -1,0 +1,148 @@
+{
+    "timeStamp": 1566345375790,
+    "date": "2019-08-21",
+    "name": "Idukki  District Panchayat, Idukki District",
+    "district": "Idukki",
+    "area": "5019km",
+    "localbody_code": "D060000",
+    "no_of_wards": 16,
+    "population": 1128605,
+    "male": 566405,
+    "female": 562200,
+    "population_density": 215,
+    "sex_ratio": 975,
+    "literacy_rate": 87,
+    "literacy_rate_male": 91,
+    "literacy_rate_female": 83,
+    "president": "KOCHUTHRUSSIAPAULOSE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ADIMALY",
+            "person": {
+                "id": "2015015800101",
+                "name": "INFENT THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNNAR",
+            "person": {
+                "id": "2015015800201",
+                "name": "S VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "DEVIKULAM",
+            "person": {
+                "id": "2015015800301",
+                "name": "BABY SAKTHIVEL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "RAJAKKADU",
+            "person": {
+                "id": "2015015800401",
+                "name": "KOCHUTHRUSSIA PAULOSE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MURICKASSERY",
+            "person": {
+                "id": "2015015800501",
+                "name": "NOBLE JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEDUMKANDOM",
+            "person": {
+                "id": "2015015800601",
+                "name": "NIRMALA NANDAKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAMPADUMPARA",
+            "person": {
+                "id": "2015015800701",
+                "name": "MOLLY MICHAEL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VANDANMEDU",
+            "person": {
+                "id": "2015015800801",
+                "name": "KUNJUMOL CHACKO"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VANDIPERIYAR",
+            "person": {
+                "id": "2015015800901",
+                "name": "VIJAYAKUMARI UDAYASOORYAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAGAMON",
+            "person": {
+                "id": "2015015801001",
+                "name": "MOLLY DOMINIC"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "UPPUTHARA",
+            "person": {
+                "id": "2015015801101",
+                "name": "ADV.SYRIAC THOMAS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOOLAMATTOM",
+            "person": {
+                "id": "2015015801201",
+                "name": "SUNITHA C.V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARIMKUNNAM",
+            "person": {
+                "id": "2015015801301",
+                "name": "MATHEW JOHN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARIMANNOOR",
+            "person": {
+                "id": "2015015801401",
+                "name": "MANOJ KUMAR N T"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PAINAVU",
+            "person": {
+                "id": "2015015801501",
+                "name": "LISSAMMA SAJAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MULLARINGADU",
+            "person": {
+                "id": "2015015801601",
+                "name": "VISHNU K CHANDRAN"
+            }
+        }
+    ]
+}

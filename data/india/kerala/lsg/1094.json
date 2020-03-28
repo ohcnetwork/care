@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349190106,
+    "date": "2019-08-21",
+    "name": "Kaniyambetta  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Kalpetta",
+    "area": "37.8km",
+    "localbody_code": "G120205",
+    "no_of_wards": 18,
+    "population": 24419,
+    "male": 12456,
+    "female": 11963,
+    "population_density": 646,
+    "sex_ratio": 960,
+    "literacy_rate": 82.59,
+    "literacy_rate_male": 87.73,
+    "literacy_rate_female": 77.26,
+    "president": "P.J.RAJENDRAPRASAD",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NELLIYAMBAM",
+            "person": {
+                "id": "2015109400101",
+                "name": "RAHIYANATH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NADAVAYAL",
+            "person": {
+                "id": "2015109400201",
+                "name": "MARY AYMANACHIRA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOLLIVAYAL",
+            "person": {
+                "id": "2015109400301",
+                "name": "SHEELA RAMADAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHITHRAMOOLA",
+            "person": {
+                "id": "2015109400401",
+                "name": "AGHILA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOZHINJANGAD",
+            "person": {
+                "id": "2015109400501",
+                "name": "RAIHANATH BASHEER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VARADOOR",
+            "person": {
+                "id": "2015109400601",
+                "name": "P.J. RAJENDRAPRASAD"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PADARIKKUNNU",
+            "person": {
+                "id": "2015109400701",
+                "name": "SMITHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARIMULA",
+            "person": {
+                "id": "2015109400801",
+                "name": "BINU JACOB"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARANI",
+            "person": {
+                "id": "2015109400901",
+                "name": "SAKUNTHALA A.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARALIKKUNNU",
+            "person": {
+                "id": "2015109401001",
+                "name": "PRAKASH KAVUMUTTAM"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ARIVARAM",
+            "person": {
+                "id": "2015109401101",
+                "name": "MUHAMMED IQBAL  ALIAS  FAISAL K.M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAMBALAKKAD EAST",
+            "person": {
+                "id": "2015109401201",
+                "name": "SUNEERA P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAMBALAKKAD WEST",
+            "person": {
+                "id": "2015109401301",
+                "name": "KADAVAN HAMSA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHUNDAKKARA",
+            "person": {
+                "id": "2015109401401",
+                "name": "JOHN C.J"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KANIYAMBETTA",
+            "person": {
+                "id": "2015109401501",
+                "name": "RASHEENA SUBAIR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PACHILAKKAD",
+            "person": {
+                "id": "2015109401601",
+                "name": "IBRAHIM KELOTH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EDAKKOMBAM",
+            "person": {
+                "id": "2015109401701",
+                "name": "ABBAS PUNNOLI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHEEKKALLOOR",
+            "person": {
+                "id": "2015109401801",
+                "name": "SARITHA T.K"
+            }
+        }
+    ]
+}

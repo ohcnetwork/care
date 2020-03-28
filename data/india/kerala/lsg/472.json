@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346559655,
+    "date": "2019-08-21",
+    "name": "Thiruvanvandoor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Chengannur",
+    "area": "10.05km",
+    "localbody_code": "G040808",
+    "no_of_wards": 13,
+    "population": 15663,
+    "male": 7708,
+    "female": 7955,
+    "population_density": 1559,
+    "sex_ratio": 1032,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "JALAJA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ERAMALLIKKARA",
+            "person": {
+                "id": "2015047200101",
+                "name": "S RENJITH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THIRUVANVANDOOR",
+            "person": {
+                "id": "2015047200201",
+                "name": "T. GOPI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NANNAD",
+            "person": {
+                "id": "2015047200301",
+                "name": "SHINY SAJI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIRUVANVANDOOR EAST",
+            "person": {
+                "id": "2015047200401",
+                "name": "HARIKUMAR M.S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PANCHAYAT OFFICE WARD",
+            "person": {
+                "id": "2015047200501",
+                "name": "GEETHA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PRAVINKOODU",
+            "person": {
+                "id": "2015047200601",
+                "name": "PROF. ALEYKUTTY KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAZHUKEER",
+            "person": {
+                "id": "2015047200701",
+                "name": "JALAJA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MAZHUKERMEL",
+            "person": {
+                "id": "2015047200801",
+                "name": "MANOJ KUMAR (MANU THEKEDATHU)"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALLISSERY",
+            "person": {
+                "id": "2015047200901",
+                "name": "CHERIAN KUTHIRAVATTOM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "UMAYATTUKARAMEL",
+            "person": {
+                "id": "2015047201001",
+                "name": "AMBILY SAJEEV"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "UMAYATTUKARA",
+            "person": {
+                "id": "2015047201101",
+                "name": "VALSAMMA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOLADATHUSSERY",
+            "person": {
+                "id": "2015047201201",
+                "name": "RESHMI SUBHASH"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VANAVATHUKKARA",
+            "person": {
+                "id": "2015047201301",
+                "name": "PUSHPANGATHAN"
+            }
+        }
+    ]
+}

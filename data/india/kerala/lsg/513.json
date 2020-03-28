@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346724746,
+    "date": "2019-08-21",
+    "name": "Aymanam  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Ettumanoor",
+    "area": "30.03km",
+    "localbody_code": "G050302",
+    "no_of_wards": 20,
+    "population": 35562,
+    "male": 17687,
+    "female": 17875,
+    "population_density": 1192,
+    "sex_ratio": 1004,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 95,
+    "president": "ALICHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAREEMADOM",
+            "person": {
+                "id": "2015051300101",
+                "name": "SUJITHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALLYAD",
+            "person": {
+                "id": "2015051300201",
+                "name": "ALICHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLUNKATHRA",
+            "person": {
+                "id": "2015051300301",
+                "name": "CHINNAMMA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULIKKUTTISSERY",
+            "person": {
+                "id": "2015051300401",
+                "name": "VIJI RAJESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "JAYANTHI",
+            "person": {
+                "id": "2015051300501",
+                "name": "SALY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "IRAVEESWARAM",
+            "person": {
+                "id": "2015051300601",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "H.S WARD",
+            "person": {
+                "id": "2015051300701",
+                "name": "JAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUDAMALOOR",
+            "person": {
+                "id": "2015051300801",
+                "name": "SEBASTAIN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AMBADI",
+            "person": {
+                "id": "2015051300901",
+                "name": "SABITHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PANDAVAM",
+            "person": {
+                "id": "2015051301001",
+                "name": "ULLASAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARYATHURUTHU",
+            "person": {
+                "id": "2015051301101",
+                "name": "ANISH KUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELAMKAVU",
+            "person": {
+                "id": "2015051301201",
+                "name": "RAJI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "AYMANAM",
+            "person": {
+                "id": "2015051301301",
+                "name": "BIJI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLUMADA",
+            "person": {
+                "id": "2015051301401",
+                "name": "MINIMOL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUZHITHAR",
+            "person": {
+                "id": "2015051301501",
+                "name": "DEVAKI K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "OLASSA H S",
+            "person": {
+                "id": "2015051301601",
+                "name": "BABY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "OLASSA PALLIKKAVALA",
+            "person": {
+                "id": "2015051301701",
+                "name": "WILLIAM KUMAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PARIPPU",
+            "person": {
+                "id": "2015051301801",
+                "name": "AJITHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AMBALAKKADAVU",
+            "person": {
+                "id": "2015051301901",
+                "name": "UNNIKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHEEPUNKAL",
+            "person": {
+                "id": "2015051302001",
+                "name": "MINIMOL"
+            }
+        }
+    ]
+}

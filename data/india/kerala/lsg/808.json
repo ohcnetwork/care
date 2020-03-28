@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348171544,
+    "date": "2019-08-21",
+    "name": "Pattithara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Thrithala",
+    "area": "27.2km",
+    "localbody_code": "G090105",
+    "no_of_wards": 18,
+    "population": 26968,
+    "male": 12864,
+    "female": 14104,
+    "population_density": 991,
+    "sex_ratio": 1096,
+    "literacy_rate": 87.61,
+    "literacy_rate_male": 91.27,
+    "literacy_rate_female": 84.35,
+    "president": "SUJATHA.V",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "AREEKKAD",
+            "person": {
+                "id": "2015080800101",
+                "name": "K.SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POOLERY",
+            "person": {
+                "id": "2015080800201",
+                "name": "A.K.DIVYA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATTITHARA",
+            "person": {
+                "id": "2015080800301",
+                "name": "AMBIKASREEDHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHITTAPPURAM",
+            "person": {
+                "id": "2015080800401",
+                "name": "ALIYAMU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ALOOR",
+            "person": {
+                "id": "2015080800501",
+                "name": "P.V.SHAJI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THANAKKAD",
+            "person": {
+                "id": "2015080800601",
+                "name": "V.P.JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VENKARA",
+            "person": {
+                "id": "2015080800701",
+                "name": "SEBU SADAKKATHULLA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KASAMUKKU",
+            "person": {
+                "id": "2015080800801",
+                "name": "K.K.SHAMEER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAKKATTIRI",
+            "person": {
+                "id": "2015080800901",
+                "name": "T.P.MUHAMMEDMASTER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "DHARMAGIRI",
+            "person": {
+                "id": "2015080801001",
+                "name": "SINDU PANANKAVIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VATTENAD",
+            "person": {
+                "id": "2015080801101",
+                "name": "T.K.VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MALA",
+            "person": {
+                "id": "2015080801201",
+                "name": "T.V.KRISHNADAS"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOTTAPPADAM",
+            "person": {
+                "id": "2015080801301",
+                "name": "MARIYA HANEEFA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THALAKKASSERY",
+            "person": {
+                "id": "2015080801401",
+                "name": "SUJATHA .V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THOZHUKKARA",
+            "person": {
+                "id": "2015080801501",
+                "name": "SASIREKHA.K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ANGADI",
+            "person": {
+                "id": "2015080801601",
+                "name": "THUSHARA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOKKAD",
+            "person": {
+                "id": "2015080801701",
+                "name": "SREEJA KALLAYIKKAL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "OTHALOOR",
+            "person": {
+                "id": "2015080801801",
+                "name": "RADHA.K.P"
+            }
+        }
+    ]
+}

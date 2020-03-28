@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.7"
+addons:
+  apt:
+    packages:
+      - libgdal-dev
+      - libsqlite3-mod-spatialite
+install:
+  - pip install -q -r requirements.txt
+script: pytest

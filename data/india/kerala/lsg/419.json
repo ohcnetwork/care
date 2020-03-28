@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346373685,
+    "date": "2019-08-21",
+    "name": "Kadampanad  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Parakkode",
+    "area": "23.95km",
+    "localbody_code": "G030804",
+    "no_of_wards": 17,
+    "population": 24797,
+    "male": 11913,
+    "female": 12884,
+    "population_density": 1035,
+    "sex_ratio": 1082,
+    "literacy_rate": 92.2,
+    "literacy_rate_male": 94.83,
+    "literacy_rate_female": 89.8,
+    "president": "AJEESHKUMAR.A.R",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "GANESHAVILASAM",
+            "person": {
+                "id": "2015041900101",
+                "name": "AJEESH KUMAR. A.R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NELLIMUKAL",
+            "person": {
+                "id": "2015041900201",
+                "name": "SATHI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MALANKAVU",
+            "person": {
+                "id": "2015041900301",
+                "name": "RAJAMMA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MAHARSHIMANGALAM",
+            "person": {
+                "id": "2015041900401",
+                "name": "MONI KUNJUMON"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANJALI",
+            "person": {
+                "id": "2015041900501",
+                "name": "K.G. SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANNIMALA",
+            "person": {
+                "id": "2015041900601",
+                "name": "USHA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUDIPPURA",
+            "person": {
+                "id": "2015041900701",
+                "name": "K. ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "DESHAKALLUMMOODU",
+            "person": {
+                "id": "2015041900801",
+                "name": "C. KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELUTHAMPIDALAVA",
+            "person": {
+                "id": "2015041900901",
+                "name": "MANOJ. R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNADY",
+            "person": {
+                "id": "2015041901001",
+                "name": "RAJALEKSHMI. R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANNADITHAZHAM",
+            "person": {
+                "id": "2015041901101",
+                "name": "LEENA .P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANDIMALAPPURAM",
+            "person": {
+                "id": "2015041901201",
+                "name": "ANOOP . S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NILACKAL",
+            "person": {
+                "id": "2015041901301",
+                "name": "P.SARASWATHI AMMA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ELLUMVILA",
+            "person": {
+                "id": "2015041901401",
+                "name": "USHAKUMARI. S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KADAMPANAD TOWN",
+            "person": {
+                "id": "2015041901501",
+                "name": "RADHAMOL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THUVAYOOR",
+            "person": {
+                "id": "2015041901601",
+                "name": "BIGILI JOSEPH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALLUKUZHY",
+            "person": {
+                "id": "2015041901701",
+                "name": "RENJITH. B"
+            }
+        }
+    ]
+}

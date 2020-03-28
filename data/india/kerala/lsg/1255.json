@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566349764030,
+    "date": "2019-08-21",
+    "name": "Panoor\n  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "area": null,
+    "localbody_code": "B130800",
+    "no_of_wards": 13,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "K.E.KUNHABDULLA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULLYODE",
+            "person": {
+                "id": "2015125500101",
+                "name": "SHIMI K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KADIRUR",
+            "person": {
+                "id": "2015125500201",
+                "name": "SHYLESH E.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHUNDANGAPOYIL",
+            "person": {
+                "id": "2015125500301",
+                "name": "SUGEESH K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALLIAYI",
+            "person": {
+                "id": "2015125500401",
+                "name": "N.K.THANKAM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MOKERI",
+            "person": {
+                "id": "2015125500501",
+                "name": "K.E.KUNHABDULLA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHAMBAD",
+            "person": {
+                "id": "2015125500601",
+                "name": "K USHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANNIANNUR",
+            "person": {
+                "id": "2015125500701",
+                "name": "K K RAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MEKKUNNU",
+            "person": {
+                "id": "2015125500801",
+                "name": "N. ANOOP"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANJIRATHIN KEEZHIL",
+            "person": {
+                "id": "2015125500901",
+                "name": "K P SHAMEEMA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHOKLI",
+            "person": {
+                "id": "2015125501001",
+                "name": "K M SAPNA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NIDUMBRAM",
+            "person": {
+                "id": "2015125501101",
+                "name": "K M VALSALA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANEKKARA",
+            "person": {
+                "id": "2015125501201",
+                "name": "MANOJ P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PONNIAM",
+            "person": {
+                "id": "2015125501301",
+                "name": "K P SATHI"
+            }
+        }
+    ]
+}

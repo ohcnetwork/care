@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348674120,
+    "date": "2019-08-21",
+    "name": "Keezhattur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perinthalmanna",
+    "area": "40.93km",
+    "localbody_code": "G100704",
+    "no_of_wards": 19,
+    "population": 27362,
+    "male": 13179,
+    "female": 14383,
+    "population_density": 669,
+    "sex_ratio": 1076,
+    "literacy_rate": 86.24,
+    "literacy_rate_male": 91.95,
+    "literacy_rate_female": 80.54,
+    "president": "PRASEETHA.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THOTTINTAKKARA",
+            "person": {
+                "id": "2015093900101",
+                "name": "MOHAMMED O P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ORAVAMPURAM",
+            "person": {
+                "id": "2015093900201",
+                "name": "KUNHIMUHAMMED.M K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHEMMANTHATTA",
+            "person": {
+                "id": "2015093900301",
+                "name": "JITHEESH. P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARYAMAD",
+            "person": {
+                "id": "2015093900401",
+                "name": "JAMEELA.C T"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KONDIPARAMBA",
+            "person": {
+                "id": "2015093900501",
+                "name": "NISAR  K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEEZHATTUR",
+            "person": {
+                "id": "2015093900601",
+                "name": "RAMADEVI CK"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POONTHAVANAM",
+            "person": {
+                "id": "2015093900701",
+                "name": "NADEERA. T K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANAPPAMKUZHI",
+            "person": {
+                "id": "2015093900801",
+                "name": "SAMEERA. P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANYALA",
+            "person": {
+                "id": "2015093900901",
+                "name": "SEENATH A P"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUKHAMPADI",
+            "person": {
+                "id": "2015093901001",
+                "name": "SURENDRAN.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PATTIKKAD",
+            "person": {
+                "id": "2015093901101",
+                "name": "KADEEJA K T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MULLIAKURSSI SOUTH",
+            "person": {
+                "id": "2015093901201",
+                "name": "USMAN.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MULLIAKURSSI NORTH",
+            "person": {
+                "id": "2015093901301",
+                "name": "MUNEERA UMAR.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARAMBOOR",
+            "person": {
+                "id": "2015093901401",
+                "name": "MOHAMMED RAFI.P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NENMINI WEST",
+            "person": {
+                "id": "2015093901501",
+                "name": "SUBADRA.T P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NENMINI EAST",
+            "person": {
+                "id": "2015093901601",
+                "name": "PRASEETHA.M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NALLOOR",
+            "person": {
+                "id": "2015093901701",
+                "name": "ABDUL BASHEER.C"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THACHINGANADAM",
+            "person": {
+                "id": "2015093901801",
+                "name": "INDIRA.M"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AREECHOLA",
+            "person": {
+                "id": "2015093901901",
+                "name": "ANAS P K"
+            }
+        }
+    ]
+}

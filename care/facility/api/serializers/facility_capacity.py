@@ -7,5 +7,14 @@ from care.facility.models import FacilityCapacity
 class FacilityCapacitySerializer(serializers.ModelSerializer):
     class Meta:
         model = FacilityCapacity
-        read_only_fields = ('id',)
+        read_only_fields = ("id",)
+        exclude = TIMESTAMP_FIELDS + ("facility",)
+
+
+class FacilityCapacityHistorySerializer(serializers.ModelSerializer):
+    def __init__(self, model, *args, **kwargs):
+        self.Meta.model = model
+        super().__init__()
+
+    class Meta:
         exclude = TIMESTAMP_FIELDS + ("facility",)

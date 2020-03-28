@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347268070,
+    "date": "2019-08-21",
+    "name": "Kunnathunad  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vadavucode",
+    "area": "18.57km",
+    "localbody_code": "G071006",
+    "no_of_wards": 18,
+    "population": 25475,
+    "male": 12816,
+    "female": 12659,
+    "population_density": 948,
+    "sex_ratio": 987,
+    "literacy_rate": 97,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 84.02,
+    "president": "ABUBAKER.P.P",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHITTANADU",
+            "person": {
+                "id": "2015068000101",
+                "name": "JIJO. V. THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERUMELI",
+            "person": {
+                "id": "2015068000201",
+                "name": "N. V. RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAKKODE",
+            "person": {
+                "id": "2015068000301",
+                "name": "A. V. JACOB"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUNNORKODE",
+            "person": {
+                "id": "2015068000401",
+                "name": "M. N. KRISHNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAITHAKKADU SOUTH",
+            "person": {
+                "id": "2015068000501",
+                "name": "K. K. PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAITHAKKADU NORTH",
+            "person": {
+                "id": "2015068000601",
+                "name": "VAHEEDA MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATTIMATTOM",
+            "person": {
+                "id": "2015068000701",
+                "name": "SYAMALA SURESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHENGARA NORTH",
+            "person": {
+                "id": "2015068000801",
+                "name": "A. P. KUNJUMUHAMAD"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENGARA SOUTH",
+            "person": {
+                "id": "2015068000901",
+                "name": "K. M. SALIM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARAKKODE EAST",
+            "person": {
+                "id": "2015068001001",
+                "name": "T. V. SASI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VEMBILLY",
+            "person": {
+                "id": "2015068001101",
+                "name": "MOLLY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERINGALA NORTH",
+            "person": {
+                "id": "2015068001201",
+                "name": "NESY USMAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERINGALA SOUTH",
+            "person": {
+                "id": "2015068001301",
+                "name": "AMBIKA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PERINGALA WEST",
+            "person": {
+                "id": "2015068001401",
+                "name": "PADMAKUMARI VISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PINARMUNDA",
+            "person": {
+                "id": "2015068001501",
+                "name": "SULAIKHA RAFEEK"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PALLIKKARA",
+            "person": {
+                "id": "2015068001601",
+                "name": "ABUBAKER. P. P"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MORAKKALA EAST",
+            "person": {
+                "id": "2015068001701",
+                "name": "SELIN ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MORAKKALA WEST",
+            "person": {
+                "id": "2015068001801",
+                "name": "JESSY SHAJI"
+            }
+        }
+    ]
+}

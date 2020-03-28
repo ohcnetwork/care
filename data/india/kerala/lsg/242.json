@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345761387,
+    "date": "2019-08-21",
+    "name": "Vakkom  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Chirayinkeezhu",
+    "area": "5.06km",
+    "localbody_code": "G010302",
+    "no_of_wards": 14,
+    "population": 17640,
+    "male": 7996,
+    "female": 9644,
+    "population_density": 329,
+    "sex_ratio": 1206,
+    "literacy_rate": 88.81,
+    "literacy_rate_male": 95.12,
+    "literacy_rate_female": 83.76,
+    "president": "VENUJIS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANAYILKADAVU",
+            "person": {
+                "id": "2015024200101",
+                "name": "AMBIKA D"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOCHUPALLY",
+            "person": {
+                "id": "2015024200201",
+                "name": "NAUSHAD B"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUTHENNADA",
+            "person": {
+                "id": "2015024200301",
+                "name": "LALIJA M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANCHAYAT",
+            "person": {
+                "id": "2015024200401",
+                "name": "RAVEENDRAN G"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUNJANVILAKOM",
+            "person": {
+                "id": "2015024200501",
+                "name": "BISHNU N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHIYAKAVU",
+            "person": {
+                "id": "2015024200601",
+                "name": "PEETHAMBARAN S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAYALVARAM",
+            "person": {
+                "id": "2015024200701",
+                "name": "THAJUNISA A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PATTIKKAVILA",
+            "person": {
+                "id": "2015024200801",
+                "name": "VENUJI S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NILAKKAMUKKU",
+            "person": {
+                "id": "2015024200901",
+                "name": "PRASANNA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KUNNUVILA",
+            "person": {
+                "id": "2015024201001",
+                "name": "SUVARNA S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SOCIETY",
+            "person": {
+                "id": "2015024201101",
+                "name": "GANESH S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUKKALUVATTOM",
+            "person": {
+                "id": "2015024201201",
+                "name": "REGHUVARAN D"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "IRANGUKADAVU",
+            "person": {
+                "id": "2015024201301",
+                "name": "SMITHA J"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KAYIKKARA KADAVU",
+            "person": {
+                "id": "2015024201401",
+                "name": "NEWTON"
+            }
+        }
+    ]
+}

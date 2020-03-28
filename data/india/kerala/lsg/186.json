@@ -1,0 +1,228 @@
+{
+    "timeStamp": 1566345532553,
+    "date": "2019-08-21",
+    "name": "Pala  Municipality, Kottayam District",
+    "district": "Kottayam",
+    "area": "15.93km",
+    "localbody_code": "M050100",
+    "no_of_wards": 26,
+    "population": 22640,
+    "male": 10988,
+    "female": 11652,
+    "population_density": 1375,
+    "sex_ratio": 1013,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 96,
+    "chairperson": "BIJIJOJO",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARAMALAKKUNNU",
+            "person": {
+                "id": "2015018600101",
+                "name": "ADV. BETTY SHAJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MUNDUPALAM",
+            "person": {
+                "id": "2015018600201",
+                "name": "SUSHAMA REGHU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARKET",
+            "person": {
+                "id": "2015018600301",
+                "name": "SIBIL THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PLATHANAM",
+            "person": {
+                "id": "2015018600401",
+                "name": "GEORGEKUTTY CHERUVALLIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANATTUPARA",
+            "person": {
+                "id": "2015018600501",
+                "name": "GIGI JOHNY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PULIMALAKKUNNU",
+            "person": {
+                "id": "2015018600601",
+                "name": "P K MADHU PARAYIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAVEEKUNNU",
+            "person": {
+                "id": "2015018600701",
+                "name": "KOCHURANI EPHREM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOCHIDAPPADY",
+            "person": {
+                "id": "2015018600801",
+                "name": "TONY THOTTATHIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MOONNANI",
+            "person": {
+                "id": "2015018600901",
+                "name": "KURIAKOSE PADAVAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MONASTRY",
+            "person": {
+                "id": "2015018601001",
+                "name": "RANI ROMEL PADINJAREKARA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHETHIMATTOM",
+            "person": {
+                "id": "2015018601101",
+                "name": "PRASAD P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KIZHATHADIYOOR",
+            "person": {
+                "id": "2015018601201",
+                "name": "LUCY JOSE EDATTU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MURIKKUMPUZHA",
+            "person": {
+                "id": "2015018601301",
+                "name": "ADV. BINU PULICKAKANDAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARIPPILKUNNU",
+            "person": {
+                "id": "2015018601401",
+                "name": "TOMY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALAMPURAYIDOM",
+            "person": {
+                "id": "2015018601501",
+                "name": "SIJI PRASAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KANNADIYURUMBU",
+            "person": {
+                "id": "2015018601601",
+                "name": "JOBY VELLAPPANY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "12TH MILE",
+            "person": {
+                "id": "2015018601701",
+                "name": "PROF.CELINE ROY THAKIDIYEL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MUKKALIKKUNNU",
+            "person": {
+                "id": "2015018601801",
+                "name": "LISEU JOSE"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PALA",
+            "person": {
+                "id": "2015018601901",
+                "name": "PROF. SATHEESH CHOLLANI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "LALOM",
+            "person": {
+                "id": "2015018602001",
+                "name": "BIJI JOJO"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VELLAPPADU",
+            "person": {
+                "id": "2015018602101",
+                "name": "MINI PRINCE"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "ARUNAPURAM",
+            "person": {
+                "id": "2015018602201",
+                "name": "SHERIN THOMAS"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "COLLEGE WARD",
+            "person": {
+                "id": "2015018602301",
+                "name": "MARY DOMINIC"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "KOTTARAMATTOM",
+            "person": {
+                "id": "2015018602401",
+                "name": "LEENA SUNNY"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "NELLIYANI",
+            "person": {
+                "id": "2015018602501",
+                "name": "BIJU PALUPADAVIL"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "PUTHENPALLIKKUNNU",
+            "person": {
+                "id": "2015018602601",
+                "name": "ROY FRANCIS"
+            }
+        }
+    ]
+}

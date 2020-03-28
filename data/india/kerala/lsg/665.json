@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566347224422,
+    "date": "2019-08-21",
+    "name": "Chellanam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Palluruthy",
+    "area": "19.37km",
+    "localbody_code": "G070801",
+    "no_of_wards": 21,
+    "population": 32978,
+    "male": 16408,
+    "female": 16570,
+    "population_density": 1874,
+    "sex_ratio": 1009,
+    "literacy_rate": 93.47,
+    "literacy_rate_male": 95.59,
+    "literacy_rate_female": 91.41,
+    "president": "MERCYJOSY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAITHAVELI",
+            "person": {
+                "id": "2015066500101",
+                "name": "ANTONY MANESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KATTIPPARAMBU",
+            "person": {
+                "id": "2015066500201",
+                "name": "JOSEPH(N.J JOY)"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "C.M.S",
+            "person": {
+                "id": "2015066500301",
+                "name": "SMITHA MATHEW JACOB(SMITHA BINU)"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHRIYAKADAVU",
+            "person": {
+                "id": "2015066500401",
+                "name": "JOHNSON PAUL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "COMPANYPPADY",
+            "person": {
+                "id": "2015066500501",
+                "name": "MERCY JOSY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANDIKKADAVU",
+            "person": {
+                "id": "2015066500601",
+                "name": "K.E JOJY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POLICE STATION",
+            "person": {
+                "id": "2015066500701",
+                "name": "LUCY RAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANNAMALY NORTH",
+            "person": {
+                "id": "2015066500801",
+                "name": "PHILOMINA.V.J"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANNAMAL;Y",
+            "person": {
+                "id": "2015066500901",
+                "name": "MINI YESUDAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHENTHODE",
+            "person": {
+                "id": "2015066501001",
+                "name": "DINESAN.C.R"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANDAKKADAVU NORTH",
+            "person": {
+                "id": "2015066501101",
+                "name": "PRAVEEN DAMODARA PRABHU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015066501201",
+                "name": "PETER SHIN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MARUVAKKAD",
+            "person": {
+                "id": "2015066501301",
+                "name": "MARY LIZY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AMBEDKAR COLONY",
+            "person": {
+                "id": "2015066501401",
+                "name": "K.D PRASAD"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHELLANAM",
+            "person": {
+                "id": "2015066501501",
+                "name": "P.T GEORGE(SHYJU)"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MALIKAPPARAMBU",
+            "person": {
+                "id": "2015066501601",
+                "name": "SEEMA BINOY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "FISHERMEN COLONY",
+            "person": {
+                "id": "2015066501701",
+                "name": "SOJI LINSON(SOPHY MARTIN)"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "GONDUPARAMBU",
+            "person": {
+                "id": "2015066501801",
+                "name": "ANITHA BABU"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NORTH CHELLANAM",
+            "person": {
+                "id": "2015066501901",
+                "name": "P.P MICHAEL( LALU)"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHELAKKADAVU",
+            "person": {
+                "id": "2015066502001",
+                "name": "VALSA FRANCIS"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KANDAKKADAVU SOUTH",
+            "person": {
+                "id": "2015066502101",
+                "name": "DEEPA SHAJI"
+            }
+        }
+    ]
+}

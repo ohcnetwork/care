@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566346177282,
+    "date": "2019-08-21",
+    "name": "Nedumpana  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Ithikkara",
+    "area": "28.06km",
+    "localbody_code": "G020905",
+    "no_of_wards": 23,
+    "population": 42357,
+    "male": 20830,
+    "female": 21527,
+    "population_density": 1510,
+    "sex_ratio": 1033,
+    "literacy_rate": 88.58,
+    "literacy_rate_male": 93.32,
+    "literacy_rate_female": 84.01,
+    "president": "S.NASSARUDEEN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAZHANGALAM NORTH",
+            "person": {
+                "id": "2015036400101",
+                "name": "ANITHA. L"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NALLILA",
+            "person": {
+                "id": "2015036400201",
+                "name": "THOMAS KOSHY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NALLILA EAST",
+            "person": {
+                "id": "2015036400301",
+                "name": "AJITHA.B.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULIYILA NORTH",
+            "person": {
+                "id": "2015036400401",
+                "name": "ANITHA. C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PULIYILA",
+            "person": {
+                "id": "2015036400502",
+                "name": "RINUMON R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELAVOOR",
+            "person": {
+                "id": "2015036400601",
+                "name": "K.USHA KUMARY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLIMON NORTH",
+            "person": {
+                "id": "2015036400701",
+                "name": "BABU.N"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALEVAYAL",
+            "person": {
+                "id": "2015036400801",
+                "name": "SHEEBA S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MEEYANNOOR",
+            "person": {
+                "id": "2015036400901",
+                "name": "NISHA.C.NAIR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELICHIKKALA",
+            "person": {
+                "id": "2015036401001",
+                "name": "INDIRA REGHUNATHAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNDUMON",
+            "person": {
+                "id": "2015036401101",
+                "name": "MUHAMMED RAFI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLIMON",
+            "person": {
+                "id": "2015036401201",
+                "name": "PRASANNA RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KULAPPADOM SOUTH",
+            "person": {
+                "id": "2015036401301",
+                "name": "SAJEEV.I"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MUTTAKKAVU NORTH",
+            "person": {
+                "id": "2015036401401",
+                "name": "SHEELA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUTTAKKAVU SOUTH",
+            "person": {
+                "id": "2015036401501",
+                "name": "M.AZAD"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MUTTAKKAVU WEST",
+            "person": {
+                "id": "2015036401601",
+                "name": "T.N MANZOOR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NEDUMPANA SOUTH",
+            "person": {
+                "id": "2015036401701",
+                "name": "SULBATH.S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KULAPPADOM NORTH",
+            "person": {
+                "id": "2015036401801",
+                "name": "BEENA A"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NEDUMPANA",
+            "person": {
+                "id": "2015036401901",
+                "name": "B.RENUKA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KALAKKAL",
+            "person": {
+                "id": "2015036402001",
+                "name": "S.NASSARUDEEN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "NEDUMPANA NORTH",
+            "person": {
+                "id": "2015036402101",
+                "name": "M.VENUGOPALAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PAZHANGALAM SOUTH",
+            "person": {
+                "id": "2015036402201",
+                "name": "C.SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PAZHANGALAM",
+            "person": {
+                "id": "2015036402301",
+                "name": "SHEELA MANOHARAN"
+            }
+        }
+    ]
+}

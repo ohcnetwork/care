@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349657233,
+    "date": "2019-08-21",
+    "name": "Kattippara  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Koduvaliy",
+    "area": "23.07km",
+    "localbody_code": "G111009",
+    "no_of_wards": 15,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "BABYRAVEENDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALLULLATHODE",
+            "person": {
+                "id": "2015122300101",
+                "name": "NIDHEESH KALLULLATHODE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AMARAD",
+            "person": {
+                "id": "2015122300201",
+                "name": "VALSALA P.C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THAZHVARAM",
+            "person": {
+                "id": "2015122300301",
+                "name": "MARRY KURIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHAMAL",
+            "person": {
+                "id": "2015122300401",
+                "name": "VALSAMMA ANIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAYONA",
+            "person": {
+                "id": "2015122300501",
+                "name": "P C THOMAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POOLODE",
+            "person": {
+                "id": "2015122300601",
+                "name": "BABY BABU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHUNDANKUZHI",
+            "person": {
+                "id": "2015122300701",
+                "name": "BABY RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANNOOTTIPPARA",
+            "person": {
+                "id": "2015122300801",
+                "name": "SUBAIDA P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PULLANHIMEDU",
+            "person": {
+                "id": "2015122300901",
+                "name": "A T HARIDASAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AMBAYATHODE",
+            "person": {
+                "id": "2015122301001",
+                "name": "LOHIDAKSHAN A V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOLIKKAL",
+            "person": {
+                "id": "2015122301101",
+                "name": "MADHARI JUBAIRIYA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VADAKKUMMURI",
+            "person": {
+                "id": "2015122301201",
+                "name": "MUHAMMED RIFAYATH K T"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VETTI OZHINJA THOTTAM",
+            "person": {
+                "id": "2015122301301",
+                "name": "ABDUL AZEEZ K V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHEMBRAKUNDA",
+            "person": {
+                "id": "2015122301401",
+                "name": "T.P. MUHAMMED SHAHIM"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KATTIPPARA",
+            "person": {
+                "id": "2015122301501",
+                "name": "INDIRA SREEDHARAN"
+            }
+        }
+    ]
+}

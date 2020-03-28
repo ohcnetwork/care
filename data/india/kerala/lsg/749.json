@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347548027,
+    "date": "2019-08-21",
+    "name": "Mulakunnathukavu  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "21.22km",
+    "localbody_code": "G080604",
+    "no_of_wards": 14,
+    "population": 15637,
+    "male": 7945,
+    "female": 7692,
+    "population_density": 737,
+    "sex_ratio": 1013,
+    "literacy_rate": 91.29,
+    "literacy_rate_male": 94.32,
+    "literacy_rate_female": 88.34,
+    "president": "BINDHUBENNY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHIRAKKUNNU",
+            "person": {
+                "id": "2015074900101",
+                "name": "MARY GRACY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GRAMALA",
+            "person": {
+                "id": "2015074900201",
+                "name": "K.H.SUBHASH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "UDAYANAGAR",
+            "person": {
+                "id": "2015074900301",
+                "name": "SHIJI SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIROOR KIZHAKE ANGADI",
+            "person": {
+                "id": "2015074900401",
+                "name": "SONY SUNNY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "POOMALA",
+            "person": {
+                "id": "2015074900501",
+                "name": "BINDHU BENNY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHOTTUPARA",
+            "person": {
+                "id": "2015074900601",
+                "name": "SUSY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOLAKKAL",
+            "person": {
+                "id": "2015074900701",
+                "name": "M.SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THADAPARAMBU",
+            "person": {
+                "id": "2015074900801",
+                "name": "NIMMY JOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THIROOR",
+            "person": {
+                "id": "2015074900901",
+                "name": "JOSEPH CHUNGATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALEAPADY",
+            "person": {
+                "id": "2015074901001",
+                "name": "RAMACHANDRAN THANGALAZHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MULAGUNNATHUKAVU",
+            "person": {
+                "id": "2015074901101",
+                "name": "MOHANAN.N.T"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "AMMANKUZHY",
+            "person": {
+                "id": "2015074901201",
+                "name": "SINDHU KONCHERY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOZHIKUNNU",
+            "person": {
+                "id": "2015074901301",
+                "name": "UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AKKODIKAVU",
+            "person": {
+                "id": "2015074901401",
+                "name": "K.P.SANTHA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348940260,
+    "date": "2019-08-21",
+    "name": "Thiruvallur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Thodannur",
+    "area": "27.58km",
+    "localbody_code": "G110404",
+    "no_of_wards": 20,
+    "population": 30562,
+    "male": 14967,
+    "female": 15595,
+    "population_density": 1108,
+    "sex_ratio": 1042,
+    "literacy_rate": 87.17,
+    "literacy_rate_male": 92.81,
+    "literacy_rate_female": 81.82,
+    "president": "AMOHANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VALLYAD",
+            "person": {
+                "id": "2015101500101",
+                "name": "KAVITHA P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALLYAD EAST",
+            "person": {
+                "id": "2015101500201",
+                "name": "T.M NASEERA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAINGOTTAYI",
+            "person": {
+                "id": "2015101500301",
+                "name": "SAFEERA T.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANNAMBATH KARA",
+            "person": {
+                "id": "2015101500401",
+                "name": "SABITHA MANAKUNI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THIRUVALLUR CENTRE",
+            "person": {
+                "id": "2015101500501",
+                "name": "F.M MUNEER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THIRUVALLUR NORTH",
+            "person": {
+                "id": "2015101500601",
+                "name": "BALAN P.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THANDOTTI",
+            "person": {
+                "id": "2015101500701",
+                "name": "SHANILA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KANJIRATTU THARA",
+            "person": {
+                "id": "2015101500801",
+                "name": "EBRAHIM KOOMULLI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NIDUMBRAMANNA",
+            "person": {
+                "id": "2015101500901",
+                "name": "MOIDU KUNDATTIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHANIYAMKADAVU",
+            "person": {
+                "id": "2015101501001",
+                "name": "BALAN T.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELLUKKARA",
+            "person": {
+                "id": "2015101501101",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THIRUVALLUR SOUTH",
+            "person": {
+                "id": "2015101501201",
+                "name": "SHYMA PANICHIKANDI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANNINADA",
+            "person": {
+                "id": "2015101501301",
+                "name": "PRAJEESH D"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THODANNUR NORTH",
+            "person": {
+                "id": "2015101501401",
+                "name": "R.K CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THODANNUR TOWN",
+            "person": {
+                "id": "2015101501501",
+                "name": "SAINABA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARYANNUR",
+            "person": {
+                "id": "2015101501601",
+                "name": "ASHOKAN P.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHEMMARATHUR WEST",
+            "person": {
+                "id": "2015101501701",
+                "name": "SAJINA P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHEMMARATHUR SOUTH",
+            "person": {
+                "id": "2015101501801",
+                "name": "LISITHA K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHEMMARATHUR NORTH",
+            "person": {
+                "id": "2015101501901",
+                "name": "A MOHANAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KOTTAPPALLI NORTH",
+            "person": {
+                "id": "2015101502001",
+                "name": "P EBRAHIM HAJI"
+            }
+        }
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345971442,
+    "date": "2019-08-21",
+    "name": "Clappana  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Oachira",
+    "area": "17.49km",
+    "localbody_code": "G020103",
+    "no_of_wards": 15,
+    "population": 21114,
+    "male": 10172,
+    "female": 10942,
+    "population_density": 1207,
+    "sex_ratio": 1076,
+    "literacy_rate": 89.08,
+    "literacy_rate_male": 93.96,
+    "literacy_rate_female": 84.61,
+    "president": "S.M.IQUBAL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PRAYAR SOUTH A",
+            "person": {
+                "id": "2015030500101",
+                "name": "BINDHU P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PRAYAR SOUTH B",
+            "person": {
+                "id": "2015030500201",
+                "name": "JAYADEVI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PRAYAR SOUTH C",
+            "person": {
+                "id": "2015030500301",
+                "name": "UMAYAMMA C N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PRAYAR SOUTH D",
+            "person": {
+                "id": "2015030500401",
+                "name": "RADHAKRISHNAN K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PRAYAR SOUTH E",
+            "person": {
+                "id": "2015030500501",
+                "name": "SHAJI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VARAVILA-A",
+            "person": {
+                "id": "2015030500601",
+                "name": "S.M.IQUBAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERINAD-B",
+            "person": {
+                "id": "2015030500701",
+                "name": "SHAJAHAN A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PERUMANTHAZHA-A",
+            "person": {
+                "id": "2015030500801",
+                "name": "RASHEEDA BEEVI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VARAVILA-B",
+            "person": {
+                "id": "2015030500901",
+                "name": "VARAVILA MANESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERUMANTHAZHA-B",
+            "person": {
+                "id": "2015030501001",
+                "name": "SEENATH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CLAPPANA EAST",
+            "person": {
+                "id": "2015030501101",
+                "name": "BINDHU PRAKASH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CLAPPANA SOUTH",
+            "person": {
+                "id": "2015030501201",
+                "name": "JAITH KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CLAPPANA NORTH-A",
+            "person": {
+                "id": "2015030501301",
+                "name": "CLAPPANA SHIBU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CLAPPANA NORTH-B",
+            "person": {
+                "id": "2015030501401",
+                "name": "SREEKALA S"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PERINAD-A",
+            "person": {
+                "id": "2015030501501",
+                "name": "GEETHA M"
+            }
+        }
+    ]
+}

@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566348307190,
+    "date": "2019-08-21",
+    "name": "Mannur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Palakkad",
+    "area": "18.51km",
+    "localbody_code": "G090704",
+    "no_of_wards": 14,
+    "population": 15797,
+    "male": 7395,
+    "female": 8402,
+    "population_density": 853,
+    "sex_ratio": 1136,
+    "literacy_rate": 81.53,
+    "literacy_rate_male": 89.13,
+    "literacy_rate_female": 75.04,
+    "president": "O.V.SWAMINATHAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTAKKUNNU",
+            "person": {
+                "id": "2015084900101",
+                "name": "HUSSAIN SHAFEEK. A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANJIRAMPARA",
+            "person": {
+                "id": "2015084900201",
+                "name": "NOORJAHAN. P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POTTUPARA",
+            "person": {
+                "id": "2015084900301",
+                "name": "K. R. SANTHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KIZHAKKUMPURAM",
+            "person": {
+                "id": "2015084900401",
+                "name": "SIVAPRAKASH. M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOZHICHUNDA",
+            "person": {
+                "id": "2015084900501",
+                "name": "ANITHA. S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAYANKADU",
+            "person": {
+                "id": "2015084900601",
+                "name": "P. N. SATHYAJITH MASTER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PEZHUMKAD",
+            "person": {
+                "id": "2015084900701",
+                "name": "BALAKRISHNAN. A. K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ONNAM MILE",
+            "person": {
+                "id": "2015084900801",
+                "name": "O. V. SWAMINATHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATHIRIPPALA",
+            "person": {
+                "id": "2015084900901",
+                "name": "NASEEMA. K. M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNUR",
+            "person": {
+                "id": "2015084901001",
+                "name": "V. M. ANVAR SADHIK"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ARIMBANKULANGARA",
+            "person": {
+                "id": "2015084901101",
+                "name": "JAYASREE. A. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NELLIKKAD",
+            "person": {
+                "id": "2015084901201",
+                "name": "SREEJA. M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERADIKKUNNU",
+            "person": {
+                "id": "2015084901301",
+                "name": "DIVAKARAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHERUMBALA",
+            "person": {
+                "id": "2015084901401",
+                "name": "SUNDARAKUMARI"
+            }
+        }
+    ]
+}

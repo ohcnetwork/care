@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346372276,
+    "date": "2019-08-21",
+    "name": "Ezhamkulam  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Parakkode",
+    "area": "30.55km",
+    "localbody_code": "G030803",
+    "no_of_wards": 20,
+    "population": 30606,
+    "male": 14925,
+    "female": 15681,
+    "population_density": 1002,
+    "sex_ratio": 1051,
+    "literacy_rate": 92.07,
+    "literacy_rate_male": 94.75,
+    "literacy_rate_female": 89.55,
+    "president": "VIJURADHAKRISHNAN.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHUMALA",
+            "person": {
+                "id": "2015041800101",
+                "name": "INDULEKHA T.K."
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLAPPARAMURUPPU",
+            "person": {
+                "id": "2015041800201",
+                "name": "MULACKAL K.VISWANATHAN NAIR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THODUVAKKADU",
+            "person": {
+                "id": "2015041800301",
+                "name": "VIJU RADHAKRISHNAN.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EZHAMKULAM",
+            "person": {
+                "id": "2015041800401",
+                "name": "REKHA BABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PLANTATION MUKKU",
+            "person": {
+                "id": "2015041800501",
+                "name": "BEENA BABUJAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEDUMON",
+            "person": {
+                "id": "2015041800601",
+                "name": "SREEDEVI BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ETTIMOODU",
+            "person": {
+                "id": "2015041800701",
+                "name": "SOBHANA.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAITHAPPARAMPU",
+            "person": {
+                "id": "2015041800801",
+                "name": "ANIYAN THOMAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KADIKA",
+            "person": {
+                "id": "2015041800901",
+                "name": "OLIKKULANGARA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALAMALA",
+            "person": {
+                "id": "2015041801001",
+                "name": "JOBOY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ILANGAMANGALOM",
+            "person": {
+                "id": "2015041801101",
+                "name": "RADHAMANI HARIKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ENATHU",
+            "person": {
+                "id": "2015041801201",
+                "name": "SARASWATHY GOPI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ENATHU PADINJARU",
+            "person": {
+                "id": "2015041801301",
+                "name": "ADV. A.THAJUDEEN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ENATHU VADAKKU",
+            "person": {
+                "id": "2015041801401",
+                "name": "SUJATHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MAMKOOTTAM",
+            "person": {
+                "id": "2015041801501",
+                "name": "MANJU BIJU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUTHIRAMUKKU",
+            "person": {
+                "id": "2015041801601",
+                "name": "SANTHOSH KUMAR.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOTTAMUKAL",
+            "person": {
+                "id": "2015041801701",
+                "name": "LETHA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "ARUKALICKAL PADINJARU",
+            "person": {
+                "id": "2015041801801",
+                "name": "MOHANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ARUKALICKAL KIHZAKKU",
+            "person": {
+                "id": "2015041801901",
+                "name": "LEKHA KUMARI.T"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "EZHAMKULAM TOWN",
+            "person": {
+                "id": "2015041802001",
+                "name": "SHEEJA.S"
+            }
+        }
+    ]
+}

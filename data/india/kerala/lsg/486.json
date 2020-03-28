@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566346633245,
+    "date": "2019-08-21",
+    "name": "Nooranad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Bharinikavu",
+    "area": "21.29km",
+    "localbody_code": "G041101",
+    "no_of_wards": 17,
+    "population": 24455,
+    "male": 11707,
+    "female": 12748,
+    "population_density": 1149,
+    "sex_ratio": 1089,
+    "literacy_rate": 94,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 91,
+    "president": "P.ASHOKANNAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ATTUVA",
+            "person": {
+                "id": "2015048600101",
+                "name": "THANKAMONY. T. S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERUMUKHA",
+            "person": {
+                "id": "2015048600201",
+                "name": "SHEEJA SASI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDAPPON EAST",
+            "person": {
+                "id": "2015048600301",
+                "name": "SWAPNA SURESH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PATTOOR",
+            "person": {
+                "id": "2015048600401",
+                "name": "SARALA. S"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAZHANJIYOORKONAM",
+            "person": {
+                "id": "2015048600501",
+                "name": "T. VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KIDANGAYAM",
+            "person": {
+                "id": "2015048600601",
+                "name": "N. RAJESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALAMEL",
+            "person": {
+                "id": "2015048600701",
+                "name": "MADHUKUMARI. V. P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NEDUKULANJI",
+            "person": {
+                "id": "2015048600801",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THATHAMMUNNA",
+            "person": {
+                "id": "2015048600901",
+                "name": "J. SOBY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHUPPALLIKUNNAM SOUTH",
+            "person": {
+                "id": "2015048601001",
+                "name": "NARENDRANATH( A. M. NARENDRAN)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PUTHUPPALLIKUNNAM NORTH",
+            "person": {
+                "id": "2015048601101",
+                "name": "PRADEEP"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAKKUNNAM",
+            "person": {
+                "id": "2015048601201",
+                "name": "N. CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NADUVILEMURI",
+            "person": {
+                "id": "2015048601301",
+                "name": "MANJU DILIP"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PADANILAM TOWN",
+            "person": {
+                "id": "2015048601401",
+                "name": "ASWATHY SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PULIMEL SOUTH",
+            "person": {
+                "id": "2015048601501",
+                "name": "GIRIJA DEVI ( GIRIJA MOHAN)"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULIMEL NORTH",
+            "person": {
+                "id": "2015048601601",
+                "name": "T. K. RAJAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EDAPPON WEST",
+            "person": {
+                "id": "2015048601701",
+                "name": "P. ASHOKAN NAIR"
+            }
+        }
+    ]
+}

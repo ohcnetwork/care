@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566346949125,
+    "date": "2019-08-21",
+    "name": "Munnar  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Devikulam",
+    "area": "556.87km",
+    "localbody_code": "G060202",
+    "no_of_wards": 21,
+    "population": 78343,
+    "male": 40208,
+    "female": 38135,
+    "population_density": 141,
+    "sex_ratio": 948,
+    "literacy_rate": 76,
+    "literacy_rate_male": 84,
+    "literacy_rate_female": 66,
+    "president": "R.KARUPPASAMY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RAJAMALAI",
+            "person": {
+                "id": "2015057900101",
+                "name": "SANTHA M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHATTAMUNNAR",
+            "person": {
+                "id": "2015057900201",
+                "name": "SANGEETHA K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "LUCKHAM",
+            "person": {
+                "id": "2015057900301",
+                "name": "MOHANDASS M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VAGUVARAI",
+            "person": {
+                "id": "2015057900401",
+                "name": "PARTHASARATHY D"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THALAYAR",
+            "person": {
+                "id": "2015057900501",
+                "name": "UMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "IRAVIKULAM",
+            "person": {
+                "id": "2015057900601",
+                "name": "GIRI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANNIMALA",
+            "person": {
+                "id": "2015057900701",
+                "name": "R.KARUPPASAMY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PERIYAVARAI",
+            "person": {
+                "id": "2015057900801",
+                "name": "GURUVUTHAI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUNNAR COLONY",
+            "person": {
+                "id": "2015057900901",
+                "name": "SEETHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "IKKANAGAR",
+            "person": {
+                "id": "2015057901001",
+                "name": "S STALIN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOOLAKADA",
+            "person": {
+                "id": "2015057901101",
+                "name": "V . DHANALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHOKKANAD",
+            "person": {
+                "id": "2015057901201",
+                "name": "SRI RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAZHAYAMUNNAR",
+            "person": {
+                "id": "2015057901301",
+                "name": "K.THANKARAJ"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SEVANMALAY",
+            "person": {
+                "id": "2015057901401",
+                "name": "VELLATHAI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "LAKSHMI",
+            "person": {
+                "id": "2015057901501",
+                "name": "SUDHA R"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KALLAR",
+            "person": {
+                "id": "2015057901601",
+                "name": "GOPAL J"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "NALLATHANNI",
+            "person": {
+                "id": "2015057901701",
+                "name": "SHARMILABEEVI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "NADAYAR",
+            "person": {
+                "id": "2015057901801",
+                "name": "P.NAGENDRAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MUNNAR TOWN",
+            "person": {
+                "id": "2015057901901",
+                "name": "M.PALANISWAMI"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHOLAMALAI",
+            "person": {
+                "id": "2015057902001",
+                "name": "K.MARIAMMAL"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KADALAR",
+            "person": {
+                "id": "2015057902101",
+                "name": "VELLATHAI"
+            }
+        }
+    ]
+}

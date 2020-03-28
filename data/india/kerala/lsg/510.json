@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346719483,
+    "date": "2019-08-21",
+    "name": "Thalayolaparambu  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Kaduthuruthy",
+    "area": "20.63km",
+    "localbody_code": "G050205",
+    "no_of_wards": 15,
+    "population": 20856,
+    "male": 10370,
+    "female": 10486,
+    "population_density": 1011,
+    "sex_ratio": 1011,
+    "literacy_rate": 95,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 91,
+    "president": "V.G.MOHANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAYAR NORTH",
+            "person": {
+                "id": "2015051000101",
+                "name": "V.G.MOHANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MIDAYIKUNNAM NORTH",
+            "person": {
+                "id": "2015051000201",
+                "name": "E.K.RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VETTIKKATTUMUKKU",
+            "person": {
+                "id": "2015051000301",
+                "name": "BISMIMOL K.K."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "UMMAMKUNNU",
+            "person": {
+                "id": "2015051000401",
+                "name": "JESSY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "D.B. COLLEGE",
+            "person": {
+                "id": "2015051000501",
+                "name": "MOLLY KURIAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POTHY",
+            "person": {
+                "id": "2015051000601",
+                "name": "K.S.UNNIKRISHNAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THRIKKARAYIKULAM",
+            "person": {
+                "id": "2015051000701",
+                "name": "SAJIMON VARGHESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THALAYOLAPARAMBU EAST",
+            "person": {
+                "id": "2015051000801",
+                "name": "SHIJI VINCENT"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ILLITHONDU",
+            "person": {
+                "id": "2015051000901",
+                "name": "MOLLY ANTONY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THALAYOLAPARAMBU TOWN",
+            "person": {
+                "id": "2015051001001",
+                "name": "THULASI MADUSUDANAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MATHANAM",
+            "person": {
+                "id": "2015051001101",
+                "name": "SHAJI K.K."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KORIKKALPAZHAMPETTY",
+            "person": {
+                "id": "2015051001201",
+                "name": "V.K.RAVI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THEVALAKKADU",
+            "person": {
+                "id": "2015051001301",
+                "name": "VIJAYAKUMARY RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHAKKALA",
+            "person": {
+                "id": "2015051001401",
+                "name": "NIRMALA MARTIN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VADAYAR ILLAMKAVU",
+            "person": {
+                "id": "2015051001501",
+                "name": "M.ANILKUMAR"
+            }
+        }
+    ]
+}

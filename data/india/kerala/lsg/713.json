@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347417031,
+    "date": "2019-08-21",
+    "name": "Orumanayur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chavakkad",
+    "area": "5.19km",
+    "localbody_code": "G080102",
+    "no_of_wards": 13,
+    "population": 10990,
+    "male": 5039,
+    "female": 5951,
+    "population_density": 2118,
+    "sex_ratio": 1181,
+    "literacy_rate": 87.09,
+    "literacy_rate_male": 92.96,
+    "literacy_rate_female": 82.64,
+    "president": "K.JCHACKO",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEKKANCHERY",
+            "person": {
+                "id": "2015071300101",
+                "name": "K.K JYOTHI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "OTTATHENGU",
+            "person": {
+                "id": "2015071300201",
+                "name": "K.V RAVEENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THANGALPADI",
+            "person": {
+                "id": "2015071300301",
+                "name": "P.K ALI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "WILLIAMS",
+            "person": {
+                "id": "2015071300401",
+                "name": "NASHARA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANGOTTUPADI",
+            "person": {
+                "id": "2015071300501",
+                "name": "K.J CHACKO"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTHAMMAVU",
+            "person": {
+                "id": "2015071300601",
+                "name": "SINDHU ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARUVARAKUNDU",
+            "person": {
+                "id": "2015071300701",
+                "name": "LEENA SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "BABYLAND",
+            "person": {
+                "id": "2015071300801",
+                "name": "MOINUDHEEN P.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALAMKADAVU",
+            "person": {
+                "id": "2015071300901",
+                "name": "V. HAMSAKKUTTY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MOONNAMKALLU",
+            "person": {
+                "id": "2015071301001",
+                "name": "NALINI LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THAIKKADAVU",
+            "person": {
+                "id": "2015071301101",
+                "name": "ASHIDA KUNDIYATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ILLATHUPADI",
+            "person": {
+                "id": "2015071301201",
+                "name": "JASIRA SAMSEER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHATHANTHARA",
+            "person": {
+                "id": "2015071301301",
+                "name": "SHAINI SHAJI"
+            }
+        }
+    ]
+}

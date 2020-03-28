@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346213862,
+    "date": "2019-08-21",
+    "name": "Kottanad  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Mallapally",
+    "area": "17.01km",
+    "localbody_code": "G030103",
+    "no_of_wards": 13,
+    "population": 14188,
+    "male": 6919,
+    "female": 7269,
+    "population_density": 834,
+    "sex_ratio": 1051,
+    "literacy_rate": 96.47,
+    "literacy_rate_male": 97.44,
+    "literacy_rate_female": 95.55,
+    "president": "SUJATHAMS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ATHIYAL",
+            "person": {
+                "id": "2015037400101",
+                "name": "AJITH B"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERUMPETTY",
+            "person": {
+                "id": "2015037400201",
+                "name": "OMANAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHUTTUMON",
+            "person": {
+                "id": "2015037400301",
+                "name": "LISSIAMMA CHERIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARIAMPLAVU",
+            "person": {
+                "id": "2015037400401",
+                "name": "THOMAS BABU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANDANPEROOR",
+            "person": {
+                "id": "2015037400501",
+                "name": "SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALAMPALA",
+            "person": {
+                "id": "2015037400601",
+                "name": "RAICHAL KURUVILA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VRINDAVANAM",
+            "person": {
+                "id": "2015037400701",
+                "name": "SUDHA P T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MADATHUMCHAL",
+            "person": {
+                "id": "2015037400801",
+                "name": "MANOJ M T"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THEODICAL",
+            "person": {
+                "id": "2015037400901",
+                "name": "SOOSY JACOB"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLAYIL",
+            "person": {
+                "id": "2015037401001",
+                "name": "SUJATHA M S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHANTHOLIL",
+            "person": {
+                "id": "2015037401101",
+                "name": "ANILA KUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHALAPPALLY",
+            "person": {
+                "id": "2015037401201",
+                "name": "VINOD K V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULLOLI",
+            "person": {
+                "id": "2015037401301",
+                "name": "LEKSHMI AJITH"
+            }
+        }
+    ]
+}

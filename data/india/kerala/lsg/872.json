@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566348384720,
+    "date": "2019-08-21",
+    "name": "Nelliyampathy  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Nenmara",
+    "area": "576.54km",
+    "localbody_code": "G091102",
+    "no_of_wards": 13,
+    "population": 9785,
+    "male": 4901,
+    "female": 4884,
+    "population_density": 17,
+    "sex_ratio": 997,
+    "literacy_rate": 68.79,
+    "literacy_rate_male": 78.01,
+    "literacy_rate_female": 59.58,
+    "president": "SREEJA.R",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULAYAMPARA",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SEETHARGUNDU",
+            "person": {
+                "id": "2015087200201",
+                "name": "GIRIJA K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ANAMADA",
+            "person": {
+                "id": "2015087200301",
+                "name": "DHANALAKSHMY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTAYANGADY",
+            "person": {
+                "id": "2015087200401",
+                "name": "RAJESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHANDRAMALA",
+            "person": {
+                "id": "2015087200501",
+                "name": "MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MEERAFLORES",
+            "person": {
+                "id": "2015087200601",
+                "name": "AJITHA B"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VICTORIA",
+            "person": {
+                "id": "2015087200701",
+                "name": "JOSEPH THOMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ORIENTAL",
+            "person": {
+                "id": "2015087200801",
+                "name": "MAHESWARY K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KARAPPARA",
+            "person": {
+                "id": "2015087200901",
+                "name": "ESWARAN S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "LILLY",
+            "person": {
+                "id": "2015087201002",
+                "name": "AMBIKA P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NOORADY",
+            "person": {
+                "id": "2015087201101",
+                "name": "SREEJA. R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOONAMPALAM",
+            "person": {
+                "id": "2015087201201",
+                "name": "SENTHIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANALAROO",
+            "person": {
+                "id": "2015087201301",
+                "name": "AMBIKA SUDHAKARAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346417359,
+    "date": "2019-08-21",
+    "name": "Perumpalam  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Thycattussery",
+    "area": "16.38km",
+    "localbody_code": "G040104",
+    "no_of_wards": 13,
+    "population": 9352,
+    "male": 4651,
+    "female": 4701,
+    "population_density": 571,
+    "sex_ratio": 1011,
+    "literacy_rate": 93,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 89,
+    "president": "KSSHIBU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PATTEKAD",
+            "person": {
+                "id": "2015042900101",
+                "name": "SHYJA RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANABUKADU",
+            "person": {
+                "id": "2015042900201",
+                "name": "LATHIKA THILAKAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IRAPPUZHA",
+            "person": {
+                "id": "2015042900301",
+                "name": "OMANA RAJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "HIGH SCHOOL",
+            "person": {
+                "id": "2015042900401",
+                "name": "ANOOP T B"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOYICKAL",
+            "person": {
+                "id": "2015042900501",
+                "name": "GEETHA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SASTHANKAL",
+            "person": {
+                "id": "2015042900601",
+                "name": "SANTHA AMBUJAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MUKKAM",
+            "person": {
+                "id": "2015042900701",
+                "name": "SAJEEV P D"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARUVELI",
+            "person": {
+                "id": "2015042900801",
+                "name": "SOBHANA CHAKARAPANI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "S.K.V.VAYANASALA",
+            "person": {
+                "id": "2015042900901",
+                "name": "ANS.P.A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHUKKAD",
+            "person": {
+                "id": "2015042901001",
+                "name": "K S SHIBU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARKET",
+            "person": {
+                "id": "2015042901101",
+                "name": "ARUNA DEVI SREEKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUNNATH",
+            "person": {
+                "id": "2015042901201",
+                "name": "JAYAKUMAR KALIPARAMBU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "HOSPITAL",
+            "person": {
+                "id": "2015042901301",
+                "name": "SAJINI MANIYAN(MINI)"
+            }
+        }
+    ]
+}

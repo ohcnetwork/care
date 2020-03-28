@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566345351611,
+    "date": "2019-08-21",
+    "name": "Kasaragod  Block Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Kasaragod",
+    "area": "410.96km",
+    "localbody_code": "B140300",
+    "no_of_wards": 15,
+    "population": 228208,
+    "male": 114341,
+    "female": 113867,
+    "population_density": 555,
+    "sex_ratio": 996,
+    "literacy_rate": 79.87,
+    "literacy_rate_male": 86.54,
+    "literacy_rate_female": 73.22,
+    "president": "C.H.MOHAMMEDKUNHICHAYINDADI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ARIKKADY",
+            "person": {
+                "id": "2015015000101",
+                "name": "U.P. THAHIRA YOUSAF"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUMBLA",
+            "person": {
+                "id": "2015015000201",
+                "name": "SATHYA SHANKARA BHAT. H"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOGRAL",
+            "person": {
+                "id": "2015015000301",
+                "name": "JANARDHANA. M.N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ERIYAL",
+            "person": {
+                "id": "2015015000401",
+                "name": "HALEEMA SHINNOON. C.A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ULIYATHADKA",
+            "person": {
+                "id": "2015015000501",
+                "name": "PRABHA SHANKARA A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NEERCHAL",
+            "person": {
+                "id": "2015015000601",
+                "name": "AVINASH. V. RAI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERDALA",
+            "person": {
+                "id": "2015015000701",
+                "name": "A.S AHAMMED"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EDANEER",
+            "person": {
+                "id": "2015015000801",
+                "name": "MALLIKA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHERKALA",
+            "person": {
+                "id": "2015015000901",
+                "name": "KADEEJA MAHAMOOD"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHENGALA",
+            "person": {
+                "id": "2015015001001",
+                "name": "HAFSATH MUNEER"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "BENDICHAL",
+            "person": {
+                "id": "2015015001101",
+                "name": "T.D. KABEER"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALANAD",
+            "person": {
+                "id": "2015015001201",
+                "name": "AYSHA SAHADULLA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEMMANAD",
+            "person": {
+                "id": "2015015001301",
+                "name": "THAHIRA THAJUDDEEN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CIVIL STATION",
+            "person": {
+                "id": "2015015001401",
+                "name": "C.H. MOHAMMED KUNHI CHAYINDADI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "RAMDAS NAGAR",
+            "person": {
+                "id": "2015015001501",
+                "name": "YASHODA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346173521,
+    "date": "2019-08-21",
+    "name": "Adichanalloor  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Ithikkara",
+    "area": "19.85km",
+    "localbody_code": "G021004",
+    "no_of_wards": 20,
+    "population": 29384,
+    "male": 13934,
+    "female": 15450,
+    "population_density": 1480,
+    "sex_ratio": 1109,
+    "literacy_rate": 91.61,
+    "literacy_rate_male": 95.37,
+    "literacy_rate_female": 88.27,
+    "president": "NAJAYAKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THAZHUTHALA",
+            "person": {
+                "id": "2015036300101",
+                "name": "SARASAMANI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUNCHIRICHIRA",
+            "person": {
+                "id": "2015036300201",
+                "name": "BIJI RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ALUMKADAVU",
+            "person": {
+                "id": "2015036300301",
+                "name": "ROYSON"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PLAKKADU",
+            "person": {
+                "id": "2015036300401",
+                "name": "M.SUBHASH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "FARMERS BANK",
+            "person": {
+                "id": "2015036300501",
+                "name": "AMRITHA S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUNDUMON",
+            "person": {
+                "id": "2015036300601",
+                "name": "K NAZARUDHEEN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ADICHANALLOOR",
+            "person": {
+                "id": "2015036300701",
+                "name": "OMANA BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELICHIKKALA",
+            "person": {
+                "id": "2015036300801",
+                "name": "THOMAS JACOB"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMMALLOOR",
+            "person": {
+                "id": "2015036300901",
+                "name": "J.L SHEEJA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KATTACHAL",
+            "person": {
+                "id": "2015036301001",
+                "name": "SULOCHANA S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAITHKUZHY",
+            "person": {
+                "id": "2015036301101",
+                "name": "MADHUSOODANAN M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MYLAKKADU",
+            "person": {
+                "id": "2015036301201",
+                "name": "N AJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ITHIKKARA",
+            "person": {
+                "id": "2015036301301",
+                "name": "RAMLA BASHEER"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "OTTAPLAMOODU",
+            "person": {
+                "id": "2015036301401",
+                "name": "REKHA S CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANAKUZHI",
+            "person": {
+                "id": "2015036301501",
+                "name": "NADEERA KOCHASSAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MYLAKKADU WEST",
+            "person": {
+                "id": "2015036301601",
+                "name": "HEMA SATHEESH"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOTTIYAM EAST",
+            "person": {
+                "id": "2015036301701",
+                "name": "ARUN C (UNNI)"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VENMANICHIRA",
+            "person": {
+                "id": "2015036301801",
+                "name": "R SAJAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KOTTIYAM",
+            "person": {
+                "id": "2015036301901",
+                "name": "SARASWATHY J"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THAZHUTHALA SOUTH",
+            "person": {
+                "id": "2015036302002",
+                "name": "HARILAL R"
+            }
+        }
+    ]
+}

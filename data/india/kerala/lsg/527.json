@@ -1,0 +1,140 @@
+{
+    "timeStamp": 1566346784097,
+    "date": "2019-08-21",
+    "name": "Karoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Lalam",
+    "area": "36.84km",
+    "localbody_code": "G050502",
+    "no_of_wards": 15,
+    "population": 20986,
+    "male": 10533,
+    "female": 10453,
+    "population_density": 570,
+    "sex_ratio": 992,
+    "literacy_rate": 95,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 94,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUDAKKACHIRA EAST",
+            "person": {
+                "id": "2015052700101",
+                "name": "SEENA JOHN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALAVOOR EAST",
+            "person": {
+                "id": "2015052700202",
+                "name": "RAJESH V.G"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NECHIPUZHOOR",
+            "person": {
+                "id": "2015052700301",
+                "name": "SURESH N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAYAPPAR",
+            "person": {
+                "id": "2015052700401",
+                "name": "OMANA BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANTHINAD EAST",
+            "person": {
+                "id": "2015052700501",
+                "name": "KURIAKOSE JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANTHINAD WEST",
+            "person": {
+                "id": "2015052700601",
+                "name": "PIOUS MANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAROOR",
+            "person": {
+                "id": "2015052700701",
+                "name": "JAYAKUMAR P.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PONAD",
+            "person": {
+                "id": "2015052700801",
+                "name": "JAYAKUMAR V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ALLAPPARA",
+            "person": {
+                "id": "2015052700901",
+                "name": "ANIAMMA JOSE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VALLICHIRA EAST",
+            "person": {
+                "id": "2015052701001",
+                "name": "OMANA V.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VALLICHIRA WEST",
+            "person": {
+                "id": "2015052701101",
+                "name": "SANDHYA BINU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDANAD WEST",
+            "person": {
+                "id": "2015052701201",
+                "name": "SUMATHY DEVI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDANAD EAST",
+            "person": {
+                "id": "2015052701301",
+                "name": "MATHEW K.J."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VALAVOOR WEST",
+            "person": {
+                "id": "2015052701401",
+                "name": "BESSY (BESSIAMMA)"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUDAKKACHIRA WEST",
+            "person": {
+                "id": "2015052701501",
+                "name": "RANI JOSE"
+            }
+        }
+    ]
+}

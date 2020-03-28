@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347514180,
+    "date": "2019-08-21",
+    "name": "Kolazhy  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Ollukkara",
+    "area": "16.62km",
+    "localbody_code": "G080606",
+    "no_of_wards": 17,
+    "population": 22517,
+    "male": 10943,
+    "female": 11574,
+    "population_density": 1355,
+    "sex_ratio": 1058,
+    "literacy_rate": 93.5,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 91.17,
+    "president": "P.G.UNNIKRISHNAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNNATHUPEEDIKA",
+            "person": {
+                "id": "2015074000101",
+                "name": "SUMITHA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ATTORE NORTH",
+            "person": {
+                "id": "2015074000201",
+                "name": "A.J.SHAJU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POTTORE NORTH",
+            "person": {
+                "id": "2015074000301",
+                "name": "AJITH KUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THIROOR",
+            "person": {
+                "id": "2015074000401",
+                "name": "ESSY BIJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHANMADAMKUNNU",
+            "person": {
+                "id": "2015074000501",
+                "name": "SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ATHEKKAD",
+            "person": {
+                "id": "2015074000601",
+                "name": "JESSY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOLAZHY NORTH",
+            "person": {
+                "id": "2015074000702",
+                "name": "SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLAZHY CENTRE",
+            "person": {
+                "id": "2015074000801",
+                "name": "SUNITHA VIJAYABHARATH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POOVANI",
+            "person": {
+                "id": "2015074000901",
+                "name": "LAKSHMY VISWAMBHARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLAZHY WEST",
+            "person": {
+                "id": "2015074001001",
+                "name": "M.T SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POTTORE SOUTH",
+            "person": {
+                "id": "2015074001101",
+                "name": "BINEESH K M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ATTORE SOUTH",
+            "person": {
+                "id": "2015074001201",
+                "name": "BENCY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PAMBOOR",
+            "person": {
+                "id": "2015074001301",
+                "name": "SHAJU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUTTUR EAST",
+            "person": {
+                "id": "2015074001401",
+                "name": "ALICE"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUTTUR WEST",
+            "person": {
+                "id": "2015074001501",
+                "name": "P.G.UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUTTUR NORTH",
+            "person": {
+                "id": "2015074001601",
+                "name": "ANNIE RAPHAEL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOTTEKKAD",
+            "person": {
+                "id": "2015074001701",
+                "name": "JESSY"
+            }
+        }
+    ]
+}

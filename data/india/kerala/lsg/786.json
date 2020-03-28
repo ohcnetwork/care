@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348099586,
+    "date": "2019-08-21",
+    "name": "Kaipamangalam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mathilakam",
+    "area": "13.7km",
+    "localbody_code": "G081402",
+    "no_of_wards": 20,
+    "population": 30377,
+    "male": 14198,
+    "female": 16179,
+    "population_density": 2217,
+    "sex_ratio": 1139,
+    "literacy_rate": 90.35,
+    "literacy_rate_male": 93.72,
+    "literacy_rate_female": 87.41,
+    "president": "SURESHBABUTV",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANJAMPALLY",
+            "person": {
+                "id": "2015078600101",
+                "name": "PRANAV N S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SALAFI NAGAR",
+            "person": {
+                "id": "2015078600201",
+                "name": "AJEESHA NAVAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "GRAMALAKSHMI",
+            "person": {
+                "id": "2015078600301",
+                "name": "SURESH KOCHUVEETTIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANCHAYATH OFFICE",
+            "person": {
+                "id": "2015078600401",
+                "name": "P.A.SAJEER"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MAHATMANAGAR",
+            "person": {
+                "id": "2015078600501",
+                "name": "LATHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SUBASH NAGAR",
+            "person": {
+                "id": "2015078600601",
+                "name": "MADHUBAI BABU KARIMPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADAMBATTUPADAM",
+            "person": {
+                "id": "2015078600701",
+                "name": "FOUSIYA SHAMEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANNUNGAL",
+            "person": {
+                "id": "2015078600801",
+                "name": "SINDHU K S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAKKATHIRUTHY",
+            "person": {
+                "id": "2015078600901",
+                "name": "SHAJITHA IQBAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHALINGAD",
+            "person": {
+                "id": "2015078601001",
+                "name": "DAMAYANDHI DASAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PRIYADARSINI",
+            "person": {
+                "id": "2015078601101",
+                "name": "AKHILAVENI A M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOONUPEEDIKA",
+            "person": {
+                "id": "2015078601201",
+                "name": "SUDHEESH C S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAZHIYAMBALAM",
+            "person": {
+                "id": "2015078601301",
+                "name": "SURESH BABU T V"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "DEVAMANGALAM",
+            "person": {
+                "id": "2015078601401",
+                "name": "JISINI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "FISHERIES",
+            "person": {
+                "id": "2015078601501",
+                "name": "P.T.RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THAINAGAR",
+            "person": {
+                "id": "2015078601602",
+                "name": "JANCY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALAMURI",
+            "person": {
+                "id": "2015078601701",
+                "name": "P.C.MANOJ"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "HEALTH CENTER",
+            "person": {
+                "id": "2015078601801",
+                "name": "K.A.SAINUDHEEN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "KADAPPURAM",
+            "person": {
+                "id": "2015078601901",
+                "name": "SEENA SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PATHINETTUMURI",
+            "person": {
+                "id": "2015078602001",
+                "name": "KADIJA PUTHIYAVEETTIL"
+            }
+        }
+    ]
+}

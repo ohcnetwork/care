@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566349377967,
+    "date": "2019-08-21",
+    "name": "Chembilode  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "20.99km",
+    "localbody_code": "G130605",
+    "no_of_wards": 19,
+    "population": 29016,
+    "male": 14042,
+    "female": 14974,
+    "population_density": 1382,
+    "sex_ratio": 1066,
+    "literacy_rate": 93.38,
+    "literacy_rate_male": 97.51,
+    "literacy_rate_female": 89.58,
+    "president": "T.V.LAKSHMI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEMBILODE NORTH",
+            "person": {
+                "id": "2015114200101",
+                "name": "T.V. HAREENDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHEMBILODE CENTRAL",
+            "person": {
+                "id": "2015114200201",
+                "name": "SHYLAJA. V.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOWANCHERY",
+            "person": {
+                "id": "2015114200301",
+                "name": "RUSEENA. T.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHAKKARAKKAL",
+            "person": {
+                "id": "2015114200401",
+                "name": "AJITHA. C.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANAYANNUR",
+            "person": {
+                "id": "2015114200501",
+                "name": "ABDUL FATHAH. K.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MIDAVILODE",
+            "person": {
+                "id": "2015114200601",
+                "name": "C.P. BINDHU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANAYANNUR WEST",
+            "person": {
+                "id": "2015114200701",
+                "name": "T.V. LAKSHMI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAKKOTH",
+            "person": {
+                "id": "2015114200801",
+                "name": "M.K. MOHANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VELLACHAL",
+            "person": {
+                "id": "2015114200901",
+                "name": "C.C. ASHRAF"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "IRIVERI",
+            "person": {
+                "id": "2015114201001",
+                "name": "BHAVITHA. P. P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUTHUKUTTY",
+            "person": {
+                "id": "2015114201101",
+                "name": "SHYMA. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THALAVIL",
+            "person": {
+                "id": "2015114201201",
+                "name": "ANITHA. P.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOYYODE CENTRAL",
+            "person": {
+                "id": "2015114201301",
+                "name": "C.P. SATHYAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOYYODE SOUTH",
+            "person": {
+                "id": "2015114201401",
+                "name": "PRASEETHA. C"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THANNADA",
+            "person": {
+                "id": "2015114201501",
+                "name": "YUSAF PUNNAKKAL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHALA SOUTH",
+            "person": {
+                "id": "2015114201601",
+                "name": "P. BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHALA NORTH",
+            "person": {
+                "id": "2015114201701",
+                "name": "M. RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOYYODE MANIYALAM CHIRA",
+            "person": {
+                "id": "2015114201801",
+                "name": "T. PRASANNA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHEMBILODE SOUTH",
+            "person": {
+                "id": "2015114201901",
+                "name": "SUNITHA. C.V"
+            }
+        }
+    ]
+}

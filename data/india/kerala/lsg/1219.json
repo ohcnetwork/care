@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349638812,
+    "date": "2019-08-21",
+    "name": "Devikulam  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Devikulam",
+    "area": "187.77km",
+    "localbody_code": "G060208",
+    "no_of_wards": 18,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "GOVINTHASAMI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "BENMORE",
+            "person": {
+                "id": "2015121900101",
+                "name": "BHAGYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KUNDALA",
+            "person": {
+                "id": "2015121900201",
+                "name": "KUMAR.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHENDUVARA",
+            "person": {
+                "id": "2015121900301",
+                "name": "PAVANRAJ.A.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHITTIVARA",
+            "person": {
+                "id": "2015121900401",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THEERTHAMALA",
+            "person": {
+                "id": "2015121900501",
+                "name": "VANITHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "YELLAPPATTY",
+            "person": {
+                "id": "2015121900601",
+                "name": "SENTHILKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARIVIKKAD",
+            "person": {
+                "id": "2015121900701",
+                "name": "SUBRAMANYAN APPAVU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SILENTVALLEY",
+            "person": {
+                "id": "2015121900801",
+                "name": "RUGMINI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GUDARVILA",
+            "person": {
+                "id": "2015121900901",
+                "name": "DEGLUS.M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANILA",
+            "person": {
+                "id": "2015121901001",
+                "name": "GAURY RAMESH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "LOCKHART",
+            "person": {
+                "id": "2015121901101",
+                "name": "LAKSHMI MUTHU"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "DEVIKULAM",
+            "person": {
+                "id": "2015121901201",
+                "name": "SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHOKKANAD",
+            "person": {
+                "id": "2015121901301",
+                "name": "SURESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NETTIKKUDY",
+            "person": {
+                "id": "2015121901401",
+                "name": "GOVINTHA SAMI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "GRAHAMSLAND",
+            "person": {
+                "id": "2015121901501",
+                "name": "THANKA PANDIYAMMAL"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MATTUPPETTY",
+            "person": {
+                "id": "2015121901601",
+                "name": "PAZHANITHAI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THENMALA",
+            "person": {
+                "id": "2015121901701",
+                "name": "NADARAJAN.V"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "GUNDUMALA",
+            "person": {
+                "id": "2015121901801",
+                "name": "KALARANI AMUTHARANI"
+            }
+        }
+    ]
+}

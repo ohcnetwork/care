@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345017849,
+    "date": "2019-08-21",
+    "name": "Pampady  Block Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pampady",
+    "area": "166km",
+    "localbody_code": "B050700",
+    "no_of_wards": 14,
+    "population": 119861,
+    "male": 59792,
+    "female": 60069,
+    "population_density": 721,
+    "sex_ratio": 1005,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "MATHEWT.S",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KIDANGOOR",
+            "person": {
+                "id": "2015005300102",
+                "name": "JOSE THADATHIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIDANGOOR SOUTH",
+            "person": {
+                "id": "2015005300201",
+                "name": "JYOTHI BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AKALAKKUNNAM",
+            "person": {
+                "id": "2015005300301",
+                "name": "MATHEW T.S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHENGALAM",
+            "person": {
+                "id": "2015005300401",
+                "name": "SAJAN THODUKA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ELIKULAM",
+            "person": {
+                "id": "2015005300502",
+                "name": "ROSMI JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANICKAD",
+            "person": {
+                "id": "2015005300601",
+                "name": "ANEESH V.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLICKATHOD",
+            "person": {
+                "id": "2015005300701",
+                "name": "SANDYA DEVI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOOROPPADA",
+            "person": {
+                "id": "2015005300801",
+                "name": "AMBILY MATHEW"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTHALA",
+            "person": {
+                "id": "2015005300901",
+                "name": "KUNJUNJAMMA KURIAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PAMPADY",
+            "person": {
+                "id": "2015005301001",
+                "name": "ANNAMMA CHERIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MEENADOM",
+            "person": {
+                "id": "2015005301101",
+                "name": "SATHEESH VARKEY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VELLOOR",
+            "person": {
+                "id": "2015005301201",
+                "name": "ANISHMON T.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MAALAM",
+            "person": {
+                "id": "2015005301301",
+                "name": "GIGI JIJI MANARCAD"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MANARCAD",
+            "person": {
+                "id": "2015005301401",
+                "name": "SABU CHERIAN"
+            }
+        }
+    ]
+}

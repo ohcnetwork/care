@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347343901,
+    "date": "2019-08-21",
+    "name": "Pampakuda  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Pampakuda",
+    "area": "30.09km",
+    "localbody_code": "G071206",
+    "no_of_wards": 13,
+    "population": 16811,
+    "male": 8566,
+    "female": 8245,
+    "population_density": 559,
+    "sex_ratio": 963,
+    "literacy_rate": 90.81,
+    "literacy_rate_male": 94.4,
+    "literacy_rate_female": 87.06,
+    "president": "SUSHAMAMADHAVAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NAITHUSALAPPADY",
+            "person": {
+                "id": "2015069700102",
+                "name": "SAJU GEORGE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "M. T. M.",
+            "person": {
+                "id": "2015069700201",
+                "name": "SUSHAMA MADHAVAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "IKKARAKANDAM",
+            "person": {
+                "id": "2015069700301",
+                "name": "THANKACHAN KURIAKOSE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PIRAMADOM",
+            "person": {
+                "id": "2015069700401",
+                "name": "REEJAMOL JOBY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAMPAKUDA",
+            "person": {
+                "id": "2015069700501",
+                "name": "AMMINI GEORGE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAINY",
+            "person": {
+                "id": "2015069700601",
+                "name": "SIJI THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ANCHELPETTY",
+            "person": {
+                "id": "2015069700701",
+                "name": "SINDHU GEORGE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AYURVEDA HOSPITAL",
+            "person": {
+                "id": "2015069700801",
+                "name": "GIJO.K.MANI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAKKAYAM",
+            "person": {
+                "id": "2015069700901",
+                "name": "O.M.CHERIAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THODUVAKUZHI",
+            "person": {
+                "id": "2015069701001",
+                "name": "SUMA GOPI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ONAKKOOR",
+            "person": {
+                "id": "2015069701101",
+                "name": "C.B.RAJEEV"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THATTUPADAM",
+            "person": {
+                "id": "2015069701201",
+                "name": "SHEELA BABU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MEMMURY SOUTH",
+            "person": {
+                "id": "2015069701301",
+                "name": "SHAJU.N.R"
+            }
+        }
+    ]
+}

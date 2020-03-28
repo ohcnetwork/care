@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566347477221,
+    "date": "2019-08-21",
+    "name": "Varavoor  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vadakkamchery",
+    "area": "29.76km",
+    "localbody_code": "G080306",
+    "no_of_wards": 14,
+    "population": 17173,
+    "male": 8030,
+    "female": 9143,
+    "population_density": 577,
+    "sex_ratio": 1138,
+    "literacy_rate": 82.5,
+    "literacy_rate_male": 86.76,
+    "literacy_rate_female": 78.86,
+    "president": "BABUKUTTANKK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHELOOR",
+            "person": {
+                "id": "2015073100101",
+                "name": "VAPPUTTY P V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015073100201",
+                "name": "SINDHU N U"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THALI",
+            "person": {
+                "id": "2015073100301",
+                "name": "PANKAJAM P A"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PILAKKAD",
+            "person": {
+                "id": "2015073100401",
+                "name": "VIJAYALAKSMI C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "RAMANKULAM",
+            "person": {
+                "id": "2015073100501",
+                "name": "GOPAKUMAR C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALAKKAL",
+            "person": {
+                "id": "2015073100601",
+                "name": "M VEERACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VARAVOOR HIGHSCHOOL",
+            "person": {
+                "id": "2015073100701",
+                "name": "BINDU UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NADUTHARA",
+            "person": {
+                "id": "2015073100801",
+                "name": "GEETHA C R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUMARAPPANAL",
+            "person": {
+                "id": "2015073100901",
+                "name": "BABUKUTTAN K K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VETTUKKAD",
+            "person": {
+                "id": "2015073101001",
+                "name": "KADEEJAKUTTY K V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VARAVOOR VALVU",
+            "person": {
+                "id": "2015073101101",
+                "name": "MOHANAN M A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTUPURAM",
+            "person": {
+                "id": "2015073101201",
+                "name": "RUGMINI P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "DEVICHIRA",
+            "person": {
+                "id": "2015073101301",
+                "name": "PREETHI P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THICHUR",
+            "person": {
+                "id": "2015073101401",
+                "name": "RAVEENDRAN M"
+            }
+        }
+    ]
+}

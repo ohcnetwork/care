@@ -1,0 +1,140 @@
+{
+    "timeStamp": 1566347566612,
+    "date": "2019-08-21",
+    "name": "Mullassery  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mullassery",
+    "area": "17.7km",
+    "localbody_code": "G080702",
+    "no_of_wards": 15,
+    "population": 19953,
+    "male": 9359,
+    "female": 10594,
+    "population_density": 1127,
+    "sex_ratio": 1132,
+    "literacy_rate": 88.3,
+    "literacy_rate_male": 92.18,
+    "literacy_rate_female": 85.02,
+    "president": "APBENNY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THIRUNELLUR",
+            "person": {
+                "id": "2015075200101",
+                "name": "MOHAMED SHARIF"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERUVALLUR",
+            "person": {
+                "id": "2015075200201",
+                "name": "INDULEKHA BAJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AMBEDKARGRAMAM",
+            "person": {
+                "id": "2015075200301",
+                "name": "P K RAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PENAKAM",
+            "person": {
+                "id": "2015075200401",
+                "name": "SREEDEVI JAYARAJAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANNAKARA",
+            "person": {
+                "id": "2015075200501",
+                "name": "P A KRISHNANKUTTY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ELAVATHUR",
+            "person": {
+                "id": "2015075200601",
+                "name": "MINI MOHANDAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATHIYARKULANGARA",
+            "person": {
+                "id": "2015075200701",
+                "name": "SEEMA UNNIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THANAVEETHY",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANINA",
+            "person": {
+                "id": "2015075200901",
+                "name": "CHANDRAKALA MANOJ"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARAMBANTHALY",
+            "person": {
+                "id": "2015075201001",
+                "name": "CLEMENT FRANCIS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SANTHIGRAMAM",
+            "person": {
+                "id": "2015075201101",
+                "name": "BABITHA LIJO"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POONCHIRA",
+            "person": {
+                "id": "2015075201201",
+                "name": "JAYA VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KORLY",
+            "person": {
+                "id": "2015075201301",
+                "name": "A  P  BENNY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MULLASSERY",
+            "person": {
+                "id": "2015075201401",
+                "name": "SABITHA CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "C H C",
+            "person": {
+                "id": "2015075201501",
+                "name": "A  K  HUSSAIN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345914198,
+    "date": "2019-08-21",
+    "name": "Kallikkadu  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Perumkadavila",
+    "area": "106.27km",
+    "localbody_code": "G010905",
+    "no_of_wards": 13,
+    "population": 12440,
+    "male": 6275,
+    "female": 6165,
+    "population_density": 117,
+    "sex_ratio": 982,
+    "literacy_rate": 87.51,
+    "literacy_rate_male": 91.5,
+    "literacy_rate_female": 83.46,
+    "president": "J.R.AJITHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEVANCODE",
+            "person": {
+                "id": "2015028700101",
+                "name": "M.SATHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VLAVETTY",
+            "person": {
+                "id": "2015028700201",
+                "name": "CHITHRA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERUMKULANGARA",
+            "person": {
+                "id": "2015028700301",
+                "name": "SASEENDRAN NAIR.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NEYYARDAM",
+            "person": {
+                "id": "2015028700401",
+                "name": "SYAM LAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALATTUKAVU",
+            "person": {
+                "id": "2015028700501",
+                "name": "SHYNI.S.L"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NIRAPPUKALA",
+            "person": {
+                "id": "2015028700601",
+                "name": "SINDHU.R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VAVODU",
+            "person": {
+                "id": "2015028700701",
+                "name": "KAVITHA VINCENT"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KALIPPARA",
+            "person": {
+                "id": "2015028700801",
+                "name": "LATHA.R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANJADIMOODU",
+            "person": {
+                "id": "2015028700901",
+                "name": "L.SANUMATHI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHAMAVILAPURAM",
+            "person": {
+                "id": "2015028701002",
+                "name": "SADASIVAN KAANI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MYLAKKARA",
+            "person": {
+                "id": "2015028701101",
+                "name": "J.R.AJITHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERINJAMKADAVU",
+            "person": {
+                "id": "2015028701201",
+                "name": "S.LATHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KALLIKKADU",
+            "person": {
+                "id": "2015028701301",
+                "name": "B.VINOD KUMAR"
+            }
+        }
+    ]
+}

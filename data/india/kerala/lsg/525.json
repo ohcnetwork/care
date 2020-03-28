@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346778364,
+    "date": "2019-08-21",
+    "name": "Ramapuram  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "54.54km",
+    "localbody_code": "G050407",
+    "no_of_wards": 18,
+    "population": 28708,
+    "male": 14376,
+    "female": 14332,
+    "population_density": 526,
+    "sex_ratio": 997,
+    "literacy_rate": 95,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 94,
+    "president": "BAIJUJOHN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "METHIRI",
+            "person": {
+                "id": "2015052500101",
+                "name": "LISSY ANTONY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KURINJI",
+            "person": {
+                "id": "2015052500201",
+                "name": "JEENAS NATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KIZHATHIRI",
+            "person": {
+                "id": "2015052500301",
+                "name": "JESSY RAJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MULLAMATTOM",
+            "person": {
+                "id": "2015052500401",
+                "name": "MATHACHAN P.J."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "RAMAPURAM BAZAR",
+            "person": {
+                "id": "2015052500501",
+                "name": "MINI SUNNY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MARANGADU",
+            "person": {
+                "id": "2015052500601",
+                "name": "SELLY GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "G V SCHOOL",
+            "person": {
+                "id": "2015052500701",
+                "name": "SHINY SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EZHACHERRY",
+            "person": {
+                "id": "2015052500801",
+                "name": "SREEKUTTAN M.O."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GANDHIPURAM",
+            "person": {
+                "id": "2015052500901",
+                "name": "SONY JOHNY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHIRAKANDOM",
+            "person": {
+                "id": "2015052501001",
+                "name": "JAMINI SINNY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHAKKAMPUZHA",
+            "person": {
+                "id": "2015052501101",
+                "name": "SURENDRAN A.N."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KONDADU",
+            "person": {
+                "id": "2015052501201",
+                "name": "TITES MATHEW"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELLILAPILLY",
+            "person": {
+                "id": "2015052501301",
+                "name": "JESSAMMA CHERIAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALAVELI",
+            "person": {
+                "id": "2015052501401",
+                "name": "JANCY PHILIPOSE"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOODAPPULAM",
+            "person": {
+                "id": "2015052501501",
+                "name": "SREENIVAS M.P."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHETTUKULAM",
+            "person": {
+                "id": "2015052501601",
+                "name": "MINI SASI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAZHAMALA",
+            "person": {
+                "id": "2015052501701",
+                "name": "BAIJU JOHN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AMANAKARA",
+            "person": {
+                "id": "2015052501802",
+                "name": "BENNY ABRAHAM"
+            }
+        }
+    ]
+}

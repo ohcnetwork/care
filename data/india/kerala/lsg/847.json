@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348303358,
+    "date": "2019-08-21",
+    "name": "Kongad  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Palakkad",
+    "area": "33.55km",
+    "localbody_code": "G090702",
+    "no_of_wards": 18,
+    "population": 25165,
+    "male": 12082,
+    "female": 13083,
+    "population_density": 708,
+    "sex_ratio": 1083,
+    "literacy_rate": 82.51,
+    "literacy_rate_male": 87.57,
+    "literacy_rate_female": 77.91,
+    "president": "PLATHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THRIPPALAMUNDA",
+            "person": {
+                "id": "2015084700101",
+                "name": "K C RAJESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTASSERI",
+            "person": {
+                "id": "2015084700201",
+                "name": "V U SIDHIK"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ATTAKKAD",
+            "person": {
+                "id": "2015084700301",
+                "name": "P LATHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERAYA",
+            "person": {
+                "id": "2015084700401",
+                "name": "V V MOHANAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANIKKASSERI",
+            "person": {
+                "id": "2015084700501",
+                "name": "K R SURESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOLPPADAM",
+            "person": {
+                "id": "2015084700601",
+                "name": "C V RAMADAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAVUNADA",
+            "person": {
+                "id": "2015084700701",
+                "name": "A P SHEENA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POOTHAMKODE",
+            "person": {
+                "id": "2015084700801",
+                "name": "P C JEEVAKUMAR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUCHERI",
+            "person": {
+                "id": "2015084700901",
+                "name": "M MANJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KONGAD TOWN",
+            "person": {
+                "id": "2015084701001",
+                "name": "M S DEVADASAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANNANTHARA",
+            "person": {
+                "id": "2015084701101",
+                "name": "P K DEVAJANAKI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTAPPADI",
+            "person": {
+                "id": "2015084701201",
+                "name": "V SETHUMADHAVAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIYANKADU",
+            "person": {
+                "id": "2015084701301",
+                "name": "N RAJANI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THONIKKARA",
+            "person": {
+                "id": "2015084701401",
+                "name": "SUNITHA KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PARASSERI",
+            "person": {
+                "id": "2015084701501",
+                "name": "K R RAJITHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUNDUVAMPADAM",
+            "person": {
+                "id": "2015084701601",
+                "name": "K PRIYA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MUNDANCHERI",
+            "person": {
+                "id": "2015084701701",
+                "name": "K REMA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PERINGODE",
+            "person": {
+                "id": "2015084701801",
+                "name": "P BINDU"
+            }
+        }
+    ]
+}

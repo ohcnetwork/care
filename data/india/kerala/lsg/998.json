@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348882200,
+    "date": "2019-08-21",
+    "name": "Chekkiad  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Thuneri",
+    "area": "24.47km",
+    "localbody_code": "G110201",
+    "no_of_wards": 15,
+    "population": 20434,
+    "male": 9722,
+    "female": 10712,
+    "population_density": 835,
+    "sex_ratio": 1102,
+    "literacy_rate": 82.48,
+    "literacy_rate_male": 91.29,
+    "literacy_rate_female": 74.7,
+    "president": "C.K.JAMEELA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PADINHARE THANAKKOTTOOR",
+            "person": {
+                "id": "2015099800101",
+                "name": "C.K.JAMEELA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THANAKKOTTOOR",
+            "person": {
+                "id": "2015099800201",
+                "name": "SAFIYA CHIRAKKOTH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAYALOTTU THAZHE",
+            "person": {
+                "id": "2015099800301",
+                "name": "KUMARAN.K.P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KANDIVATHUKKAL",
+            "person": {
+                "id": "2015099800401",
+                "name": "LEELA VAYALIL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KURUVANTHERI",
+            "person": {
+                "id": "2015099800501",
+                "name": "KUMARAN PUTHOLI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KURUVANTHERI",
+            "person": {
+                "id": "2015099800601",
+                "name": "K.CHANDRIKA TEACHER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHEKKIAD",
+            "person": {
+                "id": "2015099800701",
+                "name": "‍VINEESH.K.K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SOUTH CHEKKIAD",
+            "person": {
+                "id": "2015099800801",
+                "name": "THODUVAYIL MUHAMMAD"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "JATHIYERI",
+            "person": {
+                "id": "2015099800901",
+                "name": "THAHIRA KHALID"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KALLUMMAL",
+            "person": {
+                "id": "2015099801001",
+                "name": "AHAMMAD KURUVAYIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PULIYAVU",
+            "person": {
+                "id": "2015099801101",
+                "name": "C.H.SAMEERA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VEVAM",
+            "person": {
+                "id": "2015099801201",
+                "name": "MAHAMOOD.E"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAKKADAVU",
+            "person": {
+                "id": "2015099801302",
+                "name": "ANEEFA P.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "UMMATHOOR",
+            "person": {
+                "id": "2015099801401",
+                "name": "NASEEMA KOTTARATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NORTH UMMATHOOR",
+            "person": {
+                "id": "2015099801501",
+                "name": "ATHIKA MUHAMMED"
+            }
+        }
+    ]
+}

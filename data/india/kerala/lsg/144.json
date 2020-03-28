@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345330702,
+    "date": "2019-08-21",
+    "name": "Edakkad  Block Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "142.43km",
+    "localbody_code": "B130600",
+    "no_of_wards": 13,
+    "population": 235106,
+    "male": 113255,
+    "female": 121851,
+    "population_density": 1651,
+    "sex_ratio": 1076,
+    "literacy_rate": 93.05,
+    "literacy_rate_male": 96.99,
+    "literacy_rate_female": 89.44,
+    "president": "M.C.MOHANAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAMBIL",
+            "person": {
+                "id": "2015014400101",
+                "name": "M.AZIZ"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOLACHERI",
+            "person": {
+                "id": "2015014400202",
+                "name": "K ANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANHIRODE",
+            "person": {
+                "id": "2015014400301",
+                "name": "AHAMMED KUTTY P C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THALAMUNDA",
+            "person": {
+                "id": "2015014400401",
+                "name": "V LAKSHMANAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "IRIVERI",
+            "person": {
+                "id": "2015014400501",
+                "name": "RATHNAVALLY.C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MAKRERI",
+            "person": {
+                "id": "2015014400601",
+                "name": "C. SANJANA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAVILAYI",
+            "person": {
+                "id": "2015014400701",
+                "name": "P.LISI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KADAMBUR",
+            "person": {
+                "id": "2015014400801",
+                "name": "V.V. SAVITHRI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KADACHIRA",
+            "person": {
+                "id": "2015014400901",
+                "name": "P.K. LALITHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHALA",
+            "person": {
+                "id": "2015014401001",
+                "name": "M. KADEEJA  TEACHER"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEMBILODE",
+            "person": {
+                "id": "2015014401101",
+                "name": "M.C. MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOWANCHERRY",
+            "person": {
+                "id": "2015014401201",
+                "name": "NIJIL. N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KANACHERRY",
+            "person": {
+                "id": "2015014401301",
+                "name": "K.P. PADMINI"
+            }
+        }
+    ]
+}

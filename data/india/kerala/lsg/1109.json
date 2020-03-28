@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349238741,
+    "date": "2019-08-21",
+    "name": "Cherukunnu  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "15.37km",
+    "localbody_code": "G130205",
+    "no_of_wards": 13,
+    "population": 16246,
+    "male": 7473,
+    "female": 8773,
+    "population_density": 1057,
+    "sex_ratio": 1174,
+    "literacy_rate": 90.41,
+    "literacy_rate_male": 96.04,
+    "literacy_rate_female": 85.71,
+    "president": "P.K.ASSANKUNHIMASTER",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "NIDUPURAM",
+            "person": {
+                "id": "2015110900101",
+                "name": "PADMINI. K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "DALIL",
+            "person": {
+                "id": "2015110900201",
+                "name": "SULOCHANA. T"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUNNANANGAD",
+            "person": {
+                "id": "2015110900301",
+                "name": "SHOBHANA. T. V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ODAYAMMADAM",
+            "person": {
+                "id": "2015110900401",
+                "name": "K. K.  NANU."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAVINISSERI",
+            "person": {
+                "id": "2015110900501",
+                "name": "P. C.  KUNHAPPA."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KAVINISSERI VAYAL",
+            "person": {
+                "id": "2015110900601",
+                "name": "SHEEJA. K. M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLICHAL",
+            "person": {
+                "id": "2015110900701",
+                "name": "P. K.  ASSANKUNHI MASTER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALAPURAM",
+            "person": {
+                "id": "2015110900801",
+                "name": "LALITHA. M. V"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOVVAPURAM",
+            "person": {
+                "id": "2015110900901",
+                "name": "RADHA. P. V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUNDAPPURAM",
+            "person": {
+                "id": "2015110901001",
+                "name": "BERTHILLA. K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MUTTIL",
+            "person": {
+                "id": "2015110901101",
+                "name": "JITHESH. O. V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLIKKARA",
+            "person": {
+                "id": "2015110901201",
+                "name": "HARIDASAN. K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THAVAM",
+            "person": {
+                "id": "2015110901301",
+                "name": "P. V.  SAJEEVAN"
+            }
+        }
+    ]
+}

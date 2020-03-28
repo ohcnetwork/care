@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566347212330,
+    "date": "2019-08-21",
+    "name": "Elankunnapuzha  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vypin",
+    "area": "11.66km",
+    "localbody_code": "G070604",
+    "no_of_wards": 23,
+    "population": 47878,
+    "male": 23560,
+    "female": 24318,
+    "population_density": 4106,
+    "sex_ratio": 1032,
+    "literacy_rate": 94.26,
+    "literacy_rate_male": 96.75,
+    "literacy_rate_female": 91.88,
+    "president": "UNNIKRISHNANK.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADAPPURAM WARD",
+            "person": {
+                "id": "2015066200101",
+                "name": "KALA BABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ROTTARY VILLAGE WARD",
+            "person": {
+                "id": "2015066200201",
+                "name": "RADHAKRISHNAN K. S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "JANAKEEYA PALAM WARD",
+            "person": {
+                "id": "2015066200301",
+                "name": "ALICE SEBASTIN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "L.P.SCHOOL WARD",
+            "person": {
+                "id": "2015066200401",
+                "name": "RESIKALA PRIYARAJ"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "TEMPLE WARD",
+            "person": {
+                "id": "2015066200501",
+                "name": "UNNIKRISHNAN K. K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARTHEDOM CHURCH WARD",
+            "person": {
+                "id": "2015066200601",
+                "name": "MATHEW LINCHEN ROY M.D"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARTHEDOM CENTRAL WARD",
+            "person": {
+                "id": "2015066200701",
+                "name": "BIJU C.G"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALIPPURAM CENTRAL WARD",
+            "person": {
+                "id": "2015066200801",
+                "name": "RASIYA JAMAL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VYDHUTHI WARD",
+            "person": {
+                "id": "2015066200901",
+                "name": "ROSELINE R.C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "SCHOOLMUTTAM EAST WARD",
+            "person": {
+                "id": "2015066201001",
+                "name": "NIXON I.S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "SANTA CRUZ WARD",
+            "person": {
+                "id": "2015066201101",
+                "name": "SOPHIA JOY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KURISINGAL CHURCH WARD",
+            "person": {
+                "id": "2015066201201",
+                "name": "SHAJI P.S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MURIKKUMPADOM JETTY WARD",
+            "person": {
+                "id": "2015066201301",
+                "name": "BINDU VENU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MALLIKARJUNA TEMPLE WARD",
+            "person": {
+                "id": "2015066201401",
+                "name": "KAILASAN T.R"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AZHEEKAL WARD",
+            "person": {
+                "id": "2015066201501",
+                "name": "SIBIN KUMAR P.K."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "UNIVERSITY WARD",
+            "person": {
+                "id": "2015066201601",
+                "name": "SHEEJA REJU"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MASJID WARD",
+            "person": {
+                "id": "2015066201701",
+                "name": "CHITHRA MAHESH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "LIGHT HOUSE WARD",
+            "person": {
+                "id": "2015066201801",
+                "name": "NALINI SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PUTHUVYPE EAST WARD",
+            "person": {
+                "id": "2015066201901",
+                "name": "SINILA PRAVEEN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "LIGHT HOUSE NORTH KADAPPURAM WARD",
+            "person": {
+                "id": "2015066202001",
+                "name": "GIRIJA ASOKAN"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SCHOOLMUTTAM WEST WARD",
+            "person": {
+                "id": "2015066202101",
+                "name": "BERNARD BENNY"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "PANCHAYAT WARD",
+            "person": {
+                "id": "2015066202202",
+                "name": "SAMBATH KUMAR V.K"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MALIPPURAM BEACH WARD",
+            "person": {
+                "id": "2015066202301",
+                "name": "SREEDEVI RAJU"
+            }
+        }
+    ]
+}

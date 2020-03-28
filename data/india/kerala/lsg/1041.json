@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566349030849,
+    "date": "2019-08-21",
+    "name": "Chelannur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Chelannur",
+    "area": "23.83km",
+    "localbody_code": "G110902",
+    "no_of_wards": 21,
+    "population": 30081,
+    "male": 14989,
+    "female": 15092,
+    "population_density": 1262,
+    "sex_ratio": 1007,
+    "literacy_rate": 92.17,
+    "literacy_rate_male": 96.36,
+    "literacy_rate_female": 88.07,
+    "president": "T.VALSALA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ICHANNUR",
+            "person": {
+                "id": "2015104100101",
+                "name": "SUJA REMESAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KANDANNUR",
+            "person": {
+                "id": "2015104100201",
+                "name": "SHINEENA . Y. M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MARUTHAD",
+            "person": {
+                "id": "2015104100301",
+                "name": "P ISMAYIL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AMBALAPPAD",
+            "person": {
+                "id": "2015104100401",
+                "name": "MOHANDAS .K .M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "IRUVALLUR",
+            "person": {
+                "id": "2015104100501",
+                "name": "RAMANI .T.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMBOYIL",
+            "person": {
+                "id": "2015104100601",
+                "name": "KAVITHA.P.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALLIPOYIL",
+            "person": {
+                "id": "2015104100701",
+                "name": "GOURI PUTHIYOTH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NELLIYATHU THAZHAM",
+            "person": {
+                "id": "2015104100801",
+                "name": "A.M RAJAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALATH",
+            "person": {
+                "id": "2015104100901",
+                "name": "SHEENA CHERUVATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "OOTTUKULAM",
+            "person": {
+                "id": "2015104101001",
+                "name": "V. BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAMMILITHAZHAM",
+            "person": {
+                "id": "2015104101101",
+                "name": "NISHA .K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUTHUVADUKUNNU",
+            "person": {
+                "id": "2015104101201",
+                "name": "M P HAMEED MASTER"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KUMARASWAMI",
+            "person": {
+                "id": "2015104101301",
+                "name": "T .VALSALA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALAMKOLLI THAZHAM",
+            "person": {
+                "id": "2015104101401",
+                "name": "SARALA .K M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ATHIYANATHIL THAZHAM",
+            "person": {
+                "id": "2015104101501",
+                "name": "V. JITHENDRANATH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THACHANKUNNU",
+            "person": {
+                "id": "2015104101601",
+                "name": "MINI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "CHELANNUR",
+            "person": {
+                "id": "2015104101701",
+                "name": "SHANI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUTHIYEDATH THAZHAM",
+            "person": {
+                "id": "2015104101801",
+                "name": "SANTOSH .T"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "OLOPPARA",
+            "person": {
+                "id": "2015104101901",
+                "name": "P. M VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "POROTH THAZHAM",
+            "person": {
+                "id": "2015104102001",
+                "name": "SHEENA P V"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHIRAKKUZHI",
+            "person": {
+                "id": "2015104102101",
+                "name": "LEELA"
+            }
+        }
+    ]
+}

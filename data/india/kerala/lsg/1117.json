@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349270722,
+    "date": "2019-08-21",
+    "name": "Chapparapadava  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Thaliparamba",
+    "area": "69.99km",
+    "localbody_code": "G130305",
+    "no_of_wards": 18,
+    "population": 26569,
+    "male": 13195,
+    "female": 13374,
+    "population_density": 380,
+    "sex_ratio": 1014,
+    "literacy_rate": 88.3,
+    "literacy_rate_male": 93.34,
+    "literacy_rate_female": 83.34,
+    "president": "MAIMOONATHM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERUMPADAVU",
+            "person": {
+                "id": "2015111700101",
+                "name": "K P KUNHIKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ERUVATTY",
+            "person": {
+                "id": "2015111700201",
+                "name": "MUNEERA P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARINKAYAM",
+            "person": {
+                "id": "2015111700301",
+                "name": "RUGMINI SASIDHARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THADIKKADAVU",
+            "person": {
+                "id": "2015111700401",
+                "name": "MANU THOMAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANATTY",
+            "person": {
+                "id": "2015111700501",
+                "name": "SALY NADUPARAMBIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUTTIKKARI",
+            "person": {
+                "id": "2015111700601",
+                "name": "SAJI P ANTONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARUNAPURAM",
+            "person": {
+                "id": "2015111700701",
+                "name": "P J MATHEW"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANGARA",
+            "person": {
+                "id": "2015111700801",
+                "name": "PRABHAKARAN TALAKKOTTE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AMMAMKULAM",
+            "person": {
+                "id": "2015111700901",
+                "name": "JAMES PURAPPOKARA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHAPPARAPADAVU",
+            "person": {
+                "id": "2015111701001",
+                "name": "SUBAIDA K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PADAPPENGAD",
+            "person": {
+                "id": "2015111701101",
+                "name": "VINOD KUMAR A N"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "SANTHIGIRI",
+            "person": {
+                "id": "2015111701201",
+                "name": "NASEERA P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOOVERI",
+            "person": {
+                "id": "2015111701301",
+                "name": "SHYAMALA KALAMVALAPPIL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "RAMAPURAM",
+            "person": {
+                "id": "2015111701401",
+                "name": "SHYJU CHALAPURATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THERANDI",
+            "person": {
+                "id": "2015111701501",
+                "name": "P PRAMEELA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOTTAKKANAM",
+            "person": {
+                "id": "2015111701601",
+                "name": "P K SATHYAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "EDAKKOME",
+            "person": {
+                "id": "2015111701701",
+                "name": "MAIMOONATH M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VIMALASSERI",
+            "person": {
+                "id": "2015111701801",
+                "name": "SINI ROYCHAN"
+            }
+        }
+    ]
+}

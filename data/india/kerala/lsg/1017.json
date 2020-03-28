@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348950844,
+    "date": "2019-08-21",
+    "name": "Keezhariyur  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Melady",
+    "area": "13.69km",
+    "localbody_code": "G110502",
+    "no_of_wards": 13,
+    "population": 13482,
+    "male": 6598,
+    "female": 6884,
+    "population_density": 985,
+    "sex_ratio": 1043,
+    "literacy_rate": 91.11,
+    "literacy_rate_male": 96.43,
+    "literacy_rate_female": 86.11,
+    "president": "K.P.GOPALANNAIR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKUMMURI",
+            "person": {
+                "id": "2015101700101",
+                "name": "NARAYANAN. M. P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KEEZHARIYUR WEST",
+            "person": {
+                "id": "2015101700201",
+                "name": "ABOOBACKER. T. P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEEZHARIYUR CENTRE",
+            "person": {
+                "id": "2015101700301",
+                "name": "KARTHIYANI. K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NADUVATHOOR",
+            "person": {
+                "id": "2015101700401",
+                "name": "NIRATHINTE MEETHAL SAVITHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAPPATTIL THAZHE",
+            "person": {
+                "id": "2015101700501",
+                "name": "BABU KURUMAYIL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUNNOTH MUKKU",
+            "person": {
+                "id": "2015101700601",
+                "name": "K. P. GOPALAN NAIR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NAMBRATHUKARA",
+            "person": {
+                "id": "2015101700701",
+                "name": "M. K. MINEESH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NAMBRATHUKARA WEST",
+            "person": {
+                "id": "2015101700801",
+                "name": "RAJASREE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NADUVATHOOR SOUTH",
+            "person": {
+                "id": "2015101700901",
+                "name": "O. K. KUMARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THATHAMVALLIPOYIL",
+            "person": {
+                "id": "2015101701001",
+                "name": "SUVARNA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANNADI",
+            "person": {
+                "id": "2015101701101",
+                "name": "RAJITHA. K. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KEERAMKUNNU",
+            "person": {
+                "id": "2015101701201",
+                "name": "PREMA. K. M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KORAPRA",
+            "person": {
+                "id": "2015101701301",
+                "name": "SABIRA"
+            }
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566349202178,
+    "date": "2019-08-21",
+    "name": "Madayi  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "16.71km",
+    "localbody_code": "G130203",
+    "no_of_wards": 20,
+    "population": 33488,
+    "male": 16077,
+    "female": 17411,
+    "population_density": 2004,
+    "sex_ratio": 1083,
+    "literacy_rate": 88.08,
+    "literacy_rate_male": 93.51,
+    "literacy_rate_female": 83.16,
+    "president": "SUHARABI.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MOOLAKKEEL",
+            "person": {
+                "id": "2015109900101",
+                "name": "SULAIMAN. K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VENGARA WEST",
+            "person": {
+                "id": "2015109900201",
+                "name": "LEENA. P.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VENGARA NORTH",
+            "person": {
+                "id": "2015109900301",
+                "name": "M. PAVITHRAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENGARA EAST",
+            "person": {
+                "id": "2015109900401",
+                "name": "RESHMA. M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ADUTHILA",
+            "person": {
+                "id": "2015109900501",
+                "name": "RAJANI. E.T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MADAYI",
+            "person": {
+                "id": "2015109900601",
+                "name": "K. SREENIVASAN MASTER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAYANGADI TOWN",
+            "person": {
+                "id": "2015109900701",
+                "name": "UMMALIL AYISHA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAYANGADI. R.S",
+            "person": {
+                "id": "2015109900801",
+                "name": "USHAKUMARI. N"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PAYANGADI SOUTH",
+            "person": {
+                "id": "2015109900901",
+                "name": "T. MARY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VADIKKAL KADAVU",
+            "person": {
+                "id": "2015109901001",
+                "name": "DAISY. K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MADAYI VADIKKAL",
+            "person": {
+                "id": "2015109901101",
+                "name": "LATHA. K"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUTHIYANGADI NEEROZHUKKUMCHAL",
+            "person": {
+                "id": "2015109901201",
+                "name": "NOUSHAD. E.C.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHIYANGADI MANHERAVALAPPU",
+            "person": {
+                "id": "2015109901301",
+                "name": "T.K. HAMEED"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUTHIYANGADI KADAVATH",
+            "person": {
+                "id": "2015109901401",
+                "name": "ASHRAF MAMMASSAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PUTHIYANGADI CENTRE",
+            "person": {
+                "id": "2015109901501",
+                "name": "FATHIMABI KUTTIYASSAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PUTHIYANGADI ETTAMMAL",
+            "person": {
+                "id": "2015109901601",
+                "name": "RASHEEDA ODIYIL"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PUTHIYAVALAPPU ERIPRAM",
+            "person": {
+                "id": "2015109901701",
+                "name": "SUHARABI. A"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MUTTAM KAKKADAPRAM",
+            "person": {
+                "id": "2015109901801",
+                "name": "ABIDA. S.K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MUTTAM NORTH",
+            "person": {
+                "id": "2015109901901",
+                "name": "HAMSA KUTTY. K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MUTTAM ETTAPRAM",
+            "person": {
+                "id": "2015109902001",
+                "name": "MUHAMMED ALI. V.P"
+            }
+        }
+    ]
+}

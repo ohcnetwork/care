@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346903723,
+    "date": "2019-08-21",
+    "name": "Vellavoor  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vazhoor",
+    "area": "23.46km",
+    "localbody_code": "G051004",
+    "no_of_wards": 13,
+    "population": 15811,
+    "male": 7855,
+    "female": 7956,
+    "population_density": 674,
+    "sex_ratio": 1009,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 95,
+    "president": "ROSAMMAKOEYPURAM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADAMKULAM",
+            "person": {
+                "id": "2015056500101",
+                "name": "SHYNI KUNNINIYIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POTTUKULAM",
+            "person": {
+                "id": "2015056500201",
+                "name": "V.G JANARDANAN NAIR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KADAYANIKKADU",
+            "person": {
+                "id": "2015056500301",
+                "name": "ROSAMMA KOEYPURAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARACKKADU",
+            "person": {
+                "id": "2015056500401",
+                "name": "MATHEW (JOSE THANNICKAL)"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KULATHUNKAL",
+            "person": {
+                "id": "2015056500501",
+                "name": "SREEJITH T.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANIMALA TOWN",
+            "person": {
+                "id": "2015056500601",
+                "name": "DAYONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUNNUMBHAGAM",
+            "person": {
+                "id": "2015056500701",
+                "name": "P K PRAKASH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MALAMPARA",
+            "person": {
+                "id": "2015056500801",
+                "name": "RADHAMANY CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "AMBEDKAR",
+            "person": {
+                "id": "2015056500901",
+                "name": "ANU ANIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ERATHUVADAKARA",
+            "person": {
+                "id": "2015056501001",
+                "name": "GEETHA MOL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELLAVOOR",
+            "person": {
+                "id": "2015056501101",
+                "name": "ANISH G"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THAZHATHUVADAKARA",
+            "person": {
+                "id": "2015056501201",
+                "name": "MADHUSUDHANAN S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KULATHOORMOOZHY",
+            "person": {
+                "id": "2015056501301",
+                "name": "SARASWATHIAMMA"
+            }
+        }
+    ]
+}

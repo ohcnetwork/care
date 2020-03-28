@@ -1,0 +1,212 @@
+{
+    "timeStamp": 1566345404512,
+    "date": "2019-08-21",
+    "name": "Kannur  District Panchayat, Kannur District",
+    "district": "Kannur",
+    "area": "2967.97km",
+    "localbody_code": "D130000",
+    "no_of_wards": 24,
+    "population": 2412365,
+    "male": 1154144,
+    "female": 1258221,
+    "population_density": 759,
+    "sex_ratio": 1049,
+    "literacy_rate": 91.48,
+    "literacy_rate_male": 95.54,
+    "literacy_rate_female": 87.65,
+    "president": "K.V.SUMESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KARIVELLUR",
+            "person": {
+                "id": "2015016500101",
+                "name": "JANAKI P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALAKKODE",
+            "person": {
+                "id": "2015016500201",
+                "name": "SUMITHRA BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NADUVIL",
+            "person": {
+                "id": "2015016500301",
+                "name": "JOY KONNACKAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAYYAVOOR",
+            "person": {
+                "id": "2015016500401",
+                "name": "SARASWATHI P.K."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ULIKKAL",
+            "person": {
+                "id": "2015016500501",
+                "name": "THOMAS VARGHESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERAVOOR",
+            "person": {
+                "id": "2015016500601",
+                "name": "SUNNY MECHERI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THILLANKERI",
+            "person": {
+                "id": "2015016500701",
+                "name": "MARGARET JOSE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOLAYAD",
+            "person": {
+                "id": "2015016500801",
+                "name": "V.K.SURESH BABU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATTIAM",
+            "person": {
+                "id": "2015016500901",
+                "name": "KARAYI RAJAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KOLAVALLOOR",
+            "person": {
+                "id": "2015016501001",
+                "name": "K.P. CHANDRAN MASTER"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANNIANNOOR",
+            "person": {
+                "id": "2015016501101",
+                "name": "T.R. SUSHEELA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KADIRUR",
+            "person": {
+                "id": "2015016501201",
+                "name": "RAMLA T.T."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PINARAYI",
+            "person": {
+                "id": "2015016501301",
+                "name": "VINITHA. P."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VENGAD",
+            "person": {
+                "id": "2015016501401",
+                "name": "P GOURI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHEMBILODE",
+            "person": {
+                "id": "2015016501501",
+                "name": "K SOBHA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOODALI",
+            "person": {
+                "id": "2015016501601",
+                "name": "K. MAHIJA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MAYYIL",
+            "person": {
+                "id": "2015016501701",
+                "name": "K NANU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOLACHERI",
+            "person": {
+                "id": "2015016501801",
+                "name": "AJITH MATTUL"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AZHIKODE",
+            "person": {
+                "id": "2015016501901",
+                "name": "K.P. JAYABALAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KALLIASSERI",
+            "person": {
+                "id": "2015016502001",
+                "name": "P.P. SHAJIR"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "CHERUKUNNU",
+            "person": {
+                "id": "2015016502101",
+                "name": "ANSARI THILLANKERI"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "KUNHIMANGALAM",
+            "person": {
+                "id": "2015016502201",
+                "name": "R. AJITHA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015016502301",
+                "name": "K.V. SUMESH"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "KADANNAPPALLY",
+            "person": {
+                "id": "2015016502401",
+                "name": "P.P. DIVYA"
+            }
+        }
+    ]
+}

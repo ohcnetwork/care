@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347328738,
+    "date": "2019-08-21",
+    "name": "Thirumarady  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Pampakuda",
+    "area": "29.24km",
+    "localbody_code": "G071204",
+    "no_of_wards": 13,
+    "population": 16462,
+    "male": 8276,
+    "female": 8186,
+    "population_density": 563,
+    "sex_ratio": 989,
+    "literacy_rate": 92.06,
+    "literacy_rate_male": 95,
+    "literacy_rate_female": 89.1,
+    "president": "O.NVIJAYAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANNATHOOR WEST",
+            "person": {
+                "id": "2015069400101",
+                "name": "JOHNSON VARGHESE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANNATHOOR NORTH",
+            "person": {
+                "id": "2015069400201",
+                "name": "LISSY REJI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANNATHOOR EAST",
+            "person": {
+                "id": "2015069400301",
+                "name": "RENJITH SIVARAMAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "OLIYAPPURAM NORTH",
+            "person": {
+                "id": "2015069400401",
+                "name": "PUSHPALATHA RAJU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "OLIYAPPURAM WEST",
+            "person": {
+                "id": "2015069400501",
+                "name": "O.N VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "OLIYAPPURAM EAST",
+            "person": {
+                "id": "2015069400601",
+                "name": "MERCY GEORGE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "OLIYAPPURAM SOUTH",
+            "person": {
+                "id": "2015069400701",
+                "name": "PRASANTH PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THIRUMARADY NORTH",
+            "person": {
+                "id": "2015069400801",
+                "name": "MAYA K.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THIRUMARADY EAST",
+            "person": {
+                "id": "2015069400901",
+                "name": "REMA MURALEEDHARA KAIMAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THIRUMARADY WEST",
+            "person": {
+                "id": "2015069401001",
+                "name": "LISSY RAJAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUMARADY SOUTH",
+            "person": {
+                "id": "2015069401101",
+                "name": "K.R PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAKKOOR SOUTH",
+            "person": {
+                "id": "2015069401201",
+                "name": "SMITHA BAIJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAKKOOR NORTH",
+            "person": {
+                "id": "2015069401301",
+                "name": "SAJU JOHN"
+            }
+        }
+    ]
+}

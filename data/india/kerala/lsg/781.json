@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348084358,
+    "date": "2019-08-21",
+    "name": "Poomangalam  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Vellangallur",
+    "area": "1094km",
+    "localbody_code": "G081302",
+    "no_of_wards": 13,
+    "population": 11504,
+    "male": 5346,
+    "female": 6158,
+    "population_density": 1052,
+    "sex_ratio": 1151,
+    "literacy_rate": 92.09,
+    "literacy_rate_male": 95.86,
+    "literacy_rate_female": 88.89,
+    "president": "VARSHARAJESH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHELOOKAVU",
+            "person": {
+                "id": "2015078100101",
+                "name": "KAVITHA  SURESH"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SHANMUGHAM CANAL",
+            "person": {
+                "id": "2015078100201",
+                "name": "LEELA PENGANKUTTY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "S.N. NAGAR",
+            "person": {
+                "id": "2015078100301",
+                "name": "SHEELA BABU RAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "EDAKULAM",
+            "person": {
+                "id": "2015078100401",
+                "name": "VARSHA RAJESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THOPPU",
+            "person": {
+                "id": "2015078100501",
+                "name": "E.R. VINOD"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PATHIYAMKULANGARA",
+            "person": {
+                "id": "2015078100601",
+                "name": "JOYSON UKKEN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALPARAMBA NORTH",
+            "person": {
+                "id": "2015078100701",
+                "name": "LEENA P.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "POOMANGALAM",
+            "person": {
+                "id": "2015078100801",
+                "name": "INASU PALLISSERY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALPARAMBA  CENTRE",
+            "person": {
+                "id": "2015078100901",
+                "name": "P.K. SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARIPALAM",
+            "person": {
+                "id": "2015078101001",
+                "name": "KATHREENA GOERGE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PAYAMMAL",
+            "person": {
+                "id": "2015078101101",
+                "name": "NATARAJAN .A. N"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NETTIYADU",
+            "person": {
+                "id": "2015078101201",
+                "name": "SINDHU GOPAKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUTTATHERI",
+            "person": {
+                "id": "2015078101301",
+                "name": "MINI SIVADASAN"
+            }
+        }
+    ]
+}
