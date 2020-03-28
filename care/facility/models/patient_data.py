@@ -1,4 +1,4 @@
-import datetime
+from types import SimpleNamespace
 
 from django.db import models
 from multiselectfield import MultiSelectField
@@ -16,8 +16,21 @@ MEDICAL_HISTORY_CHOICES = [
 
 SYMPTOM_CHOICES = [(1, "NO"), (2, "FEVER"), (3, "SORE THROAT"), (4, "COUGH"), (5, "BREATHLESSNESS")]
 
-SAMPLE_TEST_RESULT_MAP = {"Positive": 1, "Negative": 2, "Awaiting": 3}
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
+
+SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
 SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
+
+SAMPLE_TEST_FLOW_MAP = {
+    "REQUEST_SUBMITTED": 1,
+    "APPROVED": 2,
+    "DENIED": 3,
+    "SENT_TO_COLLECTON_CENTRE": 4,
+    "RECEIVED_AND_FORWARED": 5,
+    "RECEIVED_AT_LAB": 6,
+    "COMPLETED": 7,
+}
+SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
 
 
 class PatientRegistration(models.Model):
@@ -58,6 +71,46 @@ class PatientTeleConsultation(models.Model):
 class PatientSample(FacilityBaseModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
-    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["Awaiting"])
-    date_of_sample = models.DateTimeField(default=datetime.datetime.now)
+
+    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
+    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
+
+    date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
+
+
+# class PatientSampleFlow(FacilityBaseModel):
+#     patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
+#     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES)
+#     notes = models.CharField(max_length=255)
+#     created_by = models.ForeignKey(User, on_delete=models.SET_NULL)
+
+
+class PatientConsultation(models.Model):
+    SUGGESTION_CHOICES = [
+        (SuggestionChoices.HI, "HOME ISOLATION"),
+        (SuggestionChoices.A, "ADMISSION"),
+        (SuggestionChoices.R, "REFERRAL"),
+    ]
+
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
+    referred_to = models.ForeignKey(
+        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients"
+    )
+    admitted = models.BooleanField(default=False)
+    admission_date = models.DateTimeField(null=True, blank=True)
+    discharge_date = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="if_referral_suggested",
+                check=~models.Q(suggestion=SuggestionChoices.R) | models.Q(referred_to__isnull=False),
+            ),
+            models.CheckConstraint(
+                name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+            ),
+        ]

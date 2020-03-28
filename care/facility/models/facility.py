@@ -40,7 +40,14 @@ ROOM_TYPES = [
     (20, "Ventilator"),
 ]
 
-FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
+FACILITY_TYPES = [
+    (1, "Educational Inst"),
+    (2, "Hospital"),
+    (3, "Other"),
+    (4, "Hostel"),
+    (5, "Hotel"),
+    (6, "Lodge"),
+]
 
 DOCTOR_TYPES = [
     (1, "General Medicine"),
@@ -68,9 +75,13 @@ class Facility(FacilityBaseModel):
     address = models.TextField()
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     oxygen_capacity = models.IntegerField(default=0)
-    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, blank=True, validators=[phone_number_regex]
+    )
     corona_testing = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     class Meta:
         verbose_name_plural = "Facilities"
@@ -94,15 +105,22 @@ class FacilityLocalGovtBody(models.Model):
     But in other cases, and in cases of incomplete data, we will only have information till a district level
     """
 
-    facility = models.OneToOneField(Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL)
-    local_body = models.ForeignKey(LocalBody, null=True, blank=True, on_delete=models.SET_NULL)
-    district = models.ForeignKey(District, null=True, blank=True, on_delete=models.SET_NULL)
+    facility = models.OneToOneField(
+        Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    local_body = models.ForeignKey(
+        LocalBody, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    district = models.ForeignKey(
+        District, null=True, blank=True, on_delete=models.SET_NULL
+    )
 
     class Meta:
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False) | models.Q(district__isnull=False),
+                check=models.Q(local_body__isnull=False)
+                | models.Q(district__isnull=False),
             )
         ]
 
@@ -124,7 +142,9 @@ class FacilityLocalGovtBody(models.Model):
 
 
 class HospitalDoctors(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
 
@@ -132,21 +152,33 @@ class HospitalDoctors(FacilityBaseModel):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
+        indexes = [
+            PartialIndex(
+                fields=["facility", "area"], unique=True, where=PQ(deleted=False)
+            )
+        ]
 
 
 class FacilityCapacity(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+        indexes = [
+            PartialIndex(
+                fields=["facility", "room_type"], unique=True, where=PQ(deleted=False)
+            )
+        ]
 
 
 class FacilityStaff(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
@@ -154,8 +186,12 @@ class FacilityStaff(FacilityBaseModel):
 
 
 class FacilityVolunteer(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
-    volunteer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
+    volunteer = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=False, blank=False
+    )
 
     def __str__(self):
         return str(self.volunteer) + " for facility " + str(self.facility)
@@ -168,10 +204,15 @@ class FacilityVolunteer(FacilityBaseModel):
 
 
 class Building(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     num_floors = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+    num_buildings = models.IntegerField(
+        validators=[MinValueValidator(0)], default=0
+    )  # For Internal Use only
 
     def __str__(self):
         return self.name + " under " + str(self.facility)
@@ -184,7 +225,9 @@ class Building(FacilityBaseModel):
 
 
 class Room(FacilityBaseModel):
-    building = models.ForeignKey("Building", on_delete=models.CASCADE, null=False, blank=False)
+    building = models.ForeignKey(
+        "Building", on_delete=models.CASCADE, null=False, blank=False
+    )
     num = models.CharField(max_length=1000)
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     beds_capacity = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -215,16 +258,32 @@ class InventoryItem(FacilityBaseModel):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name + " with unit " + self.unit + " with minimum stock " + str(self.minimum_stock)
+        return (
+            self.name
+            + " with unit "
+            + self.unit
+            + " with minimum stock "
+            + str(self.minimum_stock)
+        )
 
 
 class Inventory(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     quantitiy = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
     def __str__(self):
-        return self.item.name + " : " + str(self.quantitiy) + " " + self.item.unit + " in " + str(self.facility)
+        return (
+            self.item.name
+            + " : "
+            + str(self.quantitiy)
+            + " "
+            + self.item.unit
+            + " in "
+            + str(self.facility)
+        )
 
     class Meta:
         verbose_name_plural = "Inventories"
@@ -232,7 +291,9 @@ class Inventory(FacilityBaseModel):
 
 class InventoryLog(FacilityBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
-    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     prev_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     new_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
@@ -260,24 +321,40 @@ class Ambulance(FacilityBaseModel):
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
+    vehicle_number = models.CharField(
+        max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True
+    )
 
     owner_name = models.CharField(max_length=255)
-    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    owner_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex]
+    )
     owner_is_smart_phone = models.BooleanField(default=True)
 
     primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    secondary_district = models.IntegerField(
+        choices=DISTRICT_CHOICES, blank=True, null=True
+    )
+    third_district = models.IntegerField(
+        choices=DISTRICT_CHOICES, blank=True, null=True
+    )
 
     primary_district_obj = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
     secondary_district_obj = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
+        District,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name="secondary_ambulances",
     )
     third_district_obj = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
+        District,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name="third_ambulances",
     )
 
     has_oxygen = models.BooleanField()
@@ -287,11 +364,15 @@ class Ambulance(FacilityBaseModel):
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
 
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
+    ambulance_type = models.IntegerField(
+        choices=AMBULANCE_TYPES, blank=False, default=1
+    )
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     has_free_service = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     @property
     def drivers(self):
@@ -304,7 +385,8 @@ class Ambulance(FacilityBaseModel):
         constraints = [
             models.CheckConstraint(
                 name="ambulance_free_or_price",
-                check=models.Q(price_per_km__isnull=False) | models.Q(has_free_service=True),
+                check=models.Q(price_per_km__isnull=False)
+                | models.Q(has_free_service=True),
             )
         ]
 

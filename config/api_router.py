@@ -3,14 +3,12 @@ from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.facility.api.viewsets.ambulance import (
-    AmbulanceCreateViewSet,
-    AmbulanceViewSet,
-)
+from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
 from care.facility.api.viewsets.facility import FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import PatientViewSet
+from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
@@ -36,6 +34,7 @@ router.register("local_body", LocalBodyViewSet)
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
 facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
+facility_nested_router.register(r"consultation", PatientConsultationViewSet)
 
 app_name = "api"
 urlpatterns = [
