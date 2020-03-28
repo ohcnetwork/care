@@ -23,7 +23,6 @@ router.register("facility", FacilityViewSet)
 router.register("ambulance", AmbulanceViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("patient", PatientViewSet)
-router.register("patient_sample", PatientSampleViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
@@ -37,8 +36,12 @@ facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)
 facility_nested_router.register(r"consultation", PatientConsultationViewSet)
 
+patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
+patient_nested_router.register(r"test_sample", PatientSampleViewSet)
+
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
     url(r"^", include(facility_nested_router.urls)),
+    url(r"^", include(patient_nested_router.urls)),
 ]

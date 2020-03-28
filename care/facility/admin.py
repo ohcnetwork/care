@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from care.facility.models.patient_sample import PatientSample
+
 from .models import (
     Ambulance,
     AmbulanceDriver,
@@ -12,7 +14,6 @@ from .models import (
     InventoryItem,
     InventoryLog,
     PatientRegistration,
-    PatientSample,
     PatientTeleConsultation,
     Room,
     StaffRoomAllocation,

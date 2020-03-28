@@ -1,4 +1,6 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -17,9 +19,13 @@ class PatientSampleFilterSet(filters.FilterSet):
 class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
     queryset = PatientSample.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientSampleFilterSet
+    http_method_names = ["get", "post", "patch", "delete"]
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
@@ -37,5 +43,22 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         """
         return super(PatientSampleViewSet, self).list(request, *args, **kwargs)
 
-    def partial_update(self, request, *args, **kwargs):
-        pass
+    def perform_create(self, serializer):
+        validated_data = serializer.validated_data
+        notes = validated_data.pop("notes", "create")
+        with transaction.atomic():
+            instance = self.get_serializer_class().create(validated_data)
+            instance.patientsampleflow_set.create(
+                status=validated_data["status"], notes=notes, created_by=self.request.user
+            )
+            return instance
+
+    def perform_update(self, serializer):
+        validated_data = serializer.validated_data
+        notes = validated_data.pop("notes", "create")
+        with transaction.atomic():
+            instance = self.get_serializer_class().update(serializer.instancce, validated_data)
+            instance.patientsampleflow_set.create(
+                status=validated_data["status"], notes=notes, created_by=self.request.user
+            )
+            return instance
