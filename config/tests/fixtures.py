@@ -23,3 +23,16 @@ def district_data():
     s = State.objects.create(id=1, name="KL")
     for id, name in DISTRICT_CHOICES:
         District.objects.create(id=id, name=name, state=s)
+
+
+@pytest.fixture()
+def facility_data():
+    return {
+        "name": "Foo",
+        "district": 13,
+        "facility_type": 1,
+        "address": "8/88, 1st Cross, 1st Main, Boo Layout",
+        "location": {"latitude": 49.878248, "longitude": 24.452545},
+        "oxygen_capacity": 10,
+        "phone_number": "9998887776",
+    }
