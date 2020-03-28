@@ -39,6 +39,8 @@ class SignupView(View):
         if form.is_valid():
             user_obj = form.save(commit=False)
             user_obj.user_type = kwargs["type"]
+            if user_obj.user_type == 30:
+                return HttpResponseRedirect("/500")
             user_obj.save()
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password1")
