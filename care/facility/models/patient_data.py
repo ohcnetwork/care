@@ -68,6 +68,7 @@ class PatientConsultation(models.Model):
     admitted = models.BooleanField(default=False)
     admission_date = models.DateTimeField(null=True)
     discharge_date = models.DateTimeField(null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         constraints = [
