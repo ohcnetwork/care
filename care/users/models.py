@@ -91,12 +91,7 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-    TYPE_VALUE_MAP = {
-        "Doctor": 5,
-        "Staff": 10,
-        "Patient": 15,
-        "Volunteer": 20,
-    }
+    TYPE_VALUE_MAP = {"Doctor": 5, "Staff": 10, "Patient": 15, "Volunteer": 20, "DistrictAdmin": 30}
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
