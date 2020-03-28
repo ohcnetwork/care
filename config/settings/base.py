@@ -82,7 +82,7 @@ THIRD_PARTY_APPS = [
     "drf_extra_fields",
     "location_field.apps.DefaultConfig",
     "django_filters",
-    "axes",
+    # "axes", Commented out to suppress warnings - Add this back when Axes is needed.
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
