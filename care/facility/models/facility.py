@@ -40,7 +40,14 @@ ROOM_TYPES = [
     (20, "Ventilator"),
 ]
 
-FACILITY_TYPES = [(1, "Educational Inst"), (2, "Hospital"), (3, "Other")]
+FACILITY_TYPES = [
+    (1, "Educational Inst"),
+    (2, "Hospital"),
+    (3, "Other"),
+    (4, "Hostel"),
+    (5, "Hotel"),
+    (6, "Lodge"),
+]
 
 DOCTOR_TYPES = [
     (1, "General Medicine"),
