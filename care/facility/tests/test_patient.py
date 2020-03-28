@@ -2,7 +2,7 @@
 
 import pytest
 
-from care.facility.models import PatientRegistration
+from care.facility.models import Disease, PatientRegistration
 
 
 @pytest.fixture()
@@ -13,15 +13,17 @@ def patient_data():
         "gender": 1,
         "phone_number": "9998887776",
         "contact_with_carrier": True,
-        "medical_history": {1},
+        "medical_history": [{"disease": 1, "details": "Quite bad"}],
     }
 
 
 @pytest.fixture()
 def patient():
-    return PatientRegistration.objects.create(
-        name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False, medical_history="2,4"
+    patient = PatientRegistration.objects.create(
+        name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False
     )
+    disease = Disease.objects.create(disease=1, details="Quite bad", patient=patient)
+    return patient
 
 
 @pytest.mark.django_db(transaction=True)
@@ -33,27 +35,26 @@ class TestPatient:
     def test_create(self, client, user, patient_data):
         client.force_authenticate(user=user)
         response = client.post("/api/v1/patient/", patient_data,)
-
         assert response.status_code == 201
-        response.data.pop("id")
-        assert response.data == {
+        response = response.json()
+        response.pop("id")
+        assert response == {
             **patient_data,
-            "medical_history_details": None,
+            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "is_active": True,
             "last_consultation": None,
         }
 
-        assert PatientRegistration.objects.get(
+        patient = PatientRegistration.objects.get(
             name=patient_data["name"],
             age=patient_data["age"],
             gender=patient_data["gender"],
             phone_number=patient_data["phone_number"],
             contact_with_carrier=patient_data["contact_with_carrier"],
-            medical_history=patient_data["medical_history"],
-            medical_history_details=None,
             created_by=user,
             is_active=True,
         )
+        assert Disease.objects.get(patient=patient, **patient_data["medical_history"][0])
 
     def test_retrieve(self, client, user, patient):
         client.force_authenticate(user=user)
@@ -61,15 +62,14 @@ class TestPatient:
         patient.save()
         response = client.get(f"/api/v1/patient/{patient.id}/")
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "id": patient.id,
             "name": patient.name,
             "age": patient.age,
             "gender": patient.gender,
             "phone_number": patient.phone_number,
             "contact_with_carrier": patient.contact_with_carrier,
-            "medical_history": {2, 4},
-            "medical_history_details": patient.medical_history_details,
+            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
@@ -91,8 +91,7 @@ class TestPatient:
             "gender": patient.gender,
             "phone_number": patient.phone_number,
             "contact_with_carrier": patient.contact_with_carrier,
-            "medical_history": {2, 4},
-            "medical_history_details": patient.medical_history_details,
+            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
@@ -112,20 +111,21 @@ class TestPatient:
                 "gender": patient.gender,
                 "phone_number": new_phone_number,
                 "contact_with_carrier": patient.contact_with_carrier,
-                "medical_history": {2, 4},
-                "medical_history_details": patient.medical_history_details,
+                "medical_history": [{"disease": 4, "details": "Mild"}],
             },
         )
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "id": patient.id,
             "name": patient.name,
             "age": patient.age,
             "gender": patient.gender,
             "phone_number": new_phone_number,
             "contact_with_carrier": patient.contact_with_carrier,
-            "medical_history": {2, 4},
-            "medical_history_details": patient.medical_history_details,
+            "medical_history": [
+                {"disease": "NO", "details": "Quite bad"},
+                {"disease": "HyperTension", "details": "Mild"},
+            ],
             "is_active": True,
             "last_consultation": None,
         }
@@ -148,7 +148,7 @@ class TestPatient:
         patient.save()
         response = client.get(f"/api/v1/patient/")
         assert response.status_code == 200
-        assert response.data == {
+        assert response.json() == {
             "count": 1,
             "next": None,
             "previous": None,
@@ -160,8 +160,7 @@ class TestPatient:
                     "gender": patient.gender,
                     "phone_number": patient.phone_number,
                     "contact_with_carrier": patient.contact_with_carrier,
-                    "medical_history": {2, 4},
-                    "medical_history_details": patient.medical_history_details,
+                    "medical_history": [{"disease": "NO", "details": "Quite bad"}],
                     "is_active": True,
                     "last_consultation": None,
                 },
