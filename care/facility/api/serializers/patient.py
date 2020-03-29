@@ -34,12 +34,18 @@ class PatientListSerializer(serializers.ModelSerializer):
         exclude = ("created_by", "deleted")
 
 
-class PatientSerializer(PatientListSerializer):
+class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
+    class PatientTeleConsultationSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = PatientTeleConsultation
+            fields = "__all__"
+
     medical_history = MedicalHistorySerializer(many=True, required=False)
+    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField()
 
     def get_last_consultation(self, obj):
@@ -70,16 +76,6 @@ class PatientSerializer(PatientListSerializer):
             for disease in medical_history:
                 patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
             return patient
-
-
-class PatientTeleConsultationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PatientTeleConsultation
-        fields = "__all__"
-
-
-class PatientDetailSerializer(PatientSerializer):
-    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
 
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):

@@ -45,6 +45,7 @@ class TestPatient:
         assert response == {
             **patient_data,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
+            "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
             "local_body": mock_equal,
@@ -146,6 +147,7 @@ class TestPatient:
                 {"disease": "NO", "details": "Quite bad"},
                 {"disease": "HyperTension", "details": "Mild"},
             ],
+            "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
             "local_body": None,

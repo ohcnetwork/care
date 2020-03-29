@@ -10,7 +10,6 @@ from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
-    PatientSerializer,
 )
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientConsultation, PatientRegistration
@@ -23,15 +22,13 @@ class PatientFilterSet(filters.FilterSet):
 class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
-    serializer_class = PatientSerializer
+    serializer_class = PatientDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientFilterSet
 
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
-        if self.action == "retrieve":
-            return PatientDetailSerializer
         elif self.action == "history":
             return PatientConsultationSerializer
         else:
