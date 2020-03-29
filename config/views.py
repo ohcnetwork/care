@@ -1,7 +1,9 @@
-from django.shortcuts import render
 import logging
+
+from django.views.generic import TemplateView
+
 
 def home_view(request):
     logging.basicConfig(level=logging.INFO)
     logging.info(request.META)
-    return render(request, "pages/home.html")
+    return TemplateView.as_view(template_name="pages/home.html")
