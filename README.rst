@@ -43,7 +43,9 @@ Git hooks is a feature which helps to fix small issues in your code before you c
 Pre-Commit is a package manager and tool for running and organising your git hooks. More here at pre_commit_site_.
 
 * Install pre-commit
-    pre-commit is installed while you run `pip install -r requirements/local.txt`
+    pre-commit is installed while you run::
+
+     pip install -r requirements/local.txt
 
 * Setup
     this installs all the git-hooks ::
