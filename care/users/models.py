@@ -41,7 +41,7 @@ class District(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name} - {self.state.name}"
+        return f"{self.name}"
 
 
 LOCAL_BODY_CHOICES = (
@@ -73,7 +73,7 @@ class LocalBody(models.Model):
         )
 
     def __str__(self):
-        return f"{self.name} ({self.body_type}) / {self.district}"
+        return f"{self.name} ({self.body_type}) "
 
 
 class CustomUserManager(UserManager):
@@ -104,8 +104,11 @@ class User(AbstractUser):
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
-    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+    state = models.ForeignKey(State, on_delete=models.PROTECT, null=True)
+
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])

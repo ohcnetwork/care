@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.users.api.serializers.user import UserSerializer
+from care.users.api.serializers.user import UserPartialSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -31,9 +31,17 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return self.queryset.filter(id=self.request.user.id)
 
+    def get_serializer_class(self):
+        if (
+            self.request.user.is_superuser
+            or self.kwargs.get("username") == self.request.user.username  # Fetching self
+            or not self.request.method == "GET"
+        ):
+            return self.serializer_class
+        return UserPartialSerializer
+
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK,
-            data=self.serializer_class(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK, data=self.serializer_class(request.user, context={"request": request}).data,
         )

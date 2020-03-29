@@ -9,31 +9,29 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('facility', '0033_ambulance_service_charge'),
+        ("facility", "0033_ambulance_service_charge"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='ambulance',
-            name='service_charge',
+        migrations.RemoveField(model_name="ambulance", name="service_charge",),
+        migrations.AddField(
+            model_name="ambulance",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='ambulance',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='ambulance',
-            name='has_free_service',
+            model_name="ambulance",
+            name="has_free_service",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='ambulance',
-            name='price_per_km',
+            model_name="ambulance",
+            name="price_per_km",
             field=models.DecimalField(decimal_places=2, max_digits=7, null=True),
-        ),
-        migrations.AddConstraint(
-            model_name='ambulance',
-            constraint=models.CheckConstraint(check=models.Q(('price_per_km__isnull', False), ('has_free_service', True), _connector='OR'), name='ambulance_free_or_price'),
         ),
     ]
