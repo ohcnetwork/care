@@ -31,25 +31,31 @@ Setting up postgres for the first time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 After installation of Postgresql
 
-Run
+Run::
 
-`sudo psql -U postgres`
+    sudo psql -U postgres
 
-If you see error
+If you see error::
 
-FATAL: Peer authentication failed for user "postgres"FATAL: Peer authentication failed for user "postgres"
+    FATAL: Peer authentication failed for user "postgres"FATAL: Peer authentication failed for user "postgres"
 
 Do the following steps to set up password authentication.
 
-`sudo -u postgres psql`
+::
 
-In the postgres# shell type `\\password postgres` to change the password
+    sudo -u postgres psql
 
-Exit psql
+In the `postgres#` shell type:: 
 
-`\\q`
+\password postgres
 
-Edit `/etc/postgresql/9.6/main/pg_hba.conf` and change:
+to change the password
+
+Exit psql::
+
+    \q
+
+Edit `/etc/postgresql/<postgres-version>/main/pg_hba.conf` and change:
 
 ::
 
@@ -60,9 +66,9 @@ To::
 
  local    all        postgres                               md5
 
-Restart postgresql
+Restart postgresql::
 
- `sudo service postgresql restart`
+ sudo service postgresql restart
 
 
 Login to the postgres shell and run:
@@ -72,6 +78,8 @@ Login to the postgres shell and run:
  CREATE DATABASE care;
  GRANT ALL PRIVILEGES ON DATABASE care TO postgres;
  \q;
+
+You may replace `care` with the database name of your preference
 
 You also might have to install PostGIS scripts.
 
@@ -134,30 +142,34 @@ For convenience, you can keep your normal user logged in on Chrome and your supe
 If the command prompts for username only and after entering if it goes to error
 do make sure that you have done the following 
 
-Note: Make sure that you have created a database named `care` with privileges set for the user `postgres`
+Note: Make sure that you have created a database named `care` (replace thisw with your database name)  with privileges set for the user `postgres`
 
-In the virtualenv shell type the following commands also.
+In the virtualenv shell type the following commands also::
 
-`export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/care`
+ export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/care
 
-`export TEST_POSTGIS_URL="postgis://postgres:<password>@127.0.0.1:5432/care"`
+ export TEST_POSTGIS_URL="postgis://postgres:<password>@127.0.0.1:5432/care"
 
-`python manage.py migrate`
+You may replace 'care' with the database you have created before.
+
+After doing this you can type the following command::
+
+    $ python manage.py migrate
 
 and after you make sure everything is ok
 
-run this command again
+run this command again::
 
-`python manage.py createsuperuser`
+$ python manage.py createsuperuser
 
 This will now prompt for the following details - Ignore any warnings.
 
 - username: give the username here
-- usertype:Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
+- usertype: Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
 - gender: 1 for male, 2 for female, 3 for other
-- email: give e-mailid
-- phonenumber
-- password
+- email: give e-mail id
+- phonenumber: give your ten digit phone number here
+- password: Give the password here
 
 Type checks
 ^^^^^^^^^^^
