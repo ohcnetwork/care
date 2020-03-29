@@ -1,9 +1,9 @@
-
 from ratelimit.utils import is_ratelimited
 
 from django.conf import settings
 
 import requests
+
 
 def validatecaptcha(request):
     recaptcha_response = request.POST.get(settings.GOOGLE_CAPTCHA_POST_KEY)
@@ -20,11 +20,11 @@ def validatecaptcha(request):
         return True
     return False
 
-def ratelimit(request ,group = "" , keys=[None] , increment = True):
 
+def ratelimit(request, group="", keys=[None], increment=True):
     checkcaptcha = False
     for key in keys:
-        if(key == 'ip'):
+        if key == 'ip':
             group = group
             key = 'ip'
         else:
@@ -38,11 +38,11 @@ def ratelimit(request ,group = "" , keys=[None] , increment = True):
             increment=True,
         ):
             checkcaptcha = True
-    
-    if(checkcaptcha):
-        if(validatecaptcha(request) == False):
+
+    if checkcaptcha:
+        if not validatecaptcha(request):
             return True
         else:
             return False
-    
+
     return False
