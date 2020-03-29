@@ -1,5 +1,8 @@
+import datetime
+
 from django.db import transaction
 from django.db.models.query_utils import Q
+from django.utils.timezone import make_aware
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import viewsets
@@ -38,6 +41,17 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
     filterset_class = PatientSampleFilterSet
     http_method_names = ["get", "post", "patch", "delete"]
 
+    def get_serializer(self, *args, **kwargs):
+        """
+        Injects the patient data to serializer
+        """
+        try:
+            kwargs["data"]["patient"] = self.kwargs["patient_pk"]
+        except KeyError:
+            # In read serializers, "data" will not be present.
+            pass
+        return super().get_serializer(*args, **kwargs)
+
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.action == "retrieve":
@@ -58,18 +72,19 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         validated_data = serializer.validated_data
         notes = validated_data.pop("notes", "create")
         with transaction.atomic():
-            instance = self.get_serializer_class().create(validated_data)
-            instance.patientsampleflow_set.create(
-                status=validated_data["status"], notes=notes, created_by=self.request.user
-            )
+            instance = serializer.create(validated_data)
+            instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)
             return instance
 
     def perform_update(self, serializer):
         validated_data = serializer.validated_data
-        notes = validated_data.pop("notes", "create")
+        notes = validated_data.pop("notes", f"updated by {self.request.user.get_username()}")
         with transaction.atomic():
-            instance = self.get_serializer_class().update(serializer.instancce, validated_data)
-            instance.patientsampleflow_set.create(
-                status=validated_data["status"], notes=notes, created_by=self.request.user
-            )
+            if validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"]:
+                validated_data["date_of_sample"] = make_aware(datetime.datetime.now())
+            elif validated_data.get("result") is not None:
+                validated_data["date_of_result"] = make_aware(datetime.datetime.now())
+                validated_data["status"] = PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
+            instance = serializer.update(serializer.instance, validated_data)
+            instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)
             return instance
