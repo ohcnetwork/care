@@ -101,6 +101,7 @@ class TestPatient:
         user.is_superuser = True
         user.save()
         response = client.get(f"/api/v1/patient/{patient.id}/")
+
         assert response.status_code == 200
         assert response.data == {
             "id": patient.id,
@@ -114,12 +115,12 @@ class TestPatient:
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
-            "local_body": mock_equal,
-            "local_body_object": mock_equal,
-            "district": mock_equal,
-            "district_object": mock_equal,
-            "state": mock_equal,
-            "state_object": mock_equal,
+            "local_body": None,
+            "local_body_object": None,
+            "district": None,
+            "district_object": None,
+            "state": None,
+            "state_object": None,
         }
 
     def test_update(self, client, user, patient):
@@ -190,15 +191,13 @@ class TestPatient:
                     "age": patient.age,
                     "gender": patient.gender,
                     "contact_with_carrier": patient.contact_with_carrier,
-                    "medical_history": [{"disease": "NO", "details": "Quite bad"}],
                     "is_active": True,
-                    "last_consultation": None,
-                    "local_body": mock_equal,
-                    "local_body_object": mock_equal,
-                    "district": mock_equal,
-                    "district_object": mock_equal,
-                    "state": mock_equal,
-                    "state_object": mock_equal,
+                    "local_body": None,
+                    "local_body_object": None,
+                    "district": None,
+                    "district_object": None,
+                    "state": None,
+                    "state_object": None,
                 },
             ],
         }
