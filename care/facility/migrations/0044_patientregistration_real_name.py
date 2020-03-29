@@ -9,7 +9,7 @@ def populate_real_names(apps, *args):
 
     patients = Patient.objects.all()
     # check to be done, else may cause issues for new people or during migration revert
-    if hasattr(patients[0], "real_name"):
+    if patients and hasattr(patients[0], "real_name"):
         for p in patients:
             p.real_name = p.name
             p.save()
