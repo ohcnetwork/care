@@ -7,17 +7,18 @@
 
 
 {% block content %}
-<h1 class="text-2xl font-bold text-center my-4">{% trans " The Chief Ministers's office requests to know Live Data" %}</h1>
+<h1 class="text-2xl font-bold text-center my-4">{% trans " The Chief Ministers's office requests to know Live Data" %}
+</h1>
 {% for i in data  %}
 <div class="shadow-lg rounded overflow-hidden w-full p-3 my-4">
-    <a href="{% url 'facility:facility-view' pk=i.id %}">
-        <span class="hospital-title block text-4xl text-center">{{i.name}}</span>
-        <h1 class="text-gray-700">Address : {{i.address}}</h1>
-        <h1 class="text-gray-700">Phone : {{i.phone_number}}</h1>
-        <h1 class="text-gray-700">District : {{i.get_district_display}}</h1>
-        <button type="button" class="mx-auto careblock mt-4 btn btn-primary">View & Edit Details</button>
+  <a href="{% url 'facility:facility-view' pk=i.id %}">
+    <span class="hospital-title block text-4xl text-center">{{i.name}}</span>
+    <h1 class="text-gray-700">Address : {{i.address}}</h1>
+    <h1 class="text-gray-700">Phone : {{i.phone_number}}</h1>
+    <h1 class="text-gray-700">District : {{i.district.name}}</h1>
+    <button type="button" class="mx-auto careblock mt-4 btn btn-primary">View & Edit Details</button>
 
-    </a>
+  </a>
 </div>
 {% endfor %}
 
