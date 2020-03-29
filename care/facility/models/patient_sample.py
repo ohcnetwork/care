@@ -19,7 +19,7 @@ class PatientSample(FacilityBaseModel):
     }
     SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
-    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
+    consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
