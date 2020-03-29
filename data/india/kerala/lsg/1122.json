@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566349314201,
+    "date": "2019-08-21",
+    "name": "Irikkur  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Irikkur",
+    "area": "11.22km",
+    "localbody_code": "G130402",
+    "no_of_wards": 13,
+    "population": 11879,
+    "male": 6179,
+    "female": 5700,
+    "population_density": 1059,
+    "sex_ratio": 922,
+    "literacy_rate": 84.85,
+    "literacy_rate_male": 93.11,
+    "literacy_rate_female": 75.71,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MODAKKAI",
+            "person": {
+                "id": "2015112200101",
+                "name": "ABDUL KADAR. K R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERUVALATHUPARAMBA",
+            "person": {
+                "id": "2015112200201",
+                "name": "AMBIKA. K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PAYASAYI",
+            "person": {
+                "id": "2015112200301",
+                "name": "ASHRAF. K R"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "SIDDIQUE NAGAR",
+            "person": {
+                "id": "2015112200401",
+                "name": "T P FATHIMA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KUNNUMMAL",
+            "person": {
+                "id": "2015112200501",
+                "name": "C V K. HALEEMA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PATTEEL",
+            "person": {
+                "id": "2015112200601",
+                "name": "YASARA. C V N"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATTUVAM",
+            "person": {
+                "id": "2015112200701",
+                "name": "K T. ANAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "NIDUVALLUR",
+            "person": {
+                "id": "2015112200801",
+                "name": "NASEEMA. P P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IRIKKUR TOWN",
+            "person": {
+                "id": "2015112200901",
+                "name": "SAFEERA. M"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NILAMUTTAM",
+            "person": {
+                "id": "2015112201001",
+                "name": "NASEER. K T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KULINHA",
+            "person": {
+                "id": "2015112201101",
+                "name": "M V. JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUTTAVU",
+            "person": {
+                "id": "2015112201201",
+                "name": "PRASANNA. M P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHEDICHERY",
+            "person": {
+                "id": "2015112201301",
+                "name": "P V. PREMALATHA"
+            }
+        }
+    ]
+}

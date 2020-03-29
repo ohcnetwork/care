@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347373694,
+    "date": "2019-08-21",
+    "name": "Arakuzha  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Muvattupuzha",
+    "area": "29.31km",
+    "localbody_code": "G071402",
+    "no_of_wards": 13,
+    "population": 14934,
+    "male": 7482,
+    "female": 7452,
+    "population_density": 510,
+    "sex_ratio": 996,
+    "literacy_rate": 93.37,
+    "literacy_rate_male": 95.16,
+    "literacy_rate_female": 91.55,
+    "president": "KURIANVALLAMATTAMKUNJU",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PERINGUZHA",
+            "person": {
+                "id": "2015070500101",
+                "name": "OMANA MOHANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERUMBALLOOR",
+            "person": {
+                "id": "2015070500201",
+                "name": "JESSY SABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARAKUZHA",
+            "person": {
+                "id": "2015070500301",
+                "name": "SANDRA KENNEDY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KEEZHMADANGU",
+            "person": {
+                "id": "2015070500401",
+                "name": "SABU POTHOOR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MEMADANGU",
+            "person": {
+                "id": "2015070500501",
+                "name": "CELINE CHERIAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THOTTAKKARA",
+            "person": {
+                "id": "2015070500601",
+                "name": "KURIAN ( VALLAMATTAM KUNJU)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PANDAPPILLY",
+            "person": {
+                "id": "2015070500701",
+                "name": "GEORGE C H"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MULLAPPADI",
+            "person": {
+                "id": "2015070500801",
+                "name": "NIMMY PAULACHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PANDAPPILLY WEST",
+            "person": {
+                "id": "2015070500901",
+                "name": "SIBY KURIACKO"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "AROOR",
+            "person": {
+                "id": "2015070501001",
+                "name": "MERCY JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MEENKUNNAM",
+            "person": {
+                "id": "2015070501101",
+                "name": "RANI JAISON"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PERUMBALLOOR WEST",
+            "person": {
+                "id": "2015070501201",
+                "name": "MINI RAJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUTHUKALLU",
+            "person": {
+                "id": "2015070501301",
+                "name": "ANISH KARUNAKARAN"
+            }
+        }
+    ]
+}

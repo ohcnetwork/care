@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348553423,
+    "date": "2019-08-21",
+    "name": "Pandikkad  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "57.01km",
+    "localbody_code": "G100302",
+    "no_of_wards": 23,
+    "population": 40721,
+    "male": 20222,
+    "female": 20499,
+    "population_density": 714,
+    "sex_ratio": 1014,
+    "literacy_rate": 89.87,
+    "literacy_rate_male": 92.46,
+    "literacy_rate_female": 87.28,
+    "president": "AJITHA.N.T",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VETTIKKATTIRI",
+            "person": {
+                "id": "2015090700101",
+                "name": "FATHIMA.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANDAKAKUNNU",
+            "person": {
+                "id": "2015090700201",
+                "name": "MUHAMMED MUNSHAD"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KODASSERY VADAKKETHALA",
+            "person": {
+                "id": "2015090700301",
+                "name": "AJITHA .N.T"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MUKKATTA",
+            "person": {
+                "id": "2015090700401",
+                "name": "SUKANYA . P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THALAPPOLIPARAMB",
+            "person": {
+                "id": "2015090700501",
+                "name": "SUJATHA . K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEYYAMBADIKUTH",
+            "person": {
+                "id": "2015090700601",
+                "name": "V.ABDUL MAJEED"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHEMBRASSERY EAST",
+            "person": {
+                "id": "2015090700701",
+                "name": "SREEDEVI .T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ODOMPATTA",
+            "person": {
+                "id": "2015090700801",
+                "name": "BENASEER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VILANGAMPOYIL",
+            "person": {
+                "id": "2015090700901",
+                "name": "K . MOHAMMED"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "POOLAMANNA",
+            "person": {
+                "id": "2015090701001",
+                "name": "SANKARAN KORAMBAYIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PERUMBULLU",
+            "person": {
+                "id": "2015090701101",
+                "name": "GOPALAKRISHNAN . P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PUKKOOTH",
+            "person": {
+                "id": "2015090701201",
+                "name": "SAMEER BABU .T.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KIZHAKKE PANDIKKAD",
+            "person": {
+                "id": "2015090701301",
+                "name": "SARITHA . T"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PULIKKALAPARAMB",
+            "person": {
+                "id": "2015090701401",
+                "name": "FASEELA . P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VALARAD",
+            "person": {
+                "id": "2015090701501",
+                "name": "HARIDASAN . K"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KAKKULAM",
+            "person": {
+                "id": "2015090701601",
+                "name": "ROSHINA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PAYYAPARAMB",
+            "person": {
+                "id": "2015090701701",
+                "name": "BUSHRA .K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PANDIKKAD TOWN",
+            "person": {
+                "id": "2015090701801",
+                "name": "T.C FIROS KHAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "VALLIKKAPARAMB",
+            "person": {
+                "id": "2015090701901",
+                "name": "PREMALATHA . K.P"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THAMBANANGADI",
+            "person": {
+                "id": "2015090702001",
+                "name": "MOHAMMED SADAKATHULLA .K.K"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VALLUVANGAD",
+            "person": {
+                "id": "2015090702101",
+                "name": "ABDUL SAREEF"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THARIPPADI",
+            "person": {
+                "id": "2015090702201",
+                "name": "JAMSHINA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "PARAMBANPOOLA",
+            "person": {
+                "id": "2015090702301",
+                "name": "MUHAMMED ABDURAHIMAN"
+            }
+        }
+    ]
+}

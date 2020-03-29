@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566347421206,
+    "date": "2019-08-21",
+    "name": "Punnayur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chavakkad",
+    "area": "16.6km",
+    "localbody_code": "G080103",
+    "no_of_wards": 20,
+    "population": 30715,
+    "male": 14667,
+    "female": 16048,
+    "population_density": 1850,
+    "sex_ratio": 1094,
+    "literacy_rate": 84.4,
+    "literacy_rate_male": 89.92,
+    "literacy_rate_female": 79.52,
+    "president": "NAFEESAKUTTYVALIYAKATH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANNALAMKUNNU",
+            "person": {
+                "id": "2015071500101",
+                "name": "SEENATH ASHARAF"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EDAKKARA WEST",
+            "person": {
+                "id": "2015071500201",
+                "name": "BUSHARA KUNNAMBATH"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "EDAKKARA EAST",
+            "person": {
+                "id": "2015071500301",
+                "name": "SUDHEER. C.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADAKKE PUNNAYUR",
+            "person": {
+                "id": "2015071500401",
+                "name": "UMMER ARAKKAL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADAMPULLI",
+            "person": {
+                "id": "2015071500501",
+                "name": "SUHARA BACKER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THEKKE PUNNAYUR",
+            "person": {
+                "id": "2015071500601",
+                "name": "MUNASH MACHINGAL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AVIYUR",
+            "person": {
+                "id": "2015071500701",
+                "name": "R.P.BASHEER"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KURANJIYUR",
+            "person": {
+                "id": "2015071500801",
+                "name": "RAJENDRAN I.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAKKAZHIYUR NORTH",
+            "person": {
+                "id": "2015071500901",
+                "name": "NAFEESAKUTTY VALIYAKATH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAKKAZHIYUR WEST",
+            "person": {
+                "id": "2015071501001",
+                "name": "HASSAN. T.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAJAH COMPANY EDAKKAZHIYUR WEST",
+            "person": {
+                "id": "2015071501101",
+                "name": "SHAHARBAN NOWSHAD"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAKKAZHIYUR EAST",
+            "person": {
+                "id": "2015071501201",
+                "name": "SUMA VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANCHAVADI SOUTH",
+            "person": {
+                "id": "2015071501301",
+                "name": "SAMEENA ASHARAF"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "EDAKKAZHIYUR BEACH",
+            "person": {
+                "id": "2015071501401",
+                "name": "ASHARAF MOOTHEDATH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PANCHAVADI NORTH",
+            "person": {
+                "id": "2015071501501",
+                "name": "JISNA RANEESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "OTTAYINI",
+            "person": {
+                "id": "2015071501601",
+                "name": "ABDUL KAREEM K.V"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AKALAD SOUTH",
+            "person": {
+                "id": "2015071501701",
+                "name": "ASHA RAVI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MOONAYINI",
+            "person": {
+                "id": "2015071501801",
+                "name": "RAJESH M.B"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "BADERPALLI",
+            "person": {
+                "id": "2015071501901",
+                "name": "SIVANANDHAN PERUVAZHIPURATH"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MOONAYINI EAST",
+            "person": {
+                "id": "2015071502001",
+                "name": "SHAJITHA ASHARAF"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345302240,
+    "date": "2019-08-21",
+    "name": "Kozhikode  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kozhikode",
+    "area": "79.22km",
+    "localbody_code": "B111200",
+    "no_of_wards": 13,
+    "population": 256796,
+    "male": 126880,
+    "female": 129916,
+    "population_density": 3242,
+    "sex_ratio": 1024,
+    "literacy_rate": 92.06,
+    "literacy_rate_male": 96.26,
+    "literacy_rate_female": 88.02,
+    "president": "N.MANOJKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "IRINGALLUR",
+            "person": {
+                "id": "2015013600101",
+                "name": "USHA.P.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALAZHI",
+            "person": {
+                "id": "2015013600201",
+                "name": "HASEENA .A.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANTHEERANKAVU",
+            "person": {
+                "id": "2015013600301",
+                "name": "V .SREEJA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KODALNADAKAVU",
+            "person": {
+                "id": "2015013600401",
+                "name": "RAMANI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAKKADAVU",
+            "person": {
+                "id": "2015013600501",
+                "name": "VINEESH.P.G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "OLAVANNA",
+            "person": {
+                "id": "2015013600601",
+                "name": "N .MANOJKUMAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ODUMBRA",
+            "person": {
+                "id": "2015013600701",
+                "name": "RAMLA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHALIYAM",
+            "person": {
+                "id": "2015013600801",
+                "name": "SABOONA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VADAKKUMBAD",
+            "person": {
+                "id": "2015013600901",
+                "name": "SAILAJA .T.K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANNUR",
+            "person": {
+                "id": "2015013601001",
+                "name": "GIJITH.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADALUNDI",
+            "person": {
+                "id": "2015013601101",
+                "name": "DINESH BABU .A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VATTAPPARAMBA",
+            "person": {
+                "id": "2015013601201",
+                "name": "SATHEEDEVI. C.M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KADUKKABASAR",
+            "person": {
+                "id": "2015013601301",
+                "name": "IMBICHI KOYA"
+            }
+        }
+    ]
+}

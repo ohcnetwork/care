@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566346090016,
+    "date": "2019-08-21",
+    "name": "Perinad  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Chittumala",
+    "area": "24.92km",
+    "localbody_code": "G020701",
+    "no_of_wards": 20,
+    "population": 50398,
+    "male": 24835,
+    "female": 25563,
+    "population_density": 2022,
+    "sex_ratio": 1029,
+    "literacy_rate": 92.19,
+    "literacy_rate_male": 95.15,
+    "literacy_rate_female": 88.36,
+    "president": "L.ANIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VELLIMON WEST",
+            "person": {
+                "id": "2015034300101",
+                "name": "SHYNIMOL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VELLIMON",
+            "person": {
+                "id": "2015034300201",
+                "name": "G.VISWANATHAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELLIMON EAST",
+            "person": {
+                "id": "2015034300301",
+                "name": "SOMAVALLY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "STARCH",
+            "person": {
+                "id": "2015034300401",
+                "name": "SHEENA LOPEZ"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHERUMOODU",
+            "person": {
+                "id": "2015034300501",
+                "name": "SREEKUMARI.S"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NANTHIRICKAL",
+            "person": {
+                "id": "2015034300601",
+                "name": "MUHAMMAD JAFFI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHIRACKONAM",
+            "person": {
+                "id": "2015034300701",
+                "name": "BINDHU JAYARAJ"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KERALAPURAM",
+            "person": {
+                "id": "2015034300801",
+                "name": "B.JYOTHIRNIVAS"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAVATTOM EAST",
+            "person": {
+                "id": "2015034300901",
+                "name": "SREEDEVI.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KERALAPURAM WEST",
+            "person": {
+                "id": "2015034301001",
+                "name": "V.PRASANNAKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EDAVATTOM A",
+            "person": {
+                "id": "2015034301101",
+                "name": "RAJAN.V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VARATTUCHIRA",
+            "person": {
+                "id": "2015034301201",
+                "name": "KUMARI JAYA.A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "EDAVATTOM B",
+            "person": {
+                "id": "2015034301301",
+                "name": "SHYLAJA.N"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "I.T.I",
+            "person": {
+                "id": "2015034301401",
+                "name": "V.MANOJ"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHANDANATHOPE",
+            "person": {
+                "id": "2015034301501",
+                "name": "REMYA RAJAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KUZHIYAM",
+            "person": {
+                "id": "2015034301601",
+                "name": "V.UMESHCHANDRAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PERINAD H.S",
+            "person": {
+                "id": "2015034301701",
+                "name": "GEETHA.K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PERINAD",
+            "person": {
+                "id": "2015034301801",
+                "name": "LETUS JEROME"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHERUMOODU I.T",
+            "person": {
+                "id": "2015034301901",
+                "name": "L.ANIL"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "BLAVETH",
+            "person": {
+                "id": "2015034302001",
+                "name": "T.SURESH KUMAR"
+            }
+        }
+    ]
+}

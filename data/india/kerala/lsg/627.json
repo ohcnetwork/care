@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566347103269,
+    "date": "2019-08-21",
+    "name": "Vadakkekkara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Paravur",
+    "area": "9.32km",
+    "localbody_code": "G070104",
+    "no_of_wards": 20,
+    "population": 31266,
+    "male": 15004,
+    "female": 16262,
+    "population_density": 2779,
+    "sex_ratio": 1084,
+    "literacy_rate": 93.25,
+    "literacy_rate_male": 96.48,
+    "literacy_rate_female": 90.37,
+    "president": "AMBROSEKM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MALIANKARA NORTH",
+            "person": {
+                "id": "2015062700101",
+                "name": "KRISHNAKUMAR P T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTUVALLIKKAD WEST",
+            "person": {
+                "id": "2015062700201",
+                "name": "SEENA SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTUVALLIKKAD",
+            "person": {
+                "id": "2015062700301",
+                "name": "SIMLA E S"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THARAYILKAVALA",
+            "person": {
+                "id": "2015062700401",
+                "name": "SREEDEVI SANOJ"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MOOTHAKUNNAM",
+            "person": {
+                "id": "2015062700501",
+                "name": "DIPULAL V D"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MADAPLATHURUTH WEST",
+            "person": {
+                "id": "2015062700601",
+                "name": "HOCHMIN N C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MADAPLATHURUTH SOUTH",
+            "person": {
+                "id": "2015062700701",
+                "name": "VIJAYAKUMARI (VIJAYAMMA) P"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANDIPPILLIKKAVU",
+            "person": {
+                "id": "2015062700801",
+                "name": "RESHMA GOPI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MADAPLATHURUTH EAST",
+            "person": {
+                "id": "2015062700902",
+                "name": "JOSE T A"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THURUTHIPPURAM",
+            "person": {
+                "id": "2015062701001",
+                "name": "PRAKASAN K V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MURAVANTHURUTH",
+            "person": {
+                "id": "2015062701101",
+                "name": "JISHA K U"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ORAVANTHURUTH",
+            "person": {
+                "id": "2015062701201",
+                "name": "MERCY SANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KATTATHURUTH",
+            "person": {
+                "id": "2015062701301",
+                "name": "MADHULAL M D"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALIATHURUTH",
+            "person": {
+                "id": "2015062701401",
+                "name": "GIREESH K K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VAVAKKAD EAST",
+            "person": {
+                "id": "2015062701501",
+                "name": "REMYA RAJEEV"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VAVAKKAD",
+            "person": {
+                "id": "2015062701601",
+                "name": "AMBROSE K M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUNJITHAI EAST",
+            "person": {
+                "id": "2015062701701",
+                "name": "ANIL ELIYAS M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KUNJITHAI WEST",
+            "person": {
+                "id": "2015062701801",
+                "name": "BIJI C B"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CHETTIKKAD",
+            "person": {
+                "id": "2015062701901",
+                "name": "SHEEBA AJAN"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MALIANKARA SOUTH",
+            "person": {
+                "id": "2015062702001",
+                "name": "LAISA ANIL"
+            }
+        }
+    ]
+}

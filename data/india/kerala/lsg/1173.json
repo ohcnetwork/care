@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566349495238,
+    "date": "2019-08-21",
+    "name": "Muzhakkunnu  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Peravoor",
+    "area": "31.04km",
+    "localbody_code": "G131104",
+    "no_of_wards": 15,
+    "population": 19228,
+    "male": 9635,
+    "female": 9593,
+    "population_density": 619,
+    "sex_ratio": 996,
+    "literacy_rate": 89.66,
+    "literacy_rate_male": 94.6,
+    "literacy_rate_female": 84.74,
+    "president": "BABUJOSEPH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "OVVAPPALLY",
+            "person": {
+                "id": "2015117300101",
+                "name": "P.P.MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AYYAPPANKAVE",
+            "person": {
+                "id": "2015117300201",
+                "name": "K.V.RASHEED"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VILAKODE",
+            "person": {
+                "id": "2015117300301",
+                "name": "MINI.B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULLANHIYODE",
+            "person": {
+                "id": "2015117300401",
+                "name": "UMESAN.K.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PALA",
+            "person": {
+                "id": "2015117300501",
+                "name": "VINEETHA.M"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMPUNNA",
+            "person": {
+                "id": "2015117300601",
+                "name": "SAJEEVAN.K.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAKKAYANGAD",
+            "person": {
+                "id": "2015117300701",
+                "name": "PREETHA.G.O"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VATTAPOIL",
+            "person": {
+                "id": "2015117300801",
+                "name": "BABU JOSEPH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "GRAMAM",
+            "person": {
+                "id": "2015117300901",
+                "name": "T.V.SINI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUDAKOZHI",
+            "person": {
+                "id": "2015117301001",
+                "name": "SURENDRAN THACHOLI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KADUKKAPALAM",
+            "person": {
+                "id": "2015117301101",
+                "name": "RAVEENDRANATHAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MUZHAKKUNNU",
+            "person": {
+                "id": "2015117301201",
+                "name": "VANAJA.A"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NALLUR",
+            "person": {
+                "id": "2015117301301",
+                "name": "SHYLAJA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARAKANDAM",
+            "person": {
+                "id": "2015117301401",
+                "name": "MINI CHANDRAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KUNNATHUR",
+            "person": {
+                "id": "2015117301501",
+                "name": "NOORJAHAN"
+            }
+        }
+    ]
+}

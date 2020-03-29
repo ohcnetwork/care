@@ -1,0 +1,292 @@
+{
+    "timeStamp": 1566345633543,
+    "date": "2019-08-21",
+    "name": "Perinthalmanna  Municipality, Malappuram District",
+    "district": "Malappuram",
+    "area": "34.41km",
+    "localbody_code": "M100100",
+    "no_of_wards": 34,
+    "population": 87356,
+    "male": 41619,
+    "female": 45737,
+    "population_density": 1134,
+    "sex_ratio": 1064,
+    "literacy_rate": 91.76,
+    "literacy_rate_male": 95.18,
+    "literacy_rate_female": 88.35,
+    "chairman": "MOHAMMEDSALIMM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHEERATTAMANNA",
+            "person": {
+                "id": "2015020900101",
+                "name": "P VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MANATHUMANGALAM",
+            "person": {
+                "id": "2015020900201",
+                "name": "ALEENA MARIYAM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KAKOOTH",
+            "person": {
+                "id": "2015020900301",
+                "name": "HUSAINA NAZAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VALIYANGADI",
+            "person": {
+                "id": "2015020900401",
+                "name": "THAMARATH USMAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KULIRMALA",
+            "person": {
+                "id": "2015020900501",
+                "name": "THEKKATH USMAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHMEBANKUNNU",
+            "person": {
+                "id": "2015020900601",
+                "name": "MOHAMED MUSTHAFA K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KUMARAMKULAM",
+            "person": {
+                "id": "2015020900701",
+                "name": "HANNA K T"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "LAKSHAM VEEDU",
+            "person": {
+                "id": "2015020900801",
+                "name": "K MOHAMMED@ BAPPU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IDUKKUMUKHAM",
+            "person": {
+                "id": "2015020900901",
+                "name": "SUNDARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MANAZHI STAND",
+            "person": {
+                "id": "2015020901001",
+                "name": "ARUN E P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANJAMA",
+            "person": {
+                "id": "2015020901101",
+                "name": "MOHAMMED SALIM M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUTTIPPARA",
+            "person": {
+                "id": "2015020901201",
+                "name": "ABDUL NASAR (NASAR KUTTI)"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANAPPADI",
+            "person": {
+                "id": "2015020901301",
+                "name": "NIRMALA P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PATHAIKKARA UP SCHOOL",
+            "person": {
+                "id": "2015020901401",
+                "name": "P T SOBHANA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KOVILAKAMPADI",
+            "person": {
+                "id": "2015020901501",
+                "name": "ASSIA K P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "OLINKARA",
+            "person": {
+                "id": "2015020901601",
+                "name": "K C MOIDEENKUTTY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KIZHAKKEKARA",
+            "person": {
+                "id": "2015020901701",
+                "name": "VANDANA K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THEKKEKARA",
+            "person": {
+                "id": "2015020901801",
+                "name": "T K HAFSA MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ANATHANAM",
+            "person": {
+                "id": "2015020901901",
+                "name": "AMBILY MANOJ"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PADINJAREKKARA",
+            "person": {
+                "id": "2015020902001",
+                "name": "UNNIKRISHNAN K T"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KUNNAPPALLI SOUTH",
+            "person": {
+                "id": "2015020902101",
+                "name": "RAJINA K"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "KALATHILAKKARA",
+            "person": {
+                "id": "2015020902201",
+                "name": "ANWAR KALATHIL"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "MARUKARAPARAMBU",
+            "person": {
+                "id": "2015020902301",
+                "name": "PATHATH ARIF"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "VALAYAM MOOCHI",
+            "person": {
+                "id": "2015020902401",
+                "name": "NASEERA A"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "ASARIKKARA",
+            "person": {
+                "id": "2015020902501",
+                "name": "SURESH K"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "THOTTAKKARA",
+            "person": {
+                "id": "2015020902601",
+                "name": "NISHA SUBAIR"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "J N ROAD",
+            "person": {
+                "id": "2015020902701",
+                "name": "SHAFEENA BEEGUM K T"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "J N ROAD CENTRAL",
+            "person": {
+                "id": "2015020902801",
+                "name": "JAMNABINTH"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "THEKKINKODE",
+            "person": {
+                "id": "2015020902901",
+                "name": "K SANKARANARAYANAN"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "KAVUNGAL PARAMBA",
+            "person": {
+                "id": "2015020903001",
+                "name": "LAKSHMI KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015020903101",
+                "name": "NISHI ANILRAJ"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "SANGEETHA",
+            "person": {
+                "id": "2015020903201",
+                "name": "VASANTHI K"
+            }
+        },
+        {
+            "ward_number": "33",
+            "name": "ALIKKAL",
+            "person": {
+                "id": "2015020903301",
+                "name": "MYMOONA PATTANI"
+            }
+        },
+        {
+            "ward_number": "34",
+            "name": "LEMON VALLEY",
+            "person": {
+                "id": "2015020903401",
+                "name": "RATHI ALLAKKATTIL"
+            }
+        }
+    ]
+}

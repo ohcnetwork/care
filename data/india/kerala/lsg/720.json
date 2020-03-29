@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347437490,
+    "date": "2019-08-21",
+    "name": "Chowannur  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chowwannur",
+    "area": "18.39km",
+    "localbody_code": "G080202",
+    "no_of_wards": 13,
+    "population": 25496,
+    "male": 12069,
+    "female": 13427,
+    "population_density": 1386,
+    "sex_ratio": 1112,
+    "literacy_rate": 91.99,
+    "literacy_rate_male": 95.21,
+    "literacy_rate_female": 89.15,
+    "president": "K.K.SATHEESAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANCHERY",
+            "person": {
+                "id": "2015072000101",
+                "name": "JELLY SANKARANARAYANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOWANNUR",
+            "person": {
+                "id": "2015072000201",
+                "name": "KAVITHA SUNILKUMAR"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "POOSAPILLY",
+            "person": {
+                "id": "2015072000301",
+                "name": "JISHA.K.C"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VELLITHIRUTHI",
+            "person": {
+                "id": "2015072000401",
+                "name": "K.P.SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAZHUNNANA",
+            "person": {
+                "id": "2015072000501",
+                "name": "SHAMILA KABEER"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAZHUNNANA THEKKUMURI",
+            "person": {
+                "id": "2015072000601",
+                "name": "SREEREKHA.V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHEMMANTHATTA",
+            "person": {
+                "id": "2015072000701",
+                "name": "RATHNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PUTHUSSERY SOUTH",
+            "person": {
+                "id": "2015072000801",
+                "name": "M.A.PRAKASAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PUTHUSSERY NORTH",
+            "person": {
+                "id": "2015072000901",
+                "name": "P.K.SANTHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANIPPAYYUR",
+            "person": {
+                "id": "2015072001001",
+                "name": "P.P.SUNILAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANTHOPE",
+            "person": {
+                "id": "2015072001101",
+                "name": "SHAFI.M.A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KAVANAMCHITTOOR",
+            "person": {
+                "id": "2015072001201",
+                "name": "K.K.SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANTHALLUR",
+            "person": {
+                "id": "2015072001301",
+                "name": "ANJANA SUDHEESH"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346973557,
+    "date": "2019-08-21",
+    "name": "Rajakkad  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Nedumkandam",
+    "area": "31.03km",
+    "localbody_code": "G060304",
+    "no_of_wards": 13,
+    "population": 13886,
+    "male": 7069,
+    "female": 6817,
+    "population_density": 448,
+    "sex_ratio": 964,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "SATHYKUNJUMON",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOCHUMULLAKKANAM",
+            "person": {
+                "id": "2015058800101",
+                "name": "BENNY THOMAS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MULLAKKANAM",
+            "person": {
+                "id": "2015058800201",
+                "name": "SUJIMON K T"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUNNACITY",
+            "person": {
+                "id": "2015058800301",
+                "name": "BIJI SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "RAJAKKAD",
+            "person": {
+                "id": "2015058800401",
+                "name": "INDIRA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NR CITY",
+            "person": {
+                "id": "2015058800501",
+                "name": "SATHY KUNJUMON"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VACKACITY",
+            "person": {
+                "id": "2015058800601",
+                "name": "BINDHU SATHEESAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ADIVARAM",
+            "person": {
+                "id": "2015058800701",
+                "name": "SANTHOSHKUMAR A D"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAZHAYAVIDUTHY",
+            "person": {
+                "id": "2015058800801",
+                "name": "PRINCE MATHEW"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KURISUMPADY",
+            "person": {
+                "id": "2015058800901",
+                "name": "SOBHANA RAMANKUTTY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUPURAM",
+            "person": {
+                "id": "2015058801001",
+                "name": "RAJAN K.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALLIMALY",
+            "person": {
+                "id": "2015058801101",
+                "name": "ANIL K P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ANAPPARA",
+            "person": {
+                "id": "2015058801201",
+                "name": "GEETHA PRASAD"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANNIYARKUTTY",
+            "person": {
+                "id": "2015058801301",
+                "name": "TEENAMOL JOHN"
+            }
+        }
+    ]
+}

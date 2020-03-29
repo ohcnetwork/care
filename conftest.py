@@ -1,8 +1,1 @@
-import pytest
-
-from django.conf import settings
-from config.settings.test import DATABASES
-
-@pytest.fixture(scope='session')
-def django_db_setup():
-    settings.DATABASES = DATABASES
+from config.tests.fixtures import client, district_data, facility_data, user  # noqa

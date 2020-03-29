@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346659576,
+    "date": "2019-08-21",
+    "name": "Kandalloor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Muthukulam",
+    "area": "9.74km",
+    "localbody_code": "G041202",
+    "no_of_wards": 15,
+    "population": 19194,
+    "male": 9010,
+    "female": 10184,
+    "population_density": 1971,
+    "sex_ratio": 1130,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 91,
+    "president": "A.V.RENJITH",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKAN KOICKAL",
+            "person": {
+                "id": "2015049300101",
+                "name": "R.VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOPPARETHU H.S",
+            "person": {
+                "id": "2015049300202",
+                "name": "PRASANNAKUMARI T S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PUTHIAVILA NORTH",
+            "person": {
+                "id": "2015049300301",
+                "name": "ADV.N. RAJAGOPAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANKULAM",
+            "person": {
+                "id": "2015049300401",
+                "name": "SARALA SANKARA NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHIYAVILA",
+            "person": {
+                "id": "2015049300501",
+                "name": "GOPAKUMAR.K.G"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHIYAVILA SOUTH",
+            "person": {
+                "id": "2015049300601",
+                "name": "MINI.S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PULLUKULANGARA NORTH",
+            "person": {
+                "id": "2015049300701",
+                "name": "R.BINDU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULLUKULANGARA",
+            "person": {
+                "id": "2015049300801",
+                "name": "REMYA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PIPE JUNCTION",
+            "person": {
+                "id": "2015049300901",
+                "name": "A.V.RENJITH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MADAMPIL",
+            "person": {
+                "id": "2015049301001",
+                "name": "KOLATHU BABU"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KALA WARD",
+            "person": {
+                "id": "2015049301101",
+                "name": "R.SHINY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALARIKKAL",
+            "person": {
+                "id": "2015049301201",
+                "name": "A.SHOBHA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "HEALTH CENTRE",
+            "person": {
+                "id": "2015049301301",
+                "name": "J.KOMALA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VARAMBATHU",
+            "person": {
+                "id": "2015049301401",
+                "name": "Y.RAJEEV"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "AMBALATHUNADA",
+            "person": {
+                "id": "2015049301501",
+                "name": "B.UDAYABHANU"
+            }
+        }
+    ]
+}

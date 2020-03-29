@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566346284442,
+    "date": "2019-08-21",
+    "name": "Cherukole  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Elanthur",
+    "area": "15.61km",
+    "localbody_code": "G030404",
+    "no_of_wards": 13,
+    "population": 13185,
+    "male": 6384,
+    "female": 6801,
+    "population_density": 845,
+    "sex_ratio": 1065,
+    "literacy_rate": 96.89,
+    "literacy_rate_male": 98.21,
+    "literacy_rate_female": 95.69,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KACHERIPADI",
+            "person": {
+                "id": "2015039300101",
+                "name": "PRADEEP"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VAZHAKKUNNAM",
+            "person": {
+                "id": "2015039300201",
+                "name": "KRISHNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KATTOOR",
+            "person": {
+                "id": "2015039300301",
+                "name": "USHAKUMARI P.G."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PUTHAMON",
+            "person": {
+                "id": "2015039300401",
+                "name": "ANNAMMA SAMUEL"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHACKAPPALAM",
+            "person": {
+                "id": "2015039300501",
+                "name": "ANNAMMA JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KEEKOZHOOR",
+            "person": {
+                "id": "2015039300601",
+                "name": "MARY THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MANJAPRAMALA",
+            "person": {
+                "id": "2015039300702",
+                "name": "ANNIE VARGHESE"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHARALEL",
+            "person": {
+                "id": "2015039300801",
+                "name": "VALSAMMA ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUDILUMUKKU",
+            "person": {
+                "id": "2015039300901",
+                "name": "GOPI V.P. (MANI)"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ANTHYALAMKAVU",
+            "person": {
+                "id": "2015039301001",
+                "name": "DANIEL M.M."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KATTOOR PETTA",
+            "person": {
+                "id": "2015039301101",
+                "name": "C.K.HARICHANDRAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KOTTANALLOOR",
+            "person": {
+                "id": "2015039301201",
+                "name": "C.G. SANTHOSH KUMAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHANNAMANKAL",
+            "person": {
+                "id": "2015039301301",
+                "name": "JESSY THOMAS"
+            }
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345132933,
+    "date": "2019-08-21",
+    "name": "Puzhakkal  Block Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Puzhakkal",
+    "area": "145.96km",
+    "localbody_code": "B080600",
+    "no_of_wards": 13,
+    "population": 164359,
+    "male": 79786,
+    "female": 84573,
+    "population_density": 1126,
+    "sex_ratio": 1059,
+    "literacy_rate": 92.78,
+    "literacy_rate_male": 95.42,
+    "literacy_rate_female": 90.34,
+    "president": "BIJUVARGHESEN.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "EDAKKALATHUR",
+            "person": {
+                "id": "2015008600101",
+                "name": "VANAJA RAPHY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAIPARAMBU",
+            "person": {
+                "id": "2015008600201",
+                "name": "SANTHOSH M.T"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PERAMANGALAM",
+            "person": {
+                "id": "2015008600301",
+                "name": "P.K. PUSHPAKARAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AVANUR",
+            "person": {
+                "id": "2015008600401",
+                "name": "ANJALY SATHEESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHOOLISSERY",
+            "person": {
+                "id": "2015008600501",
+                "name": "ADV. SOLY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MULANKUNNATHUKAVU",
+            "person": {
+                "id": "2015008600601",
+                "name": "RANJU VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "POOMALA",
+            "person": {
+                "id": "2015008600701",
+                "name": "BIJU VARGHESE N."
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KUNNATHUPEEDIKA",
+            "person": {
+                "id": "2015008600801",
+                "name": "SHEEBA GIRISH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOLAZHY",
+            "person": {
+                "id": "2015008600901",
+                "name": "SUJATHA MURALEEDHARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUTHUVARA",
+            "person": {
+                "id": "2015008601001",
+                "name": "C.V. KURIYAKOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PURANATTUKARA",
+            "person": {
+                "id": "2015008601101",
+                "name": "SUMA HARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ADAT",
+            "person": {
+                "id": "2015008601201",
+                "name": "JAYALAKSHMY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAPPUR",
+            "person": {
+                "id": "2015008601301",
+                "name": "ADV. LAIJU C. EDAKALATHUR"
+            }
+        }
+    ]
+}

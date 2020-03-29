@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566347135020,
+    "date": "2019-08-21",
+    "name": "Karukutty  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Angamally",
+    "area": "33.57km",
+    "localbody_code": "G070304",
+    "no_of_wards": 17,
+    "population": 24860,
+    "male": 12231,
+    "female": 12629,
+    "population_density": 741,
+    "sex_ratio": 1030,
+    "literacy_rate": 90.28,
+    "literacy_rate_male": 93.11,
+    "literacy_rate_female": 82.56,
+    "president": "SHAJUVTHEKKEKKARA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RAILWAY STATION",
+            "person": {
+                "id": "2015063700101",
+                "name": "JASMIN SABU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CABLE NAGAR",
+            "person": {
+                "id": "2015063700201",
+                "name": "SHYNI GEORGE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VAZHACHAL",
+            "person": {
+                "id": "2015063700301",
+                "name": "JOMON GEORGE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PANTHACKAL",
+            "person": {
+                "id": "2015063700401",
+                "name": "GRACY SEBASTIAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDAKKUNNU",
+            "person": {
+                "id": "2015063700501",
+                "name": "REJI T V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PALISSERY",
+            "person": {
+                "id": "2015063700601",
+                "name": "MARY ANTONY"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EZGHATTUMUGHAM",
+            "person": {
+                "id": "2015063700701",
+                "name": "USHA MANOHARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARAMATTAM",
+            "person": {
+                "id": "2015063700801",
+                "name": "ANEESH K P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAKKUNNU EAST",
+            "person": {
+                "id": "2015063700901",
+                "name": "RANY POLY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PADUVAPURAM",
+            "person": {
+                "id": "2015063701001",
+                "name": "MARY ANTONY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MOONNAMPARAMBU",
+            "person": {
+                "id": "2015063701101",
+                "name": "K K ARUNKUMAR"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MALAYAMKUNNU",
+            "person": {
+                "id": "2015063701201",
+                "name": "SHAJU V THEKKEKKARA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALLIYANGADI",
+            "person": {
+                "id": "2015063701301",
+                "name": "BABU SANY"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NJALOOKKARA",
+            "person": {
+                "id": "2015063701401",
+                "name": "P K BALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KARAYAMPARAMBU EAST",
+            "person": {
+                "id": "2015063701501",
+                "name": "KUNJAMMA JACOB"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KARAYAMPARAMBU WEST",
+            "person": {
+                "id": "2015063701601",
+                "name": "SHAIBY POLY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PEECHANIKADU",
+            "person": {
+                "id": "2015063701701",
+                "name": "JOJY KALLOOKKARAN"
+            }
+        }
+    ]
+}

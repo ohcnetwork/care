@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346324819,
+    "date": "2019-08-21",
+    "name": "Konni  Grama Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Konni",
+    "area": "41.45km",
+    "localbody_code": "G030601",
+    "no_of_wards": 18,
+    "population": 27800,
+    "male": 13548,
+    "female": 14252,
+    "population_density": 671,
+    "sex_ratio": 1052,
+    "literacy_rate": 94.55,
+    "literacy_rate_male": 96.22,
+    "literacy_rate_female": 92.98,
+    "president": "REJANI.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANIYANPARA",
+            "person": {
+                "id": "2015040600101",
+                "name": "DEENAMMA ROY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KIZHAKKUPURAM",
+            "person": {
+                "id": "2015040600201",
+                "name": "REJANI.M"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHENGARA",
+            "person": {
+                "id": "2015040600301",
+                "name": "N.N.RAJAPPAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ATTACHACKAL",
+            "person": {
+                "id": "2015040600401",
+                "name": "THULASI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAITHAKUNNU",
+            "person": {
+                "id": "2015040600501",
+                "name": "OMANA THANKACHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ATHUMPUMKULAM",
+            "person": {
+                "id": "2015040600601",
+                "name": "BIJI.K.VARGHESE"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KONNAPPARA",
+            "person": {
+                "id": "2015040600701",
+                "name": "ROJI BABY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAYYANAMON",
+            "person": {
+                "id": "2015040600801",
+                "name": "MOHANAN.K.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERINJOTTACKAL",
+            "person": {
+                "id": "2015040600901",
+                "name": "MATHEW.K.G"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MURINGAMANGALAM",
+            "person": {
+                "id": "2015040601001",
+                "name": "SULEKHA.V.NAIR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANGARAM",
+            "person": {
+                "id": "2015040601101",
+                "name": "T.SOUDHAMINI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ELIYARACKAL",
+            "person": {
+                "id": "2015040601201",
+                "name": "BEENA.G.NAIR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAKAYAR",
+            "person": {
+                "id": "2015040601301",
+                "name": "ANI SABU THOMAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MADATHILKAVU",
+            "person": {
+                "id": "2015040601401",
+                "name": "PRAVEEN PLAVILAYIL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VATTAKKAVU",
+            "person": {
+                "id": "2015040601501",
+                "name": "SOBHA MURALY"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KONNI TOWN",
+            "person": {
+                "id": "2015040601601",
+                "name": "LAILA.M.O"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MAMMOODU",
+            "person": {
+                "id": "2015040601701",
+                "name": "GEETHA"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "CHITTOOR",
+            "person": {
+                "id": "2015040601801",
+                "name": "LISSY SAM"
+            }
+        }
+    ]
+}

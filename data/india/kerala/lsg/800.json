@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566348135057,
+    "date": "2019-08-21",
+    "name": "Koratty  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chalakudy",
+    "area": "23.42km",
+    "localbody_code": "G081603",
+    "no_of_wards": 19,
+    "population": 30118,
+    "male": 15104,
+    "female": 15014,
+    "population_density": 1286,
+    "sex_ratio": 994,
+    "literacy_rate": 91.7,
+    "literacy_rate_male": 94.42,
+    "literacy_rate_female": 88.98,
+    "president": "KUMARIBALAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MURINGOOR",
+            "person": {
+                "id": "2015080000101",
+                "name": "JAYMY THARAYIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KHANNANAGAR",
+            "person": {
+                "id": "2015080000201",
+                "name": "JOY EMMANUEL"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARAKKOOTTAM",
+            "person": {
+                "id": "2015080000301",
+                "name": "SINDHU JAYARAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KONOOR",
+            "person": {
+                "id": "2015080000401",
+                "name": "C. V. DAMODHARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHUNAKKARA",
+            "person": {
+                "id": "2015080000501",
+                "name": "KUMARI BALAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALUNGAMURY",
+            "person": {
+                "id": "2015080000601",
+                "name": "V. K. KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NALUKETTU",
+            "person": {
+                "id": "2015080000701",
+                "name": "K. P. THOMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "SRAMBIKKAL",
+            "person": {
+                "id": "2015080000801",
+                "name": "RAJANI RAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THIRUMUDIKKUNNU",
+            "person": {
+                "id": "2015080000901",
+                "name": "DAISY DAVIS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUDAPUZHA",
+            "person": {
+                "id": "2015080001001",
+                "name": "BISSY JOSE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MANGALASSERY",
+            "person": {
+                "id": "2015080001101",
+                "name": "MINI DAVIS"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHETTARIKKAL",
+            "person": {
+                "id": "2015080001201",
+                "name": "BINDU SATHYAPALAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VAZHICHAL",
+            "person": {
+                "id": "2015080001301",
+                "name": "DAVIS MOOLAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHIRANGARA",
+            "person": {
+                "id": "2015080001401",
+                "name": "SINDHU RAVI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KORATTY TOWN",
+            "person": {
+                "id": "2015080001501",
+                "name": "GRACY BABU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "DEVAMATHA",
+            "person": {
+                "id": "2015080001601",
+                "name": "JAINY JOSHY"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALLI ANGADI",
+            "person": {
+                "id": "2015080001701",
+                "name": "SOUMIA RAJESH"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KATTAPPURAM",
+            "person": {
+                "id": "2015080001801",
+                "name": "BINDU KUMARAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ATTAPPADAM",
+            "person": {
+                "id": "2015080001901",
+                "name": "JAYARAJ K. C"
+            }
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348685413,
+    "date": "2019-08-21",
+    "name": "Vettathur  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perinthalmanna",
+    "area": "35.84km",
+    "localbody_code": "G100706",
+    "no_of_wards": 16,
+    "population": 21757,
+    "male": 10950,
+    "female": 10807,
+    "population_density": 607,
+    "sex_ratio": 987,
+    "literacy_rate": 87.18,
+    "literacy_rate_male": 91.37,
+    "literacy_rate_female": 82.99,
+    "president": "ANNAMMAVALLIYAMTHADATHIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLIKUTH",
+            "person": {
+                "id": "2015094100101",
+                "name": "HAREESH BABU P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIAVATTAM",
+            "person": {
+                "id": "2015094100201",
+                "name": "HAMSAKUTTY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PACHEERI",
+            "person": {
+                "id": "2015094100301",
+                "name": "AJITHA.N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THELAKKAD",
+            "person": {
+                "id": "2015094100401",
+                "name": "NASAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KAPPU",
+            "person": {
+                "id": "2015094100501",
+                "name": "SAINI MOL .N"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POORONAKUNNU",
+            "person": {
+                "id": "2015094100601",
+                "name": "KARIMBANA SULAIKHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EZHUTHALA",
+            "person": {
+                "id": "2015094100701",
+                "name": "RUKKIYA KARUVATH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARA",
+            "person": {
+                "id": "2015094100801",
+                "name": "MANIKANDAN MASTER"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VETTATHUR",
+            "person": {
+                "id": "2015094100901",
+                "name": "SAIDALAVI.E"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THEKKANMALA",
+            "person": {
+                "id": "2015094101001",
+                "name": "ANNAMMA VALLIYAMTHADATHIL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MELKULANGARA",
+            "person": {
+                "id": "2015094101101",
+                "name": "ABDUL HAKEEM A"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERANGARAKUNNU",
+            "person": {
+                "id": "2015094101201",
+                "name": "KHADHEEJA MUSTHAFA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PEEDIKAPPADI",
+            "person": {
+                "id": "2015094101301",
+                "name": "HAMZA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ALUNGAL",
+            "person": {
+                "id": "2015094101401",
+                "name": "JAMEELA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANNARMALA",
+            "person": {
+                "id": "2015094101501",
+                "name": "RAFEEKA BASHEER"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOORIKKUNNU",
+            "person": {
+                "id": "2015094101601",
+                "name": "GOPALAKRISHNAN MASTER"
+            }
+        }
+    ]
+}

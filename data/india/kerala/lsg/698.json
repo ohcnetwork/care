@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347348200,
+    "date": "2019-08-21",
+    "name": "Ramamangalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Pampakuda",
+    "area": "23.4km",
+    "localbody_code": "G071207",
+    "no_of_wards": 13,
+    "population": 14340,
+    "male": 7351,
+    "female": 6989,
+    "population_density": 613,
+    "sex_ratio": 951,
+    "literacy_rate": 90.65,
+    "literacy_rate_male": 94.24,
+    "literacy_rate_female": 86.91,
+    "president": "MINIKUMARIKA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "SIVALY",
+            "person": {
+                "id": "2015069800101",
+                "name": "RENJITH VIJAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KODIKUTHIMALA",
+            "person": {
+                "id": "2015069800201",
+                "name": "MINIKUMARI K A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PATHIKKAL",
+            "person": {
+                "id": "2015069800301",
+                "name": "SMITHA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "UNNEKKAD",
+            "person": {
+                "id": "2015069800401",
+                "name": "SILY"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015069800501",
+                "name": "BEENA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NETTUPADAM",
+            "person": {
+                "id": "2015069800602",
+                "name": "N R SREENIVASAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KAILOLI",
+            "person": {
+                "id": "2015069800701",
+                "name": "PAILY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KAVUMKADA",
+            "person": {
+                "id": "2015069800801",
+                "name": "SATHEESH"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTTARATHUMMUKAL",
+            "person": {
+                "id": "2015069800901",
+                "name": "SURESHKUMAR"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KIZHUMURI",
+            "person": {
+                "id": "2015069801001",
+                "name": "SOBHANA SIVARAJAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "RAMAMANGALAM KADAVU",
+            "person": {
+                "id": "2015069801101",
+                "name": "SINDHU RAVI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "RAMAMANGALAM CENTRAL",
+            "person": {
+                "id": "2015069801201",
+                "name": "JOY"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KORANKADAVU",
+            "person": {
+                "id": "2015069801301",
+                "name": "JESSIE GEORGE"
+            }
+        }
+    ]
+}

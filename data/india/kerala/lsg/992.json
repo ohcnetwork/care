@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566348855368,
+    "date": "2019-08-21",
+    "name": "Perumpadappa  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Perumpadappu",
+    "area": "14.92km",
+    "localbody_code": "G101504",
+    "no_of_wards": 18,
+    "population": 27204,
+    "male": 13066,
+    "female": 14138,
+    "population_density": 1811,
+    "sex_ratio": 1082,
+    "literacy_rate": 84.4,
+    "literacy_rate_male": 88.92,
+    "literacy_rate_female": 79.88,
+    "president": "ANAS.V.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHIYIRUTHY WEST",
+            "person": {
+                "id": "2015099200101",
+                "name": "ANAS.V.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUTHIYIRUTHY EAST",
+            "person": {
+                "id": "2015099200201",
+                "name": "SOUDAMINI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYIROOR EAST",
+            "person": {
+                "id": "2015099200301",
+                "name": "VALSALAKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KODATHUR NORTH",
+            "person": {
+                "id": "2015099200401",
+                "name": "SUNIL M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUTHANPALLI",
+            "person": {
+                "id": "2015099200501",
+                "name": "BINEESHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUZHAPPULLI",
+            "person": {
+                "id": "2015099200601",
+                "name": "ANSAR"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHERAVALLUR WEST",
+            "person": {
+                "id": "2015099200701",
+                "name": "CHANDANATHEL FATHIMA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHERAVALLUR EAST",
+            "person": {
+                "id": "2015099200801",
+                "name": "SUBAIDA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THAVALAKUNNU",
+            "person": {
+                "id": "2015099200901",
+                "name": "SUHARA AHAMMED"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PERUMPADAPPU",
+            "person": {
+                "id": "2015099201001",
+                "name": "SHAHINBAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VANNERI",
+            "person": {
+                "id": "2015099201101",
+                "name": "M .A .MOHANAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERAYI",
+            "person": {
+                "id": "2015099201201",
+                "name": "ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KODATHUR SOUTH",
+            "person": {
+                "id": "2015099201301",
+                "name": "LILLY .P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AYIROOR WEST",
+            "person": {
+                "id": "2015099201401",
+                "name": "KUNHUMON .P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALAPPETTY EAST",
+            "person": {
+                "id": "2015099201501",
+                "name": "SHAHINA KALID"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "POOVANKKARA",
+            "person": {
+                "id": "2015099201601",
+                "name": "MNJULA .P .R"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PALAPPETTY WEST",
+            "person": {
+                "id": "2015099201701",
+                "name": "ABU .C .M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "THATTUPARAMBU",
+            "person": {
+                "id": "2015099201801",
+                "name": "ALUNGAL ASHRAF"
+            }
+        }
+    ]
+}

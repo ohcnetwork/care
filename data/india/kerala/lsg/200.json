@@ -1,0 +1,276 @@
+{
+    "timeStamp": 1566345596180,
+    "date": "2019-08-21",
+    "name": "Chavakkad  Municipality, Thrissur District",
+    "district": "Thrissur",
+    "area": "12.41km",
+    "localbody_code": "M080200",
+    "no_of_wards": 32,
+    "population": 33543,
+    "male": 15881,
+    "female": 17662,
+    "population_density": 3045,
+    "sex_ratio": 1127,
+    "literacy_rate": 88.19,
+    "literacy_rate_male": 92.55,
+    "literacy_rate_female": 84.59,
+    "chairman": "N.K.AKBAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PUTHENKADAPPURAM NORTH",
+            "person": {
+                "id": "2015020000101",
+                "name": "HARIS T.A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GRAMAKULAM",
+            "person": {
+                "id": "2015020000201",
+                "name": "JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THIRUVATHRA NORTH",
+            "person": {
+                "id": "2015020000301",
+                "name": "K.H. SALAM"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUNCHERY",
+            "person": {
+                "id": "2015020000401",
+                "name": "SUBURA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PUNNA NORTH",
+            "person": {
+                "id": "2015020000501",
+                "name": "SHAHIDA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUNNA SOUTH",
+            "person": {
+                "id": "2015020000601",
+                "name": "HIMA MANOJ"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ALUMPADI",
+            "person": {
+                "id": "2015020000701",
+                "name": "BABURAJ K.S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MAMMIYOOR",
+            "person": {
+                "id": "2015020000801",
+                "name": "SAISON"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUTHUVATTOOR",
+            "person": {
+                "id": "2015020000901",
+                "name": "SANTHA SUBRAHMANIAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "OVUNGAL",
+            "person": {
+                "id": "2015020001001",
+                "name": "RAJALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAYOOR NORTH",
+            "person": {
+                "id": "2015020001101",
+                "name": "HASEENA SALIM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALAYOOR EAST",
+            "person": {
+                "id": "2015020001201",
+                "name": "JOYACY V.J"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PALAYOOR SOUTH",
+            "person": {
+                "id": "2015020001301",
+                "name": "SAHINA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PALAYOOR",
+            "person": {
+                "id": "2015020001401",
+                "name": "PETER"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALAYOOR WEST",
+            "person": {
+                "id": "2015020001501",
+                "name": "BUSHARA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHAVAKKAD TOWN",
+            "person": {
+                "id": "2015020001601",
+                "name": "A.H. AKBAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KOZHIKKULANGARA",
+            "person": {
+                "id": "2015020001701",
+                "name": "N.K.AKBAR"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MANATHALA NORTH",
+            "person": {
+                "id": "2015020001801",
+                "name": "VISWAMBARAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "CIVILSTATION",
+            "person": {
+                "id": "2015020001901",
+                "name": "NAZEEM"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MANATHALA",
+            "person": {
+                "id": "2015020002001",
+                "name": "SALEEM PANANTHARAYIL"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "BLANGAD",
+            "person": {
+                "id": "2015020002101",
+                "name": "MANJUSHA"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MADEKKADAVU",
+            "person": {
+                "id": "2015020002201",
+                "name": "MANJULA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "BLANGAD BEACH",
+            "person": {
+                "id": "2015020002301",
+                "name": "KARTHIAYANI KUNJITHAPPAN"
+            }
+        },
+        {
+            "ward_number": "24",
+            "name": "DWARAKA BEACH",
+            "person": {
+                "id": "2015020002401",
+                "name": "ANANDHAN"
+            }
+        },
+        {
+            "ward_number": "25",
+            "name": "PULICHIRAKKETTU WEST",
+            "person": {
+                "id": "2015020002501",
+                "name": "P.D. SURESHBABU"
+            }
+        },
+        {
+            "ward_number": "26",
+            "name": "PULICHIRAKKETTU EAST",
+            "person": {
+                "id": "2015020002601",
+                "name": "A.A. MAHENDRAN"
+            }
+        },
+        {
+            "ward_number": "27",
+            "name": "PARAPPILTHAZHAM",
+            "person": {
+                "id": "2015020002701",
+                "name": "P.P. NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "28",
+            "name": "PUTHENKADAPPURAM SOUTH",
+            "person": {
+                "id": "2015020002801",
+                "name": "SEENATH"
+            }
+        },
+        {
+            "ward_number": "29",
+            "name": "KOTTAPPURAM",
+            "person": {
+                "id": "2015020002901",
+                "name": "MANJU KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "30",
+            "name": "PUTHIYARA",
+            "person": {
+                "id": "2015020003001",
+                "name": "HASEENA"
+            }
+        },
+        {
+            "ward_number": "31",
+            "name": "THIRUVATHRA",
+            "person": {
+                "id": "2015020003101",
+                "name": "LISHA"
+            }
+        },
+        {
+            "ward_number": "32",
+            "name": "PUTHENKADAPPURAM",
+            "person": {
+                "id": "2015020003201",
+                "name": "P.M. NAZAR"
+            }
+        }
+    ]
+}

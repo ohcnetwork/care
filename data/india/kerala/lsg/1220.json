@@ -1,0 +1,156 @@
+{
+    "timeStamp": 1566349647492,
+    "date": "2019-08-21",
+    "name": "Thenkara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "16.62km",
+    "localbody_code": "G090509",
+    "no_of_wards": 17,
+    "population": null,
+    "male": null,
+    "female": null,
+    "population_density": null,
+    "sex_ratio": null,
+    "literacy_rate": null,
+    "literacy_rate_male": null,
+    "literacy_rate_female": null,
+    "president": "SALEENAA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THATHENGALAM",
+            "person": {
+                "id": "2015122000101",
+                "name": "HAMSA M"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIMBANKUNNU",
+            "person": {
+                "id": "2015122000201",
+                "name": "SHOUKATHALI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MELAMURI",
+            "person": {
+                "id": "2015122000301",
+                "name": "SUKUMARAN P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MEZHUKUMPARA",
+            "person": {
+                "id": "2015122000401",
+                "name": "RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ANAMOOLI",
+            "person": {
+                "id": "2015122000501",
+                "name": "MUHAMMED FAIZAL T"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTTIYODE",
+            "person": {
+                "id": "2015122000601",
+                "name": "PIYUSH BABU P"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOLPPADAM",
+            "person": {
+                "id": "2015122000701",
+                "name": "RAHEEMA ABDUL RASHEED"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THENKARA",
+            "person": {
+                "id": "2015122000801",
+                "name": "ARIFA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KANHIRAVALLY",
+            "person": {
+                "id": "2015122000901",
+                "name": "SAVITHRI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MUTHUVALLY",
+            "person": {
+                "id": "2015122001001",
+                "name": "RUGMINI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PARASSERI",
+            "person": {
+                "id": "2015122001101",
+                "name": "RASHEEDA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANALADI",
+            "person": {
+                "name": "*****"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VELLARAMKUNNU",
+            "person": {
+                "id": "2015122001301",
+                "name": "SALEENA A"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PUNCHAKODE",
+            "person": {
+                "id": "2015122001402",
+                "name": "USHA C"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MUNDAKKANNI",
+            "person": {
+                "id": "2015122001501",
+                "name": "PRASANNA"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERUMKULAM",
+            "person": {
+                "id": "2015122001601",
+                "name": "OMANA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KAITHACHIRA",
+            "person": {
+                "id": "2015122001701",
+                "name": "U SAROJINI"
+            }
+        }
+    ]
+}

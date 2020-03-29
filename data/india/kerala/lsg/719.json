@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566347435337,
+    "date": "2019-08-21",
+    "name": "Choondal  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chowwannur",
+    "area": "19.98km",
+    "localbody_code": "G080201",
+    "no_of_wards": 18,
+    "population": 26771,
+    "male": 12542,
+    "female": 14229,
+    "population_density": 1340,
+    "sex_ratio": 1135,
+    "literacy_rate": 89.81,
+    "literacy_rate_male": 93.31,
+    "literacy_rate_female": 86.81,
+    "president": "K.SKAREEM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PELAKKATTUPAYYUR",
+            "person": {
+                "id": "2015071900101",
+                "name": "REKHA SUNIL"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHOONDAL",
+            "person": {
+                "id": "2015071900201",
+                "name": "M.B PRAVEEN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PARANNUR",
+            "person": {
+                "id": "2015071900301",
+                "name": "SNUGIL.M SUBRAMANIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAPPUR",
+            "person": {
+                "id": "2015071900401",
+                "name": "SINI V.C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATTIKKARA",
+            "person": {
+                "id": "2015071900501",
+                "name": "P.K SUGATHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHIRANELLUR",
+            "person": {
+                "id": "2015071900601",
+                "name": "SHEEBA JAYAPRAKASH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AYAMMUK",
+            "person": {
+                "id": "2015071900701",
+                "name": "K.S KAREEM"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANALI",
+            "person": {
+                "id": "2015071900801",
+                "name": "SHANTY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THALAKKOTUKARA",
+            "person": {
+                "id": "2015071900901",
+                "name": "HARIHARASUDHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MAZHUVANCHERY CENTER",
+            "person": {
+                "id": "2015071901001",
+                "name": "ANCY WILLIAMS"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAZHUVANCHERY",
+            "person": {
+                "id": "2015071901101",
+                "name": "SANTHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ERANELLUR",
+            "person": {
+                "id": "2015071901201",
+                "name": "STELLA JOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PERUMANNU",
+            "person": {
+                "id": "2015071901301",
+                "name": "K.P RAMESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KECHERY",
+            "person": {
+                "id": "2015071901401",
+                "name": "JAMAL U.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THUVANOOR",
+            "person": {
+                "id": "2015071901501",
+                "name": "SHEEJA ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "VETTUKAD",
+            "person": {
+                "id": "2015071901601",
+                "name": "SHYLA T.R"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "THAYANKAVU",
+            "person": {
+                "id": "2015071901701",
+                "name": "ANTONY M.K"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PAYYOOR",
+            "person": {
+                "id": "2015071901801",
+                "name": "T.A MUHAMMED SHAFI"
+            }
+        }
+    ]
+}

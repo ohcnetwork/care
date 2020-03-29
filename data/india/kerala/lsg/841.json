@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566348287611,
+    "date": "2019-08-21",
+    "name": "Tachampara  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "53.97km",
+    "localbody_code": "G090508",
+    "no_of_wards": 15,
+    "population": 17884,
+    "male": 8698,
+    "female": 9186,
+    "population_density": 331,
+    "sex_ratio": 1056,
+    "literacy_rate": 88.99,
+    "literacy_rate_male": 82.29,
+    "literacy_rate_female": 85.85,
+    "president": "SUJATHA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHOORIYODE",
+            "person": {
+                "id": "2015084100101",
+                "name": "FIRDOUSA. P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOOTAMBADAM",
+            "person": {
+                "id": "2015084100201",
+                "name": "SAFEER. P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALANJAPALAM",
+            "person": {
+                "id": "2015084100301",
+                "name": "NOUSHAD BABU.V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOZHIYODE",
+            "person": {
+                "id": "2015084100401",
+                "name": "RAMANI.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUNDAMBALAM",
+            "person": {
+                "id": "2015084100501",
+                "name": "GEETHA MURALIDHARAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PICHALAMUNDA",
+            "person": {
+                "id": "2015084100601",
+                "name": "GANESH KUMAR. K.R"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PALAKKAYAM",
+            "person": {
+                "id": "2015084100701",
+                "name": "SHAJU PAZHUKKATHARA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHEENIKKAPARA",
+            "person": {
+                "id": "2015084100801",
+                "name": "GRACY. K.A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "IRUMBAMUTTY",
+            "person": {
+                "id": "2015084100901",
+                "name": "BEENA JOY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VAKKODAN",
+            "person": {
+                "id": "2015084101001",
+                "name": "K.K. THOMAS (REJI)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHENDHANDU",
+            "person": {
+                "id": "2015084101101",
+                "name": "MARY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PONNAMKODE",
+            "person": {
+                "id": "2015084101201",
+                "name": "M. RAJAGOPALAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "THACHAMPARA",
+            "person": {
+                "id": "2015084101301",
+                "name": "GEORGE THOMAS"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NEDUMANNU",
+            "person": {
+                "id": "2015084101401",
+                "name": "SUJATHA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MATTOM",
+            "person": {
+                "id": "2015084101501",
+                "name": "PUSHPALATHA"
+            }
+        }
+    ]
+}

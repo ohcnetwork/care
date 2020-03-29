@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566348321067,
+    "date": "2019-08-21",
+    "name": "Kuthanur  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Kuzhalmannam",
+    "area": "35.83km",
+    "localbody_code": "G090802",
+    "no_of_wards": 16,
+    "population": 22452,
+    "male": 10834,
+    "female": 11618,
+    "population_density": 627,
+    "sex_ratio": 1092,
+    "literacy_rate": 76.96,
+    "literacy_rate_male": 85.32,
+    "literacy_rate_female": 69.32,
+    "president": "MAYAP.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KOTTODE",
+            "person": {
+                "id": "2015085400101",
+                "name": "SASIDHARAN R"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARAKKODE",
+            "person": {
+                "id": "2015085400201",
+                "name": "JAMEELA IBRAHIM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "LAKSHAMVEEDU",
+            "person": {
+                "id": "2015085400301",
+                "name": "DIVYA C.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTHAMANGALAM",
+            "person": {
+                "id": "2015085400401",
+                "name": "PRATHAPAN P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NADUTHARA",
+            "person": {
+                "id": "2015085400501",
+                "name": "KUTTAN K.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BALANPARAMBU",
+            "person": {
+                "id": "2015085400601",
+                "name": "AMBIKA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PRARUKAD",
+            "person": {
+                "id": "2015085400701",
+                "name": "THILAKAM C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "AMBALAPPADAM",
+            "person": {
+                "id": "2015085400801",
+                "name": "UMMAR FARUK K.A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VALUPARAMBU",
+            "person": {
+                "id": "2015085400901",
+                "name": "JAYANTHI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MALANCHITTY",
+            "person": {
+                "id": "2015085401001",
+                "name": "GANGADHARAN P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARUTHAMTHADAM",
+            "person": {
+                "id": "2015085401101",
+                "name": "CHANDRAN R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARINJAMTHODE",
+            "person": {
+                "id": "2015085401201",
+                "name": "RATHEESH R"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHIMBUKAD",
+            "person": {
+                "id": "2015085401301",
+                "name": "REGHA R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KARADIYAMPARA",
+            "person": {
+                "id": "2015085401401",
+                "name": "SANDHYA MOL"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALATHARA",
+            "person": {
+                "id": "2015085401501",
+                "name": "MAYA P.A"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PEZHUMKODE",
+            "person": {
+                "id": "2015085401601",
+                "name": "MANIKANDAN M"
+            }
+        }
+    ]
+}

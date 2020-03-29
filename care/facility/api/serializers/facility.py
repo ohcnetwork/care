@@ -4,17 +4,25 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
-from care.facility.models import FACILITY_TYPES, Facility
-from care.users.models import DISTRICT_CHOICES
+from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from config.serializers import ChoiceField
 
 User = get_user_model()
 
 
+class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
+    local_body = LocalBodySerializer()
+    district = DistrictSerializer()
+
+    class Meta:
+        model = FacilityLocalGovtBody
+        fields = "__all__"
+
+
 class FacilitySerializer(serializers.ModelSerializer):
     """Serializer for facility.models.Facility."""
 
-    district = ChoiceField(choices=DISTRICT_CHOICES)
     facility_type = ChoiceField(choices=FACILITY_TYPES)
     # A valid location => {
     #     "latitude": 49.8782482189424,
@@ -22,17 +30,26 @@ class FacilitySerializer(serializers.ModelSerializer):
     # }
     location = PointField(required=False)
 
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    district_object = DistrictSerializer(source="district", read_only=True)
+    state_object = StateSerializer(source="state", read_only=True)
+
     class Meta:
         model = Facility
         fields = [
             "id",
             "name",
+            "local_body",
             "district",
+            "state",
             "facility_type",
             "address",
             "location",
             "oxygen_capacity",
             "phone_number",
+            "local_body_object",
+            "district_object",
+            "state_object",
         ]
 
 
@@ -49,7 +66,9 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "local_body",
             "district",
+            "state",
             "facility_type",
             "address",
             "location",
@@ -78,6 +97,7 @@ class FacilityUpsertSerializer(serializers.ModelSerializer):
         else:
             if facility.created_by != user and not user.is_superuser:
                 raise PermissionDenied(f"{facility} is owned by another user")
+
             for k, v in validated_data.items():
                 setattr(facility, k, v)
             facility.save()

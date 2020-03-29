@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349329506,
+    "date": "2019-08-21",
+    "name": "Kolachery  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Irikkur",
+    "area": "20.72km",
+    "localbody_code": "G130608",
+    "no_of_wards": 17,
+    "population": 23053,
+    "male": 11163,
+    "female": 11890,
+    "population_density": 1113,
+    "sex_ratio": 1065,
+    "literacy_rate": 88,
+    "literacy_rate_male": 94.73,
+    "literacy_rate_female": 81.75,
+    "president": "KTHAHIRA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAMBURUTHI",
+            "person": {
+                "id": "2015112500101",
+                "name": "K THAHIRA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAMBIL",
+            "person": {
+                "id": "2015112500201",
+                "name": "SHAMEEMA T.V."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PANNIYANKANDI",
+            "person": {
+                "id": "2015112500301",
+                "name": "SAREENA K.M.P."
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NANIYUR",
+            "person": {
+                "id": "2015112500401",
+                "name": "PRAMEELA K."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLACHERY",
+            "person": {
+                "id": "2015112500501",
+                "name": "GOURI M."
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUMACHERY",
+            "person": {
+                "id": "2015112500601",
+                "name": "P.V. VALSAN MASTER"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KODIPOYIL",
+            "person": {
+                "id": "2015112500701",
+                "name": "P NABEESA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PALLIPARAMBA",
+            "person": {
+                "id": "2015112500801",
+                "name": "SHARAFUNNISA P."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KAYACHIRA",
+            "person": {
+                "id": "2015112500901",
+                "name": "NISAR L."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHELERI",
+            "person": {
+                "id": "2015112501001",
+                "name": "ANITHA K."
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NOONHERI",
+            "person": {
+                "id": "2015112501101",
+                "name": "K.C.P. FOUSIYA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KARAYAPPU",
+            "person": {
+                "id": "2015112501201",
+                "name": "SHAHUL HAMEED K."
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHELERI CENTRAL",
+            "person": {
+                "id": "2015112501301",
+                "name": "CHANDRA BHANU K.P."
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VALAVIL CHELERI",
+            "person": {
+                "id": "2015112501401",
+                "name": "M.V. NARAYANAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "EDAKKAI",
+            "person": {
+                "id": "2015112501501",
+                "name": "INDIRA P."
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOLACHERI PARAMBA",
+            "person": {
+                "id": "2015112501601",
+                "name": "M ANANDAN MASTER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PATTAYAM",
+            "person": {
+                "id": "2015112501701",
+                "name": "MUHAMMED HANEEFA"
+            }
+        }
+    ]
+}

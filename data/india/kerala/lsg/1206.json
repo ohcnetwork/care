@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349593764,
+    "date": "2019-08-21",
+    "name": "Cheruvathur  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Neeleswaram",
+    "area": "18.37km",
+    "localbody_code": "G140601",
+    "no_of_wards": 17,
+    "population": 24504,
+    "male": 11742,
+    "female": 12762,
+    "population_density": 1334,
+    "sex_ratio": 1078,
+    "literacy_rate": 88.16,
+    "literacy_rate_male": 94.29,
+    "literacy_rate_female": 82.62,
+    "president": "MADHAVANMANIYARA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "ACHAMTHURUTHI",
+            "person": {
+                "id": "2015120600101",
+                "name": "SREEJA K P"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PATHIKKAL",
+            "person": {
+                "id": "2015120600201",
+                "name": "PRAMEELA C V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIYIL",
+            "person": {
+                "id": "2015120600301",
+                "name": "NARAYANAN O V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MAYICHA",
+            "person": {
+                "id": "2015120600401",
+                "name": "KUNHIRAMAN K V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MUNDAKKANDAM",
+            "person": {
+                "id": "2015120600501",
+                "name": "JAYASREE M V"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOVVAL",
+            "person": {
+                "id": "2015120600601",
+                "name": "MADHAVAN MANIYARA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "V V NAGAR",
+            "person": {
+                "id": "2015120600701",
+                "name": "MADHAVI KRISHNAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PONMALAM",
+            "person": {
+                "id": "2015120600801",
+                "name": "VIJAYAN P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KUTTAMATH",
+            "person": {
+                "id": "2015120600901",
+                "name": "SATHYABHAMA K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERUVATHUR",
+            "person": {
+                "id": "2015120601001",
+                "name": "NARAYANAN K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VENGAT",
+            "person": {
+                "id": "2015120601101",
+                "name": "MINI MOL P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANNAMKAI",
+            "person": {
+                "id": "2015120601201",
+                "name": "THANKAMNI V V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KAITHAKKAD",
+            "person": {
+                "id": "2015120601301",
+                "name": "ANOOP KUMAR K P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KADANGOD",
+            "person": {
+                "id": "2015120601401",
+                "name": "YOUSEF M"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NELLIKKAL",
+            "person": {
+                "id": "2015120601501",
+                "name": "RAVEENDRAN T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THURUTHI",
+            "person": {
+                "id": "2015120601601",
+                "name": "NAFEESATH NASAR"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ORKKULAM",
+            "person": {
+                "id": "2015120601701",
+                "name": "VALSALA P"
+            }
+        }
+    ]
+}

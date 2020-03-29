@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346658182,
+    "date": "2019-08-21",
+    "name": "Pathiyoor  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Muthukulam",
+    "area": "16.27km",
+    "localbody_code": "G041201",
+    "no_of_wards": 19,
+    "population": 30281,
+    "male": 14639,
+    "female": 15642,
+    "population_density": 1861,
+    "sex_ratio": 1069,
+    "literacy_rate": 94,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 91,
+    "president": "V.PRABHAKARAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RAMAPURAM VADAKKU",
+            "person": {
+                "id": "2015049200101",
+                "name": "VEENA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EVOOR THEKKU",
+            "person": {
+                "id": "2015049200201",
+                "name": "USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "S R K V L P S WARD",
+            "person": {
+                "id": "2015049200301",
+                "name": "LEELA GOKUL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PATHIYOORKALA",
+            "person": {
+                "id": "2015049200401",
+                "name": "RAJAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATHIYOOR KSHETHRAM",
+            "person": {
+                "id": "2015049200501",
+                "name": "RAMANI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "P H C WARD",
+            "person": {
+                "id": "2015049200601",
+                "name": "DEEPA (AMBILI)"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ARATTUKULANGARA",
+            "person": {
+                "id": "2015049200701",
+                "name": "K.SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PATHIYOORTHOTTAM",
+            "person": {
+                "id": "2015049200801",
+                "name": "V.PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "BHAGAVATHIPPADY",
+            "person": {
+                "id": "2015049200901",
+                "name": "AJITHA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ERUVA KIZHAKKU",
+            "person": {
+                "id": "2015049201001",
+                "name": "PRAKASH KUMAR G (BIJU)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUTTIKULANGARA",
+            "person": {
+                "id": "2015049201101",
+                "name": "N.RAJASEKHARAN PILLAI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ERUVA",
+            "person": {
+                "id": "2015049201201",
+                "name": "I JAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PATHIYOOR PADINJARU",
+            "person": {
+                "id": "2015049201301",
+                "name": "PATHIYOOR NAZAR"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "SPINNING MILL",
+            "person": {
+                "id": "2015049201401",
+                "name": "RAHIM KOPPARA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VERUVALLY BHAGAM",
+            "person": {
+                "id": "2015049201501",
+                "name": "BINDHU ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MALAMELBHAGAM",
+            "person": {
+                "id": "2015049201601",
+                "name": "KRISHNA PILLAI (KITTU)"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARUVATTUMKUZHY",
+            "person": {
+                "id": "2015049201701",
+                "name": "P.D.SUNIL"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KALARIKKAL",
+            "person": {
+                "id": "2015049201801",
+                "name": "PRASANNA T"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "RAMAPURAM THEKKU",
+            "person": {
+                "id": "2015049201901",
+                "name": "SOUMYA SYAM"
+            }
+        }
+    ]
+}

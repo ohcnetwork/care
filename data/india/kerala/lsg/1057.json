@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566349065899,
+    "date": "2019-08-21",
+    "name": "Mavoor  Grama Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Kunnamangalam",
+    "area": "20.48km",
+    "localbody_code": "G111103",
+    "no_of_wards": 18,
+    "population": 26144,
+    "male": 13166,
+    "female": 12978,
+    "population_density": 1277,
+    "sex_ratio": 986,
+    "literacy_rate": 92.84,
+    "literacy_rate_male": 96.38,
+    "literacy_rate_female": 89.26,
+    "president": "MUNEERATHC",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MALAPRAM",
+            "person": {
+                "id": "2015105700101",
+                "name": "UNNIKRISHNAN T"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VALAYANNUR",
+            "person": {
+                "id": "2015105700201",
+                "name": "SUNEESH E.T."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHERUPPA",
+            "person": {
+                "id": "2015105700301",
+                "name": "ABDUL GAFOOR U"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KUTTIKADAVU",
+            "person": {
+                "id": "2015105700401",
+                "name": "MUNEERATH C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THENGILAKADAVU",
+            "person": {
+                "id": "2015105700501",
+                "name": "K USMAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MECHERIKUNNU",
+            "person": {
+                "id": "2015105700601",
+                "name": "RAJI P.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANNIPARAMBA",
+            "person": {
+                "id": "2015105700701",
+                "name": "KAVITHA BHAI K"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ADUVAD",
+            "person": {
+                "id": "2015105700801",
+                "name": "ANOOP K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOTAKUNNU",
+            "person": {
+                "id": "2015105700901",
+                "name": "UNNIKRISHNAN K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANIYATH",
+            "person": {
+                "id": "2015105701001",
+                "name": "JAYASREE P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THATHOORPOYIL",
+            "person": {
+                "id": "2015105701101",
+                "name": "VASANTHY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MAVOOR",
+            "person": {
+                "id": "2015105701201",
+                "name": "SUBAIDA KANNARA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAMMAL",
+            "person": {
+                "id": "2015105701301",
+                "name": "MIMOONA K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KACHERIKUNNU",
+            "person": {
+                "id": "2015105701401",
+                "name": "ABDUL RAZAK"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KALPALLI",
+            "person": {
+                "id": "2015105701501",
+                "name": "SAJITHA P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "AYAMKULAM",
+            "person": {
+                "id": "2015105701601",
+                "name": "SURESH PUTHUKKUDI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KIZHAKKE KAYALAMA",
+            "person": {
+                "id": "2015105701701",
+                "name": "SUNIL KUMAR M"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MANAKKAD",
+            "person": {
+                "id": "2015105701801",
+                "name": "SUDHA C"
+            }
+        }
+    ]
+}

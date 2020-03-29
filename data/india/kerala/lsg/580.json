@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346950500,
+    "date": "2019-08-21",
+    "name": "Kanthalloor  Grama Panchayat, Idukki District",
+    "district": "Idukki",
+    "block": "Devikulam",
+    "area": "116.29km",
+    "localbody_code": "G060203",
+    "no_of_wards": 13,
+    "population": 10265,
+    "male": 5272,
+    "female": 4993,
+    "population_density": 88,
+    "sex_ratio": 947,
+    "literacy_rate": 71,
+    "literacy_rate_male": 78,
+    "literacy_rate_female": 64,
+    "president": "DAISYRANIRAJENDRAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALAPETTY",
+            "person": {
+                "id": "2015058000101",
+                "name": "DAISY RANI RAJENDRAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PERADIPALLAM",
+            "person": {
+                "id": "2015058000201",
+                "name": "ANISH.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KEEZHANTHOOR",
+            "person": {
+                "id": "2015058000301",
+                "name": "MAHALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHENKALAR",
+            "person": {
+                "id": "2015058000401",
+                "name": "MALLIKA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANTHALLOOR",
+            "person": {
+                "id": "2015058000501",
+                "name": "MALLIKA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTHOOR",
+            "person": {
+                "id": "2015058000601",
+                "name": "KRUPA VINCENT"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PERUMALA",
+            "person": {
+                "id": "2015058000701",
+                "name": "KALAVATHI ELANGO"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KARSANADU",
+            "person": {
+                "id": "2015058000801",
+                "name": "SIVANRAJ.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MISSIONVAYAL",
+            "person": {
+                "id": "2015058000901",
+                "name": "SELVAKUMAR.S"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "DENDUKOMBU",
+            "person": {
+                "id": "2015058001001",
+                "name": "REVATHI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOVILKADAVU",
+            "person": {
+                "id": "2015058001101",
+                "name": "MURUGAN.P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PIUSNAGAR",
+            "person": {
+                "id": "2015058001201",
+                "name": "VANITHA.M"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHURAKULAM",
+            "person": {
+                "id": "2015058001301",
+                "name": "SUBHA BENNY"
+            }
+        }
+    ]
+}

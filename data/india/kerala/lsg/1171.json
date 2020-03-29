@@ -1,0 +1,124 @@
+{
+    "timeStamp": 1566349486644,
+    "date": "2019-08-21",
+    "name": "Kelakam  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Peravoor",
+    "area": "77.92km",
+    "localbody_code": "G131102",
+    "no_of_wards": 13,
+    "population": 15787,
+    "male": 7992,
+    "female": 7795,
+    "population_density": 203,
+    "sex_ratio": 975,
+    "literacy_rate": 92.18,
+    "literacy_rate_male": 94.19,
+    "literacy_rate_female": 90.12,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNDERI",
+            "person": {
+                "id": "2015117100101",
+                "name": "MANOHARAN MARADI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THULLAL",
+            "person": {
+                "id": "2015117100201",
+                "name": "THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ILLIMUKKU",
+            "person": {
+                "id": "2015117100301",
+                "name": "JANCY THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHETTIAMPARAMBA",
+            "person": {
+                "id": "2015117100401",
+                "name": "LEELAMMA ALIAS"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VENDEKKUMCHAL",
+            "person": {
+                "id": "2015117100501",
+                "name": "V.T.THOMAS"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "NARANGATHATTU",
+            "person": {
+                "id": "2015117100601",
+                "name": "ASHRAF"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "SANTHIGIRI",
+            "person": {
+                "id": "2015117100701",
+                "name": "SINDHU MANKUTTATHIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ADAKKATHODE",
+            "person": {
+                "id": "2015117100801",
+                "name": "RAJAN ADUKKOLIL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POYYAMALA",
+            "person": {
+                "id": "2015117100901",
+                "name": "JOY VELUPUZHAKKAL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "VELLOONNY",
+            "person": {
+                "id": "2015117101001",
+                "name": "LISSY JOSEPH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POOVATHINCHOLA",
+            "person": {
+                "id": "2015117101101",
+                "name": "THANKAMMA SCARIA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANHALAMPURAM",
+            "person": {
+                "id": "2015117101201",
+                "name": "MAIDHILY RAMANAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KELAKAM",
+            "person": {
+                "id": "2015117101301",
+                "name": "SANTHA P.V"
+            }
+        }
+    ]
+}

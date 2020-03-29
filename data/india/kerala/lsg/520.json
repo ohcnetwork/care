@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346764583,
+    "date": "2019-08-21",
+    "name": "Kanakkary  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Uzhavoor",
+    "area": "23.23km",
+    "localbody_code": "G050403",
+    "no_of_wards": 15,
+    "population": 20585,
+    "male": 10153,
+    "female": 10432,
+    "population_density": 886,
+    "sex_ratio": 1027,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 94,
+    "president": "BINOYPCHERIAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KALATHOOR",
+            "person": {
+                "id": "2015052000101",
+                "name": "CHERIYAN MATHEW (SANTY MATTATHIL)"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VEMPALLY",
+            "person": {
+                "id": "2015052000201",
+                "name": "SELIMA SIBI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARIMPUMKALA",
+            "person": {
+                "id": "2015052000301",
+                "name": "ANITHA JAYAMOHAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VATTUKULAM",
+            "person": {
+                "id": "2015052000401",
+                "name": "K.S.DIVAKARAN KAPPILORATHU"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADAPPOOR",
+            "person": {
+                "id": "2015052000501",
+                "name": "JOMOL"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MUTHIRAKKALA",
+            "person": {
+                "id": "2015052000601",
+                "name": "VINU VASUDEVAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "RETNAGIRI",
+            "person": {
+                "id": "2015052000701",
+                "name": "ROY  CHANAKAPPARA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PATTITHANAM",
+            "person": {
+                "id": "2015052000801",
+                "name": "BINOY  P  CHERIAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KALARIPPADI",
+            "person": {
+                "id": "2015052000901",
+                "name": "BLESSY  S  MARIA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KANAKKARY",
+            "person": {
+                "id": "2015052001001",
+                "name": "LOVELY MOL VARGHESE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHATHAMALA",
+            "person": {
+                "id": "2015052001101",
+                "name": "MINI MOL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VEDAGIRI",
+            "person": {
+                "id": "2015052001201",
+                "name": "JAIN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KURUMULLOOR",
+            "person": {
+                "id": "2015052001301",
+                "name": "MINU MANOJ"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KALLAMPARA",
+            "person": {
+                "id": "2015052001401",
+                "name": "JESSY MATHEW"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NAMBIAKULAM",
+            "person": {
+                "id": "2015052001501",
+                "name": "JINI JOJI"
+            }
+        }
+    ]
+}

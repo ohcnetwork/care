@@ -1,0 +1,164 @@
+{
+    "timeStamp": 1566347104659,
+    "date": "2019-08-21",
+    "name": "Chittattukara  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Paravur",
+    "area": "9.46km",
+    "localbody_code": "G070105",
+    "no_of_wards": 18,
+    "population": 25320,
+    "male": 12244,
+    "female": 13076,
+    "population_density": 2677,
+    "sex_ratio": 1068,
+    "literacy_rate": 92.37,
+    "literacy_rate_male": 95.59,
+    "literacy_rate_female": 89.39,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MACHAMTHURUTH",
+            "person": {
+                "id": "2015062800101",
+                "name": "M P PAULSON"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ALAMTHURUTH",
+            "person": {
+                "id": "2015062800201",
+                "name": "NISHAD A I"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "NEENDOOR NORTH(HEAD QUARTERS WARD)",
+            "person": {
+                "id": "2015062800301",
+                "name": "SAJEEV"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PARAYAKAD",
+            "person": {
+                "id": "2015062800401",
+                "name": "C U CHINNAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VALIYAPALLAMTHURUTH",
+            "person": {
+                "id": "2015062800501",
+                "name": "JAIN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PARAVOOTHARA",
+            "person": {
+                "id": "2015062800601",
+                "name": "VANAJA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MAKKANAI",
+            "person": {
+                "id": "2015062800701",
+                "name": "VIJAYALAKSHMI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THOPPU",
+            "person": {
+                "id": "2015062800801",
+                "name": "JASMIN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THANNIPPADAM",
+            "person": {
+                "id": "2015062800901",
+                "name": "BEENA"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "CHERIYAPALLAMTHURUTH NORTH",
+            "person": {
+                "id": "2015062801001",
+                "name": "AROOSH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHERIYAPALLAMTHURUTH SOUTH",
+            "person": {
+                "id": "2015062801101",
+                "name": "SUNITHA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NEENDOOR SOUTH",
+            "person": {
+                "id": "2015062801201",
+                "name": "MAYADEVI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHITTATTUKARA",
+            "person": {
+                "id": "2015062801301",
+                "name": "REKHA"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "POOYAPPILLY",
+            "person": {
+                "id": "2015062801401",
+                "name": "NEELAMBARAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PATTANAM MUSSARIS",
+            "person": {
+                "id": "2015062801501",
+                "name": "JIBEESH"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PATTANAM CENTER",
+            "person": {
+                "id": "2015062801601",
+                "name": "AMEER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "PATTANAM WEST",
+            "person": {
+                "id": "2015062801701",
+                "name": "TREESA BABU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PATTANAM NORTH",
+            "person": {
+                "id": "2015062801801",
+                "name": "SIMNA"
+            }
+        }
+    ]
+}

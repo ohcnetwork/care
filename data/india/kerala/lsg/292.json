@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566345932724,
+    "date": "2019-08-21",
+    "name": "Kanjiramkulam  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Athiyannoor",
+    "area": "10.36km",
+    "localbody_code": "G011002",
+    "no_of_wards": 14,
+    "population": 17191,
+    "male": 8706,
+    "female": 8485,
+    "population_density": 1659,
+    "sex_ratio": 975,
+    "literacy_rate": 90.2,
+    "literacy_rate_male": 92.64,
+    "literacy_rate_female": 87.73,
+    "president": "RAVI.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAZHIVOOR",
+            "person": {
+                "id": "2015029200101",
+                "name": "SASIKALA KUMARI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KAIVANVILA",
+            "person": {
+                "id": "2015029200201",
+                "name": "SHAILAJAKUMARI.B"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THADATHIKULAM",
+            "person": {
+                "id": "2015029200301",
+                "name": "RAVI.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MOONUMUKKU",
+            "person": {
+                "id": "2015029200401",
+                "name": "RETHIDEVI.S.R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANJIRAMKULAM TOWN",
+            "person": {
+                "id": "2015029200501",
+                "name": "ADV.SUNEESH.D"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHEENIVILA",
+            "person": {
+                "id": "2015029200601",
+                "name": "CISILET BAI.C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NELLIKKAKUZHI",
+            "person": {
+                "id": "2015029200701",
+                "name": "WILFRED.C"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUZHAKKOLKUNNU",
+            "person": {
+                "id": "2015029200801",
+                "name": "THANKARAJ.R"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHANI",
+            "person": {
+                "id": "2015029200901",
+                "name": "PRASANNAKUMARI D"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "LOURDEPURAM",
+            "person": {
+                "id": "2015029201001",
+                "name": "SARASI KUTTAPPAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAVILA",
+            "person": {
+                "id": "2015029201101",
+                "name": "JAYAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NEDIYAKALA",
+            "person": {
+                "id": "2015029201201",
+                "name": "VALSA.J"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KARICHAL",
+            "person": {
+                "id": "2015029201301",
+                "name": "BINDHU.R.R"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "OOTTARA",
+            "person": {
+                "id": "2015029201401",
+                "name": "S.SREEKUMAR"
+            }
+        }
+    ]
+}

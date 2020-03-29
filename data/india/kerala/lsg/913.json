@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348576863,
+    "date": "2019-08-21",
+    "name": "Wandoor  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "59.45km",
+    "localbody_code": "G100306",
+    "no_of_wards": 23,
+    "population": 35748,
+    "male": 17544,
+    "female": 18204,
+    "population_density": 601,
+    "sex_ratio": 1038,
+    "literacy_rate": 88.37,
+    "literacy_rate_male": 92.72,
+    "literacy_rate_female": 84.03,
+    "president": "ROSHNI.K",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANHIRAMPADAM",
+            "person": {
+                "id": "2015091300101",
+                "name": "VELAYUDHAN.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIMBANTHODI",
+            "person": {
+                "id": "2015091300201",
+                "name": "SATHISH.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARAD",
+            "person": {
+                "id": "2015091300301",
+                "name": "SHEELA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KELEMPADAM",
+            "person": {
+                "id": "2015091300401",
+                "name": "ROSHNI.K"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "SHANTHINAGAR",
+            "person": {
+                "id": "2015091300501",
+                "name": "M.RAMACHANDRAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "EMANGAD",
+            "person": {
+                "id": "2015091300601",
+                "name": "MAHAMOOD"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VARAMBANKALLU",
+            "person": {
+                "id": "2015091300701",
+                "name": "DHANYA.M"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KOORAD",
+            "person": {
+                "id": "2015091300801",
+                "name": "M.MUHAMMED ALI"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MUDAPPILASSERI",
+            "person": {
+                "id": "2015091300901",
+                "name": "BABY KAMALAM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MADASSERI",
+            "person": {
+                "id": "2015091301001",
+                "name": "SALEENA.M"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VANIYAMBALAM",
+            "person": {
+                "id": "2015091301101",
+                "name": "RAMLATH"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUTTIYIL",
+            "person": {
+                "id": "2015091301201",
+                "name": "KADEEJA.C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHETTIYARAMMAL",
+            "person": {
+                "id": "2015091301301",
+                "name": "SAJITHA.K.K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MARAKKALAMKUNNU",
+            "person": {
+                "id": "2015091301401",
+                "name": "T.K.SANOJ"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLIKUNNU",
+            "person": {
+                "id": "2015091301501",
+                "name": "ABDUL NASAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THACHUNNI",
+            "person": {
+                "id": "2015091301601",
+                "name": "MURALI ELAMBRA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KARUNALAYAPADI",
+            "person": {
+                "id": "2015091301701",
+                "name": "K.PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "AMBALAPPADI",
+            "person": {
+                "id": "2015091301801",
+                "name": "RADHIKA"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "WANDOOR TOWN",
+            "person": {
+                "id": "2015091301901",
+                "name": "SAJITHA"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PAZHAYA VANIYAMBALAM",
+            "person": {
+                "id": "2015091302001",
+                "name": "NISHA.T.K"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "VELLAMPURAM",
+            "person": {
+                "id": "2015091302101",
+                "name": "SAJITHA SHAJU"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "POTTIPPARA",
+            "person": {
+                "id": "2015091302201",
+                "name": "VIMALA"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "KAPPIL",
+            "person": {
+                "id": "2015091302301",
+                "name": "JAMSHEER.C.T"
+            }
+        }
+    ]
+}

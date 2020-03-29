@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348562090,
+    "date": "2019-08-21",
+    "name": "Thrikkalangodu  Grama Panchayat, Malappuram District",
+    "district": "Malappuram",
+    "block": "Wandoor",
+    "area": "59.9km",
+    "localbody_code": "G100304",
+    "no_of_wards": 23,
+    "population": 36257,
+    "male": 17837,
+    "female": 18420,
+    "population_density": 605,
+    "sex_ratio": 1033,
+    "literacy_rate": 91.23,
+    "literacy_rate_male": 94.2,
+    "literacy_rate_female": 88.31,
+    "president": "MAMMEDKOYANELLIPARAMBAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PULINGOTTUPURAM",
+            "person": {
+                "id": "2015091000101",
+                "name": "MANJUSHA. U.K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AMAYOOR",
+            "person": {
+                "id": "2015091000201",
+                "name": "VENU PRAKKUNNU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANDALAPPATTA",
+            "person": {
+                "id": "2015091000301",
+                "name": "ABDUL MAJEED PALAKKAL"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERUPALLI",
+            "person": {
+                "id": "2015091000401",
+                "name": "ABOOBACKAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARAKKUNNU JUNCTION",
+            "person": {
+                "id": "2015091000501",
+                "name": "N.P MUHAMMED"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KARAKKUNNU 34",
+            "person": {
+                "id": "2015091000601",
+                "name": "MAMMED KOYA NELLIPARAMBAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PAZHEDAM",
+            "person": {
+                "id": "2015091000701",
+                "name": "AMINA. T.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PULATH",
+            "person": {
+                "id": "2015091000801",
+                "name": "SHAHAR BANU E.P"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAKKAD",
+            "person": {
+                "id": "2015091000901",
+                "name": "DEVAYANI"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PATHIRIKKODE",
+            "person": {
+                "id": "2015091001001",
+                "name": "SUNIMOL"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PELEPPURAM",
+            "person": {
+                "id": "2015091001101",
+                "name": "FATHIMA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHARANKAVU",
+            "person": {
+                "id": "2015091001201",
+                "name": "BHASKARAN .C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERUKULAM",
+            "person": {
+                "id": "2015091001301",
+                "name": "NUSAIBA USMAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUTTASSERI",
+            "person": {
+                "id": "2015091001401",
+                "name": "RAJLA P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MAILOOTH",
+            "person": {
+                "id": "2015091001501",
+                "name": "VIJEESH .C"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERAMKUTH",
+            "person": {
+                "id": "2015091001601",
+                "name": "VIMALA .P.M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MANHAPPATTA",
+            "person": {
+                "id": "2015091001701",
+                "name": "RANJIMA .P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOOMAMKULAM",
+            "person": {
+                "id": "2015091001801",
+                "name": "SINI MATHEW"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "AYYAMKODE",
+            "person": {
+                "id": "2015091001901",
+                "name": "ABDUL SALAM"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KARIKKADU",
+            "person": {
+                "id": "2015091002001",
+                "name": "K.P. SUDHEESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "THRIKKALANGODE",
+            "person": {
+                "id": "2015091002101",
+                "name": "AJITHA KALANGODIPARAMP"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "MARATHANI",
+            "person": {
+                "id": "2015091002201",
+                "name": "YOOSAF MECHERI"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "ANAKKOTTUPURAM",
+            "person": {
+                "id": "2015091002301",
+                "name": "MOIDEEN MOOLATH"
+            }
+        }
+    ]
+}

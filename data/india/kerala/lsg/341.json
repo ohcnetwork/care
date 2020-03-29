@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346087286,
+    "date": "2019-08-21",
+    "name": "Neduvathoor  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Kottarakara",
+    "area": "22.27km",
+    "localbody_code": "G020605",
+    "no_of_wards": 18,
+    "population": 26186,
+    "male": 12655,
+    "female": 13531,
+    "population_density": 1176,
+    "sex_ratio": 1069,
+    "literacy_rate": 93.23,
+    "literacy_rate_male": 96.09,
+    "literacy_rate_female": 90.6,
+    "president": "K.P.SREEKALA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THEKKUMPURAM",
+            "person": {
+                "id": "2015034100102",
+                "name": "OMANA SUDHAKARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARUVAYAM",
+            "person": {
+                "id": "2015034100201",
+                "name": "VIDHYA.V"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THEVALAPPURAM",
+            "person": {
+                "id": "2015034100301",
+                "name": "R.SURESH KUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTATHALA",
+            "person": {
+                "id": "2015034100401",
+                "name": "S.MANJUSHA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "AVANOOR",
+            "person": {
+                "id": "2015034100501",
+                "name": "M.C.RAMANI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "VALLOM",
+            "person": {
+                "id": "2015034100601",
+                "name": "UNNIKRISHNA PILLAI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KURUMPALOOR",
+            "person": {
+                "id": "2015034100701",
+                "name": "SINDHU.A"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "CHALOOKONAM",
+            "person": {
+                "id": "2015034100801",
+                "name": "K.R.OMANAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NEELESWARAM",
+            "person": {
+                "id": "2015034100901",
+                "name": "JALAJA SURESH"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PINATTINMOODU",
+            "person": {
+                "id": "2015034101001",
+                "name": "K.UDAYAKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ANNOOR",
+            "person": {
+                "id": "2015034101101",
+                "name": "K.P. SREEKALA"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VENMANNOOR",
+            "person": {
+                "id": "2015034101201",
+                "name": "N.SALEELA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEDUVATHOOR",
+            "person": {
+                "id": "2015034101301",
+                "name": "JAYALEKSHMI"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "ANAKOTTOOR",
+            "person": {
+                "id": "2015034101401",
+                "name": "BHAVANA"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANAKOTTOOR WEST",
+            "person": {
+                "id": "2015034101501",
+                "name": "ANILKUMAR.D"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PULLAMALA",
+            "person": {
+                "id": "2015034101601",
+                "name": "V.K.JYOTHI"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUZHAKKADU",
+            "person": {
+                "id": "2015034101701",
+                "name": "USHAKUMARI"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KALLELIL",
+            "person": {
+                "id": "2015034101801",
+                "name": "VIJAYAN PILLAI"
+            }
+        }
+    ]
+}

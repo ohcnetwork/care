@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566347495344,
+    "date": "2019-08-21",
+    "name": "VallatholNagar  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Pazhayannur",
+    "area": "19.87km",
+    "localbody_code": "G080402",
+    "no_of_wards": 16,
+    "population": 21099,
+    "male": 10105,
+    "female": 10994,
+    "population_density": 1062,
+    "sex_ratio": 1088,
+    "literacy_rate": 84.78,
+    "literacy_rate_male": 89.83,
+    "literacy_rate_female": 80.2,
+    "president": "PADMAJAP",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PALLAM",
+            "person": {
+                "id": "2015073500101",
+                "name": "ALI E .K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PUDUSSERY MANAPPADI",
+            "person": {
+                "id": "2015073500201",
+                "name": "ANIL K.P"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MUESIUM",
+            "person": {
+                "id": "2015073500301",
+                "name": "PADMAJA P"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHERUTHURUTHY TOWN",
+            "person": {
+                "id": "2015073500401",
+                "name": "RADHA T N"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MECHERI",
+            "person": {
+                "id": "2015073500501",
+                "name": "PRATHEESH KUMAR A K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KULAMBU",
+            "person": {
+                "id": "2015073500601",
+                "name": "VINEETHA BABU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALAMANDALAM",
+            "person": {
+                "id": "2015073500701",
+                "name": "GIRISH KUMAR K R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VETTIKATTIRI",
+            "person": {
+                "id": "2015073500801",
+                "name": "NISHA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "THAZHAPRA",
+            "person": {
+                "id": "2015073500901",
+                "name": "ALI P K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NEDUMPURA",
+            "person": {
+                "id": "2015073501001",
+                "name": "SHEEJA T"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PANNIYADI",
+            "person": {
+                "id": "2015073501101",
+                "name": "KRISHNAKUMARI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "PALLIKKAL SCHOOL",
+            "person": {
+                "id": "2015073501201",
+                "name": "NARAYANAN V"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHERUTHURUTHY SCHOOL",
+            "person": {
+                "id": "2015073501301",
+                "name": "ABDUL SALEEM P T"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "YATHEEMKHANA",
+            "person": {
+                "id": "2015073501402",
+                "name": "NIRMALADEVI P"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "CHEYIKAL",
+            "person": {
+                "id": "2015073501501",
+                "name": "AJITHA RAVIKUMAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PUDUSSERY",
+            "person": {
+                "id": "2015073501601",
+                "name": "SULAIMAN M"
+            }
+        }
+    ]
+}

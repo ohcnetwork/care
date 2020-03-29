@@ -1,0 +1,165 @@
+{
+    "timeStamp": 1566346851832,
+    "date": "2019-08-21",
+    "name": "Puthuppally  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pallom",
+    "area": "22.4km",
+    "localbody_code": "G050802",
+    "no_of_wards": 18,
+    "population": 27701,
+    "male": 13597,
+    "female": 14104,
+    "population_density": 1237,
+    "sex_ratio": 1037,
+    "literacy_rate": 97,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 96,
+    "president": "NIBUJOHNTHOMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "RUBBER BOARD",
+            "person": {
+                "id": "2015055000101",
+                "name": "KOCHUMON"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "THALAPPADY",
+            "person": {
+                "id": "2015055000201",
+                "name": "SANTHAMMA THOMAS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELLOOKUTTA",
+            "person": {
+                "id": "2015055000301",
+                "name": "RACHEL KURIAN (SONIA)"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VENNIMALA",
+            "person": {
+                "id": "2015055000401",
+                "name": "JITHIN GEORGE"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PAYYAPPADI",
+            "person": {
+                "id": "2015055000501",
+                "name": "RUBY PAPPACHAN"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KANJIRATHUM MOODU",
+            "person": {
+                "id": "2015055000601",
+                "name": "HONEY JINU"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHUPPALLY TOWN",
+            "person": {
+                "id": "2015055000701",
+                "name": "JESSY BENCY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PINNAKKUMALA",
+            "person": {
+                "id": "2015055000801",
+                "name": "USHA PRASANNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PONGANPARA",
+            "person": {
+                "id": "2015055000901",
+                "name": "SAM K VARKEY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THOTTAKKADU",
+            "person": {
+                "id": "2015055001001",
+                "name": "SAJI P SKARIA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PARIYARAM",
+            "person": {
+                "id": "2015055001101",
+                "name": "SATHEESH MATHEW"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VETTATHUKAVALA",
+            "person": {
+                "id": "2015055001201",
+                "name": "GEETHA SHIJU"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "ERICADU",
+            "person": {
+                "id": "2015055001301",
+                "name": "EAPEN M OOMMEN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KOCHALUMMOODU",
+            "person": {
+                "id": "2015055001401",
+                "name": "ALEYAMMA A Z"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "IRAVINELLOOR",
+            "person": {
+                "id": "2015055001501",
+                "name": "VALSAMMA MANI"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ANGADI",
+            "person": {
+                "id": "2015055001601",
+                "name": "NIBU JOHN THOMAS"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "ELLUKALA",
+            "person": {
+                "id": "2015055001701",
+                "name": "LATHA MOHAN"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PUMMATTAM",
+            "person": {
+                "id": "2015055001801",
+                "name": "PONNESAN K G"
+            }
+        }
+    ]
+}

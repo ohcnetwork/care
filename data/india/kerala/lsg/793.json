@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566348115654,
+    "date": "2019-08-21",
+    "name": "Aloor  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Mala",
+    "area": "34.39km",
+    "localbody_code": "G081501",
+    "no_of_wards": 23,
+    "population": 37456,
+    "male": 18178,
+    "female": 19278,
+    "population_density": 1089,
+    "sex_ratio": 1060,
+    "literacy_rate": 92.53,
+    "literacy_rate_male": 94.94,
+    "literacy_rate_female": 90.28,
+    "president": "SANDHYA.R.S",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANJAPPILLY",
+            "person": {
+                "id": "2015079300101",
+                "name": "SHAJU.K.J"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "VADAKKUMMURY",
+            "person": {
+                "id": "2015079300201",
+                "name": "STELLA WILSON"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KALLETTUMKARA NORTH",
+            "person": {
+                "id": "2015079300301",
+                "name": "USHA BABU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ANATHADAM",
+            "person": {
+                "id": "2015079300401",
+                "name": "NEETHU.K.P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KADALICHIRA",
+            "person": {
+                "id": "2015079300501",
+                "name": "LATHA.C.K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "THANIPPARA",
+            "person": {
+                "id": "2015079300601",
+                "name": "BINDHU P.S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "URUMPANKUNNU",
+            "person": {
+                "id": "2015079300701",
+                "name": "DAVIS.A.R"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VELLANCHIRA",
+            "person": {
+                "id": "2015079300801",
+                "name": "M.M.THANKAMONEY"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EAST THIRUTHIPARAMPU",
+            "person": {
+                "id": "2015079300901",
+                "name": "BINDU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "WEST THIRUTHIPARAMBU",
+            "person": {
+                "id": "2015079301001",
+                "name": "SANDHYA.R.S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KAROOR",
+            "person": {
+                "id": "2015079301101",
+                "name": "HELAN CHACKO"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KUZHIKATTUSSERY",
+            "person": {
+                "id": "2015079301201",
+                "name": "AMBIKA SIVADASAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KOMBODINJAMAKAL",
+            "person": {
+                "id": "2015079301301",
+                "name": "AJITHA K G"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PARAMBI",
+            "person": {
+                "id": "2015079301401",
+                "name": "K.M.MUJEEB"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KANNIKKARA",
+            "person": {
+                "id": "2015079301501",
+                "name": "NIXEN.C.J"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "THAZHEKAD",
+            "person": {
+                "id": "2015079301601",
+                "name": "SAVITHRI RAMANAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALLETTUMKARA SOUTH",
+            "person": {
+                "id": "2015079301701",
+                "name": "SHAJU.T.V"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "MANATTUKUNNU",
+            "person": {
+                "id": "2015079301801",
+                "name": "SUNITHA SASEENDRAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ALOOR",
+            "person": {
+                "id": "2015079301901",
+                "name": "KOCHUTHRESSIA DEVASSY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "PORUNNAKUNNU",
+            "person": {
+                "id": "2015079302001",
+                "name": "LALU.P.V"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "SHOLAYAR",
+            "person": {
+                "id": "2015079302101",
+                "name": "JUMYLA.K.K"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "KARAKKULAM",
+            "person": {
+                "id": "2015079302201",
+                "name": "MINI JOHNSON"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "VALLAKKUNNU",
+            "person": {
+                "id": "2015079302301",
+                "name": "I.K.CHANDRAN"
+            }
+        }
+    ]
+}

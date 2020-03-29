@@ -1,0 +1,181 @@
+{
+    "timeStamp": 1566348436880,
+    "date": "2019-08-21",
+    "name": "Vadakkencheri  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Alathur",
+    "area": "37.88km",
+    "localbody_code": "G091207",
+    "no_of_wards": 20,
+    "population": 31470,
+    "male": 15343,
+    "female": 16127,
+    "population_density": 831,
+    "sex_ratio": 1051,
+    "literacy_rate": 80.37,
+    "literacy_rate_male": 87.28,
+    "literacy_rate_female": 73.89,
+    "president": "ANITHAPAULSON",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PARUVASSERY",
+            "person": {
+                "id": "2015088400101",
+                "name": "P. GANGADHARAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHERUKANNAMBRA",
+            "person": {
+                "id": "2015088400201",
+                "name": "A K APPUKKUTTAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYAKKAD",
+            "person": {
+                "id": "2015088400301",
+                "name": "MANOJ. M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADUKANTHODI",
+            "person": {
+                "id": "2015088400401",
+                "name": "K VISWANATHAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VADAKKETHARA",
+            "person": {
+                "id": "2015088400501",
+                "name": "R SINDHU RAJ"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "ANJUMOORTHY",
+            "person": {
+                "id": "2015088400601",
+                "name": "PRAVEENA SANTHOSH"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MALAPPURAM",
+            "person": {
+                "id": "2015088400701",
+                "name": "M K VINOD"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THEKKETHARA",
+            "person": {
+                "id": "2015088400801",
+                "name": "VANAJA RADHAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MANGALAM",
+            "person": {
+                "id": "2015088400901",
+                "name": "K KUMARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "MICHARAMCODE",
+            "person": {
+                "id": "2015088401002",
+                "name": "RUGMANI GOPI"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "PALAYAM",
+            "person": {
+                "id": "2015088401101",
+                "name": "ANITHA PAULSON"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MANDAM",
+            "person": {
+                "id": "2015088401201",
+                "name": "N B VIJAYAKUMARI"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "GRAMAM",
+            "person": {
+                "id": "2015088401301",
+                "name": "VALSAMMA. P. K"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VADAKKENCHERY",
+            "person": {
+                "id": "2015088401401",
+                "name": "PALAYAM PRADEEP"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "PALLIKKAD",
+            "person": {
+                "id": "2015088401501",
+                "name": "REMA V"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PRADHANI",
+            "person": {
+                "id": "2015088401601",
+                "name": "C PRASAD"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KALAMKULAM",
+            "person": {
+                "id": "2015088401701",
+                "name": "C K VINU"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KURUVAI",
+            "person": {
+                "id": "2015088401801",
+                "name": "SONY BENNY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PANNIYANKARA",
+            "person": {
+                "id": "2015088401901",
+                "name": "A JOSE"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "KOLAKKOD",
+            "person": {
+                "id": "2015088402001",
+                "name": "PONNUKUTTY KANNAN"
+            }
+        }
+    ]
+}

@@ -1,0 +1,141 @@
+{
+    "timeStamp": 1566346675451,
+    "date": "2019-08-21",
+    "name": "Chempu  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Vaikom",
+    "area": "18.42km",
+    "localbody_code": "G050102",
+    "no_of_wards": 15,
+    "population": 18828,
+    "male": 9490,
+    "female": 9338,
+    "population_density": 1022,
+    "sex_ratio": 984,
+    "literacy_rate": 90,
+    "literacy_rate_male": 96,
+    "literacy_rate_female": 84,
+    "president": "CHITHRALEKHAKR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KATTIKUNNU",
+            "person": {
+                "id": "2015050000101",
+                "name": "RASHEED MANGADAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PANACKAL",
+            "person": {
+                "id": "2015050000201",
+                "name": "RAMLATH SALIM"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ELIYAMMEL",
+            "person": {
+                "id": "2015050000301",
+                "name": "SEENA BIJU"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "DR.AMBEDKAR",
+            "person": {
+                "id": "2015050000401",
+                "name": "CHITHRALEKHA K R"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALLUKUTHANKADAVU",
+            "person": {
+                "id": "2015050000501",
+                "name": "ADV.G SHEEBA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "BRAHMAMANGALAM",
+            "person": {
+                "id": "2015050000601",
+                "name": "REJI MECHERI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "CHALUNKAL",
+            "person": {
+                "id": "2015050000701",
+                "name": "VENUGOPAL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015050000801",
+                "name": "ASSA BABU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ENADI",
+            "person": {
+                "id": "2015050000901",
+                "name": "LATHA BAIJU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THURUTHUMMA",
+            "person": {
+                "id": "2015050001001",
+                "name": "M K SANILKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEMPU POSTOFFICE",
+            "person": {
+                "id": "2015050001101",
+                "name": "K K REMESAN"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHEMPU TOWN",
+            "person": {
+                "id": "2015050001201",
+                "name": "PREMDASAN M S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VIJAYODHAYAM",
+            "person": {
+                "id": "2015050001301",
+                "name": "LEKHA SURESH"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MURINJAPUZHA",
+            "person": {
+                "id": "2015050001401",
+                "name": "LATHA ASOKAN"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MAHATMAGANDHI",
+            "person": {
+                "id": "2015050001501",
+                "name": "SMITHA PRINCE"
+            }
+        }
+    ]
+}

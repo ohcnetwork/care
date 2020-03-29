@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566348141633,
+    "date": "2019-08-21",
+    "name": "Athirappilly  Grama Panchayat, Thrissur District",
+    "district": "Thrissur",
+    "block": "Chalakudy",
+    "area": "489km",
+    "localbody_code": "G081606",
+    "no_of_wards": 13,
+    "population": 9216,
+    "male": 4662,
+    "female": 4554,
+    "population_density": 19,
+    "sex_ratio": 976,
+    "literacy_rate": 76.66,
+    "literacy_rate_male": 82.57,
+    "literacy_rate_female": 70.62,
+    "president": "THANKAMMAVARGHESE",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VETTIKKUZHI",
+            "person": {
+                "id": "2015080300101",
+                "name": "SANITHA M.V"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHIKLAI",
+            "person": {
+                "id": "2015080300201",
+                "name": "JAYA THAMBY"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VYSSERY",
+            "person": {
+                "id": "2015080300301",
+                "name": "RATHEESH M.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "AROORMUZHI",
+            "person": {
+                "id": "2015080300401",
+                "name": "PUSHPANGADHAN P.M"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VETTILAPPARA",
+            "person": {
+                "id": "2015080300501",
+                "name": "PRINCY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PILLAPPARA",
+            "person": {
+                "id": "2015080300601",
+                "name": "JOSHY K.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ATHIRAPPILLY",
+            "person": {
+                "id": "2015080300701",
+                "name": "CHANDRIKA SHIBU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PERINGALKUTH",
+            "person": {
+                "id": "2015080300801",
+                "name": "RIJESH K.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PERUMPARA",
+            "person": {
+                "id": "2015080300901",
+                "name": "THANKAMMA VARGHESE"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PUTHUKKAD",
+            "person": {
+                "id": "2015080301001",
+                "name": "KARUPASAMY"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "FACTORY DIVISION",
+            "person": {
+                "id": "2015080301101",
+                "name": "KOLINCHI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "NADUPERATT",
+            "person": {
+                "id": "2015080301201",
+                "name": "NIRMALA SENTHIL"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MYLADUMPARA",
+            "person": {
+                "id": "2015080301301",
+                "name": "SARASWATHI V"
+            }
+        }
+    ]
+}

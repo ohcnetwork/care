@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566349373833,
+    "date": "2019-08-21",
+    "name": "Kadambur  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Edakkad",
+    "area": "7.95km",
+    "localbody_code": "G130603",
+    "no_of_wards": 13,
+    "population": 16441,
+    "male": 7867,
+    "female": 8574,
+    "population_density": 2068,
+    "sex_ratio": 1090,
+    "literacy_rate": 94.34,
+    "literacy_rate_male": 97.9,
+    "literacy_rate_female": 91.14,
+    "president": "GIRISANK",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PANONNERI",
+            "person": {
+                "id": "2015113900101",
+                "name": "SUMAJA K K"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "ADOOR",
+            "person": {
+                "id": "2015113900201",
+                "name": "SUJANA C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KOTTOOR",
+            "person": {
+                "id": "2015113900301",
+                "name": "RISVATH T"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KADACHIRA",
+            "person": {
+                "id": "2015113900401",
+                "name": "NISHA V P"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ORIKARA",
+            "person": {
+                "id": "2015113900501",
+                "name": "RAZACK V K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KADAMBUR",
+            "person": {
+                "id": "2015113900601",
+                "name": "PREMAVALLI P V"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KADAMBUR CENTRAL",
+            "person": {
+                "id": "2015113900701",
+                "name": "SONA K V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MANDOOL",
+            "person": {
+                "id": "2015113900801",
+                "name": "DINESHAN A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "EDAKKAD WEST",
+            "person": {
+                "id": "2015113900901",
+                "name": "KRISHNAN V"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAKKAD EAST",
+            "person": {
+                "id": "2015113901001",
+                "name": "SHYAMALA V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KANNADICHAL",
+            "person": {
+                "id": "2015113901101",
+                "name": "JAYAKUMAR T V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ADOOR CENTRAL",
+            "person": {
+                "id": "2015113901201",
+                "name": "GIRISAN K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PANONNERI WEST",
+            "person": {
+                "id": "2015113901301",
+                "name": "VIMALA DEVI A"
+            }
+        }
+    ]
+}

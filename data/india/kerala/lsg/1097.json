@@ -1,0 +1,133 @@
+{
+    "timeStamp": 1566349197168,
+    "date": "2019-08-21",
+    "name": "Ezhome  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Payyannur",
+    "area": "21km",
+    "localbody_code": "G130202",
+    "no_of_wards": 14,
+    "population": 20208,
+    "male": 10085,
+    "female": 10123,
+    "population_density": 935,
+    "sex_ratio": 1071,
+    "literacy_rate": 90.74,
+    "literacy_rate_male": 96.22,
+    "literacy_rate_female": 85.7,
+    "president": "D.VIMALA",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KANNOM",
+            "person": {
+                "id": "2015109700101",
+                "name": "A P JANARDHANAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KOTTILA",
+            "person": {
+                "id": "2015109700201",
+                "name": "ADV.N.SURESH BABU"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ONAPPARAMBA",
+            "person": {
+                "id": "2015109700301",
+                "name": "M.SAJEEVAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NARIKKODE",
+            "person": {
+                "id": "2015109700401",
+                "name": "D.VIMALA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PARAMMAL",
+            "person": {
+                "id": "2015109700501",
+                "name": "E.LEELA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTTAKKEEL",
+            "person": {
+                "id": "2015109700601",
+                "name": "I.V.USHA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "EZHOME",
+            "person": {
+                "id": "2015109700701",
+                "name": "V.PRASEEJA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "EZHOMEMOOLA",
+            "person": {
+                "id": "2015109700801",
+                "name": "SUDHAJ.A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENGAL",
+            "person": {
+                "id": "2015109700901",
+                "name": "VALSALA.C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PAZHAYANGADI",
+            "person": {
+                "id": "2015109701001",
+                "name": "REETHA.P.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERIPURAM",
+            "person": {
+                "id": "2015109701101",
+                "name": "USHA.T.P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ADUTHILA",
+            "person": {
+                "id": "2015109701201",
+                "name": "N.V.RAMAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NERUVAMBRAM",
+            "person": {
+                "id": "2015109701301",
+                "name": "C.O.PRABHAKARAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KANAYI",
+            "person": {
+                "id": "2015109701401",
+                "name": "ANILKUMAR.K.P"
+            }
+        }
+    ]
+}

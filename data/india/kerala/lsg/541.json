@@ -1,0 +1,140 @@
+{
+    "timeStamp": 1566346833133,
+    "date": "2019-08-21",
+    "name": "Akalakunnam  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pampady",
+    "area": "34.84km",
+    "localbody_code": "G050701",
+    "no_of_wards": 15,
+    "population": 19556,
+    "male": 9703,
+    "female": 9853,
+    "population_density": 561,
+    "sex_ratio": 1015,
+    "literacy_rate": 96,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 96,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PATTIYALIMATTAM",
+            "person": {
+                "id": "2015054100101",
+                "name": "SAJITHA AJI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "NELLIKUNNU",
+            "person": {
+                "id": "2015054100201",
+                "name": "ANILKUMAR B"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "THACHILANGAD",
+            "person": {
+                "id": "2015054100301",
+                "name": "GIRIJA RAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KARIMPANI",
+            "person": {
+                "id": "2015054100401",
+                "name": "SUNNY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDAMULA",
+            "person": {
+                "id": "2015054100501",
+                "name": "JIJI JOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "POOVATHILAPPU",
+            "person": {
+                "id": "2015054100601",
+                "name": "BABY THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KANJIRAMATTAM",
+            "person": {
+                "id": "2015054100701",
+                "name": "SUNIJA RAJU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KDAKUZHY",
+            "person": {
+                "id": "2015054100801",
+                "name": "SHERLY SALJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHENGALAM",
+            "person": {
+                "id": "2015054100901",
+                "name": "JOSE ANTONY"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "THEKKUMTHALA",
+            "person": {
+                "id": "2015054101001",
+                "name": "KRISHNAKUMARI RAJASEKHARAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MATTAPPALLY",
+            "person": {
+                "id": "2015054101101",
+                "name": "AJITHA JOMON"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MOOZHOOR",
+            "person": {
+                "id": "2015054101201",
+                "name": "SHAJI BHASKAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANJAMATTOM",
+            "person": {
+                "id": "2015054101301",
+                "name": "TONY ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "MATTAKKARA",
+            "person": {
+                "id": "2015054101401",
+                "name": "SHALI BENNY VADAKKEDAM"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MANAL",
+            "person": {
+                "id": "2015054101501",
+                "name": "MATHEW M K"
+            }
+        }
+    ]
+}

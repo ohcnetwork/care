@@ -1,0 +1,157 @@
+{
+    "timeStamp": 1566349162550,
+    "date": "2019-08-21",
+    "name": "Noolpuzha  Grama Panchayat, Wayanad District",
+    "district": "Wayanad",
+    "block": "Sulthanbathery",
+    "area": "242.97km",
+    "localbody_code": "G120305",
+    "no_of_wards": 17,
+    "population": 23151,
+    "male": 11806,
+    "female": 11345,
+    "population_density": 95,
+    "sex_ratio": 961,
+    "literacy_rate": 72.53,
+    "literacy_rate_male": 78.02,
+    "literacy_rate_female": 66.77,
+    "president": "K.SOBHANKUMAR",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VADAKKANAD",
+            "person": {
+                "id": "2015108300101",
+                "name": "ANEESH T.A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KARIPPOOR",
+            "person": {
+                "id": "2015108300201",
+                "name": "MOHANAN M.K"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALLUVADY",
+            "person": {
+                "id": "2015108300301",
+                "name": "A.K SAROJINI"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KOTTANODE",
+            "person": {
+                "id": "2015108300401",
+                "name": "K.RUGMINI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PILAKKAVE",
+            "person": {
+                "id": "2015108300501",
+                "name": "FAISAL C"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KALLOOR",
+            "person": {
+                "id": "2015108300601",
+                "name": "DEEPA SHAJI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KALLUMUKKU",
+            "person": {
+                "id": "2015108300702",
+                "name": "SHEENA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "MUTHANGA",
+            "person": {
+                "id": "2015108300801",
+                "name": "JAYA M.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PONKUZHI",
+            "person": {
+                "id": "2015108300901",
+                "name": "PUSHPA BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NENMENIKKUNNU",
+            "person": {
+                "id": "2015108301001",
+                "name": "K. SOBHANKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THIRUVANNOOR",
+            "person": {
+                "id": "2015108301101",
+                "name": "BALAN V"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHETTYALATHOOR",
+            "person": {
+                "id": "2015108301201",
+                "name": "K.K SUKUMARAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NAMBIKOLLY",
+            "person": {
+                "id": "2015108301301",
+                "name": "BENNY KAINIKKAL"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "NAGARAMKUNNU",
+            "person": {
+                "id": "2015108301401",
+                "name": "KANAKAMANI"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "THELAMPATTA",
+            "person": {
+                "id": "2015108301501",
+                "name": "ANIL C"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "NAIKETTY",
+            "person": {
+                "id": "2015108301601",
+                "name": "ANITHA VINOD"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MOOLANKAVE",
+            "person": {
+                "id": "2015108301701",
+                "name": "NIRMALA MATHEW"
+            }
+        }
+    ]
+}

@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566349439231,
+    "date": "2019-08-21",
+    "name": "Kunnothuparamba  Grama Panchayat, Kannur District",
+    "district": "Kannur",
+    "block": "Koothuparamba",
+    "area": "29.77km",
+    "localbody_code": "G130903",
+    "no_of_wards": 21,
+    "population": 34491,
+    "male": 16263,
+    "female": 18228,
+    "population_density": 1159,
+    "sex_ratio": 1121,
+    "literacy_rate": 90.83,
+    "literacy_rate_male": 95.55,
+    "literacy_rate_female": 86.74,
+    "president": "BALAN.KKARUVANKANDIYIL",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUNUMMAL",
+            "person": {
+                "id": "2015115900101",
+                "name": "SHYLAJA"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHENDAYAD",
+            "person": {
+                "id": "2015115900201",
+                "name": "BHASKARAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KUNNOTHUPARAMBA",
+            "person": {
+                "id": "2015115900301",
+                "name": "LATHA.K"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "CHITTARITHODE",
+            "person": {
+                "id": "2015115900401",
+                "name": "BINDU.V"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "JATHIKOOTTAM",
+            "person": {
+                "id": "2015115900501",
+                "name": "SAVITHRI.P.P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "CHERUPARAMBA",
+            "person": {
+                "id": "2015115900601",
+                "name": "ISMAIL"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOLAVALLOOR",
+            "person": {
+                "id": "2015115900701",
+                "name": "KUNHIKKANNAN.T.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THUVAKKUNNU",
+            "person": {
+                "id": "2015115900801",
+                "name": "SUKUMARAN.M"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "CHIRAKKARA",
+            "person": {
+                "id": "2015115900901",
+                "name": "BALAN.K KARUVANKANDIYIL"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PARAD",
+            "person": {
+                "id": "2015115901001",
+                "name": "K.RINESH"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "EAST PARAD",
+            "person": {
+                "id": "2015115901101",
+                "name": "KHADEEJA THEKKAYIL"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANNAMKODE",
+            "person": {
+                "id": "2015115901201",
+                "name": "SAMEERA.K.P"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PUTHUR",
+            "person": {
+                "id": "2015115901301",
+                "name": "SARITHA.N.P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CENTRAL PUTHOOR",
+            "person": {
+                "id": "2015115901401",
+                "name": "PUSHPA.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "ANAPPALAM",
+            "person": {
+                "id": "2015115901501",
+                "name": "P.K.KUNHAMBU"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "MARUNNAN POYIL",
+            "person": {
+                "id": "2015115901601",
+                "name": "SUJATHA.K"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KUTTERI",
+            "person": {
+                "id": "2015115901701",
+                "name": "SUJATHA.K.P"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KAIVELIKKAL",
+            "person": {
+                "id": "2015115901801",
+                "name": "SANILA.A.K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "NILLANGAL",
+            "person": {
+                "id": "2015115901901",
+                "name": "N.ANIL KUMAR"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "VARAPRA",
+            "person": {
+                "id": "2015115902001",
+                "name": "CHANDRIKA"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "MAVILERY",
+            "person": {
+                "id": "2015115902101",
+                "name": "ANEESH.P.K"
+            }
+        }
+    ]
+}

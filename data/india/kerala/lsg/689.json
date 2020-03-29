@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347312795,
+    "date": "2019-08-21",
+    "name": "Pallarimangalam  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "15.82km",
+    "localbody_code": "G071109",
+    "no_of_wards": 13,
+    "population": 11518,
+    "male": 5758,
+    "female": 5760,
+    "population_density": 728,
+    "sex_ratio": 1000,
+    "literacy_rate": 88.23,
+    "literacy_rate_male": 92.98,
+    "literacy_rate_female": 83.52,
+    "president": "MOITHUP.K.",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MADIYOOR",
+            "person": {
+                "id": "2015068900101",
+                "name": "AMINA HASSANKUNJU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "EETTIPARA",
+            "person": {
+                "id": "2015068900201",
+                "name": "SHAJIMOL RAFEEQUE"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VELLARAMATTOM",
+            "person": {
+                "id": "2015068900301",
+                "name": "MUBEENA ALIKUTTY"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MANIKKINAR",
+            "person": {
+                "id": "2015068900401",
+                "name": "SHAMSUDEEN MAKKAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VALACHIRA",
+            "person": {
+                "id": "2015068900501",
+                "name": "PATHUMMA ABDUL SALAM"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PAIMATTOM",
+            "person": {
+                "id": "2015068900601",
+                "name": "SIDHICK P. M."
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KOOVALLOOR",
+            "person": {
+                "id": "2015068900701",
+                "name": "REMANAN A. A,"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KURUPPUKANDOM",
+            "person": {
+                "id": "2015068900801",
+                "name": "MOITHU P. K."
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PALLARIMANGALAM NORTH",
+            "person": {
+                "id": "2015068900901",
+                "name": "AMEEN T. M."
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PALLARIMANGALAM SOUTH",
+            "person": {
+                "id": "2015068901001",
+                "name": "NISAMOL SIDHIQUE"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MAVUDY",
+            "person": {
+                "id": "2015068901101",
+                "name": "MUHAMMED A. P."
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ADIVAD",
+            "person": {
+                "id": "2015068901201",
+                "name": "SHAMEENA ALIYAR"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PULIKKUNNEPADY",
+            "person": {
+                "id": "2015068901301",
+                "name": "NIZAMOL ISMAYIL"
+            }
+        }
+    ]
+}

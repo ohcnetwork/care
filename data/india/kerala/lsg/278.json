@@ -1,0 +1,189 @@
+{
+    "timeStamp": 1566345884763,
+    "date": "2019-08-21",
+    "name": "Maranalloor  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Nemom",
+    "area": "25.13km",
+    "localbody_code": "G010803",
+    "no_of_wards": 21,
+    "population": 45502,
+    "male": 22293,
+    "female": 23209,
+    "population_density": 1276,
+    "sex_ratio": 1014,
+    "literacy_rate": 89.35,
+    "literacy_rate_male": 92.27,
+    "literacy_rate_female": 86.5,
+    "president": "REMAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KUZHIVILA",
+            "person": {
+                "id": "2015027800102",
+                "name": "HEMA.S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AZHAKAM",
+            "person": {
+                "id": "2015027800201",
+                "name": "VIJAYAKUMARI C"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KANDALA",
+            "person": {
+                "id": "2015027800302",
+                "name": "NASEERA.B"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "THOONGAMPARA",
+            "person": {
+                "id": "2015027800401",
+                "name": "ASHRAF A"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "ARUMALOOR",
+            "person": {
+                "id": "2015027800501",
+                "name": "P.MURALIDHARAN NAIR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOTTAMPALLI",
+            "person": {
+                "id": "2015027800601",
+                "name": "SHEEBA S"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARINGAL",
+            "person": {
+                "id": "2015027800701",
+                "name": "JOY S"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "OFFICE WARD",
+            "person": {
+                "id": "2015027800801",
+                "name": "DEENAKUMARI K.S"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KOOVALASSERY",
+            "person": {
+                "id": "2015027800901",
+                "name": "VASANTHY K"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARUVIKARA",
+            "person": {
+                "id": "2015027801001",
+                "name": "SOBHANA THANKACHY S"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "VELIYAMCODU",
+            "person": {
+                "id": "2015027801101",
+                "name": "GEORGE B"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MELARIYODU",
+            "person": {
+                "id": "2015027801201",
+                "name": "ARUNKUMAR S.S"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MANNADIKONAM",
+            "person": {
+                "id": "2015027801301",
+                "name": "AJIKUMAR T"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VANDANNOOR",
+            "person": {
+                "id": "2015027801401",
+                "name": "SHEEBAMOL V.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "VETTAMANGALAM",
+            "person": {
+                "id": "2015027801501",
+                "name": "SOBHA G"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ERUTHAVOOR",
+            "person": {
+                "id": "2015027801601",
+                "name": "SHIBU G"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KILIKOTTUKONAM",
+            "person": {
+                "id": "2015027801701",
+                "name": "REMA S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "OORUTTAMBALAM",
+            "person": {
+                "id": "2015027801802",
+                "name": "SREEMIDHUN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "MARANALLOOR",
+            "person": {
+                "id": "2015027801901",
+                "name": "ANITHA J.S"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "CHEENIVILA",
+            "person": {
+                "id": "2015027802001",
+                "name": "AKHILESH G"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "PERUMULLOOR",
+            "person": {
+                "id": "2015027802101",
+                "name": "KUMARI MAYA P.S"
+            }
+        }
+    ]
+}

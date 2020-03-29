@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566346844796,
+    "date": "2019-08-21",
+    "name": "Kumarakom  Grama Panchayat, Kottayam District",
+    "district": "Kottayam",
+    "block": "Pallom",
+    "area": "51.67km",
+    "localbody_code": "G050306",
+    "no_of_wards": 16,
+    "population": 22232,
+    "male": 11022,
+    "female": 11210,
+    "population_density": 430,
+    "sex_ratio": 1017,
+    "literacy_rate": 96,
+    "literacy_rate_male": 98,
+    "literacy_rate_female": 94,
+    "president": "A.PSALIMON",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAVANATTINKARA",
+            "person": {
+                "id": "2015054800101",
+                "name": "KAVITHA LALU"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CSI CHURCH",
+            "person": {
+                "id": "2015054800201",
+                "name": "A.P GOPI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MANKUZHY",
+            "person": {
+                "id": "2015054800301",
+                "name": "P.K SANTHAKUMAR"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "VADAKKUMKARA",
+            "person": {
+                "id": "2015054800401",
+                "name": "USHA SALI"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KOLLAKERY",
+            "person": {
+                "id": "2015054800501",
+                "name": "SINDHU CHANDRABOSE"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "IDAVATTAM",
+            "person": {
+                "id": "2015054800601",
+                "name": "REJITHA KOCHUMON"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "THEKKUMKARA",
+            "person": {
+                "id": "2015054800701",
+                "name": "A.P SALIMON"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ATTIPEEDIKA",
+            "person": {
+                "id": "2015054800801",
+                "name": "KRISHNENDU P.K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NASRETH",
+            "person": {
+                "id": "2015054800901",
+                "name": "DHANYA SABU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BAZAR",
+            "person": {
+                "id": "2015054801001",
+                "name": "SINDHU RAVIKUMAR"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MELEKKARA",
+            "person": {
+                "id": "2015054801101",
+                "name": "ADV.VISHNUMANI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MARCKET",
+            "person": {
+                "id": "2015054801201",
+                "name": "JAYAKUMAR V.N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "SBT",
+            "person": {
+                "id": "2015054801301",
+                "name": "DR.MAGI JOHN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "AMMANKARI",
+            "person": {
+                "id": "2015054801401",
+                "name": "DEEPA ABHILASH"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "SREE KUMARAMANGALAM",
+            "person": {
+                "id": "2015054801501",
+                "name": "PRADEEPKUMAR V.S"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHEPPANNUKARI",
+            "person": {
+                "id": "2015054801601",
+                "name": "JAIMON THOMAS"
+            }
+        }
+    ]
+}

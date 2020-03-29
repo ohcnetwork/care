@@ -1,0 +1,205 @@
+{
+    "timeStamp": 1566346469348,
+    "date": "2019-08-21",
+    "name": "Mararikulam South  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Aryad",
+    "area": "19.07km",
+    "localbody_code": "G040403",
+    "no_of_wards": 23,
+    "population": 45335,
+    "male": 22423,
+    "female": 22912,
+    "population_density": 2377,
+    "sex_ratio": 1022,
+    "literacy_rate": 95,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 92,
+    "president": "INDHIRATHILAKAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "POLLETHAI WEST",
+            "person": {
+                "id": "2015044600101",
+                "name": "SOSAMMA LOUIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "POLLETHAI EAST",
+            "person": {
+                "id": "2015044600201",
+                "name": "JAYAMOHAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "VALAVANADU",
+            "person": {
+                "id": "2015044600301",
+                "name": "KALA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PREETHIKULANGARA",
+            "person": {
+                "id": "2015044600401",
+                "name": "DINAKARAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KALAVOOR",
+            "person": {
+                "id": "2015044600501",
+                "name": "REMADEVI.K.D"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SOUTH KALAVOOR",
+            "person": {
+                "id": "2015044600601",
+                "name": "INDHIRA THILAKAN"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "VALIYA KALAVOOR",
+            "person": {
+                "id": "2015044600701",
+                "name": "SETHUNATH"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PAZHAYAKADU",
+            "person": {
+                "id": "2015044600801",
+                "name": "RESHMI RAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "PATHIRAPPALLY",
+            "person": {
+                "id": "2015044600901",
+                "name": "MUTHU LEKSHMI GOPALAKRISHNAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "PATHIRAPPALLY SOUTH",
+            "person": {
+                "id": "2015044601001",
+                "name": "THRESIAMMA(MARYKUTTY)"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "POOMKAVU EAST",
+            "person": {
+                "id": "2015044601101",
+                "name": "PHILOMINA(SUJA)"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "POOMKAVU WEST",
+            "person": {
+                "id": "2015044601201",
+                "name": "OMANA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "CHETTIKADU",
+            "person": {
+                "id": "2015044601301",
+                "name": "ALICE SANDYAVU"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "PATTUKALAM",
+            "person": {
+                "id": "2015044601401",
+                "name": "M.G.LAIJU"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "OMANAPPUZHA",
+            "person": {
+                "id": "2015044601501",
+                "name": "CICILY(KUNJUMOL SHAJI)"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "CHERIYAPOZHI",
+            "person": {
+                "id": "2015044601601",
+                "name": "K.A.SOPHIYA"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "SARVODAYAPURAM",
+            "person": {
+                "id": "2015044601701",
+                "name": "RAMESHAN.C.R"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KATTOOR EAST",
+            "person": {
+                "id": "2015044601801",
+                "name": "V.S.SIVAKUTTAN"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PANCHAYAT OFFICE",
+            "person": {
+                "id": "2015044601901",
+                "name": "PHILOMINA ANTONY"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MANGADAKKADU",
+            "person": {
+                "id": "2015044602001",
+                "name": "SREEKUMARI.V.R"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "KORTHUSSERI",
+            "person": {
+                "id": "2015044602101",
+                "name": "SANILKUMAR.K.P"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "VAZHAKOOTTAM POZHI",
+            "person": {
+                "id": "2015044602201",
+                "name": "SIBIL ROSE.K.J"
+            }
+        },
+        {
+            "ward_number": "23",
+            "name": "SASTHRI BHAGAM",
+            "person": {
+                "id": "2015044602301",
+                "name": "MERCY"
+            }
+        }
+    ]
+}

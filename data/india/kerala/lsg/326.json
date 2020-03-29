@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566346045345,
+    "date": "2019-08-21",
+    "name": "Pattazhi Vadakkekara  Grama Panchayat, Kollam District",
+    "district": "Kollam",
+    "block": "Pathanapuram",
+    "area": "18.07km",
+    "localbody_code": "G020404",
+    "no_of_wards": 13,
+    "population": 13969,
+    "male": 6799,
+    "female": 7170,
+    "population_density": 749,
+    "sex_ratio": 1055,
+    "literacy_rate": 91.41,
+    "literacy_rate_male": 94.57,
+    "literacy_rate_female": 88.46,
+    "president": "RANANDARAJAN",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THAZHATHUVADAKKU",
+            "person": {
+                "id": "2015032600101",
+                "name": "LINCY VARGHESE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "GOVINDAMADOM",
+            "person": {
+                "id": "2015032600201",
+                "name": "JOSEPH  JOHN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "CHELIKKUZHY",
+            "person": {
+                "id": "2015032600301",
+                "name": "R    ANANDARAJAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MARKET",
+            "person": {
+                "id": "2015032600401",
+                "name": "ABHILASH  C"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "MANAYARA",
+            "person": {
+                "id": "2015032600501",
+                "name": "REMADEVI  .V  P"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALOOR",
+            "person": {
+                "id": "2015032600601",
+                "name": "SYAMALAKUMARI. C"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KARIMPALOOR",
+            "person": {
+                "id": "2015032600701",
+                "name": "D .VANAJAKUMARY"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VATTAKKALA",
+            "person": {
+                "id": "2015032600801",
+                "name": "RENUKA .G K"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "MEENAMVADAKKEKKARA",
+            "person": {
+                "id": "2015032600901",
+                "name": "MASOOD KHAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KADUVATHODU",
+            "person": {
+                "id": "2015032601001",
+                "name": "NAZEEMA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "ERATHUVADAKKU",
+            "person": {
+                "id": "2015032601101",
+                "name": "REMADEVI. L"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "THENGAMANMADOM",
+            "person": {
+                "id": "2015032601201",
+                "name": "A. VIJAYAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "METHUKUMMEL",
+            "person": {
+                "id": "2015032601301",
+                "name": "BEENA K"
+            }
+        }
+    ]
+}

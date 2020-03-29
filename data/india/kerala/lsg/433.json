@@ -1,0 +1,173 @@
+{
+    "timeStamp": 1566346429677,
+    "date": "2019-08-21",
+    "name": "Pattanakkad  Grama Panchayat, Alappuzha District",
+    "district": "Alappuzha",
+    "block": "Pattanakkad",
+    "area": "15.36km",
+    "localbody_code": "G040202",
+    "no_of_wards": 19,
+    "population": 29235,
+    "male": 14349,
+    "female": 14886,
+    "population_density": 1903,
+    "sex_ratio": 1037,
+    "literacy_rate": 93,
+    "literacy_rate_male": 97,
+    "literacy_rate_female": 90,
+    "president": "SHERIFT.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "VEEYATHRA",
+            "person": {
+                "id": "2015043300101",
+                "name": "MAYA SUDARSAN"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PARAYIL",
+            "person": {
+                "id": "2015043300201",
+                "name": "SUMESH M.S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "PONNAMVELI NORTH",
+            "person": {
+                "id": "2015043300301",
+                "name": "RADHAKRISHNAN R.D"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PONNAMVELI",
+            "person": {
+                "id": "2015043300401",
+                "name": "PADMA SATHESH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "PATTANAKAD",
+            "person": {
+                "id": "2015043300501",
+                "name": "PRAMOD K.R"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "HIGH SCHOOL",
+            "person": {
+                "id": "2015043300601",
+                "name": "SHERIF T.M"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PUTHIYAKAVU",
+            "person": {
+                "id": "2015043300701",
+                "name": "SIJI SAJAN"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "UZHUVA",
+            "person": {
+                "id": "2015043300801",
+                "name": "MAYA"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "UZHUVA WEST",
+            "person": {
+                "id": "2015043300901",
+                "name": "SINDHU SHIBU"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ATHIKKAD",
+            "person": {
+                "id": "2015043301001",
+                "name": "MANOJ M.P"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOTHAKULANGARA",
+            "person": {
+                "id": "2015043301101",
+                "name": "SUMESH S.P"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "MENASHERI",
+            "person": {
+                "id": "2015043301201",
+                "name": "KANAKARAJ E.K"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VETTACKAL",
+            "person": {
+                "id": "2015043301301",
+                "name": "SHYAMALA ASHOKAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KONATTUSHERI",
+            "person": {
+                "id": "2015043301401",
+                "name": "VIJAYASREE V.V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "KONATTUSHERI SOUTH",
+            "person": {
+                "id": "2015043301501",
+                "name": "DHARMAJAN"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARASHUPURAM",
+            "person": {
+                "id": "2015043301601",
+                "name": "BABICHAN"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "AARATTUVAZHI",
+            "person": {
+                "id": "2015043301701",
+                "name": "JASMIN T.S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "VETTACKAL WEST",
+            "person": {
+                "id": "2015043301801",
+                "name": "MANJU BABY"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "ANDHAKARANAZHY",
+            "person": {
+                "id": "2015043301901",
+                "name": "THRESYAMMA"
+            }
+        }
+    ]
+}

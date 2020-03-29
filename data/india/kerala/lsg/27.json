@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566344944448,
+    "date": "2019-08-21",
+    "name": "Pulikeezhu  Block Panchayat, Pathanamthitta District",
+    "district": "Pathanamthitta",
+    "block": "Pulikezhu",
+    "area": "68.66km",
+    "localbody_code": "B030200",
+    "no_of_wards": 13,
+    "population": 90038,
+    "male": 43659,
+    "female": 46379,
+    "population_density": 1311,
+    "sex_ratio": 1062,
+    "literacy_rate": 96.55,
+    "literacy_rate_male": 97.99,
+    "literacy_rate_female": 95.21,
+    "president": "ADV.SATHISHCHATHANKERY",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "CHATHANKERY",
+            "person": {
+                "id": "2015002700101",
+                "name": "ADV. SATHISH CHATHANKERY"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "MEPRAL",
+            "person": {
+                "id": "2015002700201",
+                "name": "ANIL MARY CHERIAN"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "KARACKAL",
+            "person": {
+                "id": "2015002700301",
+                "name": "EAPPEN KURIAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PULIKEEZHU",
+            "person": {
+                "id": "2015002700401",
+                "name": "BINILKUMAR"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "VENPALA",
+            "person": {
+                "id": "2015002700501",
+                "name": "ANURADHA SURESH"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KUTTOOR",
+            "person": {
+                "id": "2015002700601",
+                "name": "PRASAD K.G"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "OTHARA",
+            "person": {
+                "id": "2015002700701",
+                "name": "SOSAMMA MAJU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "PARUMALA",
+            "person": {
+                "id": "2015002700801",
+                "name": "AMBIKA MOHAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "KADAPRA",
+            "person": {
+                "id": "2015002700901",
+                "name": "ADV.M.B.NINAN"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "NIRANAM",
+            "person": {
+                "id": "2015002701001",
+                "name": "SUMA CHERIAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KOMBANKERY",
+            "person": {
+                "id": "2015002701101",
+                "name": "ANNAMMA VARUGHESE .C"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KANNASSA",
+            "person": {
+                "id": "2015002701201",
+                "name": "SUSAMMA PAULOSE"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "NEDUMPROM",
+            "person": {
+                "id": "2015002701301",
+                "name": "T.PRESANNA KUMARI"
+            }
+        }
+    ]
+}

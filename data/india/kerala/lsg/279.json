@@ -1,0 +1,180 @@
+{
+    "timeStamp": 1566345891214,
+    "date": "2019-08-21",
+    "name": "Malayinkeezh  Grama Panchayat, Thiruvananthapuram District",
+    "district": "Thiruvananthapuram",
+    "block": "Nemom",
+    "area": "39.48km",
+    "localbody_code": "G010804",
+    "no_of_wards": 20,
+    "population": 24048,
+    "male": 11560,
+    "female": 12488,
+    "population_density": 609,
+    "sex_ratio": 1080,
+    "literacy_rate": 92.34,
+    "literacy_rate_male": 95.96,
+    "literacy_rate_female": 89.04,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANCHADI",
+            "person": {
+                "id": "2015027900101",
+                "name": "RADHAKRISHNAN NAIR S"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "SREEKRISHNAPURAM",
+            "person": {
+                "id": "2015027900201",
+                "name": "CHANDRAN NAIR S"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ARUVIPPARA",
+            "person": {
+                "id": "2015027900301",
+                "name": "SREEKALA V"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "MAVOTTUKONAM",
+            "person": {
+                "id": "2015027900401",
+                "name": "ANIL VISHWAM"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "CHITTIYOORKODE",
+            "person": {
+                "id": "2015027900501",
+                "name": "SHIBULAL K"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MALAYINKEEZHU",
+            "person": {
+                "id": "2015027900601",
+                "name": "CHANDRAMATHI A"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "MEPPUKADA",
+            "person": {
+                "id": "2015027900701",
+                "name": "GREETA S.V"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANTHIYOORKONAM",
+            "person": {
+                "id": "2015027900801",
+                "name": "JOY C.Y"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "BLOCK OFFICE",
+            "person": {
+                "id": "2015027900901",
+                "name": "AJI KUMAR D.R"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "GOVINDAMANGALAM",
+            "person": {
+                "id": "2015027901001",
+                "name": "VIJAYAKUMAR V"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "MARUKIL PERUMANA",
+            "person": {
+                "id": "2015027901101",
+                "name": "SAROJINI R"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "ARUVAKODE",
+            "person": {
+                "id": "2015027901201",
+                "name": "NIYADUL AKBAR S.H"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALIYERATHALA",
+            "person": {
+                "id": "2015027901301",
+                "name": "INDHULEKHA P"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "KUNNUMPARA",
+            "person": {
+                "id": "2015027901401",
+                "name": "SREEKALA V"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "MACHEL",
+            "person": {
+                "id": "2015027901501",
+                "name": "SUNIJAMOL G.B"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ANAPPAD",
+            "person": {
+                "id": "2015027901601",
+                "name": "SUDHAKUMARI M"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "MANAPPURAM",
+            "person": {
+                "id": "2015027901701",
+                "name": "SREEKANTH V.S"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "KOVILUVILA",
+            "person": {
+                "id": "2015027901801",
+                "name": "SUNANDA V K"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "OFFICE WARD",
+            "person": {
+                "id": "2015027901901",
+                "name": "MURUGAN D"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "THACHOTTUKAVU",
+            "person": {
+                "id": "2015027902001",
+                "name": "SREEKUMARI S"
+            }
+        }
+    ]
+}

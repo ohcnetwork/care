@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345295461,
+    "date": "2019-08-21",
+    "name": "Panthalayani  Block Panchayat, Kozhikode District",
+    "district": "Kozhikode",
+    "block": "Panthalayani",
+    "area": "91.11km",
+    "localbody_code": "B110800",
+    "no_of_wards": 13,
+    "population": 165065,
+    "male": 79811,
+    "female": 85254,
+    "population_density": 1812,
+    "sex_ratio": 1068,
+    "literacy_rate": 90.91,
+    "literacy_rate_male": 95.71,
+    "literacy_rate_female": 86.51,
+    "president": "SHOBHA.K.M",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KADALOOR",
+            "person": {
+                "id": "2015013200101",
+                "name": "MUHAMMED ALI"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "CHINGAPURAM",
+            "person": {
+                "id": "2015013200201",
+                "name": "SHEEJA.P.K."
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MOODADI",
+            "person": {
+                "id": "2015013200301",
+                "name": "SHOBHA.K.M"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "ARIKKULAM",
+            "person": {
+                "id": "2015013200401",
+                "name": "JANU. K.M."
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KARAYAD",
+            "person": {
+                "id": "2015013200501",
+                "name": "P.P.REMANI"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MODAKKALLUR",
+            "person": {
+                "id": "2015013200601",
+                "name": "SABEESH.B"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ATHOLI",
+            "person": {
+                "id": "2015013200701",
+                "name": "SHAHINASBI"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THIRUVANGOOR",
+            "person": {
+                "id": "2015013200801",
+                "name": "MOHANAN"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "VENGALAM",
+            "person": {
+                "id": "2015013200902",
+                "name": "NARAYANI P T"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KAPPAD",
+            "person": {
+                "id": "2015013201001",
+                "name": "SUHARA MEHABOOB"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "CHEMANCHERY",
+            "person": {
+                "id": "2015013201101",
+                "name": "VIJAYAN KANNANCHERY"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "EDAKKULAM",
+            "person": {
+                "id": "2015013201201",
+                "name": "GEETHA.K.C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MELUR",
+            "person": {
+                "id": "2015013201301",
+                "name": "GEETHA KAROL"
+            }
+        }
+    ]
+}

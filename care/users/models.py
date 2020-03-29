@@ -17,7 +17,7 @@ DISTRICT_CHOICES = [
     (11, "Kozhikode"),
     (12, "Wayanad"),
     (13, "Kannur"),
-    (14, "Kasaragod"),
+    (14, "Kasargode"),
 ]
 
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
@@ -33,7 +33,7 @@ class State(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"State: {self.name}"
+        return f"{self.name}"
 
 
 class District(models.Model):
@@ -41,24 +41,39 @@ class District(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"District: {self.name} - {self.state.name}"
+        return f"{self.name}"
 
 
 LOCAL_BODY_CHOICES = (
-    (1, "Panchayath"),
-    (2, "Municipality"),
-    (3, "Corporation"),
-    (25, "Others"),
+    # Panchayath levels
+    (1, "Grama Panchayath"),
+    (2, "Block Panchayath"),
+    (3, "District Panchayath"),
+    # Municipality levels
+    (10, "Municipality"),
+    # Corporation levels
+    (20, "Corporation"),
+    # Unknown
+    (50, "Others"),
 )
 
 
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
+
     name = models.CharField(max_length=255)
     body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
+    localbody_code = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        unique_together = (
+            "district",
+            "body_type",
+            "name",
+        )
 
     def __str__(self):
-        return f"LocalBody: {self.name} ({self.body_type}) / {self.district}"
+        return f"{self.name} ({self.body_type}) "
 
 
 class CustomUserManager(UserManager):
@@ -81,12 +96,19 @@ class User(AbstractUser):
         "Staff": 10,
         "Patient": 15,
         "Volunteer": 20,
+        "DistrictLabAdmin": 25,
+        "DistrictAdmin": 30,
+        "StateLabAdmin": 35,
     }
+
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
-    district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    new_district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
+    state = models.ForeignKey(State, on_delete=models.PROTECT, null=True)
+
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
@@ -104,7 +126,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
 

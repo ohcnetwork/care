@@ -1,0 +1,149 @@
+{
+    "timeStamp": 1566349517976,
+    "date": "2019-08-21",
+    "name": "Vorkady  Grama Panchayat, Kasargode District",
+    "district": "Kasargode",
+    "block": "Manjewswaram",
+    "area": "45.4km",
+    "localbody_code": "G140102",
+    "no_of_wards": 16,
+    "population": 20821,
+    "male": 10412,
+    "female": 10409,
+    "population_density": 459,
+    "sex_ratio": 999,
+    "literacy_rate": 77.69,
+    "literacy_rate_male": 87.55,
+    "literacy_rate_female": 67.8,
+    "president": "ABDULMAJEEDB.A",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "PAVOOR",
+            "person": {
+                "id": "2015118000101",
+                "name": "HARIS PAVOOR"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "KEDUMBADY",
+            "person": {
+                "id": "2015118000201",
+                "name": "SUNITHA DSOUZA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "SUNNANGALA",
+            "person": {
+                "id": "2015118000301",
+                "name": "JESINTHA DSOUZA"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAVALA",
+            "person": {
+                "id": "2015118000401",
+                "name": "POORNIMA S BERINJA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "BODDODY",
+            "person": {
+                "id": "2015118000501",
+                "name": "VASANTHA"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "SULLYAME",
+            "person": {
+                "id": "2015118000601",
+                "name": "GEETHA SAMANI"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "PATHOOR",
+            "person": {
+                "id": "2015118000701",
+                "name": "MAIMOONA"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "THALEKKI",
+            "person": {
+                "id": "2015118000801",
+                "name": "ABDUL MAJEED B.A"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "SODANKOOR",
+            "person": {
+                "id": "2015118000901",
+                "name": "SEETHA.D"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "BORKALA",
+            "person": {
+                "id": "2015118001001",
+                "name": "INDIRA"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KONIBAIL",
+            "person": {
+                "id": "2015118001101",
+                "name": "BHARATHI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KODLAMOGARU",
+            "person": {
+                "id": "2015118001201",
+                "name": "GOPALAKRISHNA PAJWA"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "DHARMANAGARA",
+            "person": {
+                "id": "2015118001301",
+                "name": "RAHMATH RAZAK"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "VORKADY",
+            "person": {
+                "id": "2015118001401",
+                "name": "SADASHIVA NAIK"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "NALLENGI",
+            "person": {
+                "id": "2015118001501",
+                "name": "ANANDA.T"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "ARIBAIL",
+            "person": {
+                "id": "2015118001601",
+                "name": "THULASI KLUMARI"
+            }
+        }
+    ]
+}

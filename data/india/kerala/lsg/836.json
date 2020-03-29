@@ -1,0 +1,197 @@
+{
+    "timeStamp": 1566348275495,
+    "date": "2019-08-21",
+    "name": "Kottopadam  Grama Panchayat, Palakkad District",
+    "district": "Palakkad",
+    "block": "Manarkkad",
+    "area": "79.81km",
+    "localbody_code": "G090503",
+    "no_of_wards": 22,
+    "population": 31832,
+    "male": 15387,
+    "female": 16445,
+    "population_density": 399,
+    "sex_ratio": 1069,
+    "literacy_rate": 79.96,
+    "literacy_rate_male": 85.3,
+    "literacy_rate_female": 75.07,
+    "president": "MUHAMMEDILLYAS",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "KAPPUPARAMBU",
+            "person": {
+                "id": "2015083600101",
+                "name": "FIROS .O"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "AMBALAPPARA",
+            "person": {
+                "id": "2015083600201",
+                "name": "DEEPA.A"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MEKKALAPPARA",
+            "person": {
+                "id": "2015083600301",
+                "name": "KUNJUMOL THOMAS"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "KACHERIPARAMBU",
+            "person": {
+                "id": "2015083600401",
+                "name": "JAMSHEENA"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "KANDAMANGALAM",
+            "person": {
+                "id": "2015083600501",
+                "name": "SUBRAMANIAN .A"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PUTTANIKKAD",
+            "person": {
+                "id": "2015083600601",
+                "name": "NASEEMA"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "AMBAZHAKODE",
+            "person": {
+                "id": "2015083600702",
+                "name": "GAFOOR KOLKKALATHIL"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "VENGA",
+            "person": {
+                "id": "2015083600801",
+                "name": "RASHEED ONGALLOOR"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "ARIYUR",
+            "person": {
+                "id": "2015083600901",
+                "name": "ADV. ABDUL SALAM"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "ARYAMBAVU",
+            "person": {
+                "id": "2015083601001",
+                "name": "RAJEENA.K"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "NAYADIPPARA",
+            "person": {
+                "id": "2015083601101",
+                "name": "DEEPESH. K.S"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VADASSERIPPURAM",
+            "person": {
+                "id": "2015083601201",
+                "name": "AKKARA HAMEED"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "KODAKKAD",
+            "person": {
+                "id": "2015083601301",
+                "name": "SUSEELA SURENDRAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "THEYYOTTUCHIRA",
+            "person": {
+                "id": "2015083601401",
+                "name": "SALMATH C.K"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "BHEEMANAD",
+            "person": {
+                "id": "2015083601501",
+                "name": "VILASINI. P.P"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "KOTTOPADAM",
+            "person": {
+                "id": "2015083601601",
+                "name": "KALLADI ABOOBACKER"
+            }
+        },
+        {
+            "ward_number": "17",
+            "name": "KODUVALIPPURAM",
+            "person": {
+                "id": "2015083601701",
+                "name": "NASAR. O"
+            }
+        },
+        {
+            "ward_number": "18",
+            "name": "PATHANGAM",
+            "person": {
+                "id": "2015083601801",
+                "name": "RAJANI EDAMUTTATH"
+            }
+        },
+        {
+            "ward_number": "19",
+            "name": "PARAPPURAM",
+            "person": {
+                "id": "2015083601901",
+                "name": "BINDHU.K"
+            }
+        },
+        {
+            "ward_number": "20",
+            "name": "MALERIYAM",
+            "person": {
+                "id": "2015083602001",
+                "name": "MUHAMMED ILLYAS"
+            }
+        },
+        {
+            "ward_number": "21",
+            "name": "NALEERIKUNNU",
+            "person": {
+                "id": "2015083602101",
+                "name": "FATHIMA JASMINE"
+            }
+        },
+        {
+            "ward_number": "22",
+            "name": "THIRUVIZHAMKUNNU",
+            "person": {
+                "id": "2015083602201",
+                "name": "M. PRADEEPKUMAR"
+            }
+        }
+    ]
+}

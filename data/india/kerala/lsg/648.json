@@ -1,0 +1,148 @@
+{
+    "timeStamp": 1566347164412,
+    "date": "2019-08-21",
+    "name": "Okkal  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Koovappady",
+    "area": "12.8km",
+    "localbody_code": "G070406",
+    "no_of_wards": 16,
+    "population": 22148,
+    "male": 11237,
+    "female": 10911,
+    "population_density": 1050,
+    "sex_ratio": 1017,
+    "literacy_rate": 93.42,
+    "literacy_rate_male": 95.95,
+    "literacy_rate_female": 90.96,
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "THANNIPPUZHA",
+            "person": {
+                "id": "2015064800101",
+                "name": "JOSE VARGHEESE"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "OKKAL NORTH",
+            "person": {
+                "id": "2015064800201",
+                "name": "LISSY LINS"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "ONAMPILLY",
+            "person": {
+                "id": "2015064800301",
+                "name": "ANIL K.N"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "NADUPPILLITHODU",
+            "person": {
+                "id": "2015064800401",
+                "name": "ANWAR MUNDETH"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "EDAVOOR",
+            "person": {
+                "id": "2015064800501",
+                "name": "AMBILY JOSHY"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "KOODALAPPADU EAST",
+            "person": {
+                "id": "2015064800601",
+                "name": "SANTHOSH K.K"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "KODUVELIPPADY",
+            "person": {
+                "id": "2015064800701",
+                "name": "REMA BABU"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "KODUVELIPPADY EAST",
+            "person": {
+                "id": "2015064800801",
+                "name": "JESSY SHAJU"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "OKKAL",
+            "person": {
+                "id": "2015064800901",
+                "name": "P K SINDHU TEACHER"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KARIKKODU",
+            "person": {
+                "id": "2015064801001",
+                "name": "MINI SAJAN"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUNNEKKATTUMALA",
+            "person": {
+                "id": "2015064801101",
+                "name": "JINEESH P M"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "VALLAM NORTH",
+            "person": {
+                "id": "2015064801201",
+                "name": "BINCY ASOKAN"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "VALLAM",
+            "person": {
+                "id": "2015064801301",
+                "name": "FOUSIYA SULAIMAN"
+            }
+        },
+        {
+            "ward_number": "14",
+            "name": "CHELAMATTAM",
+            "person": {
+                "id": "2015064801402",
+                "name": "SHEENA BENNY"
+            }
+        },
+        {
+            "ward_number": "15",
+            "name": "OKKAL THURUTHU",
+            "person": {
+                "id": "2015064801501",
+                "name": "ANWAR MARAKKAR"
+            }
+        },
+        {
+            "ward_number": "16",
+            "name": "PERUMATTAM",
+            "person": {
+                "id": "2015064801601",
+                "name": "VILASINI SUKUMARAN"
+            }
+        }
+    ]
+}

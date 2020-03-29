@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566345089745,
+    "date": "2019-08-21",
+    "name": "Vypin  Block Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Vypin",
+    "area": "87.35km",
+    "localbody_code": "B070700",
+    "no_of_wards": 13,
+    "population": 188521,
+    "male": 92306,
+    "female": 96215,
+    "population_density": 2158,
+    "sex_ratio": 1042,
+    "literacy_rate": 93.83,
+    "literacy_rate_male": 96.64,
+    "literacy_rate_female": 91.16,
+    "president": "DR.KKJOSHI",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MUNAMBAM",
+            "person": {
+                "id": "2015007200101",
+                "name": "P V LOIS"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PALLIPURAM",
+            "person": {
+                "id": "2015007200201",
+                "name": "DR.K K JOSHI"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "AYYAMPILLY",
+            "person": {
+                "id": "2015007200301",
+                "name": "THULASI SOMAN"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "PAZHANGAD",
+            "person": {
+                "id": "2015007200401",
+                "name": "MINI PURUSHOTHAMAN"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "NAYARAMBALAM EAST",
+            "person": {
+                "id": "2015007200501",
+                "name": "P K RAJU"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "MANATTUPARAMBU",
+            "person": {
+                "id": "2015007200601",
+                "name": "DAISY THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "NJARAKAL",
+            "person": {
+                "id": "2015007200701",
+                "name": "PRAIJU FRANCIS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ARATTUVAZHI",
+            "person": {
+                "id": "2015007200801",
+                "name": "SUJATHA CHANDRABOSE"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "NAYARAMBALAM WEST",
+            "person": {
+                "id": "2015007200901",
+                "name": "SIJI C C"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "EDAVANAKAD",
+            "person": {
+                "id": "2015007201001",
+                "name": "M K MANAF"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "KUZHUPPILLY",
+            "person": {
+                "id": "2015007201101",
+                "name": "THANKAMANI SASI"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "CHERAI",
+            "person": {
+                "id": "2015007201201",
+                "name": "UNNIKRISHNAN A N"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "MUNAMBAM BEACH",
+            "person": {
+                "id": "2015007201301",
+                "name": "SUBODHA SHAJI"
+            }
+        }
+    ]
+}

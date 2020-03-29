@@ -1,0 +1,125 @@
+{
+    "timeStamp": 1566347306825,
+    "date": "2019-08-21",
+    "name": "Pothanicad  Grama Panchayat, Ernakulam District",
+    "district": "Ernakulam",
+    "block": "Kothamangalam",
+    "area": "17.14km",
+    "localbody_code": "G071108",
+    "no_of_wards": 13,
+    "population": 10787,
+    "male": 5294,
+    "female": 5493,
+    "population_density": 629,
+    "sex_ratio": 1030,
+    "literacy_rate": 99,
+    "literacy_rate_male": 99,
+    "literacy_rate_female": 98,
+    "president": "SANTHIABRAHAM",
+    "wards": [
+        {
+            "ward_number": "1",
+            "name": "MANJALAMPARA",
+            "person": {
+                "id": "2015068800101",
+                "name": "KRISHNANKUTTY T.A"
+            }
+        },
+        {
+            "ward_number": "2",
+            "name": "PULINTHANAM",
+            "person": {
+                "id": "2015068800202",
+                "name": "ALEXY SKARIA"
+            }
+        },
+        {
+            "ward_number": "3",
+            "name": "MAVUDY",
+            "person": {
+                "id": "2015068800301",
+                "name": "SAJI . K . VARGHESE"
+            }
+        },
+        {
+            "ward_number": "4",
+            "name": "POTTANCHIRA",
+            "person": {
+                "id": "2015068800401",
+                "name": "ELDHOSE VARGHESE  ( ELDHOSE THURUTHEL)"
+            }
+        },
+        {
+            "ward_number": "5",
+            "name": "THRIKKEPPADY",
+            "person": {
+                "id": "2015068800502",
+                "name": "GEETHA SASIKUMAR"
+            }
+        },
+        {
+            "ward_number": "6",
+            "name": "PERUNEER",
+            "person": {
+                "id": "2015068800601",
+                "name": "JIMMY .K.THOMAS"
+            }
+        },
+        {
+            "ward_number": "7",
+            "name": "ERAPPUPARA",
+            "person": {
+                "id": "2015068800701",
+                "name": "MARY THOMAS"
+            }
+        },
+        {
+            "ward_number": "8",
+            "name": "ANATHUZHY",
+            "person": {
+                "id": "2015068800801",
+                "name": "ANCY MANUEL"
+            }
+        },
+        {
+            "ward_number": "9",
+            "name": "POTHANICAD CENTRAL",
+            "person": {
+                "id": "2015068800901",
+                "name": "JERISH THOMAS"
+            }
+        },
+        {
+            "ward_number": "10",
+            "name": "KONNANPARA",
+            "person": {
+                "id": "2015068801001",
+                "name": "PRIYA PAUL ( PRIYA ELDHOSE )"
+            }
+        },
+        {
+            "ward_number": "11",
+            "name": "THAYMATTOM",
+            "person": {
+                "id": "2015068801101",
+                "name": "SANTHI ABRAHAM"
+            }
+        },
+        {
+            "ward_number": "12",
+            "name": "KALLADAPOOTHAPPARA",
+            "person": {
+                "id": "2015068801201",
+                "name": "JACOB M.C"
+            }
+        },
+        {
+            "ward_number": "13",
+            "name": "PARAMBANCHERY",
+            "person": {
+                "id": "2015068801301",
+                "name": "LEELAMMA JOSEPH"
+            }
+        }
+    ]
+}
