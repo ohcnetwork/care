@@ -16,4 +16,8 @@ class UserAccessMixin:
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        model = self.queryset.__dict__["model"]
+        kwargs = {}
+        if hasattr(model(), "created_by"):
+            kwargs["created_by"] = self.request.user
+        serializer.save(**kwargs)

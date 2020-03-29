@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from care.facility.models.patient_sample import PatientSample
+
 from .models import (
     Ambulance,
     AmbulanceDriver,
@@ -85,3 +87,4 @@ admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration)
 admin.site.register(PatientTeleConsultation)
+admin.site.register(PatientSample)

@@ -29,6 +29,7 @@ django-axes==5.3.1  # https://github.com/jazzband/django-axes
 django-simple-history==2.8.0  # https://django-simple-history.readthedocs.io/en/latest/quick_start.html
 django-ratelimit==2.0.0 # Limiting Requests
 django-fernet-fields==0.6 # https://django-fernet-fields.readthedocs.io/en/latest/
+dry-rest-permissions==0.1.10  # For permissions handling
 
 # Testing
 # ------------------------------------------------------------------------------
