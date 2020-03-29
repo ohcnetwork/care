@@ -1,21 +1,32 @@
 """Use this module for tests in all other modules"""
-from care.users.models import User
+# from care.users.models import User
 
+# will be fixed later
 
-class TestHelper:
-    """Initialize objects that will be useful for all other tests"""
+# class TestHelper:
+#     """Initialize objects that will be useful for all other tests"""
 
-    def __init__(self, *args, **kwargs):
-        self.super_user = User.objects.create_superuser(
-            user_type=5,
-            district=13,
-            phone_number="8887776665",
-            gender=1,
-            age=30,
-            email="foo@foobar.com",
-            username="supeuser",
-            password="user123#",
-        )
+#     def setup_data(self, *args, **kwargs):
+#         self.data = {
+#             "user_type": 5,
+#             "email": "some.email@somedomain.com",
+#             "phone_number": "5554446667",
+#             "age": 30,
+#             "gender": 2,
+#             "district": 11,
+#             "username": "user",
+#             "password": "bar",
+#         }
+#         self.user = User.objects.create_user(
+#             user_type=5,
+#             district=13,
+#             phone_number="8887776665",
+#             gender=1,
+#             age=30,
+#             email="foo@foobar.com",
+#             username="user",
+#             password="user123#",
+#         )
 
 
 class EverythingEquals:
