@@ -155,7 +155,7 @@ This will now prompt for the following details - Ignore any warnings.
 - username: give the username here
 - usertype:Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
 - gender: 1 for male, 2 for female, 3 for other
-- email: give e-mailid
+- email: give e-mail id
 - phonenumber
 - password
 
