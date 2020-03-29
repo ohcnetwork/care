@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 from django.db import models
+from fernet_fields import EncryptedCharField
 from multiselectfield import MultiSelectField
 
 from care.facility.models import District, FacilityBaseModel, LocalBody, SoftDeleteManager, State
@@ -29,7 +30,7 @@ class PatientRegistration(models.Model):
     name = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex], db_index=True)
+    phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     contact_with_carrier = models.BooleanField(verbose_name="Contact with a Covid19 carrier")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
@@ -40,6 +41,7 @@ class PatientRegistration(models.Model):
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
+    real_name = EncryptedCharField(max_length=200)
     deleted = models.BooleanField(default=False)
 
     objects = SoftDeleteManager()

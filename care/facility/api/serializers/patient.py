@@ -58,6 +58,13 @@ class PatientSerializer(serializers.ModelSerializer):
                 patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
             return patient
 
+    def to_representation(self, obj):
+        repr = super().to_representation(obj)
+        if not self.context["request"].user.is_superuser:
+            repr.pop("real_name")
+            repr.pop("phone_number")
+        return repr
+
 
 class PatientTeleConsultationSerializer(serializers.ModelSerializer):
     class Meta:
