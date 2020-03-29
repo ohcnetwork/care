@@ -1,19 +1,27 @@
 from django.db import transaction
+from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
-from dry_rest_permissions.generics import DRYPermissions
+from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.patient_sample import PatientSampleDetailSerializer, PatientSampleSerializer
-from care.facility.models import PatientSample
+from care.facility.models import PatientSample, User
+
+
+class PatientSampleFilterBackend(DRYPermissionFiltersBase):
+    def filter_queryset(self, request, queryset, view):
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type < User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(Q(facility__district=request.user.district))
+        return queryset
 
 
 class PatientSampleFilterSet(filters.FilterSet):
     district = filters.NumberFilter(field_name="facility__district_id")
-    district_name = filters.CharFilter(
-        field_name="facility__facilitylocalgovtbody__district__name", lookup_expr="icontains"
-    )
+    district_name = filters.CharFilter(field_name="facility__district__name", lookup_expr="icontains")
 
 
 class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
@@ -23,7 +31,10 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (
+        PatientSampleFilterBackend,
+        filters.DjangoFilterBackend,
+    )
     filterset_class = PatientSampleFilterSet
     http_method_names = ["get", "post", "patch", "delete"]
 
