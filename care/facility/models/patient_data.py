@@ -27,7 +27,7 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
 
 class PatientRegistration(models.Model):
-    name = models.CharField(max_length=200)
+    name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
@@ -41,7 +41,6 @@ class PatientRegistration(models.Model):
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
-    real_name = EncryptedCharField(max_length=200)
     deleted = models.BooleanField(default=False)
 
     objects = SoftDeleteManager()

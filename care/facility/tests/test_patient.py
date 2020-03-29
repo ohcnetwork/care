@@ -9,7 +9,6 @@ from config.tests.helper import mock_equal
 @pytest.fixture()
 def patient_data():
     return {
-        "real_name": "Bar",
         "name": "Foo",
         "age": 40,
         "gender": 1,
@@ -22,7 +21,7 @@ def patient_data():
 @pytest.fixture()
 def patient():
     patient = PatientRegistration.objects.create(
-        real_name="Foo", name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False
+        name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False
     )
     disease = Disease.objects.create(disease=1, details="Quite bad", patient=patient)
     return patient
@@ -41,11 +40,12 @@ class TestPatient:
         assert response.status_code == 201
         response = response.json()
         response.pop("id")
-        real_name = patient_data.pop("real_name")
+        name = patient_data.pop("name")
         phone_number = patient_data.pop("phone_number")
         assert response == {
             **patient_data,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
+            "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
             "local_body": mock_equal,
@@ -57,14 +57,13 @@ class TestPatient:
         }
 
         patient = PatientRegistration.objects.get(
-            name=patient_data["name"],
             age=patient_data["age"],
             gender=patient_data["gender"],
             contact_with_carrier=patient_data["contact_with_carrier"],
             created_by=user,
             is_active=True,
         )
-        assert patient.real_name == real_name
+        assert patient.name == name
         assert patient.phone_number == phone_number
         assert Disease.objects.get(patient=patient, **patient_data["medical_history"][0])
 
@@ -77,7 +76,6 @@ class TestPatient:
         response = response.json()
         assert response == {
             "id": patient.id,
-            "name": patient.name,
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_carrier": patient.contact_with_carrier,
@@ -101,25 +99,25 @@ class TestPatient:
         user.is_superuser = True
         user.save()
         response = client.get(f"/api/v1/patient/{patient.id}/")
+
         assert response.status_code == 200
         assert response.data == {
             "id": patient.id,
             "name": patient.name,
             "age": patient.age,
             "gender": patient.gender,
-            "real_name": patient.real_name,
             "phone_number": patient.phone_number,
             "contact_with_carrier": patient.contact_with_carrier,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
-            "local_body": mock_equal,
-            "local_body_object": mock_equal,
-            "district": mock_equal,
-            "district_object": mock_equal,
-            "state": mock_equal,
-            "state_object": mock_equal,
+            "local_body": None,
+            "local_body_object": None,
+            "district": None,
+            "district_object": None,
+            "state": None,
+            "state_object": None,
         }
 
     def test_update(self, client, user, patient):
@@ -134,7 +132,6 @@ class TestPatient:
                 "name": patient.name,
                 "age": patient.age,
                 "gender": patient.gender,
-                "real_name": patient.real_name,
                 "phone_number": new_phone_number,
                 "contact_with_carrier": patient.contact_with_carrier,
                 "medical_history": [{"disease": 4, "details": "Mild"}],
@@ -143,7 +140,6 @@ class TestPatient:
         assert response.status_code == 200
         assert response.json() == {
             "id": patient.id,
-            "name": patient.name,
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_carrier": patient.contact_with_carrier,
@@ -151,14 +147,15 @@ class TestPatient:
                 {"disease": "NO", "details": "Quite bad"},
                 {"disease": "HyperTension", "details": "Mild"},
             ],
+            "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
-            "local_body": mock_equal,
-            "local_body_object": mock_equal,
-            "district": mock_equal,
-            "district_object": mock_equal,
-            "state": mock_equal,
-            "state_object": mock_equal,
+            "local_body": None,
+            "local_body_object": None,
+            "district": None,
+            "district_object": None,
+            "state": None,
+            "state_object": None,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -186,19 +183,16 @@ class TestPatient:
             "results": [
                 {
                     "id": patient.id,
-                    "name": patient.name,
                     "age": patient.age,
                     "gender": patient.gender,
                     "contact_with_carrier": patient.contact_with_carrier,
-                    "medical_history": [{"disease": "NO", "details": "Quite bad"}],
                     "is_active": True,
-                    "last_consultation": None,
-                    "local_body": mock_equal,
-                    "local_body_object": mock_equal,
-                    "district": mock_equal,
-                    "district_object": mock_equal,
-                    "state": mock_equal,
-                    "state_object": mock_equal,
+                    "local_body": None,
+                    "local_body_object": None,
+                    "district": None,
+                    "district_object": None,
+                    "state": None,
+                    "state_object": None,
                 },
             ],
         }

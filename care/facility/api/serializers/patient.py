@@ -17,17 +17,36 @@ from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializ
 from config.serializers import ChoiceField
 
 
-class PatientSerializer(serializers.ModelSerializer):
+class PatientListSerializer(serializers.ModelSerializer):
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    district_object = DistrictSerializer(source="district", read_only=True)
+    state_object = StateSerializer(source="state", read_only=True)
+
+    def to_representation(self, obj):
+        repr = super().to_representation(obj)
+        if not self.context["request"].user.is_superuser:
+            repr.pop("name")
+            repr.pop("phone_number")
+        return repr
+
+    class Meta:
+        model = PatientRegistration
+        exclude = ("created_by", "deleted")
+
+
+class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
-    medical_history = MedicalHistorySerializer(many=True, required=False)
-    last_consultation = serializers.SerializerMethodField()
+    class PatientTeleConsultationSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = PatientTeleConsultation
+            fields = "__all__"
 
-    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
-    district_object = DistrictSerializer(source="district", read_only=True)
-    state_object = StateSerializer(source="state", read_only=True)
+    medical_history = MedicalHistorySerializer(many=True, required=False)
+    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
+    last_consultation = serializers.SerializerMethodField()
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -57,23 +76,6 @@ class PatientSerializer(serializers.ModelSerializer):
             for disease in medical_history:
                 patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
             return patient
-
-    def to_representation(self, obj):
-        repr = super().to_representation(obj)
-        if not self.context["request"].user.is_superuser:
-            repr.pop("real_name")
-            repr.pop("phone_number")
-        return repr
-
-
-class PatientTeleConsultationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PatientTeleConsultation
-        fields = "__all__"
-
-
-class PatientDetailSerializer(PatientSerializer):
-    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
 
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
