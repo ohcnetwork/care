@@ -96,8 +96,11 @@ class User(AbstractUser):
         "Staff": 10,
         "Patient": 15,
         "Volunteer": 20,
+        "DistrictLabAdmin": 25,
         "DistrictAdmin": 30,
+        "StateLabAdmin": 35,
     }
+
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
