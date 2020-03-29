@@ -16,6 +16,9 @@ from rest_framework_simplejwt.views import (
 from .auth_views import TokenObtainPairView
 
 from config import api_router
+from .adminlogin import login_wrapper
+
+admin.site.login = login_wrapper(admin.site.login)
 
 schema_view = get_schema_view(
     openapi.Info(
