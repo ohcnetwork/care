@@ -29,6 +29,8 @@ class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return PatientDetailSerializer
+        elif self.action == "history":
+            return PatientConsultationSerializer
         else:
             return self.serializer_class
 
@@ -43,7 +45,7 @@ class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
         queryset = PatientConsultation.objects.filter(patient__id=self.kwargs.get("pk"))
         if not user.is_superuser:
             queryset = queryset.filter(patient__created_by=user)
-        return Response(data=PatientConsultationSerializer(queryset, many=True).data)
+        return Response(data=self.get_serializer_class()(queryset, many=True).data)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
