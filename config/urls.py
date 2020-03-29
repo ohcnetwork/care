@@ -17,6 +17,7 @@ from .auth_views import TokenObtainPairView
 
 from config import api_router
 from .adminlogin import login_wrapper
+from .views import home_view
 
 admin.site.login = login_wrapper(admin.site.login)
 
@@ -35,7 +36,7 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", home_view, name="home"),
     path(
         "ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"
     ),
