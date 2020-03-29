@@ -21,7 +21,11 @@ class PatientFilterSet(filters.FilterSet):
 
 class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
-    queryset = PatientRegistration.objects.filter(deleted=False)
+    queryset = (
+        PatientRegistration.objects.filter(deleted=False)
+        .select_related("local_body", "district", "state")
+        .prefetch_related("medical_history")
+    )
     serializer_class = PatientSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientFilterSet
