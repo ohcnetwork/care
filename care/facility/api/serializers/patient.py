@@ -20,7 +20,7 @@ from config.serializers import ChoiceField
 class PatientSerializer(serializers.ModelSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
-        details = serializers.CharField()
+        details = serializers.CharField(required=False, allow_blank=True)
 
     medical_history = MedicalHistorySerializer(many=True, required=False)
     last_consultation = serializers.SerializerMethodField()
