@@ -12,6 +12,10 @@ from .base import env
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
+# The first key will be used to encrypt all new data, and decryption of existing values will be attempted
+# with all given keys in order. This is useful for key rotation: place a new key at the head of the list
+# for use with all new or changed data, but existing values encrypted with old keys will still be accessible
+FERNET_KEYS = [env("FERNET_SECRET_KEY_1", default="76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["*"]
 
