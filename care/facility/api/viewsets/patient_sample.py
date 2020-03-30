@@ -25,6 +25,8 @@ class PatientSampleFilterBackend(DRYPermissionFiltersBase):
 class PatientSampleFilterSet(filters.FilterSet):
     district = filters.NumberFilter(field_name="facility__district_id")
     district_name = filters.CharFilter(field_name="facility__district__name", lookup_expr="icontains")
+    status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
+    result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
 
 
 class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
@@ -41,22 +43,17 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
     filterset_class = PatientSampleFilterSet
     http_method_names = ["get", "post", "patch", "delete"]
 
-    def get_serializer(self, *args, **kwargs):
-        """
-        Injects the patient data to serializer
-        """
-        try:
-            kwargs["data"]["patient"] = self.kwargs["patient_pk"]
-        except KeyError:
-            # In read serializers, "data" will not be present.
-            pass
-        return super().get_serializer(*args, **kwargs)
-
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.action == "retrieve":
             serializer_class = PatientSampleDetailSerializer
         return serializer_class
+
+    def get_queryset(self):
+        queryset = super(PatientSampleViewSet, self).get_queryset()
+        if self.kwargs.get("patient_pk") is not None:
+            queryset = queryset.filter(patient_id=self.kwargs.get("patient_pk"))
+        return queryset
 
     def list(self, request, *args, **kwargs):
         """
@@ -70,6 +67,8 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
+        if self.kwargs.get("patient_pk") is not None:
+            validated_data["patient_id"] = self.kwargs.get("patient_pk")
         notes = validated_data.pop("notes", "create")
         with transaction.atomic():
             instance = serializer.create(validated_data)
