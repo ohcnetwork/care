@@ -5,6 +5,8 @@ from care.facility.models import DailyRound, PatientConsultation, SuggestionChoi
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
+    facility_name = serializers.CharField(source="facility.name", read_only=True)
+
     class Meta:
         model = PatientConsultation
         fields = "__all__"
