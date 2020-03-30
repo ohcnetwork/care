@@ -25,7 +25,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         repr = super().to_representation(obj)
-        if not self.context["request"].user.is_superuser:
+        if self.context.get("request") and self.context.get("request").user.is_superuser:
             repr.pop("name")
             repr.pop("phone_number")
         return repr

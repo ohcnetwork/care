@@ -6,8 +6,9 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
+from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
-from care.facility.models import Facility
+from care.facility.models import Facility, PatientRegistration
 
 
 class FacilityFilter(filters.FilterSet):
@@ -99,3 +100,10 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         with transaction.atomic():
             serializer.create(serializer.validated_data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["get"], detail=True)
+    def patients(self, *args, **kwargs):
+        queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
+            "local_body", "district", "state"
+        )
+        return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)

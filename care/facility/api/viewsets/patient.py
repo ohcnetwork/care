@@ -13,14 +13,13 @@ from care.facility.models import Facility, FacilityPatientStatsHistory, PatientR
 
 
 class PatientFilterSet(filters.FilterSet):
+    facility = filters.NumberFilter(field_name="facility_id")
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
 class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
-    queryset = PatientRegistration.objects.filter(deleted=False).select_related(
-        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state",
-    )
+    queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
     serializer_class = PatientDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientFilterSet
