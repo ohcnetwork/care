@@ -148,6 +148,9 @@ class PatientConsultation(models.Model):
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.patient.name}<>{self.facility.name}"
+
     @staticmethod
     def has_write_permission(request):
         if not request.data.get("facility"):

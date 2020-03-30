@@ -23,8 +23,8 @@ class PatientSampleFilterBackend(DRYPermissionFiltersBase):
 
 
 class PatientSampleFilterSet(filters.FilterSet):
-    district = filters.NumberFilter(field_name="facility__district_id")
-    district_name = filters.CharFilter(field_name="facility__district__name", lookup_expr="icontains")
+    district = filters.NumberFilter(field_name="consultation__facility__district_id")
+    district_name = filters.CharFilter(field_name="consultation__facility__district__name", lookup_expr="icontains")
     status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
 
