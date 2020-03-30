@@ -28,7 +28,7 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
 
 class PatientRegistration(models.Model):
-    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, default=True)
+    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField()

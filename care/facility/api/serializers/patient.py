@@ -47,11 +47,14 @@ class PatientDetailSerializer(PatientListSerializer):
 
     medical_history = MedicalHistorySerializer(many=True, required=False)
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
-    last_consultation = PatientConsultationSerializer(read_only=True)
+    last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
 
     def get_last_consultation(self, obj):
-        return PatientConsultation.objects.filter(patient=obj).last()
+        last_consultation = PatientConsultation.objects.filter(patient=obj).last()
+        if not last_consultation:
+            return None
+        return PatientConsultationSerializer(last_consultation).data
 
     class Meta:
         model = PatientRegistration
