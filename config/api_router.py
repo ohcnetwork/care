@@ -8,7 +8,7 @@ from care.facility.api.viewsets.facility import FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientViewSet
-from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
@@ -39,9 +39,13 @@ facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryVie
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 
+consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
+consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
+    url(r"^", include(consultation_nested_router.urls)),
 ]
