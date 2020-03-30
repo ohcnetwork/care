@@ -3,7 +3,7 @@ from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
+from care.facility.api.viewsets.ambulance import AmbulanceViewSet
 from care.facility.api.viewsets.facility import FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
@@ -21,7 +21,7 @@ else:
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
 router.register("ambulance", AmbulanceViewSet)
-router.register("ambulance/create", AmbulanceCreateViewSet)
+# router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
 
