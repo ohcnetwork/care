@@ -30,9 +30,8 @@
     <span class="room_type text-xl block p-3">{{i.get_room_type_display}}</span>
     <span class="capacity-qty block text-4xl text-center">{{i.current_capacity}}</span>
     <span class="label block text-center text-gray-600">Currently Occupied</span>
-    <button
-      class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
-      <a href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> EDIT </a> </button>
+    <button class="careblock mx-auto">
+      <a class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> EDIT </a> </button>
     <div class="footer bg-gray-900 px-3 py-3 text-center">
       <span class="text-white ">Total Capacity: {{i.total_capacity}}</span>
     </div>
@@ -48,8 +47,8 @@
     <span class="qty p-4 block text-4xl text-center">{{i.count}}</span>
     <span class="label block text-center text-gray-600">{{i.get_area_display}} Doctors</span>
     <button
-      class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
-      <a href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> EDIT </a>
+      class="careblock mx-auto">
+      <a class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> EDIT </a>
     </button>
 
   </div>
