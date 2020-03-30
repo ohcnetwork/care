@@ -6,7 +6,11 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from simple_history.utils import bulk_create_with_history
 
-from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
+from care.facility.api.serializers.facility import (
+    FacilitySerializer,
+    FacilityUpsertSerializer,
+    FacilityBasicInfoSerializer,
+)
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
@@ -58,6 +62,12 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         - `district` current supports only Kerala, will be changing when the UI is ready to support any district
         """
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
+
+    @action(methods=["GET"], detail=False)
+    def list_all(self, request):
+        return self.get_paginated_response(
+            FacilityBasicInfoSerializer(self.paginate_queryset(self.queryset), many=True).data
+        )
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
