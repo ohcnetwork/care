@@ -4,6 +4,7 @@ from django.db import transaction
 from django.utils.timezone import make_aware
 from rest_framework import serializers
 
+from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
@@ -46,13 +47,11 @@ class PatientDetailSerializer(PatientListSerializer):
 
     medical_history = MedicalHistorySerializer(many=True, required=False)
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
-    last_consultation = serializers.SerializerMethodField()
+    last_consultation = PatientConsultationSerializer(read_only=True)
+    facility_object = FacilitySerializer(source="facility", read_only=True)
 
     def get_last_consultation(self, obj):
-        last_consultation = PatientConsultation.objects.filter(patient=obj).last()
-        if last_consultation:
-            return PatientConsultationSerializer(last_consultation).data
-        return None
+        return PatientConsultation.objects.filter(patient=obj).last()
 
     class Meta:
         model = PatientRegistration

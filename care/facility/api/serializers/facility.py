@@ -20,6 +20,25 @@ class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class FacilityBasicInfoSerializer(serializers.ModelSerializer):
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    district_object = DistrictSerializer(source="district", read_only=True)
+    state_object = StateSerializer(source="state", read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = (
+            "id",
+            "name",
+            "local_body",
+            "district",
+            "state",
+            "local_body_object",
+            "district_object",
+            "state_object",
+        )
+
+
 class FacilitySerializer(serializers.ModelSerializer):
     """Serializer for facility.models.Facility."""
 
