@@ -1,8 +1,10 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
@@ -24,6 +26,10 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
     filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filterset_class = FacilityFilter
 
     def list(self, request, *args, **kwargs):
