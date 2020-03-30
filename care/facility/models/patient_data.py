@@ -124,6 +124,27 @@ class PatientConsultation(models.Model):
     discharge_date = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.created_by,
+            self.facility.created_by,
+            self.patient.created_by,
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return request.user in (self.created_by, self.facility.created_by, self.patient.created_by,)
+
     class Meta:
         constraints = [
             models.CheckConstraint(

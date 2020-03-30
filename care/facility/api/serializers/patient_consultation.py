@@ -7,7 +7,7 @@ from care.facility.models import PatientConsultation, SuggestionChoices
 class PatientConsultationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
-        fields = "__all__"
+        exclude = ("created_by",)
 
     def validate(self, obj):
         validated = super().validate(obj)
