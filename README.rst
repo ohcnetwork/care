@@ -112,6 +112,12 @@ Running tests with py.test
 
   $ pytest
 
+If you get an :code:`ImproperlyConfigured` error regarding the Spatialite library extension, install it with the command:
+
+::
+
+  $ sudo apt install libsqlite3-mod-spatialite
+
 Live reloading and Sass CSS compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
