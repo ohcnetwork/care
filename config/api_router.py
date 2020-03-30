@@ -23,6 +23,7 @@ router.register("facility", FacilityViewSet)
 router.register("ambulance", AmbulanceViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("patient", PatientViewSet)
+router.register("consultation", PatientConsultationViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
@@ -34,7 +35,6 @@ facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facilit
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
 facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)
-facility_nested_router.register(r"consultation", PatientConsultationViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
