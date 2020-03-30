@@ -5,10 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
-from care.facility.api.serializers.facility import (
-    FacilitySerializer,
-    FacilityUpsertSerializer,
-)
+from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility
 
@@ -24,7 +21,7 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     """Viewset for facility CRUD operations."""
 
     serializer_class = FacilitySerializer
-    queryset = Facility.objects.filter(is_active=True)
+    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityFilter
 

@@ -1,9 +1,10 @@
 # flake8: noqa
 
 import pytest
+from django.conf import settings
 
 from care.facility.models import Disease, PatientRegistration
-from config.tests.helper import mock_equal
+from config.tests.helper import assert_equal_dicts, mock_equal
 
 
 @pytest.fixture()
@@ -35,6 +36,7 @@ class TestPatient:
         assert response.status_code == 403
 
     def test_create(self, client, user, patient_data):
+        settings.DEBUG = True
         client.force_authenticate(user=user)
         response = client.post("/api/v1/patient/", patient_data,)
         assert response.status_code == 201
@@ -47,13 +49,15 @@ class TestPatient:
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
-            "last_consultation": None,
+            "last_consultation": mock_equal,
             "local_body": mock_equal,
             "local_body_object": mock_equal,
             "district": mock_equal,
             "district_object": mock_equal,
             "state": mock_equal,
             "state_object": mock_equal,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
         }
 
         patient = PatientRegistration.objects.get(
@@ -89,6 +93,8 @@ class TestPatient:
             "district_object": mock_equal,
             "state": mock_equal,
             "state_object": mock_equal,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -118,6 +124,8 @@ class TestPatient:
             "district_object": None,
             "state": None,
             "state_object": None,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
         }
 
     def test_update(self, client, user, patient):
@@ -156,6 +164,8 @@ class TestPatient:
             "district_object": None,
             "state": None,
             "state_object": None,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -193,6 +203,7 @@ class TestPatient:
                     "district_object": None,
                     "state": None,
                     "state_object": None,
+                    "facility": mock_equal,
                 },
             ],
         }

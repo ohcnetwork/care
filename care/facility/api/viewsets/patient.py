@@ -1,27 +1,26 @@
 from django_filters import rest_framework as filters
 from rest_framework import viewsets
-from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from care.facility.api.mixins import UserAccessMixin
+from care.facility.api.mixins import HistoryMixin, UserAccessMixin
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientConsultation, PatientRegistration
+from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
 
 
 class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
-class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
+class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
-    queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
+    queryset = PatientRegistration.objects.filter(deleted=False).select_related(
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state",
+    )
     serializer_class = PatientDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientFilterSet
@@ -29,8 +28,6 @@ class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
-        elif self.action == "history":
-            return PatientConsultationSerializer
         else:
             return self.serializer_class
 
@@ -38,14 +35,6 @@ class PatientViewSet(UserAccessMixin, viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return self.queryset
         return self.queryset.filter(created_by=self.request.user)
-
-    @action(detail=True, methods=["get"])
-    def history(self, request, *args, **kwargs):
-        user = request.user
-        queryset = PatientConsultation.objects.filter(patient__id=self.kwargs.get("pk"))
-        if not user.is_superuser:
-            queryset = queryset.filter(patient__created_by=user)
-        return Response(data=self.get_serializer_class()(queryset, many=True).data)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

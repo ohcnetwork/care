@@ -19,8 +19,3 @@ class LocalBodySerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalBody
         fields = "__all__"
-
-    def to_representation(self, instance):
-        data = super(LocalBodySerializer, self).to_representation(instance)
-        data["district"] = DistrictSerializer(instance.district).to_representation(instance.district)
-        return data

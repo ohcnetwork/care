@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from django.db import models
 from fernet_fields import EncryptedCharField
 from multiselectfield import MultiSelectField
+from simple_history.models import HistoricalRecords
 
 from care.facility.models import District, FacilityBaseModel, LocalBody, SoftDeleteManager, State
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
@@ -27,6 +28,8 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
 
 class PatientRegistration(models.Model):
+    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
+
     name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
@@ -42,6 +45,8 @@ class PatientRegistration(models.Model):
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
     deleted = models.BooleanField(default=False)
+
+    history = HistoricalRecords()
 
     objects = SoftDeleteManager()
 
