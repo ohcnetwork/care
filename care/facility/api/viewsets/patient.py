@@ -1,9 +1,11 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
-from care.facility.api.mixins import HistoryMixin, UserAccessMixin
+from care.facility.api.mixins import HistoryMixin
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -17,8 +19,8 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
-class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
     serializer_class = PatientDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -33,7 +35,7 @@ class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        return self.queryset.filter(created_by=self.request.user)
+        return self.queryset.filter(Q(created_by=self.request.user) | Q(facility__created_by=self.request.user))
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

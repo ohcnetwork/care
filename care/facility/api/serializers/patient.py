@@ -56,6 +56,7 @@ class PatientDetailSerializer(PatientListSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
+            validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
             diseases = []
             for disease in medical_history:

@@ -57,6 +57,31 @@ class PatientRegistration(models.Model):
         self.deleted = True
         self.save()
 
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (self.facility and request.user == self.facility.created_by)
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (self.facility and request.user == self.facility.created_by)
+        )
+
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
