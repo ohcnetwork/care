@@ -14,6 +14,11 @@ class PatientConsultationViewSet(ModelViewSet):
     )
     queryset = PatientConsultation.objects.all()
 
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return self.queryset
+        return self.queryset.filter(facility__created_by=self.request.user)
+
 
 class DailyRoundsViewSet(ModelViewSet):
     serializer_class = DailyRoundSerializer
