@@ -23,15 +23,6 @@ class PatientListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
 
-    def to_representation(self, obj):
-        repr = super().to_representation(obj)
-        if self.context.get("request"):
-            user = self.context.get("request").user
-            if not user.is_superuser and not obj.created_by != user:
-                repr.pop("name")
-                repr.pop("phone_number")
-        return repr
-
     class Meta:
         model = PatientRegistration
         exclude = ("created_by", "deleted")
