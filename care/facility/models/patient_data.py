@@ -112,6 +112,9 @@ class PatientConsultation(models.Model):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    examination_details = models.TextField(null=True, blank=True)
+    existing_medication = models.TextField(null=True, blank=True)
+    prescribed_medication = models.TextField(null=True, blank=True)
     suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
@@ -120,6 +123,27 @@ class PatientConsultation(models.Model):
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.created_by,
+            self.facility.created_by,
+            self.patient.created_by,
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return request.user in (self.created_by, self.facility.created_by, self.patient.created_by,)
 
     class Meta:
         constraints = [
