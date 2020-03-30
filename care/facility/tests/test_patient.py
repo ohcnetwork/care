@@ -4,7 +4,7 @@ import pytest
 from django.conf import settings
 
 from care.facility.models import Disease, PatientRegistration
-from config.tests.helper import assert_equal_dicts, mock_equal
+from config.tests.helper import mock_equal
 
 
 @pytest.fixture()
