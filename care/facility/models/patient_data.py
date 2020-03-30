@@ -155,3 +155,35 @@ class PatientConsultation(models.Model):
                 name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+
+class DailyRound(models.Model):
+    consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
+    temperature = models.DecimalField(max_digits=5, decimal_places=2)
+    temperature_measured_at = models.DateTimeField()
+    physical_examination_info = models.TextField(null=True, blank=True)
+    other_details = models.TextField(null=True, blank=True)
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and PatientConsultation.objects.get(id=request.parser_context["kwargs"]["consultation_pk"]).created_by
+            == request.user
+        )
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.consultation.facility.created_by,
+            self.consultation.patient.created_by,
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.consultation.facility.created_by,
+            self.consultation.patient.created_by,
+        )

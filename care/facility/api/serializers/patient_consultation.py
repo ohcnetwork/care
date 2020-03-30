@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from care.facility.models import PatientConsultation, SuggestionChoices
+from care.facility.models import DailyRound, PatientConsultation, SuggestionChoices
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
@@ -22,3 +22,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         ):
             raise ValidationError({"admission_date": [f"This field is required as the patient has been admitted."]})
         return validated
+
+
+class DailyRoundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyRound
+        fields = "__all__"
