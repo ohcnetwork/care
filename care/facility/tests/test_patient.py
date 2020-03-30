@@ -42,8 +42,6 @@ class TestPatient:
         assert response.status_code == 201
         response = response.json()
         response.pop("id")
-        name = patient_data.pop("name")
-        phone_number = patient_data.pop("phone_number")
         assert response == {
             **patient_data,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
@@ -67,8 +65,8 @@ class TestPatient:
             created_by=user,
             is_active=True,
         )
-        assert patient.name == name
-        assert patient.phone_number == phone_number
+        assert patient.name == patient_data["name"]
+        assert patient.phone_number == patient_data["phone_number"]
         assert Disease.objects.get(patient=patient, **patient_data["medical_history"][0])
 
     def test_retrieve(self, client, user, patient):
@@ -80,6 +78,8 @@ class TestPatient:
         response = response.json()
         assert response == {
             "id": patient.id,
+            "name": patient.name,
+            "phone_number": patient.phone_number,
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_carrier": patient.contact_with_carrier,
@@ -87,14 +87,14 @@ class TestPatient:
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
-            "local_body": mock_equal,
-            "local_body_object": mock_equal,
-            "district": mock_equal,
-            "district_object": mock_equal,
-            "state": mock_equal,
-            "state_object": mock_equal,
-            "facility": mock_equal,
-            "facility_object": mock_equal,
+            "local_body": None,
+            "local_body_object": None,
+            "district": None,
+            "district_object": None,
+            "state": None,
+            "state_object": None,
+            "facility": None,
+            "facility_object": None,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -148,6 +148,8 @@ class TestPatient:
         assert response.status_code == 200
         assert response.json() == {
             "id": patient.id,
+            "name": patient.name,
+            "phone_number": new_phone_number,
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_carrier": patient.contact_with_carrier,
@@ -176,6 +178,11 @@ class TestPatient:
         patient.save()
 
         response = client.delete(f"/api/v1/patient/{patient.id}/",)
+        assert response.status_code == 403
+
+        user.is_superuser = True
+        user.save()
+        response = client.delete(f"/api/v1/patient/{patient.id}/",)
         assert response.status_code == 204
         with pytest.raises(PatientRegistration.DoesNotExist):
             PatientRegistration.objects.get(id=patient.id)
@@ -193,6 +200,8 @@ class TestPatient:
             "results": [
                 {
                     "id": patient.id,
+                    "name": patient.name,
+                    "phone_number": patient.phone_number,
                     "age": patient.age,
                     "gender": patient.gender,
                     "contact_with_carrier": patient.contact_with_carrier,
@@ -203,7 +212,7 @@ class TestPatient:
                     "district_object": None,
                     "state": None,
                     "state_object": None,
-                    "facility": mock_equal,
+                    "facility": None,
                 },
             ],
         }
