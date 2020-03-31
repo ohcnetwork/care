@@ -3,22 +3,18 @@ from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
     CreateModelMixin,
+    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
-    DestroyModelMixin,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
-from care.facility.api.viewsets import FacilityBaseViewset
-from care.facility.models import Ambulance
-
 from care.facility.api.mixins import UserAccessMixin
-
-from rest_framework.permissions import IsAuthenticated
+from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
+from care.facility.models import Ambulance
 
 
 class AmbulanceFilterSet(filters.FilterSet):
@@ -38,7 +34,9 @@ class AmbulanceViewSet(
 ):
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
-    queryset = Ambulance.objects.filter(deleted=False)
+    queryset = Ambulance.objects.filter(deleted=False).select_related(
+        "primary_district", "secondary_district", "third_district"
+    )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
