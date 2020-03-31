@@ -30,7 +30,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
 class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
-        id = serializers.IntegerField(read_only=True)
+        id = serializers.IntegerField(read_only=True, source='disease')
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
