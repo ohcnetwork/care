@@ -36,6 +36,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 class UserSerializer(SignUpSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
@@ -50,6 +51,7 @@ class UserSerializer(SignUpSerializer):
             "phone_number",
             "gender",
             "age",
+            "is_superuser",
         )
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
