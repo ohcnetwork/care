@@ -20,8 +20,9 @@ else:
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
-router.register("ambulance", AmbulanceViewSet)
+
 router.register("ambulance/create", AmbulanceCreateViewSet)
+router.register("ambulance", AmbulanceViewSet)
 
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)

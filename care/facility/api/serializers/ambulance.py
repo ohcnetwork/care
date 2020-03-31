@@ -16,26 +16,44 @@ class AmbulanceDriverSerializer(serializers.ModelSerializer):
 class AmbulanceSerializer(serializers.ModelSerializer):
     drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
+    primary_district = DistrictSerializer(read_only=True)
+    secondary_district = DistrictSerializer(read_only=True)
+    third_district = DistrictSerializer(read_only=True)
+
     class Meta:
         model = Ambulance
-        exclude = TIMESTAMP_FIELDS
+        fields = [
+            "id",
+            "name",
+            "local_body",
+            "district",
+            "state",
+            "facility_type",
+            "address",
+            "location",
+            "oxygen_capacity",
+            "phone_number",
+            "local_body_object",
+            "district_object",
+            "state_object",
+        ]
 
-    def to_representation(self, instance):
-        data = super(AmbulanceSerializer, self).to_representation(instance)
-        data["primary_district_obj"] = (
-            DistrictSerializer().to_representation(instance.primary_district_obj)
-            if instance.primary_district_obj
-            else None
-        )
-        data["secondary_district_obj"] = (
-            DistrictSerializer().to_representation(instance.secondary_district_obj)
-            if instance.secondary_district_obj
-            else None
-        )
-        data["third_district_obj"] = (
-            DistrictSerializer().to_representation(instance.third_district_obj) if instance.third_district_obj else None
-        )
-        return data
+    # def to_representation(self, instance):
+    #     data = super(AmbulanceSerializer, self).to_representation(instance)
+    #     data["primary_district"] = (
+    #         DistrictSerializer().to_representation(instance.primary_district_obj)
+    #         if instance.primary_district_obj
+    #         else None
+    #     )
+    #     data["secondary_district"] = (
+    #         DistrictSerializer().to_representation(instance.secondary_district_obj)
+    #         if instance.secondary_district_obj
+    #         else None
+    #     )
+    #     data["third_district"] = (
+    #         DistrictSerializer().to_representation(instance.third_district_obj) if instance.third_district_obj else None
+    #     )
+    #     return data
 
     def validate(self, obj):
         validated = super().validate(obj)
@@ -47,10 +65,6 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             drivers = validated_data.pop("drivers", [])
             validated_data.pop("created_by", None)
-
-            validated_data["primary_district_obj_id"] = validated_data.get("primary_district")
-            validated_data["secondary_district_obj_id"] = validated_data.get("secondary_district")
-            validated_data["third_district_obj_id"] = validated_data.get("third_district")
 
             ambulance = super(AmbulanceSerializer, self).create(validated_data)
 

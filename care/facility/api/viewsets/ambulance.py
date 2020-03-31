@@ -20,16 +20,17 @@ from care.facility.api.mixins import UserAccessMixin
 
 from rest_framework.permissions import IsAuthenticated
 
+
 class AmbulanceFilterSet(filters.FilterSet):
     vehicle_numbers = filters.BaseInFilter(field_name="vehicle_number")
 
-    primary_district = filters.CharFilter(field_name="primary_district_obj_id")
-    secondary_district = filters.CharFilter(field_name="secondary_district_obj_id")
-    third_district = filters.CharFilter(field_name="third_district_obj_id")
+    primary_district = filters.CharFilter(field_name="primary_district_id")
+    secondary_district = filters.CharFilter(field_name="secondary_district_id")
+    third_district = filters.CharFilter(field_name="third_district_id")
 
-    primary_district_name = filters.CharFilter(field_name="primary_district_obj__name", lookup_expr="icontains")
-    secondary_district_name = filters.CharFilter(field_name="secondary_district_obj__name", lookup_expr="icontains")
-    third_district_name = filters.CharFilter(field_name="third_district_obj__name", lookup_expr="icontains")
+    primary_district_name = filters.CharFilter(field_name="primary_district__name", lookup_expr="icontains")
+    secondary_district_name = filters.CharFilter(field_name="secondary_district__name", lookup_expr="icontains")
+    third_district_name = filters.CharFilter(field_name="third_district__name", lookup_expr="icontains")
 
 
 class AmbulanceViewSet(
