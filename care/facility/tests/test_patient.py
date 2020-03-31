@@ -153,10 +153,7 @@ class TestPatient:
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_carrier": patient.contact_with_carrier,
-            "medical_history": [
-                {"disease": "NO", "details": "Quite bad"},
-                {"disease": "HyperTension", "details": "Mild"},
-            ],
+            "medical_history": [{"disease": "HyperTension", "details": "Mild"},],
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
