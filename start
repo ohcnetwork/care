@@ -40,4 +40,4 @@ done
 
 python /app/manage.py collectstatic --noinput
 
-/usr/local/bin/gunicorn config/wsgi.py --bind 0.0.0.0:9000 --chdir=/app
+/usr/local/bin/gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
