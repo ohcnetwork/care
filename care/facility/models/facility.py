@@ -102,6 +102,9 @@ class Facility(FacilityBaseModel):
     def has_write_permission(request):
         return True
 
+    def has_object_read_permission(self, request):
+        return True
+
     @staticmethod
     def has_destroy_permission(request):
         return True
