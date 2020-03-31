@@ -203,8 +203,12 @@ class DailyRound(models.Model):
     def has_write_permission(request):
         return request.user.is_superuser or (
             request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and PatientConsultation.objects.get(id=request.parser_context["kwargs"]["consultation_pk"]).created_by
-            == request.user
+            and (
+                PatientConsultation.objects.get(
+                    id=request.parser_context["kwargs"]["consultation_pk"]
+                ).facility.created_by
+                == request.user
+            )
         )
 
     @staticmethod
