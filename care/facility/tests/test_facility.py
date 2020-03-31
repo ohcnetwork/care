@@ -276,7 +276,7 @@ class TestFacilityBulkUpsert:
     def test_super_user_access(self, client, user, facility):
         client.force_authenticate(user=user)
         response = client.get(f"/api/v1/facility/{facility.id}/")
-        assert response.status_code == 403
+        assert response.status_code == 404
 
         user.is_superuser = True
         user.save()

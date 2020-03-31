@@ -1,6 +1,6 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
-from dry_rest_permissions.generics import DRYPermissions
+from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -24,16 +24,26 @@ class FacilityFilter(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="facilitylocalgovtbody__local_body__name", lookup_expr="icontains")
 
 
+class FacilityQSPermissions(DRYPermissionFiltersBase):
+    def filter_queryset(self, request, queryset, view):
+        if request.user.is_superuser or view.action == "list_all":
+            return queryset
+        else:
+            return queryset.filter(created_by=request.user)
+
+
 class FacilityViewSet(viewsets.ModelViewSet):
     """Viewset for facility CRUD operations."""
 
-    serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (
+        FacilityQSPermissions,
+        filters.DjangoFilterBackend,
+    )
     filterset_class = FacilityFilter
 
     def get_serializer_class(self):
