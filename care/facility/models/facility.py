@@ -322,17 +322,17 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
-    primary_district_obj = models.ForeignKey(
+    primary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
-    secondary_district_obj = models.ForeignKey(
+    secondary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
     )
-    third_district_obj = models.ForeignKey(
+    third_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
     )
 
@@ -355,6 +355,37 @@ class Ambulance(FacilityBaseModel):
 
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+            )
+        )
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+            )
+        )
 
     # class Meta:
     #     constraints = [
