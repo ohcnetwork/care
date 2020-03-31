@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.users.api.serializers.user import UserPartialSerializer, UserSerializer
+from care.users.api.serializers.user import UserListSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -20,25 +21,20 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            self.permission_classes = ()  # allows signup
+            return [
+                DRYPermissions(),
+            ]
         else:
-            self.permission_classes = (IsAuthenticated,)
-        return super().get_permissions()
-
-    def get_queryset(self):
-        if self.request.user.is_superuser or self.request.method == "GET":
-            return self.queryset
-        else:
-            return self.queryset.filter(id=self.request.user.id)
+            return [
+                IsAuthenticated(),
+                DRYPermissions(),
+            ]
 
     def get_serializer_class(self):
-        if (
-            self.request.user.is_superuser
-            or self.kwargs.get("username") == self.request.user.username  # Fetching self
-            or not self.request.method == "GET"
-        ):
+        if self.action == "list" and not self.request.user.is_superuser:
+            return UserListSerializer
+        else:
             return self.serializer_class
-        return UserPartialSerializer
 
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):

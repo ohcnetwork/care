@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class UserPartialSerializer(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "first_name", "last_name")

@@ -126,6 +126,27 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user.is_superuser or self == request.user
+
+    @staticmethod
+    def has_write_permission(request):
+        try:
+            return request.data["user_type"] <= User.TYPE_VALUE_MAP["Volunteer"]
+        except KeyError:
+            # No user_type passed, the view shall raise a 400
+            return True
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return request.user.is_superuser or self == request.user
+
     def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
