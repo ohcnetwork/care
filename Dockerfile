@@ -33,3 +33,5 @@ COPY --chown=django:django . /app
 USER django
 
 WORKDIR /app
+
+EXPOSE 9000
