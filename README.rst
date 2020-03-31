@@ -5,8 +5,9 @@ Care
    :alt: Codacy Badge
    :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
 
-
-[![Build Status](https://travis-ci.org/coronasafe/care.svg?branch=master)](https://travis-ci.org/coronasafe/care)
+.. image:: https://travis-ci.org/coronasafe/care.svg?branch=master
+    :alt: Travis CI build
+    :target: https://travis-ci.org/coronasafe/care
 
 Care is a Corona Care Center management app for the Govt of Kerala
 
