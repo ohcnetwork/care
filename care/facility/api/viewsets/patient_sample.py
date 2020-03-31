@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.patient_sample import PatientSampleDetailSerializer, PatientSampleSerializer
-from care.facility.models import PatientSample, User
+from care.facility.models import PatientSample, User, patient_data
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -74,6 +74,21 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         if self.kwargs.get("patient_pk") is not None:
             validated_data["patient_id"] = self.kwargs.get("patient_pk")
         notes = validated_data.pop("notes", "create")
+        if "consultation_id" not in validated_data:
+            try:
+                validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
+                    patient=validated_data["patient_id"]
+                ).order_by("-id")[0]
+            except:
+                raise Exception("No Consultation Done")
+        else:
+            try:
+                validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
+                    id=validated_data["consultation_id"]
+                )
+            except:
+                raise Exception("No Consultation Done")
+
         with transaction.atomic():
             instance = serializer.create(validated_data)
             instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)

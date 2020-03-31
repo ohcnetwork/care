@@ -19,10 +19,11 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     notes = serializers.CharField(required=False)
     date_of_sample = serializers.DateTimeField(read_only=True)
     date_of_result = serializers.DateTimeField(read_only=True)
+    consultation_id = serializers.CharField(required=False)
 
     class Meta:
         model = PatientSample
-        exclude = TIMESTAMP_FIELDS + ("patient",)
+        exclude = TIMESTAMP_FIELDS + ("patient", "consultation")
 
     def create(self, validated_data):
         # popping these values makes sure that ONLY the default values are set during create
