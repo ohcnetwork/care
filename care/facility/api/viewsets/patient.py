@@ -12,6 +12,7 @@ from care.facility.api.serializers.patient import (
     PatientListSerializer,
 )
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.users.models import User
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -35,6 +36,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.queryset.filter(district=self.request.user.district)
         return self.queryset.filter(Q(created_by=self.request.user) | Q(facility__created_by=self.request.user))
 
 

@@ -70,6 +70,10 @@ class PatientRegistration(models.Model):
             request.user.is_superuser
             or request.user == self.created_by
             or (self.facility and request.user == self.facility.created_by)
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
         )
 
     def has_object_write_permission(self, request):
@@ -80,6 +84,11 @@ class PatientRegistration(models.Model):
             request.user.is_superuser
             or request.user == self.created_by
             or (self.facility and request.user == self.facility.created_by)
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+            #  TODO State Level Permissions
         )
 
     @property
