@@ -29,7 +29,10 @@ class PatientSample(FacilityBaseModel):
 
     @property
     def flow(self):
-        return self.patientsampleflow_set.order_by("-created_date")
+        try:
+            return self.flow_prefetched
+        except AttributeError:
+            return self.patientsampleflow_set.order_by("-created_date")
 
     @staticmethod
     def has_write_permission(request):
