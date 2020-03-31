@@ -15,6 +15,8 @@ from care.facility.api.serializers.facility import (
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 
+from care.users.models import User
+
 
 class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
@@ -28,6 +30,8 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser or view.action == "list_all":
             return queryset
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return queryset.filter(district=request.user.district)
         else:
             return queryset.filter(created_by=request.user)
 
