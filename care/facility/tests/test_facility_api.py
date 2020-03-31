@@ -2,37 +2,21 @@ from django.contrib.gis.geos import Point
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import Facility, FacilityCapacity, FacilityLocalGovtBody
+from care.facility.models import Facility, FacilityCapacity
 from care.users.models import User
+from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
 # flake8: noqa
 
 
-class TestFacility(APITestCase):
+class TestFacility(TestBase):
     """Test Facility APIs"""
 
-    # Override the constructor when using helper
-    # def __init__(self, *args, **kwargs):
-    #     super(TestFacility, self).__init__(*args, **kwargs)
+    URL = "/api/v1/facility"
 
     @classmethod
     def setUpTestData(cls):
-        # super(TestFacility, cls).setUpTestData()
-        cls.su_data = {
-            "user_type": 5,
-            "email": "some.email@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "district": 11,
-            "username": "superuser_1",
-            "password": "bar",
-        }
-        cls.super_user = User.objects.create_superuser(**cls.su_data)
-        cls.user_data = cls.su_data.copy()
-        cls.user_data["username"] = "user"
-        cls.user = User.objects.create_user(**cls.user_data)
         cls.facility_data = {
             "name": "Foo",
             "district": 13,
@@ -42,32 +26,6 @@ class TestFacility(APITestCase):
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
         }
-        # **cls.data is not used because of a issue with the location attribute which requires a Point object
-        cls.facility = Facility.objects.create(
-            name="Foo",
-            district=13,
-            facility_type=1,
-            address="8/88, 1st Cross, 1st Main, Boo Layout",
-            location=Point(24.452545, 49.878248),
-            oxygen_capacity=10,
-            phone_number="9998887776",
-        )
-        FacilityLocalGovtBody.objects.create(facility=cls.facility, local_body=None, district_id=13)
-
-    def setUp(self):
-        """
-        Run before every class method
-            - keep a normal user logged in
-        """
-        # super(TestFacility, self).setUp()
-        self.client.login(username=self.user_data["username"], password=self.user_data["password"])
-
-    def test_login_required(self):
-        """Test unlogged unusers are thrown an error 403"""
-        # Terminate the user session since user is logged in inside the setUp function
-        self.client.logout()
-        response = self.client.post("/api/v1/facility/", {},)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_can_create_facility(self):
         """
@@ -129,22 +87,25 @@ class TestFacility(APITestCase):
         facility = self.facility
         facility.created_by = self.user
         facility.save()
-        response = self.client.get(f"/api/v1/facility/{facility.id}/")
+        response = self.client.get(self.get_url(facility.id), format="json", redirect="follow")
         self.assertDictEqual(
             response.data,
             {
                 "id": facility.id,
                 "name": facility.name,
-                "district": facility.district,
                 "facility_type": "Educational Inst",
                 "address": facility.address,
                 "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                "local_govt_body": {
-                    "id": mock_equal,
-                    "facility": facility.id,
-                    "local_body": None,
-                    "district": {"id": 13, "name": "Kannur", "state": mock_equal},
+                "local_body": None,
+                "local_body_object": None,
+                "district": facility.district.id,
+                "district_object": {
+                    "id": facility.district.id,
+                    "name": facility.district.name,
+                    "state": facility.district.state.id,
                 },
+                "state": facility.district.state.id,
+                "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
                 "oxygen_capacity": facility.oxygen_capacity,
                 "phone_number": facility.phone_number,
             },
