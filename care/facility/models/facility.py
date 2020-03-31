@@ -98,16 +98,32 @@ class Facility(FacilityBaseModel):
     def has_read_permission(request):
         return True
 
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
     @staticmethod
     def has_write_permission(request):
         return True
 
-    def has_object_read_permission(self, request):
-        return True
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
 
-    @staticmethod
-    def has_destroy_permission(request):
-        return True
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
 
     def save(self, *args, **kwargs) -> None:
         """
