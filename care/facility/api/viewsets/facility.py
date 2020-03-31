@@ -17,6 +17,7 @@ from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 
 
 class FacilityFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     district = filters.NumberFilter(field_name="facilitylocalgovtbody__district_id")
     district_name = filters.CharFilter(field_name="facilitylocalgovtbody__district__name", lookup_expr="icontains")
     local_body = filters.NumberFilter(field_name="facilitylocalgovtbody__local_body_id")
@@ -28,12 +29,18 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
     serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
-    filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
     )
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityFilter
+
+    def get_serializer_class(self):
+        if self.action == "list_all":
+            return FacilityBasicInfoSerializer
+        else:
+            return FacilitySerializer
 
     def list(self, request, *args, **kwargs):
         """
@@ -68,10 +75,8 @@ class FacilityViewSet(viewsets.ModelViewSet):
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
 
     @action(methods=["GET"], detail=False)
-    def list_all(self, request):
-        return self.get_paginated_response(
-            FacilityBasicInfoSerializer(self.paginate_queryset(self.queryset), many=True).data
-        )
+    def list_all(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
