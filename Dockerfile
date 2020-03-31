@@ -39,6 +39,3 @@ COPY --chown=django:django . /app
 USER django
 
 WORKDIR /app
-
-ENTRYPOINT ["/entrypoint"]
-
