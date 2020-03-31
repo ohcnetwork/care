@@ -137,6 +137,8 @@ class User(AbstractUser):
     def has_write_permission(request):
         try:
             return request.data["user_type"] <= User.TYPE_VALUE_MAP["Volunteer"]
+        except TypeError:
+            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
