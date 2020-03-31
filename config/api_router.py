@@ -30,6 +30,9 @@ router.register("state", StateViewSet)
 router.register("district", DistrictViewSet)
 router.register("local_body", LocalBodyViewSet)
 
+# Patient Sample
+router.register("test_sample", PatientSampleViewSet)
+
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
