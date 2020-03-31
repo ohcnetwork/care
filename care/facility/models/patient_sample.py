@@ -45,6 +45,9 @@ class PatientSample(FacilityBaseModel):
     def has_object_update_permission(self, request):
         return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
 
+    def has_object_destroy_permission(self, request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+
 
 class PatientSampleFlow(FacilityBaseModel):
     patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)

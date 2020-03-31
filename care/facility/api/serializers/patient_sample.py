@@ -24,6 +24,12 @@ class PatientSampleSerializer(serializers.ModelSerializer):
         model = PatientSample
         exclude = TIMESTAMP_FIELDS + ("patient",)
 
+    def create(self, validated_data):
+        # popping these values makes sure that ONLY the default values are set during create
+        validated_data.pop("status", None)
+        validated_data.pop("result", None)
+        return super(PatientSampleSerializer, self).create(validated_data)
+
 
 class PatientSampleDetailSerializer(PatientSampleSerializer):
     flow = serializers.ListSerializer(child=PatientSampleFlowSerializer())

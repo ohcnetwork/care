@@ -1,13 +1,21 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from simple_history.utils import bulk_create_with_history
 
-from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
+from care.facility.api.serializers.facility import (
+    FacilitySerializer,
+    FacilityUpsertSerializer,
+    FacilityBasicInfoSerializer,
+)
+from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
-from care.facility.models import Facility
+from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 
 
 class FacilityFilter(filters.FilterSet):
@@ -23,6 +31,10 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
     filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filterset_class = FacilityFilter
 
     def list(self, request, *args, **kwargs):
@@ -56,6 +68,12 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         - `district` current supports only Kerala, will be changing when the UI is ready to support any district
         """
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
+
+    @action(methods=["GET"], detail=False)
+    def list_all(self, request):
+        return self.get_paginated_response(
+            FacilityBasicInfoSerializer(self.paginate_queryset(self.queryset), many=True).data
+        )
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
@@ -95,7 +113,63 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         serializer = FacilityUpsertSerializer(data=data, many=True)
         serializer.is_valid(raise_exception=True)
 
-        serializer.context["user"] = self.request.user
+        district_id = request.data[0]["district"]
+        facilities = (
+            Facility.objects.filter(district_id=district_id)
+            .select_related("local_body", "district", "state", "created_by__district", "created_by__state")
+            .prefetch_related("facilitycapacity_set")
+        )
+
+        facility_map = {f.name.lower(): f for f in facilities}
+        facilities_to_update = []
+        facilities_to_create = []
+
+        for f in serializer.validated_data:
+            f["district_id"] = f.pop("district")
+            if f["name"].lower() in facility_map:
+                facilities_to_update.append(f)
+            else:
+                f["created_by_id"] = request.user.id
+                facilities_to_create.append(f)
+
         with transaction.atomic():
-            serializer.create(serializer.validated_data)
+            capacity_create_objs = []
+            for f in facilities_to_create:
+                capacity = f.pop("facilitycapacity_set")
+                f_obj = Facility.objects.create(**f)
+                for c in capacity:
+                    capacity_create_objs.append(FacilityCapacity(facility=f_obj, **c))
+            for f in facilities_to_update:
+                capacity = f.pop("facilitycapacity_set")
+                f_obj = facility_map.get(f["name"].lower())
+                changed = False
+                for k, v in f.items():
+                    if getattr(f_obj, k) != v:
+                        setattr(f_obj, k, v)
+                        changed = True
+                if changed:
+                    f_obj.save()
+                capacity_map = {c.room_type: c for c in f_obj.facilitycapacity_set.all()}
+                for c in capacity:
+                    changed = False
+                    if c["room_type"] in capacity_map:
+                        c_obj = capacity_map.get(c["room_type"])
+                        for k, v in c.items():
+                            if getattr(c_obj, k) != v:
+                                setattr(c_obj, k, v)
+                                changed = True
+                        if changed:
+                            c_obj.save()
+                    else:
+                        capacity_create_objs.append(FacilityCapacity(facility=f_obj, **c))
+
+            bulk_create_with_history(capacity_create_objs, FacilityCapacity, batch_size=500)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["get"], detail=True)
+    def patients(self, *args, **kwargs):
+        queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
+            "local_body", "district", "state"
+        )
+        return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)

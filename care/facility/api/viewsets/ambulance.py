@@ -1,15 +1,12 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.ambulance import (
-    AmbulanceDriverSerializer,
-    AmbulanceSerializer,
-)
+from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Ambulance
 
@@ -26,7 +23,7 @@ class AmbulanceFilterSet(filters.FilterSet):
     third_district_name = filters.CharFilter(field_name="third_district_obj__name", lookup_expr="icontains")
 
 
-class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
+class AmbulanceViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     permission_classes = (AllowAny,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False)
@@ -65,9 +62,9 @@ class AmbulanceViewSet(FacilityBaseViewset, ListModelMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
-    permission_classes = (AllowAny,)
-    serializer_class = AmbulanceSerializer
-    queryset = Ambulance.objects.filter(deleted=False)
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AmbulanceFilterSet
+# class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
+#     permission_classes = (AllowAny,)
+#     serializer_class = AmbulanceSerializer
+#     queryset = Ambulance.objects.filter(deleted=False)
+#     filter_backends = (filters.DjangoFilterBackend,)
+#     filterset_class = AmbulanceFilterSet
