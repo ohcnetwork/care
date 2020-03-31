@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update \
   # dependencies for building Python packages
-  && apt-get install -y build-essential \
+  && apt-get install -y build-essential libgdal-dev python3-dev \
   # psycopg2 dependencies
   && apt-get install -y libpq-dev \
   # Translations dependencies
@@ -20,12 +20,6 @@ RUN addgroup --system django \
 COPY ./requirements /requirements
 RUN pip install --no-cache-dir -r /requirements/production.txt \
     && rm -rf /requirements
-
-COPY ./entrypoint /entrypoint
-
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
-RUN chown django /entrypoint
 
 COPY ./start /start
 RUN sed -i 's/\r$//g' /start
