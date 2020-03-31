@@ -1,20 +1,18 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from simple_history.utils import bulk_create_with_history
 
 from care.facility.api.serializers.facility import (
+    FacilityBasicInfoSerializer,
     FacilitySerializer,
     FacilityUpsertSerializer,
-    FacilityBasicInfoSerializer,
 )
 from care.facility.api.serializers.patient import PatientListSerializer
-from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 
 
@@ -25,7 +23,7 @@ class FacilityFilter(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="facilitylocalgovtbody__local_body__name", lookup_expr="icontains")
 
 
-class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
+class FacilityViewSet(viewsets.ModelViewSet):
     """Viewset for facility CRUD operations."""
 
     serializer_class = FacilitySerializer
