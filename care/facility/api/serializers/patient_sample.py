@@ -19,7 +19,8 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     notes = serializers.CharField(required=False)
     date_of_sample = serializers.DateTimeField(read_only=True)
     date_of_result = serializers.DateTimeField(read_only=True)
-    consultation_id = serializers.CharField(required=False)
+    patient_id = serializers.IntegerField(required=False)
+    consultation_id = serializers.IntegerField(required=False)
 
     class Meta:
         model = PatientSample
@@ -32,5 +33,6 @@ class PatientSampleSerializer(serializers.ModelSerializer):
         return super(PatientSampleSerializer, self).create(validated_data)
 
 
-class PatientSampleDetailSerializer(PatientSampleSerializer):
+class PatientSampleReadSerializer(PatientSampleSerializer):
     flow = serializers.ListSerializer(child=PatientSampleFlowSerializer())
+    patient_name = serializers.CharField(source="patient.name")

@@ -1,16 +1,18 @@
 import datetime
 
 from django.db import transaction
+from django.db.models import Prefetch
 from django.db.models.query_utils import Q
 from django.utils.timezone import make_aware
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.mixins import UserAccessMixin
-from care.facility.api.serializers.patient_sample import PatientSampleDetailSerializer, PatientSampleSerializer
-from care.facility.models import PatientSample, User, patient_data
+from care.facility.api.serializers.patient_sample import PatientSampleReadSerializer, PatientSampleSerializer
+from care.facility.models import PatientSample, PatientSampleFlow, User, patient_data
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -35,7 +37,13 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
-    queryset = PatientSample.objects.all()
+    queryset = PatientSample.objects.all().prefetch_related(
+        Prefetch(
+            "patientsampleflow_set",
+            PatientSampleFlow.objects.all().order_by("-created_date"),
+            to_attr="flow_prefetched",
+        )
+    )
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -49,8 +57,8 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
-        if self.action == "retrieve":
-            serializer_class = PatientSampleDetailSerializer
+        if self.request.method == "GET":
+            serializer_class = PatientSampleReadSerializer
         return serializer_class
 
     def get_queryset(self):
@@ -74,20 +82,22 @@ class PatientSampleViewSet(UserAccessMixin, viewsets.ModelViewSet):
         if self.kwargs.get("patient_pk") is not None:
             validated_data["patient_id"] = self.kwargs.get("patient_pk")
         notes = validated_data.pop("notes", "create")
+        if not validated_data.get("patient_id") and not validated_data.get("consultation_id"):
+            raise ValidationError({"non_field_errors": ["Either of patient_id or consultation_id is required"]})
         if "consultation_id" not in validated_data:
             try:
                 validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
                     patient=validated_data["patient_id"]
                 ).order_by("-id")[0]
-            except:
-                raise Exception("No Consultation Done")
+            except IndexError:
+                raise ValidationError({"patient_id": ["Invalid id/ No consultation done"]})
         else:
             try:
-                validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
+                validated_data["consultation"] = patient_data.PatientConsultation.objects.get(
                     id=validated_data["consultation_id"]
                 )
-            except:
-                raise Exception("No Consultation Done")
+            except patient_data.PatientConsultation.DoesNotExist:
+                raise ValidationError({"consultation_id": ["Invalid id"]})
 
         with transaction.atomic():
             instance = serializer.create(validated_data)
