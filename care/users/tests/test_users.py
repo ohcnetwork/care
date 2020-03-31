@@ -14,6 +14,7 @@ def data():
         "district": 11,
         "username": "foo",
         "password": "bar",
+        "is_superuser": False,
     }
 
 
@@ -43,7 +44,7 @@ class TestUser:
             "user_type": "Doctor",
             "first_name": "",
             "last_name": "",
-        } == response.json()["results"][1], "reading others is not limited"
+        } == response.json()["results"][1]
 
         response = client.get(f"/api/v1/users/{data['username']}/")
         assert response.status_code == 200
@@ -55,7 +56,7 @@ class TestUser:
             "user_type": "Doctor",
             "first_name": "",
             "last_name": "",
-        }, "reading others is not limited"
+        }
 
         response = client.put(f"/api/v1/users/{data['username']}/", {**data, "age": 31, "password": password,})
         assert response.status_code == 200
