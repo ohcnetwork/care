@@ -50,14 +50,25 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        return True
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     def has_object_read_permission(self, request):
-        return True
+        return (
+            request.user.is_superuser
+            or request.user == self.consultation.facility.created_by
+            or (
+                request.user.district == self.consultation.facility.district
+                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+            )
+            or (
+                request.user.state == self.consultation.facility.state
+                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+            )
+        )
 
     def has_object_update_permission(self, request):
-        if request.user.is_superuser:
-            return True
+        if not self.has_object_read_permission(request):
+            return False
         map_ = self.SAMPLE_TEST_FLOW_CHOICES
         if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
             return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
