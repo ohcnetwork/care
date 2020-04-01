@@ -69,6 +69,8 @@ class PatientSample(FacilityBaseModel):
     def has_object_update_permission(self, request):
         if not self.has_object_read_permission(request):
             return False
+        if request.user.is_superuser:
+            return True
         map_ = self.SAMPLE_TEST_FLOW_CHOICES
         if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
             return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]

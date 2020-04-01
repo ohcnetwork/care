@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.db.models import Prefetch
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -8,11 +7,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.serializers.patient_sample import (
+    PatientSampleDetailSerializer,
     PatientSamplePatchSerializer,
-    PatientSampleReadSerializer,
     PatientSampleSerializer,
 )
-from care.facility.models import PatientSample, PatientSampleFlow, User, patient_data
+from care.facility.models import PatientConsultation, PatientRegistration, PatientSample, User
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -38,17 +37,7 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
-    queryset = (
-        PatientSample.objects.all()
-        .prefetch_related(
-            Prefetch(
-                "patientsampleflow_set",
-                PatientSampleFlow.objects.all().order_by("-created_date"),
-                to_attr="flow_prefetched",
-            )
-        )
-        .order_by("-id")
-    )
+    queryset = PatientSample.objects.all().select_related("consultation", "patient")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -62,9 +51,9 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
-        if self.request.method == "GET":
-            serializer_class = PatientSampleReadSerializer
-        elif self.request.method == "PATCH":
+        if self.action == "retrieve":
+            serializer_class = PatientSampleDetailSerializer
+        elif self.action == "partial_update":
             serializer_class = PatientSamplePatchSerializer
         return serializer_class
 
@@ -87,24 +76,23 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         if self.kwargs.get("patient_pk") is not None:
-            validated_data["patient_id"] = self.kwargs.get("patient_pk")
+            validated_data["patient"] = PatientRegistration.objects.get(id=self.kwargs.get("patient_pk"))
         notes = validated_data.pop("notes", "create")
-        if not validated_data.get("patient_id") and not validated_data.get("consultation_id"):
-            raise ValidationError({"non_field_errors": ["Either of patient_id or consultation_id is required"]})
-        if "consultation_id" not in validated_data:
+        if not validated_data.get("patient") and not validated_data.get("consultation"):
+            raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
+
+        if "consultation" not in validated_data:
             try:
-                validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
-                    patient=validated_data["patient_id"]
-                ).order_by("-id")[0]
+                validated_data["consultation"] = PatientConsultation.objects.filter(
+                    patient=validated_data["patient"]
+                ).last()
             except IndexError:
-                raise ValidationError({"patient_id": ["Invalid id/ No consultation done"]})
+                raise ValidationError({"patient": ["Invalid id/ No consultation done"]})
         else:
             try:
-                validated_data["consultation"] = patient_data.PatientConsultation.objects.get(
-                    id=validated_data["consultation_id"]
-                )
-            except patient_data.PatientConsultation.DoesNotExist:
-                raise ValidationError({"consultation_id": ["Invalid id"]})
+                validated_data["consultation"] = PatientConsultation.objects.get(id=validated_data["consultation"])
+            except PatientConsultation.DoesNotExist:
+                raise ValidationError({"consultation": ["Invalid id"]})
 
         with transaction.atomic():
             instance = serializer.create(validated_data)
