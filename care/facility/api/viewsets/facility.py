@@ -23,6 +23,8 @@ class FacilityFilter(filters.FilterSet):
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
     local_body = filters.NumberFilter(field_name="local_body__id")
     local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    state = filters.NumberFilter(field_name="state__id")
+    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
