@@ -68,7 +68,10 @@ class FacilitySerializer(serializers.ModelSerializer):
             "local_body_object",
             "district_object",
             "state_object",
+            "modified_date",
+            "created_date",
         ]
+        read_only_fields = ("modified_date", "created_date")
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
