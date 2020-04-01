@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from django.db import models
 from fernet_fields import EncryptedCharField
 from multiselectfield import MultiSelectField
+from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import District, Facility, FacilityBaseModel, LocalBody, SoftDeleteManager, State
@@ -111,6 +112,12 @@ class Disease(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
+    deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
+
+    class Meta:
+        indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
 
 class PatientTeleConsultation(models.Model):

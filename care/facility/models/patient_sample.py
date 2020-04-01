@@ -18,6 +18,16 @@ class PatientSample(FacilityBaseModel):
         "COMPLETED": 7,
     }
     SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
+    SAMPLE_FLOW_RULES = {
+        # previous rule      # next valid rules
+        "REQUEST_SUBMITTED": {"APPROVED", "DENIED",},
+        "APPROVED": {"SENT_TO_COLLECTON_CENTRE"},
+        "DENIED": {"REQUEST_SUBMITTED"},
+        "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED"},
+        "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB"},
+        "RECEIVED_AT_LAB": {"COMPLETED"},
+    }
+
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
@@ -29,7 +39,10 @@ class PatientSample(FacilityBaseModel):
 
     @property
     def flow(self):
-        return self.patientsampleflow_set.order_by("-created_date")
+        try:
+            return self.flow_prefetched
+        except AttributeError:
+            return self.patientsampleflow_set.order_by("-created_date")
 
     @staticmethod
     def has_write_permission(request):
@@ -37,16 +50,37 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        return True
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     def has_object_read_permission(self, request):
-        return True
+        return (
+            request.user.is_superuser
+            or request.user == self.consultation.facility.created_by
+            or (
+                request.user.district == self.consultation.facility.district
+                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+            )
+            or (
+                request.user.state == self.consultation.facility.state
+                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+            )
+        )
 
     def has_object_update_permission(self, request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        if not self.has_object_read_permission(request):
+            return False
+        map_ = self.SAMPLE_TEST_FLOW_CHOICES
+        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
+            return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
+            return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
+            return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+        # The view shall raise a 400
+        return True
 
     def has_object_destroy_permission(self, request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        return request.user.is_superuser
 
 
 class PatientSampleFlow(FacilityBaseModel):

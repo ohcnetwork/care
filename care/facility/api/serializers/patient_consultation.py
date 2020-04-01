@@ -3,9 +3,12 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.models import DailyRound, PatientConsultation, SuggestionChoices
 
+from config.serializers import ChoiceField
+
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
     facility_name = serializers.CharField(source="facility.name", read_only=True)
+    suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion")
 
     class Meta:
         model = PatientConsultation

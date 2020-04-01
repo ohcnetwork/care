@@ -14,6 +14,7 @@ def data():
         "district": 11,
         "username": "foo",
         "password": "bar",
+        "is_superuser": False,
     }
 
 
@@ -39,11 +40,13 @@ class TestUser:
             **data,
             "id": newuser["id"],
             "district": 11,
+            "local_body": None,
+            "state": None,
             "gender": "Male",
             "user_type": "Doctor",
             "first_name": "",
             "last_name": "",
-        } == response.json()["results"][1], "reading others is not limited"
+        } == response.json()["results"][1]
 
         response = client.get(f"/api/v1/users/{data['username']}/")
         assert response.status_code == 200
@@ -51,11 +54,13 @@ class TestUser:
             **data,
             "id": newuser["id"],
             "district": 11,
+            "local_body": None,
+            "state": None,
             "gender": "Male",
             "user_type": "Doctor",
             "first_name": "",
             "last_name": "",
-        }, "reading others is not limited"
+        }
 
         response = client.put(f"/api/v1/users/{data['username']}/", {**data, "age": 31, "password": password,})
         assert response.status_code == 200
@@ -67,7 +72,7 @@ class TestUser:
         with pytest.raises(User.DoesNotExist):
             User.objects.get(username=data["username"])
 
-    def test_user_can_read_cant_modify_delete_others(self, client, user, data):
+    def test_list_is_open_to_all(self, client, user, data):
         response = client.post("/api/v1/users/", data,)
         assert response.status_code == 201
         newuser = response.json()
@@ -84,21 +89,20 @@ class TestUser:
             "last_name": newuser["last_name"],
         }, "reading others is limited"
 
+    def test_user_cant_read_modify_delete_others(self, client, user, data):
+        response = client.post("/api/v1/users/", data,)
+        assert response.status_code == 201
+
         response = client.get(f"/api/v1/users/{data['username']}/")
-        assert response.status_code == 200
-        assert response.json() == {
-            "id": newuser["id"],
-            "first_name": newuser["first_name"],
-            "last_name": newuser["last_name"],
-        }, "reading others is limited"
+        assert response.status_code == 403
 
         response = client.put(f"/api/v1/users/{data['username']}/", data)
-        assert response.status_code == 404
+        assert response.status_code == 403
 
         response = client.delete(f"/api/v1/users/{data['username']}/")
-        assert response.status_code == 404
+        assert response.status_code == 403
 
-    def test_user_can_read_modify_delete_himself(self, client, data):
+    def test_user_can_read_modify_cant_delete_himself(self, client, data):
         response = client.post("/api/v1/users/", data,)
         assert response.status_code == 201
 
@@ -117,6 +121,8 @@ class TestUser:
             **data,
             "id": user.id,
             "district": 11,
+            "local_body": None,
+            "state": None,
             "gender": "Male",
             "user_type": "Doctor",
             "first_name": "",
@@ -129,6 +135,10 @@ class TestUser:
         assert User.objects.only("age").get(username=data["username"]).age == 31
 
         response = client.delete(f"/api/v1/users/{user.username}/")
-        assert response.status_code == 204
-        with pytest.raises(User.DoesNotExist):
-            User.objects.get(username=data["username"])
+        assert response.status_code == 403
+
+    def test_signup_is_not_allowed_on_higher_levels(self, client, user, data):
+        for user_type in [25, 30, 35]:
+            data["user_type"] = user_type
+            response = client.post("/api/v1/users/", data,)
+            assert response.status_code == 403

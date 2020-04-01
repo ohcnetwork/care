@@ -1,41 +1,59 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
-from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import status
+from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from simple_history.utils import bulk_create_with_history
 
 from care.facility.api.serializers.facility import (
+    FacilityBasicInfoSerializer,
     FacilitySerializer,
     FacilityUpsertSerializer,
-    FacilityBasicInfoSerializer,
 )
 from care.facility.api.serializers.patient import PatientListSerializer
-from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
+from care.users.models import User
 
 
 class FacilityFilter(filters.FilterSet):
-    district = filters.NumberFilter(field_name="facilitylocalgovtbody__district_id")
-    district_name = filters.CharFilter(field_name="facilitylocalgovtbody__district__name", lookup_expr="icontains")
-    local_body = filters.NumberFilter(field_name="facilitylocalgovtbody__local_body_id")
-    local_body_name = filters.CharFilter(field_name="facilitylocalgovtbody__local_body__name", lookup_expr="icontains")
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    district = filters.NumberFilter(field_name="district__id")
+    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    local_body = filters.NumberFilter(field_name="local_body__id")
+    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
 
 
-class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
+class FacilityQSPermissions(DRYPermissionFiltersBase):
+    def filter_queryset(self, request, queryset, view):
+        if request.user.is_superuser or view.action == "list_all":
+            return queryset
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return queryset.filter(district=request.user.district)
+        else:
+            return queryset.filter(created_by=request.user)
+
+
+class FacilityViewSet(viewsets.ModelViewSet):
     """Viewset for facility CRUD operations."""
 
-    serializer_class = FacilitySerializer
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
-    filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
     )
+    filter_backends = (
+        FacilityQSPermissions,
+        filters.DjangoFilterBackend,
+    )
     filterset_class = FacilityFilter
+
+    def get_serializer_class(self):
+        if self.action == "list_all":
+            return FacilityBasicInfoSerializer
+        else:
+            return FacilitySerializer
 
     def list(self, request, *args, **kwargs):
         """
@@ -70,10 +88,8 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
 
     @action(methods=["GET"], detail=False)
-    def list_all(self, request):
-        return self.get_paginated_response(
-            FacilityBasicInfoSerializer(self.paginate_queryset(self.queryset), many=True).data
-        )
+    def list_all(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):

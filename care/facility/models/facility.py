@@ -5,7 +5,7 @@ from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.users.models import DISTRICT_CHOICES, District, LocalBody, State
+from care.users.models import District, LocalBody, State
 
 User = get_user_model()
 
@@ -48,6 +48,7 @@ FACILITY_TYPES = [
     (4, "Hostel"),
     (5, "Hotel"),
     (6, "Lodge"),
+    (7, "TeleMedicine"),
 ]
 
 DOCTOR_TYPES = [
@@ -98,19 +99,32 @@ class Facility(FacilityBaseModel):
     def has_read_permission(request):
         return True
 
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
     @staticmethod
     def has_write_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        return True
+        return request.user.is_superuser
 
-    def has_object_read_permission(self, request):
-        return True
-
-    @staticmethod
-    def has_destroy_permission(request):
-        return True
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -297,7 +311,7 @@ class InventoryLog(FacilityBaseModel):
 
 class Ambulance(FacilityBaseModel):
     vehicle_number_regex = RegexValidator(
-        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{1,4}$",
+        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
         code="invalid_vehicle_number",
     )
@@ -309,17 +323,17 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
+    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
-    primary_district_obj = models.ForeignKey(
+    primary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
-    secondary_district_obj = models.ForeignKey(
+    secondary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
     )
-    third_district_obj = models.ForeignKey(
+    third_district = models.ForeignKey(
         District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
     )
 
@@ -342,6 +356,37 @@ class Ambulance(FacilityBaseModel):
 
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+            )
+        )
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+            )
+        )
 
     # class Meta:
     #     constraints = [

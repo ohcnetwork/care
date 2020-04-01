@@ -30,7 +30,6 @@ class PatientListSerializer(serializers.ModelSerializer):
 
 class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
-        id = serializers.IntegerField(read_only=True, source='disease')
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
@@ -39,7 +38,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
-    medical_history = MedicalHistorySerializer(many=True, required=False)
+    medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
@@ -63,15 +62,19 @@ class PatientDetailSerializer(PatientListSerializer):
             for disease in medical_history:
                 diseases.append(Disease(patient=patient, **disease))
             if diseases:
-                Disease.objects.bulk_create(diseases)
+                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
             return patient
 
     def update(self, instance, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             patient = super().update(instance, validated_data)
+            Disease.objects.filter(patient=patient).update(deleted=True)
+            diseases = []
             for disease in medical_history:
-                patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
+                diseases.append(Disease(patient=patient, **disease))
+            if diseases:
+                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
             return patient
 
 

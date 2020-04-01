@@ -8,7 +8,7 @@ from config.serializers import ChoiceField
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES)
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
@@ -23,20 +23,45 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
+            "local_body",
             "district",
+            "state",
             "phone_number",
             "gender",
             "age",
         )
-
-        extra_kwargs = {"url": {"lookup_field": "username"}}
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data.get("password"))
         return super().create(validated_data)
 
 
-class UserPartialSerializer(serializers.ModelSerializer):
+class UserSerializer(SignUpSerializer):
+    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "user_type",
+            "local_body",
+            "district",
+            "state",
+            "phone_number",
+            "gender",
+            "age",
+            "is_superuser",
+        )
+
+    extra_kwargs = {"url": {"lookup_field": "username"}}
+
+
+class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "first_name", "last_name")

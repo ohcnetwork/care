@@ -70,6 +70,10 @@ class FacilitySerializer(serializers.ModelSerializer):
             "state_object",
         ]
 
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+        return super().create(validated_data)
+
 
 class FacilityUpsertSerializer(serializers.ModelSerializer):
     """

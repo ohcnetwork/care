@@ -1,32 +1,42 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.permissions import AllowAny
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
-from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Ambulance
 
 
 class AmbulanceFilterSet(filters.FilterSet):
     vehicle_numbers = filters.BaseInFilter(field_name="vehicle_number")
 
-    primary_district = filters.CharFilter(field_name="primary_district_obj_id")
-    secondary_district = filters.CharFilter(field_name="secondary_district_obj_id")
-    third_district = filters.CharFilter(field_name="third_district_obj_id")
+    primary_district = filters.CharFilter(field_name="primary_district_id")
+    secondary_district = filters.CharFilter(field_name="secondary_district_id")
+    third_district = filters.CharFilter(field_name="third_district_id")
 
-    primary_district_name = filters.CharFilter(field_name="primary_district_obj__name", lookup_expr="icontains")
-    secondary_district_name = filters.CharFilter(field_name="secondary_district_obj__name", lookup_expr="icontains")
-    third_district_name = filters.CharFilter(field_name="third_district_obj__name", lookup_expr="icontains")
+    primary_district_name = filters.CharFilter(field_name="primary_district__name", lookup_expr="icontains")
+    secondary_district_name = filters.CharFilter(field_name="secondary_district__name", lookup_expr="icontains")
+    third_district_name = filters.CharFilter(field_name="third_district__name", lookup_expr="icontains")
 
 
-class AmbulanceViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
-    permission_classes = (AllowAny,)
+class AmbulanceViewSet(
+    UserAccessMixin, RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
+):
+    permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
-    queryset = Ambulance.objects.filter(deleted=False)
+    queryset = Ambulance.objects.filter(deleted=False).select_related(
+        "primary_district", "secondary_district", "third_district"
+    )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
@@ -62,9 +72,9 @@ class AmbulanceViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
-#     permission_classes = (AllowAny,)
-#     serializer_class = AmbulanceSerializer
-#     queryset = Ambulance.objects.filter(deleted=False)
-#     filter_backends = (filters.DjangoFilterBackend,)
-#     filterset_class = AmbulanceFilterSet
+class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
+    permission_classes = (AllowAny,)
+    serializer_class = AmbulanceSerializer
+    queryset = Ambulance.objects.filter(deleted=False)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AmbulanceFilterSet
