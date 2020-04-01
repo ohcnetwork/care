@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 
 from care.facility.models.patient_sample import PatientSample
 
@@ -25,8 +26,57 @@ class BuildingAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+class DistrictFilter(SimpleListFilter):
+    """DistrictFilter """
+
+    title = "District"
+    parameter_name = "district"
+
+    def lookups(self, request, model_admin):
+        district = Facility.objects.values_list("district__name", flat=True)
+        return list(map(lambda x: (x, x), set(district)))
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+        return queryset.filter(district__name=self.value())
+
+
+class LocalBodyFilter(SimpleListFilter):
+    """Local body filter"""
+
+    title = "Local body"
+    parameter_name = "local_body"
+
+    def lookups(self, request, model_admin):
+        local_body = Facility.objects.values_list("local_body__name", flat=True)
+        return list(map(lambda x: (x, x), set(local_body)))
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+        return queryset.filter(local_body__name=self.value())
+
+
+class StateFilter(SimpleListFilter):
+    """State filter"""
+
+    title = "State"
+    parameter_name = "state"
+
+    def lookups(self, request, model_admin):
+        state = Facility.objects.values_list("state__name", flat=True)
+        return list(map(lambda x: (x, x), set(state)))
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+        return queryset.filter(state__name=self.value())
+
+
 class FacilityAdmin(admin.ModelAdmin):
     search_fields = ["name"]
+    list_filter = [DistrictFilter, LocalBodyFilter, StateFilter]
 
 
 class FacilityStaffAdmin(admin.ModelAdmin):
