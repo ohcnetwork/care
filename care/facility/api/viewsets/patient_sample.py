@@ -38,12 +38,16 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
-    queryset = PatientSample.objects.all().prefetch_related(
-        Prefetch(
-            "patientsampleflow_set",
-            PatientSampleFlow.objects.all().order_by("-created_date"),
-            to_attr="flow_prefetched",
+    queryset = (
+        PatientSample.objects.all()
+        .prefetch_related(
+            Prefetch(
+                "patientsampleflow_set",
+                PatientSampleFlow.objects.all().order_by("-created_date"),
+                to_attr="flow_prefetched",
+            )
         )
+        .order_by("-id")
     )
     permission_classes = (
         IsAuthenticated,
