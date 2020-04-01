@@ -16,7 +16,6 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_user(cls, district: District, username: str = "user", **kwargs):
-        username = kwargs.get("username", username)
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
@@ -128,6 +127,7 @@ class TestBase(APITestCase):
         response.update(self.get_local_body_representation(getattr(obj, "local_body", None)))
         response.update(self.get_district_representation(getattr(obj, "district", None)))
         response.update(self.get_state_representation(getattr(obj, "state", None)))
+        return response
 
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:
