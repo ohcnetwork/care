@@ -1,73 +1,84 @@
+import datetime
+from typing import Any
+
 from django.contrib.gis.geos import Point
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import Facility, FacilityCapacity, FacilityLocalGovtBody
+from care.facility.models import Facility, FacilityCapacity
 from care.users.models import User
+from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
 # flake8: noqa
 
 
-class TestFacility(APITestCase):
+class TestFacility(TestBase):
     """Test Facility APIs"""
 
-    # Override the constructor when using helper
-    # def __init__(self, *args, **kwargs):
-    #     super(TestFacility, self).__init__(*args, **kwargs)
+    def get_base_url(self):
+        return "/api/v1/facility"
+
+    def get_list_representation(self, facility) -> dict:
+        return {
+            "id": facility.id,
+            "name": facility.name,
+            "facility_type": "Educational Inst",
+            "address": facility.address,
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_body": None,
+            "local_body_object": None,
+            "district": facility.district.id,
+            "district_object": {
+                "id": facility.district.id,
+                "name": facility.district.name,
+                "state": facility.district.state.id,
+            },
+            "state": facility.district.state.id,
+            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
+            "oxygen_capacity": facility.oxygen_capacity,
+            "phone_number": facility.phone_number,
+        }
+
+    def get_detail_representation(self, facility: Any = None) -> dict:
+        if isinstance(facility, dict):
+            location = facility.pop("location", {})
+            district_id = facility.pop("district")
+            facility = Facility(
+                **facility, district_id=district_id, location=Point(location["longitude"], location["latitude"])
+            )
+        return {
+            "id": facility.id,
+            "name": facility.name,
+            "facility_type": "Educational Inst",
+            "address": facility.address,
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_body": None,
+            "local_body_object": None,
+            "district": facility.district.id,
+            "district_object": {
+                "id": facility.district.id,
+                "name": facility.district.name,
+                "state": facility.district.state.id,
+            },
+            "state": facility.district.state.id,
+            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
+            "oxygen_capacity": facility.oxygen_capacity,
+            "phone_number": facility.phone_number,
+        }
 
     @classmethod
-    def setUpTestData(cls):
-        # super(TestFacility, cls).setUpTestData()
-        cls.su_data = {
-            "user_type": 5,
-            "email": "some.email@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "district": 11,
-            "username": "superuser_1",
-            "password": "bar",
-        }
-        cls.super_user = User.objects.create_superuser(**cls.su_data)
-        cls.user_data = cls.su_data.copy()
-        cls.user_data["username"] = "user"
-        cls.user = User.objects.create_user(**cls.user_data)
+    def setUpClass(cls) -> None:
+        super(TestFacility, cls).setUpClass()
         cls.facility_data = {
             "name": "Foo",
-            "district": 13,
+            "district": cls.district.id,
             "facility_type": 1,
-            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
+            "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
         }
-        # **cls.data is not used because of a issue with the location attribute which requires a Point object
-        cls.facility = Facility.objects.create(
-            name="Foo",
-            district=13,
-            facility_type=1,
-            address="8/88, 1st Cross, 1st Main, Boo Layout",
-            location=Point(24.452545, 49.878248),
-            oxygen_capacity=10,
-            phone_number="9998887776",
-        )
-        FacilityLocalGovtBody.objects.create(facility=cls.facility, local_body=None, district_id=13)
-
-    def setUp(self):
-        """
-        Run before every class method
-            - keep a normal user logged in
-        """
-        # super(TestFacility, self).setUp()
-        self.client.login(username=self.user_data["username"], password=self.user_data["password"])
-
-    def test_login_required(self):
-        """Test unlogged unusers are thrown an error 403"""
-        # Terminate the user session since user is logged in inside the setUp function
-        self.client.logout()
-        response = self.client.post("/api/v1/facility/", {},)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_can_create_facility(self):
         """
@@ -77,43 +88,19 @@ class TestFacility(APITestCase):
             - verify inserted values
         """
         facility_data = self.facility_data
-        response = self.client.post("/api/v1/facility/", facility_data, format="json")
+        response = self.client.post(self.get_url(), facility_data, format="json")
 
         # test status code
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response.data.pop("id")
         # test response data
         self.assertDictEqual(
-            response.data,
-            {
-                **facility_data,
-                "id": mock_equal,
-                "facility_type": "Educational Inst",
-                "local_govt_body": {
-                    "id": mock_equal,
-                    "facility": mock_equal,
-                    "local_body": None,
-                    "district": {"id": 13, "name": "Kannur", "state": 1},
-                },
-            },
-        )
-
-        facility = Facility.objects.get(
-            name=facility_data["name"],
-            district=facility_data["district"],
-            facility_type=facility_data["facility_type"],
-            address=facility_data["address"],
-            oxygen_capacity=facility_data["oxygen_capacity"],
-            phone_number=facility_data["phone_number"],
-            created_by=self.user,
+            response.json(), {**self.get_detail_representation(facility_data), "id": mock_equal},
         )
 
         # Facility exists
-        assert facility
-        facility_loc = facility_data["location"]
-        self.assertDictEqual(
-            facility_loc, {"latitude": facility_loc["latitude"], "longitude": facility_loc["longitude"],},
-        )
+        facility = Facility.objects.filter(address=facility_data["address"], created_by=self.user).first()
+        self.assertIsNotNone(facility)
+        self.assertEqual(response.json()["id"], facility.id)
 
     def test_inactive_facility_retrieval(self):
         """Test inactive facility are not accessible"""
@@ -129,22 +116,25 @@ class TestFacility(APITestCase):
         facility = self.facility
         facility.created_by = self.user
         facility.save()
-        response = self.client.get(f"/api/v1/facility/{facility.id}/")
+        response = self.client.get(self.get_url(facility.id), format="json", redirect="follow")
         self.assertDictEqual(
             response.data,
             {
                 "id": facility.id,
                 "name": facility.name,
-                "district": facility.district,
                 "facility_type": "Educational Inst",
                 "address": facility.address,
                 "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                "local_govt_body": {
-                    "id": mock_equal,
-                    "facility": facility.id,
-                    "local_body": None,
-                    "district": {"id": 13, "name": "Kannur", "state": mock_equal},
+                "local_body": None,
+                "local_body_object": None,
+                "district": facility.district.id,
+                "district_object": {
+                    "id": facility.district.id,
+                    "name": facility.district.name,
+                    "state": facility.district.state.id,
                 },
+                "state": facility.district.state.id,
+                "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
                 "oxygen_capacity": facility.oxygen_capacity,
                 "phone_number": facility.phone_number,
             },
@@ -152,63 +142,53 @@ class TestFacility(APITestCase):
 
     def test_facility_update(self):
         """Test facilities attributes can be updated"""
-        facility = self.facility
+        facility = self.clone_object(self.facility)
         facility.created_by = self.user
         facility.save()
 
-        new_district = {"id": 12, "name": "Wayanad"}
+        new_district = self.create_district(self.state)
 
         response = self.client.put(
-            f"/api/v1/facility/{facility.id}/",
+            self.get_url(facility.id),
             {
                 "name": "Another name",
-                "district": new_district["id"],
+                "district": new_district.id,
                 "facility_type": facility.facility_type,
                 "address": facility.address,
             },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictEqual(
-            response.data,
-            {
-                "id": facility.id,
-                "name": "Another name",
-                "district": new_district["id"],
-                "facility_type": "Educational Inst",
-                "address": facility.address,
-                "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                "local_govt_body": {
-                    "id": mock_equal,
-                    "facility": facility.id,
-                    "local_body": None,
-                    "district": {"id": new_district["id"], "name": new_district["name"], "state": mock_equal,},
-                },
-                "oxygen_capacity": facility.oxygen_capacity,
-                "phone_number": facility.phone_number,
-            },
-        )
+
+        expected_response = self.get_detail_representation(facility)
+        expected_response["name"] = "Another name"
+        expected_response.update(self.get_district_representation(new_district))
+        expected_response.update(self.get_state_representation(new_district.state))
+        self.assertDictEqual(response.json(), expected_response)
+
         facility.refresh_from_db()
         self.assertEqual(facility.name, "Another name")
 
     def test_facility_update_doesnt_change_creator(self):
         """Test the updation of facility attribute doesn't change its creator"""
-        facility = self.facility
+        facility = self.clone_object(self.facility)
         facility.created_by = self.user
         facility.save()
         original_creator = facility.created_by
 
-        response = self.client.put(f"/api/v1/facility/{facility.id}/", self.facility_data, format="json")
+        self.client.force_login(self.super_user)
+        response = self.client.put(self.get_url(facility.id), self.facility_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         facility.refresh_from_db()
         self.assertEqual(facility.created_by, original_creator)
 
     def test_facility_deletion(self):
         """Test facility deletion can be done and an appropriate error is raised on subsequent retrieval"""
-        facility = self.facility
+        facility = self.clone_object(self.facility)
         facility.created_by = self.user
         facility.save()
 
-        response = self.client.delete(f"/api/v1/facility/{facility.id}/",)
+        response = self.client.delete(self.get_url(facility.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(Facility.DoesNotExist):
             Facility.objects.get(id=facility.id)
@@ -219,33 +199,11 @@ class TestFacility(APITestCase):
         facility.created_by = self.user
         facility.save()
 
-        response = self.client.get(f"/api/v1/facility/")
+        response = self.client.get(self.get_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(
-            response.data,
-            {
-                "count": 1,
-                "next": None,
-                "previous": None,
-                "results": [
-                    {
-                        "id": facility.id,
-                        "name": facility.name,
-                        "district": facility.district,
-                        "facility_type": "Educational Inst",
-                        "address": facility.address,
-                        "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                        "local_govt_body": {
-                            "id": mock_equal,
-                            "facility": facility.id,
-                            "local_body": None,
-                            "district": {"id": 13, "name": "Kannur", "state": mock_equal,},
-                        },
-                        "oxygen_capacity": facility.oxygen_capacity,
-                        "phone_number": facility.phone_number,
-                    },
-                ],
-            },
+            response.json(),
+            {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(facility)],},
         )
 
 

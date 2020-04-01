@@ -5,7 +5,7 @@ from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.users.models import DISTRICT_CHOICES, District, LocalBody, State
+from care.users.models import District, LocalBody, State
 
 User = get_user_model()
 
