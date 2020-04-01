@@ -48,6 +48,7 @@ FACILITY_TYPES = [
     (4, "Hostel"),
     (5, "Hotel"),
     (6, "Lodge"),
+    (7, "TeleMedicine"),
 ]
 
 DOCTOR_TYPES = [
