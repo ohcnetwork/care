@@ -42,20 +42,20 @@ class DistrictFilter(SimpleListFilter):
         return queryset.filter(district__name=self.value())
 
 
-class LocalBodyFilter(SimpleListFilter):
-    """Local body filter"""
+# class LocalBodyFilter(SimpleListFilter):
+#     """Local body filter"""
 
-    title = "Local body"
-    parameter_name = "local_body"
+#     title = "Local body"
+#     parameter_name = "local_body"
 
-    def lookups(self, request, model_admin):
-        local_body = Facility.objects.values_list("local_body__name", flat=True)
-        return list(map(lambda x: (x, x), set(local_body)))
+#     def lookups(self, request, model_admin):
+#         local_body = Facility.objects.values_list("local_body__name", flat=True)
+#         return list(map(lambda x: (x, x), set(local_body)))
 
-    def queryset(self, request, queryset):
-        if self.value() is None:
-            return queryset
-        return queryset.filter(local_body__name=self.value())
+#     def queryset(self, request, queryset):
+#         if self.value() is None:
+#             return queryset
+#         return queryset.filter(local_body__name=self.value())
 
 
 class StateFilter(SimpleListFilter):
@@ -76,7 +76,7 @@ class StateFilter(SimpleListFilter):
 
 class FacilityAdmin(admin.ModelAdmin):
     search_fields = ["name"]
-    list_filter = [DistrictFilter, LocalBodyFilter, StateFilter]
+    list_filter = [StateFilter, DistrictFilter]
 
 
 class FacilityStaffAdmin(admin.ModelAdmin):
