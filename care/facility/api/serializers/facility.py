@@ -39,6 +39,17 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
         )
 
 
+class FacilityAllSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facility
+        fields = (
+            "id",
+            "name",
+            "district",
+            "state",
+        )
+
+
 class FacilitySerializer(serializers.ModelSerializer):
     """Serializer for facility.models.Facility."""
 

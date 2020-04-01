@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
-from care.facility.api.serializers.facility import FacilitySerializer, FacilityUpsertSerializer
+from care.facility.api.serializers.facility import FacilityAllSerializer, FacilitySerializer, FacilityUpsertSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility
 
@@ -35,6 +35,18 @@ class FacilityViewSet(FacilityBaseViewset, ListModelMixin):
         - `local_body` - ID
         - `local_body_name` - supports for ilike match
         """
+        is_all = request.query_params.get("all")
+        if is_all == "true":
+            super(FacilityViewSet, self)
+            serializer_class = FacilityAllSerializer
+            queryset = Facility.objects.filter(is_active=True)
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = serializer_class(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = serializer_class(queryset, many=True)
+            return Response(serializer.data)
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
