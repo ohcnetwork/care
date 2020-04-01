@@ -105,9 +105,9 @@ class User(AbstractUser):
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True)
-    state = models.ForeignKey(State, on_delete=models.PROTECT, null=True)
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
