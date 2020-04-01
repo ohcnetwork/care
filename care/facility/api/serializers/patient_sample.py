@@ -18,11 +18,14 @@ class PatientSampleFlowSerializer(serializers.ModelSerializer):
 
 
 class PatientSampleSerializer(serializers.ModelSerializer):
-    patient_name = serializers.CharField(source="patient.name")
+    patient_name = serializers.CharField(read_only=True, source="patient.name")
     facility = serializers.IntegerField(read_only=True, source="consultation.facility_id")
 
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)
+
+    patient = serializers.IntegerField(required=False, source="patient_id")
+    consultation = serializers.IntegerField(required=False, source="consultation_id")
 
     date_of_sample = serializers.DateTimeField(required=False)
     date_of_result = serializers.DateTimeField(required=False)

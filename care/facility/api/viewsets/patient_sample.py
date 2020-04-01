@@ -11,7 +11,7 @@ from care.facility.api.serializers.patient_sample import (
     PatientSamplePatchSerializer,
     PatientSampleSerializer,
 )
-from care.facility.models import PatientSample, User, patient_data
+from care.facility.models import PatientConsultation, PatientRegistration, PatientSample, User
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -76,24 +76,22 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         if self.kwargs.get("patient_pk") is not None:
-            validated_data["patient_id"] = self.kwargs.get("patient_pk")
+            validated_data["patient"] = PatientRegistration.objects.get(id=self.kwargs.get("patient_pk"))
         notes = validated_data.pop("notes", "create")
         if not validated_data.get("patient") and not validated_data.get("consultation"):
             raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
 
         if "consultation" not in validated_data:
             try:
-                validated_data["consultation"] = patient_data.PatientConsultation.objects.filter(
+                validated_data["consultation"] = PatientConsultation.objects.filter(
                     patient=validated_data["patient"]
                 ).last()
             except IndexError:
                 raise ValidationError({"patient": ["Invalid id/ No consultation done"]})
         else:
             try:
-                validated_data["consultation"] = patient_data.PatientConsultation.objects.get(
-                    id=validated_data["consultation"]
-                )
-            except patient_data.PatientConsultation.DoesNotExist:
+                validated_data["consultation"] = PatientConsultation.objects.get(id=validated_data["consultation"])
+            except PatientConsultation.DoesNotExist:
                 raise ValidationError({"consultation": ["Invalid id"]})
 
         with transaction.atomic():
