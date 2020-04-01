@@ -37,7 +37,7 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
-    queryset = PatientSample.objects.all().select_related("consultation", "patient")
+    queryset = PatientSample.objects.all().select_related("consultation", "patient").order_by("-id")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,

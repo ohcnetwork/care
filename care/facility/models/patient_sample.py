@@ -34,6 +34,8 @@ class PatientSample(FacilityBaseModel):
     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
 
+    fast_track = models.TextField(default="")
+
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
 
