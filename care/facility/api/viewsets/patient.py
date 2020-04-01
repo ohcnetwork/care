@@ -1,26 +1,28 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
-from care.facility.api.mixins import HistoryMixin, UserAccessMixin
+from care.facility.api.mixins import HistoryMixin
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
 )
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.users.models import User
 
 
 class PatientFilterSet(filters.FilterSet):
+    facility = filters.NumberFilter(field_name="facility_id")
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
-class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
-    queryset = PatientRegistration.objects.filter(deleted=False).select_related(
-        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state",
-    )
+class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
     serializer_class = PatientDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientFilterSet
@@ -34,7 +36,9 @@ class PatientViewSet(UserAccessMixin, HistoryMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        return self.queryset.filter(created_by=self.request.user)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.queryset.filter(district=self.request.user.district)
+        return self.queryset.filter(Q(created_by=self.request.user) | Q(facility__created_by=self.request.user))
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

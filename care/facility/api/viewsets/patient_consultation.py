@@ -1,9 +1,17 @@
+from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
-from care.facility.models import PatientConsultation
+from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
+from care.facility.models import DailyRound, PatientConsultation
+
+from care.users.models import User
+
+
+class PatientConsultationFilter(filters.FilterSet):
+    patient = filters.NumberFilter(field_name="patient__id")
+    facility = filters.NumberFilter(field_name="facility__id")
 
 
 class PatientConsultationViewSet(ModelViewSet):
@@ -13,3 +21,38 @@ class PatientConsultationViewSet(ModelViewSet):
         DRYPermissions,
     )
     queryset = PatientConsultation.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PatientConsultationFilter
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return self.queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.queryset.filter(patient__district=self.request.user.district)
+        return self.queryset.filter(facility__created_by=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        """
+        Consultation List
+
+        Supported filters
+        - `facility` - ID
+        - `patient` - ID
+        """
+        return super().list(request, *args, **kwargs)
+
+
+class DailyRoundsViewSet(ModelViewSet):
+    serializer_class = DailyRoundSerializer
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+    queryset = DailyRound.objects.all()
+
+    def get_serializer(self, *args, **kwargs):
+        try:
+            kwargs["data"]["consultation"] = self.kwargs.get("consultation_pk")
+        except KeyError:
+            pass
+        return super().get_serializer(*args, **kwargs)

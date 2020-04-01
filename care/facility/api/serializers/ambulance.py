@@ -16,26 +16,18 @@ class AmbulanceDriverSerializer(serializers.ModelSerializer):
 class AmbulanceSerializer(serializers.ModelSerializer):
     drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
+    primary_district_object = DistrictSerializer(read_only=True, source="primary_district")
+    secondary_district_object = DistrictSerializer(read_only=True, source="secondary_district")
+    third_district_object = DistrictSerializer(read_only=True, source="third_district")
+
     class Meta:
         model = Ambulance
-        exclude = TIMESTAMP_FIELDS
-
-    def to_representation(self, instance):
-        data = super(AmbulanceSerializer, self).to_representation(instance)
-        data["primary_district_obj"] = (
-            DistrictSerializer().to_representation(instance.primary_district_obj)
-            if instance.primary_district_obj
-            else None
+        read_only_fields = (
+            "primary_district_object",
+            "secondary_district_object",
+            "third_district_object",
         )
-        data["secondary_district_obj"] = (
-            DistrictSerializer().to_representation(instance.secondary_district_obj)
-            if instance.secondary_district_obj
-            else None
-        )
-        data["third_district_obj"] = (
-            DistrictSerializer().to_representation(instance.third_district_obj) if instance.third_district_obj else None
-        )
-        return data
+        exclude = ("created_by",)
 
     def validate(self, obj):
         validated = super().validate(obj)
@@ -47,10 +39,6 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             drivers = validated_data.pop("drivers", [])
             validated_data.pop("created_by", None)
-
-            validated_data["primary_district_obj_id"] = validated_data.get("primary_district")
-            validated_data["secondary_district_obj_id"] = validated_data.get("secondary_district")
-            validated_data["third_district_obj_id"] = validated_data.get("third_district")
 
             ambulance = super(AmbulanceSerializer, self).create(validated_data)
 

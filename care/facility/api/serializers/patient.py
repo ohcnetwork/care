@@ -23,13 +23,6 @@ class PatientListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
 
-    def to_representation(self, obj):
-        repr = super().to_representation(obj)
-        if not self.context["request"].user.is_superuser:
-            repr.pop("name")
-            repr.pop("phone_number")
-        return repr
-
     class Meta:
         model = PatientRegistration
         exclude = ("created_by", "deleted")
@@ -45,7 +38,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
-    medical_history = MedicalHistorySerializer(many=True, required=False)
+    medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
@@ -63,20 +56,25 @@ class PatientDetailSerializer(PatientListSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
+            validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
             diseases = []
             for disease in medical_history:
                 diseases.append(Disease(patient=patient, **disease))
             if diseases:
-                Disease.objects.bulk_create(diseases)
+                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
             return patient
 
     def update(self, instance, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             patient = super().update(instance, validated_data)
+            Disease.objects.filter(patient=patient).update(deleted=True)
+            diseases = []
             for disease in medical_history:
-                patient.medical_history.update_or_create(disease=disease.pop("disease"), defaults=disease)
+                diseases.append(Disease(patient=patient, **disease))
+            if diseases:
+                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
             return patient
 
 

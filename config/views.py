@@ -1,5 +1,9 @@
-from django.shortcuts import render
 import logging
+
+from django.views.generic import TemplateView
+
+from django.shortcuts import render
+
 
 def home_view(request):
     logging.basicConfig(level=logging.INFO)

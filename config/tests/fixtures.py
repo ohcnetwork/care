@@ -16,7 +16,7 @@ def user():
     s = State.objects.create(name="KL")
     d = District.objects.create(name="Kannur", state=s)
     return User.objects.create(
-        user_type=5, district=d, phone_number="8887776665", gender=1, age=30, email="foo@foobar.com",
+        user_type=10, district=d, phone_number="8887776665", gender=1, age=30, email="foo@foobar.com",
     )
 
 

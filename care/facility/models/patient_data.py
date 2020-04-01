@@ -3,9 +3,10 @@ from types import SimpleNamespace
 from django.db import models
 from fernet_fields import EncryptedCharField
 from multiselectfield import MultiSelectField
+from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import District, FacilityBaseModel, LocalBody, SoftDeleteManager, State
+from care.facility.models import District, Facility, FacilityBaseModel, LocalBody, SoftDeleteManager, State
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 DISEASE_CHOICES = [
@@ -57,6 +58,40 @@ class PatientRegistration(models.Model):
         self.deleted = True
         self.save()
 
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (self.facility and request.user == self.facility.created_by)
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (self.facility and request.user == self.facility.created_by)
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+            #  TODO State Level Permissions
+        )
+
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
@@ -77,6 +112,12 @@ class Disease(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
+    deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
+
+    class Meta:
+        indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
 
 class PatientTeleConsultation(models.Model):
@@ -122,28 +163,32 @@ class PatientConsultation(models.Model):
     admitted = models.BooleanField(default=False)
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.patient.name}<>{self.facility.name}"
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        if not request.data.get("facility"):
+            # Don't bother, the view shall raise a 400
+            return True
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and Facility.objects.get(id=request.data["facility"]).created_by == request.user
+        )
 
     @staticmethod
     def has_read_permission(request):
         return True
 
     def has_object_read_permission(self, request):
-        return request.user.is_superuser or request.user in (
-            self.created_by,
-            self.facility.created_by,
-            self.patient.created_by,
-        )
+        return request.user.is_superuser or request.user == self.facility.created_by
 
     def has_object_write_permission(self, request):
         return request.user.is_superuser
 
     def has_object_update_permission(self, request):
-        return request.user in (self.created_by, self.facility.created_by, self.patient.created_by,)
+        return request.user == self.facility.created_by
 
     class Meta:
         constraints = [
@@ -155,3 +200,39 @@ class PatientConsultation(models.Model):
                 name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+
+class DailyRound(models.Model):
+    consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
+    temperature = models.DecimalField(max_digits=5, decimal_places=2)
+    temperature_measured_at = models.DateTimeField()
+    physical_examination_info = models.TextField(null=True, blank=True)
+    other_details = models.TextField(null=True, blank=True)
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and (
+                PatientConsultation.objects.get(
+                    id=request.parser_context["kwargs"]["consultation_pk"]
+                ).facility.created_by
+                == request.user
+            )
+        )
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.consultation.facility.created_by,
+            self.consultation.patient.created_by,
+        )
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser or request.user in (
+            self.consultation.facility.created_by,
+            self.consultation.patient.created_by,
+        )

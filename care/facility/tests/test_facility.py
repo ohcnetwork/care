@@ -167,6 +167,11 @@ class TestFacility:
         facility.save()
 
         response = client.delete(f"/api/v1/facility/{facility.id}/",)
+        assert response.status_code == 403
+
+        user.is_superuser = True
+        user.save()
+        response = client.delete(f"/api/v1/facility/{facility.id}/",)
         assert response.status_code == 204
         with pytest.raises(Facility.DoesNotExist):
             Facility.objects.get(id=facility.id)
@@ -214,6 +219,8 @@ class TestFacilityBulkUpsert:
         )
         facility.created_by = user
         facility.save()
+        user.is_superuser = True
+        user.save()
         client.force_authenticate(user=user)
 
         name = "Another"
@@ -310,7 +317,6 @@ class TestFacilityBulkUpsert:
             ],
         )
         assert response.status_code == 403
-        assert re.match(r"[\w, ()-/]+ is owned by another user", response.json()["detail"]) is not None
 
     def test_admins_can_update_ones_facility(self, client, user, facility):
         client.force_authenticate(user=user)
