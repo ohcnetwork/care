@@ -1,7 +1,4 @@
-"""Use this module for tests in all other modules"""
-from django.contrib.gis.geos import Point
-
-from care.facility.models import Disease, Facility, PatientRegistration
+"""Use this module for tests in only users api"""
 from care.users.models import District, State, User
 
 # will be fixed later
@@ -47,49 +44,6 @@ class TestHelper:
         cls.user_data_client = cls.user_data.copy()
         cls.user_data_client["user_type"] = "Staff"
         cls.user_data_client["district"] = cls.district.id
-
-        cls.facility_data = {
-            "name": "Foo",
-            "district": cls.district.id,
-            "facility_type": 1,
-            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-            "location": {"latitude": 49.878248, "longitude": 24.452545},
-            "oxygen_capacity": 10,
-            "phone_number": "9998887776",
-        }
-
-        cls.patient_data = {
-            "name": "Foo",
-            "age": 40,
-            "gender": 1,
-            "phone_number": "9998887776",
-            "contact_with_carrier": True,
-            "medical_history": [{"disease": 1, "details": "Quite bad"}],
-        }
-
-        cls.patient = PatientRegistration.objects.create(
-            name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False,
-        )
-        cls.patient_data["id"] = cls.patient.id
-
-        cls.disease = Disease.objects.create(disease=1, details="Quite bad", patient=cls.patient)
-
-        cls.facility = Facility.objects.create(
-            name="Foo",
-            district=cls.district,
-            facility_type=1,
-            address="8/88, 1st Cross, 1st Main, Boo Layout",
-            location=Point(24.452545, 49.878248),
-            oxygen_capacity=10,
-            phone_number="9998887776",
-        )
-
-        cls.stats_data = {
-            "num_patients_visited": 1,
-            "num_patients_home_quarantine": 2,
-            "num_patients_isolation": 3,
-            "num_patient_referred": 4,
-        }
 
 
 class EverythingEquals:
