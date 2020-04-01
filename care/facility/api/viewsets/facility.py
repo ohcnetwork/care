@@ -14,16 +14,15 @@ from care.facility.api.serializers.facility import (
 )
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
-
 from care.users.models import User
 
 
 class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    district = filters.NumberFilter(field_name="facilitylocalgovtbody__district_id")
-    district_name = filters.CharFilter(field_name="facilitylocalgovtbody__district__name", lookup_expr="icontains")
-    local_body = filters.NumberFilter(field_name="facilitylocalgovtbody__local_body_id")
-    local_body_name = filters.CharFilter(field_name="facilitylocalgovtbody__local_body__name", lookup_expr="icontains")
+    district = filters.NumberFilter(field_name="district__id")
+    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    local_body = filters.NumberFilter(field_name="local_body__id")
+    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
