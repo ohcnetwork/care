@@ -177,6 +177,7 @@ class TestBase(APITestCase):
         response.update(self.get_local_body_representation(getattr(obj, "local_body", None)))
         response.update(self.get_district_representation(getattr(obj, "district", None)))
         response.update(self.get_state_representation(getattr(obj, "state", None)))
+        return response
 
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:

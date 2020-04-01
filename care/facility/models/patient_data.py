@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from django.db import models
-from fernet_fields import EncryptedCharField
+from fernet_fields import EncryptedCharField, EncryptedTextField
 from multiselectfield import MultiSelectField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
@@ -35,7 +35,23 @@ class PatientRegistration(models.Model):
     age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
-    contact_with_carrier = models.BooleanField(verbose_name="Contact with a Covid19 carrier")
+    address = EncryptedTextField(default="")
+
+    contact_with_confirmed_carrier = models.BooleanField(
+        default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
+    )
+    contact_with_suspected_carrier = models.BooleanField(
+        default=False, verbose_name="Suspected Contact with a Covid19 Carrier"
+    )
+    estimated_contact_date = models.DateTimeField(null=True, blank=True)
+
+    past_travel = models.BooleanField(
+        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days"
+    )
+    countries_travelled = models.TextField(default="")
+
+    present_health = models.TextField(default="")
+    has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
