@@ -14,15 +14,22 @@ def patient_data():
         "age": 40,
         "gender": 1,
         "phone_number": "9998887776",
-        "contact_with_carrier": True,
+        "contact_with_confirmed_carrier": True,
+        "contact_with_suspected_carrier": False,
         "medical_history": [{"disease": 1, "details": "Quite bad"}],
+        "countries_travelled": "Nope",
+        "estimated_contact_date": None,
+        "has_SARI": False,
+        "present_health": "Good",
+        "past_travel": False,
+        "address": "Elsewhere street, Elsewhere county, Elsewhere",
     }
 
 
 @pytest.fixture()
 def patient():
     patient = PatientRegistration.objects.create(
-        name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_carrier=False
+        name="Bar", age=31, gender=2, phone_number="7776665554", contact_with_confirmed_carrier=False
     )
     disease = Disease.objects.create(disease=1, details="Quite bad", patient=patient)
     return patient
@@ -56,12 +63,13 @@ class TestPatient:
             "state_object": mock_equal,
             "facility": mock_equal,
             "facility_object": mock_equal,
+            "contact_with_suspected_carrier": False,
         }
 
         patient = PatientRegistration.objects.get(
             age=patient_data["age"],
             gender=patient_data["gender"],
-            contact_with_carrier=patient_data["contact_with_carrier"],
+            contact_with_confirmed_carrier=patient_data["contact_with_confirmed_carrier"],
             created_by=user,
             is_active=True,
         )
@@ -82,7 +90,7 @@ class TestPatient:
             "phone_number": patient.phone_number,
             "age": patient.age,
             "gender": patient.gender,
-            "contact_with_carrier": patient.contact_with_carrier,
+            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
@@ -95,6 +103,13 @@ class TestPatient:
             "state_object": None,
             "facility": None,
             "facility_object": None,
+            "address": patient.address,
+            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
+            "countries_travelled": patient.countries_travelled,
+            "estimated_contact_date": patient.estimated_contact_date,
+            "has_SARI": patient.has_SARI,
+            "past_travel": patient.past_travel,
+            "present_health": patient.present_health,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -113,7 +128,7 @@ class TestPatient:
             "age": patient.age,
             "gender": patient.gender,
             "phone_number": patient.phone_number,
-            "contact_with_carrier": patient.contact_with_carrier,
+            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
             "medical_history": [{"disease": "NO", "details": "Quite bad"}],
             "tele_consultation_history": [],
             "is_active": True,
@@ -126,6 +141,13 @@ class TestPatient:
             "state_object": None,
             "facility": mock_equal,
             "facility_object": mock_equal,
+            "address": patient.address,
+            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
+            "countries_travelled": patient.countries_travelled,
+            "estimated_contact_date": patient.estimated_contact_date,
+            "has_SARI": patient.has_SARI,
+            "past_travel": patient.past_travel,
+            "present_health": patient.present_health,
         }
 
     def test_update(self, client, user, patient):
@@ -141,7 +163,7 @@ class TestPatient:
                 "age": patient.age,
                 "gender": patient.gender,
                 "phone_number": new_phone_number,
-                "contact_with_carrier": patient.contact_with_carrier,
+                "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
                 "medical_history": [{"disease": 4, "details": "Mild"}],
             },
         )
@@ -152,7 +174,7 @@ class TestPatient:
             "phone_number": new_phone_number,
             "age": patient.age,
             "gender": patient.gender,
-            "contact_with_carrier": patient.contact_with_carrier,
+            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
             "medical_history": [{"disease": "HyperTension", "details": "Mild"},],
             "tele_consultation_history": [],
             "is_active": True,
@@ -165,6 +187,13 @@ class TestPatient:
             "state_object": None,
             "facility": mock_equal,
             "facility_object": mock_equal,
+            "address": patient.address,
+            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
+            "countries_travelled": patient.countries_travelled,
+            "estimated_contact_date": patient.estimated_contact_date,
+            "has_SARI": patient.has_SARI,
+            "past_travel": patient.past_travel,
+            "present_health": patient.present_health,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -201,7 +230,7 @@ class TestPatient:
                     "phone_number": patient.phone_number,
                     "age": patient.age,
                     "gender": patient.gender,
-                    "contact_with_carrier": patient.contact_with_carrier,
+                    "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
                     "is_active": True,
                     "local_body": None,
                     "local_body_object": None,
@@ -210,6 +239,13 @@ class TestPatient:
                     "state": None,
                     "state_object": None,
                     "facility": None,
+                    "address": patient.address,
+                    "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
+                    "countries_travelled": patient.countries_travelled,
+                    "estimated_contact_date": patient.estimated_contact_date,
+                    "has_SARI": patient.has_SARI,
+                    "past_travel": patient.past_travel,
+                    "present_health": patient.present_health,
                 },
             ],
         }
