@@ -232,6 +232,7 @@ class TestFacility:
                 {
                     "id": facility.id,
                     "name": facility.name,
+                    "facility_type": {"id": facility.facility_type, "name": "Educational Inst",},
                     "local_body": None,
                     "local_body_object": None,
                     "district": facility.district.id,
