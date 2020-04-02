@@ -63,6 +63,8 @@ class TestFacility:
                 "district_object": {"id": facility_data["district"], "name": "Kannur", "state": mock_equal},
                 "state": mock_equal,
                 "state_object": {"id": mock_equal, "name": "KL"},
+                "created_date": mock_equal,
+                "modified_date": mock_equal,
             },
         )
 
@@ -110,6 +112,8 @@ class TestFacility:
             "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def test_update(self, client, user, facility):
@@ -143,6 +147,8 @@ class TestFacility:
             "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
         facility.refresh_from_db()
         assert facility.name == "Another name"
@@ -205,6 +211,38 @@ class TestFacility:
                     "state_object": {"id": facility.state.id, "name": facility.state.name},
                     "oxygen_capacity": facility.oxygen_capacity,
                     "phone_number": facility.phone_number,
+                    "created_date": mock_equal,
+                    "modified_date": mock_equal,
+                },
+            ],
+        }
+
+    def test_list_all(self, client, user, facility):
+        client.force_authenticate(user=user)
+        response = client.get(f"/api/v1/facility/")
+        assert response.status_code == 200
+        assert response.json() == {"count": 0, "next": None, "previous": None, "results": []}
+
+        response = client.get(f"/api/v1/facility/?all=true")
+        assert response.json() == {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "id": facility.id,
+                    "name": facility.name,
+                    "facility_type": {"id": facility.facility_type, "name": "Educational Inst",},
+                    "local_body": None,
+                    "local_body_object": None,
+                    "district": facility.district.id,
+                    "district_object": {
+                        "id": facility.district.id,
+                        "name": facility.district.name,
+                        "state": facility.district.state.id,
+                    },
+                    "state": facility.state.id,
+                    "state_object": {"id": facility.state.id, "name": facility.state.name},
                 },
             ],
         }
@@ -300,6 +338,8 @@ class TestFacilityBulkUpsert:
             "state_object": {"id": facility.state.id, "name": facility.state.name},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def test_others_cant_update_ones_facility(self, client, user, facility):

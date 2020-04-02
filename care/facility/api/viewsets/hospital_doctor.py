@@ -1,3 +1,5 @@
+from dry_rest_permissions.generics import DRYPermissions
+
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 
@@ -5,17 +7,28 @@ from care.facility.api.serializers.hospital_doctor import HospitalDoctorSerializ
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, HospitalDoctors
 
+from rest_framework.permissions import IsAuthenticated
+
+
+from care.users.models import User
+
 
 class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = HospitalDoctorSerializer
     queryset = HospitalDoctors.objects.filter(deleted=False)
+
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
 
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset.filter(facility__id=self.kwargs.get("facility_pk"))
         if user.is_superuser:
             return queryset
-
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__created_by=user)
 
     def get_object(self):

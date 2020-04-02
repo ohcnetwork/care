@@ -188,6 +188,37 @@ class HospitalDoctors(FacilityBaseModel):
     class Meta:
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
 
 class FacilityCapacity(FacilityBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
@@ -199,6 +230,45 @@ class FacilityCapacity(FacilityBaseModel):
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        Update Date Modified
+        """
+        super().save(*args, **kwargs)
+        # self.facility.modified_date = self.modified_date
+        self.facility.save()
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        return request.user.is_superuser
+
+    def has_object_update_permission(self, request):
+        return (
+            request.user.is_superuser
+            or request.user == self.created_by
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.district == self.district
+            )
+        )
 
 
 class FacilityStaff(FacilityBaseModel):

@@ -19,6 +19,7 @@ from config.serializers import ChoiceField
 
 
 class PatientListSerializer(serializers.ModelSerializer):
+    facility = serializers.IntegerField(source="facility_id", allow_null=True, read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)

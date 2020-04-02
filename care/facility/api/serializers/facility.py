@@ -23,6 +23,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+    facility_type = serializers.SerializerMethodField()
+
+    def get_facility_type(self, facility):
+        return {"id": facility.facility_type, "name": FACILITY_TYPES[facility.facility_type - 1][1]}
 
     class Meta:
         model = Facility
@@ -35,10 +39,11 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "local_body_object",
             "district_object",
             "state_object",
+            "facility_type",
         )
 
 
-class FacilitySerializer(serializers.ModelSerializer):
+class FacilitySerializer(FacilityBasicInfoSerializer):
     """Serializer for facility.models.Facility."""
 
     facility_type = ChoiceField(choices=FACILITY_TYPES)
@@ -47,10 +52,6 @@ class FacilitySerializer(serializers.ModelSerializer):
     #     "longitude": 24.452545489
     # }
     location = PointField(required=False)
-
-    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
-    district_object = DistrictSerializer(source="district", read_only=True)
-    state_object = StateSerializer(source="state", read_only=True)
 
     class Meta:
         model = Facility
@@ -68,7 +69,10 @@ class FacilitySerializer(serializers.ModelSerializer):
             "local_body_object",
             "district_object",
             "state_object",
+            "modified_date",
+            "created_date",
         ]
+        read_only_fields = ("modified_date", "created_date")
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
