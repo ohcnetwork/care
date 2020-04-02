@@ -217,6 +217,36 @@ class TestFacility:
             ],
         }
 
+    def test_list_all(self, client, user, facility):
+        client.force_authenticate(user=user)
+        response = client.get(f"/api/v1/facility/")
+        assert response.status_code == 200
+        assert response.json() == {"count": 0, "next": None, "previous": None, "results": []}
+
+        response = client.get(f"/api/v1/facility/?all=true")
+        assert response.json() == {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "id": facility.id,
+                    "name": facility.name,
+                    "facility_type": {"id": facility.facility_type, "name": "Educational Inst",},
+                    "local_body": None,
+                    "local_body_object": None,
+                    "district": facility.district.id,
+                    "district_object": {
+                        "id": facility.district.id,
+                        "name": facility.district.name,
+                        "state": facility.district.state.id,
+                    },
+                    "state": facility.state.id,
+                    "state_object": {"id": facility.state.id, "name": facility.state.name},
+                },
+            ],
+        }
+
 
 @pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)

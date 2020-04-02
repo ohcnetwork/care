@@ -19,6 +19,7 @@ from care.users.models import User
 
 class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    facility_type = filters.NumberFilter(field_name="facility_type")
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
     local_body = filters.NumberFilter(field_name="local_body__id")
@@ -29,7 +30,7 @@ class FacilityFilter(filters.FilterSet):
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser or view.action == "list_all":
+        if request.user.is_superuser or request.query_params.get("all") == "true":
             return queryset
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(district=request.user.district)
@@ -52,7 +53,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
     filterset_class = FacilityFilter
 
     def get_serializer_class(self):
-        if self.action == "list_all":
+        if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
         else:
             return FacilitySerializer
@@ -62,10 +63,17 @@ class FacilityViewSet(viewsets.ModelViewSet):
         Facility List
 
         Supported filters
+        - `name` - supports for ilike match
+        - `facility_type` - ID
         - `district` - ID
         - `district_name` - supports for ilike match
         - `local_body` - ID
         - `local_body_name` - supports for ilike match
+        - `state_body` - ID
+        - `state_body_name` - supports for ilike match
+
+        Other query params
+        - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
         """
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
@@ -88,10 +96,6 @@ class FacilityViewSet(viewsets.ModelViewSet):
         - `district` current supports only Kerala, will be changing when the UI is ready to support any district
         """
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
-
-    @action(methods=["GET"], detail=False)
-    def list_all(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
