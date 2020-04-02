@@ -3,18 +3,28 @@ from typing import Any
 
 from django.contrib.gis.geos import Point
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from care.facility.models import Facility, FacilityCapacity
 from care.users.models import User
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
-# flake8: noqa
-
 
 class TestFacility(TestBase):
     """Test Facility APIs"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super(TestFacility, cls).setUpClass()
+        cls.facility_data = {
+            "name": "Foo",
+            "district": cls.district.id,
+            "facility_type": 1,
+            "address": f"Address {datetime.datetime.now().timestamp}",
+            "location": {"latitude": 49.878248, "longitude": 24.452545},
+            "oxygen_capacity": 10,
+            "phone_number": "9998887776",
+        }
 
     def get_base_url(self):
         return "/api/v1/facility"
@@ -35,7 +45,7 @@ class TestFacility(TestBase):
                 "state": facility.district.state.id,
             },
             "state": facility.district.state.id,
-            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
+            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
         }
@@ -45,7 +55,7 @@ class TestFacility(TestBase):
             location = facility.pop("location", {})
             district_id = facility.pop("district")
             facility = Facility(
-                **facility, district_id=district_id, location=Point(location["longitude"], location["latitude"])
+                **facility, district_id=district_id, location=Point(location["longitude"], location["latitude"]),
             )
         return {
             "id": facility.id,
@@ -62,22 +72,9 @@ class TestFacility(TestBase):
                 "state": facility.district.state.id,
             },
             "state": facility.district.state.id,
-            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
+            "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
-        }
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        super(TestFacility, cls).setUpClass()
-        cls.facility_data = {
-            "name": "Foo",
-            "district": cls.district.id,
-            "facility_type": 1,
-            "address": f"Address {datetime.datetime.now().timestamp}",
-            "location": {"latitude": 49.878248, "longitude": 24.452545},
-            "oxygen_capacity": 10,
-            "phone_number": "9998887776",
         }
 
     def test_user_can_create_facility(self):
@@ -108,7 +105,7 @@ class TestFacility(TestBase):
         facility.created_by = self.user
         facility.is_active = False
         facility.save()
-        response = self.client.get(f"/api/v1/facility/{facility.id}/")
+        response = self.client.get(self.get_url(facility.id))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_active_facility_retrival(self):
@@ -134,7 +131,7 @@ class TestFacility(TestBase):
                     "state": facility.district.state.id,
                 },
                 "state": facility.district.state.id,
-                "state_object": {"id": facility.district.state.id, "name": facility.district.state.name},
+                "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
                 "oxygen_capacity": facility.oxygen_capacity,
                 "phone_number": facility.phone_number,
             },
@@ -182,18 +179,43 @@ class TestFacility(TestBase):
         facility.refresh_from_db()
         self.assertEqual(facility.created_by, original_creator)
 
-    def test_facility_deletion(self):
-        """Test facility deletion can be done and an appropriate error is raised on subsequent retrieval"""
+    def test_facility_deletion_for_super(self):
+        """
+        Test facility deletion can be done
+            - response code 204 is returned
+            - appropriate exception is raised on subsequent retrieval
+        """
         facility = self.clone_object(self.facility)
-        facility.created_by = self.user
+        user = self.user
+        facility.created_by = user
         facility.save()
+
+        user.is_superuser = True
+        user.save()
 
         response = self.client.delete(self.get_url(facility.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(Facility.DoesNotExist):
             Facility.objects.get(id=facility.id)
 
-    def test_facility_list_retrieval(self):
+    def test_facility_deletion_failure_for_user(self):
+        """
+        Test facility deletion can't be done
+            - Return a permission error 403
+            - Facility exists inside the database
+        """
+        facility = self.clone_object(self.facility)
+        user = self.user
+        facility.created_by = user
+        facility.save()
+
+        response = self.client.delete(self.get_url(facility.id))
+        # Test API response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # Test database response
+        self.assertIsNotNone(Facility.objects.get(id=facility.id))
+
+    def test_facility_list_retrieval_for_user(self):
         """Test retrieval of facility list"""
         facility = self.facility
         facility.created_by = self.user
@@ -206,86 +228,140 @@ class TestFacility(TestBase):
             {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(facility)],},
         )
 
+    def test_superuser_can_update_ones_facility(self):
+        """
+        Test superuser can update their facility
+            - test status code 201 is returned
+        """
+        user = self.user
+        user.is_superuser = True
+        user.save()
 
-class TestFacilityBulkUpdate(APITestCase):
+        # although this should be put, PUT is weirdly enough not allowed here
+        response = self.client.post(self.get_url(), self.get_list_representation(self.facility), format="json",)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class TestFacilityBulkUpdate(TestBase):
     """Test API for bulk updates to facility"""
 
-    @classmethod
-    def setUpTestData(cls):
-        # super(TestFacility, cls).setUpTestData()
-        cls.su_data = {
-            "user_type": 5,
-            "email": "some.email@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "district": 11,
-            "username": "superuser_1",
-            "password": "bar",
-        }
-        cls.super_user = User.objects.create_superuser(**cls.su_data)
-        cls.user_data = cls.su_data.copy()
-        cls.user_data["username"] = "user"
-        cls.user = User.objects.create_user(**cls.user_data)
-        cls.facility_data = {
-            "name": "Foo",
-            "district": 13,
-            "facility_type": 1,
-            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-            "location": {"latitude": 49.878248, "longitude": 24.452545},
-            "oxygen_capacity": 10,
-            "phone_number": "9998887776",
-        }
-        # **cls.data is not used because of a issue with the location attribute which requires a Point object
-        cls.facility = Facility.objects.create(
-            name="Foo",
-            district=13,
-            facility_type=1,
-            address="8/88, 1st Cross, 1st Main, Boo Layout",
-            location=Point(24.452545, 49.878248),
-            oxygen_capacity=10,
-            phone_number="9998887776",
-        )
+    def get_base_url(self):
+        return "/api/v1/facility/bulk_upsert"
 
-    def setUp(self):
-        """This is run before every class method"""
-        self.client.login(username=self.su_data["username"], password=self.su_data["password"])
+    def get_list_representation(self, facility: Any = None) -> dict:
 
-    def test_facility_bulk_upsert(self):
+        if isinstance(facility, dict):
+            location = facility.pop("location", {})
+            district_id = facility.pop("district")
+            facility = Facility(
+                **facility, district_id=district_id, location=Point(location["longitude"], location["latitude"]),
+            )
+
+        return {
+            "name": facility.name,
+            "district": facility.district.id,
+            "facility_type": 3,
+            "address": facility.address,
+            "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48}],
+        }
+
+    def get_detail_representation(self, facility: Facility) -> dict:
+        return {
+            "id": facility.id,
+            "name": facility.name,
+            "facility_type": "Educational Inst",
+            "address": facility.address,
+            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "local_body": None,
+            "local_body_object": None,
+            "district": facility.district.id,
+            "district_object": {
+                "id": facility.district.id,
+                "name": facility.district.name,
+                "state": facility.district.state.id,
+            },
+            "state": facility.state.id,
+            "state_object": {"id": facility.state.id, "name": facility.state.name},
+            "oxygen_capacity": facility.oxygen_capacity,
+            "phone_number": facility.phone_number,
+        }
+
+    def test_facility_bulk_upsert_for_user(self):
         """
         For bulk facility upsert, test for a normal user:
-            - status code after update
-            - test retrived values
+            - permission error is raised
         """
         facility = self.facility
-        user = self.user
-        # logout the superuser, it's logged in due to the setUp function
-        self.client.logout()
-        # login the normal user
-        self.client.login(username=self.user_data["username"], password=self.user_data["password"])
 
-        capacity = FacilityCapacity.objects.create(
-            facility=facility, room_type=1, total_capacity=50, current_capacity=0
-        )
-        facility.created_by = user
+        # capacity = FacilityCapacity.objects.create(
+        #     facility=facility, room_type=1, total_capacity=50, current_capacity=0
+        # )
+        facility.created_by = self.user
         facility.save()
 
         name = "Another"
         address = "Dasappan's House, Washington Jn, OolaMukk P.O."
         phone_number = "7776665554"
         response = self.client.post(
-            "/api/v1/facility/bulk_upsert/",
+            self.get_url(),
             data=[
                 {
                     "name": facility.name,
-                    "district": facility.district,
+                    "district": facility.district.id,
                     "facility_type": 3,
                     "address": facility.address,
                     "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
                 },
                 {
                     "name": name,
-                    "district": 1,
+                    "district": facility.district.id,
+                    "facility_type": 2,
+                    "address": address,
+                    "phone_number": phone_number,
+                    "capacity": [
+                        {"room_type": 0, "total_capacity": 350, "current_capacity": 150,},
+                        {"room_type": 1, "total_capacity": 200, "current_capacity": 100,},
+                    ],
+                },
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_facility_bulk_upsert_for_superuser(self):
+        """
+        For bulk facility upsert, test for a super user:
+            - status code after update
+            - test retrived values
+        """
+        facility = self.facility
+        user = self.user
+
+        user.is_superuser = True
+        user.save()
+
+        capacity = FacilityCapacity.objects.create(
+            facility=facility, room_type=1, total_capacity=50, current_capacity=0
+        )
+        facility.created_by = self.user
+        facility.save()
+
+        name = "Another"
+        address = "Dasappan's House, Washington Jn, OolaMukk P.O."
+        phone_number = "7776665554"
+        response = self.client.post(
+            self.get_url(),
+            data=[
+                {
+                    "name": facility.name,
+                    "district": facility.district.id,
+                    "facility_type": 3,
+                    "address": facility.address,
+                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48,}],
+                },
+                {
+                    "name": name,
+                    "district": facility.district.id,
                     "facility_type": 2,
                     "address": address,
                     "phone_number": phone_number,
@@ -308,9 +384,14 @@ class TestFacilityBulkUpdate(APITestCase):
         self.assertEqual(len(capacities), 1)
 
         new_facility = Facility.objects.get(
-            created_by=user, name=name, district=1, facility_type=2, address=address, phone_number=phone_number,
+            created_by=user,
+            name=name,
+            district=facility.district.id,
+            facility_type=2,
+            address=address,
+            phone_number=phone_number,
         )
-        assert new_facility
+        self.assertIsNotNone(new_facility)
         capacities = new_facility.facilitycapacity_set.all()
         self.assertEqual(capacities[0].room_type, 0)
         self.assertEqual(capacities[0].total_capacity, 350)
@@ -327,7 +408,8 @@ class TestFacilityBulkUpdate(APITestCase):
         """
         # logout the superuser, it's logged in due to the setUp function
         self.client.logout()
-        response = self.client.get(f"/api/v1/facility/{self.facility.id}/")
+        test_facility = TestFacility()
+        response = self.client.get(test_facility.get_url(self.facility.id))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_normal_users_cant_access(self):
@@ -337,50 +419,46 @@ class TestFacilityBulkUpdate(APITestCase):
             This is weird and not consistent\
             but it is what it is.
         """
-        # logout the superuser, it's logged in due to the setUp function
+        # logout the user, it's logged in due to the setUp function
         self.client.logout()
         self.client.login(
             username=self.user_data["username"], password=self.user_data["password"],
         )
-        response = self.client.get(f"/api/v1/facility/{self.facility.id}/")
+        test_facility = TestFacility()
+        response = self.client.get(test_facility.get_url(self.facility.id))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_super_user_can_access_url_by_location(self):
         """Test super user can access url by location"""
-        response = self.client.get(f"/api/v1/facility/{self.facility.id}/")
+        user = self.user
+        user.is_superuser = True
+        user.save()
+
+        test_facility = TestFacility()
+        response = self.client.get(test_facility.get_url(self.facility.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_superuser_bulk_facility_data_retrieval(self):
-        """Test superusers can retrieve bulk facility"""
-        user = self.super_user
+        """Test superusers can retrieve bulk facility data"""
+        user = self.user
+        user.is_superuser = True
+        user.save()
+
         facility = self.facility
-        response = self.client.get(f"/api/v1/facility/{facility.id}/", format="json")
-        self.assertDictEqual(
-            response.data,
-            {
-                "id": facility.id,
-                "name": facility.name,
-                "district": facility.district,
-                "facility_type": "Educational Inst",
-                "address": facility.address,
-                "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                "local_govt_body": {
-                    "id": mock_equal,
-                    "facility": facility.id,
-                    "local_body": None,
-                    "district": {"id": 13, "name": "Kannur", "state": mock_equal},
-                },
-                "oxygen_capacity": facility.oxygen_capacity,
-                "phone_number": facility.phone_number,
-            },
-        )
+
+        test_facility = TestFacility()
+        response = self.client.get(test_facility.get_url(facility.id), format="json")
+        self.assertDictEqual(response.data, self.get_detail_representation(facility))
 
     def test_others_cant_update_ones_facility(self):
         """Test facility can't be updated by non-creators"""
-        # logout the superuser, it's logged in due to the setUp function
+        # logout the user, it's logged in due to the setUp function
         self.client.logout()
+        data = self.user_data.copy()
+        data["username"] = "test"
+        User.objects.create_user(**data)
         self.client.login(
-            username=self.user_data["username"], password=self.user_data["password"],
+            username=data["username"], password=data["password"],
         )
         facility = self.facility
         data = self.user_data
@@ -388,38 +466,9 @@ class TestFacilityBulkUpdate(APITestCase):
         new_user = User.objects.create_user(**data)
         facility.created_by = new_user
         facility.save()
-        # although this should be put, PUT is weirdly enough not allowed here
-        response = self.client.post(
-            "/api/v1/facility/bulk_upsert/",
-            data=[
-                {
-                    "name": facility.name,
-                    "district": facility.district,
-                    "facility_type": 3,
-                    "address": facility.address,
-                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48}],
-                },
-            ],
-            format="json",
-        )
+        # although this should be PUT, PUT is weirdly enough not allowed here
+        response = self.client.post(self.get_url(), data=self.get_list_representation(facility),)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertRegexpMatches(response.json()["detail"], r"[\w, ()-/]+ is owned by another user")
-
-    def test_superuser_can_update_ones_facility(self):
-        """Test superuser can update their facility"""
-        facility = self.facility
-        # although this should be put, PUT is weirdly enough not allowed here
-        response = self.client.post(
-            "/api/v1/facility/bulk_upsert/",
-            data=[
-                {
-                    "name": facility.name,
-                    "district": facility.district,
-                    "facility_type": 3,
-                    "address": facility.address,
-                    "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48}],
-                },
-            ],
-            format="json",
+        self.assertEqual(
+            response.json()["detail"], "You do not have permission to perform this action.",
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -100,6 +100,7 @@ class TestBase(APITestCase):
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
+            "capacity": [],
         }
 
     @classmethod
