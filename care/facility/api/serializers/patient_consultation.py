@@ -1,7 +1,14 @@
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework.exceptions import ValidationError
 
-from care.facility.models import DailyRound, PatientConsultation, SuggestionChoices
+from care.facility.models import (
+    DailyRound,
+    PatientConsultation,
+    SuggestionChoices,
+    SYMPTOM_CHOICES,
+    CATEGORY_CHOICES,
+    ADMIT_CHOICES,
+)
 
 from config.serializers import ChoiceField
 
@@ -9,6 +16,10 @@ from config.serializers import ChoiceField
 class PatientConsultationSerializer(serializers.ModelSerializer):
     facility_name = serializers.CharField(source="facility.name", read_only=True)
     suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion")
+
+    symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
+    category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
 
     class Meta:
         model = PatientConsultation
