@@ -2,36 +2,24 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.users.models import User
+from config.tests.helper import TestHelper
 
-# from config.tests.helper import Helper
 
-
-class TestSuperUser(APITestCase):
-    # def __init__(self, *args, **kwargs):
-    #     """Initialize the data values"""
-    #     self.setup_data(*args, **kwargs)
-
+class TestSuperUser(TestHelper, APITestCase):
     @classmethod
     def setUpTestData(cls):
         """Runs once per class method"""
-        cls.data = {
-            "user_type": 5,
-            "email": "some.email@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "district": 11,
-            "username": "superuser_1",
-            "password": "bar",
-        }
-        cls.super_user = User.objects.create_superuser(**cls.data)
+        # Initalizes the setup data
+        cls.setup_data()
+        cls.user.is_superuser = True
+        cls.user.save()
 
     def setUp(self):
         """
         Run once before every test
             - login the super user
         """
-        self.client.login(username=self.data["username"], password=self.data["password"])
+        self.client.login(**self.user_creds)
 
     def test_user_creation(self):
         """
@@ -43,7 +31,7 @@ class TestSuperUser(APITestCase):
                 - username is present in the response
         """
         url = "/api/v1/users/"
-        data = self.data
+        data = self.user_data_client
         data["username"] = "test"
         response = self.client.post(url, data)
         # Test status code
@@ -62,28 +50,40 @@ class TestSuperUser(APITestCase):
 
     def test_superuser_can_acess_url_by_location(self):
         """Test super user can acess the url by location"""
-        username = self.data["username"]
+        username = self.user_creds["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_superuser_can_view(self):
         """Test super user can view all of their profile"""
-        username = self.data["username"]
+        username = self.user_creds["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
         res_data_json = response.json()
         res_data_json.pop("id")
-        data = self.data.copy()
+        data = self.user_data_client.copy()
         data.pop("password")
         self.assertDictEqual(
             res_data_json,
-            {**data, "district": 11, "gender": "Female", "user_type": "Doctor", "first_name": "", "last_name": "",},
+            {
+                **data,
+                "district": self.district.id,
+                "gender": "Female",
+                "is_superuser": True,
+                "user_type": "Staff",
+                "first_name": "",
+                "last_name": "",
+                "local_body": None,
+                "state": None,
+            },
         )
 
     def test_superuser_can_modify(self):
         """Test superusers can modify the attributes for other users"""
-        username = self.data["username"]
-        password = self.data["password"]
-        response = self.client.put(f"/api/v1/users/{username}/", {**self.data, "age": 31, "password": password,},)
+        username = self.user_creds["username"]
+        password = self.user_creds["password"]
+        response = self.client.put(
+            f"/api/v1/users/{username}/", {**self.user_data_client, "age": 31, "password": password,},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -92,15 +92,15 @@ class TestSuperUser(APITestCase):
 
     def test_superuser_can_delete(self):
         """Test superuser can delete other users"""
-        response = self.client.delete(f"/api/v1/users/{self.data['username']}/")
+        response = self.client.delete(f"/api/v1/users/{self.user_creds['username']}/")
         # test response code
         self.assertEqual(response.status_code, 204)
         # test backend response
         with self.assertRaises(expected_exception=User.DoesNotExist):
-            User.objects.get(username=self.data["username"])
+            User.objects.get(username=self.user_data["username"])
 
 
-class TestUser(APITestCase):
+class TestUser(TestHelper, APITestCase):
     @classmethod
     def setUpTestData(cls):
         """
@@ -109,19 +109,14 @@ class TestUser(APITestCase):
         Create 2 users
             - 1 will be used to check if they can tinker attributes of the other
         """
-        cls.data_1 = {
-            "user_type": 5,
-            "email": "some.email@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "district": 11,
-            "username": "user_5",
-            "password": "bar",
-        }
-        cls.user_1 = User.objects.create_user(**cls.data_1)
+        cls.setup_data()
+        cls.data_1 = cls.user_data.copy()
+        cls.data_1_client = cls.user_data_client.copy()
+        cls.user_1 = cls.user
         cls.data_2 = cls.data_1.copy()
+        cls.data_2_client = cls.user_data_client.copy()
         cls.data_2["username"] = "user_2"
+        cls.data_2_client["username"] = cls.data_2["username"]
         cls.user_2 = User.objects.create_user(**cls.data_2)
 
     def setUp(self):
@@ -148,14 +143,16 @@ class TestUser(APITestCase):
         results = res_data_json["results"]
         # test presence of usernames
         self.assertEqual(
-            {self.user_1.username, self.user_2.username}, {r["username"] for r in results},
+            {self.user_1.id, self.user_2.id}, {r["id"] for r in results},
         )
 
     def test_user_can_modify_themselves(self):
         """Test user can modify the attributes for themselves"""
         password = self.data_1["password"]
         username = self.data_1["username"]
-        response = self.client.put(f"/api/v1/users/{username}/", {**self.data_1, "age": 31, "password": password,},)
+        response = self.client.put(
+            f"/api/v1/users/{username}/", {**self.data_1_client, "age": 31, "password": password,},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -163,33 +160,34 @@ class TestUser(APITestCase):
         self.assertEqual(User.objects.only("age").get(username=username).age, 31)
 
     def test_user_can_delete_themselves(self):
-        """Test user can delete themselves"""
+        """Test user can't delete themselves"""
         response = self.client.delete(f"/api/v1/users/{self.data_1['username']}/")
         # test response code
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # test backend response
-        with self.assertRaises(expected_exception=User.DoesNotExist):
-            User.objects.get(username=self.data_1["username"])
+        self.assertIsNotNone(User.objects.get(username=self.data_1["username"]))
 
     def test_user_can_read_others(self):
         """Test 1 user can read the attributes of the other user"""
         username = self.data_2["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cant_modify_others(self):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.put(f"/api/v1/users/{username}/", {**self.data_2, "age": 31, "password": password,},)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.put(
+            f"/api/v1/users/{username}/", {**self.data_2_client, "age": 31, "password": password,},
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_can_delete_others(self):
         """Test a user can't delete others"""
         field = "username"
         response = self.client.delete(f"/api/v1/users/{self.data_2[field]}/")
         # test response code
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # test backend response(user_2 still exists)
         self.assertEqual(
             self.data_2[field], User.objects.only(field).get(username=self.data_2[field]).username,
