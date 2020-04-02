@@ -1,0 +1,54 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.8.0
+  aws-eks: circleci/aws-eks@0.2.6
+
+workflows:
+  deploy-to-staging-and-production:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          region: AWS_DEFAULT_REGION
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1}"
+          filters:
+            branches:
+              only: master
+      - aws-eks/update-container-image:
+          name: migrate-and-collectstatic-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_STAGING_INITIALSETUP_DEPLOYMENT_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
+      - aws-eks/update-container-image:
+          name: deploy-to-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
+          requires:
+            - migrate-and-collectstatic-staging
+      - hold-for-production:
+          type: approval
+          requires:
+            - deploy-to-staging
+      - aws-eks/update-container-image:
+          name: migrate-and-collectstatic-production
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_PRODUCTION_INITIALSETUP_DEPLOYMENT_NAME}"
+          requires:
+            - hold-for-production
+      - aws-eks/update-container-image:
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_PRODUCTION_DEPLOYMENT_NAME}"
+          requires:
+            - migrate-and-collectstatic-production
