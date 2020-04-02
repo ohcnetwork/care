@@ -63,6 +63,8 @@ class TestFacility:
                 "district_object": {"id": facility_data["district"], "name": "Kannur", "state": mock_equal},
                 "state": mock_equal,
                 "state_object": {"id": mock_equal, "name": "KL"},
+                "created_date": mock_equal,
+                "modified_date": mock_equal,
             },
         )
 
@@ -110,6 +112,8 @@ class TestFacility:
             "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def test_update(self, client, user, facility):
@@ -143,6 +147,8 @@ class TestFacility:
             "state_object": {"id": mock_equal, "name": "KL"},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
         facility.refresh_from_db()
         assert facility.name == "Another name"
@@ -205,6 +211,8 @@ class TestFacility:
                     "state_object": {"id": facility.state.id, "name": facility.state.name},
                     "oxygen_capacity": facility.oxygen_capacity,
                     "phone_number": facility.phone_number,
+                    "created_date": mock_equal,
+                    "modified_date": mock_equal,
                 },
             ],
         }
@@ -300,6 +308,8 @@ class TestFacilityBulkUpsert:
             "state_object": {"id": facility.state.id, "name": facility.state.name},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def test_others_cant_update_ones_facility(self, client, user, facility):
