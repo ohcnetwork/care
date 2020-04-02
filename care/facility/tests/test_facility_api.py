@@ -265,26 +265,9 @@ class TestFacilityBulkUpdate(TestBase):
             "capacity": [{"room_type": 1, "total_capacity": 100, "current_capacity": 48}],
         }
 
-    def get_detail_representation(self, facility: Facility) -> dict:
-        return {
-            "id": facility.id,
-            "name": facility.name,
-            "facility_type": "Educational Inst",
-            "address": facility.address,
-            "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-            "local_body": None,
-            "local_body_object": None,
-            "district": facility.district.id,
-            "district_object": {
-                "id": facility.district.id,
-                "name": facility.district.name,
-                "state": facility.district.state.id,
-            },
-            "state": facility.state.id,
-            "state_object": {"id": facility.state.id, "name": facility.state.name},
-            "oxygen_capacity": facility.oxygen_capacity,
-            "phone_number": facility.phone_number,
-        }
+    def get_detail_representation(self):
+        # Not really required here
+        pass
 
     def test_facility_bulk_upsert_for_user(self):
         """
