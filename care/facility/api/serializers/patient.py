@@ -8,6 +8,7 @@ from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
+    DISEASE_STATUS_CHOICES,
     Disease,
     Facility,
     FacilityPatientStatsHistory,
@@ -46,6 +47,8 @@ class PatientDetailSerializer(PatientListSerializer):
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
+
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES)
 
     class Meta:
         model = PatientRegistration

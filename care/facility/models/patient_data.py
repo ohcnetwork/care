@@ -27,6 +27,27 @@ SYMPTOM_CHOICES = [
     (5, "BREATHLESSNESS"),
 ]
 
+DISEASE_STATUS_CHOICES = [
+    (1, "SUSPECTED"),
+    (2, "POSITIVE"),
+    (3, "NEGATIVE"),
+    (4, "RECOVERY"),
+    (5, "RECOVERED"),
+    (5, "EXPIRED"),
+]
+
+BLOOD_GROUP_CHOICES = [
+    ("A+", "A+"),
+    ("A-", "A-"),
+    ("B+", "B+"),
+    ("B-", "B-"),
+    ("AB+", "AB+"),
+    ("AB-", "AB-"),
+    ("O+", "O+"),
+    ("O-", "O-"),
+]
+
+
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
 
@@ -39,6 +60,8 @@ class PatientRegistration(models.Model):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
+    blood_group = models.CharField(choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4)
+
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
     )
@@ -50,14 +73,17 @@ class PatientRegistration(models.Model):
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days"
     )
-    countries_travelled = models.TextField(default="")
+    countries_travelled = models.TextField(default="", blank=True)
+    date_of_return = models.DateTimeField(blank=True, null=True)
 
-    present_health = models.TextField(default="")
+    present_health = models.TextField(default="", blank=True)
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
+
+    disease_status = models.IntegerField(choices=DISEASE_STATUS_CHOICES, default=1, blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
@@ -227,8 +253,8 @@ class PatientConsultation(models.Model):
 
 class DailyRound(models.Model):
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
-    temperature = models.DecimalField(max_digits=5, decimal_places=2)
-    temperature_measured_at = models.DateTimeField()
+    temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
+    temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     other_details = models.TextField(null=True, blank=True)
 
