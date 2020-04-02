@@ -43,12 +43,13 @@ ROOM_TYPES = [
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
-    (2, "Hospital"),
+    (2, "Private Hospital"),
     (3, "Other"),
     (4, "Hostel"),
     (5, "Hotel"),
     (6, "Lodge"),
     (7, "TeleMedicine"),
+    (8, "Govt Hospital"),
 ]
 
 DOCTOR_TYPES = [

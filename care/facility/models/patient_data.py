@@ -15,6 +15,8 @@ DISEASE_CHOICES = [
     (3, "Heart Disease"),
     (4, "HyperTension"),
     (5, "Kidney Diseases"),
+    (6, "Lung Diseases/Asthma"),
+    (7, "Cancer"),
 ]
 
 SYMPTOM_CHOICES = [
@@ -182,6 +184,11 @@ class PatientConsultation(models.Model):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # will be true when the consultation is created
+            self.patient.facility = self.facility
+        super(PatientConsultation, self).save(*args, **kwargs)
 
     @staticmethod
     def has_write_permission(request):

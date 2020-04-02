@@ -85,6 +85,7 @@ THIRD_PARTY_APPS = [
     "simple_history",
     "ratelimit",
     "dry_rest_permissions",
+    "corsheaders",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -138,6 +139,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -318,3 +320,5 @@ GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
 GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
 
 GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
+
+CORS_ORIGIN_ALLOW_ALL = True
