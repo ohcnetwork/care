@@ -185,6 +185,11 @@ class PatientConsultation(models.Model):
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
 
+    def save(self, *args, **kwargs):
+        if not self.pk:  # will be true when the consultation is created
+            self.patient.facility = self.facility
+        super(PatientConsultation, self).save(*args, **kwargs)
+
     @staticmethod
     def has_write_permission(request):
         if not request.data.get("facility"):

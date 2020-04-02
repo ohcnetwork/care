@@ -9,6 +9,7 @@ from care.facility.api.serializers.patient_consultation import PatientConsultati
 from care.facility.models import (
     DISEASE_CHOICES,
     Disease,
+    Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
     PatientRegistration,
@@ -39,10 +40,16 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
+    facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
+
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
+
+    class Meta:
+        model = PatientRegistration
+        exclude = ("created_by", "deleted")
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -50,9 +57,10 @@ class PatientDetailSerializer(PatientListSerializer):
             return None
         return PatientConsultationSerializer(last_consultation).data
 
-    class Meta:
-        model = PatientRegistration
-        exclude = ("created_by", "deleted")
+    def validate_facility(self, value):
+        if value is not None and Facility.objects.filter(id=value).first() is None:
+            raise serializers.ValidationError("facility not found")
+        return value
 
     def create(self, validated_data):
         with transaction.atomic():
