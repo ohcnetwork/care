@@ -48,6 +48,7 @@ urlpatterns = [
     path("facility/", include("care.facility.urls", namespace="facility")),
     # RESTful APIs
     path("api/v1/", include(api_router.urlpatterns)),
+    url(r"^watchman/", include("watchman.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
