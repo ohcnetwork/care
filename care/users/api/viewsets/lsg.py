@@ -47,7 +47,7 @@ class LocalBodyFilterSet(filters.FilterSet):
 
 class LocalBodyViewSet(viewsets.ModelViewSet):
     serializer_class = LocalBodySerializer
-    queryset = LocalBody.objects.all()
+    queryset = LocalBody.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LocalBodyFilterSet
     http_method_names = ["get"]  # allows only reads
