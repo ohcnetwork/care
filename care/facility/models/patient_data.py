@@ -19,12 +19,30 @@ DISEASE_CHOICES = [
     (7, "Cancer"),
 ]
 
+CATEGORY_CHOICES = [
+    ("Mild", "Category-A"),
+    ("Moderate", "Category-B"),
+    ("Severe", "Category-C"),
+    (None, "UNCLASSIFIED"),
+]
+
+ADMIT_CHOICES = [
+    (None, "Not admitted"),
+    (1, "Isolation Room"),
+    (2, "ICU"),
+    (3, "ICU with Ventilator"),
+]
+
 SYMPTOM_CHOICES = [
-    (1, "NO"),
+    (1, "ASYMPTOMATIC"),
     (2, "FEVER"),
     (3, "SORE THROAT"),
     (4, "COUGH"),
     (5, "BREATHLESSNESS"),
+    (6, "MYALGIA"),
+    (7, "ABDOMINAL DISCOMFORT"),
+    (8, "VOMITING/DIARRHOEA"),
+    (9, "OTHERS"),
 ]
 
 DISEASE_STATUS_CHOICES = [
@@ -209,6 +227,10 @@ class PatientConsultation(models.Model):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    other_symptoms = models.TextField(default="", blank=True)
+    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -217,6 +239,7 @@ class PatientConsultation(models.Model):
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
+    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
 
