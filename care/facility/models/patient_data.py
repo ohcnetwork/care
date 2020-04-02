@@ -59,7 +59,9 @@ class PatientRegistration(models.Model):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
-    blood_group = models.CharField(choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4)
+    blood_group = models.CharField(
+        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
+    )
 
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
@@ -72,23 +74,27 @@ class PatientRegistration(models.Model):
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days"
     )
-    countries_travelled = models.TextField(default="", blank=True)
-    date_of_return = models.DateTimeField(blank=True, null=True)
+    countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
+    date_of_return = models.DateTimeField(
+        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
+    )
 
-    present_health = models.TextField(default="", blank=True)
+    present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
-    disease_status = models.IntegerField(choices=DISEASE_STATUS_CHOICES, default=1, blank=True)
+    disease_status = models.IntegerField(
+        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status"
+    )
 
     number_of_aged_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people aged above 60 living with the patient"
+        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people who have chronic diseases living with the patient"
+        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
