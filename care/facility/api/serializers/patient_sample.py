@@ -83,4 +83,4 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
 
 class PatientSampleDetailSerializer(PatientSampleSerializer):
     flow = serializers.ListSerializer(child=PatientSampleFlowSerializer())
-    facility_object = FacilityBasicInfoSerializer(source="consultation__facility")
+    facility_object = FacilityBasicInfoSerializer(source="consultation.facility")
