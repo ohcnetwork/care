@@ -48,7 +48,7 @@ class PatientDetailSerializer(PatientListSerializer):
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
 
-    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES)
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DISEASE_CHOICES[0][0])
 
     class Meta:
         model = PatientRegistration
