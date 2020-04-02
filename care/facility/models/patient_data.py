@@ -15,6 +15,8 @@ DISEASE_CHOICES = [
     (3, "Heart Disease"),
     (4, "HyperTension"),
     (5, "Kidney Diseases"),
+    (6, "Lung Diseases/Asthma"),
+    (7, "Cancer"),
 ]
 
 SYMPTOM_CHOICES = [
