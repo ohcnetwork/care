@@ -155,3 +155,14 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        While saving, if the local body is not null, then district will be local body's district
+        Overriding save will help in a collision where the local body's district and district fields are different.
+        """
+        if self.local_body is not None:
+            self.district = self.local_body.district
+        if self.district is not None:
+            self.state = self.district.state
+        super().save(*args, **kwargs)
