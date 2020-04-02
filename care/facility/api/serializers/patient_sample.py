@@ -19,11 +19,11 @@ class PatientSampleFlowSerializer(serializers.ModelSerializer):
 
 class PatientSampleSerializer(serializers.ModelSerializer):
     patient_name = serializers.CharField(read_only=True, source="patient.name")
-    patinet_has_sari = serializers.BooleanField(read_only=True, source="patient.has_SARI")
-    patinet_has_confirmed_contact = serializers.BooleanField(
+    patient_has_sari = serializers.BooleanField(read_only=True, source="patient.has_SARI")
+    patient_has_confirmed_contact = serializers.BooleanField(
         read_only=True, source="patient.contact_with_confirmed_carrier"
     )
-    patinet_has_suspected_contact = serializers.BooleanField(
+    patient_has_suspected_contact = serializers.BooleanField(
         read_only=True, source="patient.contact_with_suspected_carrier"
     )
     patient_travel_history = serializers.CharField(read_only=True, source="patient.countries_travelled")
