@@ -19,6 +19,7 @@ from care.users.models import User
 
 class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    facility_type = filters.NumberFilter(field_name="facility_type")
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
     local_body = filters.NumberFilter(field_name="local_body__id")
@@ -62,10 +63,14 @@ class FacilityViewSet(viewsets.ModelViewSet):
         Facility List
 
         Supported filters
+        - `name` - supports for ilike match
+        - `facility_type` - ID
         - `district` - ID
         - `district_name` - supports for ilike match
         - `local_body` - ID
         - `local_body_name` - supports for ilike match
+        - `state_body` - ID
+        - `state_body_name` - supports for ilike match
 
         Other query params
         - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
