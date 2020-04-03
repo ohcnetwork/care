@@ -59,6 +59,17 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         else:
             return self.serializer_class
 
+    def list(self, request, *args, **kwargs):
+        """
+        Patient List
+
+        `without_facility` accepts boolean - default is false -
+            if true: shows only patients without a facility mapped
+            if false (default behaviour): shows only patients with a facility mapped
+
+        """
+        return super(PatientViewSet, self).list(request, *args, **kwargs)
+
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
     entry_date = filters.DateFromToRangeFilter(field_name="entry_date")
