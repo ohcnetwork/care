@@ -90,7 +90,7 @@ class PatientRegistration(models.Model):
     estimated_contact_date = models.DateTimeField(null=True, blank=True)
 
     past_travel = models.BooleanField(
-        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days"
+        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
     countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
@@ -147,7 +147,8 @@ class PatientRegistration(models.Model):
             )
         )
 
-    def has_object_write_permission(self, request):
+    def has_object_destroy_permission(self, request):
+        """Currently refers only to delete action"""
         return request.user.is_superuser
 
     def has_object_update_permission(self, request):
