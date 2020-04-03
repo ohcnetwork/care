@@ -9,13 +9,13 @@ from care.users.models import District, LocalBody, State
 
 class StateViewSet(viewsets.ModelViewSet):
     serializer_class = StateSerializer
-    queryset = State.objects.all()
+    queryset = State.objects.all().order_by("name")
     http_method_names = ["get"]  # allows only reads
 
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):
         state = self.get_object()
-        serializer = DistrictSerializer(state.district_set.all(), many=True)
+        serializer = DistrictSerializer(state.district_set.all().order_by("name"), many=True)
         return Response(data=serializer.data)
 
 
@@ -26,7 +26,7 @@ class DistrictFilterSet(filters.FilterSet):
 
 class DistrictViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
-    queryset = District.objects.all()
+    queryset = District.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictFilterSet
     http_method_names = ["get"]  # allows only reads
@@ -34,7 +34,7 @@ class DistrictViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def local_bodies(self, *args, **kwargs):
         district = self.get_object()
-        serializer = LocalBodySerializer(district.localbody_set.all(), many=True)
+        serializer = LocalBodySerializer(district.localbody_set.all().order_by("name"), many=True)
         return Response(data=serializer.data)
 
 
@@ -47,7 +47,7 @@ class LocalBodyFilterSet(filters.FilterSet):
 
 class LocalBodyViewSet(viewsets.ModelViewSet):
     serializer_class = LocalBodySerializer
-    queryset = LocalBody.objects.all()
+    queryset = LocalBody.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LocalBodyFilterSet
     http_method_names = ["get"]  # allows only reads

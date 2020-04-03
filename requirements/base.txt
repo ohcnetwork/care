@@ -30,6 +30,7 @@ django-ratelimit==2.0.0 # Limiting Requests
 django-fernet-fields==0.6 # https://django-fernet-fields.readthedocs.io/en/latest/
 dry-rest-permissions==0.1.10  # For permissions handling
 django-cors-headers==3.2.1
+django-watchman==1.1.0 # For Status Endpoints
 
 # Testing
 # ------------------------------------------------------------------------------

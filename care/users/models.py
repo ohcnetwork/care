@@ -147,7 +147,17 @@ class User(AbstractUser):
         return request.user.is_superuser
 
     def has_object_update_permission(self, request):
-        return request.user.is_superuser or self == request.user
+        if request.user.is_superuser:
+            return True
+        if not self == request.user:
+            return False
+        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
+            "DistrictLabAdmin"
+        ]:
+            # District/state admins shouldn't be able to edit their district/state, that'll practically give them
+            # access to everything
+            return False
+        return True
 
     def delete(self, *args, **kwargs):
         self.deleted = True
@@ -155,3 +165,14 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        While saving, if the local body is not null, then district will be local body's district
+        Overriding save will help in a collision where the local body's district and district fields are different.
+        """
+        if self.local_body is not None:
+            self.district = self.local_body.district
+        if self.district is not None:
+            self.state = self.district.state
+        super().save(*args, **kwargs)

@@ -5,6 +5,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.patient_sample import PatientSample, PatientSampleFlow
 from config.serializers import ChoiceField
 
@@ -82,3 +83,4 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
 
 class PatientSampleDetailSerializer(PatientSampleSerializer):
     flow = serializers.ListSerializer(child=PatientSampleFlowSerializer())
+    facility_object = FacilityBasicInfoSerializer(source="consultation.facility")

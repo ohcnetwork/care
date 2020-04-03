@@ -37,6 +37,7 @@ ROOM_TYPES = [
     (0, "Total"),
     (1, "Normal"),
     (2, "Hostel"),
+    (3, "Single Room with Attached Bathroom"),
     (10, "ICU"),
     (20, "Ventilator"),
 ]
