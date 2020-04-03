@@ -23,6 +23,11 @@ def patient_data():
         "present_health": "Good",
         "past_travel": False,
         "address": "Elsewhere street, Elsewhere county, Elsewhere",
+        "blood_group": None,
+        "date_of_return": None,
+        "disease_status": "SUSPECTED",
+        "number_of_aged_dependents": 0,
+        "number_of_chronic_diseased_dependents": 0,
     }
 
 
@@ -110,6 +115,11 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -148,6 +158,11 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
         }
 
     def test_update(self, client, user, patient):
@@ -194,6 +209,11 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -246,6 +266,11 @@ class TestPatient:
                     "has_SARI": patient.has_SARI,
                     "past_travel": patient.past_travel,
                     "present_health": patient.present_health,
+                    "blood_group": None,
+                    "date_of_return": None,
+                    "disease_status": 1,
+                    "number_of_aged_dependents": 0,
+                    "number_of_chronic_diseased_dependents": 0,
                 },
             ],
         }
