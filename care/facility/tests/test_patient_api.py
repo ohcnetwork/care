@@ -128,7 +128,7 @@ class TestPatient(TestBase):
         user = self.user
         response = self.client.post(self.get_url(), patient_data, format="json")
 
-        breakpoint()
+        # breakpoint()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response.data.pop("id")
         self.assertDictEqual(response.data, self.get_detail_representation(patient_data))
@@ -176,7 +176,7 @@ class TestPatient(TestBase):
 
         new_phone_number = "9999997775"
         response = self.client.put(self.get_url(patient.id), self.get_detail_representation(patient), format="json",)
-        breakpoint()
+        # breakpoint()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.data, self.get_detail_representation(self.patient_data))
         patient.refresh_from_db()
