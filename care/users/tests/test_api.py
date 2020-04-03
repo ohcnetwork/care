@@ -66,14 +66,14 @@ class TestSuperUser(TestHelper, APITestCase):
             res_data_json,
             {
                 **data,
-                "district": self.district.id,
                 "gender": "Female",
                 "is_superuser": True,
                 "user_type": "Staff",
                 "first_name": "",
                 "last_name": "",
                 "local_body": None,
-                "state": None,
+                "district": self.district.id,
+                "state": self.state.id,
             },
         )
 
