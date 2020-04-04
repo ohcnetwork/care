@@ -23,6 +23,12 @@ def patient_data():
         "present_health": "Good",
         "past_travel": False,
         "address": "Elsewhere street, Elsewhere county, Elsewhere",
+        "date_of_return": None,
+        "blood_group": "A+",
+        "disease_status": "SUSPECTED",
+        "number_of_aged_dependents": 0,
+        "number_of_chronic_diseased_dependents": 1,
+        "ongoing_medication":''
     }
 
 
@@ -64,6 +70,7 @@ class TestPatient:
             "facility": mock_equal,
             "facility_object": mock_equal,
             "contact_with_suspected_carrier": False,
+            "ongoing_medication":''
         }
 
         patient = PatientRegistration.objects.get(
@@ -110,6 +117,12 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            'number_of_aged_dependents': 0,
+            'number_of_chronic_diseased_dependents': 0,
+            "ongoing_medication":'',
         }
 
     def test_super_user_access(self, client, user, patient):
@@ -148,6 +161,12 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
+            "ongoing_medication":'',
         }
 
     def test_update(self, client, user, patient):
@@ -175,7 +194,7 @@ class TestPatient:
             "age": patient.age,
             "gender": patient.gender,
             "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
-            "medical_history": [{"disease": "HyperTension", "details": "Mild"},],
+            "medical_history": [{"disease": "HyperTension", "details": "Mild"}, ],
             "tele_consultation_history": [],
             "is_active": True,
             "last_consultation": None,
@@ -194,6 +213,12 @@ class TestPatient:
             "has_SARI": patient.has_SARI,
             "past_travel": patient.past_travel,
             "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
+            "ongoing_medication":'',
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -246,6 +271,11 @@ class TestPatient:
                     "has_SARI": patient.has_SARI,
                     "past_travel": patient.past_travel,
                     "present_health": patient.present_health,
+                    "blood_group": None,
+                    "date_of_return": None,
+                    "disease_status": 1,
+                    "number_of_aged_dependents": 0,
+                    "number_of_chronic_diseased_dependents": 0,
                 },
             ],
         }
