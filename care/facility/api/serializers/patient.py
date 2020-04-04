@@ -10,6 +10,7 @@ from care.facility.models import (
     DISEASE_CHOICES,
     DISEASE_STATUS_CHOICES,
     Disease,
+    DiseaseStatusEnum,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -26,6 +27,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
     class Meta:
         model = PatientRegistration
@@ -49,7 +51,7 @@ class PatientDetailSerializer(PatientListSerializer):
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
 
-    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DISEASE_CHOICES[0][0])
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
     class Meta:
         model = PatientRegistration

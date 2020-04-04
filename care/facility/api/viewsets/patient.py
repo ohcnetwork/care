@@ -51,7 +51,9 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = PatientRegistration.objects.all().select_related("local_body", "district", "state", "facility")
+    queryset = PatientRegistration.objects.all().select_related(
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+    )
     serializer_class = PatientDetailSerializer
     filter_backends = (
         PatientDRYFilter,

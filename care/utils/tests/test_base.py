@@ -1,17 +1,23 @@
 import abc
 import datetime
+from typing import Any, Dict, OrderedDict
 
+import dateparser
 from django.contrib.gis.geos import Point
+from pytz import unicode
 from rest_framework.test import APITestCase
 
 from care.facility.models import Facility, LocalBody, User
 from care.users.models import District, State
+from config.tests.helper import EverythingEquals
 
 
 class TestBase(APITestCase):
     """
     Base class for tests, handles most of the test setup and tools for setting up data
     """
+
+    maxDiff = None
 
     @classmethod
     def create_user(cls, district: District, username: str = "user", **kwargs):
@@ -44,16 +50,18 @@ class TestBase(APITestCase):
         return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
 
     @classmethod
-    def create_facility(cls, district: District):
-        return Facility.objects.create(
-            name="Foo",
-            district=district,
-            facility_type=1,
-            address="8/88, 1st Cross, 1st Main, Boo Layout",
-            location=Point(24.452545, 49.878248),
-            oxygen_capacity=10,
-            phone_number="9998887776",
-        )
+    def create_facility(cls, district: District, **kwargs):
+        data = {
+            "name": "Foo",
+            "district": district,
+            "facility_type": 1,
+            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
+            "location": Point(24.452545, 49.878248),
+            "oxygen_capacity": 10,
+            "phone_number": "9998887776",
+        }
+        data.update(kwargs)
+        return Facility.objects.create(**data)
 
     @classmethod
     def get_user_data(cls, district: District, user_type: str):
@@ -206,9 +214,25 @@ class TestBase(APITestCase):
             return {"state": None, "state_object": None}
         return {"state": state.id, "state_object": {"id": state.id, "name": state.name}}
 
-    # def test_login_required(self, *args, **kwargs):
-    #     """Test unlogged unusers are thrown an error 403"""
-    #     # Terminate the user session since user is logged in inside the setUp function
-    #     self.client.logout()
-    #     response = self.client.post(self.get_url(*args, **kwargs), {},)
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def assertDictEqual(self, first: Dict[Any, Any], second: Dict[Any, Any], msg: Any = ...) -> None:
+        first_dict = self._convert_to_matchable_types(first.copy())
+        second_dict = self._convert_to_matchable_types(second.copy())
+        return super(TestBase, self).assertDictEqual(first_dict, second_dict, msg)
+
+    def _convert_to_matchable_types(self, d):
+        def dict_to_matching_type(d: dict):
+            return {k: to_matching_type(k, v) for k, v in d.items()}
+
+        def to_matching_type(name: str, value):
+            if isinstance(value, (OrderedDict, dict)):
+                return dict_to_matching_type(dict(value))
+            elif isinstance(value, list):
+                return [to_matching_type("", v) for v in value]
+            elif "date" in name and not isinstance(value, (type(None), EverythingEquals)):
+                return_value = value
+                if isinstance(value, (str, unicode,)):
+                    return_value = dateparser.parse(value)
+                return return_value.astimezone(tz=datetime.timezone.utc)
+            return value
+
+        return dict_to_matching_type(d)

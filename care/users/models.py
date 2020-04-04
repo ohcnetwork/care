@@ -115,6 +115,7 @@ class User(AbstractUser):
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
     REQUIRED_FIELDS = [
         "user_type",
         "email",
