@@ -36,9 +36,6 @@ class TestPatient(TestBase):
             "facility": None,
             "blood_group": None,
             "date_of_return": None,
-            "state_object": None,
-            "local_body_object": None,
-            "district_object": None,
         }
 
         cls.patient = PatientRegistration.objects.create(name="Bar", age=31, gender=2, phone_number="7776665554",)
@@ -75,9 +72,6 @@ class TestPatient(TestBase):
             "facility": patient.facility,
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
-            "state_object": None,
-            "local_body_object": None,
-            "district_object": None,
         }
 
     def get_detail_representation(self, patient: Any):
@@ -110,9 +104,6 @@ class TestPatient(TestBase):
             "last_consultation": None,
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
-            "state_object": None,
-            "local_body_object": None,
-            "district_object": None,
             "facility_object": None,
         }
 
