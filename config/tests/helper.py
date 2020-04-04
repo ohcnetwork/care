@@ -10,8 +10,8 @@ class TestHelper:
     @classmethod
     def setup_data(cls):
         """Initialize the data objects to be used for other function"""
-        state = State.objects.create(name="KL")
-        cls.district = District.objects.create(name="Kannur", state=state)
+        cls.state = State.objects.create(name="KL")
+        cls.district = District.objects.create(name="Kannur", state=cls.state)
         cls.user = User.objects.create(
             user_type=10,
             district=cls.district,
@@ -31,7 +31,6 @@ class TestHelper:
 
         cls.user_data = {
             "user_type": 10,
-            "district": cls.district,
             "phone_number": "8887776665",
             "gender": 2,
             "age": 30,
@@ -40,10 +39,9 @@ class TestHelper:
             "password": "bar",
         }
 
-        # this is weird but it is what it is, this data will be used when using the request API
+        # # this is weird but it is what it is, this data will be used when using the request API
         cls.user_data_client = cls.user_data.copy()
         cls.user_data_client["user_type"] = "Staff"
-        cls.user_data_client["district"] = cls.district.id
 
 
 class EverythingEquals:
