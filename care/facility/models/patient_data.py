@@ -1,3 +1,4 @@
+import enum
 from types import SimpleNamespace
 
 from django.db import models
@@ -45,14 +46,17 @@ SYMPTOM_CHOICES = [
     (9, "OTHERS"),
 ]
 
-DISEASE_STATUS_CHOICES = [
-    (1, "SUSPECTED"),
-    (2, "POSITIVE"),
-    (3, "NEGATIVE"),
-    (4, "RECOVERY"),
-    (5, "RECOVERED"),
-    (5, "EXPIRED"),
-]
+
+class DiseaseStatusEnum(enum.IntEnum):
+    SUSPECTED = 1
+    POSITIVE = 2
+    NEGATIVE = 3
+    RECOVERY = 4
+    RECOVERED = 5
+    EXPIRED = 6
+
+
+DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
 
 BLOOD_GROUP_CHOICES = [
     ("A+", "A+"),
@@ -248,8 +252,12 @@ class PatientConsultation(models.Model):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # will be true when the consultation is created
-            self.patient.facility = self.facility
+        if not self.pk or self.referred_to is not None:
+            # pk is None when the consultation is created
+            # referred to is not null when the person is being referred to a new facility
+            self.patient.facility = self.referred_to or self.facility
+            self.patient.save()
+
         super(PatientConsultation, self).save(*args, **kwargs)
 
     @staticmethod

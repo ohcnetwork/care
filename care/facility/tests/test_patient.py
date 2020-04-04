@@ -61,8 +61,8 @@ class TestPatient:
             "district_object": None,
             "state": None,
             "state_object": None,
-            "facility": None,
-            "facility_object": None,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
             "address": patient.address,
             "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
             "countries_travelled": patient.countries_travelled,
@@ -183,8 +183,8 @@ class TestPatient:
         patient.save()
         response = client.get(f"/api/v1/patient/")
         assert response.status_code == 200
-        response_payload = {**self._response(patient), "disease_status": 1}
-        for key in ["facility_object", "last_consultation", "medical_history", "tele_consultation_history"]:
+        response_payload = {**self._response(patient), "disease_status": "SUSPECTED"}
+        for key in ["last_consultation", "medical_history", "tele_consultation_history"]:
             response_payload.pop(key)
         assert response.json() == {
             "count": 1,

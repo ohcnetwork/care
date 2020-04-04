@@ -25,12 +25,8 @@ class TestPatientStatsHistory(TestBase):
             "num_patient_referred": 4,
         }
 
-    def get_base_url(self, entry_id=None) -> str:
-        facility_id = self.facility.id
-        url = f"/api/v1/facility/{facility_id}/patient_stats"
-        if entry_id:
-            url = f"{url}/{entry_id}"
-        return url
+    def get_base_url(self) -> str:
+        return f"/api/v1/facility/{self.facility.id}/patient_stats"
 
     def get_list_representation(self, facility_data) -> dict:
 
@@ -51,7 +47,7 @@ class TestPatientStatsHistory(TestBase):
         return {
             "id": mock_equal,
             "facility": facility.id,
-            "entry_date": datetime.datetime.today().strftime("%Y-%m-%d"),
+            "entry_date": mock_equal,
             "created_date": mock_equal,
             "modified_date": mock_equal,
             **stats_data,
@@ -97,13 +93,10 @@ class TestPatientStatsHistory(TestBase):
         """Test patient history list is displayed with the correct data"""
         stats_data = self.stats_data
         facility = self.facility
-        facility_data = self.facility_data
+        facility_data = self.facility_data.copy()
 
-        location = facility_data.pop("location", None)
         facility_data["district"] = self.district
-        facility_2 = Facility.objects.create(
-            **{**facility_data, "location": Point(location["latitude"], location["longitude"]),}
-        )
+        facility_2 = self.create_facility(district=self.district, name="Facility 2")
 
         FacilityPatientStatsHistory.objects.create(
             facility=facility, entry_date=datetime.date(2020, 4, 1), **stats_data

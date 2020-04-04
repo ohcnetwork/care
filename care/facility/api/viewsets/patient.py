@@ -25,29 +25,35 @@ class PatientFilterSet(filters.FilterSet):
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=request.user.state)
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(district=request.user.district)
-        elif not request.user.is_superuser:
+        else:
             queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
 
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
-        try:
-            show_without_facility = json.loads(request.query_params.get("without_facility"))
-        except (
-            JSONDecodeError,
-            TypeError,
-        ):
-            show_without_facility = False
-
-        queryset = queryset.filter(facility_id__isnull=show_without_facility)
-        return super(PatientDRYFilter, self).filter_list_queryset(request, queryset, view)
+        if request.user.is_superuser is False:
+            try:
+                show_without_facility = json.loads(request.query_params.get("without_facility"))
+            except (
+                JSONDecodeError,
+                TypeError,
+            ):
+                show_without_facility = False
+            queryset = queryset.filter(facility_id__isnull=show_without_facility)
+        return self.filter_queryset(request, queryset, view)
 
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = PatientRegistration.objects.all().select_related("local_body", "district", "state")
+    queryset = PatientRegistration.objects.all().select_related(
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+    )
     serializer_class = PatientDetailSerializer
     filter_backends = (
         PatientDRYFilter,
