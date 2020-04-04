@@ -102,6 +102,7 @@ class PatientRegistration(models.Model):
     )
 
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
+    ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)

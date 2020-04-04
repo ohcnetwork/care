@@ -28,6 +28,7 @@ def patient_data():
         "disease_status": "SUSPECTED",
         "number_of_aged_dependents": 0,
         "number_of_chronic_diseased_dependents": 0,
+        "ongoing_medication":''
     }
 
 
@@ -75,6 +76,7 @@ class TestPatient:
             "disease_status": "SUSPECTED",
             "number_of_aged_dependents": 0,
             "number_of_chronic_diseased_dependents": 0,
+            "ongoing_medication":''
         }
 
     def test_login_required(self, client):
@@ -103,6 +105,7 @@ class TestPatient:
             "facility": mock_equal,
             "facility_object": mock_equal,
             "contact_with_suspected_carrier": False,
+            "ongoing_medication":''
         }
 
         patient = PatientRegistration.objects.get(
@@ -184,7 +187,7 @@ class TestPatient:
         response = client.get(f"/api/v1/patient/")
         assert response.status_code == 200
         response_payload = {**self._response(patient), "disease_status": "SUSPECTED"}
-        for key in ["last_consultation", "medical_history", "tele_consultation_history"]:
+        for key in ["last_consultation", "medical_history", "tele_consultation_history", "ongoing_medication"]:
             response_payload.pop(key)
         assert response.json() == {
             "count": 1,
