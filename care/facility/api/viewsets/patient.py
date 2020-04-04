@@ -14,7 +14,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, DiseaseStatusEnum
 from care.users.models import User
 
 
@@ -51,15 +51,24 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = PatientRegistration.objects.all().select_related(
-        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
-    )
     serializer_class = PatientDetailSerializer
     filter_backends = (
         PatientDRYFilter,
         filters.DjangoFilterBackend,
     )
     filterset_class = PatientFilterSet
+
+    def get_queryset(self):
+        filter_query = self.request.GET.get('disease_status', None)
+        if (filter_query):
+            return PatientRegistration.objects.filter(disease_status=DiseaseStatusEnum[filter_query].value
+                                                      ).select_related(
+                "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+            )
+        else:
+            return PatientRegistration.objects.all().select_related(
+                "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+            )
 
     def get_serializer_class(self):
         if self.action == "list":
