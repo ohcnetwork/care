@@ -81,6 +81,12 @@ class CustomUserManager(UserManager):
         qs = super().get_queryset()
         return qs.filter(deleted=False)
 
+    def create_superuser(self, username: str, email: str, password: str, **extra_fields: []):
+        district_id = extra_fields['district']
+        district = District.objects.get(id=district_id)
+        extra_fields['district'] = district
+        return super().create_superuser(username, email, password, extra_fields)
+
 
 class Skill(models.Model):
     name = models.CharField(max_length=255)
