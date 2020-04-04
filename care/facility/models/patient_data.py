@@ -52,6 +52,7 @@ SYMPTOM_CHOICES = [
     (7, "ABDOMINAL DISCOMFORT"),
     (8, "VOMITING/DIARRHOEA"),
     (9, "OTHERS"),
+    (10, "SARI"),
 ]
 
 
