@@ -61,14 +61,14 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         filter_query = self.request.GET.get('disease_status', None)
         if (filter_query):
-            return PatientRegistration.objects.filter(disease_status=DiseaseStatusEnum[filter_query].value
-                                                      ).select_related(
-                "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
-            )
-        else:
-            return PatientRegistration.objects.all().select_related(
-                "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
-            )
+            return PatientRegistration.objects.filter(
+                disease_status=DiseaseStatusEnum[filter_query].value).select_related(
+                "local_body", "district", "state", "facility",
+                "facility__local_body", "facility__district", "facility__state")
+
+        return PatientRegistration.objects.all().select_related(
+            "local_body", "district", "state", "facility",
+            "facility__local_body", "facility__district", "facility__state")
 
     def get_serializer_class(self):
         if self.action == "list":
