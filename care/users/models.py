@@ -141,15 +141,9 @@ class User(AbstractUser):
 
     @staticmethod
     def has_write_permission(request):
-        user_type = int(request.data["user_type"])
         try:
+            user_type = int(request.data["user_type"])
             return user_type <= User.TYPE_VALUE_MAP["Volunteer"]
-        # except TypeError:
-        #     breakpoint()
-        #     return (
-        #         User.TYPE_VALUE_MAP[request.data["user_type"]]
-        #         <= User.TYPE_VALUE_MAP["Volunteer"]
-        # )
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
