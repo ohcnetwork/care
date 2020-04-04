@@ -1,6 +1,9 @@
-from django.db.models import Q
+import json
+from json import JSONDecodeError
+
+from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
-from dry_rest_permissions.generics import DRYPermissions
+from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -20,11 +23,42 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
+class PatientDRYFilter(DRYPermissionFiltersBase):
+    def filter_queryset(self, request, queryset, view):
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=request.user.state)
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=request.user.district)
+        else:
+            queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
+
+        return queryset
+
+    def filter_list_queryset(self, request, queryset, view):
+        if request.user.is_superuser is False:
+            try:
+                show_without_facility = json.loads(request.query_params.get("without_facility"))
+            except (
+                JSONDecodeError,
+                TypeError,
+            ):
+                show_without_facility = False
+            queryset = queryset.filter(facility_id__isnull=show_without_facility)
+        return self.filter_queryset(request, queryset, view)
+
+
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = PatientRegistration.objects.filter(deleted=False).select_related("local_body", "district", "state")
+    queryset = PatientRegistration.objects.all().select_related(
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+    )
     serializer_class = PatientDetailSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (
+        PatientDRYFilter,
+        filters.DjangoFilterBackend,
+    )
     filterset_class = PatientFilterSet
 
     def get_serializer_class(self):
@@ -33,12 +67,16 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         else:
             return self.serializer_class
 
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return self.queryset.filter(district=self.request.user.district)
-        return self.queryset.filter(Q(created_by=self.request.user) | Q(facility__created_by=self.request.user))
+    def list(self, request, *args, **kwargs):
+        """
+        Patient List
+
+        `without_facility` accepts boolean - default is false -
+            if true: shows only patients without a facility mapped
+            if false (default behaviour): shows only patients with a facility mapped
+
+        """
+        return super(PatientViewSet, self).list(request, *args, **kwargs)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

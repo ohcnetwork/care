@@ -5,6 +5,7 @@ Base settings to build other settings files upon.
 from datetime import timedelta
 
 import environ
+import json
 
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
@@ -24,7 +25,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Kolkata"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -86,6 +87,7 @@ THIRD_PARTY_APPS = [
     "ratelimit",
     "dry_rest_permissions",
     "corsheaders",
+    "watchman",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -226,6 +228,8 @@ CSRF_COOKIE_HTTPONLY = True
 SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
+
+CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
 
 # EMAIL
 # ------------------------------------------------------------------------------

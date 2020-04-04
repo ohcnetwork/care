@@ -123,6 +123,10 @@ class AmbulanceDriverAdmin(admin.ModelAdmin):
     autocomplete_fields = ["ambulance"]
 
 
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "age", "gender")
+
+
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
@@ -135,6 +139,6 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
-admin.site.register(PatientRegistration)
+admin.site.register(PatientRegistration, PatientAdmin)
 admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample)

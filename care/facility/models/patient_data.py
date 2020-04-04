@@ -1,3 +1,4 @@
+import enum
 from types import SimpleNamespace
 
 from django.db import models
@@ -19,22 +20,43 @@ DISEASE_CHOICES = [
     (7, "Cancer"),
 ]
 
+CATEGORY_CHOICES = [
+    ("Mild", "Category-A"),
+    ("Moderate", "Category-B"),
+    ("Severe", "Category-C"),
+    (None, "UNCLASSIFIED"),
+]
+
+ADMIT_CHOICES = [
+    (None, "Not admitted"),
+    (1, "Isolation Room"),
+    (2, "ICU"),
+    (3, "ICU with Ventilator"),
+]
+
 SYMPTOM_CHOICES = [
-    (1, "NO"),
+    (1, "ASYMPTOMATIC"),
     (2, "FEVER"),
     (3, "SORE THROAT"),
     (4, "COUGH"),
     (5, "BREATHLESSNESS"),
+    (6, "MYALGIA"),
+    (7, "ABDOMINAL DISCOMFORT"),
+    (8, "VOMITING/DIARRHOEA"),
+    (9, "OTHERS"),
 ]
 
-DISEASE_STATUS_CHOICES = [
-    (1, "SUSPECTED"),
-    (2, "POSITIVE"),
-    (3, "NEGATIVE"),
-    (4, "RECOVERY"),
-    (5, "RECOVERED"),
-    (5, "EXPIRED"),
-]
+
+class DiseaseStatusEnum(enum.IntEnum):
+    SUSPECTED = 1
+    POSITIVE = 2
+    NEGATIVE = 3
+    RECOVERY = 4
+    RECOVERED = 5
+    EXPIRED = 6
+
+
+DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
 
 BLOOD_GROUP_CHOICES = [
     ("A+", "A+"),
@@ -72,7 +94,7 @@ class PatientRegistration(models.Model):
     estimated_contact_date = models.DateTimeField(null=True, blank=True)
 
     past_travel = models.BooleanField(
-        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days"
+        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
     countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
@@ -130,7 +152,8 @@ class PatientRegistration(models.Model):
             )
         )
 
-    def has_object_write_permission(self, request):
+    def has_object_destroy_permission(self, request):
+        """Currently refers only to delete action"""
         return request.user.is_superuser
 
     def has_object_update_permission(self, request):
@@ -210,6 +233,10 @@ class PatientConsultation(models.Model):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    other_symptoms = models.TextField(default="", blank=True)
+    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -218,6 +245,7 @@ class PatientConsultation(models.Model):
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
+    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
 
@@ -225,8 +253,12 @@ class PatientConsultation(models.Model):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # will be true when the consultation is created
-            self.patient.facility = self.facility
+        if not self.pk or self.referred_to is not None:
+            # pk is None when the consultation is created
+            # referred to is not null when the person is being referred to a new facility
+            self.patient.facility = self.referred_to or self.facility
+            self.patient.save()
+
         super(PatientConsultation, self).save(*args, **kwargs)
 
     @staticmethod

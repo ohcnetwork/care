@@ -73,13 +73,19 @@ class LocalBody(models.Model):
         )
 
     def __str__(self):
-        return f"{self.name} ({self.body_type}) "
+        return f"{self.name} ({self.body_type})"
 
 
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(deleted=False)
+
+    def create_superuser(self, username, email, password, **extra_fields):
+        district_id = extra_fields["district"]
+        district = District.objects.get(id=district_id)
+        extra_fields["district"] = district
+        return super().create_superuser(username, email, password, **extra_fields)
 
 
 class Skill(models.Model):
@@ -115,6 +121,7 @@ class User(AbstractUser):
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
     REQUIRED_FIELDS = [
         "user_type",
         "email",
@@ -147,7 +154,17 @@ class User(AbstractUser):
         return request.user.is_superuser
 
     def has_object_update_permission(self, request):
-        return request.user.is_superuser or self == request.user
+        if request.user.is_superuser:
+            return True
+        if not self == request.user:
+            return False
+        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
+            "DistrictLabAdmin"
+        ]:
+            # District/state admins shouldn't be able to edit their district/state, that'll practically give them
+            # access to everything
+            return False
+        return True
 
     def delete(self, *args, **kwargs):
         self.deleted = True

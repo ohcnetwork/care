@@ -19,7 +19,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 FERNET_KEYS = env.list("FERNET_SECRET_KEY", default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"])
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))
 
 # DATABASES
 # ------------------------------------------------------------------------------

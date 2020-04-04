@@ -23,11 +23,11 @@ def patient_data():
         "present_health": "Good",
         "past_travel": False,
         "address": "Elsewhere street, Elsewhere county, Elsewhere",
+        "blood_group": None,
         "date_of_return": None,
-        "blood_group": "A+",
         "disease_status": "SUSPECTED",
         "number_of_aged_dependents": 0,
-        "number_of_chronic_diseased_dependents": 1,
+        "number_of_chronic_diseased_dependents": 0,
         "ongoing_medication":''
     }
 
@@ -44,6 +44,41 @@ def patient():
 @pytest.mark.usefixtures("district_data")
 @pytest.mark.django_db(transaction=True)
 class TestPatient:
+    def _response(self, patient):
+        return {
+            "id": patient.id,
+            "name": patient.name,
+            "phone_number": patient.phone_number,
+            "age": patient.age,
+            "gender": patient.gender,
+            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
+            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
+            "tele_consultation_history": [],
+            "is_active": True,
+            "last_consultation": None,
+            "local_body": None,
+            "local_body_object": None,
+            "district": None,
+            "district_object": None,
+            "state": None,
+            "state_object": None,
+            "facility": mock_equal,
+            "facility_object": mock_equal,
+            "address": patient.address,
+            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
+            "countries_travelled": patient.countries_travelled,
+            "estimated_contact_date": patient.estimated_contact_date,
+            "has_SARI": patient.has_SARI,
+            "past_travel": patient.past_travel,
+            "present_health": patient.present_health,
+            "blood_group": None,
+            "date_of_return": None,
+            "disease_status": "SUSPECTED",
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
+            "ongoing_medication":''
+        }
+
     def test_login_required(self, client):
         response = client.post("/api/v1/patient/", {},)
         assert response.status_code == 403
@@ -90,40 +125,7 @@ class TestPatient:
         patient.save()
         response = client.get(f"/api/v1/patient/{patient.id}/")
         assert response.status_code == 200
-        response = response.json()
-        assert response == {
-            "id": patient.id,
-            "name": patient.name,
-            "phone_number": patient.phone_number,
-            "age": patient.age,
-            "gender": patient.gender,
-            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
-            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
-            "tele_consultation_history": [],
-            "is_active": True,
-            "last_consultation": None,
-            "local_body": None,
-            "local_body_object": None,
-            "district": None,
-            "district_object": None,
-            "state": None,
-            "state_object": None,
-            "facility": None,
-            "facility_object": None,
-            "address": patient.address,
-            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
-            "countries_travelled": patient.countries_travelled,
-            "estimated_contact_date": patient.estimated_contact_date,
-            "has_SARI": patient.has_SARI,
-            "past_travel": patient.past_travel,
-            "present_health": patient.present_health,
-            "blood_group": None,
-            "date_of_return": None,
-            "disease_status": "SUSPECTED",
-            'number_of_aged_dependents': 0,
-            'number_of_chronic_diseased_dependents': 0,
-            "ongoing_medication":'',
-        }
+        assert response.json() == self._response(patient)
 
     def test_super_user_access(self, client, user, patient):
         client.force_authenticate(user=user)
@@ -135,39 +137,7 @@ class TestPatient:
         response = client.get(f"/api/v1/patient/{patient.id}/")
 
         assert response.status_code == 200
-        assert response.data == {
-            "id": patient.id,
-            "name": patient.name,
-            "age": patient.age,
-            "gender": patient.gender,
-            "phone_number": patient.phone_number,
-            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
-            "medical_history": [{"disease": "NO", "details": "Quite bad"}],
-            "tele_consultation_history": [],
-            "is_active": True,
-            "last_consultation": None,
-            "local_body": None,
-            "local_body_object": None,
-            "district": None,
-            "district_object": None,
-            "state": None,
-            "state_object": None,
-            "facility": mock_equal,
-            "facility_object": mock_equal,
-            "address": patient.address,
-            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
-            "countries_travelled": patient.countries_travelled,
-            "estimated_contact_date": patient.estimated_contact_date,
-            "has_SARI": patient.has_SARI,
-            "past_travel": patient.past_travel,
-            "present_health": patient.present_health,
-            "blood_group": None,
-            "date_of_return": None,
-            "disease_status": "SUSPECTED",
-            "number_of_aged_dependents": 0,
-            "number_of_chronic_diseased_dependents": 0,
-            "ongoing_medication":'',
-        }
+        assert response.json() == self._response(patient)
 
     def test_update(self, client, user, patient):
         client.force_authenticate(user=user)
@@ -188,37 +158,9 @@ class TestPatient:
         )
         assert response.status_code == 200
         assert response.json() == {
-            "id": patient.id,
-            "name": patient.name,
+            **self._response(patient),
             "phone_number": new_phone_number,
-            "age": patient.age,
-            "gender": patient.gender,
-            "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
-            "medical_history": [{"disease": "HyperTension", "details": "Mild"}, ],
-            "tele_consultation_history": [],
-            "is_active": True,
-            "last_consultation": None,
-            "local_body": None,
-            "local_body_object": None,
-            "district": None,
-            "district_object": None,
-            "state": None,
-            "state_object": None,
-            "facility": mock_equal,
-            "facility_object": mock_equal,
-            "address": patient.address,
-            "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
-            "countries_travelled": patient.countries_travelled,
-            "estimated_contact_date": patient.estimated_contact_date,
-            "has_SARI": patient.has_SARI,
-            "past_travel": patient.past_travel,
-            "present_health": patient.present_health,
-            "blood_group": None,
-            "date_of_return": None,
-            "disease_status": "SUSPECTED",
-            "number_of_aged_dependents": 0,
-            "number_of_chronic_diseased_dependents": 0,
-            "ongoing_medication":'',
+            "medical_history": [{"details": "Mild", "disease": "HyperTension"}],
         }
         patient.refresh_from_db()
         assert patient.phone_number == new_phone_number
@@ -244,38 +186,12 @@ class TestPatient:
         patient.save()
         response = client.get(f"/api/v1/patient/")
         assert response.status_code == 200
+        response_payload = {**self._response(patient), "disease_status": "SUSPECTED"}
+        for key in ["last_consultation", "medical_history", "tele_consultation_history", "ongoing_medication"]:
+            response_payload.pop(key)
         assert response.json() == {
             "count": 1,
             "next": None,
             "previous": None,
-            "results": [
-                {
-                    "id": patient.id,
-                    "name": patient.name,
-                    "phone_number": patient.phone_number,
-                    "age": patient.age,
-                    "gender": patient.gender,
-                    "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
-                    "is_active": True,
-                    "local_body": None,
-                    "local_body_object": None,
-                    "district": None,
-                    "district_object": None,
-                    "state": None,
-                    "state_object": None,
-                    "facility": None,
-                    "address": patient.address,
-                    "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
-                    "countries_travelled": patient.countries_travelled,
-                    "estimated_contact_date": patient.estimated_contact_date,
-                    "has_SARI": patient.has_SARI,
-                    "past_travel": patient.past_travel,
-                    "present_health": patient.present_health,
-                    "blood_group": None,
-                    "date_of_return": None,
-                    "disease_status": 1,
-                    "number_of_aged_dependents": 0,
-                    "number_of_chronic_diseased_dependents": 0,
-                },
-            ],
+            "results": [response_payload,],
         }

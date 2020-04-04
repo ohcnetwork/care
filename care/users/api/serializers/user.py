@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from care.users.models import GENDER_CHOICES
+from care.users.models import GENDER_CHOICES, State
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -12,6 +12,8 @@ class SignUpSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES)
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
+    # until we start supporting other states
+    state = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = User
@@ -33,6 +35,8 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data.get("password"))
+        # until we start supporting other states
+        validated_data["state"] = State.objects.get(name="Kerala")
         return super().create(validated_data)
 
 
