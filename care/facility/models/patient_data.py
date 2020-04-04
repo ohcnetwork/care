@@ -81,6 +81,8 @@ class PatientRegistration(models.Model):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
+    is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
+
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
     )
