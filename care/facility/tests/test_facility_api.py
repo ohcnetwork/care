@@ -91,7 +91,13 @@ class TestFacility(TestBase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # test response data
         self.assertDictEqual(
-            response.json(), {**self.get_detail_representation(facility_data), "id": mock_equal},
+            response.json(),
+            {
+                **self.get_detail_representation(facility_data),
+                "id": mock_equal,
+                "modified_date": mock_equal,
+                "created_date": mock_equal,
+            },
         )
 
         # Facility exists
@@ -108,33 +114,16 @@ class TestFacility(TestBase):
         response = self.client.get(self.get_url(facility.id))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_active_facility_retrival(self):
+    def test_active_facility_retrieval(self):
         """Test facility attributes can be retrieved"""
         facility = self.facility
         facility.created_by = self.user
         facility.save()
         response = self.client.get(self.get_url(facility.id), format="json", redirect="follow")
+
         self.assertDictEqual(
             response.data,
-            {
-                "id": facility.id,
-                "name": facility.name,
-                "facility_type": "Educational Inst",
-                "address": facility.address,
-                "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
-                "local_body": None,
-                "local_body_object": None,
-                "district": facility.district.id,
-                "district_object": {
-                    "id": facility.district.id,
-                    "name": facility.district.name,
-                    "state": facility.district.state.id,
-                },
-                "state": facility.district.state.id,
-                "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
-                "oxygen_capacity": facility.oxygen_capacity,
-                "phone_number": facility.phone_number,
-            },
+            {**self.get_list_representation(facility), "modified_date": mock_equal, "created_date": mock_equal,},
         )
 
     def test_facility_update(self):
@@ -161,7 +150,9 @@ class TestFacility(TestBase):
         expected_response["name"] = "Another name"
         expected_response.update(self.get_district_representation(new_district))
         expected_response.update(self.get_state_representation(new_district.state))
-        self.assertDictEqual(response.json(), expected_response)
+        self.assertDictEqual(
+            response.json(), {**expected_response, "modified_date": mock_equal, "created_date": mock_equal,},
+        )
 
         facility.refresh_from_db()
         self.assertEqual(facility.name, "Another name")
@@ -225,7 +216,14 @@ class TestFacility(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(
             response.json(),
-            {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(facility)],},
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {**self.get_list_representation(facility), "modified_date": mock_equal, "created_date": mock_equal,}
+                ],
+            },
         )
 
     def test_superuser_can_update_ones_facility(self):
@@ -431,7 +429,7 @@ class TestFacilityBulkUpdate(TestBase):
 
         test_facility = TestFacility()
         response = self.client.get(test_facility.get_url(facility.id), format="json")
-        self.assertDictEqual(response.data, self.get_detail_representation(facility))
+        self.assertDictEqual(response.data, test_facility.get_detail_representation(facility))
 
     def test_others_cant_update_ones_facility(self):
         """Test facility can't be updated by non-creators"""
