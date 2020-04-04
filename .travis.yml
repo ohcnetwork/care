@@ -8,4 +8,4 @@ addons:
       - libsqlite3-mod-spatialite
 install:
   - pip install -q -r requirements.txt
-script: pytest
+script: python manage.py test
