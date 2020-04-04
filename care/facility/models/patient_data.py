@@ -27,6 +27,14 @@ CATEGORY_CHOICES = [
     (None, "UNCLASSIFIED"),
 ]
 
+CURRENT_HEALTH_CHOICES = [
+    (0, "NO DATA"),
+    (1, "REQUIRES VENTILATOR"),
+    (2, "WORSE"),
+    (3, "STATUS QUO"),
+    (4, "BETTER"),
+]
+
 ADMIT_CHOICES = [
     (None, "Not admitted"),
     (1, "Isolation Room"),
@@ -303,6 +311,11 @@ class DailyRound(models.Model):
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
+    additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    other_symptoms = models.TextField(default="", blank=True)
+    patient_category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
+    recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
 
     @staticmethod
