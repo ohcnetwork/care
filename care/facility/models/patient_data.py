@@ -247,8 +247,12 @@ class PatientConsultation(models.Model):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # will be true when the consultation is created
-            self.patient.facility = self.facility
+        if not self.pk or self.referred_to is not None:
+            # pk is None when the consultation is created
+            # referred to is not null when the person is being referred to a new facility
+            self.patient.facility = self.referred_to or self.facility
+            self.patient.save()
+
         super(PatientConsultation, self).save(*args, **kwargs)
 
     @staticmethod
