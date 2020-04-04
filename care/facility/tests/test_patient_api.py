@@ -4,6 +4,7 @@ from rest_framework import status
 
 from care.facility.models import Disease, PatientRegistration
 from care.utils.tests.test_base import TestBase
+from config.tests.helper import mock_equal
 
 
 class TestPatient(TestBase):
@@ -105,6 +106,12 @@ class TestPatient(TestBase):
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
             "facility_object": None,
+            "state_object": None,
+            "district_object": None,
+            "local_body_object": None,
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
+            "disease_status": "SUSPECTED",
         }
 
     def test_login_required(self):
@@ -127,8 +134,7 @@ class TestPatient(TestBase):
 
         # breakpoint()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response.data.pop("id")
-        self.assertDictEqual(response.data, self.get_detail_representation(patient_data))
+        self.assertDictEqual(response.data, {**self.get_detail_representation(patient_data), "id": mock_equal})
 
         patient = PatientRegistration.objects.get(
             name=patient_data["name"],
