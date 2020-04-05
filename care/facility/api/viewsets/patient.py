@@ -34,10 +34,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
         else:
             queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
 
-        return queryset
-
-    def filter_list_queryset(self, request, queryset, view):
-        if request.user.is_superuser is False:
+        if view.action == "list":
             try:
                 show_without_facility = json.loads(request.query_params.get("without_facility"))
             except (
@@ -46,7 +43,8 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             ):
                 show_without_facility = False
             queryset = queryset.filter(facility_id__isnull=show_without_facility)
-        return self.filter_queryset(request, queryset, view)
+
+        return queryset
 
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
