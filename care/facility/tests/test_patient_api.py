@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import Disease, PatientRegistration
+from care.facility.models import PatientRegistration
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -132,21 +132,13 @@ class TestPatient(TestBase):
         user = self.user
         response = self.client.post(self.get_url(), patient_data, format="json")
 
-        # breakpoint()
+        patient_data = self.get_detail_representation(patient_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertDictEqual(response.data, {**self.get_detail_representation(patient_data), "id": mock_equal})
+        self.assertDictEqual(response.data, {**patient_data, "id": mock_equal})
 
-        patient = PatientRegistration.objects.get(
-            name=patient_data["name"],
-            age=patient_data["age"],
-            gender=patient_data["gender"],
-            phone_number=patient_data["phone_number"],
-            contact_with_suspected_carrier=patient_data["contact_with_suspected_carrier"],
-            contact_with_confirmed_carrier=patient_data["contact_with_confirmed_carrier"],
-            created_by=user,
-            is_active=True,
-        )
-        self.assertIsNotNone(Disease.objects.get(patient=patient, **patient_data["medical_history"][0]))
+        patient = PatientRegistration.objects.get(created_by=user,)
+        self.assertIsNotNone(patient)
+        self.assertEqual(patient.id, response.data["id"])
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""
