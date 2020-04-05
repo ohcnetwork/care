@@ -15,7 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().select_related("local_body", "district", "state")
     lookup_field = "username"
 
     def get_permissions(self):

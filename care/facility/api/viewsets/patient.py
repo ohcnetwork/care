@@ -25,26 +25,27 @@ class PatientFilterSet(filters.FilterSet):
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser:
-            pass
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(state=request.user.state)
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(district=request.user.district)
-        else:
-            queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
-
         if view.action == "list":
-            try:
-                show_without_facility = json.loads(request.query_params.get("without_facility"))
-            except (
-                JSONDecodeError,
-                TypeError,
-            ):
-                show_without_facility = False
-            queryset = queryset.filter(facility_id__isnull=show_without_facility)
+            queryset = self.filter_list_queryset(request, queryset, view)
 
+        if not request.user.is_superuser:
+            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+                queryset = queryset.filter(state=request.user.state)
+            elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+                queryset = queryset.filter(district=request.user.district)
+            else:
+                queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
         return queryset
+
+    def filter_list_queryset(self, request, queryset, view):
+        try:
+            show_without_facility = json.loads(request.query_params.get("without_facility"))
+        except (
+            JSONDecodeError,
+            TypeError,
+        ):
+            show_without_facility = False
+        return queryset.filter(facility_id__isnull=show_without_facility)
 
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
