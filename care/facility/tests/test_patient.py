@@ -186,7 +186,7 @@ class TestPatient:
         client.force_authenticate(user=user)
         patient.created_by = user
         patient.save()
-        response = client.get(f"/api/v1/patient/")
+        response = client.get(f"/api/v1/patient/?without_facility=true")
         assert response.status_code == 200
         response_payload = {**self._response(patient), "disease_status": "SUSPECTED"}
         for key in ["last_consultation", "medical_history", "tele_consultation_history", "ongoing_medication"]:
@@ -196,4 +196,13 @@ class TestPatient:
             "next": None,
             "previous": None,
             "results": [response_payload,],
+        }
+
+        response = client.get(f"/api/v1/patient/")
+        assert response.status_code == 200
+        assert response.json() == {
+            "count": 0,
+            "next": None,
+            "previous": None,
+            "results": [],
         }
