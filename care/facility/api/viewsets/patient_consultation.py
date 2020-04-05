@@ -48,7 +48,7 @@ class DailyRoundsViewSet(ModelViewSet):
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = DailyRound.objects.all()
+    queryset = DailyRound.objects.all().order_by("-id")
 
     def get_queryset(self):
         queryset = self.queryset.filter(consultation_id=self.kwargs.get("consultation_pk"))
