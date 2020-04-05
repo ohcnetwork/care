@@ -30,6 +30,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     patient_travel_history = serializers.CharField(read_only=True, source="patient.countries_travelled")
 
     facility = serializers.IntegerField(read_only=True, source="consultation.facility_id")
+    facility_object = FacilityBasicInfoSerializer(source="consultation.facility", read_only=True)
 
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)

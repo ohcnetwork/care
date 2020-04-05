@@ -121,6 +121,7 @@ class User(AbstractUser):
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
     REQUIRED_FIELDS = [
         "user_type",
         "email",
@@ -143,10 +144,15 @@ class User(AbstractUser):
     def has_write_permission(request):
         try:
             user_type = int(request.data["user_type"])
-            return user_type <= User.TYPE_VALUE_MAP["Volunteer"]
+
+        except TypeError:
+            user_type = request.data["user_type"]
+
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
+        finally:
+            return user_type <= User.TYPE_VALUE_MAP["Volunteer"]
 
     def has_object_write_permission(self, request):
         return request.user.is_superuser

@@ -7,5 +7,5 @@ addons:
       - libgdal-dev
       - libsqlite3-mod-spatialite
 install:
-  - pip install -q -r requirements.txt
-script: pytest
+  - pip install -q -r requirements/local.txt
+script: python manage.py test --settings=config.settings.test -n
