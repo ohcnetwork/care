@@ -188,9 +188,9 @@ Running type checks with mypy:
 
 Run Tests
 ^^^^^^^^^^^^^
-```python
-python manage.py test
-```
+::
+
+   $ python manage.py test --settings=config.settings.test -n
 
 If you get an :code:`ImproperlyConfigured` error regarding the Spatialite library extension, install it with the command:
 

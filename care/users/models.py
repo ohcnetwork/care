@@ -143,7 +143,7 @@ class User(AbstractUser):
     @staticmethod
     def has_write_permission(request):
         try:
-            return request.data["user_type"] <= User.TYPE_VALUE_MAP["Volunteer"]
+            return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
         except TypeError:
             return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
         except KeyError:

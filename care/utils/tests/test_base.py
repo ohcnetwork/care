@@ -65,7 +65,7 @@ class TestBase(APITestCase):
         return Facility.objects.create(**data)
 
     @classmethod
-    def get_user_data(cls, district: District, user_type: str):
+    def get_user_data(cls, district: District = None, user_type: str = None):
         """
         Returns the data to be used for API testing
 
@@ -76,9 +76,13 @@ class TestBase(APITestCase):
                 district: District
                 user_type: str(A valid mapping for the integer types mentioned inside the models)
         """
+        district = district or cls.district
+        user_type = user_type or User.TYPE_VALUE_MAP["Staff"]
+
         return {
             "user_type": user_type,
-            "district": cls.district,
+            "district": district,
+            "state": district.state,
             "phone_number": "8887776665",
             "gender": 2,
             "age": 30,

@@ -43,5 +43,9 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+INSTALLED_APPS += [  # noqa F405
+    "test_without_migrations",
+]
+
 DATABASES = {}
 DATABASES["default"] = {"ENGINE": "django.contrib.gis.db.backends.spatialite"}
