@@ -39,7 +39,7 @@ class TestPatient(TestBase):
             "date_of_return": None,
         }
 
-        cls.patient = PatientRegistration.objects.create(name="Bar", age=31, gender=2, phone_number="7776665554",)
+        cls.patient = PatientRegistration.objects.create(**cls.patient_data)
         cls.patient_data["id"] = cls.patient.id
 
     def get_base_url(self):
@@ -177,12 +177,14 @@ class TestPatient(TestBase):
         patient.save()
 
         new_phone_number = "9999997775"
-        response = self.client.put(self.get_url(patient.id), self.get_detail_representation(patient), format="json",)
-        # breakpoint()
+
+        patient = self.get_detail_representation(patient)
+        patient["phone_number"] = new_phone_number
+
+        response = self.client.put(self.get_url(patient["id"]), patient, format="json",)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictEqual(response.data, self.get_detail_representation(self.patient_data))
-        patient.refresh_from_db()
-        self.assertEqual(patient.phone_number, new_phone_number)
+        self.assertDictEqual(response.data, patient)
 
     def test_user_can_delete_patient(self):
         """
