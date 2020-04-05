@@ -145,7 +145,7 @@ class User(AbstractUser):
         try:
             user_type = int(request.data["user_type"])
 
-        except TypeError:
+        except ValueError:
             user_type = request.data["user_type"]
 
         except KeyError:
