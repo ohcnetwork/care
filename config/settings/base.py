@@ -88,6 +88,7 @@ THIRD_PARTY_APPS = [
     "dry_rest_permissions",
     "corsheaders",
     "watchman",
+    "djangoql",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]

@@ -3,6 +3,8 @@ from django.contrib.admin import SimpleListFilter
 
 from care.facility.models.patient_sample import PatientSample
 
+from djangoql.admin import DjangoQLSearchMixin
+
 from .models import (
     Ambulance,
     AmbulanceDriver,
@@ -18,6 +20,7 @@ from .models import (
     PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
+    Disease,
 )
 
 
@@ -74,9 +77,10 @@ class StateFilter(SimpleListFilter):
         return queryset.filter(state__name=self.value())
 
 
-class FacilityAdmin(admin.ModelAdmin):
+class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name"]
     list_filter = [StateFilter, DistrictFilter]
+    djangoql_completion_enabled_by_default = True
 
 
 class FacilityStaffAdmin(admin.ModelAdmin):
@@ -142,3 +146,4 @@ admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration, PatientAdmin)
 admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample)
+admin.site.register(Disease)
