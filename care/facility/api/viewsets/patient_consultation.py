@@ -50,6 +50,10 @@ class DailyRoundsViewSet(ModelViewSet):
     )
     queryset = DailyRound.objects.all()
 
+    def get_queryset(self):
+        queryset = self.queryset.filter(consultation_id=self.kwargs.get("consultation_pk"))
+        return queryset
+
     def get_serializer(self, *args, **kwargs):
         try:
             kwargs["data"]["consultation"] = self.kwargs.get("consultation_pk")
