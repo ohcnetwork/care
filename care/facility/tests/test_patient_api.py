@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import PatientRegistration
+from care.facility.models import DISEASE_STATUS_CHOICES, PatientRegistration
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -73,6 +73,12 @@ class TestPatient(TestBase):
             "facility": patient.facility,
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
+            "state_object": None,
+            "district_object": None,
+            "local_body_object": None,
+            "number_of_aged_dependents": 0,
+            "number_of_chronic_diseased_dependents": 0,
+            "disease_status": DISEASE_STATUS_CHOICES[0][0],
         }
 
     def get_detail_representation(self, patient: Any):
@@ -111,7 +117,7 @@ class TestPatient(TestBase):
             "local_body_object": None,
             "number_of_aged_dependents": 0,
             "number_of_chronic_diseased_dependents": 0,
-            "disease_status": "SUSPECTED",
+            "disease_status": DISEASE_STATUS_CHOICES[0][1],
         }
 
     def test_login_required(self):
@@ -134,6 +140,7 @@ class TestPatient(TestBase):
 
         patient_data = self.get_detail_representation(patient_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         self.assertDictEqual(response.data, {**patient_data, "id": mock_equal})
 
         patient = PatientRegistration.objects.get(created_by=user,)
@@ -221,9 +228,9 @@ class TestPatient(TestBase):
 
         patient.created_by = self.user
         patient.save()
-        response = self.client.get(self.get_url())
+        response = self.client.get(self.get_url(), format="json")
         self.assertDictEqual(
-            response.data,
+            response.json(),
             {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(patient)],},
         )
 
