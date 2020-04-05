@@ -28,7 +28,8 @@ def patient_data():
         "disease_status": "SUSPECTED",
         "number_of_aged_dependents": 0,
         "number_of_chronic_diseased_dependents": 0,
-        "ongoing_medication":''
+        "ongoing_medication": "",
+        "is_medical_worker": False,
     }
 
 
@@ -76,7 +77,8 @@ class TestPatient:
             "disease_status": "SUSPECTED",
             "number_of_aged_dependents": 0,
             "number_of_chronic_diseased_dependents": 0,
-            "ongoing_medication":''
+            "ongoing_medication": "",
+            "is_medical_worker": patient.is_medical_worker,
         }
 
     def test_login_required(self, client):
@@ -105,7 +107,7 @@ class TestPatient:
             "facility": mock_equal,
             "facility_object": mock_equal,
             "contact_with_suspected_carrier": False,
-            "ongoing_medication":''
+            "ongoing_medication": "",
         }
 
         patient = PatientRegistration.objects.get(

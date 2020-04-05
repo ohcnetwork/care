@@ -93,11 +93,10 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
             raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
 
         if "consultation" not in validated_data:
-            try:
-                validated_data["consultation"] = PatientConsultation.objects.filter(
-                    patient=validated_data["patient"]
-                ).last()
-            except IndexError:
+            validated_data["consultation"] = PatientConsultation.objects.filter(
+                patient=validated_data["patient"]
+            ).last()
+            if not validated_data["consultation"]:
                 raise ValidationError({"patient": ["Invalid id/ No consultation done"]})
         else:
             try:
