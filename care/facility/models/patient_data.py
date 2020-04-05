@@ -333,7 +333,15 @@ class DailyRound(models.Model):
 
     @staticmethod
     def has_read_permission(request):
-        return True
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and (
+                PatientConsultation.objects.get(
+                    id=request.parser_context["kwargs"]["consultation_pk"]
+                ).facility.created_by
+                == request.user
+            )
+        )
 
     def has_object_read_permission(self, request):
         return request.user.is_superuser or request.user in (

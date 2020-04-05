@@ -84,7 +84,7 @@ class TestPatient(TestBase):
             "present_health": patient.present_health,
             "has_SARI": patient.has_SARI,
             "is_active": patient.is_active,
-            "facility": patient.facility,
+            "facility": getattr(patient.facility, "id", None),
             "facility_object": self._get_facility_representation(patient.facility),
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
@@ -99,8 +99,9 @@ class TestPatient(TestBase):
             return facility
         else:
             return {
+                "id": facility.id,
                 "name": facility.name,
-                "facility_type": facility.facility_type,
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
                 **self.get_local_body_district_state_representation(facility),
             }
 
@@ -263,11 +264,24 @@ class TestPatient(TestBase):
 
     def test_patient_list_retrieval(self):
         """Test user can retreive their patient list"""
-        patient = self.patient
+        patient = self.clone_object(self.patient)
+        patient_2 = self.clone_object(self.patient)
 
         patient.created_by = self.user
         patient.save()
+
+        patient_2.name = "patient 2"
+        patient_2.created_by = self.user
+        patient_2.facility = self.facility
+        patient_2.save()
+
         response = self.client.get(self.get_url())
+        self.assertDictEqual(
+            response.json(),
+            {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(patient_2)],},
+        )
+
+        response = self.client.get(f"{self.get_url()}?without_facility=true")
         self.assertDictEqual(
             response.json(),
             {"count": 1, "next": None, "previous": None, "results": [self.get_list_representation(patient)],},
