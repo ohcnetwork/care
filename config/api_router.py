@@ -24,7 +24,7 @@ router.register("facility", FacilityViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
 
-router.register("patient", PatientViewSet, basename='patient')
+router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
 
 # Local Body / LSG Viewsets

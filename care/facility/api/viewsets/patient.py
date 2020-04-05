@@ -50,6 +50,9 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
+    queryset = PatientRegistration.objects.all().select_related(
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+    )
     serializer_class = PatientDetailSerializer
     filter_backends = (
         PatientDRYFilter,
@@ -58,14 +61,15 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     filterset_class = PatientFilterSet
 
     def get_queryset(self):
-        filter_query = self.request.GET.get('disease_status', None)
-        if (filter_query):
-            return PatientRegistration.objects.filter(
-                disease_status=DiseaseStatusEnum[filter_query].value).select_related(
+        filter_query = self.request.query_params.get('disease_status')
+        queryset = super().get_queryset()
+        if filter_query:
+            diseace_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
+            return queryset.filter(disease_status=diseace_status).select_related(
                 "local_body", "district", "state", "facility",
                 "facility__local_body", "facility__district", "facility__state")
 
-        return PatientRegistration.objects.all().select_related(
+        return queryset.select_related(
             "local_body", "district", "state", "facility",
             "facility__local_body", "facility__district", "facility__state")
 
