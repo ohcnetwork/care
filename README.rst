@@ -91,7 +91,9 @@ You also might have to install PostGIS scripts.
 
     $ sudo apt install postgresql-<version>-postgis-scripts
 
-* Windows users can install PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
+* Windows users can install
+    - PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
+    - OSGeo4W from this site_. 
 
 Then follow the steps listed here_.
 
@@ -122,7 +124,7 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 .. _here: https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
 .. _answer: https://stackoverflow.com/a/12670521/4385622
 .. _pre_commit_site: https://pre-commit.com/
-
+.. _site: https://trac.osgeo.org/osgeo4w/
 
 Settings
 --------

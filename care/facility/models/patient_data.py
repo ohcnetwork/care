@@ -27,6 +27,14 @@ CATEGORY_CHOICES = [
     (None, "UNCLASSIFIED"),
 ]
 
+CURRENT_HEALTH_CHOICES = [
+    (0, "NO DATA"),
+    (1, "REQUIRES VENTILATOR"),
+    (2, "WORSE"),
+    (3, "STATUS QUO"),
+    (4, "BETTER"),
+]
+
 ADMIT_CHOICES = [
     (None, "Not admitted"),
     (1, "Isolation Room"),
@@ -44,6 +52,7 @@ SYMPTOM_CHOICES = [
     (7, "ABDOMINAL DISCOMFORT"),
     (8, "VOMITING/DIARRHOEA"),
     (9, "OTHERS"),
+    (10, "SARI"),
 ]
 
 
@@ -81,6 +90,8 @@ class PatientRegistration(models.Model):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
+    is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
+
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
     )
@@ -102,6 +113,7 @@ class PatientRegistration(models.Model):
     )
 
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
+    ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
@@ -300,6 +312,11 @@ class DailyRound(models.Model):
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
+    additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    other_symptoms = models.TextField(default="", blank=True)
+    patient_category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
+    recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
 
     @staticmethod

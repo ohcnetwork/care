@@ -31,7 +31,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted")
+        exclude = ("created_by", "deleted", "ongoing_medication")
 
 
 class PatientDetailSerializer(PatientListSerializer):
