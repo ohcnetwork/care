@@ -10,15 +10,16 @@ from simple_history.models import HistoricalRecords
 from care.facility.models import District, Facility, FacilityBaseModel, LocalBody, SoftDeleteManager, State
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
-DISEASE_CHOICES = [
-    (1, "NO"),
-    (2, "Diabetes"),
-    (3, "Heart Disease"),
-    (4, "HyperTension"),
-    (5, "Kidney Diseases"),
-    (6, "Lung Diseases/Asthma"),
-    (7, "Cancer"),
-]
+DISEASE_CHOICES_MAP = {
+    "NO": 1,
+    "Diabetes": 2,
+    "Heart Disease": 3,
+    "HyperTension": 4,
+    "Kidney Diseases": 5,
+    "Lung Diseases/Asthma": 6,
+    "Cancer": 7,
+}
+DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
 CATEGORY_CHOICES = [
     ("Mild", "Category-A"),
