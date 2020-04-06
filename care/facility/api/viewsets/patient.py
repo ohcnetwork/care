@@ -14,7 +14,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import DISEASE_CHOICES_VALUES, Facility, FacilityPatientStatsHistory, PatientRegistration
 from care.users.models import User
 
 
@@ -29,9 +29,9 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             queryset = self.filter_list_queryset(request, queryset, view)
 
         if not request.user.is_superuser:
-            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            if request.user.user_type >= User.TYPE_VALUES.choices.StateLabAdmin.value:
                 queryset = queryset.filter(state=request.user.state)
-            elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            elif request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
                 queryset = queryset.filter(district=request.user.district)
             else:
                 queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
@@ -51,7 +51,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = PatientRegistration.objects.all().select_related(
-        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state",
     )
     serializer_class = PatientDetailSerializer
     filter_backends = (
@@ -59,6 +59,17 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         filters.DjangoFilterBackend,
     )
     filterset_class = PatientFilterSet
+
+    def get_queryset(self):
+        filter_query = self.request.query_params.get("disease_status")
+        queryset = super().get_queryset()
+        if filter_query:
+            disease_status = (
+                filter_query if filter_query.isdigit() else DISEASE_CHOICES_VALUES.choices[filter_query].value
+            )
+            return queryset.filter(disease_status=disease_status)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -73,6 +84,14 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         `without_facility` accepts boolean - default is false -
             if true: shows only patients without a facility mapped
             if false (default behaviour): shows only patients with a facility mapped
+
+        `disease_status` accepts - string and int -
+            SUSPECTED = 1
+            POSITIVE = 2
+            NEGATIVE = 3
+            RECOVERY = 4
+            RECOVERED = 5
+            EXPIRED = 6
 
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)

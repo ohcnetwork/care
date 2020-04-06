@@ -88,6 +88,8 @@ THIRD_PARTY_APPS = [
     "dry_rest_permissions",
     "corsheaders",
     "watchman",
+    "djangoql",
+    "maintenance_mode",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -150,6 +152,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "maintenance_mode.middleware.MaintenanceModeMiddleware",
 ]
 
 # STATIC
@@ -317,7 +320,7 @@ def GETKEY(group, request):
     return "ratelimit"
 
 
-DJANGO_RATE_LIMIT = "5/10m"
+DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
 
 GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
 
@@ -326,3 +329,5 @@ GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
 GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
