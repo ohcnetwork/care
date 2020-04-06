@@ -89,6 +89,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "watchman",
     "djangoql",
+    "maintenance_mode",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -151,6 +152,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "maintenance_mode.middleware.MaintenanceModeMiddleware",
 ]
 
 # STATIC
@@ -327,3 +329,5 @@ GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
 GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
