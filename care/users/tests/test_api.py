@@ -68,7 +68,7 @@ class TestSuperUser(TestHelper, APITestCase):
                 **data,
                 "gender": "Female",
                 "is_superuser": True,
-                "user_type": "Staff",
+                "user_type": User.TYPE_VALUE.choices.Staff.name,
                 "first_name": "",
                 "last_name": "",
                 "local_body": None,

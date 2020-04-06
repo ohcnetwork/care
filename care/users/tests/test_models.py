@@ -99,7 +99,12 @@ class UserModelTest(TestCase):
         state = State.objects.create(name="uttar pradesh")
         district = District.objects.create(state=state, name="name")
         cls.user = User.objects.create_user(
-            username="test", user_type=5, district=district, phone_number=8_888_888_888, gender=1, age=21,
+            username="test",
+            user_type=User.TYPE_VALUE.choices.Doctor.value,
+            district=district,
+            phone_number=8_888_888_888,
+            gender=1,
+            age=21,
         )
 
     def test_max_length_phone_number(self):

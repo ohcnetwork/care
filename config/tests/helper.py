@@ -13,7 +13,7 @@ class TestHelper:
         cls.state = State.objects.create(name="KL")
         cls.district = District.objects.create(name="Kannur", state=cls.state)
         cls.user = User.objects.create(
-            user_type=10,
+            user_type=User.TYPE_VALUE.choices.Staff.value,
             district=cls.district,
             phone_number="8887776665",
             gender=2,
@@ -30,7 +30,7 @@ class TestHelper:
         }
 
         cls.user_data = {
-            "user_type": 10,
+            "user_type": User.TYPE_VALUE.choices.Staff.value,
             "phone_number": "8887776665",
             "gender": 2,
             "age": 30,
@@ -41,7 +41,7 @@ class TestHelper:
 
         # # this is weird but it is what it is, this data will be used when using the request API
         cls.user_data_client = cls.user_data.copy()
-        cls.user_data_client["user_type"] = "Staff"
+        cls.user_data_client["user_type"] = User.TYPE_VALUE.choices.Staff.name
 
 
 class EverythingEquals:
