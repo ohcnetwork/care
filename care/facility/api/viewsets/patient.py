@@ -14,7 +14,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import DiseaseStatusEnum, Facility, FacilityPatientStatsHistory, PatientRegistration
 from care.users.models import User
 
 
@@ -60,6 +60,15 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     )
     filterset_class = PatientFilterSet
 
+    def get_queryset(self):
+        filter_query = self.request.query_params.get("disease_status")
+        queryset = super().get_queryset()
+        if filter_query:
+            disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
+            return queryset.filter(disease_status=disease_status)
+
+        return queryset
+
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
@@ -73,6 +82,14 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         `without_facility` accepts boolean - default is false -
             if true: shows only patients without a facility mapped
             if false (default behaviour): shows only patients with a facility mapped
+
+        `disease_status` accepts - string and int -
+            SUSPECTED = 1
+            POSITIVE = 2
+            NEGATIVE = 3
+            RECOVERY = 4
+            RECOVERED = 5
+            EXPIRED = 6
 
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)
