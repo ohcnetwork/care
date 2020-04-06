@@ -7,23 +7,68 @@ import multiselectfield.db.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0075_auto_20200405_1122'),
+        ("facility", "0075_auto_20200405_1122"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dailyround',
-            name='additional_symptoms',
-            field=multiselectfield.db.fields.MultiSelectField(blank=True, choices=[(1, 'ASYMPTOMATIC'), (2, 'FEVER'), (3, 'SORE THROAT'), (4, 'COUGH'), (5, 'BREATHLESSNESS'), (6, 'MYALGIA'), (7, 'ABDOMINAL DISCOMFORT'), (8, 'VOMITING/DIARRHOEA'), (9, 'OTHERS')], default=1, max_length=17, null=True),
+            model_name="dailyround",
+            name="additional_symptoms",
+            field=multiselectfield.db.fields.MultiSelectField(
+                blank=True,
+                choices=[
+                    (1, "ASYMPTOMATIC"),
+                    (2, "FEVER"),
+                    (3, "SORE THROAT"),
+                    (4, "COUGH"),
+                    (5, "BREATHLESSNESS"),
+                    (6, "MYALGIA"),
+                    (7, "ABDOMINAL DISCOMFORT"),
+                    (8, "VOMITING/DIARRHOEA"),
+                    (9, "OTHERS"),
+                ],
+                default=1,
+                max_length=17,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='symptoms',
-            field=multiselectfield.db.fields.MultiSelectField(blank=True, choices=[(1, 'ASYMPTOMATIC'), (2, 'FEVER'), (3, 'SORE THROAT'), (4, 'COUGH'), (5, 'BREATHLESSNESS'), (6, 'MYALGIA'), (7, 'ABDOMINAL DISCOMFORT'), (8, 'VOMITING/DIARRHOEA'), (9, 'OTHERS')], default=1, max_length=17, null=True),
+            model_name="patientconsultation",
+            name="symptoms",
+            field=multiselectfield.db.fields.MultiSelectField(
+                blank=True,
+                choices=[
+                    (1, "ASYMPTOMATIC"),
+                    (2, "FEVER"),
+                    (3, "SORE THROAT"),
+                    (4, "COUGH"),
+                    (5, "BREATHLESSNESS"),
+                    (6, "MYALGIA"),
+                    (7, "ABDOMINAL DISCOMFORT"),
+                    (8, "VOMITING/DIARRHOEA"),
+                    (9, "OTHERS"),
+                ],
+                default=1,
+                max_length=17,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='patientteleconsultation',
-            name='symptoms',
-            field=multiselectfield.db.fields.MultiSelectField(choices=[(1, 'ASYMPTOMATIC'), (2, 'FEVER'), (3, 'SORE THROAT'), (4, 'COUGH'), (5, 'BREATHLESSNESS'), (6, 'MYALGIA'), (7, 'ABDOMINAL DISCOMFORT'), (8, 'VOMITING/DIARRHOEA'), (9, 'OTHERS')], max_length=17),
+            model_name="patientteleconsultation",
+            name="symptoms",
+            field=multiselectfield.db.fields.MultiSelectField(
+                choices=[
+                    (1, "ASYMPTOMATIC"),
+                    (2, "FEVER"),
+                    (3, "SORE THROAT"),
+                    (4, "COUGH"),
+                    (5, "BREATHLESSNESS"),
+                    (6, "MYALGIA"),
+                    (7, "ABDOMINAL DISCOMFORT"),
+                    (8, "VOMITING/DIARRHOEA"),
+                    (9, "OTHERS"),
+                ],
+                max_length=17,
+            ),
         ),
     ]

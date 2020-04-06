@@ -64,7 +64,9 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
         if filter_query:
-            disease_status = filter_query if filter_query.isdigit() else DISEASE_CHOICES_VALUES[filter_query].value
+            disease_status = (
+                filter_query if filter_query.isdigit() else DISEASE_CHOICES_VALUES.choices[filter_query].value
+            )
             return queryset.filter(disease_status=disease_status)
 
         return queryset
