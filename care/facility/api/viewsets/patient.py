@@ -14,7 +14,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, DiseaseStatusEnum
+from care.facility.models import DiseaseStatusEnum, Facility, FacilityPatientStatsHistory, PatientRegistration
 from care.users.models import User
 
 
@@ -61,17 +61,13 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     filterset_class = PatientFilterSet
 
     def get_queryset(self):
-        filter_query = self.request.query_params.get('disease_status')
+        filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
         if filter_query:
-            diseace_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
-            return queryset.filter(disease_status=diseace_status).select_related(
-                "local_body", "district", "state", "facility",
-                "facility__local_body", "facility__district", "facility__state")
+            disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
+            return queryset.filter(disease_status=disease_status)
 
-        return queryset.select_related(
-            "local_body", "district", "state", "facility",
-            "facility__local_body", "facility__district", "facility__state")
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
