@@ -10,7 +10,7 @@ class UserAccessMixin:
         model = self.queryset.__dict__["model"]
         if self.request.user.is_superuser:
             pass
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictAdmin.value:
             if hasattr(model(), "district"):
                 queryset = queryset.filter(district=self.request.user.district)
             if hasattr(model(), "facility"):

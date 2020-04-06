@@ -15,7 +15,7 @@ class EnumChoices:
     >>> gender_choices = EnumChoices(choices={'Male':1, 'Female': 2, 'Non-Binary': 3})
 
     # For using the values inside a model, use
-    >>> gender_choices.choices_tuple()
+    >>> gender_choices.list_tuple_choices()
     [('Male', 1), ('Female', 2), ('Non-binary', 3)]
 
     # For accessing a choice
@@ -42,7 +42,7 @@ class EnumChoices:
             raise TypeError(f"Invalid instance of choices passed, {type(choices)} is not a {dict}")
         self.choices = Enum(name, choices)
 
-    def choice_tuple(self):
+    def list_tuple_choices(self):
         """
         Return a tuple of choices, useful for passing the choices to models """
         return [(choice.value, choice.name) for choice in self.choices]

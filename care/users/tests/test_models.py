@@ -100,7 +100,7 @@ class UserModelTest(TestCase):
         district = District.objects.create(state=state, name="name")
         cls.user = User.objects.create_user(
             username="test",
-            user_type=User.TYPE_VALUE.choices.Doctor.value,
+            user_type=User.TYPE_VALUES.choices.Doctor.value,
             district=district,
             phone_number=8_888_888_888,
             gender=1,

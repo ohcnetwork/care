@@ -5,7 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models import DailyRound, PatientConsultation
-
 from care.users.models import User
 
 
@@ -27,7 +26,7 @@ class PatientConsultationViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin:
             return self.queryset.filter(patient__district=self.request.user.district)
         return self.queryset.filter(facility__created_by=self.request.user)
 

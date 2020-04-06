@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.users.models import GENDER_VALUE, User
+from care.users.models import GENDER_VALUES, User
 from config.tests.helper import TestHelper
 
 
@@ -66,9 +66,9 @@ class TestSuperUser(TestHelper, APITestCase):
             res_data_json,
             {
                 **data,
-                "gender": GENDER_VALUE.choices.Female.name,
+                "gender": GENDER_VALUES.choices.Female.name,
                 "is_superuser": True,
-                "user_type": User.TYPE_VALUE.choices.Staff.name,
+                "user_type": User.TYPE_VALUES.choices.Staff.name,
                 "first_name": "",
                 "last_name": "",
                 "local_body": None,

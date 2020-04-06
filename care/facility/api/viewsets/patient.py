@@ -25,7 +25,7 @@ class PatientFilterSet(filters.FilterSet):
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
             queryset = queryset.filter(district=request.user.district)
         elif not request.user.is_superuser:
             queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))

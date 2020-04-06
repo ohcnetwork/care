@@ -34,7 +34,7 @@ class FacilityBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES_VALUE = EnumChoices(
+ROOM_TYPES_VALUES = EnumChoices(
     choices={
         "Total": 0,
         "Normal": 1,
@@ -44,9 +44,9 @@ ROOM_TYPES_VALUE = EnumChoices(
         "Ventilator": 20,
     }
 )
-ROOM_TYPES = ROOM_TYPES_VALUE.choice_tuple()
+ROOM_TYPES = ROOM_TYPES_VALUES.list_tuple_choices()
 
-FACILITY_TYPES_VALUE = EnumChoices(
+FACILITY_TYPES_VALUES = EnumChoices(
     choices={
         "Educational Inst": 1,
         "Private Hospital": 2,
@@ -58,15 +58,15 @@ FACILITY_TYPES_VALUE = EnumChoices(
         "Govt Hospital": 8,
     }
 )
-FACILITY_TYPES = FACILITY_TYPES_VALUE.choice_tuple()
+FACILITY_TYPES = FACILITY_TYPES_VALUES.list_tuple_choices()
 
-DOCTOR_TYPES_VALUE = EnumChoices(
+DOCTOR_TYPES_VALUES = EnumChoices(
     choices={"General Medicine": 1, "Pulmonology": 2, "Critical Care": 3, "Paediatrics": 4, "Other Speciality": 5,}
 )
-DOCTOR_TYPES = DOCTOR_TYPES_VALUE.choice_tuple()
+DOCTOR_TYPES = DOCTOR_TYPES_VALUES.list_tuple_choices()
 
-AMBULANCE_TYPES_VALUE = EnumChoices(choices={"Basic": 1, "Cardiac": 2, "Hearse": 3})
-AMBULANCE_TYPES = AMBULANCE_TYPES_VALUE.choice_tuple()
+AMBULANCE_TYPES_VALUES = EnumChoices(choices={"Basic": 1, "Cardiac": 2, "Hearse": 3})
+AMBULANCE_TYPES = AMBULANCE_TYPES_VALUES.list_tuple_choices()
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -111,7 +111,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -128,7 +128,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -204,7 +204,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -221,7 +221,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -255,7 +255,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -272,7 +272,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -443,7 +443,7 @@ class Ambulance(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
             )
         )
@@ -460,7 +460,7 @@ class Ambulance(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
                 and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
             )
         )

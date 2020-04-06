@@ -3,6 +3,7 @@ from typing import Any
 from rest_framework import status
 
 from care.facility.models import Disease, PatientRegistration
+from care.users.models import GENDER_VALUES
 from care.utils.tests.test_base import TestBase
 
 
@@ -19,7 +20,7 @@ class TestPatient(TestBase):
         cls.patient_data = {
             "name": "Foo",
             "age": 32,
-            "gender": 2,
+            "gender": GENDER_VALUES.choices.Female.value,
             "phone_number": "8888888888",
             "address": "Global citizen",
             "contact_with_confirmed_carrier": True,
@@ -39,7 +40,9 @@ class TestPatient(TestBase):
             "district_object": None,
         }
 
-        cls.patient = PatientRegistration.objects.create(name="Bar", age=31, gender=2, phone_number="7776665554",)
+        cls.patient = PatientRegistration.objects.create(
+            name="Bar", age=31, gender=GENDER_VALUES.choices.Female.value, phone_number="7776665554",
+        )
         cls.patient_data["id"] = cls.patient.id
 
     def get_base_url(self):

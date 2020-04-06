@@ -31,7 +31,7 @@ class PatientSample(FacilityBaseModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
-    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
+    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"],)
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
 
     fast_track = models.TextField(default="")
@@ -48,11 +48,11 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
 
     @staticmethod
     def has_read_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
 
     def has_object_read_permission(self, request):
         return (
@@ -60,11 +60,11 @@ class PatientSample(FacilityBaseModel):
             or request.user == self.consultation.facility.created_by
             or (
                 request.user.district == self.consultation.facility.district
-                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
             )
             or (
                 request.user.state == self.consultation.facility.state
-                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and request.user.user_type >= User.TYPE_VALUES.choices.StateLabAdmin.value
             )
         )
 
@@ -74,12 +74,12 @@ class PatientSample(FacilityBaseModel):
         if request.user.is_superuser:
             return True
         map_ = self.SAMPLE_TEST_FLOW_CHOICES
-        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE",):
+            return request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
         elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            return request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
         elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+            return request.user.user_type >= User.TYPE_VALUES.choices.StateLabAdmin.value
         # The view shall raise a 400
         return True
 

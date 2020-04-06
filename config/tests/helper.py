@@ -1,5 +1,5 @@
 """Use this module for tests in only users api"""
-from care.users.models import GENDER_VALUE, District, State, User
+from care.users.models import GENDER_VALUES, District, State, User
 
 # will be fixed later
 
@@ -13,10 +13,10 @@ class TestHelper:
         cls.state = State.objects.create(name="KL")
         cls.district = District.objects.create(name="Kannur", state=cls.state)
         cls.user = User.objects.create(
-            user_type=User.TYPE_VALUE.choices.Staff.value,
+            user_type=User.TYPE_VALUES.choices.Staff.value,
             district=cls.district,
             phone_number="8887776665",
-            gender=GENDER_VALUE.choices.Female.value,
+            gender=GENDER_VALUES.choices.Female.value,
             age=30,
             email="foo@foobar.com",
             username="user",
@@ -30,9 +30,9 @@ class TestHelper:
         }
 
         cls.user_data = {
-            "user_type": User.TYPE_VALUE.choices.Staff.value,
+            "user_type": User.TYPE_VALUES.choices.Staff.value,
             "phone_number": "8887776665",
-            "gender": GENDER_VALUE.choices.Female.value,
+            "gender": GENDER_VALUES.choices.Female.value,
             "age": 30,
             "email": "foo@foobar.com",
             "username": "user",
@@ -41,7 +41,7 @@ class TestHelper:
 
         # # this is weird but it is what it is, this data will be used when using the request API
         cls.user_data_client = cls.user_data.copy()
-        cls.user_data_client["user_type"] = User.TYPE_VALUE.choices.Staff.name
+        cls.user_data_client["user_type"] = User.TYPE_VALUES.choices.Staff.name
 
 
 class EverythingEquals:

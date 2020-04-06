@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from care.utils.enum_choices import EnumChoices
 
-DISTRICT_VALUE = EnumChoices(
+DISTRICT_VALUES = EnumChoices(
     choices={
         "Thiruvananthapuram": 1,
         "Kollam": 2,
@@ -23,10 +23,10 @@ DISTRICT_VALUE = EnumChoices(
         "Kasargode": 14,
     }
 )
-DISTRICT_CHOICES = DISTRICT_VALUE.choice_tuple()
+DISTRICT_CHOICES = DISTRICT_VALUES.list_tuple_choices()
 
-GENDER_VALUE = EnumChoices(choices={"Male": 1, "Female": 2, "Non-binary": 3})
-GENDER_CHOICES = GENDER_VALUE.choice_tuple()
+GENDER_VALUES = EnumChoices(choices={"Male": 1, "Female": 2, "Non-binary": 3})
+GENDER_CHOICES = GENDER_VALUES.list_tuple_choices()
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -50,7 +50,7 @@ class District(models.Model):
         return f"{self.name}"
 
 
-LOCAL_BODY_VALUE = EnumChoices(
+LOCAL_BODY_VALUES = EnumChoices(
     choices={
         "Grama Panchayath": 1,
         "Block Panchayath": 2,
@@ -61,7 +61,7 @@ LOCAL_BODY_VALUE = EnumChoices(
     }
 )
 
-LOCAL_BODY_CHOICES = LOCAL_BODY_VALUE.choice_tuple()
+LOCAL_BODY_CHOICES = LOCAL_BODY_VALUES.list_tuple_choices()
 
 
 class LocalBody(models.Model):
@@ -103,7 +103,7 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-    TYPE_VALUE = EnumChoices(
+    TYPE_VALUES = EnumChoices(
         choices={
             "Doctor": 5,
             "Staff": 10,
@@ -115,9 +115,9 @@ class User(AbstractUser):
         }
     )
 
-    TYPE_CHOICES = TYPE_VALUE.choice_tuple()
+    TYPE_CHOICES = TYPE_VALUES.list_tuple_choices()
 
-    # TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
+    # TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUES_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
@@ -153,10 +153,10 @@ class User(AbstractUser):
     def has_write_permission(request):
         try:
             user_type = request.data["user_type"]
-            return user_type <= User.TYPE_VALUE.choices.Volunteer.value
+            return user_type <= User.TYPE_VALUES.choices.Volunteer.value
 
         except TypeError:  # Support string choice as well
-            return user_type <= User.TYPE_VALUE.choices.Volunteer.name
+            return user_type <= User.TYPE_VALUES.choices.Volunteer.name
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -169,7 +169,7 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE.choices[
+        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUES.choices[
             "DistrictLabAdmin"
         ]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
