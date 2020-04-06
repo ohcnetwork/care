@@ -1,5 +1,5 @@
 """Use this module for tests in only users api"""
-from care.users.models import District, State, User
+from care.users.models import GENDER_VALUE, District, State, User
 
 # will be fixed later
 
@@ -16,7 +16,7 @@ class TestHelper:
             user_type=User.TYPE_VALUE.choices.Staff.value,
             district=cls.district,
             phone_number="8887776665",
-            gender=2,
+            gender=GENDER_VALUE.choices.Female.value,
             age=30,
             email="foo@foobar.com",
             username="user",
@@ -32,7 +32,7 @@ class TestHelper:
         cls.user_data = {
             "user_type": User.TYPE_VALUE.choices.Staff.value,
             "phone_number": "8887776665",
-            "gender": 2,
+            "gender": GENDER_VALUE.choices.Female.value,
             "age": 30,
             "email": "foo@foobar.com",
             "username": "user",

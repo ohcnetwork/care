@@ -6,6 +6,7 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.users.models import District, LocalBody, State
+from care.utils.enum_choices import EnumChoices
 
 User = get_user_model()
 
@@ -33,35 +34,39 @@ class FacilityBaseModel(models.Model):
 
 # Facility Model Start
 
-ROOM_TYPES = [
-    (0, "Total"),
-    (1, "Normal"),
-    (2, "Hostel"),
-    (3, "Single Room with Attached Bathroom"),
-    (10, "ICU"),
-    (20, "Ventilator"),
-]
+ROOM_TYPES_VALUE = EnumChoices(
+    choices={
+        "Total": 0,
+        "Normal": 1,
+        "Hostel": 2,
+        "Single Room with Attached Bathroom": 3,
+        "ICU": 10,
+        "Ventilator": 20,
+    }
+)
+ROOM_TYPES = ROOM_TYPES_VALUE.choice_tuple()
 
-FACILITY_TYPES = [
-    (1, "Educational Inst"),
-    (2, "Private Hospital"),
-    (3, "Other"),
-    (4, "Hostel"),
-    (5, "Hotel"),
-    (6, "Lodge"),
-    (7, "TeleMedicine"),
-    (8, "Govt Hospital"),
-]
+FACILITY_TYPES_VALUE = EnumChoices(
+    choices={
+        "Educational Inst": 1,
+        "Private Hospital": 2,
+        "Other": 3,
+        "Hostel": 4,
+        "Hotel": 5,
+        "Lodge": 6,
+        "TeleMedicine": 7,
+        "Govt Hospital": 8,
+    }
+)
+FACILITY_TYPES = FACILITY_TYPES_VALUE.choice_tuple()
 
-DOCTOR_TYPES = [
-    (1, "General Medicine"),
-    (2, "Pulmonology"),
-    (3, "Critical Care"),
-    (4, "Paediatrics"),
-    (5, "Other Speciality"),
-]
+DOCTOR_TYPES_VALUE = EnumChoices(
+    choices={"General Medicine": 1, "Pulmonology": 2, "Critical Care": 3, "Paediatrics": 4, "Other Speciality": 5,}
+)
+DOCTOR_TYPES = DOCTOR_TYPES_VALUE.choice_tuple()
 
-AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
+AMBULANCE_TYPES_VALUE = EnumChoices(choices={"Basic": 1, "Cardiac": 2, "Hearse": 3})
+AMBULANCE_TYPES = AMBULANCE_TYPES_VALUE.choice_tuple()
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -106,7 +111,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -123,7 +128,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -199,7 +204,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -216,7 +221,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -250,7 +255,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -267,7 +272,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district == self.district
             )
         )
@@ -387,7 +392,7 @@ class Ambulance(FacilityBaseModel):
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
         code="invalid_vehicle_number",
     )
-    INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
+    INSURANCE_YEAR_VALUE = ((2020, 2020), (2021, 2021), (2022, 2022))
 
     vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
 
@@ -395,9 +400,9 @@ class Ambulance(FacilityBaseModel):
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
+    # primary_district = models.IntegerField(choices=DISTRICT_VALUE, blank=False)
+    # secondary_district = models.IntegerField(choices=DISTRICT_VALUE, blank=True, null=True)
+    # third_district = models.IntegerField(choices=DISTRICT_VALUE, blank=True, null=True)
 
     primary_district = models.ForeignKey(
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
@@ -414,7 +419,7 @@ class Ambulance(FacilityBaseModel):
     has_suction_machine = models.BooleanField()
     has_defibrillator = models.BooleanField()
 
-    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_VALUE)
 
     ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
 
@@ -438,7 +443,7 @@ class Ambulance(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
             )
         )
@@ -455,7 +460,7 @@ class Ambulance(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                request.user.user_type >= User.TYPE_VALUE.choices.DistrictLabAdmin.value
                 and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
             )
         )

@@ -4,8 +4,8 @@ import datetime
 from django.contrib.gis.geos import Point
 from rest_framework.test import APITestCase
 
-from care.facility.models import Facility, LocalBody, User
-from care.users.models import District, State
+from care.facility.models import FACILITY_TYPES_VALUE, Facility, LocalBody, User
+from care.users.models import GENDER_VALUE, District, State
 
 
 class TestBase(APITestCase):
@@ -23,14 +23,16 @@ class TestBase(APITestCase):
             "username": username,
             "password": "bar",
             "district": district,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE.choices.Staff.value,
         }
         data.update(kwargs)
         return User.objects.create_user(**data)
 
     @classmethod
     def create_super_user(cls, district: District, username: str = "superuser"):
-        user = cls.create_user(district=district, username=username, user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],)
+        user = cls.create_user(
+            district=district, username=username, user_type=User.TYPE_VALUE.choices.DistrictAdmin.value,
+        )
         user.is_superuser = True
         user.save()
         return user
@@ -48,7 +50,7 @@ class TestBase(APITestCase):
         return Facility.objects.create(
             name="Foo",
             district=district,
-            facility_type=1,
+            facility_type=FACILITY_TYPES_VALUE.choices["Educational Inst"].value,
             address="8/88, 1st Cross, 1st Main, Boo Layout",
             location=Point(24.452545, 49.878248),
             oxygen_capacity=10,
@@ -71,7 +73,7 @@ class TestBase(APITestCase):
             "user_type": user_type,
             "district": cls.district,
             "phone_number": "8887776665",
-            "gender": 2,
+            "gender": GENDER_VALUE.choices.Female.value,
             "age": 30,
             "email": "foo@foobar.com",
             "username": "user",
@@ -95,7 +97,7 @@ class TestBase(APITestCase):
         return {
             "name": "Foo",
             "district": cls.district.id,
-            "facility_type": 1,
+            "facility_type": FACILITY_TYPES_VALUE.choices["Educational Inst"].value,
             "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "oxygen_capacity": 10,
@@ -108,7 +110,7 @@ class TestBase(APITestCase):
         super(TestBase, cls).setUpClass()
         cls.state = cls.create_state()
         cls.district = cls.create_district(cls.state)
-        cls.user_type = User.TYPE_VALUE_MAP["Staff"]
+        cls.user_type = User.TYPE_VALUE.choices.Staff.value
         cls.user = cls.create_user(cls.district)
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)

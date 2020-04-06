@@ -27,9 +27,9 @@ class EnumChoices:
     2
 
     # This also works
-    >>> gender_choices.choice['Female']
+    >>> gender_choices.choices['Female']
     <choices.Female: 2>
-    >>> gender_choices.choice['Female'].value
+    >>> gender_choices.choices['Female'].value
     2
 
     """
@@ -39,7 +39,7 @@ class EnumChoices:
         if not choices:
             raise ValueError("No argument passed")
         if not isinstance(choices, dict):
-            raise TypeError(f"Invalid instance of choices passed, {type(choices)} is not a {type(dict)}")
+            raise TypeError(f"Invalid instance of choices passed, {type(choices)} is not a {dict}")
         self.choices = Enum(name, choices)
 
     def choice_tuple(self):

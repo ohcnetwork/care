@@ -4,7 +4,7 @@ from typing import Any
 from django.contrib.gis.geos import Point
 from rest_framework import status
 
-from care.facility.models import Facility, FacilityCapacity
+from care.facility.models import FACILITY_TYPES_VALUE, Facility, FacilityCapacity
 from care.users.models import User
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
@@ -19,7 +19,7 @@ class TestFacility(TestBase):
         cls.facility_data = {
             "name": "Foo",
             "district": cls.district.id,
-            "facility_type": 1,
+            "facility_type": FACILITY_TYPES_VALUE.choices["Educational Inst"].value,
             "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "oxygen_capacity": 10,
