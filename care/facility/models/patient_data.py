@@ -50,7 +50,7 @@ SYMPTOM_CHOICES_VALUES = EnumChoices(
 SYMPTOM_CHOICES = SYMPTOM_CHOICES_VALUES.list_tuple_choices()
 
 DISEASE_STATUS_VALUES = EnumChoices(
-    choices={"SUSPECTED": 1, "POSITIVE": 2, "NEGATIVE": 3, "RECOVERY": 4, "RECOVERED": 5, "EXPIRED": 5,}
+    choices={"SUSPECTED": 1, "POSITIVE": 2, "NEGATIVE": 3, "RECOVERY": 4, "RECOVERED": 5, "EXPIRED": 6,}
 )
 DISEASE_STATUS_CHOICES = DISEASE_STATUS_VALUES.list_tuple_choices()
 
@@ -58,6 +58,22 @@ BLOOD_GROUP_VALUES = EnumChoices(
     choices={"A+": "A+", "A-": "A-", "B+": "B+", "B-": "B-", "AB+": "AB+", "AB-": "AB-", "O+": "O+", "O-": "O-",}
 )
 BLOOD_GROUP_CHOICES = BLOOD_GROUP_VALUES.list_tuple_choices()
+
+CURRENT_HEALTH_VALUES = EnumChoices(
+    choices={"NO DATA": 0, "REQUIRES VENTILATOR": 1, "WORSE": 2, "STATUS QUO": 3, "BETTER": 4,}
+)
+CURRENT_HEALTH_CHOICES = CURRENT_HEALTH_VALUES.list_tuple_choices()
+
+BLOOD_GROUP_CHOICES = [
+    ("A+", "A+"),
+    ("A-", "A-"),
+    ("B+", "B+"),
+    ("B-", "B-"),
+    ("AB+", "AB+"),
+    ("AB-", "AB-"),
+    ("O+", "O+"),
+    ("O-", "O-"),
+]
 
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
@@ -70,6 +86,8 @@ class PatientRegistration(models.Model):
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
+
+    is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient",
@@ -92,6 +110,7 @@ class PatientRegistration(models.Model):
     )
 
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
+    ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
@@ -242,8 +261,12 @@ class PatientConsultation(models.Model):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # will be true when the consultation is created
-            self.patient.facility = self.facility
+        if not self.pk or self.referred_to is not None:
+            # pk is None when the consultation is created
+            # referred to is not null when the person is being referred to a new facility
+            self.patient.facility = self.referred_to or self.facility
+            self.patient.save()
+
         super(PatientConsultation, self).save(*args, **kwargs)
 
     @staticmethod
@@ -286,6 +309,11 @@ class DailyRound(models.Model):
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
+    additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    other_symptoms = models.TextField(default="", blank=True)
+    patient_category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
+    recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
 
     @staticmethod
@@ -302,7 +330,15 @@ class DailyRound(models.Model):
 
     @staticmethod
     def has_read_permission(request):
-        return True
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and (
+                PatientConsultation.objects.get(
+                    id=request.parser_context["kwargs"]["consultation_pk"]
+                ).facility.created_by
+                == request.user
+            )
+        )
 
     def has_object_read_permission(self, request):
         return request.user.is_superuser or request.user in (

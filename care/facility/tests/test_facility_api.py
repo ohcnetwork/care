@@ -75,6 +75,8 @@ class TestFacility(TestBase):
             "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def test_user_can_create_facility(self):
@@ -429,7 +431,7 @@ class TestFacilityBulkUpdate(TestBase):
 
         test_facility = TestFacility()
         response = self.client.get(test_facility.get_url(facility.id), format="json")
-        self.assertDictEqual(response.data, test_facility.get_detail_representation(facility))
+        self.assertDictEqual(response.json(), test_facility.get_detail_representation(facility))
 
     def test_others_cant_update_ones_facility(self):
         """Test facility can't be updated by non-creators"""

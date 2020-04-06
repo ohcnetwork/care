@@ -37,7 +37,18 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
-    queryset = PatientSample.objects.all().select_related("consultation", "patient").order_by("-id")
+    queryset = (
+        PatientSample.objects.all()
+        .select_related(
+            "consultation",
+            "patient",
+            "consultation__facility",
+            "consultation__facility__local_body",
+            "consultation__facility__district",
+            "consultation__facility__state",
+        )
+        .order_by("-id")
+    )
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -82,11 +93,10 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
             raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
 
         if "consultation" not in validated_data:
-            try:
-                validated_data["consultation"] = PatientConsultation.objects.filter(
-                    patient=validated_data["patient"]
-                ).last()
-            except IndexError:
+            validated_data["consultation"] = PatientConsultation.objects.filter(
+                patient=validated_data["patient"]
+            ).last()
+            if not validated_data["consultation"]:
                 raise ValidationError({"patient": ["Invalid id/ No consultation done"]})
         else:
             try:

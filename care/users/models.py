@@ -117,8 +117,6 @@ class User(AbstractUser):
 
     TYPE_CHOICES = TYPE_VALUES.list_tuple_choices()
 
-    # TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUES_MAP.items()]
-
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
@@ -131,6 +129,7 @@ class User(AbstractUser):
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
     REQUIRED_FIELDS = [
         "user_type",
         "email",

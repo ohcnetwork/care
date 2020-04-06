@@ -39,9 +39,11 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
-
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-DATABASES = {}
-DATABASES["default"] = {"ENGINE": "django.contrib.gis.db.backends.spatialite"}
+INSTALLED_APPS += [  # noqa F405
+    "test_without_migrations",
+]
+
+DATABASES = {"default": {"ENGINE": "django.contrib.gis.db.backends.spatialite", "ATOMIC_REQUESTS": False}}

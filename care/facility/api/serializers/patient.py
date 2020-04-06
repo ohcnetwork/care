@@ -4,11 +4,12 @@ from django.db import transaction
 from django.utils.timezone import make_aware
 from rest_framework import serializers
 
-from care.facility.api.serializers.facility import FacilitySerializer
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
     DISEASE_STATUS_CHOICES,
+    DISEASE_STATUS_VALUES,
     Disease,
     Facility,
     FacilityPatientStatsHistory,
@@ -22,13 +23,15 @@ from config.serializers import ChoiceField
 
 class PatientListSerializer(serializers.ModelSerializer):
     facility = serializers.IntegerField(source="facility_id", allow_null=True, read_only=True)
+    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DISEASE_STATUS_VALUES.choices.SUSPECTED.value,)
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted")
+        exclude = ("created_by", "deleted", "ongoing_medication")
 
 
 class PatientDetailSerializer(PatientListSerializer):
@@ -48,7 +51,7 @@ class PatientDetailSerializer(PatientListSerializer):
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
 
-    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DISEASE_CHOICES[0][0])
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DISEASE_STATUS_VALUES.choices.SUSPECTED.value,)
 
     class Meta:
         model = PatientRegistration
