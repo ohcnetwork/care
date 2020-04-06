@@ -318,7 +318,7 @@ def GETKEY(group, request):
     return "ratelimit"
 
 
-DJANGO_RATE_LIMIT = "5/10m"
+DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
 
 GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
 
