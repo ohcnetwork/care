@@ -83,6 +83,14 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             if true: shows only patients without a facility mapped
             if false (default behaviour): shows only patients with a facility mapped
 
+        `disease_status` accepts - string and int -
+            SUSPECTED = 1
+            POSITIVE = 2
+            NEGATIVE = 3
+            RECOVERY = 4
+            RECOVERED = 5
+            EXPIRED = 6
+
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
