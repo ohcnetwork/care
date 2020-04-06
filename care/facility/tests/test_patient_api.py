@@ -1,10 +1,8 @@
-import datetime
 from typing import Any
 
-from django.utils.timezone import make_aware
 from rest_framework import status
 
-from care.facility.models import DISEASE_CHOICES, Disease, DiseaseStatusEnum, PatientRegistration
+from care.facility.models import DiseaseStatusEnum, PatientRegistration
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -19,44 +17,6 @@ class TestPatient(TestBase):
             - Initialize the attributes useful for class methods
         """
         super(TestPatient, cls).setUpClass()
-        cls.patient_data = {
-            "name": "Foo",
-            "age": 32,
-            "gender": 2,
-            "is_medical_worker": True,
-            "blood_group": "O+",
-            "ongoing_medication": "",
-            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-            "disease_status": "SUSPECTED",
-            "phone_number": "8888888888",
-            "address": "Global citizen",
-            "contact_with_confirmed_carrier": True,
-            "contact_with_suspected_carrier": True,
-            "estimated_contact_date": None,
-            "past_travel": False,
-            "countries_travelled": "",
-            "present_health": "Fine",
-            "has_SARI": False,
-            "is_active": True,
-            "state": cls.state.id,
-            "district": cls.district.id,
-            "local_body": None,
-            "number_of_aged_dependents": 2,
-            "number_of_chronic_diseased_dependents": 1,
-        }
-
-        patient_data = cls.patient_data.copy()
-        patient_data.update(
-            {"district": cls.district, "state": cls.state, "disease_status": DiseaseStatusEnum.SUSPECTED.value}
-        )
-
-        cls.patient = PatientRegistration.objects.create(**patient_data)
-        medical_history = [
-            Disease.objects.create(patient=cls.patient, disease=DISEASE_CHOICES[1][0], details="Some symptoms.")
-        ]
-        cls.patient.medical_history.set(medical_history)
-        cls.patient_data.update({"medical_history": [{"disease": DISEASE_CHOICES[1][1], "details": "Some symptoms."}]})
-        pass
 
     def get_base_url(self):
         return "/api/v1/patient"
