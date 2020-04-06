@@ -44,5 +44,6 @@ class EnumChoices:
 
     def list_tuple_choices(self):
         """
-        Return a tuple of choices, useful for passing the choices to models """
+        Returns a list of choices tuples, useful for passing the choices to models
+        """
         return [(choice.value, choice.name) for choice in self.choices]

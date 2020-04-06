@@ -2,22 +2,25 @@ from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration
 from care.users.models import User
+from care.utils.enum_choices import EnumChoices
 
 
 class PatientSample(FacilityBaseModel):
-    SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
-    SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
+    SAMPLE_TEST_RESULT_VALUES = EnumChoices(choices={"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4})
+    SAMPLE_TEST_RESULT_CHOICES = SAMPLE_TEST_RESULT_VALUES.list_tuple_choices()
 
-    SAMPLE_TEST_FLOW_MAP = {
-        "REQUEST_SUBMITTED": 1,
-        "APPROVED": 2,
-        "DENIED": 3,
-        "SENT_TO_COLLECTON_CENTRE": 4,
-        "RECEIVED_AND_FORWARED": 5,
-        "RECEIVED_AT_LAB": 6,
-        "COMPLETED": 7,
-    }
-    SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
+    SAMPLE_TEST_FLOW_VALUES = EnumChoices(
+        choices={
+            "REQUEST_SUBMITTED": 1,
+            "APPROVED": 2,
+            "DENIED": 3,
+            "SENT_TO_COLLECTON_CENTRE": 4,
+            "RECEIVED_AND_FORWARED": 5,
+            "RECEIVED_AT_LAB": 6,
+            "COMPLETED": 7,
+        }
+    )
+    SAMPLE_TEST_FLOW_CHOICES = SAMPLE_TEST_FLOW_VALUES.list_tuple_choices()
     SAMPLE_FLOW_RULES = {
         # previous rule      # next valid rules
         "REQUEST_SUBMITTED": {"APPROVED", "DENIED",},
@@ -31,8 +34,12 @@ class PatientSample(FacilityBaseModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
-    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"],)
-    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
+    status = models.IntegerField(
+        choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_VALUES.choices.REQUEST_SUBMITTED.value,
+    )
+    result = models.IntegerField(
+        choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_VALUES.choices.AWAITING.value,
+    )
 
     fast_track = models.TextField(default="")
 

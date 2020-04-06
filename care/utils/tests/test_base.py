@@ -19,7 +19,7 @@ class TestBase(APITestCase):
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
             "age": 30,
-            "gender": 2,
+            "gender": GENDER_VALUES.choices.Female.value,
             "username": username,
             "password": "bar",
             "district": district,
