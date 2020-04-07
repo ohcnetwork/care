@@ -24,7 +24,7 @@ class TestPatient(TestBase):
     def get_list_representation(self, patient=None):
 
         if isinstance(patient, dict):
-            medical_history = patient.pop("medical_history", default="[]")
+            medical_history = patient.pop("medical_history", [])
             patient = PatientRegistration(**patient)
             patient.medical_history.set(medical_history)
 
