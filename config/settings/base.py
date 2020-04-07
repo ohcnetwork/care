@@ -90,6 +90,7 @@ THIRD_PARTY_APPS = [
     "watchman",
     "djangoql",
     "maintenance_mode",
+    "automated_logging",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
@@ -153,6 +154,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
+    "automated_logging.middleware.AutomatedLoggingMiddleware",
 ]
 
 # STATIC
@@ -259,8 +261,26 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",},
+    'db': { 'level': 'INFO', 'class': 'automated_logging.handlers.DatabaseHandler', }},
+    'loggers': { 'automated_logging': { 'level': 'INFO', 'handlers': ['db'], 'propagate': True, },
+    'django': { 'level': 'INFO', 'handlers': ['db'], 'propagate': True, },
+    }    
+}
+
+from logging import INFO
+AUTOMATED_LOGGING = {
+    'exclude': {'model': ['admin', 'session', 'automated_logging', 'basehttp', 'contenttypes', 'migrations', 'historicalpatientregistration', 'historicalfacilitycapacity'],
+                'request': ['GET', 200],
+                'unspecified': []},
+    'modules': ['request', 'model', 'unspecified'],
+    'to_database': True,
+    'loglevel': {'model': INFO,
+                 'request': INFO},
+    'save_na': True,
+    'request': {
+      'query': False
+    }
 }
 
 # django-allauth
