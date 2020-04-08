@@ -54,6 +54,8 @@ class TestPatient(TestBase):
             "disease_status": self._get_disease_state_representation(patient.disease_status),
             "number_of_aged_dependents": patient.number_of_aged_dependents,
             "number_of_chronic_diseased_dependents": patient.number_of_chronic_diseased_dependents,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
             **self.get_local_body_district_state_representation(patient),
         }
 
@@ -123,6 +125,8 @@ class TestPatient(TestBase):
             "countries_travelled": patient.countries_travelled,
             "last_consultation": None,
             "facility_object": None,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
             **self.get_local_body_district_state_representation(patient),
         }
 

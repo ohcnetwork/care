@@ -20,6 +20,8 @@ from care.facility.models import (
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from config.serializers import ChoiceField
 
+from care.facility.api.serializers import TIMESTAMP_FIELDS
+
 
 class PatientListSerializer(serializers.ModelSerializer):
     facility = serializers.IntegerField(source="facility_id", allow_null=True, read_only=True)
@@ -32,6 +34,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientRegistration
         exclude = ("created_by", "deleted", "ongoing_medication")
+        read_only = TIMESTAMP_FIELDS
 
 
 class PatientDetailSerializer(PatientListSerializer):
@@ -56,6 +59,7 @@ class PatientDetailSerializer(PatientListSerializer):
     class Meta:
         model = PatientRegistration
         exclude = ("created_by", "deleted")
+        read_only = TIMESTAMP_FIELDS
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()

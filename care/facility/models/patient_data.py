@@ -88,7 +88,22 @@ BLOOD_GROUP_CHOICES = [
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
 
-class PatientRegistration(models.Model):
+class PatientBaseModel(models.Model):
+    created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+    deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
+
+    class Meta:
+        abstract = True
+
+    def delete(self, *args):
+        self.deleted = True
+        self.save()
+
+
+class PatientRegistration(PatientBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
@@ -147,7 +162,6 @@ class PatientRegistration(models.Model):
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
-    deleted = models.BooleanField(default=False)
 
     history = HistoricalRecords()
 
@@ -194,10 +208,6 @@ class PatientRegistration(models.Model):
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
-
-    def delete(self, **kwargs):
-        self.deleted = True
-        self.save()
 
     def save(self, *args, **kwargs) -> None:
         """
