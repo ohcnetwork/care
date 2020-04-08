@@ -26,7 +26,7 @@ class PatientConsultationViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin:
+        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
             return self.queryset.filter(patient__district=self.request.user.district)
         return self.queryset.filter(facility__created_by=self.request.user)
 

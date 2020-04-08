@@ -168,9 +168,9 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUES.choices[
-            "DistrictLabAdmin"
-        ]:
+        if (
+            request.data.get("district") or request.data.get("state")
+        ) and self.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False
