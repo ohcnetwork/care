@@ -159,8 +159,6 @@ class User(AbstractUser):
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
-        finally:
-            return user_type <= User.TYPE_VALUE_MAP["Volunteer"]
 
     def has_object_write_permission(self, request):
         return request.user.is_superuser
