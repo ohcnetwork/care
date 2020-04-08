@@ -34,9 +34,6 @@ class TestSuperUser(TestUserBase):
         """
         self.client.force_login(self.super_user)
 
-    def get_base_url(self):
-        return "/api/v1/users"
-
     def test_user_creation(self):
         """
         For a superuser account, test
