@@ -1,3 +1,4 @@
+import enum
 from types import SimpleNamespace
 
 from django.db import models
@@ -8,61 +9,64 @@ from simple_history.models import HistoricalRecords
 
 from care.facility.models import District, Facility, FacilityBaseModel, LocalBody, SoftDeleteManager, State
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
-from care.utils.enum_choices import EnumChoices
 
-DISEASE_CHOICES_VALUES = EnumChoices(
-    choices={
-        "NO": 1,
-        "Diabetes": 2,
-        "Heart Disease": 3,
-        "HyperTension": 4,
-        "Kidney Diseases": 5,
-        "Lung Diseases/Asthma": 6,
-        "Cancer": 7,
-    }
-)
-DISEASE_CHOICES = DISEASE_CHOICES_VALUES.list_tuple_choices()
+DISEASE_CHOICES_MAP = {
+    "NO": 1,
+    "Diabetes": 2,
+    "Heart Disease": 3,
+    "HyperTension": 4,
+    "Kidney Diseases": 5,
+    "Lung Diseases/Asthma": 6,
+    "Cancer": 7,
+}
+DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
+
+CATEGORY_CHOICES = [
+    ("Mild", "Category-A"),
+    ("Moderate", "Category-B"),
+    ("Severe", "Category-C"),
+    (None, "UNCLASSIFIED"),
+]
+
+CURRENT_HEALTH_CHOICES = [
+    (0, "NO DATA"),
+    (1, "REQUIRES VENTILATOR"),
+    (2, "WORSE"),
+    (3, "STATUS QUO"),
+    (4, "BETTER"),
+]
+
+ADMIT_CHOICES = [
+    (None, "Not admitted"),
+    (1, "Isolation Room"),
+    (2, "ICU"),
+    (3, "ICU with Ventilator"),
+]
+
+SYMPTOM_CHOICES = [
+    (1, "ASYMPTOMATIC"),
+    (2, "FEVER"),
+    (3, "SORE THROAT"),
+    (4, "COUGH"),
+    (5, "BREATHLESSNESS"),
+    (6, "MYALGIA"),
+    (7, "ABDOMINAL DISCOMFORT"),
+    (8, "VOMITING/DIARRHOEA"),
+    (9, "OTHERS"),
+    (10, "SARI"),
+]
 
 
-CATEGORY_CHOICES_VALUES = EnumChoices(
-    choices={"Category-A": "Mild", "Category-B": "Moderate", "Category-C": "Severe", "UNCLASSIFIED": None,}
-)
-CATEGORY_CHOICES = CATEGORY_CHOICES_VALUES.list_tuple_choices()
+class DiseaseStatusEnum(enum.IntEnum):
+    SUSPECTED = 1
+    POSITIVE = 2
+    NEGATIVE = 3
+    RECOVERY = 4
+    RECOVERED = 5
+    EXPIRED = 6
 
-ADMIT_CHOICES_VALUES = EnumChoices(
-    choices={"Not admitted": None, "Isolation Room": 1, "ICU": 2, "ICU with Ventilator": 3,}
-)
-ADMIT_CHOICES = ADMIT_CHOICES_VALUES.list_tuple_choices()
 
-SYMPTOM_CHOICES_VALUES = EnumChoices(
-    choices={
-        "ASYMPTOMATIC": 1,
-        "FEVER": 2,
-        "SORE THROAT": 3,
-        "COUGH": 4,
-        "BREATHLESSNESS": 5,
-        "MYALGIA": 6,
-        "ABDOMINAL DISCOMFORT": 7,
-        "VOMITING/DIARRHOEA": 8,
-        "OTHERS": 9,
-    }
-)
-SYMPTOM_CHOICES = SYMPTOM_CHOICES_VALUES.list_tuple_choices()
-
-DISEASE_STATUS_VALUES = EnumChoices(
-    choices={"SUSPECTED": 1, "POSITIVE": 2, "NEGATIVE": 3, "RECOVERY": 4, "RECOVERED": 5, "EXPIRED": 6,}
-)
-DISEASE_STATUS_CHOICES = DISEASE_STATUS_VALUES.list_tuple_choices()
-
-BLOOD_GROUP_VALUES = EnumChoices(
-    choices={"A+": "A+", "A-": "A-", "B+": "B+", "B-": "B-", "AB+": "AB+", "AB-": "AB-", "O+": "O+", "O-": "O-",}
-)
-BLOOD_GROUP_CHOICES = BLOOD_GROUP_VALUES.list_tuple_choices()
-
-CURRENT_HEALTH_VALUES = EnumChoices(
-    choices={"NO DATA": 0, "REQUIRES VENTILATOR": 1, "WORSE": 2, "STATUS QUO": 3, "BETTER": 4,}
-)
-CURRENT_HEALTH_CHOICES = CURRENT_HEALTH_VALUES.list_tuple_choices()
+DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
 
 BLOOD_GROUP_CHOICES = [
     ("A+", "A+"),
@@ -90,7 +94,7 @@ class PatientRegistration(models.Model):
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient",
+        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
     )
 
     contact_with_confirmed_carrier = models.BooleanField(
@@ -106,7 +110,7 @@ class PatientRegistration(models.Model):
     )
     countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
-        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled",
+        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )
 
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
@@ -118,14 +122,14 @@ class PatientRegistration(models.Model):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status",
+        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status"
     )
 
     number_of_aged_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True,
+        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True,
+        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -143,7 +147,7 @@ class PatientRegistration(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     @staticmethod
     def has_read_permission(request):
@@ -155,7 +159,7 @@ class PatientRegistration(models.Model):
             or request.user == self.created_by
             or (self.facility and request.user == self.facility.created_by)
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -170,7 +174,7 @@ class PatientRegistration(models.Model):
             or request.user == self.created_by
             or (self.facility and request.user == self.facility.created_by)
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
             #  TODO State Level Permissions
@@ -275,7 +279,7 @@ class PatientConsultation(models.Model):
             # Don't bother, the view shall raise a 400
             return True
         return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and Facility.objects.get(id=request.data["facility"]).created_by == request.user
         )
 
@@ -319,7 +323,7 @@ class DailyRound(models.Model):
     @staticmethod
     def has_write_permission(request):
         return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
                 PatientConsultation.objects.get(
                     id=request.parser_context["kwargs"]["consultation_pk"]
@@ -331,7 +335,7 @@ class DailyRound(models.Model):
     @staticmethod
     def has_read_permission(request):
         return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUES.choices.Staff.value
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
                 PatientConsultation.objects.get(
                     id=request.parser_context["kwargs"]["consultation_pk"]

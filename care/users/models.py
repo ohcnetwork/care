@@ -3,30 +3,24 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 from django.urls import reverse
 
-from care.utils.enum_choices import EnumChoices
+DISTRICT_CHOICES = [
+    (1, "Thiruvananthapuram"),
+    (2, "Kollam"),
+    (3, "Pathanamthitta"),
+    (4, "Alappuzha"),
+    (5, "Kottayam"),
+    (6, "Idukki"),
+    (7, "Ernakulam"),
+    (8, "Thrissur"),
+    (9, "Palakkad"),
+    (10, "Malappuram"),
+    (11, "Kozhikode"),
+    (12, "Wayanad"),
+    (13, "Kannur"),
+    (14, "Kasargode"),
+]
 
-DISTRICT_VALUES = EnumChoices(
-    choices={
-        "Thiruvananthapuram": 1,
-        "Kollam": 2,
-        "Pathanamthitta": 3,
-        "Alappuzha": 4,
-        "Kottayam": 5,
-        "Idukki": 6,
-        "Ernakulam": 7,
-        "Thrissur": 8,
-        "Palakkad": 9,
-        "Malappuram": 10,
-        "Kozhikode": 11,
-        "Wayanad": 12,
-        "Kannur": 13,
-        "Kasargode": 14,
-    }
-)
-DISTRICT_CHOICES = DISTRICT_VALUES.list_tuple_choices()
-
-GENDER_VALUES = EnumChoices(choices={"Male": 1, "Female": 2, "Non-binary": 3})
-GENDER_CHOICES = GENDER_VALUES.list_tuple_choices()
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
@@ -50,18 +44,18 @@ class District(models.Model):
         return f"{self.name}"
 
 
-LOCAL_BODY_VALUES = EnumChoices(
-    choices={
-        "Grama Panchayath": 1,
-        "Block Panchayath": 2,
-        "District Panchayath": 3,
-        "Municipality": 10,
-        "Corporation": 20,
-        "Others": 50,
-    }
+LOCAL_BODY_CHOICES = (
+    # Panchayath levels
+    (1, "Grama Panchayath"),
+    (2, "Block Panchayath"),
+    (3, "District Panchayath"),
+    # Municipality levels
+    (10, "Municipality"),
+    # Corporation levels
+    (20, "Corporation"),
+    # Unknown
+    (50, "Others"),
 )
-
-LOCAL_BODY_CHOICES = LOCAL_BODY_VALUES.list_tuple_choices()
 
 
 class LocalBody(models.Model):
@@ -103,19 +97,17 @@ class Skill(models.Model):
 
 
 class User(AbstractUser):
-    TYPE_VALUES = EnumChoices(
-        choices={
-            "Doctor": 5,
-            "Staff": 10,
-            "Patient": 15,
-            "Volunteer": 20,
-            "DistrictLabAdmin": 25,
-            "DistrictAdmin": 30,
-            "StateLabAdmin": 35,
-        }
-    )
+    TYPE_VALUE_MAP = {
+        "Doctor": 5,
+        "Staff": 10,
+        "Patient": 15,
+        "Volunteer": 20,
+        "DistrictLabAdmin": 25,
+        "DistrictAdmin": 30,
+        "StateLabAdmin": 35,
+    }
 
-    TYPE_CHOICES = TYPE_VALUES.list_tuple_choices()
+    TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
@@ -151,11 +143,9 @@ class User(AbstractUser):
     @staticmethod
     def has_write_permission(request):
         try:
-            user_type = request.data["user_type"]
-            return user_type <= User.TYPE_VALUES.choices.Volunteer.value
-
-        except TypeError:  # Support string choice as well
-            return user_type <= User.TYPE_VALUES.choices.Volunteer.name
+            return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
+        except TypeError:
+            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -168,9 +158,9 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (
-            request.data.get("district") or request.data.get("state")
-        ) and self.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
+        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
+            "DistrictLabAdmin"
+        ]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False
