@@ -7,6 +7,7 @@ import dateparser
 from django.contrib.gis.geos import Point
 from django.utils.timezone import make_aware
 from pytz import unicode
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
@@ -60,7 +61,8 @@ class TestBase(APITestCase):
         return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
 
     @classmethod
-    def create_facility(cls, district: District, **kwargs):
+    def create_facility(cls, district: District, user: User = None, **kwargs):
+        user = user or cls.user
         data = {
             "name": "Foo",
             "district": district,
@@ -69,6 +71,7 @@ class TestBase(APITestCase):
             "location": Point(24.452545, 49.878248),
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
+            "created_by": user,
         }
         data.update(kwargs)
         return Facility.objects.create(**data)
@@ -307,3 +310,10 @@ class TestBase(APITestCase):
             return value
 
         return dict_to_matching_type(d)
+
+    def execute_list(self, user=None):
+        user = user or self.user
+        self.client.force_authenticate(user)
+        response = self.client.get(self.get_url(), format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response

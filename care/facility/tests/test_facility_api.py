@@ -249,7 +249,6 @@ class TestFacilityBulkUpdate(TestBase):
         return "/api/v1/facility/bulk_upsert"
 
     def get_list_representation(self, facility: Any = None) -> dict:
-
         if isinstance(facility, dict):
             location = facility.pop("location", {})
             district_id = facility.pop("district")
@@ -394,22 +393,6 @@ class TestFacilityBulkUpdate(TestBase):
         test_facility = TestFacility()
         response = self.client.get(test_facility.get_url(self.facility.id))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_normal_users_cant_access(self):
-        """
-        Test normal users can't access
-            Error 404 is raised in this case while 403 was raised in the previous one\
-            This is weird and not consistent\
-            but it is what it is.
-        """
-        # logout the user, it's logged in due to the setUp function
-        self.client.logout()
-        self.client.login(
-            username=self.user_data["username"], password=self.user_data["password"],
-        )
-        test_facility = TestFacility()
-        response = self.client.get(test_facility.get_url(self.facility.id))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_super_user_can_access_url_by_location(self):
         """Test super user can access url by location"""

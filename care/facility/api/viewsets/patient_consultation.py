@@ -5,13 +5,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models import DailyRound, PatientConsultation
-
 from care.users.models import User
 
 
 class PatientConsultationFilter(filters.FilterSet):
-    patient = filters.NumberFilter(field_name="patient__id")
-    facility = filters.NumberFilter(field_name="facility__id")
+    patient = filters.NumberFilter(field_name="patient_id")
+    facility = filters.NumberFilter(field_name="facility_id")
 
 
 class PatientConsultationViewSet(ModelViewSet):
@@ -20,7 +19,7 @@ class PatientConsultationViewSet(ModelViewSet):
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = PatientConsultation.objects.all()
+    queryset = PatientConsultation.objects.all().select_related("facility").order_by("-id")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationFilter
 
