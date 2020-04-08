@@ -257,7 +257,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel):
         )
 
 
-class PatientConsultation(models.Model):
+class PatientConsultation(PatientBaseModel):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),

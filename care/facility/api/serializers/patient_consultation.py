@@ -13,6 +13,8 @@ from care.facility.models import (
 
 from config.serializers import ChoiceField
 
+from care.facility.api.serializers import TIMESTAMP_FIELDS
+
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
     facility_name = serializers.CharField(source="facility.name", read_only=True)
@@ -24,7 +26,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        fields = "__all__"
+        read_only = TIMESTAMP_FIELDS
+        exclude = ("deleted",)
 
     def validate(self, obj):
         validated = super().validate(obj)

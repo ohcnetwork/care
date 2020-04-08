@@ -2,6 +2,7 @@ import datetime
 
 from care.facility.models import CATEGORY_CHOICES, SYMPTOM_CHOICES, PatientConsultation
 from care.utils.tests.test_base import TestBase
+from config.tests.helper import mock_equal
 
 
 class TestPatientConsultationApi(TestBase):
@@ -28,6 +29,8 @@ class TestPatientConsultationApi(TestBase):
             "admitted_to": obj.admitted_to,
             "admission_date": obj.admission_date,
             "discharge_date": obj.discharge_date,
+            "created_date": obj.created_date,
+            "modified_date": obj.modified_date,
         }
 
     def get_detail_representation(self, obj=None) -> dict:
@@ -53,6 +56,8 @@ class TestPatientConsultationApi(TestBase):
             "admitted_to": None,
             "admission_date": None,
             "discharge_date": None,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
         }
 
     def create_consultation(self, patient=None, facility=None, **kwargs) -> PatientConsultation:
