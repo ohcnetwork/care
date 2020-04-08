@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import DISEASE_STATUS_VALUES, PatientRegistration
+from care.facility.models import DiseaseStatusEnum, PatientRegistration
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -61,7 +61,7 @@ class TestPatient(TestBase):
             return {
                 "id": facility.id,
                 "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display(),},
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
                 **self.get_local_body_district_state_representation(facility),
             }
 
@@ -73,7 +73,7 @@ class TestPatient(TestBase):
 
     def _get_disease_state_representation(self, disease_state):
         if isinstance(disease_state, int):
-            return DISEASE_STATUS_VALUES.choices(disease_state).name
+            return DiseaseStatusEnum(disease_state).name
         return disease_state
 
     def get_detail_representation(self, patient: Any):
@@ -175,7 +175,7 @@ class TestPatient(TestBase):
         patient.created_by = self.user
         patient.save()
 
-        new_disease_status = DISEASE_STATUS_VALUES.choices.NEGATIVE
+        new_disease_status = DiseaseStatusEnum.NEGATIVE
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )

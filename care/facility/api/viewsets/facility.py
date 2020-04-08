@@ -32,7 +32,7 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser or request.query_params.get("all") == "true":
             return queryset
-        elif request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(district=request.user.district)
         else:
             return queryset.filter(created_by=request.user)
@@ -138,7 +138,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
         district_id = request.data[0]["district"]
         facilities = (
             Facility.objects.filter(district_id=district_id)
-            .select_related("local_body", "district", "state", "created_by__district", "created_by__state",)
+            .select_related("local_body", "district", "state", "created_by__district", "created_by__state")
             .prefetch_related("facilitycapacity_set")
         )
 
