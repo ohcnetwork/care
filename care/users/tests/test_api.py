@@ -4,13 +4,9 @@ from care.users.models import User
 from care.utils.tests.test_base import TestBase
 
 
-class TestSuperUser(TestBase):
-    def setUp(self):
-        """
-        Run once before every test
-            - login the super user
-        """
-        self.client.force_login(self.super_user)
+class TestUserBase(TestBase):
+    def get_base_url(self):
+        return "/api/v1/users"
 
     def get_detail_representation(self, obj=None) -> dict:
         return {
@@ -26,6 +22,18 @@ class TestSuperUser(TestBase):
             **self.get_local_body_district_state_representation(obj),
         }
 
+    def get_list_display(self):
+        pass
+
+
+class TestSuperUser(TestUserBase):
+    def setUp(self):
+        """
+        Run once before every test
+            - login the super user
+        """
+        self.client.force_login(self.super_user)
+
     def test_user_creation(self):
         """
         For a superuser account, test
@@ -35,7 +43,7 @@ class TestSuperUser(TestBase):
                 - object count is 2(1 was created in setUpTestData)
                 - username is present in the response
         """
-        url = "/api/v1/users/"
+        url = self.get_url()
 
         data = self.user_data.copy()
         data["district"] = data["district"].id
@@ -56,12 +64,12 @@ class TestSuperUser(TestBase):
 
     def test_superuser_can_acess_url_by_location(self):
         """Test super user can acess the url by location"""
-        response = self.client.get(f"/api/v1/users/{self.user.username}/")
+        response = self.client.get(self.get_url(self.user.username))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_superuser_can_view(self):
         """Test super user can view all of their profile"""
-        response = self.client.get(f"/api/v1/users/{self.user.username}/")
+        response = self.client.get(self.get_url(self.user.username))
         res_data_json = response.json()
         res_data_json.pop("id")
 
@@ -80,7 +88,7 @@ class TestSuperUser(TestBase):
         data["district"] = data["district"].id
         data["state"] = data["state"].id
 
-        response = self.client.put(f"/api/v1/users/{username}/", {**data, "age": 31, "password": password},)
+        response = self.client.put(self.get_url(username), {**data, "age": 31, "password": password},)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
@@ -90,7 +98,7 @@ class TestSuperUser(TestBase):
 
     def test_superuser_can_delete(self):
         """Test superuser can delete other users"""
-        response = self.client.delete(f"/api/v1/users/{self.user.username}/")
+        response = self.client.delete(self.get_url(self.user.username))
         # test response code
         self.assertEqual(response.status_code, 204)
         # test backend response
@@ -98,21 +106,7 @@ class TestSuperUser(TestBase):
             User.objects.get(username=self.user_data["username"])
 
 
-class TestUser(TestBase):
-    def get_detail_representation(self, obj=None) -> dict:
-        return {
-            "username": obj.username,
-            "user_type": obj.get_user_type_display(),
-            "is_superuser": obj.is_superuser,
-            "gender": obj.get_gender_display(),
-            "email": obj.email,
-            "phone_number": obj.phone_number,
-            "first_name": obj.first_name,
-            "last_name": obj.last_name,
-            "age": obj.age,
-            **self.get_local_body_district_state_representation(obj),
-        }
-
+class TestUser(TestUserBase):
     @classmethod
     def setUpClass(cls) -> None:
         """
@@ -136,12 +130,12 @@ class TestUser(TestBase):
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
         username = self.user.username
-        response = self.client.get(f"/api/v1/users/{username}/")
+        response = self.client.get(self.get_url(username))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_can_read_all(self):
         """Test user can read all"""
-        response = self.client.get("/api/v1/users/")
+        response = self.client.get(self.get_url())
         # test response code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
@@ -156,7 +150,7 @@ class TestUser(TestBase):
         """Test user can modify the attributes for themselves"""
         password = "new_password"
         username = self.user.username
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(self.get_url(username), {"age": 31, "password": password,},)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -166,20 +160,20 @@ class TestUser(TestBase):
     def test_user_cannot_read_others(self):
         """Test 1 user can read the attributes of the other user"""
         username = self.data_2["username"]
-        response = self.client.get(f"/api/v1/users/{username}/")
+        response = self.client.get(self.get_url(username))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(self.get_url(username), {"age": 31, "password": password,},)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_delete_others(self):
         """Test a user can't delete others"""
         field = "username"
-        response = self.client.delete(f"/api/v1/users/{self.data_2[field]}/")
+        response = self.client.delete(self.get_url(self.data_2[field]))
         # test response code
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # test backend response(user_2 still exists)

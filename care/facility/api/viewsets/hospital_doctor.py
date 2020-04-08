@@ -1,15 +1,11 @@
 from dry_rest_permissions.generics import DRYPermissions
-
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 
 from care.facility.api.serializers.hospital_doctor import HospitalDoctorSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, HospitalDoctors
-
-from rest_framework.permissions import IsAuthenticated
-
-
 from care.users.models import User
 
 
@@ -27,7 +23,7 @@ class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
         queryset = self.queryset.filter(facility__id=self.kwargs.get("facility_pk"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictAdmin.value:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__created_by=user)
 
