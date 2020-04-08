@@ -31,25 +31,10 @@ class TestPatientConsultationApi(TestBase):
         }
 
     def get_detail_representation(self, obj=None) -> dict:
-        return {
-            "patient": obj.patient.id,
-            "facility": obj.facility.id,
-            "facility_name": obj.facility.name,
-            "symptoms": obj.symptoms,
-            "other_symptoms": obj.other_symptoms,
-            "symptoms_onset_date": obj.symptoms_onset_date,
-            "category": obj.get_category_display(),
-            "examination_details": obj.examination_details,
-            "existing_medication": obj.existing_medication,
-            "prescribed_medication": obj.prescribed_medication,
-            "suggestion": obj.suggestion,
-            "suggestion_text": obj.get_suggestion_display(),
-            "referred_to": obj.referred_to,
-            "admitted": obj.admitted,
-            "admitted_to": obj.admitted_to,
-            "admission_date": obj.admission_date,
-            "discharge_date": obj.discharge_date,
-        }
+        list_repr = self.get_list_representation(obj)
+        detail_repr = list_repr.copy()
+        detail_repr.update({})  # no changes in list repr and detail repr, if there are only those may be updated here.
+        return detail_repr
 
     def get_consultation_data(self):
         return {
