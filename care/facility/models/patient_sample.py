@@ -4,6 +4,17 @@ from care.facility.models import FacilityBaseModel, PatientRegistration
 from care.users.models import User
 
 
+SAMPLE_TYPE_CHOICES = [
+    (0, "UNKNOWN"),
+    (1, "BA/ETA"),
+    (2, "TS/NPS/NS"),
+    (3, "Blood in EDTA"),
+    (4, "Acute Sera"),
+    (5, "Covalescent sera"),
+    (6, "OTHER TYPE"),
+]
+
+
 class PatientSample(FacilityBaseModel):
     SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
     SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
@@ -30,6 +41,20 @@ class PatientSample(FacilityBaseModel):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
+
+    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES, default=0)
+    sample_type_other = models.TextField(default="")
+
+    has_sari = models.BooleanField(default=False)
+    has_ari = models.BooleanField(default=False)
+
+    doctor_name = models.CharField(max_length=255, default="NO DOCTOR SPECIFIED")
+    diagnosis = models.TextField(default="")
+    diff_diagnosis = models.TextField(default="")
+    etiology_identified = models.TextField(default="")
+    is_atypical_presentation = models.BooleanField(default=False)
+    atypical_presentation = models.TextField(default="")
+    is_unusual_course = models.BooleanField(default=False)
 
     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
