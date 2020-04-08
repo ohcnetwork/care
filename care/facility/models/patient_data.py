@@ -54,6 +54,12 @@ SYMPTOM_CHOICES = [
     (8, "VOMITING/DIARRHOEA"),
     (9, "OTHERS"),
     (10, "SARI"),
+    (11, "SPUTUM"),
+    (12, "NAUSEA"),
+    (13, "CHEST PAIN"),
+    (14, "HEMOPTYSIS"),
+    (15, "NASAL DISCHARGE"),
+    (16, "BODY ACHE"),
 ]
 
 
