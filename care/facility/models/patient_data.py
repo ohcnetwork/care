@@ -97,6 +97,11 @@ class PatientRegistration(models.Model):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
+    nationality = models.CharField(max_length=255, default="", verbose_name="Nationality of Patient")
+    passport_no = models.CharField(max_length=255, default="", verbose_name="Passport Number of Foreign Patients")
+
+    aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
+
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
