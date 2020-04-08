@@ -151,6 +151,9 @@ class User(AbstractUser):
     @staticmethod
     def has_write_permission(request):
         try:
+            user_type = int(request.data["user_type"])
+
+        except ValueError:
             user_type = request.data["user_type"]
             return user_type <= User.TYPE_VALUES.choices.Volunteer.value
 
