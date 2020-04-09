@@ -3,8 +3,16 @@ from fernet_fields import EncryptedCharField, EncryptedTextField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import District, FacilityBaseModel, LocalBody, PatientBaseModel, SoftDeleteManager, State
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_CHOICES, DISEASE_STATUS_CHOICES
+from care.facility.models import (
+    DISEASE_CHOICES,
+    District,
+    FacilityBaseModel,
+    LocalBody,
+    PatientBaseModel,
+    SoftDeleteManager,
+    State,
+)
+from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 

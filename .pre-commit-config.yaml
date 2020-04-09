@@ -49,3 +49,11 @@ repos:
         types: [python]
         pass_filenames: false
         require_serial: true
+
+      - id: pre-commit-django-tests
+        name: Run Django unit tests
+        entry: python manage.py test --settings=config.settings.test -n
+        language: system
+        types: [python]
+        pass_filenames: false
+        require_serial: true

@@ -2,13 +2,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.models.patient_base import (
-    ADMIT_CHOICES,
-    CATEGORY_CHOICES,
-    CURRENT_HEALTH_CHOICES,
-    SYMPTOM_CHOICES,
-    SuggestionChoices,
-)
+from care.facility.models import CATEGORY_CHOICES
+from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from config.serializers import ChoiceField
 

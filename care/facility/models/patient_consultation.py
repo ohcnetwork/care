@@ -1,10 +1,9 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import Facility
+from care.facility.models import CATEGORY_CHOICES, Facility
 from care.facility.models.patient_base import (
     ADMIT_CHOICES,
-    CATEGORY_CHOICES,
     CURRENT_HEALTH_CHOICES,
     SYMPTOM_CHOICES,
     PatientBaseModel,

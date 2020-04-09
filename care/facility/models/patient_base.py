@@ -5,22 +5,6 @@ from django.db import models
 
 from care.facility.models.base import SoftDeleteManager
 
-DISEASE_CHOICES_MAP = {
-    "NO": 1,
-    "Diabetes": 2,
-    "Heart Disease": 3,
-    "HyperTension": 4,
-    "Kidney Diseases": 5,
-    "Lung Diseases/Asthma": 6,
-    "Cancer": 7,
-}
-DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
-CATEGORY_CHOICES = [
-    ("Mild", "Category-A"),
-    ("Moderate", "Category-B"),
-    ("Severe", "Category-C"),
-    (None, "UNCLASSIFIED"),
-]
 CURRENT_HEALTH_CHOICES = [
     (0, "NO DATA"),
     (1, "REQUIRES VENTILATOR"),
@@ -51,6 +35,25 @@ SYMPTOM_CHOICES = [
     (14, "HEMOPTYSIS"),
     (15, "NASAL DISCHARGE"),
     (16, "BODY ACHE"),
+]
+
+DISEASE_CHOICES_MAP = {
+    "NO": 1,
+    "Diabetes": 2,
+    "Heart Disease": 3,
+    "HyperTension": 4,
+    "Kidney Diseases": 5,
+    "Lung Diseases/Asthma": 6,
+    "Cancer": 7,
+}
+DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
+
+
+CATEGORY_CHOICES = [
+    ("Mild", "Category-A"),
+    ("Moderate", "Category-B"),
+    ("Severe", "Category-C"),
+    (None, "UNCLASSIFIED"),
 ]
 
 
