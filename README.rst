@@ -1,6 +1,12 @@
 Care
 ====
 
+Auto Deployed to https://api.care.coronasafe.in for master Branch. 
+
+Report bugs at https://bugs.coronasafe.in
+
+Issue tracker : https://bugs.coronasafe.network/projects/CARE/issues
+
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
    :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
