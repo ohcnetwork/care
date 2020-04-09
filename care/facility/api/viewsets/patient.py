@@ -5,7 +5,6 @@ from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import serializers, viewsets
-from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
@@ -97,27 +96,6 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
-    @action(detail=False)
-    def search(self, request, *args, **kwargs):
-        serializer = PatientSearchSerializer(data=request.query_params, partial=True)
-        serializer.is_valid(raise_exception=True)
-
-        search_keys = ["date_of_birth", "year_of_birth", "phone_number"]
-        search_fields = {
-            key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
-        }
-        if not search_fields:
-            raise serializers.ValidationError(
-                {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
-            )
-
-        if not request.user.is_superuser:
-            search_fields["state_id"] = request.user.state_id
-        result_qs = PatientSearch.objects.filter(**search_fields)
-        page = self.paginate_queryset(result_qs)
-        result_serializer = PatientSearchSerializer(page, many=True)
-        return self.get_paginated_response(result_serializer.data)
-
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
     entry_date = filters.DateFromToRangeFilter(field_name="entry_date")
@@ -157,3 +135,50 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
 
         """
         return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
+
+
+class PatientSearchViewSet(viewsets.ModelViewSet):
+    http_method_names = ["get"]
+    queryset = PatientSearch.objects.all()
+    serializer_class = PatientSearchSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
+
+    def get_queryset(self):
+        if self.action != "list":
+            return super(PatientSearchViewSet, self).get_queryset()
+        else:
+            serializer = PatientSearchSerializer(data=self.request.query_params, partial=True)
+            serializer.is_valid(raise_exception=True)
+
+            search_keys = ["date_of_birth", "year_of_birth", "phone_number"]
+            search_fields = {
+                key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
+            }
+            if not search_fields:
+                raise serializers.ValidationError(
+                    {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
+                )
+
+            if not self.request.user.is_superuser:
+                search_fields["state_id"] = self.request.user.state_id
+            return self.queryset.filter(**search_fields)
+
+    def retrieve(self, request, *args, **kwargs):
+        raise NotImplementedError()
+
+    def list(self, request, *args, **kwargs):
+        """
+        Patient Search
+
+        ### Available filters -
+
+        - year_of_birth: in YYYY format
+        - date_of_birth: in YYYY-MM-DD format
+        - phone_number: in E164 format: eg: +917795937091
+
+        **SPECIAL NOTE**: the values should be urlencoded
+
+        `Eg: api/v1/patient/search/?year_of_birth=1992&phone_number=%2B917795937091`
+
+        """
+        return super(PatientSearchViewSet, self).list(request, *args, **kwargs)

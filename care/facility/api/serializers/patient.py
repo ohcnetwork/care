@@ -10,6 +10,7 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, 
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
+    GENDER_CHOICES,
     Disease,
     Facility,
     FacilityPatientStatsHistory,
@@ -119,8 +120,9 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 
 
 class PatientSearchSerializer(serializers.ModelSerializer):
+    gender = ChoiceField(choices=GENDER_CHOICES)
     phone_number = PhoneNumberField()
 
     class Meta:
         model = PatientSearch
-        exclude = ("patient_id",)
+        fields = "__all__"

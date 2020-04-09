@@ -101,27 +101,6 @@ class PatientRegistration(PatientBaseModel):
         return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     @staticmethod
-    def has_search_permission(request):
-        """
-        Checks the permission for /search API
-
-        Parameters
-        ----------
-        request: Request object
-
-        Returns
-        -------
-        bool
-            True if has permission
-            False else
-        """
-        if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return True
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified:
-            return True
-        return False
-
-    @staticmethod
     def has_read_permission(request):
         return True
 
@@ -221,6 +200,14 @@ class PatientSearch(models.Model):
             models.Index(fields=["year_of_birth", "date_of_birth", "phone_number"]),
             models.Index(fields=["year_of_birth", "phone_number"]),
         ]
+
+    @staticmethod
+    def has_read_permission(request):
+        if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return True
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified:
+            return True
+        return False
 
 
 class Disease(models.Model):
