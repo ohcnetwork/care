@@ -277,3 +277,19 @@ class TestPatient(TestBase):
         response = self.client.get(self.get_url(entry_id=patient.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
+
+    def test_search(self):
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        user = self.clone_object(self.user, save=False)
+        user.username = f"{user.username}_verified_test_search"
+        user.verified = True
+        user.save()
+        self.client.force_authenticate(user)
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

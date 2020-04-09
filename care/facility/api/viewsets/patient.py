@@ -4,7 +4,8 @@ from json import JSONDecodeError
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import viewsets
+from rest_framework import serializers, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
@@ -13,8 +14,9 @@ from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
+    PatientSearchSerializer,
 )
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, PatientSearch
 from care.facility.models.patient_base import DiseaseStatusEnum
 from care.users.models import User
 
@@ -94,6 +96,27 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
 
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)
+
+    @action(detail=False)
+    def search(self, request, *args, **kwargs):
+        serializer = PatientSearchSerializer(data=request.query_params, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        search_keys = ["date_of_birth", "year_of_birth", "phone_number"]
+        search_fields = {
+            key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
+        }
+        if not search_fields:
+            raise serializers.ValidationError(
+                {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
+            )
+
+        if not request.user.is_superuser:
+            search_fields["state_id"] = request.user.state_id
+        result_qs = PatientSearch.objects.filter(**search_fields)
+        page = self.paginate_queryset(result_qs)
+        result_serializer = PatientSearchSerializer(page, many=True)
+        return self.get_paginated_response(result_serializer.data)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

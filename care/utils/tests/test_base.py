@@ -221,11 +221,12 @@ class TestBase(APITestCase):
         return f"{url}/"
 
     @classmethod
-    def clone_object(cls, obj):
+    def clone_object(cls, obj, save=True):
         new_obj = obj._meta.model.objects.get(pk=obj.id)
         new_obj.pk = None
         new_obj.id = None
-        new_obj.save()
+        if save:
+            new_obj.save()
         return new_obj
 
     @abc.abstractmethod

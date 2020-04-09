@@ -8,7 +8,14 @@ from rest_framework import serializers
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
-from care.facility.models import DISEASE_CHOICES, Disease, Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import (
+    DISEASE_CHOICES,
+    Disease,
+    Facility,
+    FacilityPatientStatsHistory,
+    PatientRegistration,
+    PatientSearch,
+)
 from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
@@ -109,3 +116,11 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
             defaults={**validated_data, "deleted": False},
         )
         return instance
+
+
+class PatientSearchSerializer(serializers.ModelSerializer):
+    phone_number = PhoneNumberField()
+
+    class Meta:
+        model = PatientSearch
+        exclude = ("patient_id",)
