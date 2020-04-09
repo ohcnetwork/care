@@ -18,10 +18,6 @@ from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATU
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 
-class PatientSoftDeleteManager(SoftDeleteManager):
-    use_in_migrations = True
-
-
 class PatientRegistration(PatientBaseModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
@@ -95,7 +91,7 @@ class PatientRegistration(PatientBaseModel):
 
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
-    objects = PatientSoftDeleteManager()
+    objects = SoftDeleteManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
