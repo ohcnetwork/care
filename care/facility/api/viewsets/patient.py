@@ -14,7 +14,8 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import DiseaseStatusEnum, Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models.patient_base import DiseaseStatusEnum
 from care.users.models import User
 
 

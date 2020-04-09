@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.models import Ambulance, AmbulanceDriver
+from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.users.api.serializers.lsg import DistrictSerializer
 
 

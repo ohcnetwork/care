@@ -1,14 +1,14 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-
-from care.facility.models.patient_sample import PatientSample
-
 from djangoql.admin import DjangoQLSearchMixin
 
+from care.facility.models.ambulance import Ambulance, AmbulanceDriver
+from care.facility.models.patient_sample import PatientSample
+from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+
 from .models import (
-    Ambulance,
-    AmbulanceDriver,
     Building,
+    Disease,
     Facility,
     FacilityCapacity,
     FacilityStaff,
@@ -17,10 +17,8 @@ from .models import (
     InventoryItem,
     InventoryLog,
     PatientRegistration,
-    PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
-    Disease,
 )
 
 

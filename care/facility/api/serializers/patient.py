@@ -4,23 +4,15 @@ from django.db import transaction
 from django.utils.timezone import make_aware
 from rest_framework import serializers
 
+from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
-from care.facility.models import (
-    DISEASE_CHOICES,
-    DISEASE_STATUS_CHOICES,
-    Disease,
-    DiseaseStatusEnum,
-    Facility,
-    FacilityPatientStatsHistory,
-    PatientConsultation,
-    PatientRegistration,
-    PatientTeleConsultation,
-)
+from care.facility.models import DISEASE_CHOICES, Disease, Facility, FacilityPatientStatsHistory, PatientRegistration
+from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
+from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from config.serializers import ChoiceField
-
-from care.facility.api.serializers import TIMESTAMP_FIELDS
 
 
 class PatientListSerializer(serializers.ModelSerializer):
