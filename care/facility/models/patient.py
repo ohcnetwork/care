@@ -47,7 +47,7 @@ class PatientRegistration(PatientBaseModel):
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
-    countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
+    countries_travelled = models.TextField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
         blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )
