@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import DiseaseStatusEnum, PatientRegistration
+from care.facility.models import DiseaseStatusEnum, PatientRegistration, PatientSearch
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -32,6 +32,7 @@ class TestPatient(TestBase):
             "id": patient.id,
             "name": patient.name,
             "age": patient.age,
+            "date_of_birth": mock_equal,
             "gender": patient.gender,
             "is_medical_worker": patient.is_medical_worker,
             "phone_number": patient.phone_number,
@@ -99,6 +100,7 @@ class TestPatient(TestBase):
             "id": mock_equal,
             "name": patient.name,
             "age": patient.age,
+            "date_of_birth": mock_equal,
             "nationality": patient.nationality,
             "passport_no": patient.passport_no,
             "aadhar_no": patient.aadhar_no,
@@ -155,6 +157,11 @@ class TestPatient(TestBase):
         patient = PatientRegistration.objects.filter(countries_travelled=patient_data["countries_travelled"]).first()
         self.assertIsNotNone(patient)
         self.assertIsNotNone(patient.medical_history.all().count(), len(patient_data["medical_history"]))
+
+        self.assertIsNotNone(patient.patient_search_id)
+        patient_search = PatientSearch.objects.get(pk=patient.patient_search_id)
+        self.assertIsNotNone(patient_search)
+        self.assertEqual(patient_search.phone_number, patient_data["phone_number"])
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""

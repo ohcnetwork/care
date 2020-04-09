@@ -5,7 +5,6 @@ from typing import Any, Dict
 
 import dateparser
 from django.contrib.gis.geos import Point
-from django.utils.timezone import make_aware
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -159,13 +158,14 @@ class TestBase(APITestCase):
         return {
             "name": "Foo",
             "age": 32,
+            "date_of_birth": datetime.date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
             "blood_group": "O+",
             "ongoing_medication": "",
-            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),
             "disease_status": "SUSPECTED",
-            "phone_number": "8888888888",
+            "phone_number": "+918888888888",
             "address": "Global citizen",
             "contact_with_confirmed_carrier": True,
             "contact_with_suspected_carrier": True,
@@ -306,7 +306,11 @@ class TestBase(APITestCase):
                 return_value = value
                 if isinstance(value, (str, unicode,)):
                     return_value = dateparser.parse(value)
-                return return_value.astimezone(tz=datetime.timezone.utc)
+                return (
+                    return_value.astimezone(tz=datetime.timezone.utc)
+                    if isinstance(return_value, datetime.datetime)
+                    else return_value
+                )
             return value
 
         return dict_to_matching_type(d)

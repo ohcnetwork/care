@@ -2,6 +2,7 @@ import datetime
 
 from django.db import transaction
 from django.utils.timezone import make_aware
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -25,7 +26,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "ongoing_medication")
+        exclude = ("created_by", "deleted", "ongoing_medication", "patient_search_id", "year_of_birth")
         read_only = TIMESTAMP_FIELDS
 
 
@@ -39,6 +40,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
+    phone_number = PhoneNumberField()
     facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
@@ -50,7 +52,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted")
+        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth")
         read_only = TIMESTAMP_FIELDS
 
     def get_last_consultation(self, obj):
