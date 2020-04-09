@@ -14,7 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
-from care.facility.models import Ambulance
+from care.facility.models.ambulance import Ambulance
 
 
 class AmbulanceFilterSet(filters.FilterSet):
