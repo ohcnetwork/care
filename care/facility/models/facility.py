@@ -1,78 +1,44 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
+from care.facility.models import FacilityBaseModel, phone_number_regex
 from care.users.models import District, LocalBody, State
-from care.utils.enum_choices import EnumChoices
 
 User = get_user_model()
 
-
-class SoftDeleteManager(models.Manager):
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(deleted=False)
-
-
-class FacilityBaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = SoftDeleteManager()
-
-    class Meta:
-        abstract = True
-
-    def delete(self, *args):
-        self.deleted = True
-        self.save()
-
-
 # Facility Model Start
 
-ROOM_TYPES_VALUES = EnumChoices(
-    choices={
-        "Total": 0,
-        "Normal": 1,
-        "Hostel": 2,
-        "Single Room with Attached Bathroom": 3,
-        "ICU": 10,
-        "Ventilator": 20,
-    }
-)
-ROOM_TYPES = ROOM_TYPES_VALUES.list_tuple_choices()
+ROOM_TYPES = [
+    (0, "Total"),
+    (1, "Normal"),
+    (2, "Hostel"),
+    (3, "Single Room with Attached Bathroom"),
+    (10, "ICU"),
+    (20, "Ventilator"),
+]
 
-FACILITY_TYPES_VALUES = EnumChoices(
-    choices={
-        "Educational Inst": 1,
-        "Private Hospital": 2,
-        "Other": 3,
-        "Hostel": 4,
-        "Hotel": 5,
-        "Lodge": 6,
-        "TeleMedicine": 7,
-        "Govt Hospital": 8,
-    }
-)
-FACILITY_TYPES = FACILITY_TYPES_VALUES.list_tuple_choices()
+FACILITY_TYPES = [
+    (1, "Educational Inst"),
+    (2, "Private Hospital"),
+    (3, "Other"),
+    (4, "Hostel"),
+    (5, "Hotel"),
+    (6, "Lodge"),
+    (7, "TeleMedicine"),
+    (8, "Govt Hospital"),
+]
 
-DOCTOR_TYPES_VALUES = EnumChoices(
-    choices={"General Medicine": 1, "Pulmonology": 2, "Critical Care": 3, "Paediatrics": 4, "Other Speciality": 5,}
-)
-DOCTOR_TYPES = DOCTOR_TYPES_VALUES.list_tuple_choices()
-
-AMBULANCE_TYPES_VALUES = EnumChoices(choices={"Basic": 1, "Cardiac": 2, "Hearse": 3})
-AMBULANCE_TYPES = AMBULANCE_TYPES_VALUES.list_tuple_choices()
-
-phone_number_regex = RegexValidator(
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-    code="invalid_mobile",
-)
+DOCTOR_TYPES = [
+    (1, "General Medicine"),
+    (2, "Pulmonology"),
+    (3, "Critical Care"),
+    (4, "Paediatrics"),
+    (5, "Other Speciality"),
+]
 
 
 class Facility(FacilityBaseModel):
@@ -111,7 +77,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -128,7 +94,7 @@ class Facility(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -204,7 +170,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -221,7 +187,7 @@ class HospitalDoctors(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -255,7 +221,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -272,7 +238,7 @@ class FacilityCapacity(FacilityBaseModel):
             request.user.is_superuser
             or request.user == self.created_by
             or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == self.district
             )
         )
@@ -384,103 +350,3 @@ class InventoryLog(FacilityBaseModel):
 
 
 # Inventory Model End
-
-
-class Ambulance(FacilityBaseModel):
-    vehicle_number_regex = RegexValidator(
-        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
-        message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
-        code="invalid_vehicle_number",
-    )
-    INSURANCE_YEAR_VALUE = ((2020, 2020), (2021, 2021), (2022, 2022))
-
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
-
-    owner_name = models.CharField(max_length=255)
-    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    owner_is_smart_phone = models.BooleanField(default=True)
-
-    # primary_district = models.IntegerField(choices=DISTRICT_VALUE, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_VALUE, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_VALUE, blank=True, null=True)
-
-    primary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
-    )
-    secondary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
-    )
-    third_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
-    )
-
-    has_oxygen = models.BooleanField()
-    has_ventilator = models.BooleanField()
-    has_suction_machine = models.BooleanField()
-    has_defibrillator = models.BooleanField()
-
-    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_VALUE)
-
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
-
-    price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    has_free_service = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    @property
-    def drivers(self):
-        return self.ambulancedriver_set.filter(deleted=False)
-
-    def __str__(self):
-        return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
-        )
-
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(
-    #             name="ambulance_free_or_price",
-    #             check=models.Q(price_per_km__isnull=False)
-    #             | models.Q(has_free_service=True),
-    #         )
-    #     ]
-
-
-class AmbulanceDriver(FacilityBaseModel):
-    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    is_smart_phone = models.BooleanField()
-
-    def __str__(self):
-        return f"Driver: {self.name}({self.phone_number})"

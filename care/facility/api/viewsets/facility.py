@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db import transaction
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -15,6 +16,7 @@ from care.facility.api.serializers.facility import (
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 from care.users.models import User
+from config.utils import get_psql_search_tokens
 
 
 class FacilityFilter(filters.FilterSet):
@@ -31,11 +33,21 @@ class FacilityFilter(filters.FilterSet):
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser or request.query_params.get("all") == "true":
-            return queryset
-        elif request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
-            return queryset.filter(district=request.user.district)
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=request.user.district)
         else:
-            return queryset.filter(created_by=request.user)
+            queryset = queryset.filter(created_by=request.user)
+        search_text = request.query_params.get("search_text")
+        if search_text:
+            vector = SearchVector("name", "district__name", "state__name")
+            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+            queryset = (
+                queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+                .filter(search_text=query)
+                .order_by("-rank")
+            )
+        return queryset
 
 
 class FacilityViewSet(viewsets.ModelViewSet):
@@ -74,6 +86,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
         Other query params
         - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
+        - `search_text` - string. Searches across name, district name and state name.
         """
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
@@ -138,7 +151,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
         district_id = request.data[0]["district"]
         facilities = (
             Facility.objects.filter(district_id=district_id)
-            .select_related("local_body", "district", "state", "created_by__district", "created_by__state",)
+            .select_related("local_body", "district", "state", "created_by__district", "created_by__state")
             .prefetch_related("facilitycapacity_set")
         )
 

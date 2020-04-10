@@ -1,6 +1,6 @@
 exclude: 'docs|node_modules|migrations|.git|.tox'
 default_stages: [commit]
-fail_fast: true
+fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -45,6 +45,14 @@ repos:
       - id: pre-commit-django-migrations
         name: Check django migrations
         entry: python manage.py makemigrations --check
+        language: system
+        types: [python]
+        pass_filenames: false
+        require_serial: true
+
+      - id: pre-commit-django-tests
+        name: Run Django unit tests
+        entry: python manage.py test --settings=config.settings.test -n
         language: system
         types: [python]
         pass_filenames: false

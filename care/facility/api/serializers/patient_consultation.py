@@ -1,16 +1,10 @@
-from rest_framework import serializers, fields
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from care.facility.models import (
-    DailyRound,
-    PatientConsultation,
-    SuggestionChoices,
-    SYMPTOM_CHOICES,
-    CATEGORY_CHOICES,
-    ADMIT_CHOICES,
-    CURRENT_HEALTH_CHOICES,
-)
-
+from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.models import CATEGORY_CHOICES
+from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from config.serializers import ChoiceField
 
 
@@ -24,7 +18,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        fields = "__all__"
+        read_only = TIMESTAMP_FIELDS
+        exclude = ("deleted",)
 
     def validate(self, obj):
         validated = super().validate(obj)
@@ -42,7 +37,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
 
 class DailyRoundSerializer(serializers.ModelSerializer):
-
     additional_symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES, required=False)
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)

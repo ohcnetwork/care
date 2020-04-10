@@ -5,22 +5,20 @@ from typing import Any, Dict
 
 import dateparser
 from django.contrib.gis.geos import Point
-from django.utils.timezone import make_aware
 from pytz import unicode
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
-    BLOOD_GROUP_VALUES,
-    DISEASE_CHOICES_VALUES,
-    DISEASE_STATUS_VALUES,
-    FACILITY_TYPES_VALUES,
+    DISEASE_CHOICES_MAP,
     Disease,
+    DiseaseStatusEnum,
     Facility,
     LocalBody,
     PatientRegistration,
     User,
 )
-from care.users.models import GENDER_VALUES, District, State
+from care.users.models import District, State
 from config.tests.helper import EverythingEquals
 
 
@@ -37,20 +35,18 @@ class TestBase(APITestCase):
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
             "age": 30,
-            "gender": GENDER_VALUES.choices.Female.value,
+            "gender": 2,
             "username": username,
             "password": "bar",
             "district": district,
-            "user_type": User.TYPE_VALUES.choices.Staff.value,
+            "user_type": User.TYPE_VALUE_MAP["Staff"],
         }
         data.update(kwargs)
         return User.objects.create_user(**data)
 
     @classmethod
     def create_super_user(cls, district: District, username: str = "superuser"):
-        user = cls.create_user(
-            district=district, username=username, user_type=User.TYPE_VALUES.choices.DistrictAdmin.value,
-        )
+        user = cls.create_user(district=district, username=username, user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],)
         user.is_superuser = True
         user.save()
         return user
@@ -64,15 +60,17 @@ class TestBase(APITestCase):
         return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
 
     @classmethod
-    def create_facility(cls, district: District, **kwargs):
+    def create_facility(cls, district: District, user: User = None, **kwargs):
+        user = user or cls.user
         data = {
             "name": "Foo",
             "district": district,
-            "facility_type": FACILITY_TYPES_VALUES.choices["Educational Inst"].value,
+            "facility_type": 1,
             "address": "8/88, 1st Cross, 1st Main, Boo Layout",
             "location": Point(24.452545, 49.878248),
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
+            "created_by": user,
         }
         data.update(kwargs)
         return Facility.objects.create(**data)
@@ -90,15 +88,13 @@ class TestBase(APITestCase):
             {
                 "district_id": district_id,
                 "state_id": state_id,
-                "disease_status": getattr(DISEASE_STATUS_VALUES.choices, patient_data["disease_status"]).value,
+                "disease_status": getattr(DiseaseStatusEnum, patient_data["disease_status"]).value,
             }
         )
 
         patient = PatientRegistration.objects.create(**patient_data)
         diseases = [
-            Disease.objects.create(
-                patient=patient, disease=DISEASE_CHOICES_VALUES.choices[mh["disease"]].value, details=mh["details"],
-            )
+            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"])
             for mh in medical_history
         ]
         patient.medical_history.set(diseases)
@@ -118,14 +114,14 @@ class TestBase(APITestCase):
                 user_type: str(A valid mapping for the integer types mentioned inside the models)
         """
         district = district or cls.district
-        user_type = user_type or User.TYPE_VALUES.choices.Staff.value
+        user_type = user_type or User.TYPE_VALUE_MAP["Staff"]
 
         return {
             "user_type": user_type,
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
-            "gender": GENDER_VALUES.choices.Female.value,
+            "gender": 2,
             "age": 30,
             "email": "foo@foobar.com",
             "username": "user",
@@ -149,7 +145,7 @@ class TestBase(APITestCase):
         return {
             "name": "Foo",
             "district": (district or cls.district).id,
-            "facility_type": FACILITY_TYPES_VALUES.choices["Educational Inst"].value,
+            "facility_type": 1,
             "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "oxygen_capacity": 10,
@@ -162,13 +158,14 @@ class TestBase(APITestCase):
         return {
             "name": "Foo",
             "age": 32,
-            "gender": GENDER_VALUES.choices.Female.value,
+            "date_of_birth": datetime.date(1992, 4, 1),
+            "gender": 2,
             "is_medical_worker": True,
-            "blood_group": BLOOD_GROUP_VALUES.choices["O+"].name,
+            "blood_group": "O+",
             "ongoing_medication": "",
-            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-            "disease_status": DISEASE_STATUS_VALUES.choices.SUSPECTED.name,
-            "phone_number": "8888888888",
+            "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),
+            "disease_status": "SUSPECTED",
+            "phone_number": "+918888888888",
             "address": "Global citizen",
             "contact_with_confirmed_carrier": True,
             "contact_with_suspected_carrier": True,
@@ -191,7 +188,7 @@ class TestBase(APITestCase):
         super(TestBase, cls).setUpClass()
         cls.state = cls.create_state()
         cls.district = cls.create_district(cls.state)
-        cls.user_type = User.TYPE_VALUES.choices.Staff.value
+        cls.user_type = User.TYPE_VALUE_MAP["Staff"]
         cls.user = cls.create_user(cls.district)
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)
@@ -224,11 +221,12 @@ class TestBase(APITestCase):
         return f"{url}/"
 
     @classmethod
-    def clone_object(cls, obj):
+    def clone_object(cls, obj, save=True):
         new_obj = obj._meta.model.objects.get(pk=obj.id)
         new_obj.pk = None
         new_obj.id = None
-        new_obj.save()
+        if save:
+            new_obj.save()
         return new_obj
 
     @abc.abstractmethod
@@ -309,7 +307,18 @@ class TestBase(APITestCase):
                 return_value = value
                 if isinstance(value, (str, unicode,)):
                     return_value = dateparser.parse(value)
-                return return_value.astimezone(tz=datetime.timezone.utc)
+                return (
+                    return_value.astimezone(tz=datetime.timezone.utc)
+                    if isinstance(return_value, datetime.datetime)
+                    else return_value
+                )
             return value
 
         return dict_to_matching_type(d)
+
+    def execute_list(self, user=None):
+        user = user or self.user
+        self.client.force_authenticate(user)
+        response = self.client.get(self.get_url(), format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response

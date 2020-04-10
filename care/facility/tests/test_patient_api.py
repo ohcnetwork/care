@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import DISEASE_STATUS_VALUES, PatientRegistration
+from care.facility.models import DiseaseStatusEnum, PatientRegistration, PatientSearch
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -24,7 +24,7 @@ class TestPatient(TestBase):
     def get_list_representation(self, patient=None):
 
         if isinstance(patient, dict):
-            medical_history = patient.pop("medical_history", default="[]")
+            medical_history = patient.pop("medical_history", [])
             patient = PatientRegistration(**patient)
             patient.medical_history.set(medical_history)
 
@@ -32,10 +32,14 @@ class TestPatient(TestBase):
             "id": patient.id,
             "name": patient.name,
             "age": patient.age,
+            "date_of_birth": mock_equal,
             "gender": patient.gender,
             "is_medical_worker": patient.is_medical_worker,
             "phone_number": patient.phone_number,
             "address": patient.address,
+            "nationality": patient.nationality,
+            "passport_no": patient.passport_no,
+            "aadhar_no": patient.aadhar_no,
             "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
             "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
             "estimated_contact_date": patient.estimated_contact_date,
@@ -51,6 +55,8 @@ class TestPatient(TestBase):
             "disease_status": self._get_disease_state_representation(patient.disease_status),
             "number_of_aged_dependents": patient.number_of_aged_dependents,
             "number_of_chronic_diseased_dependents": patient.number_of_chronic_diseased_dependents,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
             **self.get_local_body_district_state_representation(patient),
         }
 
@@ -61,7 +67,7 @@ class TestPatient(TestBase):
             return {
                 "id": facility.id,
                 "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display(),},
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
                 **self.get_local_body_district_state_representation(facility),
             }
 
@@ -73,7 +79,7 @@ class TestPatient(TestBase):
 
     def _get_disease_state_representation(self, disease_state):
         if isinstance(disease_state, int):
-            return DISEASE_STATUS_VALUES.choices(disease_state).name
+            return DiseaseStatusEnum(disease_state).name
         return disease_state
 
     def get_detail_representation(self, patient: Any):
@@ -94,6 +100,10 @@ class TestPatient(TestBase):
             "id": mock_equal,
             "name": patient.name,
             "age": patient.age,
+            "date_of_birth": mock_equal,
+            "nationality": patient.nationality,
+            "passport_no": patient.passport_no,
+            "aadhar_no": patient.aadhar_no,
             "is_medical_worker": patient.is_medical_worker,
             "blood_group": patient.blood_group,
             "ongoing_medication": patient.ongoing_medication,
@@ -117,6 +127,8 @@ class TestPatient(TestBase):
             "countries_travelled": patient.countries_travelled,
             "last_consultation": None,
             "facility_object": None,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
             **self.get_local_body_district_state_representation(patient),
         }
 
@@ -145,6 +157,11 @@ class TestPatient(TestBase):
         patient = PatientRegistration.objects.filter(countries_travelled=patient_data["countries_travelled"]).first()
         self.assertIsNotNone(patient)
         self.assertIsNotNone(patient.medical_history.all().count(), len(patient_data["medical_history"]))
+
+        self.assertIsNotNone(patient.patient_search_id)
+        patient_search = PatientSearch.objects.get(pk=patient.patient_search_id)
+        self.assertIsNotNone(patient_search)
+        self.assertEqual(patient_search.phone_number, patient_data["phone_number"])
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""
@@ -175,7 +192,7 @@ class TestPatient(TestBase):
         patient.created_by = self.user
         patient.save()
 
-        new_disease_status = DISEASE_STATUS_VALUES.choices.NEGATIVE
+        new_disease_status = DiseaseStatusEnum.NEGATIVE
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
@@ -260,3 +277,19 @@ class TestPatient(TestBase):
         response = self.client.get(self.get_url(entry_id=patient.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
+
+    def test_search(self):
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        user = self.clone_object(self.user, save=False)
+        user.username = f"{user.username}_verified_test_search"
+        user.verified = True
+        user.save()
+        self.client.force_authenticate(user)
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

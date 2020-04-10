@@ -4,13 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
-from care.facility.models import DailyRound, PatientConsultation
+from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from care.users.models import User
 
 
 class PatientConsultationFilter(filters.FilterSet):
-    patient = filters.NumberFilter(field_name="patient__id")
-    facility = filters.NumberFilter(field_name="facility__id")
+    patient = filters.NumberFilter(field_name="patient_id")
+    facility = filters.NumberFilter(field_name="facility_id")
 
 
 class PatientConsultationViewSet(ModelViewSet):
@@ -19,14 +19,14 @@ class PatientConsultationViewSet(ModelViewSet):
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = PatientConsultation.objects.all()
+    queryset = PatientConsultation.objects.all().select_related("facility").order_by("-id")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationFilter
 
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUES.choices.DistrictLabAdmin.value:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(patient__district=self.request.user.district)
         return self.queryset.filter(facility__created_by=self.request.user)
 
