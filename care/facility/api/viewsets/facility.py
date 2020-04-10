@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db import transaction
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -75,6 +76,18 @@ class FacilityViewSet(viewsets.ModelViewSet):
         Other query params
         - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
         """
+        search_text = request.query_params.get("search_text")
+        if search_text:
+            vector = SearchVector("name") + SearchVector("district__name") + SearchVector("state__name")
+            query = SearchQuery(search_text)
+            queryset = Facility.objects.annotate(rank=SearchRank(vector, query)).order_by("-rank")
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
