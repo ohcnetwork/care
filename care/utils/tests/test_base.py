@@ -94,7 +94,7 @@ class TestBase(APITestCase):
 
         patient = PatientRegistration.objects.create(**patient_data)
         diseases = [
-            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"])
+            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"],)
             for mh in medical_history
         ]
         patient.medical_history.set(diseases)
@@ -193,10 +193,12 @@ class TestBase(APITestCase):
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)
         cls.patient = cls.create_patient()
+        # cls.ambulance = cls.create_ambulance()
 
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
+        # cls.ambulance_data = cls.get_ambulance_data(cls.district)
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
