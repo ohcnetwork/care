@@ -1,4 +1,5 @@
-from django.db import connection, transaction
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db import transaction
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import status, viewsets
@@ -31,33 +32,22 @@ class FacilityFilter(filters.FilterSet):
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
+        if request.user.is_superuser or request.query_params.get("all") == "true":
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=request.user.district)
+        else:
+            queryset = queryset.filter(created_by=request.user)
         search_text = request.query_params.get("search_text")
         if search_text:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    SELECT id
-                    FROM (
-                      SELECT f.id,
-                        to_tsvector('english', coalesce(f.name, ' '))
-                        || to_tsvector('english', coalesce(d.name, ' '))
-                        || to_tsvector('english', coalesce(s.name, ' '))
-                        AS document
-                      FROM facility_facility f
-                        LEFT JOIN users_district d ON f.district_id = d.id
-                        LEFT JOIN users_state s ON f.state_id = s.id
-                    ) facility_search
-                    WHERE facility_search.document @@ to_tsquery('english', %s)
-                """,
-                    (get_psql_search_tokens(search_text),),
-                )
-                queryset = queryset.filter(id__in=[r[0] for r in cursor.fetchall()])
-        if request.user.is_superuser or request.query_params.get("all") == "true":
-            return queryset
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return queryset.filter(district=request.user.district)
-        else:
-            return queryset.filter(created_by=request.user)
+            vector = SearchVector("name", "district__name", "state__name")
+            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+            queryset = (
+                queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+                .filter(search_text=query)
+                .order_by("-rank")
+            )
+        return queryset
 
 
 class FacilityViewSet(viewsets.ModelViewSet):
