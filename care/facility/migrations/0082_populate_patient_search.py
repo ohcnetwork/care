@@ -11,10 +11,17 @@ def populate_patient_search(apps, *args, **kwargs):
         # in future if the model is renamed / removed, migration should not throw exception
         return
 
-    for patient in PatientRegistration.objects.all():
+    patient_qs = PatientRegistration.objects.all().select_related('local_body__district', 'district__state')
+    for patient in patient_qs:
         patient.year_of_birth = patient.date_of_birth.year \
             if patient.date_of_birth is not None \
             else datetime.datetime.now().year - patient.age
+
+        if patient.local_body:
+            patient.district = patient.local_body.district
+        if patient.district:
+            patient.state = patient.district.state
+
         if patient.patient_search_id is None:
             ps = PatientSearch.objects.create(
                 name=patient.name,
@@ -26,7 +33,6 @@ def populate_patient_search(apps, *args, **kwargs):
                 patient_id=patient.pk
             )
             patient.patient_search_id = ps.pk
-            patient.save()
         else:
             ps = PatientSearch.objects.get(pk=patient.patient_search_id)
             ps.name = patient.name
@@ -36,6 +42,7 @@ def populate_patient_search(apps, *args, **kwargs):
             ps.year_of_birth = patient.year_of_birth
             ps.state_id = patient.state_id
             ps.save()
+        patient.save()
 
 
 def reverse_populate_patient_search(*args, **kwargs):
