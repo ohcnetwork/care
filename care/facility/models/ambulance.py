@@ -104,7 +104,7 @@ class AmbulanceDriver(FacilityBaseModel):
 
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    is_smart_phone = models.BooleanField()
+    has_smart_phone = models.BooleanField()
 
     def __str__(self):
         return f"Driver: {self.name}({self.phone_number})"
