@@ -22,7 +22,7 @@ class Ambulance(FacilityBaseModel):
 
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    owner_is_smart_phone = models.BooleanField(default=True)
+    owner_has_smart_phone = models.BooleanField(default=True)
 
     # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
     # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
