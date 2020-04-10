@@ -1,5 +1,4 @@
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db import transaction
+from django.db import connection, transaction
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import status, viewsets
@@ -16,6 +15,7 @@ from care.facility.api.serializers.facility import (
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.models import Facility, FacilityCapacity, PatientRegistration
 from care.users.models import User
+from config.utils import get_psql_search_tokens
 
 
 class FacilityFilter(filters.FilterSet):
@@ -31,6 +31,27 @@ class FacilityFilter(filters.FilterSet):
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
+        search_text = request.query_params.get("search_text")
+        if search_text:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT id
+                    FROM (
+                      SELECT f.id,
+                        to_tsvector('english', coalesce(f.name, ' '))
+                        || to_tsvector('english', coalesce(d.name, ' '))
+                        || to_tsvector('english', coalesce(s.name, ' '))
+                        AS document
+                      FROM facility_facility f
+                        LEFT JOIN users_district d ON f.district_id = d.id
+                        LEFT JOIN users_state s ON f.state_id = s.id
+                    ) facility_search
+                    WHERE facility_search.document @@ to_tsquery('english', %s)
+                """,
+                    (get_psql_search_tokens(search_text),),
+                )
+                queryset = queryset.filter(id__in=[r[0] for r in cursor.fetchall()])
         if request.user.is_superuser or request.query_params.get("all") == "true":
             return queryset
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
@@ -75,19 +96,8 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
         Other query params
         - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
+        - `search_text` - string. Searches across name, district name and state name.
         """
-        search_text = request.query_params.get("search_text")
-        if search_text:
-            vector = SearchVector("name") + SearchVector("district__name") + SearchVector("state__name")
-            query = SearchQuery(search_text)
-            queryset = Facility.objects.annotate(rank=SearchRank(vector, query)).order_by("-rank")
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
