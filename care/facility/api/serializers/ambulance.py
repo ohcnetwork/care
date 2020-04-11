@@ -35,6 +35,13 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             raise ValidationError("The ambulance must provide a price or be marked as free")
         return validated
 
+    def validate_vehicle_number(self, value):
+        """
+        Converts vehicle number to upper case before passing it to the database\
+        Earlier regular expression used only permitted upper case values.
+        """
+        return value.upper()
+
     def create(self, validated_data):
         with transaction.atomic():
             drivers = validated_data.pop("drivers", [])

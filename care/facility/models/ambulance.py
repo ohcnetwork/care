@@ -1,24 +1,32 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.base import FacilityBaseModel, phone_number_regex
 from care.users.models import District
 
 User = get_user_model()
 
-AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
+AMBULANCE_TYPES_MAP = {"Basic": 1, "Cardiac": 2, "Hearse": 3}
+AMBULANCE_TYPES = [(val, key) for key, val in AMBULANCE_TYPES_MAP.items()]
 
 
 class Ambulance(FacilityBaseModel):
     vehicle_number_regex = RegexValidator(
-        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
-        message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
+        regex="^[A-Za-z]{2}[0-9]{1,2}[A-Za-z]{0,2}[0-9]{1,4}$",
+        message=_("Please Enter the vehicle number without spaces, eg: KL13AB1234"),
         code="invalid_vehicle_number",
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
+    vehicle_number = models.CharField(
+        max_length=20,
+        validators=[vehicle_number_regex],
+        unique=True,
+        db_index=True,
+        help_text=vehicle_number_regex.message,
+    )
 
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
