@@ -41,7 +41,9 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 class UserSerializer(SignUpSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+
     is_superuser = serializers.BooleanField(read_only=True)
+    verified = serializers.BooleanField(read_only=True)
 
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
@@ -63,6 +65,7 @@ class UserSerializer(SignUpSerializer):
             "gender",
             "age",
             "is_superuser",
+            "verified",
             "local_body_object",
             "district_object",
             "state_object",
