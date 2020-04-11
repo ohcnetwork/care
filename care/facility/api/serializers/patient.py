@@ -2,7 +2,6 @@ import datetime
 
 from django.db import transaction
 from django.utils.timezone import make_aware
-from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -21,6 +20,7 @@ from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseSta
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
 
 
@@ -48,7 +48,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberIsPossibleField()
     facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
@@ -121,7 +121,7 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 
 class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberIsPossibleField()
 
     class Meta:
         model = PatientSearch
