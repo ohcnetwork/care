@@ -17,6 +17,7 @@ class TestSuperUser(TestBase):
             "username": obj.username,
             "user_type": obj.get_user_type_display(),
             "is_superuser": obj.is_superuser,
+            "verified": obj.verified,
             "gender": obj.get_gender_display(),
             "email": obj.email,
             "phone_number": obj.phone_number,
