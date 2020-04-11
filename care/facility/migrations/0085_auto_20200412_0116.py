@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0083_auto_20200411_1136'),
+        ('facility', '0084_install_trigram_similarity'),
     ]
 
     operations = [
