@@ -23,7 +23,7 @@ def populate_patient_search(apps, *args, **kwargs):
         if patient.district:
             patient.state = patient.district.state
         if not patient.state:
-            patient.state = State.objects.filter(deleted=False).first()
+            patient.state = State.objects.all().first()
 
         if patient.patient_search_id is None:
             ps = PatientSearch.objects.create(
