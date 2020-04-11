@@ -29,7 +29,7 @@ class PatientRegistration(PatientBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
-    age = models.PositiveIntegerField()
+    age = models.PositiveIntegerField(default=0)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
@@ -98,7 +98,9 @@ class PatientRegistration(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified
+        )
 
     @staticmethod
     def has_read_permission(request):

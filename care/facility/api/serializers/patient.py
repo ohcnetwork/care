@@ -74,6 +74,12 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError("facility not found")
         return value
 
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        if not self.partial and not validated.get("age") and not validated.get("date_of_birth"):
+            raise serializers.ValidationError({"date_of_birth": [f"Either age or date_of_birth should be passed"]})
+        return validated
+
     def create(self, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
