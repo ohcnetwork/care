@@ -7,6 +7,7 @@ from django.db import migrations
 def populate_patient_search(apps, *args, **kwargs):
     PatientRegistration = apps.get_model('facility', 'PatientRegistration')
     PatientSearch = apps.get_model('facility', 'PatientSearch')
+    State = apps.get_model('users', 'State')
     if not PatientRegistration:
         # in future if the model is renamed / removed, migration should not throw exception
         return
@@ -21,6 +22,8 @@ def populate_patient_search(apps, *args, **kwargs):
             patient.district = patient.local_body.district
         if patient.district:
             patient.state = patient.district.state
+        if not patient.state:
+            patient.state = State.objects.filter(deleted=False).first()
 
         if patient.patient_search_id is None:
             ps = PatientSearch.objects.create(
