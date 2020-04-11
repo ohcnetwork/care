@@ -30,6 +30,17 @@ FACILITY_TYPES = [
     (6, "Lodge"),
     (7, "TeleMedicine"),
     (8, "Govt Hospital"),
+    # Use 2xx for Govt owned hospitals and health centres
+    (200, "Primary Health Centres"),
+    (201, "24x7 Public Health Centres"),
+    (202, "Family Health Centres"),
+    (203, "Community Health Centres"),
+    (220, "Urban Primary Health Center"),
+    (230, "Taluk Hospitals"),
+    (231, "Taluk Headquarters Hospitals"),
+    (240, "Women and Child Health Centres"),
+    (250, "General hospitals"),  # TODO: same as 8, need to merge
+    (260, "District Hospitals"),
 ]
 
 DOCTOR_TYPES = [

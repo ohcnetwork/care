@@ -21,6 +21,7 @@ from care.users.models import User
 
 
 class PatientFilterSet(filters.FilterSet):
+    source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     facility = filters.NumberFilter(field_name="facility_id")
     phone_number = filters.CharFilter(field_name="phone_number")
 
@@ -53,7 +54,17 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = PatientRegistration.objects.all().select_related(
-        "local_body", "district", "state", "facility", "facility__local_body", "facility__district", "facility__state"
+        "local_body",
+        "district",
+        "state",
+        "facility",
+        "facility__local_body",
+        "facility__district",
+        "facility__state",
+        "nearest_facility",
+        "nearest_facility__local_body",
+        "nearest_facility__district",
+        "nearest_facility__state",
     )
     serializer_class = PatientDetailSerializer
     filter_backends = (

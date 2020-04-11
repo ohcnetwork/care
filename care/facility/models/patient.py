@@ -1,4 +1,5 @@
 import datetime
+import enum
 
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -22,11 +23,19 @@ class PatientRegistration(PatientBaseModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
 
-    def __init__(self, *args, **kwargs):
-        super(PatientRegistration, self).__init__(*args, **kwargs)
-        self._diff = {}
+    class SourceEnum(enum.Enum):
+        CARE = 10
+        COVID_TRACKER = 20
+        STAY = 30
 
+    SourceChoices = [(e.value, e.name) for e in SourceEnum]
+
+    source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
+    nearest_facility = models.ForeignKey(
+        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
+    )
+    meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField(null=True, blank=True)
@@ -89,7 +98,7 @@ class PatientRegistration(PatientBaseModel):
 
     patient_search_id = EncryptedIntegerField(help_text="FKey to PatientSearch", null=True)
 
-    history = HistoricalRecords(excluded_fields=["patient_search_id"])
+    history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = SoftDeleteManager()
 
@@ -208,6 +217,79 @@ class PatientSearch(models.Model):
         elif request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified:
             return True
         return False
+
+
+class PatientMetaInfo(models.Model):
+    class OccupationEnum(enum.Enum):
+        STUDENT = 1
+        MEDICAL_WORKER = 2
+        GOVT_EMPLOYEE = 3
+        PRIVATE_EMPLOYEE = 4
+        HOME_MAKER = 5
+        WORKING_ABROAD = 6
+        OTHERS = 7
+
+    OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
+
+    occupation = models.IntegerField(choices=OccupationChoices)
+    head_of_household = models.BooleanField()
+
+
+class PatientContactDetails(models.Model):
+    class RelationEnum(enum.IntEnum):
+        FAMILY_MEMBER = 1
+        FRIEND = 2
+        RELATIVE = 3
+        NEIGHBOUR = 4
+        TRAVEL_TOGETHER = 5
+        WHILE_AT_HOSPITAL = 6
+        WHILE_AT_SHOP = 7
+        WHILE_AT_OFFICE_OR_ESTABLISHMENT = 8
+        WORSHIP_PLACE = 9
+        OTHERS = 10
+
+    class ModeOfContactEnum(enum.IntEnum):
+        # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
+        TOUCHED_BODY_FLUIDS = 1
+        # "2. Had direct physical contact with the body of the patient
+        # including physical examination without full precautions."
+        DIRECT_PHYSICAL_CONTACT = 2
+        # "3. Touched or cleaned the linens/clothes/or dishes of the patient"
+        CLEANED_USED_ITEMS = 3
+        # "4. Lives in the same household as the patient."
+        LIVE_IN_SAME_HOUSEHOLD = 4
+        # "5. Close contact within 3ft (1m) of the confirmed case without precautions."
+        CLOSE_CONTACT_WITHOUT_PRECAUTION = 5
+        # "6. Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours."
+        CO_PASSENGER_AEROPLANE = 6
+        # "7. Health care workers and other contacts who had full PPE while handling the +ve case"
+        HEALTH_CARE_WITH_PPE = 7
+        # "8. Shared the same space(same class for school/worked in
+        # same room/similar and not having a high risk exposure"
+        SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
+        # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
+        TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
+
+    RelationChoices = [(item.value, item.name) for item in RelationEnum]
+    ModeOfContactChoices = [(item.value, item.name) for item in ModeOfContactEnum]
+
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients")
+    patient_in_contact = models.ForeignKey(
+        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts"
+    )
+    relation_with_patient = models.IntegerField(choices=RelationChoices)
+    mode_of_contact = models.IntegerField(choices=ModeOfContactChoices)
+    date_of_first_contact = models.DateField(null=True)
+    date_of_last_contact = models.DateField(null=True)
+
+    is_primary = models.BooleanField(help_text="If false, then secondary contact")
+    condition_of_contact_is_symptomatic = models.BooleanField(
+        help_text="While in contact, did the patient showing symptoms"
+    )
+
+    deleted = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager()
 
 
 class Disease(models.Model):
