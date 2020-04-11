@@ -1,14 +1,18 @@
+import datetime
 import json
 from json import JSONDecodeError
 
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import serializers, viewsets
 from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.mixins import HistoryMixin
+from care.facility.api.mixins import HistoryMixin, UserAccessMixin
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -137,7 +141,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
 
 
-class PatientSearchViewSet(viewsets.ModelViewSet):
+class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
     queryset = PatientSearch.objects.all()
     serializer_class = PatientSearchSerializer
@@ -150,7 +154,7 @@ class PatientSearchViewSet(viewsets.ModelViewSet):
             serializer = PatientSearchSerializer(data=self.request.query_params, partial=True)
             serializer.is_valid(raise_exception=True)
 
-            search_keys = ["date_of_birth", "year_of_birth", "phone_number"]
+            search_keys = ["date_of_birth", "year_of_birth", "phone_number", "name", "age"]
             search_fields = {
                 key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
             }
@@ -161,7 +165,25 @@ class PatientSearchViewSet(viewsets.ModelViewSet):
 
             if not self.request.user.is_superuser:
                 search_fields["state_id"] = self.request.user.state_id
-            return self.queryset.filter(**search_fields)
+
+            if "age" in search_fields:
+                age = search_fields.pop("age")
+                year_of_birth = datetime.datetime.now().year - age
+                search_fields["age__gte"] = year_of_birth - 5
+                search_fields["age__lte"] = year_of_birth + 5
+
+            name = search_fields.pop("name", None)
+
+            queryset = self.queryset.filter(**search_fields)
+
+            if name:
+                queryset = (
+                    queryset.annotate(similarity=TrigramSimilarity("name", name))
+                    .filter(similarity__gt=0.2)
+                    .order_by("-similarity")
+                )
+
+            return queryset
 
     def retrieve(self, request, *args, **kwargs):
         raise NotImplementedError()
@@ -175,6 +197,8 @@ class PatientSearchViewSet(viewsets.ModelViewSet):
         - year_of_birth: in YYYY format
         - date_of_birth: in YYYY-MM-DD format
         - phone_number: in E164 format: eg: +917795937091
+        - name: free text search
+        - age: number - searches age +/- 5 years
 
         **SPECIAL NOTE**: the values should be urlencoded
 
