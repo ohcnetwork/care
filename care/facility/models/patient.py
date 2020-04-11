@@ -29,7 +29,7 @@ class PatientRegistration(PatientBaseModel):
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
-    age = models.PositiveIntegerField()
+    age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
