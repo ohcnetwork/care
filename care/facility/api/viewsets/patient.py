@@ -22,12 +22,14 @@ from care.facility.api.serializers.patient import (
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, PatientSearch
 from care.facility.models.patient_base import DiseaseStatusEnum
 from care.users.models import User
+from care.utils.filters.number_in_filter import NumberInFilter
 
 
 class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     facility = filters.NumberFilter(field_name="facility_id")
     phone_number = filters.CharFilter(field_name="phone_number")
+    ids = NumberInFilter(field_name="id", lookup_expr="in")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
