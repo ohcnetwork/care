@@ -2,10 +2,10 @@
 Base settings to build other settings files upon.
 """
 
+import json
 from datetime import timedelta
 
 import environ
-import json
 
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
@@ -90,6 +90,7 @@ THIRD_PARTY_APPS = [
     "watchman",
     "djangoql",
     "maintenance_mode",
+    "django.contrib.postgres",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
