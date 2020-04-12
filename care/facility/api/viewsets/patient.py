@@ -12,13 +12,14 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.mixins import HistoryMixin, UserAccessMixin
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
     PatientSearchSerializer,
 )
+from care.facility.api.viewsets import UserAccessMixin
+from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, PatientSearch
 from care.facility.models.patient_base import DiseaseStatusEnum
 from care.users.models import User
