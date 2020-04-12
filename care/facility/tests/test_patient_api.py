@@ -180,7 +180,15 @@ class TestPatient(TestBase):
         patient_data["countries_travelled"] = f"countries_travelled_test_patient_creation"
 
         response = self.client.post(self.get_url(), patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # only for verified users
 
+        verified_user = self.clone_object(self.user, save=False)
+        verified_user.username = "verified_user_test_patient_creation"
+        verified_user.verified = True
+        verified_user.save()
+        self.client.force_authenticate(verified_user)
+
+        response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient_data))
 
@@ -226,8 +234,23 @@ class TestPatient(TestBase):
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # only for verified users
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        verified_user = self.clone_object(self.user, save=False)
+        verified_user.username = "verified_user_test_patient_creation"
+        verified_user.verified = True
+        verified_user.save()
+        self.client.force_authenticate(verified_user)
+
+        patient.created_by = verified_user
+        patient.save()
+
+        response = self.client.patch(
+            self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
+        )
+        print(response.json())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
+
         patient.refresh_from_db()
         self.assertEqual(patient.disease_status, new_disease_status.value)
 
