@@ -106,7 +106,7 @@ class PatientDetailSerializer(PatientListSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         if not self.partial and not validated.get("age") and not validated.get("date_of_birth"):
-            raise serializers.ValidationError({"date_of_birth": [f"Either age or date_of_birth should be passed"]})
+            raise serializers.ValidationError({"non_field_errors": [f"Either age or date_of_birth should be passed"]})
         return validated
 
     def create(self, validated_data):
@@ -156,6 +156,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
             if self.partial is not True:  # clear the list and enter details if PUT
                 patient.contacted_patients.clear(bulk=True)
+
             if contacted_patients:
                 contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
