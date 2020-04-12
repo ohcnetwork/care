@@ -5,10 +5,14 @@ from django.db import migrations
 
 def auto_verify_users_with_facility(apps, *args):
     user_model = apps.get_model('users', 'User')
+
+    # all users who has at-least one facility associated with them is verified
     for user in user_model.objects.all():
-        # all users who has at-least one facility associated with them is verified
         user.verified = user.facility_set.exists()
         user.save()
+
+    # all users who are equal or above District Lab Admin (25)
+    user_model.objects.filter(user_type__gte=25).update(verified=True)
 
 
 def reverse_auto_verify_users_with_facility(*args):
