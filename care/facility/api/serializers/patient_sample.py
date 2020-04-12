@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.patient_sample import PatientSample, PatientSampleFlow, SAMPLE_TYPE_CHOICES
+from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from config.serializers import ChoiceField
 
 
@@ -73,11 +73,14 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": [f"is required as the test is complete"]})
 
-        if validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"]:
+        if (
+            validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"]
+            and validated_data.get("date_of_sample") is None
+        ):
             validated_data["date_of_sample"] = make_aware(datetime.datetime.now())
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
             validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
-        elif validated_data.get("result") is not None:
+        elif validated_data.get("result") is not None and validated_data.get("date_of_result") is None:
             validated_data["date_of_result"] = make_aware(datetime.datetime.now())
 
         return super().update(instance, validated_data)
