@@ -63,10 +63,12 @@ class UserSerializer(SignUpSerializer):
             "gender",
             "age",
             "is_superuser",
+            "verified",
             "local_body_object",
             "district_object",
             "state_object",
         )
+        read_only_fields = ("is_superuser", "verified")
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
 

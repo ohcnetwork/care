@@ -13,6 +13,8 @@ from care.facility.models import (
     Disease,
     Facility,
     FacilityPatientStatsHistory,
+    PatientContactDetails,
+    PatientMetaInfo,
     PatientRegistration,
     PatientSearch,
 )
@@ -24,18 +26,39 @@ from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPoss
 from config.serializers import ChoiceField
 
 
+class PatientMetaInfoSerializer(serializers.ModelSerializer):
+    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
+
+    class Meta:
+        model = PatientMetaInfo
+        fields = "__all__"
+
+
 class PatientListSerializer(serializers.ModelSerializer):
     facility = serializers.IntegerField(source="facility_id", allow_null=True, read_only=True)
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
+    source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "ongoing_medication", "patient_search_id", "year_of_birth")
+        exclude = ("created_by", "deleted", "ongoing_medication", "patient_search_id", "year_of_birth", "meta_info")
         read_only = TIMESTAMP_FIELDS
+
+
+class PatientContactDetailsSerializer(serializers.ModelSerializer):
+    relation_with_patient = ChoiceField(choices=PatientContactDetails.RelationChoices)
+    mode_of_contact = ChoiceField(choices=PatientContactDetails.ModeOfContactChoices)
+
+    patient_in_contact_object = PatientListSerializer(read_only=True, source="patient_in_contact")
+
+    class Meta:
+        model = PatientContactDetails
+        exclude = ("patient",)
 
 
 class PatientDetailSerializer(PatientListSerializer):
@@ -55,12 +78,18 @@ class PatientDetailSerializer(PatientListSerializer):
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
+    nearest_facility_object = FacilitySerializer(source="nearest_facility", read_only=True)
 
+    source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
+
+    meta_info = PatientMetaInfoSerializer(required=False)
+    contacted_patients = PatientContactDetailsSerializer(many=True, required=False)
 
     class Meta:
         model = PatientRegistration
         exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth")
+        include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS
 
     def get_last_consultation(self, obj):
@@ -83,18 +112,35 @@ class PatientDetailSerializer(PatientListSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
+            meta_info = validated_data.pop("meta_info", {})
+            contacted_patients = validated_data.pop("contacted_patients", [])
+
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
             diseases = []
+
             for disease in medical_history:
                 diseases.append(Disease(patient=patient, **disease))
             if diseases:
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
+
+            if meta_info:
+                meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                patient.meta_info = meta_info_obj
+                patient.save()
+
+            if contacted_patients:
+                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
+                PatientContactDetails.objects.bulk_create(contacted_patient_objs)
+
             return patient
 
     def update(self, instance, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
+            meta_info = validated_data.pop("meta_info", {})
+            contacted_patients = validated_data.pop("contacted_patients", [])
+
             patient = super().update(instance, validated_data)
             Disease.objects.filter(patient=patient).update(deleted=True)
             diseases = []
@@ -102,6 +148,18 @@ class PatientDetailSerializer(PatientListSerializer):
                 diseases.append(Disease(patient=patient, **disease))
             if diseases:
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
+
+            if meta_info:
+                for key, value in meta_info.items():
+                    setattr(patient.meta_info, key, value)
+                patient.meta_info.save()
+
+            if self.partial is not True:  # clear the list and enter details if PUT
+                patient.contacted_patients.clear(bulk=True)
+            if contacted_patients:
+                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
+                PatientContactDetails.objects.bulk_create(contacted_patient_objs)
+
             return patient
 
 

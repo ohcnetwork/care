@@ -57,6 +57,8 @@ class TestPatient(TestBase):
             "number_of_chronic_diseased_dependents": patient.number_of_chronic_diseased_dependents,
             "created_date": mock_equal,
             "modified_date": mock_equal,
+            "source": patient.get_source_display(),
+            "nearest_facility": getattr(patient.nearest_facility, "id", None),
             **self.get_local_body_district_state_representation(patient),
         }
 
@@ -81,6 +83,29 @@ class TestPatient(TestBase):
         if isinstance(disease_state, int):
             return DiseaseStatusEnum(disease_state).name
         return disease_state
+
+    def _get_metainfo_representation(self, patient: PatientRegistration):
+        if not patient.meta_info:
+            return None
+        return {
+            "occupation": patient.meta_info.get_occupation_display(),
+            "head_of_household": patient.meta_info.head_of_household,
+        }
+
+    def _get_contact_patients_representation(self, patient: PatientRegistration):
+        return [
+            {
+                "patient_in_contact": contacted_patient.patient_in_contact,
+                "patient_in_contact_object": self.get_list_representation(contacted_patient.patient_in_contact),
+                "relation_with_patient": contacted_patient.get_relation_with_patient_display(),
+                "mode_of_contact": contacted_patient.get_mode_of_contact_display(),
+                "date_of_first_contact": contacted_patient.date_of_first_contact,
+                "date_of_last_contact": contacted_patient.date_of_last_contact,
+                "is_primary": contacted_patient.is_primary,
+                "condition_of_contact_is_symptomatic": contacted_patient.condition_of_contact_is_symptomatic,
+            }
+            for contacted_patient in patient.contacted_patients.all()
+        ]
 
     def get_detail_representation(self, patient: Any):
 
@@ -129,7 +154,12 @@ class TestPatient(TestBase):
             "facility_object": None,
             "created_date": mock_equal,
             "modified_date": mock_equal,
+            "source": patient.get_source_display(),
             **self.get_local_body_district_state_representation(patient),
+            "nearest_facility": patient.nearest_facility,
+            "nearest_facility_object": self._get_facility_representation(patient.nearest_facility),
+            "meta_info": self._get_metainfo_representation(patient),
+            "contacted_patients": self._get_contact_patients_representation(patient),
         }
 
     def test_login_required(self):
