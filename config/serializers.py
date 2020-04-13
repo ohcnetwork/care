@@ -3,7 +3,12 @@ from rest_framework import serializers
 
 class ChoiceField(serializers.ChoiceField):
     def to_representation(self, obj):
-        return self._choices[obj]
+        try:
+            return self._choices[obj]
+        except KeyError:
+            key_type = type(list(self.choices.keys())[0])
+            key = key_type(obj)
+            return self._choices[key]
 
     def to_internal_value(self, data):
         if isinstance(data, str) and data not in self.choice_strings_to_values:
