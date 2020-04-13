@@ -105,6 +105,7 @@ class User(AbstractUser):
         "DistrictLabAdmin": 25,
         "DistrictAdmin": 30,
         "StateLabAdmin": 35,
+        "StateAdmin": 40,
     }
 
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
