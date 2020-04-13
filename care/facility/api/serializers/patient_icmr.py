@@ -107,7 +107,7 @@ class ICMRExposureHistorySerializer(serializers.ModelSerializer):
 
 
 class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
-    date_of_onset_of_symptoms = serializers.DateField(source="consultation.symptoms_onset_date")
+    date_of_onset_of_symptoms = serializers.DateField()
     symptoms = serializers.ListSerializer(child=ChoiceField(choices=SYMPTOM_CHOICES))
     hospitalization_date = serializers.DateField()
     hospital_phone_number = serializers.CharField(source="consultation.facility.phone_number")
