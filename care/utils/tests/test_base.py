@@ -10,9 +10,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
-    AMBULANCE_TYPES_MAP,
     DISEASE_CHOICES_MAP,
-    Ambulance,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -105,28 +103,6 @@ class TestBase(APITestCase):
         return patient
 
     @classmethod
-    def create_ambulance(cls, district: District, user: User = None, **kwargs):
-        """
-        Returns the object for the ambulance created
-        """
-        data = {
-            "vehicle_number": "kl12bl3456",
-            "owner_name": "foo",
-            "owner_phone_number": "8888888888",
-            "owner_has_smart_phone": True,
-            "primary_district": district,
-            "has_oxygen": False,
-            "has_ventilator": False,
-            "has_suction_machine": False,
-            "has_defibrillator": False,
-            "insurance_valid_till_year": 2020,
-            "created_by": user,
-            "has_free_service": True,
-        }
-        data.update(kwargs)
-        return Ambulance.objects.create(**data)
-
-    @classmethod
     def get_user_data(cls, district: District = None, user_type: str = None):
         """
         Returns the data to be used for API testing
@@ -209,24 +185,6 @@ class TestBase(APITestCase):
         }
 
     @classmethod
-    def get_ambulance_data(cls, district: District) -> None:
-        return {
-            "vehicle_number": "kl12bl3456",
-            "owner_name": "foo",
-            "owner_phone_number": "8888888888",
-            "owner_has_smart_phone": True,
-            "primary_district": district.id,
-            "has_oxygen": False,
-            "has_ventilator": False,
-            "has_suction_machine": False,
-            "has_defibrillator": False,
-            "insurance_valid_till_year": 2020,
-            "ambulance_type": AMBULANCE_TYPES_MAP["Basic"],
-            "price_per_km": "20.32",
-            "drivers": [{"name": "Foo", "phone_number": "8888888888", "has_smart_phone": True}],
-        }
-
-    @classmethod
     def setUpClass(cls) -> None:
         super(TestBase, cls).setUpClass()
         cls.state = cls.create_state()
@@ -236,12 +194,10 @@ class TestBase(APITestCase):
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)
         cls.patient = cls.create_patient()
-        cls.ambulance = cls.create_ambulance(district=cls.district, user=cls.user)
 
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
-        cls.ambulance_data = cls.get_ambulance_data(cls.district)
 
     def setUp(self) -> None:
         self.client.force_login(self.user)

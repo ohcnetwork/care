@@ -2,7 +2,8 @@ from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import Ambulance, AmbulanceDriver
+from care.facility.models import AMBULANCE_TYPES_MAP, Ambulance, AmbulanceDriver
+from care.users.models import District, User
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -11,11 +12,53 @@ class TestAmbulance(TestBase):
     """Test Ambulance APIs"""
 
     @classmethod
+    def create_ambulance(cls, district: District, user: User = None, **kwargs):
+        """
+        Returns the object for the ambulance created
+        """
+        data = {
+            "vehicle_number": "kl12bl3456",
+            "owner_name": "foo",
+            "owner_phone_number": "8888888888",
+            "owner_has_smart_phone": True,
+            "primary_district": district,
+            "has_oxygen": False,
+            "has_ventilator": False,
+            "has_suction_machine": False,
+            "has_defibrillator": False,
+            "insurance_valid_till_year": 2020,
+            "created_by": user,
+            "has_free_service": True,
+        }
+        data.update(kwargs)
+        return Ambulance.objects.create(**data)
+
+    @classmethod
+    def get_ambulance_data(cls, district: District) -> None:
+        return {
+            "vehicle_number": "kl12bl3456",
+            "owner_name": "foo",
+            "owner_phone_number": "8888888888",
+            "owner_has_smart_phone": True,
+            "primary_district": district.id,
+            "has_oxygen": False,
+            "has_ventilator": False,
+            "has_suction_machine": False,
+            "has_defibrillator": False,
+            "insurance_valid_till_year": 2020,
+            "ambulance_type": AMBULANCE_TYPES_MAP["Basic"],
+            "price_per_km": "20.32",
+            "drivers": [{"name": "Foo", "phone_number": "8888888888", "has_smart_phone": True}],
+        }
+
+    @classmethod
     def setUpClass(cls) -> None:
         """
         Initialize the class attributes
         """
         super(TestAmbulance, cls).setUpClass()
+        cls.ambulance = cls.create_ambulance(district=cls.district, user=cls.user)
+        cls.ambulance_data = cls.get_ambulance_data(cls.district)
 
     def get_base_url(self) -> str:
         return "/api/v1/ambulance"
@@ -227,45 +270,6 @@ class TestAmbulance(TestBase):
         This test is not required because this operation is handled by django admin
         """
         pass
-        # ambulance = self.ambulance
-        # data = self.get_detail_representation(ambulance)
-        # driver_1 = {
-        #     "name": "foo",
-        #     "phone_number": "8888888888",
-        #     "has_smart_phone": False,
-        # }
-        # driver_2 = {
-        #     "name": "bar",
-        #     "phone_number": "8888888888",
-        #     "has_smart_phone": False,
-        # }
-        # data.update(drivers=[driver_1, driver_2])
-        # # remove created and modified date
-        # data.pop("created_date", None)
-        # data.pop("modified_date", None)
-
-        # response = self.client.post(
-        #     self.get_url(ambulance.id, action="add_driver"), data, format="json",
-        # )
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # # test data from the API
-        # self.assertDictEqual(
-        #     response.data.json()["drivers"],
-        #     [
-        #         {**self._get_driver_representation(driver_1)},
-        #         {**self._get_driver_representation(driver_2)},
-        #     ],
-        # )
-
-        # # test model response
-        # self.refresh_db()
-        # self.assertEqual(
-        #     ambulance.drivers,
-        #     [
-        #         {**self._get_driver_representation(driver_1)},
-        #         {**self._get_driver_representation(driver_2)},
-        #     ],
-        # )
 
     def test_ambulance_remove_driver(self):
         """
@@ -275,11 +279,3 @@ class TestAmbulance(TestBase):
         This test is not required currently, because this is handled by django admin
         """
         pass
-        # ambulance = self.ambulance
-        # ambulance.created_by = self.user
-        # ambulance.save()
-
-        # response = self.client.delete(
-        #     self.get_url(ambulance.id, action="remove_driver")
-        # )
-        # self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
