@@ -7,9 +7,11 @@ from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import serializers, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient import (
@@ -18,10 +20,12 @@ from care.facility.api.serializers.patient import (
     PatientListSerializer,
     PatientSearchSerializer,
 )
+from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, PatientSearch
 from care.facility.models.patient_base import DiseaseStatusEnum
+from care.facility.models.patient_icmr import PatientIcmr
 from care.users.models import User
 
 
@@ -90,6 +94,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
+        elif self.action == "icmr_sample":
+            return PatientICMRSerializer
         else:
             return self.serializer_class
 
@@ -111,6 +117,12 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
 
         """
         return super(PatientViewSet, self).list(request, *args, **kwargs)
+
+    @action(detail=True, methods=["GET"])
+    def icmr_sample(self, *args, **kwargs):
+        patient = self.get_object()
+        patient.__class__ = PatientIcmr
+        return Response(data=PatientICMRSerializer(patient).data)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
