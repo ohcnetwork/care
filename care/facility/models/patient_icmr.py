@@ -138,7 +138,9 @@ class PatientSampleICMR(PatientSample):
 
     @property
     def hospitalization_date(self):
-        return self.consultation.admission_date.date()
+        return (
+            self.consultation.admission_date.date() if self.consultation and self.consultation.admission_date else None
+        )
 
     @property
     def medical_conditions(self):
