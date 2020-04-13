@@ -92,7 +92,7 @@ class PatientIcmr(PatientRegistration):
 
     @property
     def travel_end_date(self):
-        return self.date_of_return.date()
+        return self.date_of_return.date() if self.date_of_return else None
 
     @property
     def travel_start_date(self):
@@ -118,7 +118,7 @@ class PatientSampleICMR(PatientSample):
 
     @property
     def collection_date(self):
-        return self.date_of_sample.date()
+        return self.date_of_sample.date() if self.date_of_sample else None
 
     @property
     def label(self):
@@ -153,6 +153,14 @@ class PatientSampleICMR(PatientSample):
             for symptom in self.consultation.symptoms
             if SYMPTOM_CHOICES[0][0] not in self.consultation.symptoms.choices.keys()
         ]
+
+    @property
+    def date_of_onset_of_symptoms(self):
+        return (
+            self.consultation.symptoms_onset_date.date()
+            if self.consultation and self.consultation.symptoms_onset_date
+            else None
+        )
 
 
 class PatientConsultationICMR(PatientConsultation):
