@@ -94,6 +94,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
+        elif self.action == "icmr_sample":
+            return PatientICMRSerializer
         else:
             return self.serializer_class
 
