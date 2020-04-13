@@ -166,6 +166,10 @@ class User(AbstractUser):
             return False
         return True
 
+    @staticmethod
+    def has_add_user_permission(request):
+        return request.user.is_superuser or request.user.verified
+
     def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()

@@ -36,6 +36,7 @@ class TestBase(APITestCase):
             "phone_number": "5554446667",
             "age": 30,
             "gender": 2,
+            "verified": True,
             "username": username,
             "password": "bar",
             "district": district,

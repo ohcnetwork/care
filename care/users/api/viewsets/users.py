@@ -42,3 +42,26 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(
             status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
         )
+
+    @action(detail=False, methods=["POST"])
+    def add_user(self, request, *args, **kwargs):
+        raise NotImplementedError
+
+        #####################
+        #  TODO: Work on this @anroopak
+        #####################
+
+        # password = request.data.pop("password", User.objects.make_random_password(length=8))
+        # serializer = UserCreateSerializer(
+        #     data={**request.data, "password": password},
+        #     context={"created_by": request.user}
+        # )
+        # serializer.is_valid(raise_exception=True)
+        #
+        # user = serializer.create(serializer.validated_data)
+        # response_data = UserCreateSerializer(user).data
+        # response_data["password"] = password
+        # return Response(
+        #     data=response_data,
+        #     status=status.HTTP_201_CREATED
+        # )

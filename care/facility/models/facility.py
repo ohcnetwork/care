@@ -6,6 +6,7 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, phone_number_regex
+from care.facility.models.mixins.permissions.facility import FacilityPermissionMixin, FacilityRelatedPermissionMixin
 from care.users.models import District, LocalBody, State
 
 User = get_user_model()
@@ -52,7 +53,7 @@ DOCTOR_TYPES = [
 ]
 
 
-class Facility(FacilityBaseModel):
+class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
@@ -69,46 +70,18 @@ class Facility(FacilityBaseModel):
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    users = models.ManyToManyField(
+        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user")
+    )
+
     class Meta:
         verbose_name_plural = "Facilities"
 
     def __str__(self):
         return f"{self.name}"
 
-    @staticmethod
-    def has_bulk_upsert_permission(request):
+    def has_object_destroy_permission(self, request):
         return request.user.is_superuser
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -119,7 +92,12 @@ class Facility(FacilityBaseModel):
             self.district = self.local_body.district
         if self.district is not None:
             self.state = self.district.state
+
+        is_create = self.pk is None
         super().save(*args, **kwargs)
+
+        if is_create:
+            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -161,7 +139,7 @@ class FacilityLocalGovtBody(models.Model):
         super().save(*args, **kwargs)
 
 
-class HospitalDoctors(FacilityBaseModel):
+class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
@@ -172,39 +150,8 @@ class HospitalDoctors(FacilityBaseModel):
     class Meta:
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
 
-    @staticmethod
-    def has_read_permission(request):
-        return True
 
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-
-class FacilityCapacity(FacilityBaseModel):
+class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -214,45 +161,6 @@ class FacilityCapacity(FacilityBaseModel):
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
-
-    def save(self, *args, **kwargs) -> None:
-        """
-        Update Date Modified
-        """
-        super().save(*args, **kwargs)
-        # self.facility.modified_date = self.modified_date
-        self.facility.save()
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
 
 
 class FacilityStaff(FacilityBaseModel):
@@ -361,3 +269,9 @@ class InventoryLog(FacilityBaseModel):
 
 
 # Inventory Model End
+
+
+class FacilityUser(models.Model):
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
