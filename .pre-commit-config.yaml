@@ -44,7 +44,7 @@ repos:
 
       - id: pre-commit-django-migrations
         name: Check django migrations
-        entry: python manage.py makemigrations --check
+        entry: python manage.py makemigrations --dry-run
         language: system
         types: [python]
         pass_filenames: false

@@ -179,15 +179,16 @@ class TestPatient(TestBase):
         patient_data = self.patient_data.copy()
         patient_data["countries_travelled"] = f"countries_travelled_test_patient_creation"
 
+        unverified_user = self.clone_object(self.user, save=False)
+        unverified_user.username = "unverified_user_test_patient_creation"
+        unverified_user.verified = False
+        unverified_user.save()
+
+        self.client.force_authenticate(unverified_user)
         response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # only for verified users
 
-        verified_user = self.clone_object(self.user, save=False)
-        verified_user.username = "verified_user_test_patient_creation"
-        verified_user.verified = True
-        verified_user.save()
-        self.client.force_authenticate(verified_user)
-
+        self.client.force_authenticate(self.user)
         response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient_data))
@@ -230,21 +231,20 @@ class TestPatient(TestBase):
         patient.created_by = self.user
         patient.save()
 
+        unverified_user = self.clone_object(self.user, save=False)
+        unverified_user.username = "unverified_user_test_patient_creation"
+        unverified_user.verified = False
+        unverified_user.save()
+
         new_disease_status = DiseaseStatusEnum.NEGATIVE
+
+        self.client.force_authenticate(unverified_user)
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # only for verified users
 
-        verified_user = self.clone_object(self.user, save=False)
-        verified_user.username = "verified_user_test_patient_creation"
-        verified_user.verified = True
-        verified_user.save()
-        self.client.force_authenticate(verified_user)
-
-        patient.created_by = verified_user
-        patient.save()
-
+        self.client.force_authenticate(self.user)
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
@@ -332,14 +332,16 @@ class TestPatient(TestBase):
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
 
     def test_search(self):
+        user = self.clone_object(self.user, save=False)
+        user.username = f"{user.username}_verified_test_search"
+        user.verified = False
+        user.save()
+
+        self.client.force_authenticate(user)
         response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        user = self.clone_object(self.user, save=False)
-        user.username = f"{user.username}_verified_test_search"
-        user.verified = True
-        user.save()
-        self.client.force_authenticate(user)
+        self.client.force_authenticate(self.user)
         response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

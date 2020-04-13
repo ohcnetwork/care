@@ -12,8 +12,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
+from care.facility.api.viewsets import UserAccessMixin
 from care.facility.models.ambulance import Ambulance
 
 
