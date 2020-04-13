@@ -107,7 +107,9 @@ class PatientRegistration(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or (
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified
+        )
 
     @staticmethod
     def has_read_permission(request):
