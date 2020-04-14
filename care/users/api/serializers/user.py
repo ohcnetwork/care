@@ -102,7 +102,7 @@ class UserCreateSerializer(SignUpSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
-            user = User.objects.create_user(**validated_data)
+            user = User.objects.create_user(**{**validated_data, "verified": True})
             user.set_password(validated_data["password"])
 
             if facilities:
