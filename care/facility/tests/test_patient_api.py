@@ -1,8 +1,9 @@
+import datetime
 from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import DiseaseStatusEnum, PatientRegistration, PatientSearch
+from care.facility.models import DiseaseStatusEnum, PatientContactDetails, PatientRegistration, PatientSearch
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -220,7 +221,7 @@ class TestPatient(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
 
-    def test_patient_update(self):
+    def test_patient_patch(self):
         """
         Test user can update their patient details
             - test status code
@@ -248,11 +249,75 @@ class TestPatient(TestBase):
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
-        print(response.json())
         self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
 
         patient.refresh_from_db()
         self.assertEqual(patient.disease_status, new_disease_status.value)
+
+    def test_patient_put(self):
+        """
+        Test user can update their patient details
+            - test status code
+            - test response.json()
+            - test data from database
+        """
+        patient = self.clone_object(self.patient)
+        patient.created_by = self.user
+        patient.contacted_patients.add(
+            PatientContactDetails(
+                **{
+                    "patient_in_contact": self.patient,
+                    "relation_with_patient": PatientContactDetails.RelationEnum.FAMILY_MEMBER.value,
+                    "mode_of_contact": PatientContactDetails.ModeOfContactEnum.CLEANED_USED_ITEMS.value,
+                    "date_of_last_contact": datetime.datetime(2020, 4, 1),
+                    "is_primary": True,
+                    "condition_of_contact_is_symptomatic": False,
+                }
+            ),
+            bulk=False,
+        )
+        patient.save()
+        patient.refresh_from_db()
+
+        new_disease_status = DiseaseStatusEnum.NEGATIVE
+        data = self.get_detail_representation(patient)
+        data.update(
+            {
+                "disease_status": new_disease_status.value,
+                "contacted_patients": [
+                    {
+                        "patient_in_contact": self.patient.id,
+                        "relation_with_patient": PatientContactDetails.RelationEnum.FRIEND.name,
+                        "mode_of_contact": PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.name,
+                        "date_of_last_contact": "2020-04-10",
+                        "is_primary": True,
+                        "condition_of_contact_is_symptomatic": False,
+                    }
+                ],
+            }
+        )
+        keys_to_pop = [key for key, value in data.items() if value is mock_equal] + [
+            "meta_info",
+            "nationality",
+            "passport_no",
+            "aadhar_no",
+        ]
+        for key in keys_to_pop:
+            data.pop(key)
+
+        response = self.client.put(self.get_url(patient.id), data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
+
+        patient.refresh_from_db()
+        self.assertEqual(patient.disease_status, new_disease_status.value)
+        self.assertEquals(patient.contacted_patients.count(), 1)
+
+        contacted_patient = patient.contacted_patients.first()
+        self.assertEquals(contacted_patient.relation_with_patient, PatientContactDetails.RelationEnum.FRIEND.value)
+        self.assertEquals(
+            contacted_patient.mode_of_contact, PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.value
+        )
+        self.assertEquals(contacted_patient.date_of_last_contact, datetime.date(2020, 4, 10))
 
     def test_user_can_delete_patient(self):
         """
