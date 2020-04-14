@@ -63,6 +63,33 @@ class UserCreateSerializer(SignUpSerializer):
                 )
         return facility_ids
 
+    def validate_local_body(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].local_body
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different local body")
+        return value
+
+    def validate_district(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].district
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different state")
+        return value
+
+    def validate_state(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].state
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different state")
+        return value
+
     def validate(self, attrs):
         validated = super(UserCreateSerializer, self).validate(attrs)
         if (

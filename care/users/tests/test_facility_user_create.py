@@ -134,3 +134,23 @@ class TestFacilityUserApi(TestBase):
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_facility_user__should_fail__when_different_location(self):
+        new_district = self.clone_object(self.district)
+        data = {
+            "username": "roopak",
+            "user_type": "Staff",
+            "phone_number": "+917795937091",
+            "gender": "Male",
+            "age": 28,
+            "first_name": "Roopak",
+            "last_name": "A N",
+            "email": "anroopak@gmail.com",
+            "district": new_district.id,
+            "verified": True,
+            "facilities": [self.facility.id],
+        }
+
+        response = self.client.post(self.get_url(), data=data, format="json")
+        # Test Creation
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
