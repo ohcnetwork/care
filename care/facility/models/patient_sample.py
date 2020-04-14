@@ -98,11 +98,11 @@ class PatientSample(FacilityBaseModel):
         if request.user.is_superuser:
             return True
         map_ = self.SAMPLE_TEST_FLOW_CHOICES
-        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE", "SENT_TO_COLLECTION_CENTRE"):
+        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
             return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
         elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
             return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AND_FORWARDED", "RECEIVED_AT_LAB"):
+        elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
             return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
         # The view shall raise a 400
         return True
