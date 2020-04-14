@@ -75,10 +75,8 @@ class UserCreateSerializer(SignUpSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
-            print(validated_data)
-            validated_data["password"] = make_password(validated_data["password"])
-
-            user = super().create(validated_data)
+            user = User.objects.create_user(**validated_data)
+            user.set_password(validated_data["password"])
 
             if facilities:
                 facility_objs = Facility.objects.filter(id__in=facilities)

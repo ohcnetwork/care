@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.users.api.serializers.user import SignUpSerializer, UserListSerializer, UserSerializer
+from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -45,23 +45,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
-        raise NotImplementedError
+        password = request.data.pop("password", User.objects.make_random_password(length=8))
+        serializer = UserCreateSerializer(
+            data={**request.data, "password": password}, context={"created_by": request.user}
+        )
+        serializer.is_valid(raise_exception=True)
 
-        #####################
-        #  TODO: Work on this @anroopak
-        #####################
+        user = serializer.create(serializer.validated_data)
 
-        # password = request.data.pop("password", User.objects.make_random_password(length=8))
-        # serializer = UserCreateSerializer(
-        #     data={**request.data, "password": password},
-        #     context={"created_by": request.user}
-        # )
-        # serializer.is_valid(raise_exception=True)
-        #
-        # user = serializer.create(serializer.validated_data)
-        # response_data = UserCreateSerializer(user).data
-        # response_data["password"] = password
-        # return Response(
-        #     data=response_data,
-        #     status=status.HTTP_201_CREATED
-        # )
+        response_data = UserCreateSerializer(user).data
+        response_data["password"] = password
+        return Response(data=response_data, status=status.HTTP_201_CREATED)
