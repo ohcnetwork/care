@@ -10,16 +10,19 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
+    CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    SYMPTOM_CHOICES,
     Disease,
     DiseaseStatusEnum,
     Facility,
     LocalBody,
+    PatientConsultation,
     PatientRegistration,
     User,
 )
 from care.users.models import District, State
-from config.tests.helper import EverythingEquals
+from config.tests.helper import EverythingEquals, mock_equal
 
 
 class TestBase(APITestCase):
@@ -323,3 +326,43 @@ class TestBase(APITestCase):
         response = self.client.get(self.get_url(), format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         return response
+
+    def get_facility_representation(self, facility):
+        if facility is None:
+            return facility
+        else:
+            return {
+                "id": facility.id,
+                "name": facility.name,
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
+                **self.get_local_body_district_state_representation(facility),
+            }
+
+    @classmethod
+    def get_consultation_data(cls):
+        return {
+            "patient": cls.patient,
+            "facility": cls.facility,
+            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
+            "other_symptoms": "No other symptoms",
+            "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
+            "category": CATEGORY_CHOICES[0][0],
+            "examination_details": "examination_details",
+            "existing_medication": "existing_medication",
+            "prescribed_medication": "prescribed_medication",
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "referred_to": None,
+            "admitted": False,
+            "admitted_to": None,
+            "admission_date": None,
+            "discharge_date": None,
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
+        }
+
+    @classmethod
+    def create_consultation(cls, patient=None, facility=None, **kwargs) -> PatientConsultation:
+        data = cls.get_consultation_data()
+        kwargs.update({"patient": patient or cls.patient, "facility": facility or cls.facility})
+        data.update(kwargs)
+        return PatientConsultation.objects.create(**data)

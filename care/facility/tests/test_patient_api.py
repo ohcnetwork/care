@@ -49,7 +49,7 @@ class TestPatient(TestBase):
             "has_SARI": patient.has_SARI,
             "is_active": patient.is_active,
             "facility": getattr(patient.facility, "id", None),
-            "facility_object": self._get_facility_representation(patient.facility),
+            "facility_object": self.get_facility_representation(patient.facility),
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
             "disease_status": self._get_disease_state_representation(patient.disease_status),
@@ -61,17 +61,6 @@ class TestPatient(TestBase):
             "nearest_facility": getattr(patient.nearest_facility, "id", None),
             **self.get_local_body_district_state_representation(patient),
         }
-
-    def _get_facility_representation(self, facility):
-        if facility is None:
-            return facility
-        else:
-            return {
-                "id": facility.id,
-                "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
-                **self.get_local_body_district_state_representation(facility),
-            }
 
     def _get_medical_history_representation(self, history):
         if isinstance(history, list):
@@ -157,7 +146,7 @@ class TestPatient(TestBase):
             "source": patient.get_source_display(),
             **self.get_local_body_district_state_representation(patient),
             "nearest_facility": patient.nearest_facility,
-            "nearest_facility_object": self._get_facility_representation(patient.nearest_facility),
+            "nearest_facility_object": self.get_facility_representation(patient.nearest_facility),
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
         }
