@@ -40,8 +40,8 @@ class TestFacilityUserApi(TestBase):
             "user_permissions": [],
         }
 
-    def test_create_facility_user__should_succeed__when_same_level(self):
-        data = {
+    def get_new_user_data(self):
+        return {
             "username": "roopak",
             "user_type": "Staff",
             "phone_number": "+917795937091",
@@ -54,6 +54,9 @@ class TestFacilityUserApi(TestBase):
             "verified": True,
             "facilities": [self.facility.id],
         }
+
+    def test_create_facility_user__should_succeed__when_same_level(self):
+        data = self.get_new_user_data().copy()
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
@@ -81,19 +84,8 @@ class TestFacilityUserApi(TestBase):
         )
 
     def test_create_facility_user__should_succeed__when_lower_level(self):
-        data = {
-            "username": "roopak",
-            "user_type": "Doctor",
-            "phone_number": "+917795937091",
-            "gender": "Male",
-            "age": 28,
-            "first_name": "Roopak",
-            "last_name": "A N",
-            "email": "anroopak@gmail.com",
-            "district": self.district.id,
-            "verified": True,
-            "facilities": [self.facility.id],
-        }
+        data = self.get_new_user_data().copy()
+        data.update({"user_type": "Doctor"})
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
@@ -117,19 +109,8 @@ class TestFacilityUserApi(TestBase):
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_create_facility_user__should_fail__when_higher_level(self):
-        data = {
-            "username": "roopak",
-            "user_type": "DistrictAdmin",
-            "phone_number": "+917795937091",
-            "gender": "Male",
-            "age": 28,
-            "first_name": "Roopak",
-            "last_name": "A N",
-            "email": "anroopak@gmail.com",
-            "district": self.district.id,
-            "verified": True,
-            "facilities": [self.facility.id],
-        }
+        data = self.get_new_user_data().copy()
+        data.update({"user_type": "DistrictAdmin"})
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
@@ -137,19 +118,8 @@ class TestFacilityUserApi(TestBase):
 
     def test_create_facility_user__should_fail__when_different_location(self):
         new_district = self.clone_object(self.district)
-        data = {
-            "username": "roopak",
-            "user_type": "Staff",
-            "phone_number": "+917795937091",
-            "gender": "Male",
-            "age": 28,
-            "first_name": "Roopak",
-            "last_name": "A N",
-            "email": "anroopak@gmail.com",
-            "district": new_district.id,
-            "verified": True,
-            "facilities": [self.facility.id],
-        }
+        data = self.get_new_user_data().copy()
+        data.update({"district": new_district.id})
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
