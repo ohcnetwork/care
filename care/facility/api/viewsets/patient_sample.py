@@ -88,7 +88,7 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
         validated_data = serializer.validated_data
         if self.kwargs.get("patient_pk") is not None:
             validated_data["patient"] = PatientRegistration.objects.get(id=self.kwargs.get("patient_pk"))
-        notes = validated_data.pop("notes", "create")
+
         if not validated_data.get("patient") and not validated_data.get("consultation"):
             raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
 
@@ -105,6 +105,7 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
                 raise ValidationError({"consultation": ["Invalid id"]})
 
         with transaction.atomic():
+            notes = validated_data.pop("notes", "created")
             instance = serializer.create(validated_data)
             instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)
             return instance
