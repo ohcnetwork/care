@@ -63,6 +63,33 @@ class UserCreateSerializer(SignUpSerializer):
                 )
         return facility_ids
 
+    def validate_local_body(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].local_body
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different local body")
+        return value
+
+    def validate_district(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].district
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different state")
+        return value
+
+    def validate_state(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].state
+            and not self.context["created_by"].is_superuser
+        ):
+            raise serializers.ValidationError("Cannot create for a different state")
+        return value
+
     def validate(self, attrs):
         validated = super(UserCreateSerializer, self).validate(attrs)
         if (
@@ -75,10 +102,8 @@ class UserCreateSerializer(SignUpSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
-            print(validated_data)
-            validated_data["password"] = make_password(validated_data["password"])
-
-            user = super().create(validated_data)
+            user = User.objects.create_user(**{**validated_data, "verified": True})
+            user.set_password(validated_data["password"])
 
             if facilities:
                 facility_objs = Facility.objects.filter(id__in=facilities)

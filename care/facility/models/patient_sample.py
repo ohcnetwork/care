@@ -3,7 +3,6 @@ from django.db import models
 from care.facility.models import FacilityBaseModel, PatientRegistration
 from care.users.models import User
 
-
 SAMPLE_TYPE_CHOICES = [
     (0, "UNKNOWN"),
     (1, "BA/ETA"),
