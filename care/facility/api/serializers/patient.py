@@ -2,6 +2,7 @@ import datetime
 
 from django.db import transaction
 from django.utils.timezone import make_aware
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -46,7 +47,14 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "ongoing_medication", "patient_search_id", "year_of_birth", "meta_info")
+        exclude = (
+            "created_by",
+            "deleted",
+            "ongoing_medication",
+            "patient_search_id",
+            "year_of_birth",
+            "meta_info",
+        )
         read_only = TIMESTAMP_FIELDS
 
 
@@ -80,7 +88,7 @@ class PatientDetailSerializer(PatientListSerializer):
     facility_object = FacilitySerializer(source="facility", read_only=True)
     nearest_facility_object = FacilitySerializer(source="nearest_facility", read_only=True)
 
-    source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value)
+    source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value,)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -105,8 +113,24 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if not self.partial and not validated.get("age") and not validated.get("date_of_birth"):
-            raise serializers.ValidationError({"non_field_errors": [f"Either age or date_of_birth should be passed"]})
+        # flag to check whether validation failed
+        err_flag = False
+        errors = ""
+        date_of_birth = validated.get("date_of_birth")
+        if not self.partial and not validated.get("age") and not date_of_birth:
+            err_flag = True
+            errors += "Either age or date_of_birth should be passed."
+
+        phone_number = validated.get("phone_number")
+
+        # Check for uniqueness of mobile number and date of birth
+        if PatientSearch.objects.filter(phone_number=phone_number, date_of_birth=date_of_birth).exists():
+            err_flag = True
+            errors += "The mobile number and date of birth match to another patient."
+
+        if err_flag:
+            raise serializers.ValidationError({"non_field_errors": [_(errors)]})
+
         return validated
 
     def create(self, validated_data):

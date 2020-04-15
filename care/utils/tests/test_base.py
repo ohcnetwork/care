@@ -98,7 +98,7 @@ class TestBase(APITestCase):
 
         patient = PatientRegistration.objects.create(**patient_data)
         diseases = [
-            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"])
+            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"],)
             for mh in medical_history
         ]
         patient.medical_history.set(diseases)
@@ -169,7 +169,7 @@ class TestBase(APITestCase):
             "ongoing_medication": "",
             "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),
             "disease_status": "SUSPECTED",
-            "phone_number": "+918888888888",
+            "phone_number": "+91888888888",
             "address": "Global citizen",
             "contact_with_confirmed_carrier": True,
             "contact_with_suspected_carrier": True,
@@ -334,7 +334,7 @@ class TestBase(APITestCase):
             return {
                 "id": facility.id,
                 "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display(),},
                 **self.get_local_body_district_state_representation(facility),
             }
 

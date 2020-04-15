@@ -167,6 +167,9 @@ class TestPatient(TestBase):
             - patient is created on the backend
         """
         patient_data = self.patient_data.copy()
+        # since this field is unique field alongside date of birth, we change it to bypass validation
+        new_phone_number = "+918888888889"
+        patient_data.update({"phone_number": new_phone_number})
         patient_data["countries_travelled"] = f"countries_travelled_test_patient_creation"
 
         unverified_user = self.clone_object(self.user, save=False)
@@ -190,7 +193,14 @@ class TestPatient(TestBase):
         self.assertIsNotNone(patient.patient_search_id)
         patient_search = PatientSearch.objects.get(pk=patient.patient_search_id)
         self.assertIsNotNone(patient_search)
-        self.assertEqual(patient_search.phone_number, patient_data["phone_number"])
+        self.assertEqual(patient_search.phone_number, new_phone_number)
+
+    def test_phone_number_and_dob_uniqueness(self):
+        """Test the uniqueness of phone number and date of birth (both fields together) for patient creation"""
+        patient_data = self.patient_data
+        response = self.client.post(self.get_url(), patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIsNotNone("phone number" in response.json()["non_field_errors"])
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""
@@ -302,9 +312,11 @@ class TestPatient(TestBase):
         self.assertEquals(patient.contacted_patients.count(), 1)
 
         contacted_patient = patient.contacted_patients.first()
-        self.assertEquals(contacted_patient.relation_with_patient, PatientContactDetails.RelationEnum.FRIEND.value)
         self.assertEquals(
-            contacted_patient.mode_of_contact, PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.value
+            contacted_patient.relation_with_patient, PatientContactDetails.RelationEnum.FRIEND.value,
+        )
+        self.assertEquals(
+            contacted_patient.mode_of_contact, PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.value,
         )
         self.assertEquals(contacted_patient.date_of_last_contact, datetime.date(2020, 4, 10))
 
