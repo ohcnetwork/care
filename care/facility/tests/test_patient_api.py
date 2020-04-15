@@ -200,7 +200,7 @@ class TestPatient(TestBase):
         patient_data = self.patient_data
         response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIsNotNone("phone number" in response.json()["non_field_errors"])
+        self.assertEqual("phone number" in response.json()["non_field_errors"][0], True)
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""

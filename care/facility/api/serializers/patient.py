@@ -126,7 +126,7 @@ class PatientDetailSerializer(PatientListSerializer):
         # Check for uniqueness of mobile number and date of birth
         if PatientSearch.objects.filter(phone_number=phone_number, date_of_birth=date_of_birth).exists():
             err_flag = True
-            errors += "The mobile number and date of birth match to another patient."
+            errors += "The phone number and date of birth match to another patient."
 
         if err_flag:
             raise serializers.ValidationError({"non_field_errors": [_(errors)]})
