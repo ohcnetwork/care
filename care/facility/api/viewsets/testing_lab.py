@@ -7,12 +7,12 @@ from care.facility.models.testing_lab import TestingLab
 
 
 class TestingLabFilterSet(filters.FilterSet):
-    name = filters.BaseInFilter(field_name="name")
-    pincode = filters.BaseInFilter(field_name="pincode")
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    pincode = filters.NumberFilter(field_name="pincode")
 
-    local_body = filters.CharFilter(field_name="local_body_id")
-    district = filters.CharFilter(field_name="district_id")
-    state = filters.CharFilter(field_name="state_id")
+    local_body = filters.NumberFilter(field_name="local_body_id")
+    district = filters.NumberFilter(field_name="district_id")
+    state = filters.NumberFilter(field_name="state_id")
 
     local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")

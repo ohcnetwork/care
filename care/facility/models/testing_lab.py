@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 
-from care.facility.models import phone_number_regex
 from care.users.models import District, LocalBody, State
 
 User = get_user_model()
@@ -16,7 +16,7 @@ class TestingLab(models.Model):
     name = models.CharField(max_length=200)
     address = models.TextField()
     pincode = models.IntegerField(validators=[pincode_regex])
-    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    phone_number = PhoneNumberField()
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
