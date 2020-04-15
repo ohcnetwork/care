@@ -97,6 +97,9 @@ class PatientRegistration(PatientBaseModel):
     )
 
     patient_search_id = EncryptedIntegerField(help_text="FKey to PatientSearch", null=True)
+    date_of_receipt_of_information = models.DateTimeField(
+        null=True, blank=True, verbose_name="Patient's information received date"
+    )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -169,6 +172,10 @@ class PatientRegistration(PatientBaseModel):
 
         self.year_of_birth = (
             self.date_of_birth.year if self.date_of_birth is not None else datetime.datetime.now().year - self.age
+        )
+        self.date_of_receipt_of_information = (
+            self.date_of_receipt_of_information if self.date_of_receipt_of_information is not None
+            else datetime.datetime.now()
         )
 
         is_create = self.pk is None
