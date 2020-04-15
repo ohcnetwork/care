@@ -64,8 +64,9 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         return super().has_write_permission(request) and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     def has_object_read_permission(self, request):
-        return super().has_object_read_permission(request) and (
-            (self.patient.facility and self.patient.facility.users.filter(user=request.user).exists())
+        return (
+            request.user.is_superuser
+            or (self.patient.facility and self.patient.facility.users.filter(user=request.user).exists())
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
@@ -83,8 +84,9 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_update_permission(self, request):
-        return super().has_object_read_permission(request) and (
-            (self.patient.facility and self.patient.facility.users.filter(user=request.user).exists())
+        return (
+            request.user.is_superuser
+            or (self.patient.facility and self.patient.facility.users.filter(user=request.user).exists())
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
