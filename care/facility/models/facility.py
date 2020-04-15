@@ -42,6 +42,7 @@ FACILITY_TYPES = [
     (240, "Women and Child Health Centres"),
     (250, "General hospitals"),  # TODO: same as 8, need to merge
     (260, "District Hospitals"),
+    (850, "Testing Labs"),
 ]
 
 DOCTOR_TYPES = [
@@ -71,7 +72,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     users = models.ManyToManyField(
-        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user")
+        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
     )
 
     class Meta:
