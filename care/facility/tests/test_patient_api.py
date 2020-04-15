@@ -313,11 +313,21 @@ class TestPatient(TestBase):
         Test users can delete patient
             - test permission error
         """
-        patient = self.patient
+        user = self.clone_object(self.user, save=False)
+        user.username = "username__test_user_can_delete_patient"
+        user.save()
+
+        patient = self.clone_object(self.patient)
         patient.created_by = self.user
         patient.save()
+
+        self.client.force_authenticate(user)
         response = self.client.delete(self.get_url(patient.id))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.client.force_authenticate(self.user)
+        response = self.client.delete(self.get_url(patient.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_superuser_can_delete_patient(self):
         """

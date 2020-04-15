@@ -1,7 +1,8 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, Facility
+from care.facility.models import CATEGORY_CHOICES
+from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     ADMIT_CHOICES,
     CURRENT_HEALTH_CHOICES,
@@ -12,7 +13,7 @@ from care.facility.models.patient_base import (
 from care.users.models import User
 
 
-class PatientConsultation(PatientBaseModel):
+class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),
@@ -48,29 +49,6 @@ class PatientConsultation(PatientBaseModel):
             self.patient.save()
 
         super(PatientConsultation, self).save(*args, **kwargs)
-
-    @staticmethod
-    def has_write_permission(request):
-        if not request.data.get("facility"):
-            # Don't bother, the view shall raise a 400
-            return True
-        return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and Facility.objects.get(id=request.data["facility"]).created_by == request.user
-        )
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return request.user.is_superuser or request.user == self.facility.created_by
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return request.user == self.facility.created_by
 
     class Meta:
         constraints = [
