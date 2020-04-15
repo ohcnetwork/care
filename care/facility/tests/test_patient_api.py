@@ -412,3 +412,43 @@ class TestPatient(TestBase):
         self.client.force_authenticate(self.super_user)
         response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_icmr_sample__should_render(self):
+        patient = self.clone_object(self.patient, save=False)
+        patient.created_by = self.user
+        patient.save()
+
+        response = self.client.get(self.get_url(patient.id, "icmr_sample"))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_patient_transfer(self):
+        patient = self.clone_object(self.patient)
+
+        new_facility_user = self.clone_object(self.user, save=False)
+        new_facility_user.username = f"{new_facility_user.username}_test_patient_transfer"
+        new_facility_user.save()
+
+        new_facility = self.clone_object(self.facility, save=False)
+        new_facility.created_by = new_facility_user
+        new_facility.save()
+
+        self.client.force_authenticate(new_facility_user)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"), {"facility": new_facility.id, "date_of_birth": "2020-04-01"}
+        )
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"),
+            {"facility": new_facility.id, "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d")},
+        )
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        patient.refresh_from_db()
+        self.assertEquals(patient.facility, new_facility)
+
+        # new owner should be able to view the details
+        response = self.client.get(self.get_url(patient.id))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
