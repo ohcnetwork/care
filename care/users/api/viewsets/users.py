@@ -32,6 +32,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list" and not self.request.user.is_superuser:
             return UserListSerializer
+        elif self.action == "add_user":
+            return UserCreateSerializer
         elif self.action == "create":
             return SignUpSerializer
         else:

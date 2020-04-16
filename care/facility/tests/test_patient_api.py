@@ -62,6 +62,7 @@ class TestPatient(TestBase):
             "source": patient.get_source_display(),
             "nearest_facility": getattr(patient.nearest_facility, "id", None),
             **self.get_local_body_district_state_representation(patient),
+            "date_of_receipt_of_information": patient.date_of_receipt_of_information,
         }
 
     def _get_medical_history_representation(self, history):
@@ -178,6 +179,7 @@ class TestPatient(TestBase):
             "nearest_facility_object": self.get_facility_representation(patient.nearest_facility),
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
+            "date_of_receipt_of_information": mock_equal,
         }
 
     def test_login_required(self):
@@ -378,11 +380,21 @@ class TestPatient(TestBase):
         Test users can delete patient
             - test permission error
         """
-        patient = self.patient
+        user = self.clone_object(self.user, save=False)
+        user.username = "username__test_user_can_delete_patient"
+        user.save()
+
+        patient = self.clone_object(self.patient)
         patient.created_by = self.user
         patient.save()
+
+        self.client.force_authenticate(user)
         response = self.client.delete(self.get_url(patient.id))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.client.force_authenticate(self.user)
+        response = self.client.delete(self.get_url(patient.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_superuser_can_delete_patient(self):
         """
@@ -467,3 +479,44 @@ class TestPatient(TestBase):
         self.client.force_authenticate(self.super_user)
         response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_icmr_sample__should_render(self):
+        patient = self.clone_object(self.patient, save=False)
+        patient.created_by = self.user
+        patient.date_of_birth = self._change_dob(patient.date_of_birth)
+        patient.save()
+
+        response = self.client.get(self.get_url(patient.id, "icmr_sample"))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_patient_transfer(self):
+        patient = self.clone_object(self.patient)
+
+        new_facility_user = self.clone_object(self.user, save=False)
+        new_facility_user.username = f"{new_facility_user.username}_test_patient_transfer"
+        new_facility_user.save()
+
+        new_facility = self.clone_object(self.facility, save=False)
+        new_facility.created_by = new_facility_user
+        new_facility.save()
+
+        self.client.force_authenticate(new_facility_user)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"), {"facility": new_facility.id, "date_of_birth": "2020-04-01"},
+        )
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"),
+            {"facility": new_facility.id, "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d"),},
+        )
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        patient.refresh_from_db()
+        self.assertEquals(patient.facility, new_facility)
+
+        # new owner should be able to view the details
+        response = self.client.get(self.get_url(patient.id))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)

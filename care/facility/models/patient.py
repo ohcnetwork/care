@@ -1,3 +1,4 @@
+import datetime
 import enum
 
 from django.db import models
@@ -16,11 +17,12 @@ from care.facility.models import (
     SoftDeleteManager,
     State,
 )
+from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 
-class PatientRegistration(PatientBaseModel):
+class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = [
         "name",
@@ -105,6 +107,9 @@ class PatientRegistration(PatientBaseModel):
     )
 
     patient_search_id = EncryptedIntegerField(help_text="FKey to PatientSearch", null=True)
+    date_of_receipt_of_information = models.DateTimeField(
+        null=True, blank=True, verbose_name="Patient's information received date"
+    )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -112,43 +117,6 @@ class PatientRegistration(PatientBaseModel):
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
-
-    @staticmethod
-    def has_write_permission(request):
-        return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified
-        )
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (self.facility and request.user == self.facility.created_by)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    def has_object_destroy_permission(self, request):
-        """Currently refers only to delete action"""
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (self.facility and request.user == self.facility.created_by)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-            #  TODO State Level Permissions
-        )
 
     @property
     def tele_consultation_history(self):
@@ -192,6 +160,11 @@ class PatientRegistration(PatientBaseModel):
 
         # since date of birth can't be NULL, this can be safely set here
         self.year_of_birth = self.date_of_birth.year
+        self.date_of_receipt_of_information = (
+            self.date_of_receipt_of_information
+            if self.date_of_receipt_of_information is not None
+            else datetime.datetime.now()
+        )
 
         is_create = self.pk is None
         super(PatientRegistration, self).save(*args, **kwargs)
