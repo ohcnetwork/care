@@ -96,11 +96,10 @@ class PatientDetailSerializer(PatientListSerializer):
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
     state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), required=True)
-    patient_search_id = serializers.CharField(required=False, read_only=False)
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "year_of_birth")
+        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth")
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS
 
@@ -122,19 +121,18 @@ class PatientDetailSerializer(PatientListSerializer):
         phone_number = validated_data.get("phone_number", "")
 
         err_flag = False
-        search_id_field = "patient_id"
-        search_id = validated_data.get("patient_search_id", None)
-        queryset = PatientSearch.objects.filter(date_of_birth=date_of_birth, phone_number=phone_number)
+        pk_field = "id"
+        queryset = PatientSearch.objects.filter(date_of_birth=date_of_birth, phone_number=phone_number).values(pk_field)
 
-        if search_id:
+        # for POST request no match should occur
+        if self.context["request"].method == "POST" and len(queryset) != 0:
+            err_flag = True
+
+        elif len(queryset) == 1:
             # patient exists
-            if len(queryset) > 0:
-                # check if the search id matches
-                if search_id == queryset.values(search_id_field)[0][search_id_field]:
-                    err_flag = True
-        else:
-            # patient doesn't exist
-            if queryset.exists():
+            search_id = self.context["view"].get_object().patient_search_id
+            # search id should match
+            if search_id == queryset[0][pk_field]:
                 err_flag = True
 
         if err_flag:
@@ -145,8 +143,6 @@ class PatientDetailSerializer(PatientListSerializer):
         return validated_data
 
     def create(self, validated_data):
-        serializer = PatientDetailSerializer(data=self.context["request"].data)
-        serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})

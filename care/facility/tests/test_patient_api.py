@@ -180,7 +180,6 @@ class TestPatient(TestBase):
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
             "date_of_receipt_of_information": mock_equal,
-            "patient_search_id": mock_equal,
         }
 
     def test_login_required(self):
