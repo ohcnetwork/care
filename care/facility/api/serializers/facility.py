@@ -26,7 +26,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     facility_type = serializers.SerializerMethodField()
 
     def get_facility_type(self, facility):
-        return {"id": facility.facility_type, "name": FACILITY_TYPES[facility.facility_type - 1][1]}
+        return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
 
     class Meta:
         model = Facility
