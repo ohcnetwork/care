@@ -83,8 +83,8 @@ class PatientDetailSerializer(PatientListSerializer):
     source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
-    meta_info = PatientMetaInfoSerializer(required=False)
-    contacted_patients = PatientContactDetailsSerializer(many=True, required=False)
+    meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
+    contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
         model = PatientRegistration
@@ -155,7 +155,7 @@ class PatientDetailSerializer(PatientListSerializer):
                 patient.meta_info.save()
 
             if self.partial is not True:  # clear the list and enter details if PUT
-                patient.contacted_patients.clear(bulk=True)
+                patient.contacted_patients.all().delete()
 
             if contacted_patients:
                 contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
@@ -191,3 +191,24 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         fields = "__all__"
+
+
+class PatientTransferSerializer(serializers.ModelSerializer):
+    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
+    patient = serializers.IntegerField(source="id", read_only=True)
+
+    class Meta:
+        model = PatientRegistration
+        fields = ("facility", "date_of_birth", "patient", "facility_object")
+
+    def validate_date_of_birth(self, value):
+        if self.instance and self.instance.date_of_birth != value:
+            raise serializers.ValidationError("Date of birth does not match")
+        return value
+
+    def create(self, validated_data):
+        raise NotImplementedError
+
+    def save(self, **kwargs):
+        self.instance.facility = self.validated_data["facility"]
+        self.instance.save()

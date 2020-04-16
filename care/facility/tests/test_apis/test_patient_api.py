@@ -1,8 +1,9 @@
+import datetime
 from typing import Any
 
 from rest_framework import status
 
-from care.facility.models import DiseaseStatusEnum, PatientRegistration, PatientSearch
+from care.facility.models import DiseaseStatusEnum, PatientContactDetails, PatientRegistration, PatientSearch
 from care.utils.tests.test_base import TestBase
 from config.tests.helper import mock_equal
 
@@ -49,7 +50,7 @@ class TestPatient(TestBase):
             "has_SARI": patient.has_SARI,
             "is_active": patient.is_active,
             "facility": getattr(patient.facility, "id", None),
-            "facility_object": self._get_facility_representation(patient.facility),
+            "facility_object": self.get_facility_representation(patient.facility),
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,
             "disease_status": self._get_disease_state_representation(patient.disease_status),
@@ -60,18 +61,8 @@ class TestPatient(TestBase):
             "source": patient.get_source_display(),
             "nearest_facility": getattr(patient.nearest_facility, "id", None),
             **self.get_local_body_district_state_representation(patient),
+            "date_of_receipt_of_information": patient.date_of_receipt_of_information,
         }
-
-    def _get_facility_representation(self, facility):
-        if facility is None:
-            return facility
-        else:
-            return {
-                "id": facility.id,
-                "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
-                **self.get_local_body_district_state_representation(facility),
-            }
 
     def _get_medical_history_representation(self, history):
         if isinstance(history, list):
@@ -157,9 +148,10 @@ class TestPatient(TestBase):
             "source": patient.get_source_display(),
             **self.get_local_body_district_state_representation(patient),
             "nearest_facility": patient.nearest_facility,
-            "nearest_facility_object": self._get_facility_representation(patient.nearest_facility),
+            "nearest_facility_object": self.get_facility_representation(patient.nearest_facility),
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
+            "date_of_receipt_of_information": mock_equal,
         }
 
     def test_login_required(self):
@@ -220,7 +212,7 @@ class TestPatient(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
 
-    def test_patient_update(self):
+    def test_patient_patch(self):
         """
         Test user can update their patient details
             - test status code
@@ -248,22 +240,96 @@ class TestPatient(TestBase):
         response = self.client.patch(
             self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
         )
-        print(response.json())
         self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
 
         patient.refresh_from_db()
         self.assertEqual(patient.disease_status, new_disease_status.value)
+
+    def test_patient_put(self):
+        """
+        Test user can update their patient details
+            - test status code
+            - test response.json()
+            - test data from database
+        """
+        patient = self.clone_object(self.patient)
+        patient.created_by = self.user
+        patient.contacted_patients.add(
+            PatientContactDetails(
+                **{
+                    "patient_in_contact": self.patient,
+                    "relation_with_patient": PatientContactDetails.RelationEnum.FAMILY_MEMBER.value,
+                    "mode_of_contact": PatientContactDetails.ModeOfContactEnum.CLEANED_USED_ITEMS.value,
+                    "date_of_last_contact": datetime.datetime(2020, 4, 1),
+                    "is_primary": True,
+                    "condition_of_contact_is_symptomatic": False,
+                }
+            ),
+            bulk=False,
+        )
+        patient.save()
+        patient.refresh_from_db()
+
+        new_disease_status = DiseaseStatusEnum.NEGATIVE
+        data = self.get_detail_representation(patient)
+        data.update(
+            {
+                "disease_status": new_disease_status.value,
+                "contacted_patients": [
+                    {
+                        "patient_in_contact": self.patient.id,
+                        "relation_with_patient": PatientContactDetails.RelationEnum.FRIEND.name,
+                        "mode_of_contact": PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.name,
+                        "date_of_last_contact": "2020-04-10",
+                        "is_primary": True,
+                        "condition_of_contact_is_symptomatic": False,
+                    }
+                ],
+            }
+        )
+        keys_to_pop = [key for key, value in data.items() if value is mock_equal] + [
+            "meta_info",
+            "nationality",
+            "passport_no",
+            "aadhar_no",
+        ]
+        for key in keys_to_pop:
+            data.pop(key)
+
+        response = self.client.put(self.get_url(patient.id), data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
+
+        patient.refresh_from_db()
+        self.assertEqual(patient.disease_status, new_disease_status.value)
+        self.assertEquals(patient.contacted_patients.count(), 1)
+
+        contacted_patient = patient.contacted_patients.first()
+        self.assertEquals(contacted_patient.relation_with_patient, PatientContactDetails.RelationEnum.FRIEND.value)
+        self.assertEquals(
+            contacted_patient.mode_of_contact, PatientContactDetails.ModeOfContactEnum.CO_PASSENGER_AEROPLANE.value
+        )
+        self.assertEquals(contacted_patient.date_of_last_contact, datetime.date(2020, 4, 10))
 
     def test_user_can_delete_patient(self):
         """
         Test users can delete patient
             - test permission error
         """
-        patient = self.patient
+        user = self.clone_object(self.user, save=False)
+        user.username = "username__test_user_can_delete_patient"
+        user.save()
+
+        patient = self.clone_object(self.patient)
         patient.created_by = self.user
         patient.save()
+
+        self.client.force_authenticate(user)
         response = self.client.delete(self.get_url(patient.id))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.client.force_authenticate(self.user)
+        response = self.client.delete(self.get_url(patient.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_superuser_can_delete_patient(self):
         """
@@ -348,3 +414,43 @@ class TestPatient(TestBase):
         self.client.force_authenticate(self.super_user)
         response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_icmr_sample__should_render(self):
+        patient = self.clone_object(self.patient, save=False)
+        patient.created_by = self.user
+        patient.save()
+
+        response = self.client.get(self.get_url(patient.id, "icmr_sample"))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_patient_transfer(self):
+        patient = self.clone_object(self.patient)
+
+        new_facility_user = self.clone_object(self.user, save=False)
+        new_facility_user.username = f"{new_facility_user.username}_test_patient_transfer"
+        new_facility_user.save()
+
+        new_facility = self.clone_object(self.facility, save=False)
+        new_facility.created_by = new_facility_user
+        new_facility.save()
+
+        self.client.force_authenticate(new_facility_user)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"), {"facility": new_facility.id, "date_of_birth": "2020-04-01"}
+        )
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # check for invalid date of birth
+        response = self.client.post(
+            self.get_url(patient.id, "transfer"),
+            {"facility": new_facility.id, "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d")},
+        )
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        patient.refresh_from_db()
+        self.assertEquals(patient.facility, new_facility)
+
+        # new owner should be able to view the details
+        response = self.client.get(self.get_url(patient.id))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)

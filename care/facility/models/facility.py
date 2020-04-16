@@ -31,17 +31,21 @@ FACILITY_TYPES = [
     (6, "Lodge"),
     (7, "TeleMedicine"),
     (8, "Govt Hospital"),
-    # Use 2xx for Govt owned hospitals and health centres
-    (200, "Primary Health Centres"),
-    (201, "24x7 Public Health Centres"),
-    (202, "Family Health Centres"),
-    (203, "Community Health Centres"),
-    (220, "Urban Primary Health Center"),
-    (230, "Taluk Hospitals"),
-    (231, "Taluk Headquarters Hospitals"),
-    (240, "Women and Child Health Centres"),
-    (250, "General hospitals"),  # TODO: same as 8, need to merge
-    (260, "District Hospitals"),
+    (9, "Labs"),
+    # Use 8xx for Govt owned hospitals and health centres
+    (800, "Primary Health Centres"),
+    (801, "24x7 Public Health Centres"),
+    (802, "Family Health Centres"),
+    (803, "Community Health Centres"),
+    (820, "Urban Primary Health Center"),
+    (830, "Taluk Hospitals"),
+    (831, "Taluk Headquarters Hospitals"),
+    (840, "Women and Child Health Centres"),
+    (850, "General hospitals"),  # TODO: same as 8, need to merge
+    (860, "District Hospitals"),
+    (870, "Govt Medical College Hospitals"),
+    # Use 9xx for Labs
+    (950, "Corona Testing Labs"),
 ]
 
 DOCTOR_TYPES = [
@@ -71,7 +75,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     users = models.ManyToManyField(
-        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user")
+        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
     )
 
     class Meta:

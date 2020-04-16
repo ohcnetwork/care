@@ -1,12 +1,10 @@
-import datetime
-
-from django.utils.timezone import make_aware
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.patient_sample import PatientSample, PatientSampleFlow, SAMPLE_TYPE_CHOICES
+from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from config.serializers import ChoiceField
 
 
@@ -42,12 +40,19 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     date_of_sample = serializers.DateTimeField(required=False)
     date_of_result = serializers.DateTimeField(required=False)
 
+    notes = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = PatientSample
-        read_only_fields = ("facility",)
+        read_only_fields = (
+            "id",
+            "facility",
+        )
         exclude = TIMESTAMP_FIELDS
 
     def create(self, validated_data):
+        validated_data.pop("status", None)
+        validated_data.pop("result", None)
         return super(PatientSampleSerializer, self).create(validated_data)
 
 
@@ -73,12 +78,15 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": [f"is required as the test is complete"]})
 
-        if validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"]:
-            validated_data["date_of_sample"] = make_aware(datetime.datetime.now())
+        if not instance.date_of_sample and validated_data.get("status") in [
+            PatientSample.SAMPLE_TEST_FLOW_MAP[key]
+            for key in {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"}
+        ]:
+            validated_data["date_of_sample"] = timezone.now()
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
             validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
         elif validated_data.get("result") is not None:
-            validated_data["date_of_result"] = make_aware(datetime.datetime.now())
+            validated_data["date_of_result"] = timezone.now()
 
         return super().update(instance, validated_data)
 
