@@ -85,7 +85,7 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             validated_data["date_of_sample"] = timezone.now()
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
             validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
-        elif validated_data.get("result") is not None:
+        elif validated_data.get("result") is not None and validated_data.get("date_of_result") is None:
             validated_data["date_of_result"] = timezone.now()
 
         return super().update(instance, validated_data)
