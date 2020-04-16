@@ -137,7 +137,10 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+        patient.refresh_from_db()
+        response_serializer = self.get_serializer_class()(patient)
+        return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

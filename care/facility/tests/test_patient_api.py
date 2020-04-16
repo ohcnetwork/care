@@ -447,7 +447,7 @@ class TestPatient(TestBase):
             self.get_url(patient.id, "transfer"),
             {"facility": new_facility.id, "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d")},
         )
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
         patient.refresh_from_db()
         self.assertEquals(patient.facility, new_facility)
 
