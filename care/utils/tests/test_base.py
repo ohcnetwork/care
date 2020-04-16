@@ -185,6 +185,7 @@ class TestBase(APITestCase):
             "number_of_aged_dependents": 2,
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
+            "date_of_receipt_of_information": datetime.datetime(2020, 4, 1, 15, 30, 00),
         }
 
     @classmethod

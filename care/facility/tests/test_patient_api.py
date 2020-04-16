@@ -61,6 +61,7 @@ class TestPatient(TestBase):
             "source": patient.get_source_display(),
             "nearest_facility": getattr(patient.nearest_facility, "id", None),
             **self.get_local_body_district_state_representation(patient),
+            "date_of_receipt_of_information": patient.date_of_receipt_of_information,
         }
 
     def _get_medical_history_representation(self, history):
@@ -150,6 +151,7 @@ class TestPatient(TestBase):
             "nearest_facility_object": self.get_facility_representation(patient.nearest_facility),
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
+            "date_of_receipt_of_information": mock_equal,
         }
 
     def test_login_required(self):
