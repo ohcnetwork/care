@@ -96,10 +96,11 @@ class PatientDetailSerializer(PatientListSerializer):
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
     state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), required=True)
+    patient_search_id = serializers.CharField(required=False, read_only=False)
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth")
+        exclude = ("created_by", "deleted", "year_of_birth")
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS
 
@@ -113,6 +114,35 @@ class PatientDetailSerializer(PatientListSerializer):
         if value is not None and Facility.objects.filter(id=value).first() is None:
             raise serializers.ValidationError(_("facility not found"))
         return value
+
+    def validate(self, attrs):
+        """Providing custom verification for uniqueness of phone number and date of birth"""
+        validated_data = super(PatientDetailSerializer, self).validate(attrs)
+        date_of_birth = validated_data.get("date_of_birth", "")
+        phone_number = validated_data.get("phone_number", "")
+
+        err_flag = False
+        search_id_field = "patient_id"
+        search_id = validated_data.get("patient_search_id", None)
+        queryset = PatientSearch.objects.filter(date_of_birth=date_of_birth, phone_number=phone_number)
+
+        if search_id:
+            # patient exists
+            if len(queryset) > 0:
+                # check if the search id matches
+                if search_id == queryset.values(search_id_field)[0][search_id_field]:
+                    err_flag = True
+        else:
+            # patient doesn't exist
+            if queryset.exists():
+                err_flag = True
+
+        if err_flag:
+            raise serializers.ValidationError(
+                {"non_field_errors": [_("Date of birth and phone number match another patient")],}
+            )
+
+        return validated_data
 
     def create(self, validated_data):
         serializer = PatientDetailSerializer(data=self.context["request"].data)

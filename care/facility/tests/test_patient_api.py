@@ -180,6 +180,7 @@ class TestPatient(TestBase):
             "meta_info": self._get_metainfo_representation(patient),
             "contacted_patients": self._get_contact_patients_representation(patient),
             "date_of_receipt_of_information": mock_equal,
+            "patient_search_id": mock_equal,
         }
 
     def test_login_required(self):
@@ -253,7 +254,7 @@ class TestPatient(TestBase):
         response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # since this is non-field error we check inside the list
-        self.assertEqual("phone number" in response.json()["non_field_errors"][0], True)
+        self.assertEqual("phone number" in response.json()["non_field_errors"][0].lower(), True)
 
     def test_users_cant_retrieve_others_patients(self):
         """Test users can't retrieve patients not created by them"""
@@ -299,7 +300,9 @@ class TestPatient(TestBase):
 
         self.client.force_authenticate(self.user)
         response = self.client.patch(
-            self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
+            self.get_url(patient.id),
+            {"disease_status": new_disease_status.value, "date_of_birth": patient.date_of_birth,},
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
 

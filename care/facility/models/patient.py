@@ -2,10 +2,8 @@ import datetime
 import enum
 
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
-from rest_framework.serializers import ValidationError
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -121,18 +119,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     @property
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
-
-    def clean(self):
-        """Providing custom verification for uniqueness of phone number and date of birth"""
-        date_of_birth = self.date_of_birth
-        phone_number = self.phone_number
-
-        if not self.patient_search_id:
-            # patient exists
-            if PatientSearch.objects.filter(date_of_birth=date_of_birth, phone_number=phone_number).exists():
-                raise ValidationError(
-                    {"non_field_errors": [_("Date of birth and phone number match another patient")],}
-                )
 
     def save(self, *args, **kwargs) -> None:
         """
