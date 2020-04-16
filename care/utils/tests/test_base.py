@@ -77,7 +77,9 @@ class TestBase(APITestCase):
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        f = Facility(**data)
+        f.save()
+        return f
 
     @classmethod
     def create_patient(cls, **kwargs):

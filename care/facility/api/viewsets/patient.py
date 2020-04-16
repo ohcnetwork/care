@@ -6,7 +6,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import serializers, viewsets
+from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
@@ -19,6 +19,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
     PatientSearchSerializer,
+    PatientTransferSerializer,
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
@@ -45,8 +46,12 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 queryset = queryset.filter(state=request.user.state)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(district=request.user.district)
-            else:
-                queryset = queryset.filter(Q(created_by=request.user) | Q(facility__created_by=request.user))
+            elif view.action != "transfer":
+                queryset = queryset.filter(
+                    Q(created_by=request.user)
+                    | Q(facility__created_by=request.user)
+                    | Q(facility__users__id__exact=request.user.id)
+                )
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -96,6 +101,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             return PatientListSerializer
         elif self.action == "icmr_sample":
             return PatientICMRSerializer
+        elif self.action == "transfer":
+            return PatientTransferSerializer
         else:
             return self.serializer_class
 
@@ -123,6 +130,14 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         patient = self.get_object()
         patient.__class__ = PatientIcmr
         return Response(data=PatientICMRSerializer(patient).data)
+
+    @action(detail=True, methods=["POST"])
+    def transfer(self, request, *args, **kwargs):
+        patient = self.get_object()
+        serializer = self.get_serializer_class()(patient, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

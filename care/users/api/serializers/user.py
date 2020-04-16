@@ -51,7 +51,17 @@ class UserCreateSerializer(SignUpSerializer):
     class Meta:
         model = User
         include = ("facilities",)
-        exclude = ()
+        exclude = (
+            "is_superuser",
+            "is_staff",
+            "is_active",
+            "last_login",
+            "date_joined",
+            "verified",
+            "deleted",
+            "groups",
+            "user_permissions",
+        )
 
     def validate_facilities(self, facility_ids):
         if facility_ids:

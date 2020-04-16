@@ -191,3 +191,24 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         fields = "__all__"
+
+
+class PatientTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientRegistration
+        fields = (
+            "facility",
+            "date_of_birth",
+        )
+
+    def validate_date_of_birth(self, value):
+        if self.instance and self.instance.date_of_birth != value:
+            raise serializers.ValidationError("Date of birth does not match")
+        return value
+
+    def create(self, validated_data):
+        raise NotImplementedError
+
+    def save(self, **kwargs):
+        self.instance.facility = self.validated_data["facility"]
+        self.instance.save()
