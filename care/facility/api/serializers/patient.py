@@ -23,6 +23,7 @@ from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseSta
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.models import State
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
 
@@ -79,6 +80,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
+    date_of_birth = serializers.DateField(required=True)
     phone_number = PhoneNumberIsPossibleField()
     facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
@@ -93,6 +95,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
+    state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), required=True)
 
     class Meta:
         model = PatientRegistration
@@ -108,32 +111,12 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate_facility(self, value):
         if value is not None and Facility.objects.filter(id=value).first() is None:
-            raise serializers.ValidationError("facility not found")
+            raise serializers.ValidationError(_("facility not found"))
         return value
 
-    def validate(self, attrs):
-        validated = super().validate(attrs)
-        # flag to check whether validation failed
-        err_flag = False
-        errors = ""
-        date_of_birth = validated.get("date_of_birth")
-        if not self.partial and not validated.get("age") and not date_of_birth:
-            err_flag = True
-            errors += "Either age or date_of_birth should be passed."
-
-        phone_number = validated.get("phone_number")
-
-        # Check for uniqueness of mobile number and date of birth
-        if PatientSearch.objects.filter(phone_number=phone_number, date_of_birth=date_of_birth).exists():
-            err_flag = True
-            errors += "The phone number and date of birth match to another patient."
-
-        if err_flag:
-            raise serializers.ValidationError({"non_field_errors": [_(errors)]})
-
-        return validated
-
     def create(self, validated_data):
+        serializer = PatientDetailSerializer(data=self.context["request"].data)
+        serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})

@@ -1,9 +1,10 @@
-import datetime
 import enum
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
+from rest_framework.serializers import ValidationError
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -21,7 +22,14 @@ from care.users.models import GENDER_CHOICES, User, phone_number_regex
 
 class PatientRegistration(PatientBaseModel):
     # fields in the PatientSearch model
-    PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
+    PATIENT_SEARCH_KEYS = [
+        "name",
+        "gender",
+        "phone_number",
+        "date_of_birth",
+        "year_of_birth",
+        "state_id",
+    ]
 
     class SourceEnum(enum.Enum):
         CARE = 10
@@ -33,7 +41,7 @@ class PatientRegistration(PatientBaseModel):
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
+        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility",
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
@@ -53,7 +61,7 @@ class PatientRegistration(PatientBaseModel):
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
+        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient",
     )
 
     contact_with_confirmed_carrier = models.BooleanField(
@@ -69,7 +77,7 @@ class PatientRegistration(PatientBaseModel):
     )
     countries_travelled = models.TextField(default="", blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
-        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
+        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled",
     )
 
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
@@ -81,14 +89,14 @@ class PatientRegistration(PatientBaseModel):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status"
+        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status",
     )
 
     number_of_aged_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
+        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True,
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
+        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True,
     )
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -146,6 +154,18 @@ class PatientRegistration(PatientBaseModel):
     def tele_consultation_history(self):
         return self.patientteleconsultation_set.order_by("-id")
 
+    def clean(self):
+        """Providing custom verification for uniqueness of phone number and date of birth"""
+        date_of_birth = self.date_of_birth
+        phone_number = self.phone_number
+
+        if not self.patient_search_id:
+            # patient exists
+            if PatientSearch.objects.filter(date_of_birth=date_of_birth, phone_number=phone_number).exists():
+                raise ValidationError(
+                    {"non_field_errors": [_("Date of birth and phone number match another patient")],}
+                )
+
     def save(self, *args, **kwargs) -> None:
         """
         While saving, if the local body is not null, then district will be local body's district
@@ -162,17 +182,19 @@ class PatientRegistration(PatientBaseModel):
         -------
         None
         """
+        # perform custom validation on the model
+        self.clean()
+
         if self.local_body is not None:
             self.district = self.local_body.district
         if self.district is not None:
             self.state = self.district.state
 
-        self.year_of_birth = (
-            self.date_of_birth.year if self.date_of_birth is not None else datetime.datetime.now().year - self.age
-        )
+        # since date of birth can't be NULL, this can be safely set here
+        self.year_of_birth = self.date_of_birth.year
 
         is_create = self.pk is None
-        super().save(*args, **kwargs)
+        super(PatientRegistration, self).save(*args, **kwargs)
         if is_create or self.patient_search_id is None:
             ps = PatientSearch.objects.create(
                 name=self.name,
@@ -184,7 +206,7 @@ class PatientRegistration(PatientBaseModel):
                 patient_id=self.pk,
             )
             self.patient_search_id = ps.pk
-            self.save()
+            self.save(update_fields=["patient_search_id"])
         else:
             PatientSearch.objects.filter(pk=self.patient_search_id).update(
                 name=self.name,
@@ -211,6 +233,7 @@ class PatientSearch(models.Model):
             models.Index(fields=["year_of_birth", "date_of_birth", "phone_number"]),
             models.Index(fields=["year_of_birth", "phone_number"]),
         ]
+        constraints = [models.UniqueConstraint(fields=["date_of_birth", "phone_number"], name="unique patient")]
 
     @staticmethod
     def has_read_permission(request):
@@ -277,7 +300,7 @@ class PatientContactDetails(models.Model):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients")
     patient_in_contact = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts"
+        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts",
     )
     relation_with_patient = models.IntegerField(choices=RelationChoices)
     mode_of_contact = models.IntegerField(choices=ModeOfContactChoices)

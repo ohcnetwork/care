@@ -1,4 +1,5 @@
 import datetime
+import random
 from typing import Any
 
 from rest_framework import status
@@ -97,6 +98,33 @@ class TestPatient(TestBase):
             for contacted_patient in patient.contacted_patients.all()
         ]
 
+    @classmethod
+    def _change_dob(cls, val: datetime.date):
+        """
+        Add a random number to day for the date of birth\
+        This is done to bypass the uniqueness of date of birth and phone number
+
+        Returns:
+            the modified object
+        """
+        # field = "date_of_birth"
+        return val + datetime.timedelta(days=random.randrange(1, 365))
+        # if isinstance(patient, dict):
+        #     patient.update(field, patient[field] + change)
+        # else:
+        #     patient.date_of_birth += change
+        # return patient
+
+    @classmethod
+    def clone_object(cls, obj, save=True):
+        new_obj = obj._meta.model.objects.get(pk=obj.id)
+        new_obj.pk = None
+        new_obj.id = None
+        if save:
+            new_obj.date_of_birth = cls._change_dob(new_obj.date_of_birth)
+            new_obj.save()
+        return new_obj
+
     def get_detail_representation(self, patient: Any):
 
         if isinstance(patient, dict):
@@ -159,6 +187,28 @@ class TestPatient(TestBase):
         response = self.client.post(self.get_url(), {},)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_date_of_birth_is_required(self):
+        """Test validation error is raised when data of birth is not passed"""
+        patient_data = self.patient_data.copy()
+        patient_data.pop("date_of_birth", None)
+        response = self.client.post(self.get_url(), patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = response.json().get("date_of_birth", None)
+        self.assertIsNotNone(error)
+        self.assertEqual("required" in error[0], True)
+
+    def test_state_is_required(self):
+        """Test validation error is raised when state is not passed"""
+        patient_data = self.patient_data.copy()
+        # update date of birth to bypass uniqueness constraints
+        patient_data.update({"date_of_birth": self._change_dob(patient_data["date_of_birth"])})
+        patient_data.pop("state", "")
+        response = self.client.post(self.get_url(), patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = response.json().get("state", None)
+        self.assertIsNotNone(error)
+        self.assertEqual("required" in error[0], True)
+
     def test_patient_creation(self):
         """
         For new patient can be creation, test
@@ -200,6 +250,7 @@ class TestPatient(TestBase):
         patient_data = self.patient_data
         response = self.client.post(self.get_url(), patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # since this is non-field error we check inside the list
         self.assertEqual("phone number" in response.json()["non_field_errors"][0], True)
 
     def test_users_cant_retrieve_others_patients(self):
@@ -282,6 +333,8 @@ class TestPatient(TestBase):
         data = self.get_detail_representation(patient)
         data.update(
             {
+                # this field is required now
+                "date_of_birth": self._change_dob(patient.date_of_birth),
                 "disease_status": new_disease_status.value,
                 "contacted_patients": [
                     {
