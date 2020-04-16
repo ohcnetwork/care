@@ -194,12 +194,12 @@ class PatientSearchSerializer(serializers.ModelSerializer):
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
+    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
+    patient = serializers.IntegerField(source="id", read_only=True)
+
     class Meta:
         model = PatientRegistration
-        fields = (
-            "facility",
-            "date_of_birth",
-        )
+        fields = ("facility", "date_of_birth", "patient", "facility_object")
 
     def validate_date_of_birth(self, value):
         if self.instance and self.instance.date_of_birth != value:
