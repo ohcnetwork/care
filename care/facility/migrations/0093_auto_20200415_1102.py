@@ -2,6 +2,7 @@
 
 from django.db import migrations, models, transaction
 
+
 def populate_date_of_information_in_patients(apps, *args, **kwargs):
     Patient = apps.get_model('facility', 'PatientRegistration')
     PatientHistory = apps.get_model('facility', 'HistoricalPatientRegistration')
@@ -14,13 +15,14 @@ def populate_date_of_information_in_patients(apps, *args, **kwargs):
             h.date_of_receipt_of_information = h.created_date
             h.save()
 
+
 def reverse_populate_date_of_information_in_patients(apps, *args):
     pass
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0090_auto_20200415_0710'),
+        ('facility', '0092_recompute_facility_types'),
     ]
 
     operations = [
