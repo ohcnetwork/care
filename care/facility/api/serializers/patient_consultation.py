@@ -21,6 +21,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         read_only = TIMESTAMP_FIELDS
         exclude = ("deleted",)
 
+    def validate_bed_number(self, bed_number):
+        try:
+            if not self.initial_data["admitted"]:
+                bed_number = None
+        except KeyError:
+            bed_number = None
+        return bed_number
+
     def validate(self, obj):
         validated = super().validate(obj)
         if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):

@@ -40,14 +40,6 @@ class PatientConsultationViewSet(ModelViewSet):
         """
         return super().list(request, *args, **kwargs)
 
-    def perform_create(self, serializer):
-        try:
-            if not self.request.data["admitted"]:
-                self.request.data["bed_number"] = ""
-        except KeyError:
-            self.request.data["bed_number"] = ""
-        serializer.save()
-
 
 class DailyRoundsViewSet(ModelViewSet):
     serializer_class = DailyRoundSerializer
