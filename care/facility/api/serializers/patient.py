@@ -132,7 +132,7 @@ class PatientDetailSerializer(PatientListSerializer):
             # patient exists
             search_id = self.context["view"].get_object().patient_search_id
             # search id should match
-            if search_id == queryset[0][pk_field]:
+            if search_id != queryset[0][pk_field]:
                 err_flag = True
 
         if err_flag:
