@@ -9,5 +9,5 @@ addons:
 install:
   - pip install -q -r requirements/local.txt
 script:
-  - python manage makemigrations --check || exit 1
+  - python manage.py makemigrations --check || exit 1
   - python manage.py test --settings=config.settings.test -n
