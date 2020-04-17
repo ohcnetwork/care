@@ -106,15 +106,10 @@ class TestPatient(TestBase):
         This is done to bypass the uniqueness of date of birth and phone number
 
         Returns:
-            the modified object
+            datetime.date
+                the modified date of birth
         """
-        # field = "date_of_birth"
         return val + datetime.timedelta(days=random.randrange(1, 365))
-        # if isinstance(patient, dict):
-        #     patient.update(field, patient[field] + change)
-        # else:
-        #     patient.date_of_birth += change
-        # return patient
 
     @classmethod
     def clone_object(cls, obj, save=True):
@@ -247,10 +242,42 @@ class TestPatient(TestBase):
         self.assertIsNotNone(patient_search)
         self.assertEqual(patient_search.phone_number, new_phone_number)
 
-    def test_phone_number_and_dob_uniqueness(self):
+    def test_phone_number_and_dob_uniqueness_in_post_request(self):
         """Test the uniqueness of phone number and date of birth (both fields together) for patient creation"""
-        patient_data = self.patient_data
+        patient_data = self.patient_data.copy()
         response = self.client.post(self.get_url(), patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # since this is non-field error we check inside the list
+        self.assertEqual("phone number" in response.json()["non_field_errors"][0].lower(), True)
+
+    def test_phone_number_and_dob_uniqueness_in_put_request(self):
+        """Test the uniqueness of phone number and date of birth (both fields together) for patient creation"""
+        patient_data = self.patient_data.copy()
+        field = "date_of_birth"
+        new_dob = self._change_dob(patient_data[field])
+        # create a new patient
+        patient_data.update({field: new_dob})
+        response = self.client.post(self.get_url(), patient_data, format="json")
+        new_patient_id = response.json()["id"]
+        # set their date of birth same as the member class patient
+        patient_data.update({field: self.patient.date_of_birth})
+        response = self.client.put(self.get_url(new_patient_id), patient_data, format="json",)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # since this is non-field error we check inside the list
+        self.assertEqual("phone number" in response.json()["non_field_errors"][0].lower(), True)
+
+    def test_phone_number_and_dob_uniqueness_in_patch_request(self):
+        """Test the uniqueness of phone number and date of birth (both fields together) for patient creation"""
+        patient_data = self.patient_data.copy()
+        field = "date_of_birth"
+        new_dob = self._change_dob(patient_data[field])
+        # create a new patient
+        patient_data.update({field: new_dob})
+        response = self.client.post(self.get_url(), patient_data, format="json")
+        new_patient_id = response.json()["id"]
+        # set their date of birth same as the member class patient
+        patient_data.update({field: self.patient.date_of_birth})
+        response = self.client.patch(self.get_url(new_patient_id), patient_data, format="json",)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # since this is non-field error we check inside the list
         self.assertEqual("phone number" in response.json()["non_field_errors"][0].lower(), True)
