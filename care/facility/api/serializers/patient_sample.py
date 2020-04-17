@@ -78,6 +78,9 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": [f"is required as the test is complete"]})
 
+        if validated_data.get("result") is None and validated_data.get("date_of_result") is not None:
+            raise ValidationError({"date_of_result": [f"cannot be provided without result"]})
+
         if not instance.date_of_sample and validated_data.get("status") in [
             PatientSample.SAMPLE_TEST_FLOW_MAP[key]
             for key in {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"}
@@ -85,7 +88,7 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             validated_data["date_of_sample"] = timezone.now()
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
             validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
-        elif validated_data.get("result") is not None:
+        elif validated_data.get("result") is not None and validated_data.get("date_of_result") is None:
             validated_data["date_of_result"] = timezone.now()
 
         return super().update(instance, validated_data)

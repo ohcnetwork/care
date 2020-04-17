@@ -27,6 +27,7 @@ class TestPatientConsultationApi(TestBase):
             "discharge_date": obj.discharge_date,
             "created_date": obj.created_date,
             "modified_date": obj.modified_date,
+            "bed_number": obj.bed_number,
         }
 
     def get_detail_representation(self, obj=None) -> dict:
