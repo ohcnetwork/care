@@ -6,7 +6,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import serializers, status, viewsets
+from rest_framework import exceptions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
@@ -193,14 +193,15 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
         if self.action != "list":
             return super(PatientSearchViewSet, self).get_queryset()
         else:
+            facility_id = self.request.query_params.get("facility_id")
             serializer = PatientSearchSerializer(data=self.request.query_params, partial=True)
             serializer.is_valid(raise_exception=True)
 
-            search_keys = ["date_of_birth", "year_of_birth", "phone_number", "name", "age"]
+            search_keys = ["year_of_birth", "phone_number", "name", "age", "facility_id"]
             search_fields = {
                 key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
             }
-            if not search_fields:
+            if not search_fields and not facility_id:
                 raise serializers.ValidationError(
                     {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
                 )
@@ -213,10 +214,19 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                 year_of_birth = datetime.datetime.now().year - age
                 search_fields["age__gte"] = year_of_birth - 5
                 search_fields["age__lte"] = year_of_birth + 5
-
+            if facility_id:
+                facility = Facility.objects.filter(id=facility_id)
+                if not facility:
+                    raise exceptions.ValidationError({"facility_id": ["Invalid facility_id"]})
+                patients = PatientRegistration.objects.filter(facility=facility[0]).values_list(
+                    "patient_search_id", flat=True
+                )
+                if patients:
+                    search_fields["pk__in"] = list(patients)
             name = search_fields.pop("name", None)
-
-            queryset = self.queryset.filter(**search_fields)
+            queryset = []
+            if search_fields:
+                queryset = self.queryset.filter(**search_fields)
 
             if name:
                 queryset = (

@@ -188,10 +188,24 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     phone_number = PhoneNumberIsPossibleField()
+    facility_id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = PatientSearch
         fields = "__all__"
+
+    def get_facility_id(self, obj):
+        facility_id = None
+        patient_det = PatientRegistration.objects.filter(id=obj.patient_id).values("facility_id")
+        if patient_det:
+            facility_id = patient_det[0].get("facility_id")
+        return facility_id
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        del ret["year_of_birth"]
+        del ret["date_of_birth"]
+        return ret
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
