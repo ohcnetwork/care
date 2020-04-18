@@ -414,6 +414,7 @@ class TestPatient(TestBase):
         self.client.force_authenticate(self.super_user)
         response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print(response.json())
 
     def test_icmr_sample__should_render(self):
         patient = self.clone_object(self.patient, save=False)
