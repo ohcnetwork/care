@@ -38,4 +38,5 @@ done
 >&2 echo 'PostgreSQL is available'
 
 
-/usr/local/bin/gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
+export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
+newrelic-admin run-program /usr/local/bin/gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
