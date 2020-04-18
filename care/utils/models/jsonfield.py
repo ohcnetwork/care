@@ -35,10 +35,10 @@ if "spatialite" in settings.DATABASES["default"]["ENGINE"]:
 
     class ArrayField(JSONField):
         def __init__(self, base_field, size=None, **kwargs):
-            """Care for DjanroArrayField's kwargs."""
+            """Care for DjangoArrayField's kwargs."""
             self.base_field = base_field
             self.size = size
-            return super().__init__(**kwargs)
+            super().__init__(**kwargs)
 
         def deconstruct(self):
             """Need to create migrations properly."""
