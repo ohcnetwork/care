@@ -16,9 +16,6 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
 
-    # until we start supporting other states
-    state = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = User
         fields = (
