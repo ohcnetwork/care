@@ -86,9 +86,10 @@ class PatientIcmr(PatientRegistration):
 
     @property
     def has_travel_to_foreign_last_14_days(self):
-        return len(self.countries_travelled.strip()) != 0 and (
-            self.date_of_return and (self.date_of_return.date() - datetime.datetime.now().date()).days <= 14
-        )
+        if self.countries_travelled:
+            return len(self.countries_travelled) != 0 and (
+                self.date_of_return and (self.date_of_return.date() - datetime.datetime.now().date()).days <= 14
+            )
 
     @property
     def travel_end_date(self):

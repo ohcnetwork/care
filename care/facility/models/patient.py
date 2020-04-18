@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
@@ -68,7 +69,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
-    countries_travelled = models.TextField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
+    countries_travelled_old = models.TextField(
+        null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False
+    )
+    countries_travelled = JSONField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
         blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )

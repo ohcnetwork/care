@@ -177,7 +177,7 @@ class TestBase(APITestCase):
             "contact_with_suspected_carrier": True,
             "estimated_contact_date": None,
             "past_travel": False,
-            "countries_travelled": "",
+            "countries_travelled": [],
             "present_health": "Fine",
             "has_SARI": False,
             "is_active": True,
