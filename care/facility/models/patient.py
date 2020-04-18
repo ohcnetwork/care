@@ -192,6 +192,11 @@ class PatientSearch(models.Model):
             return True
         return False
 
+    @property
+    def facility_id(self):
+        facility_ids = PatientRegistration.objects.filter(id=self.patient_id).values_list("facility_id")
+        return facility_ids[0][0] if len(facility_ids) > 0 else None
+
 
 class PatientMetaInfo(models.Model):
     class OccupationEnum(enum.Enum):
