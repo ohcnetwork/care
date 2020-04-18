@@ -169,8 +169,9 @@ class TestPatient(TestBase):
             - patient is created on the backend
         """
         patient_data = self.patient_data.copy()
-        patient_data["countries_travelled"] = f"countries_travelled_test_patient_creation"
-
+        patient_data["countries_travelled"] = [
+            "country1",
+        ]
         unverified_user = self.clone_object(self.user, save=False)
         unverified_user.username = "unverified_user_test_patient_creation"
         unverified_user.verified = False

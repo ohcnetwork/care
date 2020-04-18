@@ -46,7 +46,15 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "ongoing_medication", "patient_search_id", "year_of_birth", "meta_info")
+        exclude = (
+            "created_by",
+            "deleted",
+            "ongoing_medication",
+            "patient_search_id",
+            "year_of_birth",
+            "meta_info",
+            "countries_travelled_old",
+        )
         read_only = TIMESTAMP_FIELDS
 
 
@@ -85,11 +93,10 @@ class PatientDetailSerializer(PatientListSerializer):
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
-    countries_travelled = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth")
+        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth", "countries_travelled_old")
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS
 
@@ -102,6 +109,13 @@ class PatientDetailSerializer(PatientListSerializer):
     def validate_facility(self, value):
         if value is not None and Facility.objects.filter(id=value).first() is None:
             raise serializers.ValidationError("facility not found")
+        return value
+
+    def validate_countries_travelled(self, value):
+        if not value:
+            value = []
+        if not isinstance(value, list):
+            value = [value]
         return value
 
     def validate(self, attrs):

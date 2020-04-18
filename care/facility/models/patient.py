@@ -18,6 +18,7 @@ from care.facility.models import (
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
+from care.utils.models.jsonfield import JSONField
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -68,7 +69,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
-    countries_travelled = models.TextField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
+    countries_travelled_old = models.TextField(
+        null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False
+    )
+    countries_travelled = JSONField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
         blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )
