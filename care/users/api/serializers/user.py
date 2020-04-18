@@ -16,9 +16,6 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
 
-    # until we start supporting other states
-    state = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = User
         fields = (
@@ -107,6 +104,10 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].is_superuser
         ):
             raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
+
+        if not validated.get("local_body") and not validated.get("district") and not validated.get("state"):
+            raise exceptions.ValidationError({"__all__": ["One of local body, district or state is required"]})
+
         return validated
 
     def create(self, validated_data):
