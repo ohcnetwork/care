@@ -112,8 +112,10 @@ class PatientDetailSerializer(PatientListSerializer):
         return value
 
     def validate_countries_travelled(self, value):
-        if value and not type(value) is list:
-            raise serializers.ValidationError("Enter valid list data")
+        if not value:
+            value = []
+        if not isinstance(value, list):
+            value = [value]
         return value
 
     def validate(self, attrs):

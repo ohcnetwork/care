@@ -1,7 +1,6 @@
 import datetime
 import enum
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
@@ -19,6 +18,7 @@ from care.facility.models import (
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
+from care.utils.models.jsonfield import JSONField
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):

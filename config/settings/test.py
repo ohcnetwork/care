@@ -47,5 +47,5 @@ INSTALLED_APPS += [  # noqa F405
 ]
 
 DATABASES = {
-    "default": {"NAME": "test_db", "ENGINE": "django.contrib.gis.db.backends.postgis", "ATOMIC_REQUESTS": False}
+    "default": {"NAME": "test_db", "ENGINE": "django.contrib.gis.db.backends.spatialite", "ATOMIC_REQUESTS": False}
 }
