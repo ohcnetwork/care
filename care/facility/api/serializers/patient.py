@@ -85,6 +85,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
+    countries_travelled = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = PatientRegistration

@@ -37,6 +37,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
+    bed_number = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"

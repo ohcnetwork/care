@@ -46,4 +46,6 @@ INSTALLED_APPS += [  # noqa F405
     "test_without_migrations",
 ]
 
-DATABASES = {"default": {"ENGINE": "django.contrib.gis.db.backends.spatialite", "ATOMIC_REQUESTS": False}}
+DATABASES = {
+    "default": {"NAME": "test_db", "ENGINE": "django.contrib.gis.db.backends.spatialite", "ATOMIC_REQUESTS": False}
+}
