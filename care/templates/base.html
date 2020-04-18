@@ -45,61 +45,7 @@
           <img class="block w-24 h-auto" src="{% static 'images/logos/black-logo.svg' %}" alt="" />
         </a>
       </div>
-      <div class="ml-auto md:hidden">
-        <button @click="open = !open" class="flex items-center px-3 py-2 border rounded" type="button">
-          <svg class="h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-          </svg>
-        </button>
-      </div>
-      <div :class="{'hidden': open}" class="w-full md:w-auto md:flex-grow md:flex md:items-center">
-        <ul
-          class="flex flex-col mt-4 -mx-4 pt-4 border-t md:flex-row md:items-center md:mx-0 md:mt-0 md:pt-0 md:mr-4 lg:mr-8 md:border-0">
-          <li>
-            <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'home' %}" title="Link">Home</a>
-          </li>
-          <!--<li>
-                        <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'ksdma' %}" title="Link">KSDMA</a>
-                    </li>-->
-
-          {% if request.user.is_authenticated and request.user.user_type == settings.STAFF_ACCOUNT_TYPE %}
-          <!-- <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="">{% trans "My Profile" %}</a>
-          </li> -->
-          <li>
-            <a class="block px-4 py-1 md:p-2 lg:px-4"
-              href="{% url 'facility:facility-create' %}">{% trans "Add Hospital" %}</a>
-          </li>
-          <li>
-            <a class="block px-4 py-1 md:p-2 lg:px-4"
-              href="{% url 'facility:facilities-view' %}">{% trans "View Hospitals" %}</a>
-          </li>
-          {% endif %}
-        </ul>
-        <ul
-          class="flex flex-col mt-4 -mx-4 pt-4 border-t md:flex-row md:items-center md:mx-0 md:ml-auto md:mt-0 md:pt-0 md:border-0">
-
-          {% if request.user.is_authenticated %}
-          <li>
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'users:logout' %}">{% trans "Sign Out" %}</a>
-          </li>
-          {% else %}
-          <!--<li>
-                        {# URL provided by django-allauth/account/urls.py #}
-                        <a class="block px-4 py-1 md:p-2 lg:px-4" href="">{% trans "Sign Up" %}</a>
-                    </li> -->
-          <li>
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="block px-4 py-1 md:p-2 lg:px-4" href="{% url 'users:signin' %}">{% trans "Sign In" %}</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
     </div>
-
   </nav>
 
   <div class="px-6 py-4 md:px-14 md:py-10 mx-auto">

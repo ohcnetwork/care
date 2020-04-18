@@ -31,7 +31,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", home_view, name="home"),
-    path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
+    #path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
     # API Docs
     url(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json",),
     url(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui",),
@@ -43,9 +43,9 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("users/", include("care.users.urls", namespace="users")),
+    # path("users/", include("care.users.urls", namespace="users")),
     # path("accounts/", include("allauth.urls")),
-    path("facility/", include("care.facility.urls", namespace="facility")),
+    # path("facility/", include("care.facility.urls", namespace="facility")),
     # RESTful APIs
     path("api/v1/", include(api_router.urlpatterns)),
     url(r"^watchman/", include("watchman.urls")),
