@@ -404,17 +404,16 @@ class TestPatient(TestBase):
         user.save()
 
         self.client.force_authenticate(user)
-        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
+        response = self.client.get(f"{self.get_url()}search/?phone_number={self.patient.phone_number}")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         self.client.force_authenticate(self.user)
-        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
+        response = self.client.get(f"{self.get_url()}search/?phone_number={self.patient.phone_number}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.client.force_authenticate(self.super_user)
-        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
+        response = self.client.get(f"{self.get_url()}search/?phone_number={self.patient.phone_number}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(response.json())
 
     def test_icmr_sample__should_render(self):
         patient = self.clone_object(self.patient, save=False)
