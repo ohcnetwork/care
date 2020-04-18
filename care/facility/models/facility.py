@@ -15,7 +15,7 @@ User = get_user_model()
 
 ROOM_TYPES = [
     (0, "Total"),
-    (1, "Normal"),
+    (1, "General Bed"),
     (2, "Hostel"),
     (3, "Single Room with Attached Bathroom"),
     (10, "ICU"),

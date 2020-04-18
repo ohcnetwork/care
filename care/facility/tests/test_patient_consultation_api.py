@@ -1,3 +1,5 @@
+from rest_framework import status
+
 from care.utils.tests.test_base import TestBase
 
 
@@ -50,3 +52,9 @@ class TestPatientConsultationApi(TestBase):
                 "results": [self.get_list_representation(consultation_2), self.get_list_representation(consultation_1)],
             },
         )
+
+    def test_detail_api(self):
+        consultation = self.create_consultation()
+        response = self.client.get(self.get_url(consultation.id))
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.json(), self.get_detail_representation(consultation))
