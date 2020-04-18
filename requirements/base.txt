@@ -44,3 +44,6 @@ django-stubs==1.5.0  # https://github.com/typeddjango/django-stubs
 # Experimental
 # ------------------------------------------------------------------------------
 djangoql==0.13.1
+
+# NewRelic for APM
+newrelic
