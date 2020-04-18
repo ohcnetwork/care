@@ -6,6 +6,7 @@ from rest_framework import exceptions, serializers
 from care.facility.models import Facility, FacilityUser
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from care.users.models import GENDER_CHOICES
+from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -15,6 +16,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES)
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
+    phone_number = PhoneNumberIsPossibleField()
 
     class Meta:
         model = User
