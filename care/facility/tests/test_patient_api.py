@@ -404,15 +404,15 @@ class TestPatient(TestBase):
         user.save()
 
         self.client.force_authenticate(user)
-        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         self.client.force_authenticate(self.user)
-        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.client.force_authenticate(self.super_user)
-        response = self.client.get(f"{self.get_url()}search/?year_of_birth=2020")
+        response = self.client.get(f"{self.get_url()}search/?phone_number=9947934662")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_icmr_sample__should_render(self):
