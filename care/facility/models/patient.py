@@ -73,6 +73,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False
     )
     countries_travelled = JSONField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
+    states_travelled = JSONField(null=True, blank=True, verbose_name="States Patient has Travelled to")
     date_of_return = models.DateTimeField(
         blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )

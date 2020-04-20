@@ -178,6 +178,7 @@ class TestBase(APITestCase):
             "estimated_contact_date": None,
             "past_travel": False,
             "countries_travelled": [],
+            "states_travelled": [],
             "present_health": "Fine",
             "has_SARI": False,
             "is_active": True,

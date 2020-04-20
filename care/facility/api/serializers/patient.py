@@ -112,6 +112,13 @@ class PatientDetailSerializer(PatientListSerializer):
         return value
 
     def validate_countries_travelled(self, value):
+        return self.check_value_is_list(value)
+
+    def validate_states_travelled(self, value):
+        return self.check_value_is_list(value)
+
+    @staticmethod
+    def check_value_is_list(value):
         if not value:
             value = []
         if not isinstance(value, list):

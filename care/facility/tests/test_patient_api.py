@@ -46,6 +46,7 @@ class TestPatient(TestBase):
             "estimated_contact_date": patient.estimated_contact_date,
             "past_travel": patient.past_travel,
             "countries_travelled": patient.countries_travelled,
+            "states_travelled": patient.states_travelled,
             "present_health": patient.present_health,
             "has_SARI": patient.has_SARI,
             "is_active": patient.is_active,
@@ -141,6 +142,7 @@ class TestPatient(TestBase):
             "has_SARI": patient.has_SARI,
             "facility": patient.facility,
             "countries_travelled": patient.countries_travelled,
+            "states_travelled": patient.states_travelled,
             "last_consultation": None,
             "facility_object": None,
             "created_date": mock_equal,
@@ -171,6 +173,9 @@ class TestPatient(TestBase):
         patient_data = self.patient_data.copy()
         patient_data["countries_travelled"] = [
             "country1",
+        ]
+        patient_data["states_travelled"] = [
+            "state1",
         ]
         unverified_user = self.clone_object(self.user, save=False)
         unverified_user.username = "unverified_user_test_patient_creation"
