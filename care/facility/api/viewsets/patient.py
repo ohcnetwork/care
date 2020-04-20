@@ -195,8 +195,10 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
         else:
             serializer = PatientSearchSerializer(data=self.request.query_params, partial=True)
             serializer.is_valid(raise_exception=True)
-
-            search_keys = ["date_of_birth", "year_of_birth", "phone_number", "name", "age"]
+            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "name", "age"]
+            else:
+                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "age"]
             search_fields = {
                 key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
             }
