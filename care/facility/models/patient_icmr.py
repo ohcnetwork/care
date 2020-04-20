@@ -178,7 +178,7 @@ class PatientConsultationICMR(PatientConsultation):
 
     def symptomatic_international_traveller(self,):
         return (
-            len(self.patient.countries_travelled.strip()) != 0
+            len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
                 and (self.patient.date_of_return.date() - datetime.datetime.now().date()).days <= 14
