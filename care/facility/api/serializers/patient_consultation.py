@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES
 from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
@@ -15,6 +16,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
+    referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
 
     class Meta:
         model = PatientConsultation
