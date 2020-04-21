@@ -364,8 +364,10 @@ class TestBase(APITestCase):
         }
 
     @classmethod
-    def create_consultation(cls, patient=None, facility=None, **kwargs) -> PatientConsultation:
+    def create_consultation(cls, patient=None, facility=None, referred_to=None, **kwargs) -> PatientConsultation:
         data = cls.get_consultation_data()
-        kwargs.update({"patient": patient or cls.patient, "facility": facility or cls.facility})
+        kwargs.update(
+            {"patient": patient or cls.patient, "facility": facility or cls.facility, "referred_to": referred_to}
+        )
         data.update(kwargs)
         return PatientConsultation.objects.create(**data)
