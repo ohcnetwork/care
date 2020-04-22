@@ -1,6 +1,7 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -40,8 +41,14 @@ class AmbulanceViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
+    def get_queryset(self):
+        return self.queryset
+
+    def get_object(self):
+        return get_object_or_404(self.get_queryset(), id=self.kwargs.get("pk"))
+
     @action(methods=["POST"], detail=True)
-    def add_driver(self, request):
+    def add_driver(self, request, *args, **kwargs):
         ambulance = self.get_object()
         serializer = AmbulanceDriverSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -50,7 +57,7 @@ class AmbulanceViewSet(
         return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
 
     @action(methods=["DELETE"], detail=True)
-    def remove_driver(self, request):
+    def remove_driver(self, request, *args, **kwargs):
         class DeleteDriverSerializer(serializers.Serializer):
             driver_id = serializers.IntegerField()
 
