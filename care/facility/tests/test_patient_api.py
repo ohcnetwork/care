@@ -30,7 +30,7 @@ class TestPatient(TestBase):
             patient.medical_history.set(medical_history)
 
         return {
-            "id": patient.id,
+            "id": str(patient.external_id),
             "name": patient.name,
             "age": patient.age,
             "date_of_birth": mock_equal,
@@ -209,7 +209,7 @@ class TestPatient(TestBase):
         patient = self.patient
         patient.created_by = self.user
         patient.save()
-        response = self.client.get(self.get_url(self.patient.id))
+        response = self.client.get(self.get_url(self.patient.external_id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
 
@@ -239,7 +239,7 @@ class TestPatient(TestBase):
 
         self.client.force_authenticate(self.user)
         response = self.client.patch(
-            self.get_url(patient.id), {"disease_status": new_disease_status.value}, format="json",
+            self.get_url(patient.external_id), {"disease_status": new_disease_status.value}, format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
 
@@ -297,7 +297,7 @@ class TestPatient(TestBase):
         for key in keys_to_pop:
             data.pop(key)
 
-        response = self.client.put(self.get_url(patient.id), data, format="json")
+        response = self.client.put(self.get_url(patient.external_id), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)  # only for verified users
 
         patient.refresh_from_db()
@@ -325,11 +325,11 @@ class TestPatient(TestBase):
         patient.save()
 
         self.client.force_authenticate(user)
-        response = self.client.delete(self.get_url(patient.id))
+        response = self.client.delete(self.get_url(patient.external_id))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_authenticate(self.user)
-        response = self.client.delete(self.get_url(patient.id))
+        response = self.client.delete(self.get_url(patient.external_id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_superuser_can_delete_patient(self):
@@ -345,7 +345,7 @@ class TestPatient(TestBase):
         patient.created_by = user
 
         patient.save()
-        response = self.client.delete(self.get_url(patient.id))
+        response = self.client.delete(self.get_url(patient.external_id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(PatientRegistration.DoesNotExist):
             PatientRegistration.objects.get(id=patient.id)
@@ -394,7 +394,7 @@ class TestPatient(TestBase):
         user = self.user
         user.is_superuser = True
         user.save()
-        response = self.client.get(self.get_url(entry_id=patient.id))
+        response = self.client.get(self.get_url(entry_id=patient.external_id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(response.json(), self.get_detail_representation(patient))
 
@@ -421,7 +421,7 @@ class TestPatient(TestBase):
         patient.created_by = self.user
         patient.save()
 
-        response = self.client.get(self.get_url(patient.id, "icmr_sample"))
+        response = self.client.get(self.get_url(patient.external_id, "icmr_sample"))
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_patient_transfer(self):
@@ -439,13 +439,13 @@ class TestPatient(TestBase):
 
         # check for invalid date of birth
         response = self.client.post(
-            self.get_url(patient.id, "transfer"), {"facility": new_facility.id, "date_of_birth": "2020-04-01"}
+            self.get_url(patient.external_id, "transfer"), {"facility": new_facility.id, "date_of_birth": "2020-04-01"}
         )
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # check for invalid date of birth
         response = self.client.post(
-            self.get_url(patient.id, "transfer"),
+            self.get_url(patient.external_id, "transfer"),
             {"facility": new_facility.id, "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d")},
         )
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -453,5 +453,5 @@ class TestPatient(TestBase):
         self.assertEquals(patient.facility, new_facility)
 
         # new owner should be able to view the details
-        response = self.client.get(self.get_url(patient.id))
+        response = self.client.get(self.get_url(patient.external_id))
         self.assertEquals(response.status_code, status.HTTP_200_OK)

@@ -35,6 +35,7 @@ class PatientMetaInfoSerializer(serializers.ModelSerializer):
 
 
 class PatientListSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     facility = serializers.IntegerField(source="facility_id", allow_null=True, read_only=True)
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
@@ -54,6 +55,7 @@ class PatientListSerializer(serializers.ModelSerializer):
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
+            "external_id",
         )
         read_only = TIMESTAMP_FIELDS
 
@@ -79,6 +81,7 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
+    id = serializers.CharField(source="external_id", read_only=True)
     phone_number = PhoneNumberIsPossibleField()
     facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
@@ -96,7 +99,14 @@ class PatientDetailSerializer(PatientListSerializer):
 
     class Meta:
         model = PatientRegistration
-        exclude = ("created_by", "deleted", "patient_search_id", "year_of_birth", "countries_travelled_old")
+        exclude = (
+            "created_by",
+            "deleted",
+            "patient_search_id",
+            "year_of_birth",
+            "countries_travelled_old",
+            "external_id",
+        )
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS
 
@@ -211,7 +221,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
 
 class PatientTransferSerializer(serializers.ModelSerializer):
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
-    patient = serializers.IntegerField(source="id", read_only=True)
+    patient = serializers.CharField(source="external_id", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -228,3 +238,14 @@ class PatientTransferSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
         self.instance.save()
+
+
+class PatientField(serializers.Field):
+    def to_representation(self, patient):
+        return patient.external_id
+
+    def to_internal_value(self, external_id):
+        try:
+            return PatientRegistration.objects.get(external_id=external_id)
+        except PatientRegistration.DoesNotExist:
+            raise serializers.ValidationError({"patient": ["Invalid"]})

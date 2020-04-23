@@ -71,7 +71,7 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(PatientSampleViewSet, self).get_queryset()
         if self.kwargs.get("patient_pk") is not None:
-            queryset = queryset.filter(patient_id=self.kwargs.get("patient_pk"))
+            queryset = queryset.filter(patient__external_id=self.kwargs.get("patient_pk"))
         return queryset
 
     def list(self, request, *args, **kwargs):
