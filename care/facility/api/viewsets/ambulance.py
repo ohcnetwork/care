@@ -73,7 +73,7 @@ class AmbulanceViewSet(
 
 
 class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False)
     filter_backends = (filters.DjangoFilterBackend,)
