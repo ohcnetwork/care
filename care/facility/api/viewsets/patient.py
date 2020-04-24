@@ -67,6 +67,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
     queryset = PatientRegistration.objects.all().select_related(
         "local_body",
         "district",

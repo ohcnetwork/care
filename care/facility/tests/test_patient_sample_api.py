@@ -13,7 +13,7 @@ from config.tests.helper import mock_equal
 class TestPatientSampleApi(TestBase):
     def get_base_url(self, **kwargs):
         patient = kwargs.get("patient", self.patient)
-        return f"/api/v1/patient/{patient.id}/test_sample"
+        return f"/api/v1/patient/{patient.external_id}/test_sample"
 
     def get_list_representation(self, obj: PatientSample) -> dict:
         return {
@@ -28,7 +28,7 @@ class TestPatientSampleApi(TestBase):
             "sample_type": obj.get_sample_type_display(),
             "status": obj.get_status_display(),
             "result": obj.get_result_display(),
-            "patient": obj.patient.id,
+            "patient": obj.patient.external_id,
             "consultation": obj.consultation.id,
             "date_of_sample": obj.date_of_sample,
             "date_of_result": obj.date_of_result,
@@ -54,7 +54,7 @@ class TestPatientSampleApi(TestBase):
         patient = kwargs.get("patient", self.patient)
         consultation = kwargs.get("consultation", self.consultation)
 
-        return {"patient": patient.id, "consultation": consultation.id, "sample_type": "BA/ETA"}
+        return {"patient": patient.external_id, "consultation": consultation.id, "sample_type": "BA/ETA"}
 
     @classmethod
     def setUpClass(cls) -> None:

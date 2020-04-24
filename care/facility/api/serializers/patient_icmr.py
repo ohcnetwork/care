@@ -139,6 +139,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
 
 
 class PatientICMRSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     personal_details = ICMRPersonalDetails()
     specimen_details = ICMRSpecimenInformationSerializer()
     patient_category = ICMRPatientCategorySerializer()

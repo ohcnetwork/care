@@ -1,5 +1,6 @@
 import datetime
 import enum
+from uuid import uuid4
 
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -32,6 +33,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
+    external_id = models.UUIDField(default=uuid4, editable=False)
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(

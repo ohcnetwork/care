@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.api.serializers.patient import PatientField
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from config.serializers import ChoiceField
 
@@ -34,7 +35,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)
 
-    patient = serializers.IntegerField(required=False, source="patient_id")
+    patient = PatientField(required=False)
     consultation = serializers.IntegerField(required=False, source="consultation_id")
 
     date_of_sample = serializers.DateTimeField(required=False)

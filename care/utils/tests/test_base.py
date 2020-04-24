@@ -2,6 +2,7 @@ import abc
 import datetime
 from collections import OrderedDict
 from typing import Any, Dict
+from uuid import uuid4
 
 import dateparser
 from django.contrib.gis.geos import Point
@@ -232,6 +233,10 @@ class TestBase(APITestCase):
         new_obj = obj._meta.model.objects.get(pk=obj.id)
         new_obj.pk = None
         new_obj.id = None
+        try:
+            new_obj.external_id = uuid4()
+        except AttributeError:
+            pass
         if save:
             new_obj.save()
         return new_obj
