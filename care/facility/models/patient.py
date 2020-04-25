@@ -33,7 +33,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    external_id = models.UUIDField(default=uuid4, editable=False)
+    external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
