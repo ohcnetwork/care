@@ -9,7 +9,7 @@ from care.users.models import User
 
 
 class PatientConsultationFilter(filters.FilterSet):
-    patient = filters.NumberFilter(field_name="patient_id")
+    patient = filters.CharFilter(field_name="patient__external_id")
     facility = filters.NumberFilter(field_name="facility_id")
 
 
