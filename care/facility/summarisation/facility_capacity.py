@@ -43,6 +43,6 @@ class FacilityCapacitySummary(viewsets.ViewSet):
         return Response(capacity_summary)
 
 
-@periodic_task(run_every=timedelta(seconds=5))
+@periodic_task(run_every=timedelta(seconds=1500))
 def facilitySummary():
-    print("Testing Summarisation")
+    print("Testing Summarisation Again")
