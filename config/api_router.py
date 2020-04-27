@@ -13,6 +13,8 @@ from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
+from care.facility.summarisation.facility_capacity import FacilityCapacitySummary
+
 if settings.DEBUG:
     router = DefaultRouter()
 else:
@@ -35,6 +37,10 @@ router.register("local_body", LocalBodyViewSet)
 
 # Patient Sample
 router.register("test_sample", PatientSampleViewSet)
+
+
+# Summarisation
+router.register("facility_summary", FacilityCapacitySummary, basename="summary-facility")
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
