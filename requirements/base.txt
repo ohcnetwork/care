@@ -47,3 +47,8 @@ djangoql==0.13.1
 
 # NewRelic for APM
 newrelic
+
+# Asyncronous Part
+# ------------------------------------------------------------------------------
+celery==4.4.2
+django-celery-beat==2.0.0

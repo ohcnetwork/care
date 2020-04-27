@@ -4,6 +4,7 @@ import logging
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from .base import *  # noqa
 from .base import env
@@ -17,7 +18,9 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # for use with all new or changed data, but existing values encrypted with old keys will still be accessible
 
 
-FERNET_KEYS = env.list("FERNET_SECRET_KEY", default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"])
+FERNET_KEYS = env.list(
+    "FERNET_SECRET_KEY", default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"]
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))
 
@@ -136,7 +139,8 @@ SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 sentry_logging = LoggingIntegration(
     level=SENTRY_LOG_LEVEL, event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
 )
-sentry_sdk.init(dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration()])
-
+sentry_sdk.init(
+    dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
+)
 # Your stuff...
 # ------------------------------------------------------------------------------
