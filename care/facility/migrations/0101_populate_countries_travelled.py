@@ -4,8 +4,9 @@ from django.db import migrations
 
 
 def populate_countries_travelled(*args):
-    from care.facility.management.commands.copy_countries_travelled_old_to_countries_travelled import Command
-    Command.copy_countries_travelled_old()
+    print("This is no longer needed")
+    # from care.facility.management.commands.copy_countries_travelled_old_to_countries_travelled import Command
+    # Command.copy_countries_travelled_old()
 
 
 def reverse_populate_countries_travelled(*args):
@@ -14,12 +15,7 @@ def reverse_populate_countries_travelled(*args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0100_auto_20200418_2315'),
+        ("facility", "0100_auto_20200418_2315"),
     ]
 
-    operations = [
-        migrations.RunPython(
-            populate_countries_travelled,
-            reverse_code=reverse_populate_countries_travelled
-        )
-    ]
+    operations = [migrations.RunPython(populate_countries_travelled, reverse_code=reverse_populate_countries_travelled)]
