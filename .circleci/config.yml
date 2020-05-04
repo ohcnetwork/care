@@ -33,6 +33,22 @@ workflows:
           resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
           requires:
             - migrate-and-collectstatic-staging
+      - aws-eks/update-container-image:
+          name: update-scheduler-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_STAGING_SCHEDULER_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
+      - aws-eks/update-container-image:
+          name: update-worker-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_STAGING_WORKER_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
       - hold-for-production:
           type: approval
           requires:
@@ -52,3 +68,19 @@ workflows:
           resource-name: "${EKS_PRODUCTION_DEPLOYMENT_NAME}"
           requires:
             - migrate-and-collectstatic-production
+      - aws-eks/update-container-image:
+          name: update-scheduler-production
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_PRODUCTION_SCHEDULER_NAME}"
+          requires:
+            - hold-for-production
+      - aws-eks/update-container-image:
+          name: update-worker
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          resource-name: "${EKS_PRODUCTION_WORKER_NAME}"
+          requires:
+            - hold-for-production
