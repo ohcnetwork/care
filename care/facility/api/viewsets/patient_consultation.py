@@ -14,6 +14,7 @@ class PatientConsultationFilter(filters.FilterSet):
 
 
 class PatientConsultationViewSet(ModelViewSet):
+    lookup_field = "external_id"
     serializer_class = PatientConsultationSerializer
     permission_classes = (
         IsAuthenticated,

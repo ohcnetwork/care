@@ -340,7 +340,7 @@ class TestBase(APITestCase):
             return facility
         else:
             return {
-                "id": facility.id,
+                "id": str(facility.external_id),
                 "name": facility.name,
                 "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
                 **self.get_local_body_district_state_representation(facility),

@@ -4,8 +4,9 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.api.serializers.patient import PatientField
+from care.facility.models import PatientConsultation, PatientRegistration
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
@@ -28,15 +29,15 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     )
     patient_travel_history = serializers.CharField(read_only=True, source="patient.countries_travelled")
 
-    facility = serializers.IntegerField(read_only=True, source="consultation.facility_id")
+    facility = ExternalIdSerializerField(read_only=True, source="consultation.facility")
     facility_object = FacilityBasicInfoSerializer(source="consultation.facility", read_only=True)
 
     sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES, required=False)
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)
 
-    patient = PatientField(required=False)
-    consultation = serializers.IntegerField(required=False, source="consultation_id")
+    patient = ExternalIdSerializerField(required=False, queryset=PatientRegistration.objects.all())
+    consultation = ExternalIdSerializerField(required=False, queryset=PatientConsultation.objects.all())
 
     date_of_sample = serializers.DateTimeField(required=False)
     date_of_result = serializers.DateTimeField(required=False)

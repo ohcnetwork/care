@@ -13,7 +13,7 @@ from config.tests.helper import mock_equal
 class TestPatientSampleApi(TestBase):
     def get_base_url(self, **kwargs):
         patient = kwargs.get("patient", self.patient)
-        return f"/api/v1/patient/{patient.external_id}/test_sample"
+        return f"/api/v1/patient/{str(patient.external_id)}/test_sample"
 
     def get_list_representation(self, obj: PatientSample) -> dict:
         return {
@@ -23,13 +23,13 @@ class TestPatientSampleApi(TestBase):
             "patient_has_confirmed_contact": obj.patient.contact_with_confirmed_carrier,
             "patient_has_suspected_contact": obj.patient.contact_with_suspected_carrier,
             "patient_travel_history": obj.patient.countries_travelled,
-            "facility": obj.consultation.facility.id,
+            "facility": str(obj.consultation.facility.external_id),
             "facility_object": self.get_facility_representation(obj.consultation.facility),
             "sample_type": obj.get_sample_type_display(),
             "status": obj.get_status_display(),
             "result": obj.get_result_display(),
-            "patient": obj.patient.external_id,
-            "consultation": obj.consultation.id,
+            "patient": str(obj.patient.external_id),
+            "consultation": str(obj.consultation.external_id),
             "date_of_sample": obj.date_of_sample,
             "date_of_result": obj.date_of_result,
             "sample_type_other": obj.sample_type_other,
@@ -54,7 +54,11 @@ class TestPatientSampleApi(TestBase):
         patient = kwargs.get("patient", self.patient)
         consultation = kwargs.get("consultation", self.consultation)
 
-        return {"patient": patient.external_id, "consultation": consultation.id, "sample_type": "BA/ETA"}
+        return {
+            "patient": str(patient.external_id),
+            "consultation": str(consultation.external_id),
+            "sample_type": "BA/ETA",
+        }
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -85,7 +89,7 @@ class TestPatientSampleApi(TestBase):
 
         with freeze_time("2020-04-01"):
             sample = self.create_sample()
-            response = self.client.patch(self.get_url(sample.id), {"status": "APPROVED"}, format="json")
+            response = self.client.patch(self.get_url(str(sample.external_id)), {"status": "APPROVED"}, format="json")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             sample.refresh_from_db()
             self.assertEquals(sample.status, PatientSample.SAMPLE_TEST_FLOW_MAP["APPROVED"])
@@ -94,7 +98,9 @@ class TestPatientSampleApi(TestBase):
             self.assertIsNone(sample.date_of_result)
 
         with freeze_time("2020-04-02"):
-            response = self.client.patch(self.get_url(sample.id), {"status": "SENT_TO_COLLECTON_CENTRE"}, format="json")
+            response = self.client.patch(
+                self.get_url(str(sample.external_id)), {"status": "SENT_TO_COLLECTON_CENTRE"}, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             sample.refresh_from_db()
             self.assertEquals(sample.status, PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"])
@@ -103,7 +109,9 @@ class TestPatientSampleApi(TestBase):
             self.assertIsNone(sample.date_of_result)
 
         with freeze_time("2020-04-03"):
-            response = self.client.patch(self.get_url(sample.id), {"status": "RECEIVED_AND_FORWARED"}, format="json")
+            response = self.client.patch(
+                self.get_url(str(sample.external_id)), {"status": "RECEIVED_AND_FORWARED"}, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             sample.refresh_from_db()
             self.assertEquals(sample.status, PatientSample.SAMPLE_TEST_FLOW_MAP["RECEIVED_AND_FORWARED"])
@@ -112,7 +120,9 @@ class TestPatientSampleApi(TestBase):
             self.assertIsNone(sample.date_of_result)
 
         with freeze_time("2020-04-04"):
-            response = self.client.patch(self.get_url(sample.id), {"status": "RECEIVED_AT_LAB"}, format="json")
+            response = self.client.patch(
+                self.get_url(str(sample.external_id)), {"status": "RECEIVED_AT_LAB"}, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             sample.refresh_from_db()
             self.assertEquals(sample.status, PatientSample.SAMPLE_TEST_FLOW_MAP["RECEIVED_AT_LAB"])
@@ -121,7 +131,7 @@ class TestPatientSampleApi(TestBase):
             self.assertIsNone(sample.date_of_result)
 
         with freeze_time("2020-04-05"):
-            response = self.client.patch(self.get_url(sample.id), {"result": "NEGATIVE"}, format="json")
+            response = self.client.patch(self.get_url(str(sample.external_id)), {"result": "NEGATIVE"}, format="json")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             sample.refresh_from_db()
             self.assertEquals(sample.status, PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"])

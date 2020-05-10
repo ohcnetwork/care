@@ -149,6 +149,7 @@ class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
 
 
 class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
+    lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     queryset = FacilityPatientStatsHistory.objects.all().order_by("-entry_date")
     serializer_class = FacilityPatientStatsHistorySerializer
@@ -158,13 +159,13 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(facility_id=self.kwargs.get("facility_pk"))
+        return queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), id=self.kwargs.get("pk"))
+        return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
 
     def get_facility(self):
-        facility_qs = Facility.objects.filter(pk=self.kwargs.get("facility_pk"))
+        facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
         if not self.request.user.is_superuser:
             facility_qs.filter(created_by=self.request.user)
         return get_object_or_404(facility_qs)

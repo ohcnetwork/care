@@ -14,7 +14,6 @@ from care.users.models import User
 
 
 class FacilityCapacitySummary(viewsets.ViewSet):
-
     permission_classes = (IsAuthenticated,)
 
     @method_decorator(cache_page(60 * 60 * 6))

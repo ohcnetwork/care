@@ -1,14 +1,8 @@
-
 from dry_rest_permissions.generics import DRYPermissions
-
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-
 from rest_framework.mixins import ListModelMixin
-from django_filters import rest_framework as filters
-
 from rest_framework.permissions import IsAuthenticated
-
 
 from care.facility.api.serializers.facility_capacity import (
     FacilityCapacityHistorySerializer,
@@ -16,13 +10,11 @@ from care.facility.api.serializers.facility_capacity import (
 )
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, FacilityCapacity
-
 from care.users.models import User
 
 
-
-
 class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
+    lookup_field = "external_id"
     serializer_class = FacilityCapacitySerializer
     queryset = FacilityCapacity.objects.filter(deleted=False)
     permission_classes = (

@@ -37,6 +37,7 @@ class PatientSampleFilterSet(filters.FilterSet):
 
 class PatientSampleViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSampleSerializer
+    lookup_field = "external_id"
     queryset = (
         PatientSample.objects.all()
         .select_related(
@@ -71,7 +72,7 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(PatientSampleViewSet, self).get_queryset()
         if self.kwargs.get("patient_external_id") is not None:
-            queryset = queryset.filter(patient__external_id=self.kwargs.get("patient_pk"))
+            queryset = queryset.filter(patient__external_id=self.kwargs.get("patient_external_id"))
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -98,11 +99,6 @@ class PatientSampleViewSet(viewsets.ModelViewSet):
             ).last()
             if not validated_data["consultation"]:
                 raise ValidationError({"patient": ["Invalid id/ No consultation done"]})
-        else:
-            try:
-                validated_data["consultation"] = PatientConsultation.objects.get(id=validated_data["consultation"])
-            except PatientConsultation.DoesNotExist:
-                raise ValidationError({"consultation": ["Invalid id"]})
 
         with transaction.atomic():
             notes = validated_data.pop("notes", "created")
