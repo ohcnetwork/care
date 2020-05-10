@@ -26,7 +26,7 @@ class TestPatientStatsHistory(TestBase):
         }
 
     def get_base_url(self) -> str:
-        return f"/api/v1/facility/{self.facility.id}/patient_stats"
+        return f"/api/v1/facility/{str(self.facility.external_id)}/patient_stats"
 
     def get_list_representation(self, facility_data) -> dict:
 
@@ -46,7 +46,7 @@ class TestPatientStatsHistory(TestBase):
 
         return {
             "id": mock_equal,
-            "facility": facility.id,
+            "facility": str(facility.external_id),
             "entry_date": mock_equal,
             "created_date": mock_equal,
             "modified_date": mock_equal,
@@ -119,7 +119,7 @@ class TestPatientStatsHistory(TestBase):
                 "results": [
                     {
                         "id": mock_equal,
-                        "facility": facility.id,
+                        "facility": str(facility.external_id),
                         "entry_date": datetime.date(2020, 4, 2).strftime("%Y-%m-%d"),
                         "created_date": mock_equal,
                         "modified_date": mock_equal,
@@ -127,7 +127,7 @@ class TestPatientStatsHistory(TestBase):
                     },
                     {
                         "id": mock_equal,
-                        "facility": facility.id,
+                        "facility": str(facility.external_id),
                         "entry_date": datetime.date(2020, 4, 1).strftime("%Y-%m-%d"),
                         "created_date": mock_equal,
                         "modified_date": mock_equal,
@@ -146,7 +146,7 @@ class TestPatientStatsHistory(TestBase):
             facility=facility, entry_date=datetime.date(2020, 4, 1), **stats_data
         )
 
-        response = self.client.get(self.get_url(entry_id=obj.id))
+        response = self.client.get(self.get_url(entry_id=obj.external_id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve(self):
@@ -158,7 +158,7 @@ class TestPatientStatsHistory(TestBase):
             facility=facility, entry_date=datetime.date(2020, 4, 1), **stats_data
         )
 
-        response = self.client.get(self.get_url(entry_id=obj.id), format="json")
+        response = self.client.get(self.get_url(entry_id=obj.external_id), format="json")
         self.assertDictEqual(
             response.json(), self.get_detail_representation(stats_data, facility=facility),
         )
@@ -175,7 +175,7 @@ class TestPatientStatsHistory(TestBase):
         )
         count = FacilityPatientStatsHistory.objects.filter(facility=facility).count()
 
-        response = self.client.delete(self.get_url(entry_id=obj.id))
+        response = self.client.delete(self.get_url(entry_id=obj.external_id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(
             FacilityPatientStatsHistory.objects.filter(facility=facility).count(), count - 1,

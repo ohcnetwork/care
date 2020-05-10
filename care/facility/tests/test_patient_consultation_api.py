@@ -10,7 +10,7 @@ class TestPatientConsultationApi(TestBase):
 
     def get_list_representation_facility(self, facility):
         return {
-            "id": facility.id,
+            "id": str(facility.external_id),
             "name": facility.name,
             "local_body": facility.local_body,
             "district": facility.district.id,
@@ -30,11 +30,11 @@ class TestPatientConsultationApi(TestBase):
         referred_to = obj.referred_to
         if referred_to:
             referred_to_object = self.get_list_representation_facility(referred_to)
-            referred_to = obj.referred_to.id
+            referred_to = str(obj.referred_to.external_id)
         return {
-            "id": obj.id,
-            "patient": obj.patient.id,
-            "facility": obj.facility.id,
+            "id": str(obj.external_id),
+            "patient": str(obj.patient.external_id),
+            "facility": str(obj.facility.external_id),
             "facility_name": obj.facility.name,
             "symptoms": obj.symptoms,
             "other_symptoms": obj.other_symptoms,
@@ -79,12 +79,12 @@ class TestPatientConsultationApi(TestBase):
 
     def test_detail_api(self):
         consultation = self.create_consultation()
-        response = self.client.get(self.get_url(consultation.id))
+        response = self.client.get(self.get_url(str(consultation.external_id)))
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(), self.get_detail_representation(consultation))
 
     def test_detail_api_with_referred_to(self):
         consultation = self.create_consultation(referred_to=self.facility)
-        response = self.client.get(self.get_url(consultation.id))
+        response = self.client.get(self.get_url(str(consultation.external_id)))
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(), self.get_detail_representation(consultation))

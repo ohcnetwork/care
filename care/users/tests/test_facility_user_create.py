@@ -67,7 +67,7 @@ class TestFacilityUserApi(TestBase):
 
         # Test if user is added to the facility
         self.assertIn(user, self.facility.users.all())
-        response = self.client.get(f"/api/v1/facility/{self.facility.id}/")
+        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
         self.assertEquals(
@@ -96,7 +96,7 @@ class TestFacilityUserApi(TestBase):
 
         # Test if user is added to the facility
         self.assertIn(user, self.facility.users.all())
-        response = self.client.get(f"/api/v1/facility/{self.facility.id}/")
+        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_create_facility_user__should_fail__when_higher_level(self):

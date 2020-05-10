@@ -20,6 +20,7 @@ class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
 
 
 class FacilityBasicInfoSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)

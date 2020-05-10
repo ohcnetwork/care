@@ -1,6 +1,5 @@
 import datetime
 import enum
-from uuid import uuid4
 
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -9,11 +8,11 @@ from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
     DISEASE_CHOICES,
+    BaseManager,
     District,
     FacilityBaseModel,
     LocalBody,
     PatientBaseModel,
-    SoftDeleteManager,
     State,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
@@ -33,7 +32,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
@@ -110,7 +108,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
-    objects = SoftDeleteManager()
+    objects = BaseManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -274,7 +272,7 @@ class PatientContactDetails(models.Model):
 
     deleted = models.BooleanField(default=False)
 
-    objects = SoftDeleteManager()
+    objects = BaseManager()
 
 
 class Disease(models.Model):
@@ -283,7 +281,7 @@ class Disease(models.Model):
     details = models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
 
-    objects = SoftDeleteManager()
+    objects = BaseManager()
 
     class Meta:
         indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]

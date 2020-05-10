@@ -65,6 +65,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
         filters.DjangoFilterBackend,
     )
     filterset_class = FacilityFilter
+    lookup_field = "external_id"
 
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
