@@ -19,6 +19,7 @@ class PatientSampleFlowSerializer(serializers.ModelSerializer):
 
 
 class PatientSampleSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
     patient_name = serializers.CharField(read_only=True, source="patient.name")
     patient_has_sari = serializers.BooleanField(read_only=True, source="patient.has_SARI")
     patient_has_confirmed_contact = serializers.BooleanField(
@@ -50,11 +51,12 @@ class PatientSampleSerializer(serializers.ModelSerializer):
             "id",
             "facility",
         )
-        exclude = TIMESTAMP_FIELDS
+        exclude = TIMESTAMP_FIELDS + ("external_id",)
 
     def create(self, validated_data):
         validated_data.pop("status", None)
         validated_data.pop("result", None)
+
         return super(PatientSampleSerializer, self).create(validated_data)
 
 
