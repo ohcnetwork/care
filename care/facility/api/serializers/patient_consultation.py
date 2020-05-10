@@ -20,7 +20,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
 
     referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
-    referred_to = ExternalIdSerializerField(queryset=Facility.objects.all())
+    referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
@@ -42,6 +42,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     def validate(self, obj):
         validated = super().validate(obj)
+        print(validated)
         if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):
             raise ValidationError(
                 {"referred_to": [f"This field is required as the suggestion is {SuggestionChoices.R}."]}
