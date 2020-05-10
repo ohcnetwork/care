@@ -51,12 +51,12 @@ class DailyRoundsViewSet(ModelViewSet):
     queryset = DailyRound.objects.all().order_by("-id")
 
     def get_queryset(self):
-        queryset = self.queryset.filter(consultation_id=self.kwargs.get("consultation_pk"))
+        queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])
         return queryset
 
     def get_serializer(self, *args, **kwargs):
-        try:
-            kwargs["data"]["consultation"] = self.kwargs.get("consultation_pk")
-        except KeyError:
-            pass
+        if "data" in kwargs:
+            kwargs["data"]["consultation"] = PatientConsultation.objects.get(
+                external_id=self.kwargs["consultation_external_id"]
+            ).id
         return super().get_serializer(*args, **kwargs)
