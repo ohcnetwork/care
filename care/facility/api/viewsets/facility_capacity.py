@@ -32,7 +32,8 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
         return queryset.filter(facility__created_by=user)
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), room_type=self.kwargs.get("pk"))
+        print(self.kwargs)
+        return get_object_or_404(self.get_queryset(), room_type=self.kwargs.get("external_id"))
 
     def get_facility(self):
         facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
