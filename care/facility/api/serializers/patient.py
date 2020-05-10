@@ -95,7 +95,7 @@ class PatientDetailSerializer(PatientListSerializer):
             fields = "__all__"
 
     phone_number = PhoneNumberIsPossibleField()
-    facility = serializers.IntegerField(source="facility_id", allow_null=True, required=False)
+    facility = serializers.UUIDField(source="facility__external_id", allow_null=True, required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
@@ -151,6 +151,10 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
+
+            if "facility__external_id" in validated_data:
+                external_id = validated_data.pop("facility__external_id")
+                validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
