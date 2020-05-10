@@ -32,7 +32,7 @@ from care.users.models import User
 
 class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
-    facility = filters.NumberFilter(field_name="facility_id")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
 
 
