@@ -29,6 +29,9 @@ class TestPatient(TestBase):
             patient = PatientRegistration(**patient)
             patient.medical_history.set(medical_history)
 
+        facility_id = None
+        if getattr(patient.facility, "external_id", None):
+            facility_id = str(getattr(patient.facility, "external_id", None))
         return {
             "id": str(str(patient.external_id)),
             "name": patient.name,
@@ -49,7 +52,7 @@ class TestPatient(TestBase):
             "present_health": patient.present_health,
             "has_SARI": patient.has_SARI,
             "is_active": patient.is_active,
-            "facility": getattr(patient.facility, "id", None),
+            "facility": facility_id,
             "facility_object": self.get_facility_representation(patient.facility),
             "blood_group": patient.blood_group,
             "date_of_return": patient.date_of_return,

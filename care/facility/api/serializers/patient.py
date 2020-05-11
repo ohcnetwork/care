@@ -151,9 +151,11 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
+
             if "facility" in validated_data:
                 external_id = validated_data.pop("facility")["external_id"]
-                validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
+                if external_id:
+                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
@@ -180,6 +182,11 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
+
+            if "facility" in validated_data:
+                external_id = validated_data.pop("facility")["external_id"]
+                if external_id:
+                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
 
             patient = super().update(instance, validated_data)
             Disease.objects.filter(patient=patient).update(deleted=True)
