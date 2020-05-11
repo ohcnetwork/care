@@ -426,6 +426,7 @@ class TestPatient(TestBase):
 
     def test_patient_transfer(self):
         patient = self.clone_object(self.patient)
+        patientsearch = PatientSearch.objects.get(id=patient.patient_search_id)
 
         new_facility_user = self.clone_object(self.user, save=False)
         new_facility_user.username = f"{new_facility_user.username}_test_patient_transfer"
@@ -439,17 +440,16 @@ class TestPatient(TestBase):
 
         # check for invalid date of birth
         response = self.client.post(
-            self.get_url(str(patient.external_id), "transfer"),
+            self.get_url(str(patientsearch.external_id), "transfer"),
             {"facility": str(new_facility.external_id), "date_of_birth": "2020-04-01"},
         )
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        # check for invalid date of birth
+        # check for valid date of birth
         response = self.client.post(
-            self.get_url(str(patient.external_id), "transfer"),
+            self.get_url(str(patientsearch.external_id), "transfer"),
             {"facility": str(new_facility.external_id), "date_of_birth": patient.date_of_birth.strftime("%Y-%m-%d")},
         )
-        print(response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         patient.refresh_from_db()
         self.assertEquals(patient.facility, new_facility)
