@@ -87,7 +87,7 @@ Login to the postgres shell and run:
 
  CREATE DATABASE care;
  GRANT ALL PRIVILEGES ON DATABASE care TO postgres;
- \q;
+ \q
 
 You may replace `care` with the database name of your preference
 
