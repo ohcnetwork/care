@@ -232,17 +232,18 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     phone_number = PhoneNumberIsPossibleField()
-    facility_id = serializers.IntegerField(read_only=True, allow_null=True)
+    patient_id = serializers.UUIDField(source="external_id", read_only=True)
+    # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
 
     class Meta:
         model = PatientSearch
-        exclude = ("date_of_birth", "year_of_birth")
+        exclude = ("date_of_birth", "year_of_birth", "external_id", "id") + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     facility = ExternalIdSerializerField(write_only=True, queryset=Facility.objects.all())
-    patient = serializers.CharField(source="external_id", read_only=True)
+    patient = serializers.UUIDField(source="external_id", read_only=True)
 
     class Meta:
         model = PatientRegistration

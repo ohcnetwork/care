@@ -134,12 +134,16 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
-        patient = self.get_object()
+        patient = PatientRegistration.objects.get(
+            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
+        )
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        patient.refresh_from_db()
+        patient = PatientRegistration.objects.get(
+            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
+        )
         response_serializer = self.get_serializer_class()(patient)
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
