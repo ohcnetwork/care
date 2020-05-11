@@ -42,11 +42,11 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             queryset = self.filter_list_queryset(request, queryset, view)
 
         if not request.user.is_superuser:
-            # if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            #     queryset = queryset.filter(state=request.user.state)
-            # elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            #     queryset = queryset.filter(district=request.user.district)
-            if view.action != "transfer":
+            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+                queryset = queryset.filter(facility__state=request.user.state)
+            elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+                queryset = queryset.filter(facility__district=request.user.district)
+            elif view.action != "transfer":
                 queryset = queryset.filter(
                     Q(created_by=request.user)
                     | Q(facility__created_by=request.user)
