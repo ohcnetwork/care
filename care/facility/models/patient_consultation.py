@@ -75,7 +75,7 @@ class DailyRound(models.Model):
             request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
                 PatientConsultation.objects.get(
-                    id=request.parser_context["kwargs"]["consultation_pk"]
+                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
                 ).facility.created_by
                 == request.user
             )
@@ -87,7 +87,7 @@ class DailyRound(models.Model):
             request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
                 PatientConsultation.objects.get(
-                    id=request.parser_context["kwargs"]["consultation_pk"]
+                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
                 ).facility.created_by
                 == request.user
             )
