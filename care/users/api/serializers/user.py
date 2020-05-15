@@ -64,8 +64,10 @@ class UserCreateSerializer(SignUpSerializer):
 
     def validate_facilities(self, facility_ids):
         if facility_ids:
-            if len(facility_ids) != Facility.objects.filter(id__in=facility_ids).count():
-                available_facility_ids = Facility.objects.filter(id__in=facility_ids).values_list("id", flat=True)
+            if len(facility_ids) != Facility.objects.filter(external_id__in=facility_ids).count():
+                available_facility_ids = Facility.objects.filter(external_id__in=facility_ids).values_list(
+                    "external_id", flat=True
+                )
                 not_found_ids = list(set(facility_ids) - set(available_facility_ids))
                 raise serializers.ValidationError(
                     f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}"
