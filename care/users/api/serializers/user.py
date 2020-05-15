@@ -44,7 +44,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(SignUpSerializer):
     password = serializers.CharField(required=False)
     facilities = serializers.ListSerializer(
-        child=serializers.IntegerField(), required=False, allow_empty=True, write_only=True
+        child=serializers.UUIDField(), required=False, allow_empty=True, write_only=True
     )
 
     class Meta:
@@ -117,6 +117,7 @@ class UserCreateSerializer(SignUpSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
+            print(validated_data)
             user = User.objects.create_user(**{**validated_data, "verified": True})
             user.set_password(validated_data["password"])
 
