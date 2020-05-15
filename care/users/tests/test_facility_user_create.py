@@ -43,7 +43,7 @@ class TestFacilityUserApi(TestBase):
             "email": "anroopak@gmail.com",
             "district": self.district.id,
             "verified": True,
-            "facilities": [self.facility.id],
+            "facilities": [self.facility.external_id],
         }
 
     def test_create_facility_user__should_succeed__when_same_level(self):
