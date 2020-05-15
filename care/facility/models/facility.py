@@ -46,6 +46,8 @@ FACILITY_TYPES = [
     (870, "Govt Medical College Hospitals"),
     # Use 9xx for Labs
     (950, "Corona Testing Labs"),
+    # Use 10xx for Corona Care Center
+    (1000, "Corona Care Centre"),
 ]
 
 DOCTOR_TYPES = [
