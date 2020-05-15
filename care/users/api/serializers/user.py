@@ -119,7 +119,7 @@ class UserCreateSerializer(SignUpSerializer):
             user.set_password(validated_data["password"])
 
             if facilities:
-                facility_objs = Facility.objects.filter(id__in=facilities)
+                facility_objs = Facility.objects.filter(external_id__in=facilities)
                 facility_user_objs = [
                     FacilityUser(facility=facility, user=user, created_by=self.context["created_by"])
                     for facility in facility_objs
