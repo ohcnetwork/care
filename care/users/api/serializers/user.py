@@ -79,6 +79,7 @@ class UserCreateSerializer(SignUpSerializer):
             value is not None
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
+            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different local body")
         return value
@@ -88,6 +89,7 @@ class UserCreateSerializer(SignUpSerializer):
             value is not None
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
+            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different state")
         return value
