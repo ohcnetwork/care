@@ -207,9 +207,9 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=["get"], detail=True)
-    def patients(self, *args, **kwargs):
-        queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
-            "local_body", "district", "state"
-        )
-        return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)
+    # @action(methods=["get"], detail=True)
+    # def patients(self, *args, **kwargs):
+    #     queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
+    #         "local_body", "district", "state"
+    #     )
+    #     return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)
