@@ -19,12 +19,12 @@ class PatientSampleFilterBackend(DRYPermissionFiltersBase):
         if request.user.is_superuser:
             pass
         else:
-            q_objects = Q(consultation__facility__created_by=request.user)
+            q_objects = Q(patient__facility__users__id__exact=request.user.id)
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 q_objects |= Q(consultation__facility__state=request.user.state)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects |= Q(consultation__facility__district=request.user.district)
-            queryset = queryset.filter(q_objects)
+            queryset = queryset.filter(q_objects).distinct("id")
         return queryset
 
 

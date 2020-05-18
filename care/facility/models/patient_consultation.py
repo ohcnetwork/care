@@ -74,10 +74,10 @@ class DailyRound(models.Model):
         return request.user.is_superuser or (
             request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
-                PatientConsultation.objects.get(
+                request.user
+                in PatientConsultation.objects.get(
                     external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.created_by
-                == request.user
+                ).facility.users.all()
             )
         )
 
@@ -86,21 +86,23 @@ class DailyRound(models.Model):
         return request.user.is_superuser or (
             request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
             and (
-                PatientConsultation.objects.get(
+                request.user
+                in PatientConsultation.objects.get(
                     external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.created_by
-                == request.user
+                ).facility.users.all()
             )
         )
 
     def has_object_read_permission(self, request):
-        return request.user.is_superuser or request.user in (
-            self.consultation.facility.created_by,
-            self.consultation.patient.created_by,
+        return (
+            request.user.is_superuser
+            or request.user in (self.consultation.facility.created_by, self.consultation.patient.created_by,)
+            or request.user in self.consultation.patient.facility.users.all()
         )
 
     def has_object_write_permission(self, request):
-        return request.user.is_superuser or request.user in (
-            self.consultation.facility.created_by,
-            self.consultation.patient.created_by,
+        return (
+            request.user.is_superuser
+            or request.user in (self.consultation.facility.created_by, self.consultation.patient.created_by,)
+            or request.user in self.consultation.facility.users.all()
         )

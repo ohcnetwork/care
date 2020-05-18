@@ -90,6 +90,7 @@ class PatientSample(FacilityBaseModel):
                 request.user.state == self.consultation.facility.state
                 and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
             )
+            or request.user in self.consultation.patient.facility.users.all()
         )
 
     def has_object_update_permission(self, request):
