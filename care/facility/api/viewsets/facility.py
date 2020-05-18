@@ -33,7 +33,7 @@ class FacilityFilter(filters.FilterSet):
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser or request.query_params.get("all") == "true":
+        if request.user.is_superuser:
             pass
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(district=request.user.district)
