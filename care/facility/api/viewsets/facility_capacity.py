@@ -29,7 +29,9 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
             return queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return queryset.filter(facility__district=user.district)
-        return queryset.filter(facility__created_by=user)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return queryset.filter(facility__state=user.state)
+        return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
         print(self.kwargs)
@@ -38,7 +40,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     def get_facility(self):
         facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
         if not self.request.user.is_superuser:
-            facility_qs.filter(created_by=self.request.user)
+            facility_qs.filter(facility__users__id__exact=self.request.user.id)
         return get_object_or_404(facility_qs)
 
     def perform_create(self, serializer):
