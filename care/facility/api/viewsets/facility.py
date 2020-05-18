@@ -37,8 +37,10 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
             pass
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(district=request.user.district)
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=request.user.state)
         else:
-            queryset = queryset.filter(Q(created_by=request.user) | Q(users__id__exact=request.user.id))
+            queryset = queryset.filter(Q(created_by=request.user) | Q(users__id__exact=request.user.id)).distinct()
 
         search_text = request.query_params.get("search_text")
         if search_text:
