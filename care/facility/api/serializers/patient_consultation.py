@@ -42,7 +42,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     def validate(self, obj):
         validated = super().validate(obj)
-        print(validated)
         if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):
             raise ValidationError(
                 {"referred_to": [f"This field is required as the suggestion is {SuggestionChoices.R}."]}

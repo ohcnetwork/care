@@ -2,6 +2,7 @@ from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
+from django.db.models.query_utils import Q
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
@@ -29,7 +30,9 @@ class PatientConsultationViewSet(ModelViewSet):
             return self.queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(patient__district=self.request.user.district)
-        return self.queryset.filter(facility__created_by=self.request.user)
+        return self.queryset.filter(
+            Q(patient__created_by=self.request.user) | Q(facility__users__id__exact=self.request.user.id)
+        ).distinct("id")
 
     def list(self, request, *args, **kwargs):
         """
