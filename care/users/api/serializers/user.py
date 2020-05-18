@@ -116,14 +116,26 @@ class UserCreateSerializer(SignUpSerializer):
 
         return validated
 
+    def facility_query(self, user):
+        queryset = Facility.objects.all()
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=user.district)
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=user.state)
+        else:
+            queryset = queryset.filter(users__id__exact=user.id)
+        return queryset
+
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
             user = User.objects.create_user(**{**validated_data, "verified": True})
             user.set_password(validated_data["password"])
-
+            facility_query = self.facility_query(self.context["created_by"])
             if facilities:
-                facility_objs = Facility.objects.filter(external_id__in=facilities)
+                facility_objs = facility_query.filter(external_id__in=facilities)
                 facility_user_objs = [
                     FacilityUser(facility=facility, user=user, created_by=self.context["created_by"])
                     for facility in facility_objs
