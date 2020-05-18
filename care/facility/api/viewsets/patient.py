@@ -48,10 +48,8 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
                 queryset = queryset.filter(
-                    Q(created_by=request.user)
-                    | Q(facility__created_by=request.user)
-                    | Q(facility__users__id__exact=request.user.id)
-                )
+                    Q(created_by=request.user) | Q(facility__users__id__exact=request.user.id)
+                ).distinct("id")
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -154,7 +152,10 @@ class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
 
 class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     queryset = FacilityPatientStatsHistory.objects.all().order_by("-entry_date")
     serializer_class = FacilityPatientStatsHistorySerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -162,8 +163,15 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "delete"]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        user = self.request.user
+        queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        if user.is_superuser:
+            return queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            return queryset.filter(facility__district=user.district)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return queryset.filter(facility__state=user.state)
+        return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
@@ -171,7 +179,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
     def get_facility(self):
         facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
         if not self.request.user.is_superuser:
-            facility_qs.filter(created_by=self.request.user)
+            facility_qs.filter(users__id__exact=self.request.user.id)
         return get_object_or_404(facility_qs)
 
     def perform_create(self, serializer):

@@ -19,6 +19,7 @@ from care.facility.models.mixins.permissions.patient import PatientPermissionMix
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
 from care.users.models import GENDER_CHOICES, User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
+from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -287,7 +288,7 @@ class Disease(models.Model):
         indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
 
-class FacilityPatientStatsHistory(FacilityBaseModel):
+class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
     entry_date = models.DateField()
     num_patients_visited = models.IntegerField(default=0)
