@@ -79,7 +79,7 @@ class LocalBody(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        return qs.filter(deleted=False).select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
         district_id = extra_fields["district"]
