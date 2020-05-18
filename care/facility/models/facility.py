@@ -281,3 +281,9 @@ class FacilityUser(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
+
+    class Meta:
+        unique_together = (
+            "facility",
+            "user",
+        )
