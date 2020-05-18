@@ -8,7 +8,11 @@ class BasePermissionMixin:
 
     @staticmethod
     def has_write_permission(request):
-        return request.user.is_superuser or request.user.verified
+        return (
+            request.user.is_superuser
+            or request.user.verified
+            or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+        )
 
     def has_object_read_permission(self, request):
         return (request.user.is_superuser or request.user.verified) and (
