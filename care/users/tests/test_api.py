@@ -87,7 +87,7 @@ class TestSuperUser(TestBase):
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
         # test value at the backend
-        self.assertEqual(User.objects.only("age").get(username=username).age, 31)
+        self.assertEqual(User.objects.get(username=username).age, 31)
 
     def test_superuser_can_delete(self):
         """Test superuser can delete other users"""
@@ -162,7 +162,7 @@ class TestUser(TestBase):
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
         # test value at the backend
-        self.assertEqual(User.objects.only("age").get(username=username).age, 31)
+        self.assertEqual(User.objects.get(username=username).age, 31)
 
     def test_user_cannot_read_others(self):
         """Test 1 user can read the attributes of the other user"""
@@ -185,5 +185,5 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # test backend response(user_2 still exists)
         self.assertEqual(
-            self.data_2[field], User.objects.only(field).get(username=self.data_2[field]).username,
+            self.data_2[field], User.objects.get(username=self.data_2[field]).username,
         )
