@@ -2,16 +2,16 @@
 
 WORK_DIR="$(dirname "$0")"
 DISTRO_NAME=$(lsb_release -sc)
-OS_REQUIREMENTS_FILENAME="requirements-$DISTRO_NAME.apt"
+OS_REQUIREMENTS_FILENAME="reqs-$DISTRO_NAME.apt"
 
 cd $WORK_DIR
 
-# Check if a requirements file exist for the current distribution.
+# Check if a reqs file exist for the current distribution.
 if [ ! -r "$OS_REQUIREMENTS_FILENAME" ]; then
     cat <<-EOF >&2
 		There is no requirements file for your distribution.
 		You can see one of the files listed below to help search the equivalent package in your system:
-		$(find ./ -name "requirements-*.apt" -printf "  - %f\n")
+		$(find ./ -name "reqs-*.apt" -printf "  - %f\n")
 	EOF
     exit 1;
 fi
@@ -41,7 +41,7 @@ function usage_message()
 	EOF
 }
 
-# Read the requirements.apt file, and remove comments and blank lines
+# Read the reqs.apt file, and remove comments and blank lines
 function list_packages(){
     grep -v "#" "${OS_REQUIREMENTS_FILENAME}" | grep -v "^$";
 }

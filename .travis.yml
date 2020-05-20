@@ -7,7 +7,7 @@ addons:
       - libgdal-dev
       - libsqlite3-mod-spatialite
 install:
-  - pip install -q -r requirements/local.txt
+  - pip install -q -r reqs/local.txt
 script:
   - python manage.py makemigrations --dry-run --settings=config.settings.test
   - python manage.py test --settings=config.settings.test -n
