@@ -1,4 +1,9 @@
 """Common settings and globals."""
+import json
+from datetime import timedelta
+
+import environ
+
 import os
 from os.path import abspath, dirname
 from sys import path
@@ -32,110 +37,308 @@ class Settings(LoggerSettingsMixin, Configuration):
     path.append(DJANGO_ROOT)
     # END PATH CONFIGURATION #
 
-    # Quick-start development settings - unsuitable for production
-    # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+    ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
+    APPS_DIR = ROOT_DIR.path("care")
 
-    # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = 'tvp62xokv-@kj(&3csyad3kl9kb89&qvkk-%vw7ye!peo(ijy0'
+    env = environ.Env()
 
-    # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
+    READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+    if READ_DOT_ENV_FILE:
+        # OS environment variables take precedence over variables from .env
+        env.read_env(str(ROOT_DIR.path(".env")))
 
-    ALLOWED_HOSTS = []
+    # GENERAL
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#debug
+    DEBUG = env.bool("DJANGO_DEBUG", False)
+    # Local time zone. Choices are
+    # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+    # though not all of them may be available with every OS.
+    # In Windows, this must be set to your system time zone.
+    TIME_ZONE = "Asia/Kolkata"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
+    LANGUAGE_CODE = "en-us"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
+    SITE_ID = 1
+    # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
+    USE_I18N = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
+    USE_L10N = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
+    USE_TZ = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
+    LOCALE_PATHS = [ROOT_DIR.path("locale")]
 
-    # Application definition
+    # URLS
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
+    ROOT_URLCONF = "care.urls"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
+    WSGI_APPLICATION = "wsgi.application"
 
+    # CollectFast
+    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
+
+    # APPS
+    # ------------------------------------------------------------------------------
     DJANGO_APPS = [
-        'django.contrib.admin',
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+        "django.contrib.sessions",
+        "django.contrib.sites",
+        "django.contrib.messages",
+        "django.contrib.gis",
+        "collectfast",  # Overrides collectstatic command in django
+        "django.contrib.staticfiles",
+        # "django.contrib.humanize", # Handy template tags
+        "django.contrib.admin",
+        "django.forms",
+    ]
+    THIRD_PARTY_APPS = [
+        "crispy_forms",
+        "allauth",
+        "allauth.account",
+        "allauth.socialaccount",
+        "storages",
+        "rest_framework",
+        "drf_yasg",
+        "drf_extra_fields",
+        "location_field.apps.DefaultConfig",
+        "django_filters",
+        "simple_history",
+        "ratelimit",
+        "dry_rest_permissions",
+        "corsheaders",
+        "watchman",
+        "djangoql",
+        "maintenance_mode",
+        "django.contrib.postgres",
+        "django_celery_beat",
     ]
 
     LOCAL_APPS = [
-        'apps.accounts',
-        'care.apps.commons',
+        "apps.accounts",
+        "apps.commons",
+        "apps.facility",
+        "apps.patients"
+    ]
+    # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+    # AUTHENTICATION
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
+    AUTHENTICATION_BACKENDS = [
+        "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend",
     ]
 
-    INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
+    # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
+    AUTH_USER_MODEL = "accounts.User"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+    LOGIN_REDIRECT_URL = "users:redirect"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+    LOGIN_URL = "/users/signin"
+
+    # PASSWORDS
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
+    PASSWORD_HASHERS = [
+        # https://docs.djangoproject.com/en/dev/topics/auth/passwords/#using-argon2-with-django
+        "django.contrib.auth.hashers.Argon2PasswordHasher",
+        "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+        "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+        "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    ]
+    # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
+    AUTH_PASSWORD_VALIDATORS = [
+        {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+        {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+        {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+        {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    ]
+
+    # MIDDLEWARE
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
     MIDDLEWARE = [
-        'django.middleware.security.SecurityMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        "django.middleware.security.SecurityMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
+        "django.contrib.sessions.middleware.SessionMiddleware",
+        "corsheaders.middleware.CorsMiddleware",
+        "django.middleware.locale.LocaleMiddleware",
+        "django.middleware.common.CommonMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
+        "django.contrib.auth.middleware.AuthenticationMiddleware",
+        "django.contrib.messages.middleware.MessageMiddleware",
+        "django.middleware.common.BrokenLinkEmailsMiddleware",
+        "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "simple_history.middleware.HistoryRequestMiddleware",
+        "maintenance_mode.middleware.MaintenanceModeMiddleware",
     ]
 
-    ROOT_URLCONF = 'covid19.urls'
+    # STATIC
+    # ------------------------------------------------------------------------------
+    USE_S3 = env.bool("USE_S3", default=False)
 
-    AUTH_USER_MODEL = 'accounts.User'
+    if USE_S3:
+        # aws settings
+        AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+        AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+        AWS_DEFAULT_ACL = "public-read"
+        AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+        AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+        # s3 static settings
+        AWS_S3_REGION_NAME = "ap-south-1"
+        AWS_LOCATION = "static"
+        STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+        STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    else:
+        STATIC_URL = "/staticfiles/"
+        STATIC_ROOT = str(ROOT_DIR("staticfiles"))
 
+    STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
+
+    MEDIA_URL = "/mediafiles/"
+    MEDIA_ROOT = str(APPS_DIR("media"))
+
+    # TEMPLATES
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#templates
     TEMPLATES = [
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
+            # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
+            "DIRS": [str(APPS_DIR.path("templates"))],
+            "OPTIONS": {
+                # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
+                # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
+                "loaders": ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader",],
+                # https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.template.context_processors.i18n",
+                    "django.template.context_processors.media",
+                    "django.template.context_processors.static",
+                    "django.template.context_processors.tz",
+                    "django.contrib.messages.context_processors.messages",
+                    "care.utils.context_processors.settings_context",
                 ],
             },
-        },
+        }
     ]
 
-    WSGI_APPLICATION = 'wsgi.application'
+    # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
+    FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
-    # Database
-    # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+    # http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
+    CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+    # FIXTURES
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#fixture-dirs
+    FIXTURE_DIRS = (str(APPS_DIR.path("fixtures")),)
+
+    # SECURITY
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
+    SESSION_COOKIE_HTTPONLY = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
+    CSRF_COOKIE_HTTPONLY = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
+    SECURE_BROWSER_XSS_FILTER = True
+    # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
+    X_FRAME_OPTIONS = "DENY"
+
+    CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
+
+    # EMAIL
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+    EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+    # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
+    EMAIL_TIMEOUT = 5
+
+    # ADMIN
+    # ------------------------------------------------------------------------------
+    # Django Admin URL.
+    ADMIN_URL = "admin/"
+    # https://docs.djangoproject.com/en/dev/ref/settings/#admins
+    ADMINS = [("""👪""", "admin@coronasafe.in")]
+    # https://docs.djangoproject.com/en/dev/ref/settings/#managers
+    MANAGERS = ADMINS
+
+    # LOGGING
+    # ------------------------------------------------------------------------------
+    # https://docs.djangoproject.com/en/dev/ref/settings/#logging
+    # See https://docs.djangoproject.com/en/dev/topics/logging for
+    # more details on how to customize your logging configuration.
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
+        "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+        "root": {"level": "INFO", "handlers": ["console"]},
     }
 
-    # Password validation
-    # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+    # django-allauth
+    # ------------------------------------------------------------------------------
+    ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+    # https://django-allauth.readthedocs.io/en/latest/configuration.html
+    ACCOUNT_AUTHENTICATION_METHOD = "username"
+    # https://django-allauth.readthedocs.io/en/latest/configuration.html
+    ACCOUNT_EMAIL_REQUIRED = True
+    # https://django-allauth.readthedocs.io/en/latest/configuration.html
+    ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+    # https://django-allauth.readthedocs.io/en/latest/configuration.html
+    ACCOUNT_ADAPTER = "care.users.adapters.AccountAdapter"
+    # https://django-allauth.readthedocs.io/en/latest/configuration.html
+    SOCIALACCOUNT_ADAPTER = "care.users.adapters.SocialAccountAdapter"
 
-    AUTH_PASSWORD_VALIDATORS = [
-        {
-            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-        },
-    ]
+    # Django Rest Framework
+    # ------------------------------------------------------------------------------
 
-    # Internationalization
-    # https://docs.djangoproject.com/en/2.2/topics/i18n/
+    REST_FRAMEWORK = {
+        "DEFAULT_AUTHENTICATION_CLASSES": (
+            # "rest_framework.authentication.BasicAuthentication",
+            # Primary api authentication
+            # "rest_framework_simplejwt.authentication.JWTAuthentication",
+            "config.authentication.CustomJWTAuthentication",
+            "config.authentication.CustomBasicAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        ),
+        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+        "PAGE_SIZE": 100,
+    }
 
-    LANGUAGE_CODE = 'en-us'
+    # Your stuff...
+    # ------------------------------------------------------------------------------
 
-    TIME_ZONE = 'UTC'
 
-    USE_I18N = True
+    ACCOUNT_EMAIL_VERIFICATION = False
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    LOGOUT_REDIRECT_URL = "/"
+    STAFF_ACCOUNT_TYPE = 10
 
-    USE_L10N = True
+    # Simple JWT
+    SIMPLE_JWT = {
+        "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)),
+        "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)),
+        "ROTATE_REFRESH_TOKENS": True,
+    }
 
-    USE_TZ = True
+    LOCATION_FIELD = {
+        "search.provider": "google",
+        "map.provider": "openstreetmap",
+        "provider.openstreetmap.max_zoom": 18,
+    }
 
-    # Static files (CSS, JavaScript, Images)
-    # https://docs.djangoproject.com/en/2.2/howto/static-files/
+    CORS_ORIGIN_ALLOW_ALL = True
 
-    STATIC_URL = '/static/'
+    MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
