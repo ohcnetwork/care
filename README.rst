@@ -1,5 +1,5 @@
-Care
-====
+Care Platform
+==================
 
 Auto Deployed to https://api.care.coronasafe.in for master Branch. 
 
@@ -111,7 +111,7 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 * Install pre-commit
     pre-commit is installed while you run ::
 
-     pip install -r requirements/local.txt
+     pip install -r reqs/local.txt
 
 * Setup
     this installs all the git-hooks ::
@@ -132,8 +132,17 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 .. _pre_commit_site: https://pre-commit.com/
 .. _site: https://trac.osgeo.org/osgeo4w/
 
-Settings
---------
+Settings Python Virtual Environment and pip installation
+---------------------------------------------------------
+* Create Python Virtual
+    $ python3 -m venv .venv
+
+* Activate virtual environment
+    $ source .venv/bin/activate
+
+* Install local requirements
+    $ pip install -r reqs/local.txt
+
 
 Moved to settings_.
 
