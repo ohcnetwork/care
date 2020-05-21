@@ -332,6 +332,9 @@ pyvenv.cfg
 pip-selfcheck.json
 .env
 
+### Local settings
+.local.py
+
 
 ### Project template
 
