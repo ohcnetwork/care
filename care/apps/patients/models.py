@@ -1,24 +1,24 @@
 import enum
 from django.db import models
 from multiselectfield import MultiSelectField
-from care.apps.commons.models import PatientBaseModel, FacilityBaseModel
+from apps.commons.models import PatientBaseModel, FacilityBaseModel
 from types import SimpleNamespace
-from care.facility.models import Facility
-from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
-from care.users.models import GENDER_CHOICES, User, phone_number_regex
+from facility.models import Facility
+from facility.models.mixins.permissions.patient import PatientPermissionMixin
+from users.models import GENDER_CHOICES, User, phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
-from care.apps.patients import constants
+from apps.patients import constants
 from simple_history.models import HistoricalRecords
-from care.utils.models.jsonfield import JSONField
-from care.facility.models import (
+from utils.models.jsonfield import JSONField
+from facility.models import (
     BaseManager,
     District,
     LocalBody,
     State,
 )
-from care.apps.patients import constants
-from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
+from apps.patients import constants
+from facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
