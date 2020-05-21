@@ -1,34 +1,45 @@
-DOCTOR = 1
-STAFF = 2
-PATIENT = 3
-VOLUNTEER = 4
-DISTRICT_LAB_ADMIN = 5
-DISTRICT_ADMIN = 6
-STATE_LAB_ADMIN = 7
-STATE_ADMIN = 8
+import collections
 
-USER_TYPE_VALUES = (
-    (DOCTOR, 'Doctor'),
-    (STAFF, 'Staff'),
-    (PATIENT, 'Patient'),
-    (DISTRICT_LAB_ADMIN, 'DistrictLabAdmin'),
-    (DISTRICT_ADMIN, 'DistrictAdmin'),
-    (STATE_LAB_ADMIN, 'StateLabAdmin'),
-    (STATE_ADMIN, 'StateAdmin'),
+
+USER_TYPES = collections.namedtuple('USER_TYPES', [
+    'DOCTOR', 'STAFF', 'PATIENT', 'VOLUNTEER', 'DISTRICT_LAB_ADMIN', 'DISTRICT_ADMIN', 'STATE_LAB_ADMIN', 'STATE_ADMIN'
+])(
+    DOCTOR=1,
+    STAFF=2,
+    PATIENT=3,
+    VOLUNTEER=4,
+    DISTRICT_LAB_ADMIN=5,
+    DISTRICT_ADMIN=6,
+    STATE_LAB_ADMIN=7,
+    STATE_ADMIN=8,
 )
 
-GRAM_PANCHAYATH = 1
-BLOCK_PANCHAYATH = 2
-DISTRICT_PANCHAYATH = 3
-MUNICIPALITY = 10
-CORPORATION = 20
-OTHERS = 50
+USER_TYPE_VALUES = (
+    (USER_TYPES.DOCTOR, 'Doctor'),
+    (USER_TYPES.STAFF, 'Staff'),
+    (USER_TYPES.PATIENT, 'Patient'),
+    (USER_TYPES.DISTRICT_LAB_ADMIN, 'DistrictLabAdmin'),
+    (USER_TYPES.DISTRICT_ADMIN, 'DistrictAdmin'),
+    (USER_TYPES.STATE_LAB_ADMIN, 'StateLabAdmin'),
+    (USER_TYPES.STATE_ADMIN, 'StateAdmin'),
+)
+
+LOCAL_BODIES = collections.namedtuple('LOCAL_BODY_CHOICES', [
+    'GRAM_PANCHAYATH', 'BLOCK_PANCHAYATH', 'DISTRICT_PANCHAYATH', 'MUNICIPALITY', 'CORPORATION', 'OTHERS'
+])(
+    GRAM_PANCHAYATH=1,
+    BLOCK_PANCHAYATH=2,
+    DISTRICT_PANCHAYATH=3,
+    MUNICIPALITY=4,
+    CORPORATION=5,
+    OTHERS=6,
+)
 
 LOCAL_BODY_CHOICES = (
-    (GRAM_PANCHAYATH, 'Gram Panchayath'),
-    (BLOCK_PANCHAYATH, 'Block Panchayath'),
-    (DISTRICT_PANCHAYATH, 'District Panchayath'),
-    (MUNICIPALITY, 'Municipality'),
-    (CORPORATION, 'Corporation'),
-    (OTHERS, 'Others'),
+    (LOCAL_BODIES.GRAM_PANCHAYATH, 'Gram Panchayath'),
+    (LOCAL_BODIES.BLOCK_PANCHAYATH, 'Block Panchayath'),
+    (LOCAL_BODIES.DISTRICT_PANCHAYATH, 'District Panchayath'),
+    (LOCAL_BODIES.MUNICIPALITY, 'Municipality'),
+    (LOCAL_BODIES.CORPORATION, 'Corporation'),
+    (LOCAL_BODIES.OTHERS, 'Others'),
 )
