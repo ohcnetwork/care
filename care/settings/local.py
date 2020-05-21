@@ -26,7 +26,7 @@ class Settings(base.Settings):
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
             'NAME': 'care1',
-            'USER': 'mintu',
+            'USER': '',
             'PASSWORD': '',
             'HOST': '',
             'PORT': '',
