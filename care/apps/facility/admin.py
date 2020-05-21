@@ -7,16 +7,19 @@ from care.facility.models.patient_sample import PatientSample
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
 from .models import (
+    Ambulance,
+    AmbulanceDriver,
     Building,
-    Disease,
     Facility,
     FacilityCapacity,
+    FacilityLocalGovtBody,
     FacilityStaff,
+    FacilityUser,
     FacilityVolunteer,
+    HospitalDoctors,
     Inventory,
     InventoryItem,
     InventoryLog,
-    PatientRegistration,
     Room,
     StaffRoomAllocation,
 )
@@ -144,19 +147,18 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+admin.site.register(Ambulance, AmbulanceAdmin)
+admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(Facility, FacilityAdmin)
-admin.site.register(FacilityStaff, FacilityStaffAdmin)
+admin.site.register(FacilityLocalGovtBody)
+admin.site.register(HospitalDoctors)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
-admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
 admin.site.register(InventoryItem, InventoryItemAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
-admin.site.register(Ambulance, AmbulanceAdmin)
-admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
-admin.site.register(PatientRegistration, PatientAdmin)
-admin.site.register(PatientTeleConsultation)
-admin.site.register(PatientSample, PatientSampleAdmin)
-admin.site.register(Disease)
+admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(FacilityUser)

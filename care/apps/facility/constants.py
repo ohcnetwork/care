@@ -1,50 +1,98 @@
+from collections import namedtuple
+
+ROOM_TYPES_CHOICES = namedtuple(
+    "ROOM_TYPES_CHOICES", ["TOTAL", "GENERAL_BED", "HOSTEL", "SINGLE_ROOM_WITH_ATTACHED_BATHROOM", "ICU", "VENTILATOR"]
+)(0, 1, 2, 3, 10, 20)
+
 ROOM_TYPES = [
-    (0, "Total"),
-    (1, "General Bed"),
-    (2, "Hostel"),
-    (3, "Single Room with Attached Bathroom"),
-    (10, "ICU"),
-    (20, "Ventilator"),
+    (ROOM_TYPES_CHOICES.TOTAL, "Total"),
+    (ROOM_TYPES_CHOICES.GENERAL_BED, "General Bed"),
+    (ROOM_TYPES_CHOICES.HOSTEL, "Hostel"),
+    (ROOM_TYPES_CHOICES.SINGLE_ROOM_WITH_ATTACHED_BATHROOM, "Single Room with Attached Bathroom"),
+    (ROOM_TYPES_CHOICES.ICU, "ICU"),
+    (ROOM_TYPES_CHOICES.VENTILATOR, "Ventilator"),
 ]
+
+FACILITY_TYPES_CHOICES = namedtuple(
+    "FACILITY_TYPES_CHOICES",
+    [
+        "EDUCATIONAL_INST",
+        "PRIVATE_HOSPITAL",
+        "OTHER",
+        "HOSTEL",
+        "HOTEL",
+        "LODGE",
+        "TELEMEDICINE",
+        "GOVT_HOSPITAL",
+        "LABS",
+        "PRIMARY_HEALTH_CENTRES",
+        "ALL_DAY_PUBLIC_HEALTH_CENTRES",
+        "FAMILY_HEALTH_CENTRES",
+        "COMMUNITY_HEALTH_CENTRES",
+        "URBAN_PRIMARY_HEALTH_CENTER",
+        "TALUK_HOSPITALS",
+        "TALUK_HEADQUARTERS_HOSPITALS",
+        "WOMEN_AND_CHILD_HEALTH_CENTRES",
+        "GENERAL_HOSPITALS",
+        "DISTRICT_HOSPITALS",
+        "GOVT_MEDICAL_COLLEGE_HOSPITALS",
+        "CORONA_TESTING_LABS",
+        "CORONA_CARE_CENTRE",
+    ],
+)(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 800, 801, 802, 803, 820, 830, 831, 840, 850, 860, 870, 950, 1000)
 
 FACILITY_TYPES = [
-    (1, "Educational Inst"),
-    (2, "Private Hospital"),
-    (3, "Other"),
-    (4, "Hostel"),
-    (5, "Hotel"),
-    (6, "Lodge"),
-    (7, "TeleMedicine"),
-    (8, "Govt Hospital"),
-    (9, "Labs"),
+    (FACILITY_TYPES_CHOICES.EDUCATIONAL_INST, "Educational Inst"),
+    (FACILITY_TYPES_CHOICES.PRIVATE_HOSPITAL, "Private Hospital"),
+    (FACILITY_TYPES_CHOICES.OTHER, "Other"),
+    (FACILITY_TYPES_CHOICES.HOSTEL, "Hostel"),
+    (FACILITY_TYPES_CHOICES.HOTEL, "Hotel"),
+    (FACILITY_TYPES_CHOICES.LODGE, "Lodge"),
+    (FACILITY_TYPES_CHOICES.TELEMEDICINE, "TeleMedicine"),
+    (FACILITY_TYPES_CHOICES.GOVT_HOSPITAL, "Govt Hospital"),
+    (FACILITY_TYPES_CHOICES.LABS, "Labs"),
     # Use 8xx for Govt owned hospitals and health centres
-    (800, "Primary Health Centres"),
-    (801, "24x7 Public Health Centres"),
-    (802, "Family Health Centres"),
-    (803, "Community Health Centres"),
-    (820, "Urban Primary Health Center"),
-    (830, "Taluk Hospitals"),
-    (831, "Taluk Headquarters Hospitals"),
-    (840, "Women and Child Health Centres"),
-    (850, "General hospitals"),  # TODO: same as 8, need to merge
-    (860, "District Hospitals"),
-    (870, "Govt Medical College Hospitals"),
+    (FACILITY_TYPES_CHOICES.PRIMARY_HEALTH_CENTRES, "Primary Health Centres"),
+    (FACILITY_TYPES_CHOICES.ALL_DAY_PUBLIC_HEALTH_CNETRES, "24x7 Public Health Centres"),
+    (FACILITY_TYPES_CHOICES.FAMILY_HEALTH_CENTRES, "Family Health Centres"),
+    (FACILITY_TYPES_CHOICES.COMMUNITY_HEALTH_CENTRES, "Community Health Centres"),
+    (FACILITY_TYPES_CHOICES.URBAN_PRIMARY_HEALTH_CENTER, "Urban Primary Health Center"),
+    (FACILITY_TYPES_CHOICES.TALUK_HOSPITALS, "Taluk Hospitals"),
+    (FACILITY_TYPES_CHOICES.TALUK_HEADQUARTERS, "Taluk Headquarters Hospitals"),
+    (FACILITY_TYPES_CHOICES.WOMEN_AND_CHILD_HEALTH_CENTRES, "Women and Child Health Centres"),
+    (FACILITY_TYPES_CHOICES.GENERAL_HOSPITALS, "General hospitals"),  # TODO: same as 8, need to merge
+    (FACILITY_TYPES_CHOICES.DISTRICT_HOSPITALS, "District Hospitals"),
+    (FACILITY_TYPES_CHOICES.GOVT_MEDICAL_COLLEGE_HOSPITALS, "Govt Medical College Hospitals"),
     # Use 9xx for Labs
-    (950, "Corona Testing Labs"),
+    (FACILITY_TYPES_CHOICES.CORONA_TESTING_LABS, "Corona Testing Labs"),
     # Use 10xx for Corona Care Center
-    (1000, "Corona Care Centre"),
+    (FACILITY_TYPES_CHOICES.CORONA_CARE_CENTRE, "Corona Care Centre"),
 ]
+
+DOCTOR_TYPES_CHOICES = namedtuple(
+    "DOCTOR_TYPES_CHOICES", ["GENERAL_MEDICINE", "PULMONOLOGY", "CRITICAL_CARE", "PAEDIATRICS", "OTHER_SPECIALITY",]
+)(0, 1, 2, 3, 4, 5)
 
 DOCTOR_TYPES = [
-    (1, "General Medicine"),
-    (2, "Pulmonology"),
-    (3, "Critical Care"),
-    (4, "Paediatrics"),
-    (5, "Other Speciality"),
+    (DOCTOR_TYPES_CHOICES.GENERAL_MEDICINE, "General Medicine"),
+    (DOCTOR_TYPES_CHOICES.PULMONOLOGY, "Pulmonology"),
+    (DOCTOR_TYPES_CHOICES.CRITICAL_CARE, "Critical Care"),
+    (DOCTOR_TYPES_CHOICES.PAEDIATRICS, "Paediatrics"),
+    (DOCTOR_TYPES_CHOICES.OTHER_SPECIALITY, "Other Speciality"),
 ]
 
+AMBULANCE_TYPES_CHOICES = namedtuple("AMBULANCE_TYPES_CHOICES", ["BASIC", "CARDIAC", "HEARSE",])(0, 1, 2, 3, 4, 5)
+
 AMBULANCE_TYPES = [
-    (1, "Basic"), 
-    (2, "Cardiac"), 
-    (3, "Hearse")
+    (AMBULANCE_TYPES_CHOICES.BASIC, "Basic"),
+    (AMBULANCE_TYPES_CHOICES.CARDIAC, "Cardiac"),
+    (AMBULANCE_TYPES_CHOICES.HEARSE, "Hearse"),
 ]
+
+# INSURANCE_YEAR_CHOICES_TYPES = namedtuple('INSURANCE_YEAR_CHOICES_TYPES', [
+#     2020,
+#     2021,
+#     2022,
+# ])(0, 1, 2)
+
+INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
