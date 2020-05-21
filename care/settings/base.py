@@ -135,7 +135,7 @@ class Settings(LoggerSettingsMixin, Configuration):
 
 
     # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-    #AUTH_USER_MODEL = "accounts.User"
+    AUTH_USER_MODEL = "accounts.User"
     # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
     LOGIN_REDIRECT_URL = "users:redirect"
     # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
