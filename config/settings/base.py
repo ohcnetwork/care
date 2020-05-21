@@ -94,7 +94,7 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
+LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.apps.commons"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -358,4 +358,3 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-
