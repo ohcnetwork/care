@@ -4,6 +4,7 @@ from django.db import models
 
 
 class BaseManager(models.Manager):
+
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(deleted=False)
@@ -16,6 +17,9 @@ class BaseManager(models.Manager):
 
 
 class BaseModel(models.Model):
+    """
+    Abstract base model
+    """
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
     created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, null=True, blank=True)
@@ -32,10 +36,16 @@ class BaseModel(models.Model):
 
 
 class FacilityBaseModel(BaseModel):
+    """
+    Base model for facility
+    """
     class Meta:
         abstract = True
 
 
 class PatientBaseModel(BaseModel):
+    """
+    Base model for Patient
+    """
     class Meta:
         abstract = True

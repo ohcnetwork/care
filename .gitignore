@@ -69,6 +69,7 @@ target/
 venv/
 ENV/
 .envrc
+care/settings/local.py
 
 # Rope project settings
 .ropeproject
@@ -330,6 +331,9 @@ tags
 pyvenv.cfg
 pip-selfcheck.json
 .env
+
+### Local settings
+.local.py
 
 
 ### Project template

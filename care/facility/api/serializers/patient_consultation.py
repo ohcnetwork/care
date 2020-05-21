@@ -3,29 +3,17 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.apps.patients.models import PatientRegistration
-from care.apps.patients.constants import CATEGORY_CHOICES
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
-from care.apps.patients import constants
-from care.apps.patients.models import PatientConsultation, DailyRound
-from care.apps.patients.constants import SUGGESTION_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
-# from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
-# from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
-    ADMIT_CHOICES = [
-    (constants.ADMIT_CHOICES.NA, "Not admitted"),
-    (constants.ADMIT_CHOICES.IR, "Isolation Room"),
-    (constants.ADMIT_CHOICES.ICU, "ICU"),
-    (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
-    (constants.ADMIT_CHOICES.HI, "Home Isolation"),
-    ]    
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
-    suggestion_text = ChoiceField(choices=SUGGESTION_CHOICES, read_only=True, source="suggestion")
+    suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion")
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)

@@ -17,15 +17,8 @@ from care.facility.models import (
     LocalBody,
     State,
 )
-# from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
 from care.apps.patients import constants
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
-#from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
-# from care.facility.models import (
-#     PatientContactDetails,
-#     PatientRegistration,
-#     PatientSample,
-# )
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
@@ -528,16 +521,7 @@ class PatientContactDetails(models.Model):
 
 
 class Disease(models.Model):
-    
-    # DISEASE_CHOICES = [
-    #     (constants.DISEASE_CHOICES_MAP.NO, "NO DISEASE"),
-    #     (constants.DISEASE_CHOICES_MAP.DB, "DIABETES"),
-    #     (constants.DISEASE_CHOICES_MAP.HD, "HEART DISEASE"),
-    #     (constants.DISEASE_CHOICES_MAP.HT, "HYPERTENSION"),
-    #     (constants.DISEASE_CHOICES_MAP.KD, "KIDNEY DISEASES"),
-    #     (constants.DISEASE_CHOICES_MAP.LA, "LUNG DISEASES/ASTHMA"),
-    #     (constants.DISEASE_CHOICES_MAP.CA, "CANCER"),
-    # ]
+
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=constants.DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)

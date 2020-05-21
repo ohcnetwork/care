@@ -3,13 +3,12 @@ from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
-# from care.facility.models.patient_sample import PatientSample
-# from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.facility.models.patient_sample import PatientSample
+from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
-from care.apps.patients.models import (Disease)
 from .models import (
     Building,
-    # Disease,
+    Disease,
     Facility,
     FacilityCapacity,
     FacilityStaff,
@@ -17,7 +16,7 @@ from .models import (
     Inventory,
     InventoryItem,
     InventoryLog,
-    # PatientRegistration,
+    PatientRegistration,
     Room,
     StaffRoomAllocation,
 )
@@ -136,13 +135,13 @@ class AmbulanceDriverAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
-# class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-#     list_display = ("id", "name", "age", "gender")
-#     djangoql_completion_enabled_by_default = True
+class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    list_display = ("id", "name", "age", "gender")
+    djangoql_completion_enabled_by_default = True
 
 
-# class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-#     djangoql_completion_enabled_by_default = True
+class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    djangoql_completion_enabled_by_default = True
 
 
 admin.site.register(Facility, FacilityAdmin)
@@ -157,7 +156,7 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
-# admin.site.register(PatientRegistration, PatientAdmin)
-# admin.site.register(PatientTeleConsultation)
-# admin.site.register(PatientSample, PatientSampleAdmin)
+admin.site.register(PatientRegistration, PatientAdmin)
+admin.site.register(PatientTeleConsultation)
+admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
