@@ -57,6 +57,7 @@ class Settings(LoggerSettingsMixin, Configuration):
     LOCAL_APPS = [
         'apps.accounts',
         'care.apps.commons',
+        'care.apps.patients'
     ]
 
     INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS

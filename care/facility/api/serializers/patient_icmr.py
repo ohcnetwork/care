@@ -1,6 +1,7 @@
 from rest_framework import serializers
-
-from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SYMPTOM_CHOICES
+from care.apps.patients import constants
+from care.facility.models import SAMPLE_TYPE_CHOICES, SYMPTOM_CHOICES
+# from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_icmr import PatientConsultationICMR, PatientIcmr, PatientSampleICMR
 from care.users.models import GENDER_CHOICES
 from config.serializers import ChoiceField
@@ -113,7 +114,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     hospital_phone_number = serializers.CharField(source="consultation.facility.phone_number")
     hospital_name = serializers.CharField(source="consultation.facility.name")
 
-    medical_conditions = serializers.ListSerializer(child=ChoiceField(choices=DISEASE_CHOICES))
+    medical_conditions = serializers.ListSerializer(child=ChoiceField(choices=constants.DISEASE_CHOICES))
 
     class Meta:
         model = PatientSampleICMR
