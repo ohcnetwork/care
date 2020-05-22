@@ -4,7 +4,6 @@ from types import SimpleNamespace
 from apps.accounts.models import (District,State,LocalBody)
 from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility
-from apps.patients.mixins import (PatientPermissionMixin, PatientRelatedPermissionMixin, BasePermissionMixin)
 from apps.accounts.models import User
 from apps.commons.constants import GENDER_CHOICES
 from apps.commons.models import SoftDeleteTimeStampedModel
@@ -15,7 +14,7 @@ from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
 
-class PatientRegistration(PatientPermissionMixin, SoftDeleteTimeStampedModel):
+class PatientRegistration(SoftDeleteTimeStampedModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
 
@@ -184,7 +183,7 @@ class PatientRegistration(PatientPermissionMixin, SoftDeleteTimeStampedModel):
                 state_id=self.state_id,
             )
 
-class PatientConsultation(PatientRelatedPermissionMixin, SoftDeleteTimeStampedModel):
+class PatientConsultation(SoftDeleteTimeStampedModel):
 
     ADMIT_CHOICES = [
     (constants.ADMIT_CHOICES.NA, "Not admitted"),

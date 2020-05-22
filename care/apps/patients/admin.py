@@ -1,9 +1,6 @@
 from django.contrib import admin
 from djangoql.admin import DjangoQLSearchMixin
 from apps.patients import models
-from .models import (
-    PatientRegistration, PatientSample, PatientTeleConsultation
-)
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "age", "gender")
