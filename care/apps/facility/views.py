@@ -1,6 +1,4 @@
-from rest_framework import viewsets
-from rest_framework import mixins
-from rest_framework import permissions
+from rest_framework import viewsets, mixins, permissions
 
 from apps.facility import (
     models as facility_models,
