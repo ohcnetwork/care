@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.translation import ugettext as _
 
 from simple_history.models import HistoricalRecords
 
@@ -95,6 +96,7 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
     """
     Model to represent a user
     """
+    email = models.EmailField(_('email address'), unique=True, blank=True)
     user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)

@@ -114,6 +114,7 @@ class Settings(LoggerSettingsMixin, Configuration):
         "maintenance_mode",
         "django.contrib.postgres",
         "django_celery_beat",
+        'rest_framework.authtoken',
     ]
 
     LOCAL_APPS = [
@@ -305,12 +306,7 @@ class Settings(LoggerSettingsMixin, Configuration):
 
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            # "rest_framework.authentication.BasicAuthentication",
-            # Primary api authentication
-            # "rest_framework_simplejwt.authentication.JWTAuthentication",
-            # "config.authentication.CustomJWTAuthentication",
-            # "config.authentication.CustomBasicAuthentication",
-            "rest_framework.authentication.SessionAuthentication",
+            "rest_framework.authentication.TokenAuthentication",
         ),
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
         "PAGE_SIZE": 100,
@@ -342,3 +338,12 @@ class Settings(LoggerSettingsMixin, Configuration):
 
     MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
+    SWAGGER_SETTINGS = {
+        'SECURITY_DEFINITIONS': {
+            'DRF Token': {
+                'type': 'apiKey',
+                'name': 'Authorization',
+                'in': 'header'
+            }
+        }
+    }
