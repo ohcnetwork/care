@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import permissions
 
 from apps.facility import (
@@ -6,7 +6,7 @@ from apps.facility import (
     serializers as facility_serializers
 )
 
-class FacilityListView(generics.ListAPIView):
+class FacilityListView(ReadOnlyModelViewSet):
 
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilityListSerializer

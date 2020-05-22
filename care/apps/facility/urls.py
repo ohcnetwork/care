@@ -1,9 +1,11 @@
-from django.urls import path
+from rest_framework.routers import SimpleRouter
 
 from apps.facility import (
     views as facility_views
 )
 
-urlpatterns = [
-    path('list/', facility_views.FacilityListView.as_view())
-]
+routers = SimpleRouter()
+
+routers.register('list', facility_views.FacilityListView, basename='facility')
+
+urlpatterns = routers.urls
