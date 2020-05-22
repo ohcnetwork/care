@@ -60,7 +60,7 @@ class Ambulance(FacilityBaseModel):
 
     @property
     def drivers(self):
-        return self.ambulancedriver_set.filter(deleted=False)
+        return self.ambulancedriver_set.filter(active=True)
 
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
@@ -212,7 +212,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
+        indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(active=True))]
 
 
 class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
@@ -224,7 +224,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     history = HistoricalRecords()
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+        indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(active=True))]
 
 
 class FacilityStaff(FacilityBaseModel):

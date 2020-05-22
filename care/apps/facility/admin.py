@@ -2,10 +2,6 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 
-from care.facility.models.ambulance import Ambulance, AmbulanceDriver
-from care.facility.models.patient_sample import PatientSample
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
-
 from .models import (
     Ambulance,
     AmbulanceDriver,
