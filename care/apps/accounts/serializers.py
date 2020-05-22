@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from django.utils.translation import ugettext as _
 
 from rest_framework import serializers as rest_serializers
@@ -43,9 +44,11 @@ class LoginSerializer(rest_serializers.Serializer):
         password = attrs.get('password')
 
         if username and password:
-            user = accounts_models.User.objects.filter(username=username).first()
+            user = accounts_models.User.objects.filter(
+                Q(username__exact=username) | Q(email__iexact=username)
+            ).first()
             if not user or not user.check_password(password):
-                msg = _('Your Email or Password is incorrect.Please try again, or click Forgot Password.')
+                msg = _('Your Username or Password is incorrect.Please try again, or click Forgot Password.')
                 raise rest_serializers.ValidationError(msg)
         else:
             msg = _('Username/Password parameter is missing or invalid.')
