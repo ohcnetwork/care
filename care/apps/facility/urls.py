@@ -6,6 +6,6 @@ from apps.facility import (
 
 routers = SimpleRouter()
 
-routers.register('facility', facility_views.FacilityListView, basename='facility')
+routers.register('facility', facility_views.FacilityListViewSet, basename='facility')
 
 urlpatterns = routers.urls

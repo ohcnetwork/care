@@ -9,21 +9,23 @@ class UserSerializer(ModelSerializer):
         model = accounts_models.User
         fields = '__all__'
 
-class LocalBodySerializer(ModelSerializer):
-
-    class Meta:
-        model = accounts_models.LocalBody
-        fields = '__all__'
-
-class DistrictSerializer(ModelSerializer):
-
-    class Meta:
-        model = accounts_models.District
-        fields = '__all__'
-
-
 class StateSerializer(ModelSerializer):
 
     class Meta:
         model = accounts_models.State
-        fields = '__all__'
+        fields = ['name']
+
+class DistrictSerializer(ModelSerializer):
+    state = StateSerializer()
+
+    class Meta:
+        model = accounts_models.District
+        fields = ['state', 'name']
+
+
+class LocalBodySerializer(ModelSerializer):
+    district = DistrictSerializer()
+
+    class Meta:
+        model = accounts_models.LocalBody
+        fields = ['district', 'name', 'body_type', 'localbody_code']
