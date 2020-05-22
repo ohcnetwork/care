@@ -1,17 +1,16 @@
-# from apps.accounts.models import District, LocalBody, State
+from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, RegexValidator
+from django.db import models
 from apps.accounts import (
     models as common_accounts_models
 )
 
-# from apps.commons.models import FacilityBaseModel
+
 from apps.commons import (
     models as commons_models,
     validators as commons_validators
 )
-# from apps.commons.validators import phone_number_regex
-from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
-from django.db import models
+
 from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
@@ -21,36 +20,15 @@ from apps.accounts import models as common
 from apps.facility import (
     constants as commons_facility_constants,
     validators as commons_facility_validators,
-    # mixins.permissions.facility as commons_facility
 )
-from apps.facility.mixins.permissions import facility as commons_facility
-# from .constants import AMBULANCE_TYPES, DOCTOR_TYPES, FACILITY_TYPES, INSURANCE_YEAR_CHOICES, ROOM_TYPES
-# from .mixins.permissions.facility import FacilityPermissionMixin, FacilityRelatedPermissionMixin
-# from .validators import vehicle_number_regex
 
 User = get_user_model()
 
-# AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
-
-
 class Ambulance(commons_models.SoftDeleteTimeStampedModel):
-    # vehicle_number_regex = RegexValidator(
-    #     regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
-    #     message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
-    #     code="invalid_vehicle_number",
-    # )
-    # INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
-
     vehicle_number = models.CharField(max_length=20, validators=[commons_facility_validators.vehicle_number_regex], unique=True, db_index=True)
-
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(max_length=14, validators=[commons_validators.phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
-
-    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-
     primary_district = models.ForeignKey(
         common_accounts_models.District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
@@ -60,14 +38,11 @@ class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     third_district = models.ForeignKey(
         common_accounts_models.District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
     )
-
     has_oxygen = models.BooleanField()
     has_ventilator = models.BooleanField()
     has_suction_machine = models.BooleanField()
     has_defibrillator = models.BooleanField()
-
     insurance_valid_till_year = models.IntegerField(choices=commons_facility_constants.INSURANCE_YEAR_CHOICES)
-
     ambulance_type = models.IntegerField(choices=commons_facility_constants.AMBULANCE_TYPES, blank=False, default=1)
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
@@ -81,50 +56,10 @@ class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
 
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
-        )
-
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(
-    #             name="ambulance_free_or_price",
-    #             check=models.Q(price_per_km__isnull=False)
-    #             | models.Q(has_free_service=True),
-    #         )
-    #     ]
 
 
 class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
-
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=14, validators=[commons_validators.phone_number_regex])
     is_smart_phone = models.BooleanField()
@@ -133,23 +68,20 @@ class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
         return f"Driver: {self.name}({self.phone_number})"
 
 
-class Facility(commons_models.SoftDeleteTimeStampedModel, commons_facility.FacilityPermissionMixin):
+class Facility(commons_models.SoftDeleteTimeStampedModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=commons_facility_constants.FACILITY_TYPES)
-
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(common_accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(common_accounts_models.District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(common_accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True)
-
     oxygen_capacity = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=14, blank=True, validators=[commons_validators.phone_number_regex])
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
     users = models.ManyToManyField(
         User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
     )
@@ -160,8 +92,7 @@ class Facility(commons_models.SoftDeleteTimeStampedModel, commons_facility.Facil
     def __str__(self):
         return f"{self.name}"
 
-    def has_object_destroy_permission(self, request):
-        return request.user.is_superuser
+    
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -182,9 +113,6 @@ class Facility(commons_models.SoftDeleteTimeStampedModel, commons_facility.Facil
 
 class FacilityLocalGovtBody(commons_models.SoftDeleteTimeStampedModel):
     """
-    DEPRECATED_FROM: 2020-03-29
-    DO NOT USE
-
     Model to relate a Facility to a local self governing body
     In ideal cases, the facility will be related to a local governing body.
     But in other cases, and in cases of incomplete data, we will only have information till a district level
@@ -219,7 +147,7 @@ class FacilityLocalGovtBody(commons_models.SoftDeleteTimeStampedModel):
         super().save(*args, **kwargs)
 
 
-class HospitalDoctors(commons_models.SoftDeleteTimeStampedModel, commons_facility.FacilityRelatedPermissionMixin):
+class HospitalDoctors(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     area = models.IntegerField(choices=commons_facility_constants.DOCTOR_TYPES)
     count = models.IntegerField()
@@ -231,12 +159,11 @@ class HospitalDoctors(commons_models.SoftDeleteTimeStampedModel, commons_facilit
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(active=True))]
 
 
-class FacilityCapacity(commons_models.SoftDeleteTimeStampedModel, commons_facility.FacilityRelatedPermissionMixin):
+class FacilityCapacity(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.IntegerField(choices=commons_facility_constants.ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-
     history = HistoricalRecords()
 
     class Meta:

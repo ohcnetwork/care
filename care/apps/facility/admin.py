@@ -1,28 +1,10 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from djangoql.admin import DjangoQLSearchMixin
 
-# from .models import (
-#     Ambulance,
-#     AmbulanceDriver,
-#     Building,
-#     Facility,
-#     FacilityCapacity,
-#     FacilityLocalGovtBody,
-#     FacilityStaff,
-#     FacilityUser,
-#     FacilityVolunteer,
-#     HospitalDoctors,
-#     Inventory,
-#     InventoryItem,
-#     InventoryLog,
-#     Room,
-#     StaffRoomAllocation,
-# )
+from djangoql.admin import DjangoQLSearchMixin
 
 from apps.facility import (
     models as accounts_models,
-    # forms as accounts_forms,
 )
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -44,22 +26,6 @@ class DistrictFilter(SimpleListFilter):
         if self.value() is None:
             return queryset
         return queryset.filter(district__name=self.value())
-
-
-# class LocalBodyFilter(SimpleListFilter):
-#     """Local body filter"""
-
-#     title = "Local body"
-#     parameter_name = "local_body"
-
-#     def lookups(self, request, model_admin):
-#         local_body = Facility.objects.values_list("local_body__name", flat=True)
-#         return list(map(lambda x: (x, x), set(local_body)))
-
-#     def queryset(self, request, queryset):
-#         if self.value() is None:
-#             return queryset
-#         return queryset.filter(local_body__name=self.value())
 
 
 class StateFilter(SimpleListFilter):
