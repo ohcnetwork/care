@@ -19,9 +19,9 @@ class FacilityListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = facility_models.Facility
-        fields = [
+        fields = (
             'name', 'is_active', 'verified', 'facility_type', 'location', 'address',
             'local_body', 'district', 'state', 'oxygen_capacity', 'phone_number',
             'corona_testing', 'created_by', 'users'
-        ]
+        )
         depth = 1
