@@ -5,7 +5,7 @@ from apps.commons.models import PatientBaseModel, FacilityBaseModel
 from types import SimpleNamespace
 from apps.accounts.models import (District,State,LocalBody)
 from apps.commons.models import BaseManager
-# from apps.facility.models import Facility
+from apps.facility.models import Facility
 from apps.patients.mixins import (PatientPermissionMixin, PatientRelatedPermissionMixin, BasePermissionMixin)
 from apps.accounts.models import User
 from apps.commons.constants import GENDER_CHOICES
@@ -16,67 +16,6 @@ from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
-
-class FacilityPermissionMixin(BasePermissionMixin):
-    @staticmethod
-    def has_bulk_upsert_permission(request):
-        return request.user.is_superuser
-
-    def has_object_read_permission(self, request):
-        return (
-            super().has_object_read_permission(request) or request.user.is_superuser or request.user in self.users.all()
-        )
-
-    def has_object_write_permission(self, request):
-        return super().has_write_permission(request) or request.user.is_superuser or request.user in self.users.all()
-
-class Facility(FacilityBaseModel, FacilityPermissionMixin):
-    name = models.CharField(max_length=1000, blank=False, null=False)
-    is_active = models.BooleanField(default=True)
-    verified = models.BooleanField(default=False)
-    # facility_type = models.IntegerField(choices=FACILITY_TYPES)
-
-    # location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
-    address = models.TextField()
-    local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
-    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
-
-    oxygen_capacity = models.IntegerField(default=0)
-    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
-    corona_testing = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    # users = models.ManyToManyField(
-    #     User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
-    # )
-
-    class Meta:
-        verbose_name_plural = "Facilities"
-
-    def __str__(self):
-        return f"{self.name}"
-
-    def has_object_destroy_permission(self, request):
-        return request.user.is_superuser
-
-    def save(self, *args, **kwargs) -> None:
-        """
-        While saving, if the local body is not null, then district will be local body's district
-        Overriding save will help in a collision where the local body's district and district fields are different.
-        """
-        if self.local_body is not None:
-            self.district = self.local_body.district
-        if self.district is not None:
-            self.state = self.district.state
-
-        is_create = self.pk is None
-        super().save(*args, **kwargs)
-
-        if is_create:
-            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
-
-
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
@@ -107,11 +46,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     (constants.SOURCE_CHOICES.CT, 'COVID_TRACKER'),
     (constants.SOURCE_CHOICES.ST, 'STAY'),
     ]
-    
+
     source = models.IntegerField(choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA)
-    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
+    facility = models.ForeignKey(Facility, on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
+        Facility, on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
@@ -184,7 +123,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
-    # objects = BaseManager()
+    objects = BaseManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -248,13 +187,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             )
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
-    # SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
 
-    # SUGGESTION_CHOICES = [
-    #         (SuggestionChoices.HI, "HOME ISOLATION"),
-    #         (SuggestionChoices.A, "ADMISSION"),
-    #         (SuggestionChoices.R, "REFERRAL"),
-    # ]
     ADMIT_CHOICES = [
     (constants.ADMIT_CHOICES.NA, "Not admitted"),
     (constants.ADMIT_CHOICES.IR, "Isolation Room"),
@@ -262,8 +195,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
     (constants.ADMIT_CHOICES.HI, "Home Isolation"),
     ]    
+
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="patients")
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="facility")
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="facility")
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
@@ -273,7 +207,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescribed_medication = models.TextField(null=True, blank=True)
     suggestion = models.CharField(max_length=3, choices=constants.SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
+        Facility, null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
     admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
@@ -472,7 +406,6 @@ class PatientSampleFlow(FacilityBaseModel):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
-
 class PatientSearch(PatientBaseModel):
     patient_id = EncryptedIntegerField()
 
@@ -504,65 +437,54 @@ class PatientSearch(PatientBaseModel):
 
 
 class PatientMetaInfo(models.Model):
-    class OccupationEnum(enum.Enum):
-        STUDENT = 1
-        MEDICAL_WORKER = 2
-        GOVT_EMPLOYEE = 3
-        PRIVATE_EMPLOYEE = 4
-        HOME_MAKER = 5
-        WORKING_ABROAD = 6
-        OTHERS = 7
 
-    OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
+    OCCUPATION_CHOICES = [
+        (constants.OCCUPATION_CHOICES.MW, 'STUDENT'),
+        (constants.OCCUPATION_CHOICES.MW, 'MEDICAL_WORKER'),
+        (constants.OCCUPATION_CHOICES.MW, 'GOVT_EMPLOYEE'),
+        (constants.OCCUPATION_CHOICES.MW, 'PRIVATE_EMPLOYEE'),
+        (constants.OCCUPATION_CHOICES.MW, 'HOME_MAKER'),
+        (constants.OCCUPATION_CHOICES.MW, 'WORKING_ABROAD'),
+        (constants.OCCUPATION_CHOICES.MW, ' OTHERS'),
+    ]    
 
-    occupation = models.IntegerField(choices=OccupationChoices)
+    occupation = models.IntegerField(choices=OCCUPATION_CHOICES)
     head_of_household = models.BooleanField()
 
 
 class PatientContactDetails(models.Model):
-    class RelationEnum(enum.IntEnum):
-        FAMILY_MEMBER = 1
-        FRIEND = 2
-        RELATIVE = 3
-        NEIGHBOUR = 4
-        TRAVEL_TOGETHER = 5
-        WHILE_AT_HOSPITAL = 6
-        WHILE_AT_SHOP = 7
-        WHILE_AT_OFFICE_OR_ESTABLISHMENT = 8
-        WORSHIP_PLACE = 9
-        OTHERS = 10
 
-    class ModeOfContactEnum(enum.IntEnum):
-        # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
-        TOUCHED_BODY_FLUIDS = 1
-        # "2. Had direct physical contact with the body of the patient
-        # including physical examination without full precautions."
-        DIRECT_PHYSICAL_CONTACT = 2
-        # "3. Touched or cleaned the linens/clothes/or dishes of the patient"
-        CLEANED_USED_ITEMS = 3
-        # "4. Lives in the same household as the patient."
-        LIVE_IN_SAME_HOUSEHOLD = 4
-        # "5. Close contact within 3ft (1m) of the confirmed case without precautions."
-        CLOSE_CONTACT_WITHOUT_PRECAUTION = 5
-        # "6. Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours."
-        CO_PASSENGER_AEROPLANE = 6
-        # "7. Health care workers and other contacts who had full PPE while handling the +ve case"
-        HEALTH_CARE_WITH_PPE = 7
-        # "8. Shared the same space(same class for school/worked in
-        # same room/similar and not having a high risk exposure"
-        SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
-        # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
-        TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
+    RELATION_CHOICES = [
+        (constants.RELATION_CHOICES.FM, 'FAMILY_MEMBER'),
+        (constants.RELATION_CHOICES.FR, 'FRIEND'),
+        (constants.RELATION_CHOICES.RL, 'RELATIVE'),
+        (constants.RELATION_CHOICES.NG, 'NEIGHBOUR'),
+        (constants.RELATION_CHOICES.TT, 'TRAVEL_TOGETHER'),
+        (constants.RELATION_CHOICES.WH, 'WHILE_AT_HOSPITAL'),
+        (constants.RELATION_CHOICES.WP, 'WHILE_AT_SHOP'),
+        (constants.RELATION_CHOICES.WO, 'WHILE_AT_OFFICE_OR_ESTABLISHMENT'),
+        (constants.RELATION_CHOICES.WP, 'WORSHIP_PLACE'),
+        (constants.RELATION_CHOICES.OT, 'OTHERS'),
+    ]
 
-    RelationChoices = [(item.value, item.name) for item in RelationEnum]
-    ModeOfContactChoices = [(item.value, item.name) for item in ModeOfContactEnum]
+    MODE_CONTACT_CHOICES = [
+        (constants.MODE_CONTACT_CHOICES.TBF, 'TOUCHED_BODY_FLUIDS'),
+        (constants.MODE_CONTACT_CHOICES.DPC, 'DIRECT_PHYSICAL_CONTACT'),
+        (constants.MODE_CONTACT_CHOICES.CUI, 'CLEANED_USED_ITEMS'),
+        (constants.MODE_CONTACT_CHOICES.LSH, 'LIVE_IN_SAME_HOUSEHOLD'),
+        (constants.MODE_CONTACT_CHOICES.CLWP, 'CLOSE_CONTACT_WITHOUT_PRECAUTION'),
+        (constants.MODE_CONTACT_CHOICES.CPA, 'CO_PASSENGER_AEROPLANE'),
+        (constants.MODE_CONTACT_CHOICES.HCWP, 'HEALTH_CARE_WITH_PPE'),
+        (constants.MODE_CONTACT_CHOICES.SSWE, 'SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE'),
+        (constants.MODE_CONTACT_CHOICES.TTWE, 'TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE'),
+    ]
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients")
     patient_in_contact = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts"
     )
-    relation_with_patient = models.IntegerField(choices=RelationChoices)
-    mode_of_contact = models.IntegerField(choices=ModeOfContactChoices)
+    relation_with_patient = models.IntegerField(choices=RELATION_CHOICES)
+    mode_of_contact = models.IntegerField(choices=MODE_CONTACT_CHOICES)
     date_of_first_contact = models.DateField(null=True)
     date_of_last_contact = models.DateField(null=True)
 
@@ -590,7 +512,7 @@ class Disease(models.Model):
 
 
 class FacilityPatientStatsHistory(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
+    facility = models.ForeignKey(Facility, on_delete=models.PROTECT)
     entry_date = models.DateField()
     num_patients_visited = models.IntegerField(default=0)
     num_patients_home_quarantine = models.IntegerField(default=0)
@@ -708,15 +630,6 @@ class PatientIcmr(PatientRegistration):
 
 
 class PatientSampleICMR(PatientSample):
-    # DISEASE_CHOICES_MAP = {
-    # "NO": 1,
-    # "Diabetes": 2,
-    # "Heart Disease": 3,
-    # "HyperTension": 4,
-    # "Kidney Diseases": 5,
-    # "Lung Diseases/Asthma": 6,
-    # "Cancer": 7,
-    # }
     class Meta:
         proxy = True
 

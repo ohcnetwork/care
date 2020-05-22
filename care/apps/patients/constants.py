@@ -86,8 +86,37 @@ SAMPLE_TEST_FLOW_CHOICES = [
     (SAMPLE_TEST_FLOW_MAP.CT, 'COMPLETED'),
 ]
 
-SOURCE_CHOICES =namedtuple(
+SOURCE_CHOICES = namedtuple(
     'type', ["CA", "CT", "ST"])(10, 20, 30)
 
-DISEASE_STATUS_CHOICES =namedtuple(
+DISEASE_STATUS_CHOICES = namedtuple(
     'type', ["SU", "PO", "NE","RE","RD","EX"])(1, 2, 3, 4, 5, 6)
+
+OCCUPATION_CHOICES = namedtuple(
+    'type', ["MW", "GE", "PE","HM","WA","OT"])(2, 3, 4, 5, 6, 7)        
+
+RELATION_CHOICES = namedtuple(
+    'type', ["FM","FR", "RL", "NG","TT","WH","WS","WO","WP","OT"])(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)   
+MODE_CONTACT_CHOICES = namedtuple(
+    'type', ["TBF","DPC", "CUI", "LSH","CLWP","CPA","HCWP","SSWE","TTWE"])(1, 2, 3, 4, 5, 6, 7, 8, 9)   
+# "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
+TOUCHED_BODY_FLUIDS = 1
+# "2. Had direct physical contact with the body of the patient
+# including physical examination without full precautions."
+DIRECT_PHYSICAL_CONTACT = 2
+# "3. Touched or cleaned the linens/clothes/or dishes of the patient"
+CLEANED_USED_ITEMS = 3
+# "4. Lives in the same household as the patient."
+LIVE_IN_SAME_HOUSEHOLD = 4
+# "5. Close contact within 3ft (1m) of the confirmed case without precautions."
+CLOSE_CONTACT_WITHOUT_PRECAUTION = 5
+# "6. Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours."
+CO_PASSENGER_AEROPLANE = 6
+# "7. Health care workers and other contacts who had full PPE while handling the +ve case"
+HEALTH_CARE_WITH_PPE = 7
+# "8. Shared the same space(same class for school/worked in
+# same room/similar and not having a high risk exposure"
+SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
+# "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
+TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9      
+ 

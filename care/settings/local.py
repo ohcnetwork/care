@@ -24,13 +24,13 @@ class Settings(base.Settings):
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
     DATABASES = {
         "default": {
-            "ENGINE": "django.contrib.gis.db.backends.postgis",
-            "NAME": "care",
-            "USER": "postgres",
-            "PASSWORD": "rohit1234",
-            "HOST": "localhost",
-            "PORT": "5432",
-            "ATOMIC_REQUESTS": True,
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': 'care',
+            'USER': 'postgres',
+            'PASSWORD': 'ayush@123',
+            'HOST': 'localhost',
+            'PORT': '5432',
+            'ATOMIC_REQUESTS': True,
         }
     }
     ########## END DATABASE CONFIGURATION
