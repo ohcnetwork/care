@@ -2,24 +2,28 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 
-from .models import (
-    Ambulance,
-    AmbulanceDriver,
-    Building,
-    Facility,
-    FacilityCapacity,
-    FacilityLocalGovtBody,
-    FacilityStaff,
-    FacilityUser,
-    FacilityVolunteer,
-    HospitalDoctors,
-    Inventory,
-    InventoryItem,
-    InventoryLog,
-    Room,
-    StaffRoomAllocation,
-)
+# from .models import (
+#     Ambulance,
+#     AmbulanceDriver,
+#     Building,
+#     Facility,
+#     FacilityCapacity,
+#     FacilityLocalGovtBody,
+#     FacilityStaff,
+#     FacilityUser,
+#     FacilityVolunteer,
+#     HospitalDoctors,
+#     Inventory,
+#     InventoryItem,
+#     InventoryLog,
+#     Room,
+#     StaffRoomAllocation,
+# )
 
+from apps.facility import (
+    models as accounts_models,
+    # forms as accounts_forms,
+)
 
 class BuildingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
@@ -33,7 +37,7 @@ class DistrictFilter(SimpleListFilter):
     parameter_name = "district"
 
     def lookups(self, request, model_admin):
-        district = Facility.objects.values_list("district__name", flat=True)
+        district = accounts_models.Facility.objects.values_list("district__name", flat=True)
         return list(map(lambda x: (x, x), set(district)))
 
     def queryset(self, request, queryset):
@@ -65,7 +69,7 @@ class StateFilter(SimpleListFilter):
     parameter_name = "state"
 
     def lookups(self, request, model_admin):
-        state = Facility.objects.values_list("state__name", flat=True)
+        state =  accounts_models.Facility.objects.values_list("state__name", flat=True)
         return list(map(lambda x: (x, x), set(state)))
 
     def queryset(self, request, queryset):
@@ -117,7 +121,7 @@ class StaffRoomAllocationAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class AmbulanceDriverInline(DjangoQLSearchMixin, admin.TabularInline):
-    model = AmbulanceDriver
+    model = accounts_models.AmbulanceDriver
     djangoql_completion_enabled_by_default = True
 
 
@@ -143,18 +147,18 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
-admin.site.register(Ambulance, AmbulanceAdmin)
-admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
-admin.site.register(Facility, FacilityAdmin)
-admin.site.register(FacilityLocalGovtBody)
-admin.site.register(HospitalDoctors)
-admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
-admin.site.register(FacilityStaff, FacilityStaffAdmin)
-admin.site.register(Building, BuildingAdmin)
-admin.site.register(Room, RoomAdmin)
-admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
-admin.site.register(InventoryItem, InventoryItemAdmin)
-admin.site.register(Inventory, InventoryAdmin)
-admin.site.register(InventoryLog)
-admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
-admin.site.register(FacilityUser)
+admin.site.register(accounts_models.Ambulance, AmbulanceAdmin)
+admin.site.register(accounts_models.AmbulanceDriver, AmbulanceDriverAdmin)
+admin.site.register(accounts_models.Facility, FacilityAdmin)
+admin.site.register(accounts_models.FacilityLocalGovtBody)
+admin.site.register(accounts_models.HospitalDoctors)
+admin.site.register(accounts_models.FacilityCapacity, FacilityCapacityAdmin)
+admin.site.register(accounts_models.FacilityStaff, FacilityStaffAdmin)
+admin.site.register(accounts_models.Building, BuildingAdmin)
+admin.site.register(accounts_models.Room, RoomAdmin)
+admin.site.register(accounts_models.StaffRoomAllocation, StaffRoomAllocationAdmin)
+admin.site.register(accounts_models.InventoryItem, InventoryItemAdmin)
+admin.site.register(accounts_models.Inventory, InventoryAdmin)
+admin.site.register(accounts_models.InventoryLog)
+admin.site.register(accounts_models.FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(accounts_models.FacilityUser)
