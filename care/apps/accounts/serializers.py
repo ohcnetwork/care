@@ -72,7 +72,7 @@ class LoginResponseSerializer(rest_serializers.ModelSerializer):
         return token.key
 
 
-class LocalBodySerializer(ModelSerializer):
+class LocalBodySerializer(rest_serializers.ModelSerializer):
     district = DistrictSerializer()
 
     class Meta:
