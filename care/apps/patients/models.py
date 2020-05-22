@@ -17,40 +17,35 @@ from utils.models.jsonfield import JSONField
 class Patient(SoftDeleteTimeStampedModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
-
     BLOOD_GROUP_CHOICES = [
-    ("A+", "A+"),
-    ("A-", "A-"),
-    ("B+", "B+"),
-    ("B-", "B-"),
-    ("AB+", "AB+"),
-    ("AB-", "AB-"),
-    ("O+", "O+"),
-    ("O-", "O-"),
+        ("A+", "A+"),
+        ("A-", "A-"),
+        ("B+", "B+"),
+        ("B-", "B-"),
+        ("AB+", "AB+"),
+        ("AB-", "AB-"),
+        ("O+", "O+"),
+        ("O-", "O-"),
     ]
-
     DISEASE_STATUS_CHOICES = [
-    (constants.DISEASE_STATUS_CHOICES.SU, 'SUSPECTED'),
-    (constants.DISEASE_STATUS_CHOICES.PO, 'POSITIVE'),
-    (constants.DISEASE_STATUS_CHOICES.NE, 'NEGATIVE'),
-    (constants.DISEASE_STATUS_CHOICES.RE, 'RECOVERY'),
-    (constants.DISEASE_STATUS_CHOICES.RD, 'RECOVERED'),
-    (constants.DISEASE_STATUS_CHOICES.EX, 'EXPIRED'),
+        (constants.DISEASE_STATUS_CHOICES.SU, 'SUSPECTED'),
+        (constants.DISEASE_STATUS_CHOICES.PO, 'POSITIVE'),
+        (constants.DISEASE_STATUS_CHOICES.NE, 'NEGATIVE'),
+        (constants.DISEASE_STATUS_CHOICES.RE, 'RECOVERY'),
+        (constants.DISEASE_STATUS_CHOICES.RD, 'RECOVERED'),
+        (constants.DISEASE_STATUS_CHOICES.EX, 'EXPIRED'),
     ]
-
     SOURCE_CHOICES = [
-    (constants.SOURCE_CHOICES.CA, 'CARE'),
-    (constants.SOURCE_CHOICES.CT, 'COVID_TRACKER'),
-    (constants.SOURCE_CHOICES.ST, 'STAY'),
+        (constants.SOURCE_CHOICES.CA, 'CARE'),
+        (constants.SOURCE_CHOICES.CT, 'COVID_TRACKER'),
+        (constants.SOURCE_CHOICES.ST, 'STAY'),
     ]
-
     source = models.IntegerField(choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA)
     facility = models.ForeignKey(Facility, on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
         Facility, on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
-
     name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
@@ -65,7 +60,6 @@ class Patient(SoftDeleteTimeStampedModel):
     aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
 
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
-
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
     )
