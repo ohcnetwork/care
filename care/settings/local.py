@@ -15,7 +15,7 @@ class Settings(base.Settings):
     # CACHES
     # ------------------------------------------------------------------------------
     # https://docs.djangoproject.com/en/dev/ref/settings/#caches
-    CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "", }}
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "",}}
 
     # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
     INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
@@ -23,14 +23,14 @@ class Settings(base.Settings):
     ########## DATABASE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'care1',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '',
-            'ATOMIC_REQUESTS': True,
+        "default": {
+            "ENGINE": "django.contrib.gis.db.backends.postgis",
+            "NAME": "care",
+            "USER": "postgres",
+            "PASSWORD": "rohit1234",
+            "HOST": "localhost",
+            "PORT": "5432",
+            "ATOMIC_REQUESTS": True,
         }
     }
     ########## END DATABASE CONFIGURATION

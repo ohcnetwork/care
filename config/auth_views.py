@@ -96,4 +96,3 @@ class TokenObtainPairView(TokenViewBase):
     """
 
     serializer_class = TokenObtainPairSerializer
-
