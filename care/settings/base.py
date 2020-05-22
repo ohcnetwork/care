@@ -308,8 +308,8 @@ class Settings(LoggerSettingsMixin, Configuration):
             # "rest_framework.authentication.BasicAuthentication",
             # Primary api authentication
             # "rest_framework_simplejwt.authentication.JWTAuthentication",
-            "config.authentication.CustomJWTAuthentication",
-            "config.authentication.CustomBasicAuthentication",
+            # "config.authentication.CustomJWTAuthentication",
+            # "config.authentication.CustomBasicAuthentication",
             "rest_framework.authentication.SessionAuthentication",
         ),
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",

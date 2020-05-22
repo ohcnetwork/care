@@ -41,7 +41,7 @@ class UserModelAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'user_type', 'age', 'gender', 'phone_number',)}),
+            'fields': ('username', 'email', 'password1', 'password2', 'age', 'gender', 'phone_number',)}),
     )
 
     fieldsets = (
