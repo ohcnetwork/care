@@ -335,7 +335,7 @@ pip-selfcheck.json
 .env
 
 ### Local settings
-.local
+.local.py
 
 
 ### Project template
