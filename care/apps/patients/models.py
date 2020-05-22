@@ -643,3 +643,17 @@ class PatientFacility(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
+
+class Lab(SoftDeleteTimeStampedModel):
+    """
+    model for the lab associated with the patient sample test
+    """
+    address = models.TextField()
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, blank=True, null=True, related_name="district",
+    )
+    incharge_name = models.ForeignKey(User, on_delete=models.PROTECT, related_name="lab_incharge")
+    patient_sample_test = models.ForeignKey(PatientSampleTest, on_delete=models.PROTECT, related_name="lab_incharge")
+
+    def __str__(self):
+        return f"{self.patient_sample_test.sample_type}<>{self.district.name}"

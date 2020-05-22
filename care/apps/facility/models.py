@@ -18,6 +18,7 @@ from apps.facility import (
     validators as commons_facility_validators,
 )
 
+
 User = get_user_model()
 
 
@@ -264,12 +265,3 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
-
-
-class Lab(commons_models.SoftDeleteTimeStampedModel):
-    address = models.TextField()
-    district = models.ForeignKey(
-        common_accounts_models.District, on_delete=models.PROTECT, blank=True, null=True, related_name="district",
-    )
-    incharge_name = models.ForeignKey(User, on_delete=models.PROTECT, related_name="lab_incharge")
-    contact_number = models.CharField(max_length=14, validators=[commons_validators.phone_number_regex])
