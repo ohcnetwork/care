@@ -1,51 +1,75 @@
-from uuid import uuid4
-
 from django.db import models
+from django.db.models import QuerySet, signals
 
 
-class BaseManager(models.Manager):
+class SoftDeleteQuerySet(QuerySet):
+
+    def delete(self):
+        self.update(active=False)
+        for obj in self:
+            signals.post_delete.send(sender=obj.__class__, instance=obj)
+
+    def hard_delete(self):
+        return super(SoftDeleteQuerySet, self).delete()
+
+
+class ActiveObjectsManager(models.Manager):
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        return SoftDeleteQuerySet(self.model, using=self._db).filter(active=True)
 
-    def filter(self, *args, **kwargs):
-        _id = kwargs.pop("id", "----")
-        if _id != "----" and not isinstance(_id, int):
-            kwargs["external_id"] = _id
-        return super().filter(*args, **kwargs)
+    def hard_delete(self):
+        return self.get_queryset().hard_delete()
 
 
-class BaseModel(models.Model):
+class SoftDeleteModel(models.Model):
     """
-    Abstract base model
+    Abstract generic model used to allow an object to be soft deleted instead removing it from db.
     """
-    external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
-    created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     active = models.BooleanField(default=True)
 
-    objects = BaseManager()
+    objects = ActiveObjectsManager()
+    all_objects = models.Manager()
 
     class Meta:
         abstract = True
 
-    def delete(self, *args):
-        self.active = False
+    def delete(self, using=None):
+        """
+        Method to soft delete an object
+        """
+        signals.pre_delete.send(sender=self.__class__, instance=self)
+        # Don't use .save() otherwise it will trigger save signals
+        self.__class__.all_objects.filter(id=self.id).update(active=False)
+        signals.post_delete.send(sender=self.__class__, instance=self)
+
+    def restore(self, using=None):
+        """
+        Method to restore soft deleted object.
+        If needed, add required signals
+        """
+        self.active = True
         self.save()
 
+    def hard_delete(self, using=None):
+        super(SoftDeleteModel, self).delete(using)
 
-class FacilityBaseModel(BaseModel):
+
+class TimeStampModel(models.Model):
     """
-    Base model for facility
+    Abstract Generic model for updated_at and created_at field
     """
-    class Meta:
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta(object):
         abstract = True
 
 
-class PatientBaseModel(BaseModel):
+class SoftDeleteTimeStampedModel(SoftDeleteModel, TimeStampModel):
     """
-    Base model for Patient
+    TimeStamped and SoftDelete Model
     """
-    class Meta:
+
+    class Meta(SoftDeleteModel.Meta, TimeStampModel.Meta):
         abstract = True
