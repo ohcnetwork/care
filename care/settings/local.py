@@ -25,9 +25,9 @@ class Settings(base.Settings):
     DATABASES = {
         "default": {
             "ENGINE": "django.contrib.gis.db.backends.postgis",
-            "NAME": "care",
-            "USER": "postgres",
-            "PASSWORD": "rohit1234",
+            "NAME": "",
+            "USER": "",
+            "PASSWORD": "",
             "HOST": "localhost",
             "PORT": "5432",
             "ATOMIC_REQUESTS": True,
