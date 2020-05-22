@@ -9,7 +9,6 @@ from apps.facility import (
 )
 
 
-
 class FacilityListSerializer(serializers.ModelSerializer):
     local_body = accounts_serializers.LocalBodySerializer
     district = accounts_serializers.DistrictSerializer

@@ -9,4 +9,3 @@ class FacilityListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilityListSerializer
-    permission_classes = [permissions.AllowAny]
