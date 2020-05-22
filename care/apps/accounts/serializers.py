@@ -70,3 +70,13 @@ class LoginResponseSerializer(rest_serializers.ModelSerializer):
     def get_token(self, instance):
         token, _ = Token.objects.get_or_create(user=instance)
         return token.key
+
+
+class LocalBodySerializer(rest_serializers.ModelSerializer):
+    district = DistrictSerializer()
+
+    class Meta:
+        model = accounts_models.LocalBody
+        fields = (
+            'district', 'name', 'body_type', 'localbody_code'
+        )
