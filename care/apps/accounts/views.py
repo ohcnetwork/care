@@ -22,18 +22,16 @@ class UserViewSet(ModelViewSet):
 
 class StateListView(rest_generics.ListAPIView):
     """
-    return list of states
+    State list API view
     """
-
     queryset = accounts_models.State.objects.all()
     serializer_class = accounts_serializers.StateSerializer
 
 
 class DistrictListView(rest_generics.ListAPIView):
     """
-    return list of districts
+    District List API view
     """
-
     queryset = accounts_models.District.objects.all()
     serializer_class = accounts_serializers.DistrictSerializer
     filter_backends = (filters.DjangoFilterBackend,)
