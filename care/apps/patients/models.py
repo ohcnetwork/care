@@ -14,7 +14,7 @@ from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
 
-class PatientRegistration(SoftDeleteTimeStampedModel):
+class Patient(SoftDeleteTimeStampedModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
 
@@ -193,7 +193,7 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
     (constants.ADMIT_CHOICES.HI, "Home Isolation"),
     ]    
 
-    patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="patients")
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE, related_name="patients")
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="facility")
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
@@ -294,7 +294,7 @@ class DailyRound(SoftDeleteTimeStampedModel):
             self.consultation.patient.created_by,
         )
 
-class PatientSample(SoftDeleteTimeStampedModel):
+class PatientSampleTest(SoftDeleteTimeStampedModel):
     SAMPLE_TYPE_CHOICES = [
         (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
         (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
@@ -323,7 +323,7 @@ class PatientSample(SoftDeleteTimeStampedModel):
     ]
 
 
-    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
     sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES,default=constants.SAMPLE_TYPE_CHOICES.UN)
@@ -397,8 +397,8 @@ class PatientSample(SoftDeleteTimeStampedModel):
 
 
 class PatientSampleFlow(SoftDeleteTimeStampedModel):
-    patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
-    status = models.IntegerField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
+    patient_sample = models.ForeignKey(PatientSampleTest, on_delete=models.PROTECT)
+    status = models.IntegerField(choices=PatientSampleTest.SAMPLE_TEST_FLOW_CHOICES)
     notes = models.CharField(max_length=255)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
@@ -429,7 +429,7 @@ class PatientSearch(SoftDeleteTimeStampedModel):
 
     @property
     def facility_id(self):
-        facility_ids = PatientRegistration.objects.filter(id=self.patient_id).values_list("facility__external_id")
+        facility_ids = Patient.objects.filter(id=self.patient_id).values_list("facility__external_id")
         return facility_ids[0][0] if len(facility_ids) > 0 else None
 
 
@@ -476,9 +476,9 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
         (constants.MODE_CONTACT_CHOICES.TTWE, 'TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE'),
     ]
 
-    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients")
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name="contacted_patients")
     patient_in_contact = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts"
+        Patient, on_delete=models.PROTECT, null=True, related_name="contacts"
     )
     relation_with_patient = models.IntegerField(choices=RELATION_CHOICES)
     mode_of_contact = models.IntegerField(choices=MODE_CONTACT_CHOICES)
@@ -497,7 +497,7 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
 
 class Disease(SoftDeleteTimeStampedModel):
 
-    patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=constants.DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
@@ -523,7 +523,7 @@ class FacilityPatientStatsHistory(SoftDeleteTimeStampedModel):
         )
 
 
-class PatientIcmr(PatientRegistration):
+class PatientIcmr(Patient):
     class Meta:
         proxy = True
 
@@ -626,7 +626,7 @@ class PatientIcmr(PatientRegistration):
         return None
 
 
-class PatientSampleICMR(PatientSample):
+class PatientSampleICMR(PatientSampleTest):
     class Meta:
         proxy = True
 
@@ -721,8 +721,8 @@ class PatientConsultationICMR(PatientConsultation):
     def asymptomatic_healthcare_worker_without_protection(self,):
         return self.patient.is_medical_worker and not self.is_symptomatic()
 
-class PatientTeleConsultation(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
+class PatientFacility(SoftDeleteTimeStampedModel):
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES)
     other_symptoms = models.TextField(blank=True, null=True)
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
