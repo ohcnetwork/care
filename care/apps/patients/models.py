@@ -3,22 +3,80 @@ from django.db import models
 from multiselectfield import MultiSelectField
 from apps.commons.models import PatientBaseModel, FacilityBaseModel
 from types import SimpleNamespace
-from facility.models import Facility
-from facility.models.mixins.permissions.patient import PatientPermissionMixin
-from users.models import GENDER_CHOICES, User, phone_number_regex
+from apps.accounts.models import (District,State,LocalBody)
+from apps.commons.models import BaseManager
+# from apps.facility.models import Facility
+from apps.patients.mixins import (PatientPermissionMixin, PatientRelatedPermissionMixin, BasePermissionMixin)
+from apps.accounts.models import User
+from apps.commons.constants import GENDER_CHOICES
+from apps.commons.models import FacilityBaseModel
+from apps.commons.validators import phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
-from facility.models import (
-    BaseManager,
-    District,
-    LocalBody,
-    State,
-)
-from apps.patients import constants
-from facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
+
+class FacilityPermissionMixin(BasePermissionMixin):
+    @staticmethod
+    def has_bulk_upsert_permission(request):
+        return request.user.is_superuser
+
+    def has_object_read_permission(self, request):
+        return (
+            super().has_object_read_permission(request) or request.user.is_superuser or request.user in self.users.all()
+        )
+
+    def has_object_write_permission(self, request):
+        return super().has_write_permission(request) or request.user.is_superuser or request.user in self.users.all()
+
+class Facility(FacilityBaseModel, FacilityPermissionMixin):
+    name = models.CharField(max_length=1000, blank=False, null=False)
+    is_active = models.BooleanField(default=True)
+    verified = models.BooleanField(default=False)
+    # facility_type = models.IntegerField(choices=FACILITY_TYPES)
+
+    # location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    address = models.TextField()
+    local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
+
+    oxygen_capacity = models.IntegerField(default=0)
+    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    corona_testing = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    # users = models.ManyToManyField(
+    #     User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
+    # )
+
+    class Meta:
+        verbose_name_plural = "Facilities"
+
+    def __str__(self):
+        return f"{self.name}"
+
+    def has_object_destroy_permission(self, request):
+        return request.user.is_superuser
+
+    def save(self, *args, **kwargs) -> None:
+        """
+        While saving, if the local body is not null, then district will be local body's district
+        Overriding save will help in a collision where the local body's district and district fields are different.
+        """
+        if self.local_body is not None:
+            self.district = self.local_body.district
+        if self.district is not None:
+            self.state = self.district.state
+
+        is_create = self.pk is None
+        super().save(*args, **kwargs)
+
+        if is_create:
+            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
+
+
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
@@ -35,23 +93,22 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     ("O-", "O-"),
     ]
 
-    class DiseaseStatusEnum(enum.IntEnum):
-        SUSPECTED = 1
-        POSITIVE = 2
-        NEGATIVE = 3
-        RECOVERY = 4
-        RECOVERED = 5
-        EXPIRED = 6
+    DISEASE_STATUS_CHOICES = [
+    (constants.DISEASE_STATUS_CHOICES.SU, 'SUSPECTED'),
+    (constants.DISEASE_STATUS_CHOICES.PO, 'POSITIVE'),
+    (constants.DISEASE_STATUS_CHOICES.NE, 'NEGATIVE'),
+    (constants.DISEASE_STATUS_CHOICES.RE, 'RECOVERY'),
+    (constants.DISEASE_STATUS_CHOICES.RD, 'RECOVERED'),
+    (constants.DISEASE_STATUS_CHOICES.EX, 'EXPIRED'),
+    ]
 
-    DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
-    class SourceEnum(enum.Enum):
-        CARE = 10
-        COVID_TRACKER = 20
-        STAY = 30
-
-    SourceChoices = [(e.value, e.name) for e in SourceEnum]
-
-    source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
+    SOURCE_CHOICES = [
+    (constants.SOURCE_CHOICES.CA, 'CARE'),
+    (constants.SOURCE_CHOICES.CT, 'COVID_TRACKER'),
+    (constants.SOURCE_CHOICES.ST, 'STAY'),
+    ]
+    
+    source = models.IntegerField(choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
         "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
@@ -105,7 +162,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status"
+        choices=DISEASE_STATUS_CHOICES, default=constants.DISEASE_STATUS_CHOICES.SU, blank=True, verbose_name="Disease Status"
     )
 
     number_of_aged_dependents = models.IntegerField(
@@ -127,7 +184,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
-    objects = BaseManager()
+    # objects = BaseManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -311,10 +368,10 @@ class PatientSample(FacilityBaseModel):
         (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
         (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
         (constants.SAMPLE_TYPE_CHOICES.TS,"TS/NPS/NS"),
-        (constants.SAMPLE_TYPE_CHOICES.BE, 'Blood in EDTA'),
-        (constants.SAMPLE_TYPE_CHOICES.AS, 'Acute Sera'),
-        (constants.SAMPLE_TYPE_CHOICES.CS, 'Covalescent sera'),
-        (constants.SAMPLE_TYPE_CHOICES.OT, 'OTHER TYPE'),
+        (constants.SAMPLE_TYPE_CHOICES.BE, 'Blood_IN_EDTA'),
+        (constants.SAMPLE_TYPE_CHOICES.AS, 'ACUTE_SERA'),
+        (constants.SAMPLE_TYPE_CHOICES.CS, 'COVALESCENT_SERA'),
+        (constants.SAMPLE_TYPE_CHOICES.OT, 'OTHER_TYPE'),
     ]
    
     SAMPLE_TEST_FLOW_CHOICES = [
@@ -334,12 +391,11 @@ class PatientSample(FacilityBaseModel):
     (constants.SAMPLE_TEST_RESULT_MAP.I, 'INVALID')
     ]
 
-    # SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in constants.SAMPLE_TEST_FLOW_MAP.items()]
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
-    sample_type = models.IntegerField(choices=constants.SAMPLE_TYPE_CHOICES, default=0)
+    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES,default=constants.SAMPLE_TYPE_CHOICES.UN)
     sample_type_other = models.TextField(default="")
 
     has_sari = models.BooleanField(default=False)

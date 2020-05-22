@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 CURRENT_HEALTH_CHOICES = namedtuple(
-    'type', ["HI", "RV", "WR", "SQ", "BT"])(0, 1, 2, 3, 4)
+    'type', ["ND", "RV", "WR", "SQ", "BT"])(0, 1, 2, 3, 4)
 
 
 CATEGORY_CHOICES = [
@@ -85,3 +85,9 @@ SAMPLE_TEST_FLOW_CHOICES = [
     (SAMPLE_TEST_FLOW_MAP.RL, 'RECEIVED_AT_LAB'),
     (SAMPLE_TEST_FLOW_MAP.CT, 'COMPLETED'),
 ]
+
+SOURCE_CHOICES =namedtuple(
+    'type', ["CA", "CT", "ST"])(10, 20, 30)
+
+DISEASE_STATUS_CHOICES =namedtuple(
+    'type', ["SU", "PO", "NE","RE","RD","EX"])(1, 2, 3, 4, 5, 6)

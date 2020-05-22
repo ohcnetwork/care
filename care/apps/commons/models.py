@@ -7,7 +7,7 @@ class BaseManager(models.Manager):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        return qs.filter(active=False)
 
     def filter(self, *args, **kwargs):
         _id = kwargs.pop("id", "----")
