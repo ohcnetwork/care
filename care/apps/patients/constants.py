@@ -47,7 +47,8 @@ DISEASE_CHOICES = [
     ]
 
 SuggestionChoices = namedtuple(
-    'type', ["HI", "A", "R"])(0, 1, 2)
+    'type', ["HI", "A", "R"])("HI","A", "R")
+    
 SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),

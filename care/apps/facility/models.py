@@ -1,5 +1,6 @@
 from apps.accounts.models import District, LocalBody, State
-from apps.commons.models import FacilityBaseModel
+# from apps.commons.models import FacilityBaseModel
+from apps.commons import models as commons_models
 from apps.commons.validators import phone_number_regex
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
@@ -17,7 +18,7 @@ User = get_user_model()
 # AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
 
 
-class Ambulance(FacilityBaseModel):
+class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     # vehicle_number_regex = RegexValidator(
     #     regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
     #     message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
@@ -106,7 +107,7 @@ class Ambulance(FacilityBaseModel):
     #     ]
 
 
-class AmbulanceDriver(FacilityBaseModel):
+class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=255)
@@ -117,7 +118,7 @@ class AmbulanceDriver(FacilityBaseModel):
         return f"Driver: {self.name}({self.phone_number})"
 
 
-class Facility(FacilityBaseModel, FacilityPermissionMixin):
+class Facility(commons_models.SoftDeleteTimeStampedModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
@@ -164,7 +165,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
 
 
-class FacilityLocalGovtBody(models.Model):
+class FacilityLocalGovtBody(commons_models.SoftDeleteTimeStampedModel):
     """
     DEPRECATED_FROM: 2020-03-29
     DO NOT USE
@@ -203,7 +204,7 @@ class FacilityLocalGovtBody(models.Model):
         super().save(*args, **kwargs)
 
 
-class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
+class HospitalDoctors(commons_models.SoftDeleteTimeStampedModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
@@ -215,7 +216,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(active=True))]
 
 
-class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
+class FacilityCapacity(commons_models.SoftDeleteTimeStampedModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -227,7 +228,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(active=True))]
 
 
-class FacilityStaff(FacilityBaseModel):
+class FacilityStaff(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -235,7 +236,7 @@ class FacilityStaff(FacilityBaseModel):
         return str(self.staff) + " for facility " + str(self.facility)
 
 
-class FacilityVolunteer(FacilityBaseModel):
+class FacilityVolunteer(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     volunteer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -249,7 +250,7 @@ class FacilityVolunteer(FacilityBaseModel):
 # Building Model Start
 
 
-class Building(FacilityBaseModel):
+class Building(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -266,7 +267,7 @@ class Building(FacilityBaseModel):
 # Room Model Start
 
 
-class Room(FacilityBaseModel):
+class Room(commons_models.SoftDeleteTimeStampedModel):
     building = models.ForeignKey("Building", on_delete=models.CASCADE, null=False, blank=False)
     num = models.CharField(max_length=1000)
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -278,7 +279,7 @@ class Room(FacilityBaseModel):
         return self.num + " under " + str(self.building)
 
 
-class StaffRoomAllocation(FacilityBaseModel):
+class StaffRoomAllocation(commons_models.SoftDeleteTimeStampedModel):
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -291,7 +292,7 @@ class StaffRoomAllocation(FacilityBaseModel):
 # Inventory Model Start
 
 
-class InventoryItem(FacilityBaseModel):
+class InventoryItem(commons_models.SoftDeleteTimeStampedModel):
     name = models.CharField(max_length=1000)
     description = models.TextField()
     minimum_stock = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -301,7 +302,7 @@ class InventoryItem(FacilityBaseModel):
         return self.name + " with unit " + self.unit + " with minimum stock " + str(self.minimum_stock)
 
 
-class Inventory(FacilityBaseModel):
+class Inventory(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     quantitiy = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -313,7 +314,7 @@ class Inventory(FacilityBaseModel):
         verbose_name_plural = "Inventories"
 
 
-class InventoryLog(FacilityBaseModel):
+class InventoryLog(commons_models.SoftDeleteTimeStampedModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     prev_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -335,7 +336,7 @@ class InventoryLog(FacilityBaseModel):
 # Inventory Model End
 
 
-class FacilityUser(models.Model):
+class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")

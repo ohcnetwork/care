@@ -1,15 +1,13 @@
-import enum
 from django.db import models
 from multiselectfield import MultiSelectField
-from apps.commons.models import PatientBaseModel, FacilityBaseModel
 from types import SimpleNamespace
 from apps.accounts.models import (District,State,LocalBody)
-from apps.commons.models import BaseManager
+from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility
 from apps.patients.mixins import (PatientPermissionMixin, PatientRelatedPermissionMixin, BasePermissionMixin)
 from apps.accounts.models import User
 from apps.commons.constants import GENDER_CHOICES
-from apps.commons.models import FacilityBaseModel
+from apps.commons.models import SoftDeleteTimeStampedModel
 from apps.commons.validators import phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
@@ -17,7 +15,7 @@ from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
 
-class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
+class PatientRegistration(PatientPermissionMixin, SoftDeleteTimeStampedModel):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
 
@@ -123,7 +121,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
-    objects = BaseManager()
+    objects = ActiveObjectsManager()
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -186,7 +184,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 state_id=self.state_id,
             )
 
-class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
+class PatientConsultation(PatientRelatedPermissionMixin, SoftDeleteTimeStampedModel):
 
     ADMIT_CHOICES = [
     (constants.ADMIT_CHOICES.NA, "Not admitted"),
@@ -239,7 +237,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         ]
 
 
-class DailyRound(models.Model):
+class DailyRound(SoftDeleteTimeStampedModel):
 
     CURRENT_HEALTH_CHOICES = [
     (constants.CURRENT_HEALTH_CHOICES.ND, "NO DATA"),
@@ -297,7 +295,7 @@ class DailyRound(models.Model):
             self.consultation.patient.created_by,
         )
 
-class PatientSample(FacilityBaseModel):
+class PatientSample(SoftDeleteTimeStampedModel):
     SAMPLE_TYPE_CHOICES = [
         (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
         (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
@@ -399,14 +397,14 @@ class PatientSample(FacilityBaseModel):
         return request.user.is_superuser
 
 
-class PatientSampleFlow(FacilityBaseModel):
+class PatientSampleFlow(SoftDeleteTimeStampedModel):
     patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
     status = models.IntegerField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
     notes = models.CharField(max_length=255)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
-class PatientSearch(PatientBaseModel):
+class PatientSearch(SoftDeleteTimeStampedModel):
     patient_id = EncryptedIntegerField()
 
     name = models.CharField(max_length=120)
@@ -436,7 +434,7 @@ class PatientSearch(PatientBaseModel):
         return facility_ids[0][0] if len(facility_ids) > 0 else None
 
 
-class PatientMetaInfo(models.Model):
+class PatientMetaInfo(SoftDeleteTimeStampedModel):
 
     OCCUPATION_CHOICES = [
         (constants.OCCUPATION_CHOICES.MW, 'STUDENT'),
@@ -452,7 +450,7 @@ class PatientMetaInfo(models.Model):
     head_of_household = models.BooleanField()
 
 
-class PatientContactDetails(models.Model):
+class PatientContactDetails(SoftDeleteTimeStampedModel):
 
     RELATION_CHOICES = [
         (constants.RELATION_CHOICES.FM, 'FAMILY_MEMBER'),
@@ -495,23 +493,23 @@ class PatientContactDetails(models.Model):
 
     deleted = models.BooleanField(default=False)
 
-    objects = BaseManager()
+    objects = ActiveObjectsManager()
 
 
-class Disease(models.Model):
+class Disease(SoftDeleteTimeStampedModel):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=constants.DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
 
-    objects = BaseManager()
+    objects = ActiveObjectsManager()
 
     class Meta:
         indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
 
-class FacilityPatientStatsHistory(FacilityBaseModel):
+class FacilityPatientStatsHistory(SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT)
     entry_date = models.DateField()
     num_patients_visited = models.IntegerField(default=0)
@@ -724,7 +722,7 @@ class PatientConsultationICMR(PatientConsultation):
     def asymptomatic_healthcare_worker_without_protection(self,):
         return self.patient.is_medical_worker and not self.is_symptomatic()
 
-class PatientTeleConsultation(models.Model):
+class PatientTeleConsultation(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES)
     other_symptoms = models.TextField(blank=True, null=True)
