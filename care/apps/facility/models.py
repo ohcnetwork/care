@@ -1,28 +1,25 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-from apps.accounts import (
-    models as common_accounts_models
-)
-
-
-from apps.commons import (
-    models as commons_models,
-    validators as commons_validators
-)
 
 from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from apps.accounts import models as common
-
+from apps.accounts import (
+    models as common_accounts_models
+)
+from apps.commons import (
+    models as commons_models,
+    validators as commons_validators
+)
 from apps.facility import (
     constants as commons_facility_constants,
     validators as commons_facility_validators,
 )
 
 User = get_user_model()
+
 
 class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     vehicle_number = models.CharField(max_length=20, validators=[commons_facility_validators.vehicle_number_regex], unique=True, db_index=True)
@@ -56,7 +53,8 @@ class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     def __str__(self):
         return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
 
-
+    class Meta:
+        verbose_name_plural = "ambulances"
 
 class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
@@ -66,6 +64,9 @@ class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"Driver: {self.name}({self.phone_number})"
+    
+    class Meta:
+        verbose_name_plural = "AmbulancesDrivers"
 
 
 class Facility(commons_models.SoftDeleteTimeStampedModel):
@@ -91,8 +92,6 @@ class Facility(commons_models.SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.name}"
-
-    
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -145,6 +144,9 @@ class FacilityLocalGovtBody(commons_models.SoftDeleteTimeStampedModel):
         if self.local_body is not None:
             self.district = self.local_body.district
         super().save(*args, **kwargs)
+    
+    class Meta:
+        verbose_name_plural = "FacilityLocalGovtBodies"
 
 
 class HospitalDoctors(commons_models.SoftDeleteTimeStampedModel):
@@ -186,12 +188,6 @@ class FacilityVolunteer(commons_models.SoftDeleteTimeStampedModel):
         return str(self.volunteer) + " for facility " + str(self.facility)
 
 
-# Facility Model End
-
-
-# Building Model Start
-
-
 class Building(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=1000)
@@ -201,12 +197,6 @@ class Building(commons_models.SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return self.name + " under " + str(self.facility)
-
-
-# Building Model End
-
-
-# Room Model Start
 
 
 class Room(commons_models.SoftDeleteTimeStampedModel):
@@ -227,11 +217,6 @@ class StaffRoomAllocation(commons_models.SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return str(self.staff) + " Allocated For " + str(self.room)
-
-
-# Room Model End
-
-# Inventory Model Start
 
 
 class InventoryItem(commons_models.SoftDeleteTimeStampedModel):
@@ -273,9 +258,6 @@ class InventoryLog(commons_models.SoftDeleteTimeStampedModel):
             + " updated by "
             + str(self.updated_by)
         )
-
-
-# Inventory Model End
 
 
 class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
