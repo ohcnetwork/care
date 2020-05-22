@@ -15,6 +15,7 @@ class FacilityListSerializer(serializers.ModelSerializer):
     state = accounts_serializers.StateSerializer
     created_by = accounts_serializers.UserSerializer
     users = accounts_serializers.UserSerializer
+    
     class Meta:
         model = facility_models.Facility
         fields = [

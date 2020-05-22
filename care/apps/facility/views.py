@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions
 
 from apps.facility import (
     models as facility_models,
@@ -7,6 +7,8 @@ from apps.facility import (
 )
 
 class FacilityListView(generics.ListAPIView):
+
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilityListSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
+``
