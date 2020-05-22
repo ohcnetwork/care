@@ -15,7 +15,9 @@ from simple_history.models import HistoricalRecords
 from utils.models.jsonfield import JSONField
 
 class Patient(SoftDeleteTimeStampedModel):
-    # fields in the PatientSearch model
+    """
+    Model to represent a patient
+    """
     PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
     BLOOD_GROUP_CHOICES = [
         ("A+", "A+"),
@@ -51,19 +53,15 @@ class Patient(SoftDeleteTimeStampedModel):
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
-
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
-
     nationality = models.CharField(max_length=255, default="", verbose_name="Nationality of Patient")
     passport_no = models.CharField(max_length=255, default="", verbose_name="Passport Number of Foreign Patients")
     aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
-
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
     )
-
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
     )
@@ -71,7 +69,6 @@ class Patient(SoftDeleteTimeStampedModel):
         default=False, verbose_name="Suspected Contact with a Covid19 Carrier"
     )
     estimated_contact_date = models.DateTimeField(null=True, blank=True)
-
     past_travel = models.BooleanField(
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
@@ -82,36 +79,29 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_return = models.DateTimeField(
         blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
     )
-
     present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
     ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
-
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
-
     disease_status = models.IntegerField(
         choices=DISEASE_STATUS_CHOICES, default=constants.DISEASE_STATUS_CHOICES.SU, blank=True, verbose_name="Disease Status"
     )
-
     number_of_aged_dependents = models.IntegerField(
         default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
         default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
-
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
-
     patient_search_id = EncryptedIntegerField(help_text="FKey to PatientSearch", null=True)
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
-
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = ActiveObjectsManager()
@@ -143,7 +133,6 @@ class Patient(SoftDeleteTimeStampedModel):
             self.district = self.local_body.district
         if self.district is not None:
             self.state = self.district.state
-
         self.year_of_birth = (
             self.date_of_birth.year if self.date_of_birth is not None else datetime.datetime.now().year - self.age
         )
@@ -152,7 +141,6 @@ class Patient(SoftDeleteTimeStampedModel):
             if self.date_of_receipt_of_information is not None
             else datetime.datetime.now()
         )
-
         is_create = self.pk is None
         super().save(*args, **kwargs)
         if is_create or self.patient_search_id is None:
@@ -178,15 +166,16 @@ class Patient(SoftDeleteTimeStampedModel):
             )
 
 class PatientConsultation(SoftDeleteTimeStampedModel):
-
+    """
+    Model to represent a patientConsultation
+    """
     ADMIT_CHOICES = [
-    (constants.ADMIT_CHOICES.NA, "Not admitted"),
-    (constants.ADMIT_CHOICES.IR, "Isolation Room"),
-    (constants.ADMIT_CHOICES.ICU, "ICU"),
-    (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
-    (constants.ADMIT_CHOICES.HI, "Home Isolation"),
+        (constants.ADMIT_CHOICES.NA, "Not admitted"),
+        (constants.ADMIT_CHOICES.IR, "Isolation Room"),
+        (constants.ADMIT_CHOICES.ICU, "ICU"),
+        (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
+        (constants.ADMIT_CHOICES.HI, "Home Isolation"),
     ]    
-
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE, related_name="patients")
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="facility")
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
@@ -231,15 +220,16 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
 
 
 class DailyRound(SoftDeleteTimeStampedModel):
-
+    """
+    Model to represent a daily round
+    """
     CURRENT_HEALTH_CHOICES = [
-    (constants.CURRENT_HEALTH_CHOICES.ND, "NO DATA"),
-    (constants.CURRENT_HEALTH_CHOICES.RV, "REQUIRES VENTILATOR"),
-    (constants.CURRENT_HEALTH_CHOICES.WR, "WORSE"),
-    (constants.CURRENT_HEALTH_CHOICES.SQ, "STATUS QUO"),
-    (constants.CURRENT_HEALTH_CHOICES.BT, "BETTER"),
+        (constants.CURRENT_HEALTH_CHOICES.ND, "NO DATA"),
+        (constants.CURRENT_HEALTH_CHOICES.RV, "REQUIRES VENTILATOR"),
+        (constants.CURRENT_HEALTH_CHOICES.WR, "WORSE"),
+        (constants.CURRENT_HEALTH_CHOICES.SQ, "STATUS QUO"),
+        (constants.CURRENT_HEALTH_CHOICES.BT, "BETTER"),
     ]
-
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
@@ -247,48 +237,15 @@ class DailyRound(SoftDeleteTimeStampedModel):
     additional_symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     patient_category = models.CharField(choices=constants.CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
-
     current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
     recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
 
-    @staticmethod
-    def has_write_permission(request):
-        return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and (
-                PatientConsultation.objects.get(
-                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.created_by
-                == request.user
-            )
-        )
-
-    @staticmethod
-    def has_read_permission(request):
-        return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and (
-                PatientConsultation.objects.get(
-                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.created_by
-                == request.user
-            )
-        )
-
-    def has_object_read_permission(self, request):
-        return request.user.is_superuser or request.user in (
-            self.consultation.facility.created_by,
-            self.consultation.patient.created_by,
-        )
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser or request.user in (
-            self.consultation.facility.created_by,
-            self.consultation.patient.created_by,
-        )
 
 class PatientSampleTest(SoftDeleteTimeStampedModel):
+    """
+    Model to represent a patient sample test
+    """
     SAMPLE_TYPE_CHOICES = [
         (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
         (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
@@ -297,8 +254,7 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
         (constants.SAMPLE_TYPE_CHOICES.AS, 'ACUTE_SERA'),
         (constants.SAMPLE_TYPE_CHOICES.CS, 'COVALESCENT_SERA'),
         (constants.SAMPLE_TYPE_CHOICES.OT, 'OTHER_TYPE'),
-    ]
-   
+    ]   
     SAMPLE_TEST_FLOW_CHOICES = [
         (constants.SAMPLE_TEST_FLOW_MAP.RS, 'REQUEST_SUBMITTED'),
         (constants.SAMPLE_TEST_FLOW_MAP.AP, 'APPROVED'),
@@ -308,24 +264,18 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
         (constants.SAMPLE_TEST_FLOW_MAP.RL, 'RECEIVED_AT_LAB'),
         (constants.SAMPLE_TEST_FLOW_MAP.CT, 'COMPLETED'),
     ]
-
     SAMPLE_TEST_RESULT_CHOICES = [
-    (constants.SAMPLE_TEST_RESULT_MAP.P, 'POSITIVE'),
-    (constants.SAMPLE_TEST_RESULT_MAP.N, 'NEGATIVE'),
-    (constants.SAMPLE_TEST_RESULT_MAP.A, 'AWAITING'),
-    (constants.SAMPLE_TEST_RESULT_MAP.I, 'INVALID')
+        (constants.SAMPLE_TEST_RESULT_MAP.P, 'POSITIVE'),
+        (constants.SAMPLE_TEST_RESULT_MAP.N, 'NEGATIVE'),
+        (constants.SAMPLE_TEST_RESULT_MAP.A, 'AWAITING'),
+        (constants.SAMPLE_TEST_RESULT_MAP.I, 'INVALID')
     ]
-
-
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
-
     sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES,default=constants.SAMPLE_TYPE_CHOICES.UN)
     sample_type_other = models.TextField(default="")
-
     has_sari = models.BooleanField(default=False)
     has_ari = models.BooleanField(default=False)
-
     doctor_name = models.CharField(max_length=255, default="NO DOCTOR SPECIFIED")
     diagnosis = models.TextField(default="")
     diff_diagnosis = models.TextField(default="")
@@ -333,12 +283,9 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     is_atypical_presentation = models.BooleanField(default=False)
     atypical_presentation = models.TextField(default="")
     is_unusual_course = models.BooleanField(default=False)
-
     status = models.IntegerField(choices=constants.SAMPLE_TEST_FLOW_CHOICES, default=constants.SAMPLE_TEST_FLOW_MAP.RS)
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=constants.SAMPLE_TEST_RESULT_MAP.A)
-
     fast_track = models.TextField(default="")
-
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
 
@@ -349,48 +296,11 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
         except AttributeError:
             return self.patientsampleflow_set.order_by("-created_date")
 
-    @staticmethod
-    def has_write_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-
-    @staticmethod
-    def has_read_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.consultation.facility.created_by
-            or (
-                request.user.district == self.consultation.facility.district
-                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-            )
-            or (
-                request.user.state == self.consultation.facility.state
-                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-            )
-        )
-
-    def has_object_update_permission(self, request):
-        if not self.has_object_read_permission(request):
-            return False
-        if request.user.is_superuser:
-            return True
-        map_ = self.SAMPLE_TEST_FLOW_CHOICES
-        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-        # The view shall raise a 400
-        return True
-
-    def has_object_destroy_permission(self, request):
-        return request.user.is_superuser
-
 
 class PatientSampleFlow(SoftDeleteTimeStampedModel):
+    """
+    Model to represent a patient sample flow
+    """
     patient_sample = models.ForeignKey(PatientSampleTest, on_delete=models.PROTECT)
     status = models.IntegerField(choices=PatientSampleTest.SAMPLE_TEST_FLOW_CHOICES)
     notes = models.CharField(max_length=255)
@@ -398,8 +308,10 @@ class PatientSampleFlow(SoftDeleteTimeStampedModel):
 
 
 class PatientSearch(SoftDeleteTimeStampedModel):
+    """
+    Model to represent a patient Search
+    """
     patient_id = EncryptedIntegerField()
-
     name = models.CharField(max_length=120)
     gender = models.IntegerField(choices=GENDER_CHOICES)
     phone_number = models.CharField(max_length=14)
@@ -413,14 +325,6 @@ class PatientSearch(SoftDeleteTimeStampedModel):
             models.Index(fields=["year_of_birth", "phone_number"]),
         ]
 
-    @staticmethod
-    def has_read_permission(request):
-        if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return True
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified:
-            return True
-        return False
-
     @property
     def facility_id(self):
         facility_ids = Patient.objects.filter(id=self.patient_id).values_list("facility__external_id")
@@ -428,7 +332,9 @@ class PatientSearch(SoftDeleteTimeStampedModel):
 
 
 class PatientMetaInfo(SoftDeleteTimeStampedModel):
-
+    """
+    Model to represent a patient meta info
+    """
     OCCUPATION_CHOICES = [
         (constants.OCCUPATION_CHOICES.MW, 'STUDENT'),
         (constants.OCCUPATION_CHOICES.MW, 'MEDICAL_WORKER'),
@@ -438,13 +344,14 @@ class PatientMetaInfo(SoftDeleteTimeStampedModel):
         (constants.OCCUPATION_CHOICES.MW, 'WORKING_ABROAD'),
         (constants.OCCUPATION_CHOICES.MW, ' OTHERS'),
     ]    
-
     occupation = models.IntegerField(choices=OCCUPATION_CHOICES)
     head_of_household = models.BooleanField()
 
 
 class PatientContactDetails(SoftDeleteTimeStampedModel):
-
+    """
+    Model to represent a patient contact details
+    """
     RELATION_CHOICES = [
         (constants.RELATION_CHOICES.FM, 'FAMILY_MEMBER'),
         (constants.RELATION_CHOICES.FR, 'FRIEND'),
@@ -457,7 +364,6 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
         (constants.RELATION_CHOICES.WP, 'WORSHIP_PLACE'),
         (constants.RELATION_CHOICES.OT, 'OTHERS'),
     ]
-
     MODE_CONTACT_CHOICES = [
         (constants.MODE_CONTACT_CHOICES.TBF, 'TOUCHED_BODY_FLUIDS'),
         (constants.MODE_CONTACT_CHOICES.DPC, 'DIRECT_PHYSICAL_CONTACT'),
@@ -469,7 +375,6 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
         (constants.MODE_CONTACT_CHOICES.SSWE, 'SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE'),
         (constants.MODE_CONTACT_CHOICES.TTWE, 'TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE'),
     ]
-
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name="contacted_patients")
     patient_in_contact = models.ForeignKey(
         Patient, on_delete=models.PROTECT, null=True, related_name="contacts"
@@ -478,31 +383,32 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
     mode_of_contact = models.IntegerField(choices=MODE_CONTACT_CHOICES)
     date_of_first_contact = models.DateField(null=True)
     date_of_last_contact = models.DateField(null=True)
-
     is_primary = models.BooleanField(help_text="If false, then secondary contact")
     condition_of_contact_is_symptomatic = models.BooleanField(
         help_text="While in contact, did the patient showing symptoms"
     )
 
-    deleted = models.BooleanField(default=False)
-
     objects = ActiveObjectsManager()
 
 
 class Disease(SoftDeleteTimeStampedModel):
-
+    """
+    Model to represent a disease associated with patient
+    """
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="medical_history")
     disease = models.IntegerField(choices=constants.DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
-    deleted = models.BooleanField(default=False)
 
     objects = ActiveObjectsManager()
 
     class Meta:
-        indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
+        indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(active=True))]
 
 
 class FacilityPatientStatsHistory(SoftDeleteTimeStampedModel):
+    """
+    Model to represent a facility patient stats history
+    """
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT)
     entry_date = models.DateField()
     num_patients_visited = models.IntegerField(default=0)
@@ -518,6 +424,9 @@ class FacilityPatientStatsHistory(SoftDeleteTimeStampedModel):
 
 
 class PatientIcmr(Patient):
+    """
+    proxy Model to represent a patient ICMR
+    """
     class Meta:
         proxy = True
 
@@ -529,14 +438,14 @@ class PatientIcmr(Patient):
     def specimen_details(self):
         instance = self.patientsample_set.last()
         if instance is not None:
-            instance.__class__ = PatientSampleICMR
+            instance.__class__ = PatientSampleIcmr
         return instance
 
     @property
     def patient_category(self):
         instance = self.consultations.last()
         if instance:
-            instance.__class__ = PatientConsultationICMR
+            instance.__class__ = PatientConsultationIcmr
         return instance
 
     @property
@@ -620,7 +529,10 @@ class PatientIcmr(Patient):
         return None
 
 
-class PatientSampleICMR(PatientSampleTest):
+class PatientSampleIcmr(PatientSampleTest):
+    """
+    Model to represent a patient sample ICMR
+    """
     class Meta:
         proxy = True
 
@@ -673,7 +585,10 @@ class PatientSampleICMR(PatientSampleTest):
         )
 
 
-class PatientConsultationICMR(PatientConsultation):
+class PatientConsultationIcmr(PatientConsultation):
+    """
+    model to reprent patient consultation ICMR
+    """
     class Meta:
         proxy = True
 
@@ -716,6 +631,9 @@ class PatientConsultationICMR(PatientConsultation):
         return self.patient.is_medical_worker and not self.is_symptomatic()
 
 class PatientFacility(SoftDeleteTimeStampedModel):
+    """
+    model to represent patient facility
+    """
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES)
     other_symptoms = models.TextField(blank=True, null=True)
@@ -723,3 +641,5 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return f"{self.patient.name}<>{self.reason}"
