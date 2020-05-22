@@ -188,7 +188,7 @@ $ python manage.py createsuperuser
 This will now prompt for the following details - Ignore any warnings.
 
 - username: give the username here
-- usertype: Give the value `10` [5 for doctor,on ca 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
+- usertype: Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
 - gender: 1 for male, 2 for female, 3 for other
 - email: give e-mail id
 - phonenumber: give your ten digit phone number here
