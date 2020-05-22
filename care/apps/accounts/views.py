@@ -1,10 +1,13 @@
 from django_filters import rest_framework as filters
-from rest_framework import generics as rest_generics
-from rest_framework import permissions as rest_permissions
-from rest_framework import status as rest_status
+from rest_framework import (
+    generics as rest_generics,
+    mixins as rest_mixins,
+    permissions as rest_permissions,
+    status as rest_status,
+    viewsets as rest_viewsets,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts import (
     models as accounts_models,
@@ -14,13 +17,13 @@ from apps.accounts import (
 from apps.commons import permissions as commons_permissions
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(rest_viewsets.ModelViewSet):
 
     queryset = accounts_models.User.objects.all()
     serializer_class = accounts_serializers.UserSerializer
 
 
-class StateListView(rest_generics.ListAPIView):
+class StateListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
     """
     State list API view
     """
@@ -28,7 +31,7 @@ class StateListView(rest_generics.ListAPIView):
     serializer_class = accounts_serializers.StateSerializer
 
 
-class DistrictListView(rest_generics.ListAPIView):
+class DistrictListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
     """
     District List API view
     """
