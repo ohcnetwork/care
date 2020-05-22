@@ -7,6 +7,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Local settings
+care/settings/local.py
+
 # Distribution / packaging
 .Python
 build/
@@ -69,7 +72,6 @@ target/
 venv/
 ENV/
 .envrc
-care/settings/local.py
 
 # Rope project settings
 .ropeproject
