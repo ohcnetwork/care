@@ -4,7 +4,7 @@ from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 from import_export.admin import ImportExportModelAdmin
 
-from apps.facility import models as accounts_models
+from apps.facility import models as facility_models
 
 
 class DistrictFilter(SimpleListFilter):
@@ -14,7 +14,7 @@ class DistrictFilter(SimpleListFilter):
     parameter_name = "district"
 
     def lookups(self, request, model_admin):
-        district = accounts_models.Facility.objects.values_list(
+        district = facility_models.Facility.objects.values_list(
             "district__name", flat=True
         )
         return list(map(lambda x: (x, x), set(district)))
@@ -32,7 +32,7 @@ class StateFilter(SimpleListFilter):
     parameter_name = "state"
 
     def lookups(self, request, model_admin):
-        state = accounts_models.Facility.objects.values_list("state__name", flat=True)
+        state = facility_models.Facility.objects.values_list("state__name", flat=True)
         return list(map(lambda x: (x, x), set(state)))
 
     def queryset(self, request, queryset):
@@ -43,22 +43,11 @@ class StateFilter(SimpleListFilter):
 
 class FacilityAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
     search_fields = ["name"]
-    list_filter = [StateFilter, DistrictFilter]
     djangoql_completion_enabled_by_default = True
 
 
 class FacilityStaffAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility"]
-    djangoql_completion_enabled_by_default = True
-
-
-class FacilityCapacityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["facility"]
-    djangoql_completion_enabled_by_default = True
-
-
-class FacilityVolunteerAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["facility", "volunteer"]
     djangoql_completion_enabled_by_default = True
 
 
@@ -72,17 +61,6 @@ class InventoryItemAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
-class RoomAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["building"]
-    search_fields = ["building", "num"]
-    djangoql_completion_enabled_by_default = True
-
-
-class StaffRoomAllocationAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["staff", "room"]
-    djangoql_completion_enabled_by_default = True
-
-
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "age", "gender")
     djangoql_completion_enabled_by_default = True
@@ -93,13 +71,14 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class TestingLabAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
-    model = accounts_models.TestingLab
+    model = facility_models.TestingLab
     djangoql_completion_enabled_by_default = True
 
 
-admin.site.register(accounts_models.Facility, FacilityAdmin)
-admin.site.register(accounts_models.FacilityStaff, FacilityStaffAdmin)
-admin.site.register(accounts_models.InventoryItem, InventoryItemAdmin)
-admin.site.register(accounts_models.Inventory, InventoryAdmin)
-admin.site.register(accounts_models.FacilityUser)
-admin.site.register(accounts_models.TestingLab, TestingLabAdmin)
+admin.site.register(facility_models.Facility, FacilityAdmin)
+admin.site.register(facility_models.FacilityInfrastructure)
+admin.site.register(facility_models.FacilityStaff, FacilityStaffAdmin)
+admin.site.register(facility_models.InventoryItem, InventoryItemAdmin)
+admin.site.register(facility_models.Inventory, InventoryAdmin)
+admin.site.register(facility_models.FacilityUser)
+admin.site.register(facility_models.TestingLab, TestingLabAdmin)
