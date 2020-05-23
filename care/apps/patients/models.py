@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 from types import SimpleNamespace
-from apps.accounts.models import (District, State, LocalBody)
+from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
@@ -19,7 +19,15 @@ class Patient(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient
     """
-    PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
+
+    PATIENT_SEARCH_KEYS = [
+        "name",
+        "gender",
+        "phone_number",
+        "date_of_birth",
+        "year_of_birth",
+        "state_id",
+    ]
     BLOOD_GROUP_CHOICES = [
         ("A+", "A+"),
         ("A-", "A-"),
@@ -31,24 +39,28 @@ class Patient(SoftDeleteTimeStampedModel):
         ("O-", "O-"),
     ]
     DISEASE_STATUS_CHOICES = [
-        (constants.DISEASE_STATUS_CHOICES.SU, 'SUSPECTED'),
-        (constants.DISEASE_STATUS_CHOICES.PO, 'POSITIVE'),
-        (constants.DISEASE_STATUS_CHOICES.NE, 'NEGATIVE'),
-        (constants.DISEASE_STATUS_CHOICES.RE, 'RECOVERY'),
-        (constants.DISEASE_STATUS_CHOICES.RD, 'RECOVERED'),
-        (constants.DISEASE_STATUS_CHOICES.EX, 'EXPIRED'),
+        (constants.DISEASE_STATUS_CHOICES.SU, "SUSPECTED"),
+        (constants.DISEASE_STATUS_CHOICES.PO, "POSITIVE"),
+        (constants.DISEASE_STATUS_CHOICES.NE, "NEGATIVE"),
+        (constants.DISEASE_STATUS_CHOICES.RE, "RECOVERY"),
+        (constants.DISEASE_STATUS_CHOICES.RD, "RECOVERED"),
+        (constants.DISEASE_STATUS_CHOICES.EX, "EXPIRED"),
     ]
     SOURCE_CHOICES = [
-        (constants.SOURCE_CHOICES.CA, 'CARE'),
-        (constants.SOURCE_CHOICES.CT, 'COVID_TRACKER'),
-        (constants.SOURCE_CHOICES.ST, 'STAY'),
+        (constants.SOURCE_CHOICES.CA, "CARE"),
+        (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
+        (constants.SOURCE_CHOICES.ST, "STAY"),
     ]
-    source = models.IntegerField(choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA)
+    source = models.IntegerField(
+        choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA
+    )
     facility = models.ForeignKey(Facility, on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
         Facility, on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
     )
-    meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
+    meta_info = models.OneToOneField(
+        "PatientMetaInfo", on_delete=models.SET_NULL, null=True
+    )
     name = EncryptedCharField(max_length=200)
     age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
@@ -56,12 +68,24 @@ class Patient(SoftDeleteTimeStampedModel):
     address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
-    nationality = models.CharField(max_length=255, default="", verbose_name="Nationality of Patient")
-    passport_no = models.CharField(max_length=255, default="", verbose_name="Passport Number of Foreign Patients")
-    aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
-    is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
+    nationality = models.CharField(
+        max_length=255, default="", verbose_name="Nationality of Patient"
+    )
+    passport_no = models.CharField(
+        max_length=255, default="", verbose_name="Passport Number of Foreign Patients"
+    )
+    aadhar_no = models.CharField(
+        max_length=255, default="", verbose_name="Aadhar Number of Patient"
+    )
+    is_medical_worker = models.BooleanField(
+        default=False, verbose_name="Is the Patient a Medical Worker"
+    )
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
+        choices=BLOOD_GROUP_CHOICES,
+        null=True,
+        blank=True,
+        max_length=4,
+        verbose_name="Blood Group of Patient",
     )
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
@@ -71,35 +95,63 @@ class Patient(SoftDeleteTimeStampedModel):
     )
     estimated_contact_date = models.DateTimeField(null=True, blank=True)
     past_travel = models.BooleanField(
-        default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
+        default=False,
+        verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
     countries_travelled_old = models.TextField(
-        null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False
+        null=True,
+        blank=True,
+        verbose_name="Countries Patient has Travelled to",
+        editable=False,
     )
-    countries_travelled = JSONField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
+    countries_travelled = JSONField(
+        null=True, blank=True, verbose_name="Countries Patient has Travelled to"
+    )
     date_of_return = models.DateTimeField(
-        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
+        blank=True,
+        null=True,
+        verbose_name="Return Date from the Last Country if Travelled",
     )
-    present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
-    ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
-    has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
-    local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    present_health = models.TextField(
+        default="", blank=True, verbose_name="Patient's Current Health Details"
+    )
+    ongoing_medication = models.TextField(
+        default="", blank=True, verbose_name="Already pescribed medication if any"
+    )
+    has_SARI = models.BooleanField(
+        default=False, verbose_name="Does the Patient Suffer from SARI"
+    )
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.SET_NULL, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES, default=constants.DISEASE_STATUS_CHOICES.SU, blank=True, verbose_name="Disease Status"
+        choices=DISEASE_STATUS_CHOICES,
+        default=constants.DISEASE_STATUS_CHOICES.SU,
+        blank=True,
+        verbose_name="Disease Status",
     )
     number_of_aged_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
+        default=0,
+        verbose_name="Number of people aged above 60 living with the patient",
+        blank=True,
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
+        default=0,
+        verbose_name="Number of people who have chronic diseases living with the patient",
+        blank=True,
     )
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
-        default=True, help_text="Not active when discharged, or removed from the watchlist",
+        default=True,
+        help_text="Not active when discharged, or removed from the watchlist",
     )
-    patient_search_id = EncryptedIntegerField(help_text="FKey to PatientSearch", null=True)
+    patient_search_id = EncryptedIntegerField(
+        help_text="FKey to PatientSearch", null=True
+    )
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
@@ -135,7 +187,9 @@ class Patient(SoftDeleteTimeStampedModel):
         if self.district is not None:
             self.state = self.district.state
         self.year_of_birth = (
-            self.date_of_birth.year if self.date_of_birth is not None else datetime.datetime.now().year - self.age
+            self.date_of_birth.year
+            if self.date_of_birth is not None
+            else datetime.datetime.now().year - self.age
         )
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
@@ -171,6 +225,7 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
     """
     Model to represent a patientConsultation
     """
+
     ADMIT_CHOICES = [
         (constants.ADMIT_CHOICES.NA, "Not admitted"),
         (constants.ADMIT_CHOICES.IR, "Isolation Room"),
@@ -178,21 +233,39 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
         (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
         (constants.ADMIT_CHOICES.HI, "Home Isolation"),
     ]
-    patient = models.ForeignKey("Patient", on_delete=models.CASCADE, related_name="patients")
-    facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="facility")
-    symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    patient = models.ForeignKey(
+        "Patient", on_delete=models.CASCADE, related_name="patients"
+    )
+    facility = models.ForeignKey(
+        Facility, on_delete=models.CASCADE, related_name="facility"
+    )
+    symptoms = MultiSelectField(
+        choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True
+    )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
-    category = models.CharField(choices=constants.CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    category = models.CharField(
+        choices=constants.CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
+    )
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
     suggestion = models.CharField(max_length=3, choices=constants.SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        Facility, null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
+        Facility,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
-    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
+    admitted_to = models.IntegerField(
+        choices=ADMIT_CHOICES, default=None, null=True, blank=True
+    )
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)
@@ -213,10 +286,12 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
         constraints = [
             models.CheckConstraint(
                 name="if_referral_suggested",
-                check=~models.Q(suggestion=constants.SuggestionChoices.R) | models.Q(referred_to__isnull=False),
+                check=~models.Q(suggestion=constants.SuggestionChoices.R)
+                | models.Q(referred_to__isnull=False),
             ),
             models.CheckConstraint(
-                name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+                name="if_admitted",
+                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
 
@@ -225,6 +300,7 @@ class DailyRound(SoftDeleteTimeStampedModel):
     """
     Model to represent a daily round
     """
+
     CURRENT_HEALTH_CHOICES = [
         (constants.CURRENT_HEALTH_CHOICES.ND, "NO DATA"),
         (constants.CURRENT_HEALTH_CHOICES.RV, "REQUIRES VENTILATOR"),
@@ -232,16 +308,31 @@ class DailyRound(SoftDeleteTimeStampedModel):
         (constants.CURRENT_HEALTH_CHOICES.SQ, "STATUS QUO"),
         (constants.CURRENT_HEALTH_CHOICES.BT, "BETTER"),
     ]
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
-    temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds"
+    )
+    temperature = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, default=0
+    )
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
-    additional_symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    additional_symptoms = MultiSelectField(
+        choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True
+    )
     other_symptoms = models.TextField(default="", blank=True)
-    patient_category = models.CharField(choices=constants.CATEGORY_CHOICES,
-                                        max_length=8, default=None, blank=True, null=True)
-    current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
-    recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
+    patient_category = models.CharField(
+        choices=constants.CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
+    )
+    current_health = models.IntegerField(
+        default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
+    )
+    recommend_discharge = models.BooleanField(
+        default=False, verbose_name="Recommend Discharging Patient"
+    )
     other_details = models.TextField(null=True, blank=True)
 
 
@@ -249,33 +340,36 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient sample test
     """
+
     SAMPLE_TYPE_CHOICES = [
-        (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
-        (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
+        (constants.SAMPLE_TYPE_CHOICES.UN, "UNKNOWN"),
+        (constants.SAMPLE_TYPE_CHOICES.BA, "BA/ETA"),
         (constants.SAMPLE_TYPE_CHOICES.TS, "TS/NPS/NS"),
-        (constants.SAMPLE_TYPE_CHOICES.BE, 'Blood_IN_EDTA'),
-        (constants.SAMPLE_TYPE_CHOICES.AS, 'ACUTE_SERA'),
-        (constants.SAMPLE_TYPE_CHOICES.CS, 'COVALESCENT_SERA'),
-        (constants.SAMPLE_TYPE_CHOICES.OT, 'OTHER_TYPE'),
+        (constants.SAMPLE_TYPE_CHOICES.BE, "Blood_IN_EDTA"),
+        (constants.SAMPLE_TYPE_CHOICES.AS, "ACUTE_SERA"),
+        (constants.SAMPLE_TYPE_CHOICES.CS, "COVALESCENT_SERA"),
+        (constants.SAMPLE_TYPE_CHOICES.OT, "OTHER_TYPE"),
     ]
     SAMPLE_TEST_FLOW_CHOICES = [
-        (constants.SAMPLE_TEST_FLOW_MAP.RS, 'REQUEST_SUBMITTED'),
-        (constants.SAMPLE_TEST_FLOW_MAP.AP, 'APPROVED'),
-        (constants.SAMPLE_TEST_FLOW_MAP.DN, 'DENIED'),
-        (constants.SAMPLE_TEST_FLOW_MAP.SC, 'SENT_TO_COLLECTON_CENTRE'),
-        (constants.SAMPLE_TEST_FLOW_MAP.RF, 'RECEIVED_AND_FORWARED'),
-        (constants.SAMPLE_TEST_FLOW_MAP.RL, 'RECEIVED_AT_LAB'),
-        (constants.SAMPLE_TEST_FLOW_MAP.CT, 'COMPLETED'),
+        (constants.SAMPLE_TEST_FLOW_MAP.RS, "REQUEST_SUBMITTED"),
+        (constants.SAMPLE_TEST_FLOW_MAP.AP, "APPROVED"),
+        (constants.SAMPLE_TEST_FLOW_MAP.DN, "DENIED"),
+        (constants.SAMPLE_TEST_FLOW_MAP.SC, "SENT_TO_COLLECTON_CENTRE"),
+        (constants.SAMPLE_TEST_FLOW_MAP.RF, "RECEIVED_AND_FORWARED"),
+        (constants.SAMPLE_TEST_FLOW_MAP.RL, "RECEIVED_AT_LAB"),
+        (constants.SAMPLE_TEST_FLOW_MAP.CT, "COMPLETED"),
     ]
     SAMPLE_TEST_RESULT_CHOICES = [
-        (constants.SAMPLE_TEST_RESULT_MAP.P, 'POSITIVE'),
-        (constants.SAMPLE_TEST_RESULT_MAP.N, 'NEGATIVE'),
-        (constants.SAMPLE_TEST_RESULT_MAP.A, 'AWAITING'),
-        (constants.SAMPLE_TEST_RESULT_MAP.I, 'INVALID')
+        (constants.SAMPLE_TEST_RESULT_MAP.P, "POSITIVE"),
+        (constants.SAMPLE_TEST_RESULT_MAP.N, "NEGATIVE"),
+        (constants.SAMPLE_TEST_RESULT_MAP.A, "AWAITING"),
+        (constants.SAMPLE_TEST_RESULT_MAP.I, "INVALID"),
     ]
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
-    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES, default=constants.SAMPLE_TYPE_CHOICES.UN)
+    sample_type = models.IntegerField(
+        choices=SAMPLE_TYPE_CHOICES, default=constants.SAMPLE_TYPE_CHOICES.UN
+    )
     sample_type_other = models.TextField(default="")
     has_sari = models.BooleanField(default=False)
     has_ari = models.BooleanField(default=False)
@@ -286,8 +380,13 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     is_atypical_presentation = models.BooleanField(default=False)
     atypical_presentation = models.TextField(default="")
     is_unusual_course = models.BooleanField(default=False)
-    status = models.IntegerField(choices=constants.SAMPLE_TEST_FLOW_CHOICES, default=constants.SAMPLE_TEST_FLOW_MAP.RS)
-    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=constants.SAMPLE_TEST_RESULT_MAP.A)
+    status = models.IntegerField(
+        choices=constants.SAMPLE_TEST_FLOW_CHOICES,
+        default=constants.SAMPLE_TEST_FLOW_MAP.RS,
+    )
+    result = models.IntegerField(
+        choices=SAMPLE_TEST_RESULT_CHOICES, default=constants.SAMPLE_TEST_RESULT_MAP.A
+    )
     fast_track = models.TextField(default="")
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
@@ -306,6 +405,7 @@ class PatientSampleFlow(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient sample flow
     """
+
     patient_sample = models.ForeignKey(PatientSampleTest, on_delete=models.PROTECT)
     status = models.IntegerField(choices=PatientSampleTest.SAMPLE_TEST_FLOW_CHOICES)
     notes = models.CharField(max_length=255)
@@ -316,6 +416,7 @@ class PatientSearch(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient Search
     """
+
     patient_id = EncryptedIntegerField()
     name = models.CharField(max_length=120)
     gender = models.IntegerField(choices=GENDER_CHOICES)
@@ -332,7 +433,9 @@ class PatientSearch(SoftDeleteTimeStampedModel):
 
     @property
     def facility_id(self):
-        facility_ids = Patient.objects.filter(id=self.patient_id).values_list("facility__external_id")
+        facility_ids = Patient.objects.filter(id=self.patient_id).values_list(
+            "facility__external_id"
+        )
         return facility_ids[0][0] if len(facility_ids) > 0 else None
 
 
@@ -340,14 +443,15 @@ class PatientMetaInfo(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient meta info
     """
+
     OCCUPATION_CHOICES = [
-        (constants.OCCUPATION_CHOICES.MW, 'STUDENT'),
-        (constants.OCCUPATION_CHOICES.MW, 'MEDICAL_WORKER'),
-        (constants.OCCUPATION_CHOICES.MW, 'GOVT_EMPLOYEE'),
-        (constants.OCCUPATION_CHOICES.MW, 'PRIVATE_EMPLOYEE'),
-        (constants.OCCUPATION_CHOICES.MW, 'HOME_MAKER'),
-        (constants.OCCUPATION_CHOICES.MW, 'WORKING_ABROAD'),
-        (constants.OCCUPATION_CHOICES.MW, ' OTHERS'),
+        (constants.OCCUPATION_CHOICES.MW, "STUDENT"),
+        (constants.OCCUPATION_CHOICES.MW, "MEDICAL_WORKER"),
+        (constants.OCCUPATION_CHOICES.MW, "GOVT_EMPLOYEE"),
+        (constants.OCCUPATION_CHOICES.MW, "PRIVATE_EMPLOYEE"),
+        (constants.OCCUPATION_CHOICES.MW, "HOME_MAKER"),
+        (constants.OCCUPATION_CHOICES.MW, "WORKING_ABROAD"),
+        (constants.OCCUPATION_CHOICES.MW, " OTHERS"),
     ]
     occupation = models.IntegerField(choices=OCCUPATION_CHOICES)
     head_of_household = models.BooleanField()
@@ -357,30 +461,39 @@ class PatientContactDetails(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient contact details
     """
+
     RELATION_CHOICES = [
-        (constants.RELATION_CHOICES.FM, 'FAMILY_MEMBER'),
-        (constants.RELATION_CHOICES.FR, 'FRIEND'),
-        (constants.RELATION_CHOICES.RL, 'RELATIVE'),
-        (constants.RELATION_CHOICES.NG, 'NEIGHBOUR'),
-        (constants.RELATION_CHOICES.TT, 'TRAVEL_TOGETHER'),
-        (constants.RELATION_CHOICES.WH, 'WHILE_AT_HOSPITAL'),
-        (constants.RELATION_CHOICES.WP, 'WHILE_AT_SHOP'),
-        (constants.RELATION_CHOICES.WO, 'WHILE_AT_OFFICE_OR_ESTABLISHMENT'),
-        (constants.RELATION_CHOICES.WP, 'WORSHIP_PLACE'),
-        (constants.RELATION_CHOICES.OT, 'OTHERS'),
+        (constants.RELATION_CHOICES.FM, "FAMILY_MEMBER"),
+        (constants.RELATION_CHOICES.FR, "FRIEND"),
+        (constants.RELATION_CHOICES.RL, "RELATIVE"),
+        (constants.RELATION_CHOICES.NG, "NEIGHBOUR"),
+        (constants.RELATION_CHOICES.TT, "TRAVEL_TOGETHER"),
+        (constants.RELATION_CHOICES.WH, "WHILE_AT_HOSPITAL"),
+        (constants.RELATION_CHOICES.WP, "WHILE_AT_SHOP"),
+        (constants.RELATION_CHOICES.WO, "WHILE_AT_OFFICE_OR_ESTABLISHMENT"),
+        (constants.RELATION_CHOICES.WP, "WORSHIP_PLACE"),
+        (constants.RELATION_CHOICES.OT, "OTHERS"),
     ]
     MODE_CONTACT_CHOICES = [
-        (constants.MODE_CONTACT_CHOICES.TBF, 'TOUCHED_BODY_FLUIDS'),
-        (constants.MODE_CONTACT_CHOICES.DPC, 'DIRECT_PHYSICAL_CONTACT'),
-        (constants.MODE_CONTACT_CHOICES.CUI, 'CLEANED_USED_ITEMS'),
-        (constants.MODE_CONTACT_CHOICES.LSH, 'LIVE_IN_SAME_HOUSEHOLD'),
-        (constants.MODE_CONTACT_CHOICES.CLWP, 'CLOSE_CONTACT_WITHOUT_PRECAUTION'),
-        (constants.MODE_CONTACT_CHOICES.CPA, 'CO_PASSENGER_AEROPLANE'),
-        (constants.MODE_CONTACT_CHOICES.HCWP, 'HEALTH_CARE_WITH_PPE'),
-        (constants.MODE_CONTACT_CHOICES.SSWE, 'SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE'),
-        (constants.MODE_CONTACT_CHOICES.TTWE, 'TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE'),
+        (constants.MODE_CONTACT_CHOICES.TBF, "TOUCHED_BODY_FLUIDS"),
+        (constants.MODE_CONTACT_CHOICES.DPC, "DIRECT_PHYSICAL_CONTACT"),
+        (constants.MODE_CONTACT_CHOICES.CUI, "CLEANED_USED_ITEMS"),
+        (constants.MODE_CONTACT_CHOICES.LSH, "LIVE_IN_SAME_HOUSEHOLD"),
+        (constants.MODE_CONTACT_CHOICES.CLWP, "CLOSE_CONTACT_WITHOUT_PRECAUTION"),
+        (constants.MODE_CONTACT_CHOICES.CPA, "CO_PASSENGER_AEROPLANE"),
+        (constants.MODE_CONTACT_CHOICES.HCWP, "HEALTH_CARE_WITH_PPE"),
+        (
+            constants.MODE_CONTACT_CHOICES.SSWE,
+            "SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE",
+        ),
+        (
+            constants.MODE_CONTACT_CHOICES.TTWE,
+            "TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE",
+        ),
     ]
-    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name="contacted_patients")
+    patient = models.ForeignKey(
+        Patient, on_delete=models.PROTECT, related_name="contacted_patients"
+    )
     patient_in_contact = models.ForeignKey(
         Patient, on_delete=models.PROTECT, null=True, related_name="contacts"
     )
@@ -400,20 +513,28 @@ class Disease(SoftDeleteTimeStampedModel):
     """
     Model to represent a disease associated with patient
     """
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="medical_history")
+
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name="medical_history"
+    )
     disease = models.IntegerField(choices=constants.DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
 
     objects = ActiveObjectsManager()
 
     class Meta:
-        indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(active=True))]
+        indexes = [
+            PartialIndex(
+                fields=["patient", "disease"], unique=True, where=PQ(active=True)
+            )
+        ]
 
 
 class FacilityPatientStatsHistory(SoftDeleteTimeStampedModel):
     """
     Model to represent a facility patient stats history
     """
+
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT)
     entry_date = models.DateField()
     num_patients_visited = models.IntegerField(default=0)
@@ -432,6 +553,7 @@ class PatientIcmr(Patient):
     """
     proxy Model to represent a patient ICMR
     """
+
     class Meta:
         proxy = True
 
@@ -509,7 +631,9 @@ class PatientIcmr(Patient):
     def has_travel_to_foreign_last_14_days(self):
         if self.countries_travelled:
             return len(self.countries_travelled) != 0 and (
-                self.date_of_return and (self.date_of_return.date() - datetime.datetime.now().date()).days <= 14
+                self.date_of_return
+                and (self.date_of_return.date() - datetime.datetime.now().date()).days
+                <= 14
             )
 
     @property
@@ -538,6 +662,7 @@ class PatientSampleIcmr(PatientSampleTest):
     """
     Model to represent a patient sample ICMR
     """
+
     class Meta:
         proxy = True
 
@@ -564,13 +689,17 @@ class PatientSampleIcmr(PatientSampleTest):
     @property
     def hospitalization_date(self):
         return (
-            self.consultation.admission_date.date() if self.consultation and self.consultation.admission_date else None
+            self.consultation.admission_date.date()
+            if self.consultation and self.consultation.admission_date
+            else None
         )
 
     @property
     def medical_conditions(self):
         return [
-            item.disease for item in self.patient.medical_history.all() if item.disease != constants.DISEASE_CHOICES_MAP.NO
+            item.disease
+            for item in self.patient.medical_history.all()
+            if item.disease != constants.DISEASE_CHOICES_MAP.NO
         ]
 
     @property
@@ -578,7 +707,8 @@ class PatientSampleIcmr(PatientSampleTest):
         return [
             symptom
             for symptom in self.consultation.symptoms
-            if constants.SYMPTOM_CHOICES[0][0] not in self.consultation.symptoms.choices.keys()
+            if constants.SYMPTOM_CHOICES[0][0]
+            not in self.consultation.symptoms.choices.keys()
         ]
 
     @property
@@ -594,11 +724,15 @@ class PatientConsultationIcmr(PatientConsultation):
     """
     model to reprent patient consultation ICMR
     """
+
     class Meta:
         proxy = True
 
     def is_symptomatic(self):
-        if constants.SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys() or self.symptoms_onset_date is not None:
+        if (
+            constants.SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys()
+            or self.symptoms_onset_date is not None
+        ):
             return True
         else:
             return False
@@ -608,7 +742,10 @@ class PatientConsultationIcmr(PatientConsultation):
             len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
-                and (self.patient.date_of_return.date() - datetime.datetime.now().date()).days <= 14
+                and (
+                    self.patient.date_of_return.date() - datetime.datetime.now().date()
+                ).days
+                <= 14
             )
             and self.is_symptomatic()
         )
@@ -627,7 +764,8 @@ class PatientConsultationIcmr(PatientConsultation):
             self.patient.contact_with_confirmed_carrier
             and not self.is_symptomatic()
             and any(
-                contact_patient.relation_with_patient == PatientContactDetails.RelationEnum.FAMILY_MEMBER.value
+                contact_patient.relation_with_patient
+                == PatientContactDetails.RelationEnum.FAMILY_MEMBER.value
                 for contact_patient in self.patient.contacted_patients.all()
             )
         )
@@ -640,6 +778,7 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     """
     model to represent patient facility
     """
+
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES)
     other_symptoms = models.TextField(blank=True, null=True)

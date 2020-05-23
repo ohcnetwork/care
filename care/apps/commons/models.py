@@ -3,7 +3,6 @@ from django.db.models import QuerySet, signals
 
 
 class SoftDeleteQuerySet(QuerySet):
-
     def delete(self):
         self.update(active=False)
         for obj in self:
@@ -14,7 +13,6 @@ class SoftDeleteQuerySet(QuerySet):
 
 
 class ActiveObjectsManager(models.Manager):
-
     def get_queryset(self):
         return SoftDeleteQuerySet(self.model, using=self._db).filter(active=True)
 
@@ -26,6 +24,7 @@ class SoftDeleteModel(models.Model):
     """
     Abstract generic model used to allow an object to be soft deleted instead removing it from db.
     """
+
     active = models.BooleanField(default=True)
 
     objects = ActiveObjectsManager()
@@ -59,6 +58,7 @@ class TimeStampModel(models.Model):
     """
     Abstract Generic model for updated_at and created_at field
     """
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

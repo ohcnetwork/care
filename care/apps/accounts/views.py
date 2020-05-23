@@ -27,6 +27,7 @@ class StateListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet)
     """
     State list API view
     """
+
     queryset = accounts_models.State.objects.all()
     serializer_class = accounts_serializers.StateSerializer
 
@@ -35,6 +36,7 @@ class DistrictListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewS
     """
     District List API view
     """
+
     queryset = accounts_models.District.objects.all()
     serializer_class = accounts_serializers.DistrictSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -45,6 +47,7 @@ class LoginView(rest_generics.GenericAPIView):
     """
     Login Api for user
     """
+
     serializer_class = accounts_serializers.LoginSerializer
     permission_classes = (commons_permissions.AnonymousPermission,)
     login_response_serializer = accounts_serializers.LoginResponseSerializer
@@ -52,13 +55,16 @@ class LoginView(rest_generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(self.login_response_serializer(serializer.validated_data['user']).data)
+        return Response(
+            self.login_response_serializer(serializer.validated_data["user"]).data
+        )
 
 
 class LogoutView(APIView):
     """
     Logout Api for User
     """
+
     permission_classes = (rest_permissions.IsAuthenticated,)
 
     def delete(self, request, *args, **kwargs):
