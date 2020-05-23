@@ -164,9 +164,9 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
-    clinical_status_updated_at = models.DateTimeField(blank=True, null=True)
-    portea_called_at = models.DateTimeField(blank=True, null=True,)
-    portea_able_to_connect = models.DateTimeField(blank=True, null=True,)
+    clinical_status_updated_at = models.DateTimeField(null=True, blank=True)
+    portea_called_at = models.DateTimeField(null=True, blank=True)
+    portea_able_to_connect = models.DateTimeField(null=True, blank=True)
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = ActiveObjectsManager()
@@ -201,7 +201,7 @@ class Patient(SoftDeleteTimeStampedModel):
         self.year_of_birth = (
             self.date_of_birth.year
             if self.date_of_birth is not None
-            else datetime.datetime.now().year - self.age
+            else 0
         )
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
