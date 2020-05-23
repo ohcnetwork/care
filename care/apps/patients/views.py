@@ -18,3 +18,9 @@ class PatientViewSet(rest_viewsets.ModelViewSet):
 
     queryset = patient_models.Patient.objects.all()
     serializer_class = patient_serializers.PatientSerializer
+
+
+class PatientGroupViewSet(rest_viewsets.ModelViewSet):
+
+    queryset = patient_models.PatientGroup.objects.all()
+    serializer_class = patient_serializers.PatientGroupSerializer

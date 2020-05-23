@@ -6,7 +6,7 @@ from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
-from apps.commons.constants import GENDER_CHOICES
+from apps.commons.constants import GENDER_CHOICES, FIELDS_CHARACTER_LIMITS
 from apps.commons.models import SoftDeleteTimeStampedModel
 from apps.commons.validators import phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -14,6 +14,21 @@ from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from libs.jsonfield import JSONField
+
+class PatientGroup(SoftDeleteTimeStampedModel):
+    """
+    model to represent patient Group
+    """
+
+    name = models.CharField(
+        max_length=FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the patient group",
+    )
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}<>{self.description}"
 
 
 class Patient(SoftDeleteTimeStampedModel):
@@ -154,9 +169,19 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
+    patient_group = models.ForeignKey(
+        PatientGroup,
+        on_delete=models.PROTECT,
+        related_name="group",
+        null=True,
+        blank=True,
+    )
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = ActiveObjectsManager()
+
+    class Meta:
+        unique_together = ('aadhar_no','passport_no','patient_group')
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -792,3 +817,24 @@ class PatientFacility(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
+
+class PatientGroup(SoftDeleteTimeStampedModel):
+    """
+    model to represent patient facility
+    """
+
+    name = models.CharField(
+        max_length=FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the patient group",
+    )
+    description = models.TextField()
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
+    symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES)
+    other_symptoms = models.TextField(blank=True, null=True)
+    reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
+    created_date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.patient.name}<>{self.reason}"
+
