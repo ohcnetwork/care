@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 
 from djangoql.admin import DjangoQLSearchMixin
+from import_export.admin import ImportExportModelAdmin 
 
 from apps.facility import models as accounts_models
 
@@ -45,7 +46,7 @@ class StateFilter(SimpleListFilter):
         return queryset.filter(state__name=self.value())
 
 
-class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+class FacilityAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
     search_fields = ["name"]
     list_filter = [StateFilter, DistrictFilter]
     djangoql_completion_enabled_by_default = True

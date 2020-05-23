@@ -2,17 +2,19 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 
+from import_export.admin import ImportExportModelAdmin 
+
 from apps.accounts import (
     models as accounts_models,
     forms as accounts_forms,
 )
 
 
-class StateAdmin(admin.ModelAdmin):
+class StateAdmin(ImportExportModelAdmin):
     search_fields = ("name",)
 
 
-class DistrictAdmin(admin.ModelAdmin):
+class DistrictAdmin(ImportExportModelAdmin):
     raw_id_fields = ("state",)
     search_fields = ("name",)
 
