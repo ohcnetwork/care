@@ -7,11 +7,16 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from apps.accounts import models as common_accounts_models
-from apps.commons import models as commons_models, validators as commons_validators
+from apps.commons import (
+    models as commons_models,
+    validators as commons_validators,
+    constants as commons_constants,
+)
 from apps.facility import (
     constants as commons_facility_constants,
     validators as commons_facility_validators,
 )
+
 
 User = get_user_model()
 
@@ -372,3 +377,33 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_users"
     )
+
+
+class TestingLab(commons_models.SoftDeleteTimeStampedModel):
+    """
+    model for the lab associated with the patient sample test
+    """
+
+    LAB_TYPE_CHOICES = [
+        (commons_facility_constants.LAB_TYPE_CHOICES.AC, "A1C"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.BC, "BLOOD COUNT TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.DI, "DIAGNOSTIC IMAGING"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.HT, "HEPATITIS TESTING"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.KT, "KIDNEY TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.TT, "THYROID TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.UL, "URINALYSIS"),
+    ]
+    name = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the Testing Lab",
+    )
+    address = models.TextField()
+    lab_type = models.IntegerField(
+        choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
+    )
+    district = models.ForeignKey(
+        common_accounts_models.District, on_delete=models.PROTECT, related_name="labs",
+    )
+
+    def __str__(self):
+        return f"{self.name}<>{self.district.name}"
