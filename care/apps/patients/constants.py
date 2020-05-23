@@ -1,7 +1,8 @@
 from collections import namedtuple
 
-CURRENT_HEALTH_CHOICES = namedtuple(
-    'type', ["ND", "RV", "WR", "SQ", "BT"])(0, 1, 2, 3, 4)
+CURRENT_HEALTH_CHOICES = namedtuple("type", ["ND", "RV", "WR", "SQ", "BT"])(
+    0, 1, 2, 3, 4
+)
 
 
 CATEGORY_CHOICES = [
@@ -12,7 +13,26 @@ CATEGORY_CHOICES = [
 ]
 
 SYMPTOM_TYPE_CHOICES = namedtuple(
-    'type', ["AS", "FV", "ST", "CO", "BT","MY","AD","VD","OT","SA","SP","NA","CP","HP","ND","BA"])(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+    "type",
+    [
+        "AS",
+        "FV",
+        "ST",
+        "CO",
+        "BT",
+        "MY",
+        "AD",
+        "VD",
+        "OT",
+        "SA",
+        "SP",
+        "NA",
+        "CP",
+        "HP",
+        "ND",
+        "BA",
+    ],
+)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
 
 SYMPTOM_CHOICES = [
     (SYMPTOM_TYPE_CHOICES.AS, "ASYMPTOMATIC"),
@@ -33,73 +53,85 @@ SYMPTOM_CHOICES = [
     (SYMPTOM_TYPE_CHOICES.BA, "BODY ACHE"),
 ]
 
-DISEASE_CHOICES_MAP = namedtuple(
-    'type', ["NO", "DB", "HD", "HT", "KD", "LA","CA"])(1, 2, 3, 4, 5, 6, 7)
+DISEASE_CHOICES_MAP = namedtuple("type", ["NO", "DB", "HD", "HT", "KD", "LA", "CA"])(
+    1, 2, 3, 4, 5, 6, 7
+)
 
 DISEASE_CHOICES = [
-        (DISEASE_CHOICES_MAP.NO, "NO DISEASE"),
-        (DISEASE_CHOICES_MAP.DB, "DIABETES"),
-        (DISEASE_CHOICES_MAP.HD, "HEART DISEASE"),
-        (DISEASE_CHOICES_MAP.HT, "HYPERTENSION"),
-        (DISEASE_CHOICES_MAP.KD, "KIDNEY DISEASES"),
-        (DISEASE_CHOICES_MAP.LA, "LUNG DISEASES/ASTHMA"),
-        (DISEASE_CHOICES_MAP.CA, "CANCER"),
-    ]
-
-SuggestionChoices = namedtuple(
-    'type', ["HI", "A", "R"])("HI","A", "R")
-    
-SUGGESTION_CHOICES = [
-        (SuggestionChoices.HI, "HOME ISOLATION"),
-        (SuggestionChoices.A, "ADMISSION"),
-        (SuggestionChoices.R, "REFERRAL"),
+    (DISEASE_CHOICES_MAP.NO, "NO DISEASE"),
+    (DISEASE_CHOICES_MAP.DB, "DIABETES"),
+    (DISEASE_CHOICES_MAP.HD, "HEART DISEASE"),
+    (DISEASE_CHOICES_MAP.HT, "HYPERTENSION"),
+    (DISEASE_CHOICES_MAP.KD, "KIDNEY DISEASES"),
+    (DISEASE_CHOICES_MAP.LA, "LUNG DISEASES/ASTHMA"),
+    (DISEASE_CHOICES_MAP.CA, "CANCER"),
 ]
 
-ADMIT_CHOICES = namedtuple(
-    'type', ["NA", "IR", "ICU", "ICV", "HI"])(None, 1, 2, 3, 20)
+SuggestionChoices = namedtuple("type", ["HI", "A", "R"])("HI", "A", "R")
 
-SAMPLE_TYPE_CHOICES = namedtuple(
-    'type', ["UN", "BA", "TS", "BE", "AS","CS","OT"])(0, 1, 2, 3, 4, 5, 6)
+SUGGESTION_CHOICES = [
+    (SuggestionChoices.HI, "HOME ISOLATION"),
+    (SuggestionChoices.A, "ADMISSION"),
+    (SuggestionChoices.R, "REFERRAL"),
+]
 
-SAMPLE_TEST_RESULT_MAP = namedtuple(
-    'type', ["P", "N", "A","I"])(1, 2, 3, 4)
+ADMIT_CHOICES = namedtuple("type", ["NA", "IR", "ICU", "ICV", "HI"])(None, 1, 2, 3, 20)
+
+SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "OT"])(
+    0, 1, 2, 3, 4, 5, 6
+)
+
+SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["P", "N", "A", "I"])(1, 2, 3, 4)
 
 SAMPLE_FLOW_RULES = {
     # previous rule      # next valid rules
     "REQUEST_SUBMITTED": {"APPROVED", "DENIED",},
-    "APPROVED": {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
+    "APPROVED": {
+        "SENT_TO_COLLECTON_CENTRE",
+        "RECEIVED_AND_FORWARED",
+        "RECEIVED_AT_LAB",
+        "COMPLETED",
+    },
     "DENIED": {"REQUEST_SUBMITTED"},
-    "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
+    "SENT_TO_COLLECTON_CENTRE": {
+        "RECEIVED_AND_FORWARED",
+        "RECEIVED_AT_LAB",
+        "COMPLETED",
+    },
     "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB", "COMPLETED"},
     "RECEIVED_AT_LAB": {"COMPLETED"},
 }
 
-SAMPLE_TEST_FLOW_MAP = namedtuple(
-    'type', ["RS", "AP", "DN", "SC", "RF","RL","CT"])(1, 2, 3, 4, 5, 6, 7)
+SAMPLE_TEST_FLOW_MAP = namedtuple("type", ["RS", "AP", "DN", "SC", "RF", "RL", "CT"])(
+    1, 2, 3, 4, 5, 6, 7
+)
 
 SAMPLE_TEST_FLOW_CHOICES = [
-    (SAMPLE_TEST_FLOW_MAP.RS, 'REQUEST_SUBMITTED'),
-    (SAMPLE_TEST_FLOW_MAP.AP, 'APPROVED'),
-    (SAMPLE_TEST_FLOW_MAP.DN, 'DENIED'),
-    (SAMPLE_TEST_FLOW_MAP.SC, 'SENT_TO_COLLECTON_CENTRE'),
-    (SAMPLE_TEST_FLOW_MAP.RF, 'RECEIVED_AND_FORWARED'),
-    (SAMPLE_TEST_FLOW_MAP.RL, 'RECEIVED_AT_LAB'),
-    (SAMPLE_TEST_FLOW_MAP.CT, 'COMPLETED'),
+    (SAMPLE_TEST_FLOW_MAP.RS, "REQUEST_SUBMITTED"),
+    (SAMPLE_TEST_FLOW_MAP.AP, "APPROVED"),
+    (SAMPLE_TEST_FLOW_MAP.DN, "DENIED"),
+    (SAMPLE_TEST_FLOW_MAP.SC, "SENT_TO_COLLECTON_CENTRE"),
+    (SAMPLE_TEST_FLOW_MAP.RF, "RECEIVED_AND_FORWARED"),
+    (SAMPLE_TEST_FLOW_MAP.RL, "RECEIVED_AT_LAB"),
+    (SAMPLE_TEST_FLOW_MAP.CT, "COMPLETED"),
 ]
 
-SOURCE_CHOICES = namedtuple(
-    'type', ["CA", "CT", "ST"])(10, 20, 30)
+SOURCE_CHOICES = namedtuple("type", ["CA", "CT", "ST"])(10, 20, 30)
 
-DISEASE_STATUS_CHOICES = namedtuple(
-    'type', ["SU", "PO", "NE","RE","RD","EX"])(1, 2, 3, 4, 5, 6)
+DISEASE_STATUS_CHOICES = namedtuple("type", ["SU", "PO", "NE", "RE", "RD", "EX"])(
+    1, 2, 3, 4, 5, 6
+)
 
-OCCUPATION_CHOICES = namedtuple(
-    'type', ["MW", "GE", "PE","HM","WA","OT"])(2, 3, 4, 5, 6, 7)        
+OCCUPATION_CHOICES = namedtuple("type", ["MW", "GE", "PE", "HM", "WA", "OT"])(
+    2, 3, 4, 5, 6, 7
+)
 
 RELATION_CHOICES = namedtuple(
-    'type', ["FM","FR", "RL", "NG","TT","WH","WS","WO","WP","OT"])(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)   
+    "type", ["FM", "FR", "RL", "NG", "TT", "WH", "WS", "WO", "WP", "OT"]
+)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 MODE_CONTACT_CHOICES = namedtuple(
-    'type', ["TBF","DPC", "CUI", "LSH","CLWP","CPA","HCWP","SSWE","TTWE"])(1, 2, 3, 4, 5, 6, 7, 8, 9)   
+    "type", ["TBF", "DPC", "CUI", "LSH", "CLWP", "CPA", "HCWP", "SSWE", "TTWE"]
+)(1, 2, 3, 4, 5, 6, 7, 8, 9)
 # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
 TOUCHED_BODY_FLUIDS = 1
 # "2. Had direct physical contact with the body of the patient
@@ -119,5 +151,4 @@ HEALTH_CARE_WITH_PPE = 7
 # same room/similar and not having a high risk exposure"
 SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
 # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
-TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9      
- 
+TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9

@@ -3,9 +3,8 @@ from django.contrib.admin import SimpleListFilter
 
 from djangoql.admin import DjangoQLSearchMixin
 
-from apps.facility import (
-    models as accounts_models,
-)
+from apps.facility import models as accounts_models
+
 
 class BuildingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
@@ -19,7 +18,9 @@ class DistrictFilter(SimpleListFilter):
     parameter_name = "district"
 
     def lookups(self, request, model_admin):
-        district = accounts_models.Facility.objects.values_list("district__name", flat=True)
+        district = accounts_models.Facility.objects.values_list(
+            "district__name", flat=True
+        )
         return list(map(lambda x: (x, x), set(district)))
 
     def queryset(self, request, queryset):
@@ -35,7 +36,7 @@ class StateFilter(SimpleListFilter):
     parameter_name = "state"
 
     def lookups(self, request, model_admin):
-        state =  accounts_models.Facility.objects.values_list("state__name", flat=True)
+        state = accounts_models.Facility.objects.values_list("state__name", flat=True)
         return list(map(lambda x: (x, x), set(state)))
 
     def queryset(self, request, queryset):

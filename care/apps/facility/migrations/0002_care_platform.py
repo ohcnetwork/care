@@ -6,24 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0001_care_platform'),
+        ("facility", "0001_care_platform"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ambulance',
-            options={'verbose_name_plural': 'ambulances'},
+            name="ambulance", options={"verbose_name_plural": "ambulances"},
         ),
         migrations.AlterModelOptions(
-            name='ambulancedriver',
-            options={'verbose_name_plural': 'AmbulancesDrivers'},
+            name="ambulancedriver",
+            options={"verbose_name_plural": "AmbulancesDrivers"},
         ),
         migrations.AlterModelOptions(
-            name='facilitylocalgovtbody',
-            options={'verbose_name_plural': 'FacilityLocalGovtBodies'},
+            name="facilitylocalgovtbody",
+            options={"verbose_name_plural": "FacilityLocalGovtBodies"},
         ),
         migrations.RemoveConstraint(
-            model_name='facilitylocalgovtbody',
-            name='cons_facilitylocalgovtbody_only_one_null',
+            model_name="facilitylocalgovtbody",
+            name="cons_facilitylocalgovtbody_only_one_null",
         ),
     ]
