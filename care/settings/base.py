@@ -228,7 +228,6 @@ class Settings(LoggerSettingsMixin, Configuration):
                     "django.template.context_processors.static",
                     "django.template.context_processors.tz",
                     "django.contrib.messages.context_processors.messages",
-                    "care.utils.context_processors.settings_context",
                 ],
             },
         }

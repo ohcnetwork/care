@@ -12,7 +12,7 @@ from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTe
 from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
-from utils.models.jsonfield import JSONField
+from libs.jsonfield import JSONField
 
 class Patient(SoftDeleteTimeStampedModel):
     """
