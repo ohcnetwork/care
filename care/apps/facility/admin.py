@@ -116,7 +116,7 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class TestingLabAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
-    model = accounts_models.AmbulanceDriver
+    model = accounts_models.TestingLab
     djangoql_completion_enabled_by_default = True
 
 
