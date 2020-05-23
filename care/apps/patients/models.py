@@ -393,7 +393,7 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     testing_lab = models.ForeignKey(
         TestingLab,
         on_delete=models.PROTECT,
-        related_name="testing_lab",
+        related_name="samples",
         null=True,
         blank=True,
     )

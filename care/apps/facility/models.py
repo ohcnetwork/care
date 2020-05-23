@@ -398,7 +398,7 @@ class TestingLab(commons_models.SoftDeleteTimeStampedModel):
     district = models.ForeignKey(
         common_accounts_models.District,
         on_delete=models.PROTECT,
-        related_name="district",
+        related_name="labs",
     )
 
     def __str__(self):
