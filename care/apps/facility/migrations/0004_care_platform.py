@@ -7,33 +7,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('commons', '0001_care_platform'),
-        ('facility', '0003_care_platform'),
+        ("commons", "0001_care_platform"),
+        ("facility", "0003_care_platform"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FacilityType',
+            name="FacilityType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=255)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.AddField(
-            model_name='facility',
-            name='owned_by',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='commons.OwnershipType'),
+            model_name="facility",
+            name="owned_by",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commons.OwnershipType",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='facility',
-            name='facility_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='facility.FacilityType'),
+            model_name="facility",
+            name="facility_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="facility.FacilityType"
+            ),
         ),
     ]
