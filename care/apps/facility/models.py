@@ -96,13 +96,19 @@ class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
         verbose_name_plural = "AmbulancesDrivers"
 
 
+class FacilityType(commons_models.SoftDeleteTimeStampedModel):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Facility(commons_models.SoftDeleteTimeStampedModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    facility_type = models.IntegerField(
-        choices=commons_facility_constants.FACILITY_TYPES
-    )
+    facility_type = models.ForeignKey(FacilityType, on_delete=models.CASCADE)
+    owned_by = models.ForeignKey(commons_models.OwnershipType, on_delete=models.CASCADE)
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(
