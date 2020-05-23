@@ -148,3 +148,7 @@ AMBULANCE_TYPES = [
 ]
 
 INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
+
+LAB_TYPE_CHOICES = namedtuple(
+    "LAB_TYPE_CHOICES", ["AC", "BC", "DI", "HT", "KT", "TT", "UL"]
+)(1, 2, 3, 4, 5, 6, 7)

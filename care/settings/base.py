@@ -115,6 +115,7 @@ class Settings(LoggerSettingsMixin, Configuration):
         "django.contrib.postgres",
         "django_celery_beat",
         'rest_framework.authtoken',
+        "import_export",
     ]
 
     LOCAL_APPS = [
