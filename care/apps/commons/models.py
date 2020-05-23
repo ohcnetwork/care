@@ -73,3 +73,10 @@ class SoftDeleteTimeStampedModel(SoftDeleteModel, TimeStampModel):
 
     class Meta(SoftDeleteModel.Meta, TimeStampModel.Meta):
         abstract = True
+
+
+class OwnershipType(SoftDeleteTimeStampedModel):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.name}"
