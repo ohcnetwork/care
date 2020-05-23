@@ -3,8 +3,19 @@ from djangoql.admin import DjangoQLSearchMixin
 from apps.patients import models
 
 
+class PatientSymptomInline(admin.TabularInline):
+    model = models.PatientSymptom
+    min_num = 0
+    extra = 1
+
+class PatientDiseaseInline(admin.TabularInline):
+    model = models.PatientDisease
+    min_num = 0
+    extra = 1
+
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "gender")
+    inlines = [PatientSymptomInline, PatientDiseaseInline]
     djangoql_completion_enabled_by_default = True
 
 
@@ -14,13 +25,6 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
-admin.site.register(models.PatientSampleTest, PatientSampleAdmin)
-admin.site.register(models.PatientConsultation)
-admin.site.register(models.DailyRound)
-admin.site.register(models.PatientSampleFlow)
-admin.site.register(models.PatientSearch)
-admin.site.register(models.PatientMetaInfo)
-admin.site.register(models.PatientContactDetails)
 admin.site.register(models.Disease)
-admin.site.register(models.FacilityPatientStatsHistory)
 admin.site.register(models.PatientGroup)
+admin.site.register(models.CovidSymptom)

@@ -98,7 +98,7 @@ class Settings(LoggerSettingsMixin, Configuration):
         "crispy_forms",
         "allauth",
         "allauth.account",
-        "allauth.socialaccount",
+        # "allauth.socialaccount",
         "storages",
         "rest_framework",
         "drf_yasg",
@@ -113,7 +113,7 @@ class Settings(LoggerSettingsMixin, Configuration):
         "djangoql",
         "maintenance_mode",
         "django.contrib.postgres",
-        "django_celery_beat",
+        # "django_celery_beat",
         'rest_framework.authtoken',
         "import_export",
     ]
