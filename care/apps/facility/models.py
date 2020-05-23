@@ -103,6 +103,7 @@ class Facility(commons_models.SoftDeleteTimeStampedModel):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     facility_type = models.ForeignKey(FacilityType, on_delete=models.CASCADE)
+    owned_by = models.ForeignKey(commons_models.OwnershipType, on_delete=models.CASCADE)
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(
