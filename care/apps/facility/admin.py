@@ -6,7 +6,6 @@ from djangoql.admin import DjangoQLSearchMixin
 from apps.facility import models as accounts_models
 
 
-
 class BuildingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     search_fields = ["name"]

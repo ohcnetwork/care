@@ -6,19 +6,12 @@ from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-<<<<<<< HEAD
-from apps.accounts import (
-    models as common_accounts_models
-)
+from apps.accounts import models as common_accounts_models
 from apps.commons import (
     models as commons_models,
     validators as commons_validators,
     constants as commons_constants
 )
-=======
-from apps.accounts import models as common_accounts_models
-from apps.commons import models as commons_models, validators as commons_validators
->>>>>>> ad8511d904d590248c4fd3cdc31c15f0765dad70
 from apps.facility import (
     constants as commons_facility_constants,
     validators as commons_facility_validators,
@@ -29,17 +22,12 @@ User = get_user_model()
 
 
 class Ambulance(commons_models.SoftDeleteTimeStampedModel):
-<<<<<<< HEAD
-    vehicle_number = models.CharField(max_length=20, validators=[
-                                      commons_facility_validators.vehicle_number_regex], unique=True, db_index=True)
-=======
     vehicle_number = models.CharField(
         max_length=20,
         validators=[commons_facility_validators.vehicle_number_regex],
         unique=True,
         db_index=True,
     )
->>>>>>> ad8511d904d590248c4fd3cdc31c15f0765dad70
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(
         max_length=14, validators=[commons_validators.phone_number_regex]

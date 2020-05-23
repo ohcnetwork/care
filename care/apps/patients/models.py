@@ -390,8 +390,13 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     fast_track = models.TextField(default="")
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
-    testing_lab = models.ForeignKey(TestingLab, on_delete=models.PROTECT,
-                                    related_name="testing_lab", null=True, blank=True)
+    testing_lab = models.ForeignKey(
+        TestingLab,
+        on_delete=models.PROTECT,
+        related_name="testing_lab",
+        null=True,
+        blank=True,
+    )
 
     @property
     def flow(self):
