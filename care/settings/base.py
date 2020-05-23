@@ -115,6 +115,7 @@ class Settings(LoggerSettingsMixin, Configuration):
         "django.contrib.postgres",
         "django_celery_beat",
         'rest_framework.authtoken',
+        "import_export",
     ]
 
     LOCAL_APPS = [
@@ -316,7 +317,6 @@ class Settings(LoggerSettingsMixin, Configuration):
 
 
     ACCOUNT_EMAIL_VERIFICATION = False
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     LOGOUT_REDIRECT_URL = "/"
     STAFF_ACCOUNT_TYPE = 10
 

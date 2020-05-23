@@ -1,0 +1,21 @@
+id,name,facility_type,address,district,oxygen_capacity
+1,dummy,1,"Hotel Apra Inn, 15A/61 WEA Colony Ajmal Khan Road, Karol Bagh",2,0
+2,dummy,1,"Hotel Apra Inn, 15A/61 WEA Colony Ajmal Khan Road, Karol Bagh",2,0
+3,dummy,1,"Swami Parmanand Prakritik Chikitsalaya Yoga & Anushandhan Kendra, West Vinod Nagar",3,0
+4,dummy,1,"Swami Parmanand Prakritik Chikitsalaya Yoga & Anushandhan Kendra, West Vinod Nagar",3,0
+5,dummy,1,"Yogesh Kansal, Shrine Hospital, Main Bawana Road, Sector 17, Rohini (Connected with MVH Hostpital)",6,0
+6,dummy,1,"Yogesh Kansal, Shrine Hospital, Main Bawana Road, Sector 17, Rohini (Connected with MVH Hostpital)",6,0
+7,dummy,1,"Maharaja Agraseen Bhawan CS Pocket 12, Rithala Road, Sector 5, Rohini",8,0
+8,dummy,1,"Khosla Hospital, Shalimar Bagh",8,0
+9,dummy,1,"Shri Satnam Bhawan, Block C-3, Phase-2, Ashok Vihar, Delhi",8,0
+10,dummy,1,"Quanrantine faclity, DUSIB flats, SE Block, Sultan Puri",8,0
+11,dummy,1,"Prime Stay B & B, Haiderpur, Shalimar Bagh",8,
+12,dummy,1,"Hotel Park, Shahdara",4,0
+13,dummy,1,"Hotel Park, Shahdara",4,0
+14,dummy,1,"Chatterpur Belemonde Hotel, MANDIR Road, Sahoorpur Extention, IIPM, Satbari, New Delhi road, Sahoorpur, Extension, Mehraul",9,0
+15,dummy,1,"Bensups Hospital, Dwarka",10,0
+16,dummy,1,"BH Salvas, Chandan Park, Jharoda Road, Najabgarh",10,0
+17,dummy,1,"The Exotica Grand, 1/12, West Patel Nagar",11,0
+18,dummy,1,"Golden Tulip Hotel, Hari Nagar",11,0
+19,dummy,1,"Swift Hotel in, Meera Bagh",11,0
+20,dummy,1,"Hotel Amrapali Grand, 2/16 East Patel Nagar",11,0

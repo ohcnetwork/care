@@ -17,23 +17,29 @@ class State(commons_models.SoftDeleteTimeStampedModel):
     """
     Model to store States
     """
-    name = models.CharField(max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the State')
+
+    name = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the State",
+    )
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
 
 class District(commons_models.SoftDeleteTimeStampedModel):
     """
     Model to store districts
     """
+
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     name = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the District'
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the District",
     )
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
 
 class LocalBody(commons_models.SoftDeleteTimeStampedModel):
@@ -43,29 +49,40 @@ class LocalBody(commons_models.SoftDeleteTimeStampedModel):
 
     district = models.ForeignKey(District, on_delete=models.PROTECT)
     name = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the Local Body'
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the Local Body",
     )
     body_type = models.PositiveIntegerField(
-        choices=accounts_constants.LOCAL_BODY_CHOICES, help_text='denotes the type of local body'
+        choices=accounts_constants.LOCAL_BODY_CHOICES,
+        help_text="denotes the type of local body",
     )
     localbody_code = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['LOCALBODY_CODE'],
-        blank=True, help_text='Code of local body'
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["LOCALBODY_CODE"],
+        blank=True,
+        help_text="Code of local body",
     )
 
     class Meta:
-        unique_together = ('district', 'body_type', 'name',)
+        unique_together = (
+            "district",
+            "body_type",
+            "name",
+        )
 
     def __str__(self):
-        return f'{self.name} ({self.body_type})'
+        return f"{self.name} ({self.body_type})"
 
 
 class Skill(commons_models.SoftDeleteTimeStampedModel):
     """
     Model to store skills of auser
     """
-    name = models.CharField(max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the skill')
-    description = models.TextField(help_text='description of skill')
+
+    name = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the skill",
+    )
+    description = models.TextField(help_text="description of skill")
 
     def __str__(self):
         return self.name
@@ -75,8 +92,11 @@ class CustomUserManager(UserManager):
     """
     Customer object manager for users
     """
+
     def get_queryset(self):
-        return commons_models.SoftDeleteQuerySet(self.model, using=self._db).filter(active=True)
+        return commons_models.SoftDeleteQuerySet(self.model, using=self._db).filter(
+            active=True
+        )
 
     def hard_delete(self):
         return self.get_queryset().hard_delete()
@@ -86,7 +106,11 @@ class UserType(commons_models.SoftDeleteTimeStampedModel):
     """
     Model to stores the types of user
     """
-    name = models.CharField(max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Type of User')
+
+    name = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Type of User",
+    )
 
     def __str__(self):
         return self.name
@@ -96,14 +120,21 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
     """
     Model to represent a user
     """
-    email = models.EmailField(_('email address'), unique=True, blank=True)
-    user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True, blank=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+
+    email = models.EmailField(_("email address"), unique=True, blank=True)
+    user_type = models.ForeignKey(
+        UserType, on_delete=models.CASCADE, null=True, blank=True
+    )
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.PROTECT, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
     phone_number = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['PHONE_NUMBER'],
-        validators=[commons_validators.phone_number_regex]
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["PHONE_NUMBER"],
+        validators=[commons_validators.phone_number_regex],
     )
     gender = models.IntegerField(choices=commons_constants.GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
@@ -111,7 +142,7 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
     verified = models.BooleanField(default=False)
     history = HistoricalRecords()
 
-    REQUIRED_FIELDS = ['email', 'phone_number', 'age', 'gender']
+    REQUIRED_FIELDS = ["email", "phone_number", "age", "gender"]
 
     objects = CustomUserManager()
 

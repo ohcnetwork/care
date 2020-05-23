@@ -1,9 +1,7 @@
 from rest_framework import viewsets, mixins, permissions
 
-from apps.facility import (
-    models as facility_models,
-    serializers as facility_serializers
-)
+from apps.facility import models as facility_models, serializers as facility_serializers
+
 
 class FacilityListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
