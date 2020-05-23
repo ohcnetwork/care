@@ -8,7 +8,7 @@ import fernet_fields.fields
 import multiselectfield.db.fields
 import partial_index
 import simple_history.models
-import utils.models.jsonfield
+import libs.jsonfield
 
 
 class Migration(migrations.Migration):
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
                 ('estimated_contact_date', models.DateTimeField(blank=True, null=True)),
                 ('past_travel', models.BooleanField(default=False, verbose_name='Travelled to Any Foreign Countries in the last 28 Days')),
                 ('countries_travelled_old', models.TextField(blank=True, editable=False, null=True, verbose_name='Countries Patient has Travelled to')),
-                ('countries_travelled', utils.models.jsonfield.JSONField(blank=True, null=True, verbose_name='Countries Patient has Travelled to')),
+                ('countries_travelled', libs.jsonfield.JSONField(blank=True, null=True, verbose_name='Countries Patient has Travelled to')),
                 ('date_of_return', models.DateTimeField(blank=True, null=True, verbose_name='Return Date from the Last Country if Travelled')),
                 ('present_health', models.TextField(blank=True, default='', verbose_name="Patient's Current Health Details")),
                 ('ongoing_medication', models.TextField(blank=True, default='', verbose_name='Already pescribed medication if any')),
@@ -140,7 +140,7 @@ class Migration(migrations.Migration):
                 ('estimated_contact_date', models.DateTimeField(blank=True, null=True)),
                 ('past_travel', models.BooleanField(default=False, verbose_name='Travelled to Any Foreign Countries in the last 28 Days')),
                 ('countries_travelled_old', models.TextField(blank=True, editable=False, null=True, verbose_name='Countries Patient has Travelled to')),
-                ('countries_travelled', utils.models.jsonfield.JSONField(blank=True, null=True, verbose_name='Countries Patient has Travelled to')),
+                ('countries_travelled', libs.jsonfield.JSONField(blank=True, null=True, verbose_name='Countries Patient has Travelled to')),
                 ('date_of_return', models.DateTimeField(blank=True, null=True, verbose_name='Return Date from the Last Country if Travelled')),
                 ('present_health', models.TextField(blank=True, default='', verbose_name="Patient's Current Health Details")),
                 ('ongoing_medication', models.TextField(blank=True, default='', verbose_name='Already pescribed medication if any')),
