@@ -28,3 +28,5 @@ LOCAL_BODY_CHOICES = (
     (LOCAL_BODIES.CORPORATION, "Corporation"),
     (LOCAL_BODIES.OTHERS, "Others"),
 )
+
+RESET_PASSWORD_BASE_URL = "reset-password"

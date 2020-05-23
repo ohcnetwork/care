@@ -1,9 +1,19 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.db.utils import IntegrityError
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext as _
 
 from rest_framework import serializers as rest_serializers
 from rest_framework.authtoken.models import Token
 
-from apps.accounts import models as accounts_models
+from apps.accounts import (
+    mailers as accounts_mailers,
+    models as accounts_models,
+)
+
+User = get_user_model()
 
 
 class UserSerializer(rest_serializers.ModelSerializer):
@@ -84,14 +94,7 @@ class LoginResponseSerializer(rest_serializers.ModelSerializer):
 
     class Meta:
         model = accounts_models.User
-        fields = (
-            "id",
-            "first_name",
-            "last_name",
-            "email",
-            "token",
-            "local_body",
-        )
+        fields = ('id', 'token')
 
     def get_token(self, instance):
         token, _ = Token.objects.get_or_create(user=instance)
@@ -104,3 +107,68 @@ class LocalBodySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = accounts_models.LocalBody
         fields = ("district", "name", "body_type", "localbody_code")
+
+
+class ForgotPasswordLinkSerializer(rest_serializers.Serializer):
+    """
+    Serializer for sending reset password link
+    """
+
+    email = rest_serializers.EmailField()
+
+    def validate_email(self, email):
+        self.user = User.all_objects.filter(email=email).first()
+        if not self.user:
+            raise rest_serializers.ValidationError(
+                "This email does not exist in our records"
+            )
+        return email
+
+    def save(self):
+        """
+        Generates a one-use only link for resetting password and sends to the user.
+        """
+        accounts_mailers.ForgotPasswordMailer(
+            user=self.user,
+            uid=urlsafe_base64_encode(force_bytes(self.user.pk)),
+            token=default_token_generator.make_token(self.user),
+        ).send()
+
+
+class BaseSetPasswordSerializer(rest_serializers.ModelSerializer):
+    """
+    Base Serializer for setting password
+    """
+
+    password_1 = rest_serializers.CharField(write_only=True)
+    password_2 = rest_serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        if validated_data.get("password_1") != validated_data.get("password_2"):
+            raise rest_serializers.ValidationError("The two passwords do not match")
+        return validated_data
+
+    class Meta:
+        fields = (
+            "password_1",
+            "password_2",
+        )
+
+
+class ResetPasswordSerializer(BaseSetPasswordSerializer):
+    class Meta:
+        model = User
+        fields = BaseSetPasswordSerializer.Meta.fields
+
+    def save(self):
+        user = self.instance
+        user.set_password(self.validated_data.get("password_1"))
+        user.is_active = True
+        try:
+            user.save()
+        except IntegrityError:
+            raise rest_serializers.ValidationError(
+                "Some Error Occurred. Please try again later."
+            )
+        return user
