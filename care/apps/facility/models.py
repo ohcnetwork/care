@@ -396,9 +396,7 @@ class TestingLab(commons_models.SoftDeleteTimeStampedModel):
         choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
     )
     district = models.ForeignKey(
-        common_accounts_models.District,
-        on_delete=models.PROTECT,
-        related_name="labs",
+        common_accounts_models.District, on_delete=models.PROTECT, related_name="labs",
     )
 
     def __str__(self):
