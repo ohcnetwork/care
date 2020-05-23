@@ -171,7 +171,7 @@ class Patient(SoftDeleteTimeStampedModel):
         null=True, blank=True, verbose_name="Patient's information received date"
     )
     cluster_group = models.ForeignKey(
-        "patients.PatientGroup",
+        PatientGroup,
         on_delete=models.PROTECT,
         related_name="group",
         null=True,
@@ -182,7 +182,11 @@ class Patient(SoftDeleteTimeStampedModel):
     objects = ActiveObjectsManager()
 
     class Meta:
-        unique_together = ("aadhar_no", "passport_no", "cluster_group")
+        unique_together = (
+            "aadhar_no",
+            "passport_no",
+            "cluster_group",
+        )
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
