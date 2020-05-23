@@ -116,24 +116,24 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class TestingLabAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
-    model = accounts_models.TestingLab
+    model = facility_models.TestingLab
     djangoql_completion_enabled_by_default = True
 
 
-admin.site.register(accounts_models.Ambulance, AmbulanceAdmin)
-admin.site.register(accounts_models.AmbulanceDriver, AmbulanceDriverAdmin)
-admin.site.register(accounts_models.Facility, FacilityAdmin)
-admin.site.register(accounts_models.FacilityLocalGovtBody)
-admin.site.register(accounts_models.HospitalDoctors)
-admin.site.register(accounts_models.FacilityCapacity, FacilityCapacityAdmin)
-admin.site.register(accounts_models.FacilityStaff, FacilityStaffAdmin)
-admin.site.register(accounts_models.Building, BuildingAdmin)
-admin.site.register(accounts_models.Room, RoomAdmin)
-admin.site.register(accounts_models.StaffRoomAllocation, StaffRoomAllocationAdmin)
-admin.site.register(accounts_models.InventoryItem, InventoryItemAdmin)
-admin.site.register(accounts_models.Inventory, InventoryAdmin)
-admin.site.register(accounts_models.InventoryLog)
-admin.site.register(accounts_models.FacilityVolunteer, FacilityVolunteerAdmin)
-admin.site.register(accounts_models.FacilityUser)
-admin.site.register(accounts_models.TestingLab, TestingLabAdmin)
+admin.site.register(facility_models.Ambulance, AmbulanceAdmin)
+admin.site.register(facility_models.AmbulanceDriver, AmbulanceDriverAdmin)
+admin.site.register(facility_models.Facility, FacilityAdmin)
+admin.site.register(facility_models.FacilityLocalGovtBody)
+admin.site.register(facility_models.HospitalDoctors)
+admin.site.register(facility_models.FacilityCapacity, FacilityCapacityAdmin)
+admin.site.register(facility_models.FacilityStaff, FacilityStaffAdmin)
+admin.site.register(facility_models.Building, BuildingAdmin)
+admin.site.register(facility_models.Room, RoomAdmin)
+admin.site.register(facility_models.StaffRoomAllocation, StaffRoomAllocationAdmin)
+admin.site.register(facility_models.InventoryItem, InventoryItemAdmin)
+admin.site.register(facility_models.Inventory, InventoryAdmin)
+admin.site.register(facility_models.InventoryLog)
+admin.site.register(facility_models.FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(facility_models.FacilityUser)
+admin.site.register(facility_models.TestingLab, TestingLabAdmin)
 admin.site.register(facility_models.FacilityType)
