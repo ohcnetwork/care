@@ -27,6 +27,8 @@ class UserSerializer(rest_serializers.ModelSerializer):
             "local_body",
             "age",
             "gender",
+            "phone_number",
+            "district"
         )
 
 
@@ -53,6 +55,7 @@ class DistrictSerializer(rest_serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "state_id"
         )
 
 

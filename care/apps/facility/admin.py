@@ -7,11 +7,6 @@ from import_export.admin import ImportExportModelAdmin
 from apps.facility import models as accounts_models
 
 
-class BuildingAdmin(admin.ModelAdmin):
-    autocomplete_fields = ["facility"]
-    search_fields = ["name"]
-
-
 class DistrictFilter(SimpleListFilter):
     """DistrictFilter """
 
@@ -53,7 +48,7 @@ class FacilityAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
 
 
 class FacilityStaffAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["facility", "staff"]
+    autocomplete_fields = ["facility"]
     djangoql_completion_enabled_by_default = True
 
 
@@ -88,24 +83,6 @@ class StaffRoomAllocationAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
-class AmbulanceDriverInline(DjangoQLSearchMixin, admin.TabularInline):
-    model = accounts_models.AmbulanceDriver
-    djangoql_completion_enabled_by_default = True
-
-
-class AmbulanceAdmin(admin.ModelAdmin):
-    search_fields = ["vehicle_number"]
-    inlines = [
-        AmbulanceDriverInline,
-    ]
-    djangoql_completion_enabled_by_default = True
-
-
-class AmbulanceDriverAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    autocomplete_fields = ["ambulance"]
-    djangoql_completion_enabled_by_default = True
-
-
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "age", "gender")
     djangoql_completion_enabled_by_default = True
@@ -120,19 +97,9 @@ class TestingLabAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
-admin.site.register(accounts_models.Ambulance, AmbulanceAdmin)
-admin.site.register(accounts_models.AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(accounts_models.Facility, FacilityAdmin)
-admin.site.register(accounts_models.FacilityLocalGovtBody)
-admin.site.register(accounts_models.HospitalDoctors)
-admin.site.register(accounts_models.FacilityCapacity, FacilityCapacityAdmin)
 admin.site.register(accounts_models.FacilityStaff, FacilityStaffAdmin)
-admin.site.register(accounts_models.Building, BuildingAdmin)
-admin.site.register(accounts_models.Room, RoomAdmin)
-admin.site.register(accounts_models.StaffRoomAllocation, StaffRoomAllocationAdmin)
 admin.site.register(accounts_models.InventoryItem, InventoryItemAdmin)
 admin.site.register(accounts_models.Inventory, InventoryAdmin)
-admin.site.register(accounts_models.InventoryLog)
-admin.site.register(accounts_models.FacilityVolunteer, FacilityVolunteerAdmin)
 admin.site.register(accounts_models.FacilityUser)
 admin.site.register(accounts_models.TestingLab, TestingLabAdmin)

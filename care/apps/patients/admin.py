@@ -14,12 +14,4 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
-admin.site.register(models.PatientSampleTest, PatientSampleAdmin)
-admin.site.register(models.PatientConsultation)
-admin.site.register(models.DailyRound)
-admin.site.register(models.PatientSampleFlow)
-admin.site.register(models.PatientSearch)
-admin.site.register(models.PatientMetaInfo)
-admin.site.register(models.PatientContactDetails)
 admin.site.register(models.Disease)
-admin.site.register(models.FacilityPatientStatsHistory)
