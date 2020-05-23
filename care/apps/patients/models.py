@@ -3,7 +3,7 @@ from multiselectfield import MultiSelectField
 from types import SimpleNamespace
 from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
-from apps.facility.models import Facility
+from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
 from apps.commons.constants import GENDER_CHOICES
 from apps.commons.models import SoftDeleteTimeStampedModel
@@ -390,6 +390,13 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     fast_track = models.TextField(default="")
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
+    testing_lab = models.ForeignKey(
+        TestingLab,
+        on_delete=models.PROTECT,
+        related_name="samples",
+        null=True,
+        blank=True,
+    )
 
     @property
     def flow(self):
