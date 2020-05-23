@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from multiselectfield import MultiSelectField
 from types import SimpleNamespace
@@ -62,7 +63,7 @@ class Patient(SoftDeleteTimeStampedModel):
         "PatientMetaInfo", on_delete=models.SET_NULL, null=True
     )
     name = EncryptedCharField(max_length=200)
-    age = models.PositiveIntegerField(null=True, blank=True)
+    age = models.PositiveIntegerField()
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
@@ -72,10 +73,10 @@ class Patient(SoftDeleteTimeStampedModel):
         max_length=255, verbose_name="Nationality of Patient"
     )
     passport_no = models.CharField(
-        max_length=255, verbose_name="Passport Number of Foreign Patients"
+        max_length=255, verbose_name="Passport Number of Foreign Patients", unique=True
     )
     aadhar_no = models.CharField(
-        max_length=255, verbose_name="Aadhar Number of Patient"
+        max_length=255, verbose_name="Aadhar Number of Patient", unique=True
     )
     is_medical_worker = models.BooleanField(
         default=False, verbose_name="Is the Patient a Medical Worker"
