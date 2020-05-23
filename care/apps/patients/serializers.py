@@ -57,16 +57,20 @@ class PatientSerializer(rest_serializers.ModelSerializer):
 
     def validate(self, attrs):
         patient_group = patient_models.Patient.objects.filter(
-            attrs.get("aadhar_no",attrs.get('passport_no'))).first()
+            attrs.get("aadhar_no", attrs.get("passport_no"))
+        ).first()
         if patient_group:
             raise rest_exceptions.PermissionDenied()
         return attrs
 
 
 class PatientGroupSerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = patient_models.PatientGroup
         fields = (
-            "id","name","description","created_at",)
-        read_only_fields=("created_at",)    
+            "id",
+            "name",
+            "description",
+            "created_at",
+        )
+        read_only_fields = ("created_at",)

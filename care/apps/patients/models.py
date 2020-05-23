@@ -15,6 +15,7 @@ from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from libs.jsonfield import JSONField
 
+
 class PatientGroup(SoftDeleteTimeStampedModel):
     """
     model to represent patient Group
@@ -169,8 +170,8 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
-    patient_group = models.ForeignKey(
-        PatientGroup,
+    cluster_group = models.ForeignKey(
+        "patients.PatientGroup",
         on_delete=models.PROTECT,
         related_name="group",
         null=True,
@@ -181,7 +182,7 @@ class Patient(SoftDeleteTimeStampedModel):
     objects = ActiveObjectsManager()
 
     class Meta:
-        unique_together = ('aadhar_no','passport_no','patient_group')
+        unique_together = ("aadhar_no", "passport_no", "cluster_group")
 
     def __str__(self):
         return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
@@ -818,6 +819,7 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
 
+
 class PatientGroup(SoftDeleteTimeStampedModel):
     """
     model to represent patient facility
@@ -837,4 +839,3 @@ class PatientGroup(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
-
