@@ -114,6 +114,9 @@ class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
+class TestingLabAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = accounts_models.AmbulanceDriver
+    djangoql_completion_enabled_by_default = True
 
 admin.site.register(accounts_models.Ambulance, AmbulanceAdmin)
 admin.site.register(accounts_models.AmbulanceDriver, AmbulanceDriverAdmin)
@@ -130,4 +133,4 @@ admin.site.register(accounts_models.Inventory, InventoryAdmin)
 admin.site.register(accounts_models.InventoryLog)
 admin.site.register(accounts_models.FacilityVolunteer, FacilityVolunteerAdmin)
 admin.site.register(accounts_models.FacilityUser)
-admin.site.register(accounts_models.TestingLab)
+admin.site.register(accounts_models.TestingLab, TestingLabAdmin)
