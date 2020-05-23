@@ -40,6 +40,7 @@ class Patient(SoftDeleteTimeStampedModel):
         ("O-", "O-"),
     ]
     DISEASE_STATUS_CHOICES = [
+        (constants.DISEASE_STATUS_CHOICES.NT, "NOT TESTED YET"),
         (constants.DISEASE_STATUS_CHOICES.SU, "SUSPECTED"),
         (constants.DISEASE_STATUS_CHOICES.PO, "POSITIVE"),
         (constants.DISEASE_STATUS_CHOICES.NE, "NEGATIVE"),
@@ -63,20 +64,29 @@ class Patient(SoftDeleteTimeStampedModel):
         "PatientMetaInfo", on_delete=models.SET_NULL, null=True
     )
     name = EncryptedCharField(max_length=200)
-    age = models.PositiveIntegerField()
+    month = models.PositiveIntegerField(null=True, blank=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
     nationality = models.CharField(
-        max_length=255, verbose_name="Nationality of Patient"
+        max_length=255, verbose_name="Nationality of Patient", default="indian"
     )
     passport_no = models.CharField(
-        max_length=255, verbose_name="Passport Number of Foreign Patients", unique=True
+        max_length=255,
+        verbose_name="Passport Number of Foreign Patients",
+        unique=True,
+        null=True,
+        blank=True,
     )
     aadhar_no = models.CharField(
-        max_length=255, verbose_name="Aadhar Number of Patient", unique=True
+        max_length=255,
+        verbose_name="Aadhar Number of Patient",
+        unique=True,
+        null=True,
+        blank=True,
     )
     is_medical_worker = models.BooleanField(
         default=False, verbose_name="Is the Patient a Medical Worker"
@@ -129,7 +139,7 @@ class Patient(SoftDeleteTimeStampedModel):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
     disease_status = models.IntegerField(
         choices=DISEASE_STATUS_CHOICES,
-        default=constants.DISEASE_STATUS_CHOICES.SU,
+        default=constants.DISEASE_STATUS_CHOICES.NT,
         blank=True,
         verbose_name="Disease Status",
     )
@@ -154,12 +164,15 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
+    clinical_status_updated_at = models.DateTimeField(blank=True, null=True)
+    portea_called_at = models.DateTimeField(blank=True, null=True,)
+    portea_able_to_connect = models.DateTimeField(blank=True, null=True,)
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = ActiveObjectsManager()
 
     def __str__(self):
-        return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
+        return "{} - {}".format(self.name, self.get_gender_display())
 
     @property
     def tele_consultation_history(self):
@@ -226,11 +239,13 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
     """
 
     ADMIT_CHOICES = [
-        (constants.ADMIT_CHOICES.NA, "Not admitted"),
-        (constants.ADMIT_CHOICES.IR, "Isolation Room"),
-        (constants.ADMIT_CHOICES.ICU, "ICU"),
-        (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
-        (constants.ADMIT_CHOICES.HI, "Home Isolation"),
+        (constants.ADMIT_CHOICES.NA, "NOT ADMITTED"),
+        (constants.ADMIT_CHOICES.IWO, "INWARD WITHOUT OXYGEN"),
+        (constants.ADMIT_CHOICES.IO, "INWARD WITH OXYGEN"),
+        (constants.ADMIT_CHOICES.IR, "ISOLATION ROOM"),
+        (constants.ADMIT_CHOICES.ICU, "ICU WITHOUT VENTILATOR"),
+        (constants.ADMIT_CHOICES.ICV, "ICU WITH VENTILATOR"),
+        (constants.ADMIT_CHOICES.HI, "HOME ISOLATION"),
     ]
     patient = models.ForeignKey(
         "Patient", on_delete=models.CASCADE, related_name="patients"
