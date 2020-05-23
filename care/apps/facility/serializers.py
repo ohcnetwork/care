@@ -1,15 +1,9 @@
-from rest_framework import serializers
+from rest_framework import serializers as rest_serializer
 
-from apps.accounts import models as accounts_models, serializers as accounts_serializers
 from apps.facility import models as facility_models
 
 
-class FacilityListSerializer(serializers.ModelSerializer):
-    local_body = accounts_serializers.LocalBodySerializer
-    district = accounts_serializers.DistrictSerializer
-    state = accounts_serializers.StateSerializer
-    created_by = accounts_serializers.UserSerializer
-    users = accounts_serializers.UserSerializer
+class FacilitySerializer(rest_serializer.ModelSerializer):
 
     class Meta:
         model = facility_models.Facility
@@ -28,5 +22,15 @@ class FacilityListSerializer(serializers.ModelSerializer):
             "corona_testing",
             "created_by",
             "users",
+            "owned_by",
         )
-        depth = 1
+        read_only_fields = ('is_active', 'verified',)
+
+
+class FacilityUserSerializer(rest_serializer.ModelSerializer):
+
+    class Meta:
+        model = facility_models.FacilityUser
+        fields = (
+            'facility', 'user', 'created_by',
+        )

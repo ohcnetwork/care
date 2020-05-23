@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from multiselectfield import MultiSelectField
 from types import SimpleNamespace
@@ -793,3 +795,15 @@ class PatientFacility(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
+
+
+class PatientTimeLine(models.Model):
+    """
+    Model to store timelines of a patient
+    """
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.date.today)
+    description = models.TextField()
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.date}"
