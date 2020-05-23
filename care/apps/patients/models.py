@@ -69,21 +69,19 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
     nationality = models.CharField(
-        max_length=255, default="", verbose_name="Nationality of Patient"
+        max_length=255, verbose_name="Nationality of Patient"
     )
     passport_no = models.CharField(
-        max_length=255, default="", verbose_name="Passport Number of Foreign Patients"
+        max_length=255, verbose_name="Passport Number of Foreign Patients"
     )
     aadhar_no = models.CharField(
-        max_length=255, default="", verbose_name="Aadhar Number of Patient"
+        max_length=255, verbose_name="Aadhar Number of Patient"
     )
     is_medical_worker = models.BooleanField(
         default=False, verbose_name="Is the Patient a Medical Worker"
     )
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES,
-        null=True,
-        blank=True,
         max_length=4,
         verbose_name="Blood Group of Patient",
     )
