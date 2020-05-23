@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 
-from import_export.admin import ImportExportModelAdmin 
+from import_export.admin import ImportExportModelAdmin
 
 from apps.accounts import (
     models as accounts_models,

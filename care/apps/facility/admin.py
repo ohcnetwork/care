@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 
 from djangoql.admin import DjangoQLSearchMixin
-from import_export.admin import ImportExportModelAdmin 
+from import_export.admin import ImportExportModelAdmin
 
 from apps.facility import models as accounts_models
 
