@@ -15,7 +15,8 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "nearest_facility",
             "meta_info",
             "name",
-            "age",
+            "year",
+            "month",
             "gender",
             "phone_number",
             "address",
@@ -47,6 +48,9 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "patient_search_id",
             "date_of_receipt_of_information",
             "patient_group",
+            "clinical_status_updated_at",
+            "portea_called_at",
+            "portea_able_to_connect"
         )
         extra_kwargs = {
             "facility": {"required": True},

@@ -75,7 +75,9 @@ SUGGESTION_CHOICES = [
     (SuggestionChoices.R, "REFERRAL"),
 ]
 
-ADMIT_CHOICES = namedtuple("type", ["NA", "IR", "ICU", "ICV", "HI"])(None, 1, 2, 3, 20)
+ADMIT_CHOICES = namedtuple("type", ["NA", "IWO", "IO", "IR", "ICU", "ICV", "HI"])(
+    None, 1, 2, 3, 4, 5, 6
+)
 
 SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "OT"])(
     0, 1, 2, 3, 4, 5, 6
@@ -118,8 +120,8 @@ SAMPLE_TEST_FLOW_CHOICES = [
 
 SOURCE_CHOICES = namedtuple("type", ["CA", "CT", "ST"])(10, 20, 30)
 
-DISEASE_STATUS_CHOICES = namedtuple("type", ["SU", "PO", "NE", "RE", "RD", "EX"])(
-    1, 2, 3, 4, 5, 6
+DISEASE_STATUS_CHOICES = namedtuple("type", ["NT", "SU", "PO", "NE", "RE", "RD", "EX"])(
+    1, 2, 3, 4, 5, 6, 7
 )
 
 OCCUPATION_CHOICES = namedtuple("type", ["MW", "GE", "PE", "HM", "WA", "OT"])(
