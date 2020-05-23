@@ -10,7 +10,7 @@ from apps.accounts import models as common_accounts_models
 from apps.commons import (
     models as commons_models,
     validators as commons_validators,
-    constants as commons_constants
+    constants as commons_constants,
 )
 from apps.facility import (
     constants as commons_facility_constants,
@@ -368,13 +368,16 @@ class InventoryLog(commons_models.SoftDeleteTimeStampedModel):
 class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="created_users"
+    )
 
 
 class TestingLab(commons_models.SoftDeleteTimeStampedModel):
     """
     model for the lab associated with the patient sample test
     """
+
     LAB_TYPE_CHOICES = [
         (commons_facility_constants.LAB_TYPE_CHOICES.AC, "A1C"),
         (commons_facility_constants.LAB_TYPE_CHOICES.BC, "BLOOD COUNT TESTS"),
@@ -385,11 +388,17 @@ class TestingLab(commons_models.SoftDeleteTimeStampedModel):
         (commons_facility_constants.LAB_TYPE_CHOICES.UL, "URINALYSIS"),
     ]
     name = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the Testing Lab')
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the Testing Lab",
+    )
     address = models.TextField()
-    lab_type = models.IntegerField(choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC)
+    lab_type = models.IntegerField(
+        choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
+    )
     district = models.ForeignKey(
-        common_accounts_models.District, on_delete=models.PROTECT, related_name="district",
+        common_accounts_models.District,
+        on_delete=models.PROTECT,
+        related_name="district",
     )
 
     def __str__(self):
