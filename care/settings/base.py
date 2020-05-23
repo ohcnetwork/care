@@ -316,7 +316,6 @@ class Settings(LoggerSettingsMixin, Configuration):
 
 
     ACCOUNT_EMAIL_VERIFICATION = False
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     LOGOUT_REDIRECT_URL = "/"
     STAFF_ACCOUNT_TYPE = 10
 
