@@ -7,6 +7,7 @@ from apps.facility import (
     models as accounts_models,
 )
 
+
 class BuildingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     search_fields = ["name"]
@@ -35,7 +36,7 @@ class StateFilter(SimpleListFilter):
     parameter_name = "state"
 
     def lookups(self, request, model_admin):
-        state =  accounts_models.Facility.objects.values_list("state__name", flat=True)
+        state = accounts_models.Facility.objects.values_list("state__name", flat=True)
         return list(map(lambda x: (x, x), set(state)))
 
     def queryset(self, request, queryset):
@@ -128,3 +129,4 @@ admin.site.register(accounts_models.Inventory, InventoryAdmin)
 admin.site.register(accounts_models.InventoryLog)
 admin.site.register(accounts_models.FacilityVolunteer, FacilityVolunteerAdmin)
 admin.site.register(accounts_models.FacilityUser)
+admin.site.register(accounts_models.TestingLab)

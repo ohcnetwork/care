@@ -11,7 +11,8 @@ from apps.accounts import (
 )
 from apps.commons import (
     models as commons_models,
-    validators as commons_validators
+    validators as commons_validators,
+    constants as commons_constants
 )
 from apps.facility import (
     constants as commons_facility_constants,
@@ -23,7 +24,8 @@ User = get_user_model()
 
 
 class Ambulance(commons_models.SoftDeleteTimeStampedModel):
-    vehicle_number = models.CharField(max_length=20, validators=[commons_facility_validators.vehicle_number_regex], unique=True, db_index=True)
+    vehicle_number = models.CharField(max_length=20, validators=[
+                                      commons_facility_validators.vehicle_number_regex], unique=True, db_index=True)
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(max_length=14, validators=[commons_validators.phone_number_regex])
     owner_is_smart_phone = models.BooleanField(default=True)
@@ -57,6 +59,7 @@ class Ambulance(commons_models.SoftDeleteTimeStampedModel):
     class Meta:
         verbose_name_plural = "ambulances"
 
+
 class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -65,7 +68,7 @@ class AmbulanceDriver(commons_models.SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"Driver: {self.name}({self.phone_number})"
-    
+
     class Meta:
         verbose_name_plural = "AmbulancesDrivers"
 
@@ -145,7 +148,7 @@ class FacilityLocalGovtBody(commons_models.SoftDeleteTimeStampedModel):
         if self.local_body is not None:
             self.district = self.local_body.district
         super().save(*args, **kwargs)
-    
+
     class Meta:
         verbose_name_plural = "FacilityLocalGovtBodies"
 
@@ -265,3 +268,28 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
+
+
+class TestingLab(commons_models.SoftDeleteTimeStampedModel):
+    """
+    model for the lab associated with the patient sample test
+    """
+    LAB_TYPE_CHOICES = [
+        (commons_facility_constants.LAB_TYPE_CHOICES.AC, "A1C"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.BC, "BLOOD COUNT TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.DI, "DIAGNOSTIC IMAGING"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.HT, "HEPATITIS TESTING"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.KT, "KIDNEY TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.TT, "THYROID TESTS"),
+        (commons_facility_constants.LAB_TYPE_CHOICES.UL, "URINALYSIS"),
+    ]
+    name = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS['NAME'], help_text='Name of the Testing Lab')
+    address = models.TextField()
+    lab_type = models.IntegerField(choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC)
+    district = models.ForeignKey(
+        common_accounts_models.District, on_delete=models.PROTECT, related_name="district",
+    )
+
+    def __str__(self):
+        return f"{self.name}<>{self.district.name}"

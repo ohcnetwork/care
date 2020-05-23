@@ -1,9 +1,9 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 from types import SimpleNamespace
-from apps.accounts.models import (District,State,LocalBody)
+from apps.accounts.models import (District, State, LocalBody)
 from apps.commons.models import ActiveObjectsManager
-from apps.facility.models import Facility
+from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
 from apps.commons.constants import GENDER_CHOICES
 from apps.commons.models import SoftDeleteTimeStampedModel
@@ -13,6 +13,7 @@ from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from libs.jsonfield import JSONField
+
 
 class Patient(SoftDeleteTimeStampedModel):
     """
@@ -165,6 +166,7 @@ class Patient(SoftDeleteTimeStampedModel):
                 state_id=self.state_id,
             )
 
+
 class PatientConsultation(SoftDeleteTimeStampedModel):
     """
     Model to represent a patientConsultation
@@ -175,7 +177,7 @@ class PatientConsultation(SoftDeleteTimeStampedModel):
         (constants.ADMIT_CHOICES.ICU, "ICU"),
         (constants.ADMIT_CHOICES.ICV, "ICU with Ventilator"),
         (constants.ADMIT_CHOICES.HI, "Home Isolation"),
-    ]    
+    ]
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE, related_name="patients")
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="facility")
     symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
@@ -236,7 +238,8 @@ class DailyRound(SoftDeleteTimeStampedModel):
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(choices=constants.SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
-    patient_category = models.CharField(choices=constants.CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    patient_category = models.CharField(choices=constants.CATEGORY_CHOICES,
+                                        max_length=8, default=None, blank=True, null=True)
     current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
     recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
@@ -249,12 +252,12 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     SAMPLE_TYPE_CHOICES = [
         (constants.SAMPLE_TYPE_CHOICES.UN, 'UNKNOWN'),
         (constants.SAMPLE_TYPE_CHOICES.BA, 'BA/ETA'),
-        (constants.SAMPLE_TYPE_CHOICES.TS,"TS/NPS/NS"),
+        (constants.SAMPLE_TYPE_CHOICES.TS, "TS/NPS/NS"),
         (constants.SAMPLE_TYPE_CHOICES.BE, 'Blood_IN_EDTA'),
         (constants.SAMPLE_TYPE_CHOICES.AS, 'ACUTE_SERA'),
         (constants.SAMPLE_TYPE_CHOICES.CS, 'COVALESCENT_SERA'),
         (constants.SAMPLE_TYPE_CHOICES.OT, 'OTHER_TYPE'),
-    ]   
+    ]
     SAMPLE_TEST_FLOW_CHOICES = [
         (constants.SAMPLE_TEST_FLOW_MAP.RS, 'REQUEST_SUBMITTED'),
         (constants.SAMPLE_TEST_FLOW_MAP.AP, 'APPROVED'),
@@ -272,7 +275,7 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     ]
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
-    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES,default=constants.SAMPLE_TYPE_CHOICES.UN)
+    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES, default=constants.SAMPLE_TYPE_CHOICES.UN)
     sample_type_other = models.TextField(default="")
     has_sari = models.BooleanField(default=False)
     has_ari = models.BooleanField(default=False)
@@ -288,6 +291,8 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
     fast_track = models.TextField(default="")
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
+    testing_lab = models.ForeignKey(TestingLab, on_delete=models.PROTECT,
+                                    related_name="testing_lab", null=True, blank=True)
 
     @property
     def flow(self):
@@ -343,7 +348,7 @@ class PatientMetaInfo(SoftDeleteTimeStampedModel):
         (constants.OCCUPATION_CHOICES.MW, 'HOME_MAKER'),
         (constants.OCCUPATION_CHOICES.MW, 'WORKING_ABROAD'),
         (constants.OCCUPATION_CHOICES.MW, ' OTHERS'),
-    ]    
+    ]
     occupation = models.IntegerField(choices=OCCUPATION_CHOICES)
     head_of_household = models.BooleanField()
 
@@ -630,6 +635,7 @@ class PatientConsultationIcmr(PatientConsultation):
     def asymptomatic_healthcare_worker_without_protection(self,):
         return self.patient.is_medical_worker and not self.is_symptomatic()
 
+
 class PatientFacility(SoftDeleteTimeStampedModel):
     """
     model to represent patient facility
@@ -643,18 +649,3 @@ class PatientFacility(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.reason}"
-
-
-class TestingLab(SoftDeleteTimeStampedModel):
-    """
-    model for the lab associated with the patient sample test
-    """
-    address = models.TextField(default="")
-    district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="district",
-    )
-    incharge_name = models.ForeignKey(User, on_delete=models.PROTECT, related_name="lab_incharge")
-    patient_sample_test = models.ForeignKey(PatientSampleTest, on_delete=models.PROTECT, related_name="patient_sample_test")
-
-    def __str__(self):
-        return f"{self.patient_sample_test.sample_type}<>{self.district.name}"
