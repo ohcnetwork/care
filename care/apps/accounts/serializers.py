@@ -94,14 +94,7 @@ class LoginResponseSerializer(rest_serializers.ModelSerializer):
 
     class Meta:
         model = accounts_models.User
-        fields = (
-            "id",
-            "first_name",
-            "last_name",
-            "email",
-            "token",
-            "local_body",
-        )
+        fields = ('id', 'token')
 
     def get_token(self, instance):
         token, _ = Token.objects.get_or_create(user=instance)
