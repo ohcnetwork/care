@@ -109,7 +109,9 @@ class Patient(SoftDeleteTimeStampedModel):
         verbose_name="Countries Patient has Travelled to",
         editable=False,
     )
-    home_isolation = models.BooleanField(default=False, verbose_name="does the patient is home isolated")
+    home_isolation = models.BooleanField(
+        default=False, verbose_name="does the patient is home isolated"
+    )
     countries_travelled = JSONField(
         null=True, blank=True, verbose_name="Countries Patient has Travelled to"
     )
@@ -255,7 +257,9 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
-    status = models.ForeignKey("Status", on_delete=models.CASCADE)
+    status = models.ForeignKey(
+        "Status", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
