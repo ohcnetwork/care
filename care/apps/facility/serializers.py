@@ -8,6 +8,7 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
         model = facility_models.Facility
         fields = (
             "name",
+            "facility_code",
             "facility_type",
             "location",
             "address",
@@ -17,8 +18,10 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
             "phone_number",
             "corona_testing",
             "created_by",
-            "users",
             "owned_by",
+            "total_patient",
+            "positive_patient",
+            "negative_patient",
         )
 
 
