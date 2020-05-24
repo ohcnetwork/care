@@ -70,6 +70,6 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
     pagination_class = commons_pagination.CustomPagination
 
     def get_queryset(self):
-        return patients_models.PatientTimeLine.objects.filter(
+        return patient_models.PatientTimeLine.objects.filter(
             patient_id=self.kwargs.get("patient_id")
         )
