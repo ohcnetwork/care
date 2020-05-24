@@ -1,5 +1,7 @@
 from rest_framework import viewsets, mixins, permissions
 
+from apps.commons import constants as commons_constants
+
 from apps.facility import models as facility_models, serializers as facility_serializers
 
 
@@ -17,9 +19,9 @@ class FacilityViewSet(
     def get_queryset(self):
         filter_kwargs = {}
         if self.request.user.user_type:
-            if self.request.user.user_type.name.lower() == "facility_user":
+            if self.request.user.user_type.name == commons_constants.FACILITY_USER:
                 filter_kwargs["facilityuser__user"] = self.request.user
-            elif self.request.user.user_type.name.lower() == "portea":
+            elif self.request.user.user_type.name == commons_constants.PORTEA:
                 filter_kwargs["id__in"] = []
         return facility_models.Facility.objects.filter(**filter_kwargs)
 
