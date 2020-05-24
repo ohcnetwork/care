@@ -38,7 +38,7 @@ class ClinicalStatusViewSet(rest_viewsets.ModelViewSet):
     serializer_class = patient_serializers.ClinicalStatusSerializer
 
 
-class StatusViewSet(rest_viewsets.ModelViewSet):
+class PatientStatusViewSet(rest_viewsets.ModelViewSet):
 
-    queryset = patient_models.Status.objects.all()
-    serializer_class = patient_serializers.StatusSerializer
+    queryset = patient_models.PatientStatus.objects.all()
+    serializer_class = patient_serializers.PatientStatusSerializer

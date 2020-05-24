@@ -16,32 +16,11 @@ class PatientDiseaseInline(admin.TabularInline):
     extra = 1
 
 
-# class PatientFacilityInline(admin.TabularInline):
-#     model = models.PatientFacility
-#     min_num = 0
-#     extra = 1
-
-
-# class PatientCovidStatusInline(admin.TabularInline):
-#     model = models.PatientCovidStatus
-#     min_num = 0
-#     extra = 1
-
-
-# class PatientClinicalStatusInline(admin.TabularInline):
-#     model = models.PatientClinicalStatus
-#     min_num = 0
-#     extra = 1
-
-
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "gender")
     inlines = [
         PatientSymptomInline,
         PatientDiseaseInline,
-        # PatientFacilityInline,
-        # PatientCovidStatusInline,
-        # PatientClinicalStatusInline,
     ]
     djangoql_completion_enabled_by_default = True
 
@@ -61,7 +40,7 @@ class CovidSymptomAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
 
 
 class PatientStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
-    model = models.Status
+    model = models.PatientStatus
     djangoql_completion_enabled_by_default = True
 
 
@@ -80,6 +59,6 @@ admin.site.register(models.PatientFacility)
 admin.site.register(models.Disease, DiseaseAdmin)
 admin.site.register(models.PatientGroup)
 admin.site.register(models.CovidSymptom, CovidSymptomAdmin)
-admin.site.register(models.Status, PatientStatusAdmin)
+admin.site.register(models.PatientStatus, PatientStatusAdmin)
 admin.site.register(models.CovidStatus, PatientCovidStatusStatusAdmin)
 admin.site.register(models.ClinicalStatus, PatientClinicalStatusStatusAdmin)

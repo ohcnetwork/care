@@ -5,23 +5,11 @@ from apps.patients import models as patient_models
 from apps.facility import models as facility_models
 
 
-class PatientClinicalStatusSerializer(rest_serializers.ModelSerializer):
-    class Meta:
-        model = patient_models.ClinicalStatus
-        fields = ("clinical",)
-
-
-class PatientCovidStatusSerializer(rest_serializers.ModelSerializer):
-    class Meta:
-        model = patient_models.CovidStatus
-        fields = ("covid",)
-
-
 class PatientFacilitySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientFacility
         fields = (
-            "status",
+            "patient_status",
             "facility",
             "patient_facility_id",
         )
@@ -75,7 +63,7 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "diseases",
             "clinicals",
             "covid_status",
-            "patient_facility",
+            "current_facility",
             "home_isolation",
         )
         extra_kwargs = {
@@ -122,9 +110,9 @@ class ClinicalStatusSerializer(rest_serializers.ModelSerializer):
         )
 
 
-class StatusSerializer(rest_serializers.ModelSerializer):
+class PatientStatusSerializer(rest_serializers.ModelSerializer):
     class Meta:
-        model = patient_models.Status
+        model = patient_models.PatientStatus
         fields = (
             "id",
             "name",

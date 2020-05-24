@@ -166,7 +166,9 @@ class Patient(SoftDeleteTimeStampedModel):
     )
     clinical_status_updated_at = models.DateTimeField(null=True, blank=True)
     portea_called_at = models.DateTimeField(null=True, blank=True)
-    portea_able_to_connect = models.DateTimeField(null=True, blank=True)
+    portea_able_to_connect = models.BooleanField(
+        null=True, blank=True, verbose_name="Is the portea able to connect"
+    )
     symptoms = models.ManyToManyField("CovidSymptom", through="PatientSymptom")
     diseases = models.ManyToManyField("Disease", through="PatientDisease")
     covid_status = models.ForeignKey(
@@ -183,12 +185,12 @@ class Patient(SoftDeleteTimeStampedModel):
         on_delete=models.CASCADE,
         related_name="clinical_status",
     )
-    patient_facility = models.ForeignKey(
+    current_facility = models.ForeignKey(
         "PatientFacility",
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name="patient_facility",
+        related_name="current_facility",
     )
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
@@ -203,16 +205,6 @@ class Patient(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return "{} - {}".format(self.name, self.get_gender_display())
-
-
-# class PatientClinicalStatus(SoftDeleteTimeStampedModel):
-#     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
-#     clinical = models.ForeignKey("ClinicalStatus", on_delete=models.CASCADE)
-
-
-# class PatientCovidStatus(SoftDeleteTimeStampedModel):
-#     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
-#     covid = models.ForeignKey("CovidStatus", on_delete=models.CASCADE)
 
 
 class PatientDisease(SoftDeleteTimeStampedModel):
@@ -241,7 +233,7 @@ class Disease(models.Model):
         return f"{self.name}"
 
 
-class Status(models.Model):
+class PatientStatus(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True)
 
@@ -270,11 +262,10 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     model to represent patient facility
     """
 
-    # patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
-    status = models.ForeignKey(
-        "Status", on_delete=models.CASCADE, null=True, blank=True
+    patient_status = models.ForeignKey(
+        "PatientStatus", on_delete=models.CASCADE, null=True, blank=True
     )
 
     def __str__(self):
