@@ -154,3 +154,10 @@ HEALTH_CARE_WITH_PPE = 7
 SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
 # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
 TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
+
+
+# Patient Status cosntants
+HOME_ISOLATION = "home-isolation"
+RECOVERED = "recovered"
+DEAD = "dead"
+FACILITY_STATUS = "facility-status"

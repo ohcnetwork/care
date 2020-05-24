@@ -1,4 +1,7 @@
+from django.db.models import F
+
 from django_filters import rest_framework as filters
+
 from rest_framework import (
     generics as rest_generics,
     mixins as rest_mixins,
@@ -15,10 +18,11 @@ from apps.patients import (
 from apps.commons import permissions as commons_permissions
 
 
-class PatientViewSet(rest_viewsets.ModelViewSet):
+class PatientViewSet(rest_viewsets.GenericViewSet, rest_mixins.ListModelMixin, rest_mixins.RetrieveModelMixin):
 
-    queryset = patient_models.Patient.objects.all()
-    serializer_class = patient_serializers.PatientSerializer
+    queryset = patient_models.Patient.objects.all().annotate(facility_status=F('patientfacility__patient_status__name'))
+    serializer_class = patient_serializers.PatientListSerializer
+    pagination_class = commons_pagination.CustomPagination
 
 
 class PatientGroupViewSet(rest_viewsets.ModelViewSet):
