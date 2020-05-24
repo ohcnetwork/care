@@ -3,7 +3,7 @@ from rest_framework import viewsets, mixins, permissions
 from apps.facility import models as facility_models, serializers as facility_serializers
 
 
-class FacilityListViewSet(
+class FacilityViewSet(
     mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
 ):
     """
