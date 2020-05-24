@@ -113,11 +113,7 @@ class ClinicalStatusSerializer(rest_serializers.ModelSerializer):
 class PatientStatusSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientStatus
-        fields = (
-            "id",
-            "name",
-            "description"
-        )    
+        fields = ("id", "name", "description")
 
 
 class PatientTimeLineSerializer(rest_serializers.ModelSerializer):

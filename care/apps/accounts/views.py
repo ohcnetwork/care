@@ -32,6 +32,7 @@ class UserTypeListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewS
     """
     User Type list view
     """
+
     queryset = accounts_models.UserType.objects.all()
     serializer_class = accounts_serializers.UserTypeSerializer
 

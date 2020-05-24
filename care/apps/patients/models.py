@@ -289,7 +289,7 @@ class PatientTimeLine(models.Model):
 
 
 class PatientFamily(models.Model):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     name = models.CharField(max_length=55)
     relation = models.CharField(max_length=55)
     age_month = models.PositiveIntegerField()
@@ -303,10 +303,14 @@ class PatientFamily(models.Model):
 
 
 class PortieCallingDetail(SoftDeleteTimeStampedModel):
-    
+
     portie = models.ForeignKey(User, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)
-    patient_family = models.ForeignKey(PatientFamily, on_delete=models.CASCADE, null=True, blank=True)
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, null=True, blank=True
+    )
+    patient_family = models.ForeignKey(
+        PatientFamily, on_delete=models.CASCADE, null=True, blank=True
+    )
     called_at = models.DateTimeField()
     able_to_connect = models.BooleanField(default=True)
     comments = models.TextField(blank=True)

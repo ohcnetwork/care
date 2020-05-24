@@ -8,7 +8,9 @@ app_name = "accounts"
 routers = SimpleRouter()
 
 routers.register("users", accounts_views.UserViewSet, basename="users")
-routers.register("user-types", accounts_views.UserTypeListViewSet, basename="users_types")
+routers.register(
+    "user-types", accounts_views.UserTypeListViewSet, basename="users_types"
+)
 routers.register("states", accounts_views.StateListViewSet, basename="state")
 routers.register("districts", accounts_views.DistrictListViewSet, basename="district")
 
