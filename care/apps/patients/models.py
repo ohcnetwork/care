@@ -50,7 +50,7 @@ class Patient(SoftDeleteTimeStampedModel):
         (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
         (constants.SOURCE_CHOICES.ST, "STAY"),
     ]
-    
+
     PATIENT_STATUS_CHOICES = (
         (constants.HOME_ISOLATION, "Home Isolation"),
         (constants.RECOVERED, "Recovered"),
@@ -272,9 +272,7 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
-    patient_status = models.ForeignKey(
-        "PatientStatus", on_delete=models.CASCADE
-    )
+    patient_status = models.ForeignKey("PatientStatus", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.facility.name}"
@@ -325,3 +323,40 @@ class PortieCallingDetail(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.portie.name} called {self.patient.name} at {self.called_at}"
+
+
+class PatientSampleTest(SoftDeleteTimeStampedModel):
+    """
+    model for the patient sample test
+    """
+
+    SAMPLE_TEST_RESULT_CHOICES = [
+        (constants.SAMPLE_TEST_RESULT_MAP.SS, "SAMPLE SENT"),
+        (constants.SAMPLE_TEST_RESULT_MAP.PO, "POSITIVE"),
+        (constants.SAMPLE_TEST_RESULT_MAP.NG, "NEGATIVE"),
+        (constants.SAMPLE_TEST_RESULT_MAP.PP, "PRESUMPTIVE POSITIVE"),
+        (constants.SAMPLE_TEST_RESULT_MAP.AW, "AWAITING"),
+        (constants.SAMPLE_TEST_RESULT_MAP.TI, "TEST INCONCLUSIVE"),
+    ]
+    patient = models.ForeignKey(
+        Patient, on_delete=models.PROTECT, related_name="patients"
+    )
+    testing_lab = models.ForeignKey(
+        TestingLab, on_delete=models.PROTECT, related_name="labs"
+    )
+    doctor_name = models.CharField(max_length=255, null=True, blank=True)
+    result = models.IntegerField(
+        choices=SAMPLE_TEST_RESULT_CHOICES, default=constants.SAMPLE_TEST_RESULT_MAP.SS
+    )
+    date_of_sample = models.DateTimeField(
+        auto_now_add=True, verbose_name="date at which sample tested"
+    )
+    date_of_result = models.DateTimeField(
+        null=True, blank=True, verbose_name="date of result of sample"
+    )
+    status_updated_at = models.DateTimeField(
+        auto_now=True, verbose_name="date at which sample updated"
+    )
+
+    def __str__(self):
+        return f"{self.patient.name} at {self.date_of_sample}"

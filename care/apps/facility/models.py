@@ -191,6 +191,11 @@ class TestingLab(models.Model):
         (commons_facility_constants.LAB_TYPE_CHOICES.TT, "THYROID TESTS"),
         (commons_facility_constants.LAB_TYPE_CHOICES.UL, "URINALYSIS"),
     ]
+    code = models.CharField(
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["LOCALBODY_CODE"],
+        help_text="code of the Testing Lab",
+        unique=True,
+    )
     name = models.CharField(
         max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
         help_text="Name of the Testing Lab",

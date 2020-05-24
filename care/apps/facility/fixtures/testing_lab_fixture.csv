@@ -1,18 +1,18 @@
-address,district,name
-"Hotel Apra Inn, 156/61 WEA Colony, Ajmal Khan Road, karol Bagh",1,dummy
-"Swami Parmanand Prakritik Chikitsalaya Yoga & Anushandhan kendra, West Vinod Nagar",2,dummy
-"Yogesh Kansal, Shrine Hospital, Main Bawana Road, Sector 17, Rohini(connected with MVH Hospital)",3,dummy
-"Maharaja Agrasen Bhawan CS Pocket 12, Rithala Road, Sector 5,Rohini",4,dummy
-"Khosla Hospital, Shalimar Bagh",4,dummy
-"Shri Satnam Bhawan, Block C-3, Phase-2, Ashok Vihar, Delhi",4,dummy
-"Qamtine facility, DUSIB FLATS, SE Block, Sultan Puri",4,dummy
-"Prime Stay B & B, Haiderpur, Shalimar Bagh",4,dummy
-"Hotel Park, Shahdara",4,dummy
-"Chatterpur Beleamonde Hotel, MANDIR Road, Sahoorpur Extension, IIPM, Satbari, New Delhi road, Sahoorpur",5,dummy
-"Bensups Hospital, Dwarka",6,dummy
-"BH Salvas, Chandan Park, Jharoda Road, Najafgarh",7,dummy
-"The Exotica Grand, 1/12, West Patel Nagar",7,dummy
-"Golden Tulip Hotel, Hari Nagar",8,dummy
-"Swift Hotel In, Meera Bagh",8,dummy
-"Hotel Amrapati Grand, 2/16 East Patel Nagar",8,dummy
-,8,dummy
+address,district,name,code
+"Hotel Apra Inn, 156/61 WEA Colony, Ajmal Khan Road, karol Bagh",1,dummy,1
+"Swami Parmanand Prakritik Chikitsalaya Yoga & Anushandhan kendra, West Vinod Nagar",2,dummy,2
+"Yogesh Kansal, Shrine Hospital, Main Bawana Road, Sector 17, Rohini(connected with MVH Hospital)",3,dummy,3
+"Maharaja Agrasen Bhawan CS Pocket 12, Rithala Road, Sector 5,Rohini",4,dummy,4
+"Khosla Hospital, Shalimar Bagh",4,dummy,5
+"Shri Satnam Bhawan, Block C-3, Phase-2, Ashok Vihar, Delhi",4,dummy,6
+"Qamtine facility, DUSIB FLATS, SE Block, Sultan Puri",4,dummy,7
+"Prime Stay B & B, Haiderpur, Shalimar Bagh",4,dummy,8
+"Hotel Park, Shahdara",4,dummy,9
+"Chatterpur Beleamonde Hotel, MANDIR Road, Sahoorpur Extension, IIPM, Satbari, New Delhi road, Sahoorpur",5,dummy,10
+"Bensups Hospital, Dwarka",6,dummy,11
+"BH Salvas, Chandan Park, Jharoda Road, Najafgarh",7,dummy,12
+"The Exotica Grand, 1/12, West Patel Nagar",7,dummy,13
+"Golden Tulip Hotel, Hari Nagar",8,dummy,14
+"Swift Hotel In, Meera Bagh",8,dummy,15
+"Hotel Amrapati Grand, 2/16 East Patel Nagar",8,dummy,16
+,8,dummy,17

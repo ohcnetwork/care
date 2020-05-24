@@ -87,6 +87,7 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             return instance.facility_status
         return instance.patient_status
 
+
 class PatientGroupSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientGroup

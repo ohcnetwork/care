@@ -22,18 +22,33 @@ from apps.patients import (
 from apps.commons import permissions as commons_permissions
 
 
-class PatientViewSet(rest_viewsets.GenericViewSet, rest_mixins.ListModelMixin, rest_mixins.RetrieveModelMixin):
+class PatientViewSet(
+    rest_viewsets.GenericViewSet,
+    rest_mixins.ListModelMixin,
+    rest_mixins.RetrieveModelMixin,
+):
 
     serializer_class = patient_serializers.PatientListSerializer
     pagination_class = commons_pagination.CustomPagination
 
     def get_queryset(self):
         queryset = patient_models.Patient.objects.all()
-        if self.request.user.user_type and self.request.user.user_type == commons_constants.PORTEA:
+        if (
+            self.request.user.user_type
+            and self.request.user.user_type == commons_constants.PORTEA
+        ):
             queryset = queryset.filter(patient_status=patients_constants.HOME_ISOLATION)
-        elif self.request.user.user_type and self.request.user.user_type == commons_constants.FACILITY_USER:
-            queryset = queryset.filter(patientfacility__facility__facilityuser__user=self.request.user)
-        return queryset.annotate(facility_status=F('patientfacility__patient_status__name'))
+        elif (
+            self.request.user.user_type
+            and self.request.user.user_type == commons_constants.FACILITY_USER
+        ):
+            queryset = queryset.filter(
+                patientfacility__facility__facilityuser__user=self.request.user
+            )
+        return queryset.annotate(
+            facility_status=F("patientfacility__patient_status__name")
+        )
+
 
 class PatientGroupViewSet(rest_viewsets.ModelViewSet):
 

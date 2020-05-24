@@ -83,7 +83,9 @@ SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "O
     0, 1, 2, 3, 4, 5, 6
 )
 
-SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["P", "N", "A", "I"])(1, 2, 3, 4)
+SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["SS", "PO", "NG", "PP", "AW", "TI"])(
+    1, 2, 3, 4, 5, 6
+)
 
 SAMPLE_FLOW_RULES = {
     # previous rule      # next valid rules
