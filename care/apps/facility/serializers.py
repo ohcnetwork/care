@@ -7,6 +7,7 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
     class Meta:
         model = facility_models.Facility
         fields = (
+            "id",
             "name",
             "facility_code",
             "facility_type",
