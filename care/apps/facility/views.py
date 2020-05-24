@@ -15,10 +15,11 @@ class FacilityViewSet(
 
     def get_queryset(self):
         filter_kwargs = {}
-        if self.request.user.user_type.name.lower() == 'facility_user':
-            filter_kwargs['facilityuser__user'] = self.request.user
-        elif self.request.user.user_type.name.lower() == 'portea':
-            filter_kwargs['id__in'] = []
+        if self.request.user.user_type:
+            if self.request.user.user_type.name.lower() == 'facility_user':
+                filter_kwargs['facilityuser__user'] = self.request.user
+            elif self.request.user.user_type.name.lower() == 'portea':
+                filter_kwargs['id__in'] = []
         return facility_models.Facility.objects.filter(**filter_kwargs)
 
 
