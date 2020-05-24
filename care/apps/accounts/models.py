@@ -13,7 +13,7 @@ from apps.commons import (
 )
 
 
-class State(commons_models.SoftDeleteTimeStampedModel):
+class State(models.Model):
     """
     Model to store States
     """
@@ -27,7 +27,7 @@ class State(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.name}"
 
 
-class District(commons_models.SoftDeleteTimeStampedModel):
+class District(models.Model):
     """
     Model to store districts
     """
@@ -42,7 +42,7 @@ class District(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.name}"
 
 
-class LocalBody(commons_models.SoftDeleteTimeStampedModel):
+class LocalBody(models.Model):
     """
     Model to store details of local bodies
     """
@@ -73,7 +73,7 @@ class LocalBody(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.name} ({self.body_type})"
 
 
-class Skill(commons_models.SoftDeleteTimeStampedModel):
+class Skill(models.Model):
     """
     Model to store skills of auser
     """
@@ -102,7 +102,7 @@ class CustomUserManager(UserManager):
         return self.get_queryset().hard_delete()
 
 
-class UserType(commons_models.SoftDeleteTimeStampedModel):
+class UserType(models.Model):
     """
     Model to stores the types of user
     """

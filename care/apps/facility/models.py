@@ -6,7 +6,7 @@ from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from apps.accounts import models as common_accounts_models
+from apps.accounts import models as accounts_models
 from apps.commons import (
     models as commons_models,
     validators as commons_validators,
@@ -21,14 +21,14 @@ from apps.facility import (
 User = get_user_model()
 
 
-class FacilityType(commons_models.SoftDeleteTimeStampedModel):
+class FacilityType(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.name}"
 
 
-class Facility(commons_models.SoftDeleteTimeStampedModel):
+class Facility(commons_models.TimeStampModel):
     name = models.CharField(max_length=1000)
     facility_code = models.CharField(max_length=50)
     facility_type = models.ForeignKey(FacilityType, on_delete=models.CASCADE)
@@ -36,19 +36,19 @@ class Facility(commons_models.SoftDeleteTimeStampedModel):
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(
-        common_accounts_models.LocalBody,
+        accounts_models.LocalBody,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     district = models.ForeignKey(
-        common_accounts_models.District,
+        accounts_models.District,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     state = models.ForeignKey(
-        common_accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True
+        accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True
     )
     phone_number = models.CharField(
         max_length=14, blank=True, validators=[commons_validators.phone_number_regex]
@@ -56,7 +56,7 @@ class Facility(commons_models.SoftDeleteTimeStampedModel):
     pincode = models.CharField(max_length=6)
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User, on_delete=models.CASCADE, null=True, blank=True
     )
     total_patient = models.PositiveIntegerField(default=0)
     positive_patient = models.PositiveIntegerField(default=0)
@@ -133,7 +133,7 @@ class BedType(models.Model):
         return str(self.name)
 
 
-class FacilityInfrastructure(commons_models.SoftDeleteTimeStampedModel):
+class FacilityInfrastructure(commons_models.TimeStampModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
@@ -142,9 +142,12 @@ class FacilityInfrastructure(commons_models.SoftDeleteTimeStampedModel):
     total_bed = models.PositiveIntegerField(default=0)
     occupied_bed = models.PositiveIntegerField(default=0)
     available_bed = models.PositiveIntegerField(default=0)
+    created_by = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
+
+    history = HistoricalRecords()
 
 
-class InventoryItem(commons_models.SoftDeleteTimeStampedModel):
+class InventoryItem(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
     unit = models.CharField(max_length=20)
@@ -153,13 +156,14 @@ class InventoryItem(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.name} with unit {self.unit} with minimum stock"
 
 
-class Inventory(commons_models.SoftDeleteTimeStampedModel):
+class Inventory(commons_models.TimeStampModel):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     required_quantity = models.PositiveIntegerField(default=0)
     current_quantity = models.PositiveIntegerField(default=0)
+    created_by = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
 
     history = HistoricalRecords()
 
@@ -179,7 +183,7 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.user.first_name} - {self.facility.name}"
 
 
-class TestingLab(commons_models.SoftDeleteTimeStampedModel):
+class TestingLab(models.Model):
     """
     model for the lab associated with the patient sample test
     """
@@ -202,7 +206,7 @@ class TestingLab(commons_models.SoftDeleteTimeStampedModel):
         choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
     )
     district = models.ForeignKey(
-        common_accounts_models.District, on_delete=models.PROTECT, related_name="labs",
+        accounts_models.District, on_delete=models.PROTECT, related_name="labs",
     )
 
     def __str__(self):
