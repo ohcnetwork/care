@@ -8,10 +8,12 @@ class PatientSymptomInline(admin.TabularInline):
     min_num = 0
     extra = 1
 
+
 class PatientDiseaseInline(admin.TabularInline):
     model = models.PatientDisease
     min_num = 0
     extra = 1
+
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "age", "gender")
@@ -27,3 +29,4 @@ admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
 admin.site.register(models.Disease)
 admin.site.register(models.CovidSymptom)
+admin.site.register(models.PatientTimeLine)

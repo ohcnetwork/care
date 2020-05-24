@@ -109,7 +109,9 @@ class FacilityStaff(commons_models.SoftDeleteTimeStampedModel):
     name = models.CharField(max_length=256)
     phone_number = models.CharField(max_length=15)
     email = models.EmailField(max_length=50)
-    designation = models.ForeignKey(StaffDesignation, on_delete=models.CASCADE, null=True, blank=True)
+    designation = models.ForeignKey(
+        StaffDesignation, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return str(self.name) + " for facility " + str(self.facility)
@@ -151,12 +153,7 @@ class InventoryItem(models.Model):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return (
-            self.name
-            + " with unit "
-            + self.unit
-            + " with minimum stock "
-        )
+        return f"{self.name} with unit {self.unit} with minimum stock"
 
 
 class Inventory(commons_models.TimeStampModel):
@@ -181,6 +178,9 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_users"
     )
+
+    def __str__(self):
+        return f"{self.user.first_name} - {self.facility.name}"
 
 
 class TestingLab(models.Model):

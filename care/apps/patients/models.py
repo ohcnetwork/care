@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
@@ -17,6 +19,7 @@ class Patient(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient
     """
+
     BLOOD_GROUP_CHOICES = [
         ("A+", "A+"),
         ("A-", "A-"),
@@ -143,20 +146,20 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
-    symptoms = models.ManyToManyField('CovidSymptom', through='PatientSymptom')
-    diseases = models.ManyToManyField('Disease' , through='PatientDisease')
+    symptoms = models.ManyToManyField("CovidSymptom", through="PatientSymptom")
+    diseases = models.ManyToManyField("Disease", through="PatientDisease")
 
     objects = ActiveObjectsManager()
 
 
 class PatientDisease(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    disease = models.ForeignKey('Disease', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    disease = models.ForeignKey("Disease", on_delete=models.CASCADE)
 
 
 class PatientSymptom(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    symptom = models.ForeignKey('CovidSymptom', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    symptom = models.ForeignKey("CovidSymptom", on_delete=models.CASCADE)
 
 
 class CovidSymptom(models.Model):
@@ -188,4 +191,17 @@ class PatientFacility(SoftDeleteTimeStampedModel):
         return f"{self.patient.name}<>{self.facility.name}"
 
     class Meta:
-        unique_together = ('facility', 'patient_facility_id')
+        unique_together = ("facility", "patient_facility_id")
+
+
+class PatientTimeLine(models.Model):
+    """
+    Model to store timelines of a patient
+    """
+
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.date.today)
+    description = models.TextField()
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.date}"
