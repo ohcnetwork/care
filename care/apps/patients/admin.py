@@ -16,8 +16,8 @@ class PatientDiseaseInline(admin.TabularInline):
     extra = 1
 
 
-class PatientStatusInline(admin.TabularInline):
-    model = models.PatientStatus
+class PatientFacilityInline(admin.TabularInline):
+    model = models.PatientFacility
     min_num = 0
     extra = 1
 
@@ -39,7 +39,7 @@ class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     inlines = [
         PatientSymptomInline,
         PatientDiseaseInline,
-        PatientStatusInline,
+        PatientFacilityInline,
         PatientCovidStatusInline,
         PatientClinicalStatusInline,
     ]

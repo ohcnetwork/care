@@ -109,6 +109,7 @@ class Patient(SoftDeleteTimeStampedModel):
         verbose_name="Countries Patient has Travelled to",
         editable=False,
     )
+    home_isolation = models.BooleanField(default=False, verbose_name="does the patient is home isolated")
     countries_travelled = JSONField(
         null=True, blank=True, verbose_name="Countries Patient has Travelled to"
     )
@@ -170,7 +171,7 @@ class Patient(SoftDeleteTimeStampedModel):
     clinicals = models.ManyToManyField(
         "ClinicalStatus", through="PatientClinicalStatus"
     )
-    patient_status = models.ManyToManyField("Status", through="PatientStatus")
+    patient_status = models.ManyToManyField("Status", through="PatientFacility")
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
     objects = ActiveObjectsManager()
@@ -189,11 +190,6 @@ class Patient(SoftDeleteTimeStampedModel):
 class PatientClinicalStatus(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     clinical = models.ForeignKey("ClinicalStatus", on_delete=models.CASCADE)
-
-
-class PatientStatus(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
-    status = models.ForeignKey("Status", on_delete=models.CASCADE)
 
 
 class PatientCovidStatus(SoftDeleteTimeStampedModel):
@@ -259,6 +255,7 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
+    status = models.ForeignKey("Status", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
