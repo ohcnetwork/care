@@ -50,6 +50,13 @@ class Patient(SoftDeleteTimeStampedModel):
         (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
         (constants.SOURCE_CHOICES.ST, "STAY"),
     ]
+    
+    PATIENT_STATUS_CHOICES = (
+        (constants.HOME_ISOLATION, "Home Isolation"),
+        (constants.RECOVERED, "Recovered"),
+        (constants.DEAD, "Dead"),
+        (constants.FACILITY_STATUS, "Facility Status"),
+    )
     source = models.IntegerField(
         choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA
     )
@@ -108,9 +115,6 @@ class Patient(SoftDeleteTimeStampedModel):
         blank=True,
         verbose_name="Countries Patient has Travelled to",
         editable=False,
-    )
-    home_isolation = models.BooleanField(
-        default=False, verbose_name="does the patient is home isolated"
     )
     countries_travelled = JSONField(
         null=True, blank=True, verbose_name="Countries Patient has Travelled to"
@@ -178,7 +182,7 @@ class Patient(SoftDeleteTimeStampedModel):
         on_delete=models.CASCADE,
         related_name="covid_status",
     )
-    clinicals = models.ForeignKey(
+    clinical_status = models.ForeignKey(
         "ClinicalStatus",
         null=True,
         blank=True,
@@ -191,6 +195,9 @@ class Patient(SoftDeleteTimeStampedModel):
         blank=True,
         on_delete=models.CASCADE,
         related_name="current_facility",
+    )
+    patient_status = models.CharField(
+        max_length=25, choices=PATIENT_STATUS_CHOICES, blank=True
     )
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
@@ -262,10 +269,11 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     model to represent patient facility
     """
 
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
     patient_status = models.ForeignKey(
-        "PatientStatus", on_delete=models.CASCADE, null=True, blank=True
+        "PatientStatus", on_delete=models.CASCADE
     )
 
     def __str__(self):

@@ -1,7 +1,10 @@
 from django.utils.translation import ugettext as _
 from rest_framework import serializers as rest_serializers
 from rest_framework import exceptions as rest_exceptions
-from apps.patients import models as patient_models
+from apps.patients import (
+    constants as patient_constants,
+    models as patient_models,
+)
 from apps.facility import models as facility_models
 
 
@@ -16,7 +19,10 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
         read_only_fields = ("facility",)
 
 
-class PatientSerializer(rest_serializers.ModelSerializer):
+class PatientListSerializer(rest_serializers.ModelSerializer):
+
+    status = rest_serializers.SerializerMethodField()
+
     class Meta:
         model = patient_models.Patient
         fields = (
@@ -61,10 +67,9 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "portea_able_to_connect",
             "symptoms",
             "diseases",
-            "clinicals",
+            "status",
             "covid_status",
             "current_facility",
-            "home_isolation",
         )
         extra_kwargs = {
             "facility": {"required": True},
@@ -77,6 +82,10 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "diseases",
         )
 
+    def get_status(self, instance):
+        if instance.patient_status == patient_constants.FACILITY_STATUS:
+            return instance.facility_status
+        return instance.patient_status
 
 class PatientGroupSerializer(rest_serializers.ModelSerializer):
     class Meta:
