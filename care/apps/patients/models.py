@@ -50,7 +50,7 @@ class Patient(SoftDeleteTimeStampedModel):
         (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
         (constants.SOURCE_CHOICES.ST, "STAY"),
     ]
-    
+
     PATIENT_STATUS_CHOICES = (
         (constants.HOME_ISOLATION, "Home Isolation"),
         (constants.RECOVERED, "Recovered"),
@@ -272,9 +272,7 @@ class PatientFacility(SoftDeleteTimeStampedModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
-    patient_status = models.ForeignKey(
-        "PatientStatus", on_delete=models.CASCADE
-    )
+    patient_status = models.ForeignKey("PatientStatus", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.facility.name}"
