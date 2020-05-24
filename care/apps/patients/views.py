@@ -24,3 +24,21 @@ class PatientGroupViewSet(rest_viewsets.ModelViewSet):
 
     queryset = patient_models.PatientGroup.objects.all()
     serializer_class = patient_serializers.PatientGroupSerializer
+
+
+class CovidStatusViewSet(rest_viewsets.ModelViewSet):
+
+    queryset = patient_models.CovidStatus.objects.all()
+    serializer_class = patient_serializers.CovidStatusSerializer
+
+
+class ClinicalStatusViewSet(rest_viewsets.ModelViewSet):
+
+    queryset = patient_models.ClinicalStatus.objects.all()
+    serializer_class = patient_serializers.ClinicalStatusSerializer
+
+
+class StatusViewSet(rest_viewsets.ModelViewSet):
+
+    queryset = patient_models.Status.objects.all()
+    serializer_class = patient_serializers.StatusSerializer

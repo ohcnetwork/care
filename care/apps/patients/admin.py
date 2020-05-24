@@ -1,7 +1,7 @@
 from django.contrib import admin
 from djangoql.admin import DjangoQLSearchMixin
 from apps.patients import models
-
+from import_export.admin import ImportExportModelAdmin
 
 class PatientSymptomInline(admin.TabularInline):
     model = models.PatientSymptom
@@ -13,9 +13,27 @@ class PatientDiseaseInline(admin.TabularInline):
     min_num = 0
     extra = 1
 
+class PatientStatusInline(admin.TabularInline):
+    model = models.PatientStatus
+    min_num = 0
+    extra = 1
+
+
+class PatientCovidStatusInline(admin.TabularInline):
+    model = models.PatientCovidStatus
+    min_num = 0
+    extra = 1
+
+
+class PatientClinicalStatusInline(admin.TabularInline):
+    model = models.PatientClinicalStatus
+    min_num = 0
+    extra = 1
+
+
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "gender")
-    inlines = [PatientSymptomInline, PatientDiseaseInline]
+    inlines = [PatientSymptomInline, PatientDiseaseInline, PatientStatusInline, PatientCovidStatusInline, PatientClinicalStatusInline]
     djangoql_completion_enabled_by_default = True
 
 
@@ -23,8 +41,36 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+class DiseaseAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = models.Disease
+    djangoql_completion_enabled_by_default = True
+
+
+class CovidSymptomAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = models.CovidSymptom
+    djangoql_completion_enabled_by_default = True
+
+
+class PatientStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = models.Status
+    djangoql_completion_enabled_by_default = True
+
+
+class PatientCovidStatusStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = models.CovidStatus
+    djangoql_completion_enabled_by_default = True
+
+
+class PatientClinicalStatusStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
+    model = models.ClinicalStatus
+    djangoql_completion_enabled_by_default = True
+
+
 admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
-admin.site.register(models.Disease)
+admin.site.register(models.Disease, DiseaseAdmin)
 admin.site.register(models.PatientGroup)
-admin.site.register(models.CovidSymptom)
+admin.site.register(models.CovidSymptom, CovidSymptomAdmin)
+admin.site.register(models.Status, PatientStatusAdmin)
+admin.site.register(models.CovidStatus, PatientCovidStatusStatusAdmin)
+admin.site.register(models.ClinicalStatus, PatientClinicalStatusStatusAdmin)

@@ -44,15 +44,6 @@ class Patient(SoftDeleteTimeStampedModel):
         ("O+", "O+"),
         ("O-", "O-"),
     ]
-    DISEASE_STATUS_CHOICES = [
-        (constants.DISEASE_STATUS_CHOICES.NT, "NOT TESTED YET"),
-        (constants.DISEASE_STATUS_CHOICES.SU, "SUSPECTED"),
-        (constants.DISEASE_STATUS_CHOICES.PO, "POSITIVE"),
-        (constants.DISEASE_STATUS_CHOICES.NE, "NEGATIVE"),
-        (constants.DISEASE_STATUS_CHOICES.RE, "RECOVERY"),
-        (constants.DISEASE_STATUS_CHOICES.RD, "RECOVERED"),
-        (constants.DISEASE_STATUS_CHOICES.EX, "EXPIRED"),
-    ]
     SOURCE_CHOICES = [
         (constants.SOURCE_CHOICES.CA, "CARE"),
         (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
@@ -141,12 +132,6 @@ class Patient(SoftDeleteTimeStampedModel):
         District, on_delete=models.SET_NULL, null=True, blank=True
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
-    disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES,
-        default=constants.DISEASE_STATUS_CHOICES.NT,
-        blank=True,
-        verbose_name="Disease Status",
-    )
     number_of_aged_dependents = models.IntegerField(
         default=0,
         verbose_name="Number of people aged above 60 living with the patient",
@@ -179,8 +164,11 @@ class Patient(SoftDeleteTimeStampedModel):
     portea_called_at = models.DateTimeField(null=True, blank=True)
     portea_able_to_connect = models.DateTimeField(null=True, blank=True)
     symptoms = models.ManyToManyField('CovidSymptom', through='PatientSymptom')
-    diseases = models.ManyToManyField('Disease' , through='PatientDisease')
-    history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
+    diseases = models.ManyToManyField('Disease', through='PatientDisease')
+    covids = models.ManyToManyField('CovidStatus', through='PatientCovidStatus')
+    clinicals = models.ManyToManyField('ClinicalStatus', through='PatientClinicalStatus')
+    patient_status = models.ManyToManyField('Status', through='PatientStatus')
+    history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
     objects = ActiveObjectsManager()
 
@@ -193,6 +181,21 @@ class Patient(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return "{} - {}".format(self.name, self.get_gender_display())
+
+
+class PatientClinicalStatus(SoftDeleteTimeStampedModel):
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    clinical = models.ForeignKey('ClinicalStatus', on_delete=models.CASCADE)
+
+
+class PatientStatus(SoftDeleteTimeStampedModel):
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    status = models.ForeignKey('Status', on_delete=models.CASCADE)
+
+
+class PatientCovidStatus(SoftDeleteTimeStampedModel):
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    covid = models.ForeignKey('CovidStatus', on_delete=models.CASCADE)
 
 
 class PatientDisease(SoftDeleteTimeStampedModel):
@@ -214,6 +217,30 @@ class CovidSymptom(models.Model):
 
 
 class Disease(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Status(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class CovidStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class ClinicalStatus(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True)
 

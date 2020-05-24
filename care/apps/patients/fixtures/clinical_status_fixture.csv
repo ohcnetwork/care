@@ -1,0 +1,9 @@
+name,description
+Asymptomatic,dummy
+Mild symptoms,dummy
+severe symptoms,dummy
+inward without oxygen,dummy
+inward with oxygen,dummy
+ICU without ventilator,dummy
+ICU with ventilator,dummy
+Other,dummy

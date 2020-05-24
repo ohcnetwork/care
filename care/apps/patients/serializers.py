@@ -1,4 +1,3 @@
-from rest_framework import serializers
 from django.utils.translation import ugettext as _
 from rest_framework import serializers as rest_serializers
 from rest_framework import exceptions as rest_exceptions
@@ -6,14 +5,41 @@ from apps.patients import models as patient_models
 from apps.facility import models as facility_models
 
 
+class PatientClinicalStatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.PatientClinicalStatus
+        fields = ('patient', 'clinical',)
+        read_only_fields = ('patient',)
+
+
+class PatientCovidStatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.PatientCovidStatus
+        fields = ('patient', 'covid',)
+        read_only_fields = ('patient',)
+
+
+class PatientStatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.PatientStatus
+        fields = ('patient', 'status',)
+        read_only_fields = ('patient',)
+
+
 class PatientSerializer(rest_serializers.ModelSerializer):
+    clinicals = PatientClinicalStatusSerializer(source="patientclinicalstatus_set", many=True)
+    status = PatientStatusSerializer(source="patientstatus_set", many=True)
+    covids = PatientCovidStatusSerializer(source="patientcovidstatus_set",many=True)
+
     class Meta:
         model = patient_models.Patient
         fields = (
             "id",
             "facility",
             "nearest_facility",
-            "meta_info",
             "name",
             "year",
             "month",
@@ -41,16 +67,20 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "ongoing_medication",
             "has_SARI",
             "local_body",
-            "disease_status",
             "number_of_aged_dependents",
             "created_by",
             "number_of_chronic_diseased_dependents",
             "patient_search_id",
             "date_of_receipt_of_information",
-            "patient_group",
+            "cluster_group",
             "clinical_status_updated_at",
             "portea_called_at",
-            "portea_able_to_connect"
+            "portea_able_to_connect",
+            "symptoms",
+            "diseases",
+            "clinicals",
+            "covids",
+            "status",
         )
         extra_kwargs = {
             "facility": {"required": True},
@@ -58,17 +88,38 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "state": {"required": True},
             "district": {"required": True},
         }
+        read_only_fields = ("symptoms", "diseases",)
 
     def validate(self, attrs):
-        patient_group = patient_models.Patient.objects.filter(
-            attrs.get("aadhar_no", attrs.get("passport_no"))
+        cluster_group = patient_models.Patient.objects.filter(
+            aadhar_no=attrs.get("aadhar_no"), passport_no=attrs.get("passport_no")
         ).first()
-        if patient_group:
+        if cluster_group:
             raise rest_exceptions.PermissionDenied()
-        return attrs
+        return super(PatientSerializer, self).validate(attrs)
+
+    def create(self, validated_data):
+        patient_status = validated_data.pop('patientstatus_set')
+        clinicals = validated_data.pop('patientclinicalstatus_set')
+        covids = validated_data.pop('patientcovidstatus_set')
+        instance = super(PatientSerializer, self).create(validated_data)
+        patient_models.PatientStatus.objects.bulk_create([
+            patient_models.PatientStatus(status=status['status'], patient=instance)
+            for status in patient_status
+        ])
+        patient_models.PatientCovidStatus.objects.bulk_create([
+            patient_models.PatientCovidStatus(covid=covid['covid'], patient=instance)
+            for covid in covids
+        ])
+        patient_models.PatientClinicalStatus.objects.bulk_create([
+            patient_models.PatientClinicalStatus(clinical=clinical['clinical'], patient=instance)
+            for clinical in clinicals
+        ])
+        return instance
 
 
 class PatientGroupSerializer(rest_serializers.ModelSerializer):
+
     class Meta:
         model = patient_models.PatientGroup
         fields = (
@@ -78,3 +129,36 @@ class PatientGroupSerializer(rest_serializers.ModelSerializer):
             "created_at",
         )
         read_only_fields = ("created_at",)
+
+
+class CovidStatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.CovidStatus
+        fields = (
+            "id",
+            "name",
+            "description",
+        )
+
+
+class ClinicalStatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.ClinicalStatus
+        fields = (
+            "id",
+            "name",
+            "description",
+        )
+
+
+class StatusSerializer(rest_serializers.ModelSerializer):
+
+    class Meta:
+        model = patient_models.Status
+        fields = (
+            "id",
+            "name",
+            "description",
+        )
