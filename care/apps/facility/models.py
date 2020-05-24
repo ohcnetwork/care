@@ -36,16 +36,10 @@ class Facility(commons_models.TimeStampModel):
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(
-        accounts_models.LocalBody,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True,
     )
     district = models.ForeignKey(
-        accounts_models.District,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        accounts_models.District, on_delete=models.SET_NULL, null=True, blank=True,
     )
     state = models.ForeignKey(
         accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True
@@ -109,7 +103,9 @@ class FacilityStaff(commons_models.SoftDeleteTimeStampedModel):
     name = models.CharField(max_length=256)
     phone_number = models.CharField(max_length=15)
     email = models.EmailField(max_length=50)
-    designation = models.ForeignKey(StaffDesignation, on_delete=models.CASCADE, null=True, blank=True)
+    designation = models.ForeignKey(
+        StaffDesignation, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return str(self.name) + " for facility " + str(self.facility)
@@ -151,12 +147,7 @@ class InventoryItem(models.Model):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return (
-            self.name
-            + " with unit "
-            + self.unit
-            + " with minimum stock "
-        )
+        return self.name + " with unit " + self.unit + " with minimum stock "
 
 
 class Inventory(commons_models.TimeStampModel):

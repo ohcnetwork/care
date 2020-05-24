@@ -3,15 +3,18 @@ from djangoql.admin import DjangoQLSearchMixin
 from apps.patients import models
 from import_export.admin import ImportExportModelAdmin
 
+
 class PatientSymptomInline(admin.TabularInline):
     model = models.PatientSymptom
     min_num = 0
     extra = 1
 
+
 class PatientDiseaseInline(admin.TabularInline):
     model = models.PatientDisease
     min_num = 0
     extra = 1
+
 
 class PatientStatusInline(admin.TabularInline):
     model = models.PatientStatus
@@ -33,7 +36,13 @@ class PatientClinicalStatusInline(admin.TabularInline):
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "gender")
-    inlines = [PatientSymptomInline, PatientDiseaseInline, PatientStatusInline, PatientCovidStatusInline, PatientClinicalStatusInline]
+    inlines = [
+        PatientSymptomInline,
+        PatientDiseaseInline,
+        PatientStatusInline,
+        PatientCovidStatusInline,
+        PatientClinicalStatusInline,
+    ]
     djangoql_completion_enabled_by_default = True
 
 

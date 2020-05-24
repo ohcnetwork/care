@@ -34,6 +34,7 @@ class Patient(SoftDeleteTimeStampedModel):
     """
     Model to represent a patient
     """
+
     BLOOD_GROUP_CHOICES = [
         ("A+", "A+"),
         ("A-", "A-"),
@@ -163,11 +164,13 @@ class Patient(SoftDeleteTimeStampedModel):
     clinical_status_updated_at = models.DateTimeField(null=True, blank=True)
     portea_called_at = models.DateTimeField(null=True, blank=True)
     portea_able_to_connect = models.DateTimeField(null=True, blank=True)
-    symptoms = models.ManyToManyField('CovidSymptom', through='PatientSymptom')
-    diseases = models.ManyToManyField('Disease', through='PatientDisease')
-    covids = models.ManyToManyField('CovidStatus', through='PatientCovidStatus')
-    clinicals = models.ManyToManyField('ClinicalStatus', through='PatientClinicalStatus')
-    patient_status = models.ManyToManyField('Status', through='PatientStatus')
+    symptoms = models.ManyToManyField("CovidSymptom", through="PatientSymptom")
+    diseases = models.ManyToManyField("Disease", through="PatientDisease")
+    covids = models.ManyToManyField("CovidStatus", through="PatientCovidStatus")
+    clinicals = models.ManyToManyField(
+        "ClinicalStatus", through="PatientClinicalStatus"
+    )
+    patient_status = models.ManyToManyField("Status", through="PatientStatus")
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
     objects = ActiveObjectsManager()
@@ -184,28 +187,28 @@ class Patient(SoftDeleteTimeStampedModel):
 
 
 class PatientClinicalStatus(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    clinical = models.ForeignKey('ClinicalStatus', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    clinical = models.ForeignKey("ClinicalStatus", on_delete=models.CASCADE)
 
 
 class PatientStatus(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    status = models.ForeignKey('Status', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    status = models.ForeignKey("Status", on_delete=models.CASCADE)
 
 
 class PatientCovidStatus(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    covid = models.ForeignKey('CovidStatus', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    covid = models.ForeignKey("CovidStatus", on_delete=models.CASCADE)
 
 
 class PatientDisease(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    disease = models.ForeignKey('Disease', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    disease = models.ForeignKey("Disease", on_delete=models.CASCADE)
 
 
 class PatientSymptom(SoftDeleteTimeStampedModel):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    symptom = models.ForeignKey('CovidSymptom', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    symptom = models.ForeignKey("CovidSymptom", on_delete=models.CASCADE)
 
 
 class CovidSymptom(models.Model):
@@ -261,4 +264,4 @@ class PatientFacility(SoftDeleteTimeStampedModel):
         return f"{self.patient.name}<>{self.facility.name}"
 
     class Meta:
-        unique_together = ('facility', 'patient_facility_id')
+        unique_together = ("facility", "patient_facility_id")
