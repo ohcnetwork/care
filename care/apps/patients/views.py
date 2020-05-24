@@ -15,9 +15,12 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
     """
     ViewSet for Patient Timeline List
     """
+
     serializer_class = patients_serializers.PatientTimeLineSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = patients_filters.PatientTimelineFilter
-    
+
     def get_queryset(self):
-        return patients_models.PatientTimeLine.objects.filter(patient__id=self.kwargs.get('patient_id'))
+        return patients_models.PatientTimeLine.objects.filter(
+            patient__id=self.kwargs.get("patient_id")
+        )

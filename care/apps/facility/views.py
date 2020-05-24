@@ -9,6 +9,7 @@ class FacilityListViewSet(
     """
     ViewSet for Faciity list and create
     """
+
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilitySerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -20,6 +21,7 @@ class FacilityUserViewSet(
     """
     ViewSet for FacilityUser add and remove
     """
+
     queryset = facility_models.FacilityUser.objects.all()
     serializer_class = facility_serializers.FacilityUserSerializer
     permission_classes = (permissions.IsAuthenticated,)

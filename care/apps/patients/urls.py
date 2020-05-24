@@ -7,6 +7,10 @@ app_name = "patients"
 
 routers = SimpleRouter()
 
-routers.register("timeline/(?P<patient_id>\d+)", patients_views.PatientTimeLineViewSet, basename="patient_timeline")
+routers.register(
+    "timeline/(?P<patient_id>\d+)",
+    patients_views.PatientTimeLineViewSet,
+    basename="patient_timeline",
+)
 
 urlpatterns = routers.urls

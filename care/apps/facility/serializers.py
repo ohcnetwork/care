@@ -4,7 +4,6 @@ from apps.facility import models as facility_models
 
 
 class FacilitySerializer(rest_serializer.ModelSerializer):
-
     class Meta:
         model = facility_models.Facility
         fields = (
@@ -24,13 +23,17 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
             "users",
             "owned_by",
         )
-        read_only_fields = ('is_active', 'verified',)
+        read_only_fields = (
+            "is_active",
+            "verified",
+        )
 
 
 class FacilityUserSerializer(rest_serializer.ModelSerializer):
-
     class Meta:
         model = facility_models.FacilityUser
         fields = (
-            'facility', 'user', 'created_by',
+            "facility",
+            "user",
+            "created_by",
         )

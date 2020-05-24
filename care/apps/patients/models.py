@@ -801,6 +801,7 @@ class PatientTimeLine(models.Model):
     """
     Model to store timelines of a patient
     """
+
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     date = models.DateField(default=datetime.date.today)
     description = models.TextField()
