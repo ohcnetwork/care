@@ -8,24 +8,17 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
         model = facility_models.Facility
         fields = (
             "name",
-            "is_active",
-            "verified",
             "facility_type",
             "location",
             "address",
             "local_body",
             "district",
             "state",
-            "oxygen_capacity",
             "phone_number",
             "corona_testing",
             "created_by",
             "users",
             "owned_by",
-        )
-        read_only_fields = (
-            "is_active",
-            "verified",
         )
 
 
