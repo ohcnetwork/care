@@ -133,17 +133,3 @@ class PatientTimeLineSerializer(rest_serializers.ModelSerializer):
             "date",
             "description",
         )
-
-
-class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
-    class Meta:
-        model = patient_models.PortieCallingDetail
-        fields = (
-            "portie",
-            "patient",
-            "patient_family",
-            "called_at",
-            "able_to_connect",
-            "able_to_connect",
-            "comments",
-        )

@@ -6,8 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("patients", "0008_auto_20200524_2119"),
-        ("patients", "0007_care_platform"),
+        ('patients', '0008_auto_20200524_2119'),
+        ('patients', '0007_care_platform'),
     ]
 
-    operations = []
+    operations = [
+    ]

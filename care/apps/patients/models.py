@@ -317,7 +317,7 @@ class PortieCallingDetail(SoftDeleteTimeStampedModel):
     patient_family = models.ForeignKey(
         PatientFamily, on_delete=models.CASCADE, null=True, blank=True
     )
-    called_at = models.DateTimeField(null=True, blank=True)
+    called_at = models.DateTimeField()
     able_to_connect = models.BooleanField(default=True)
     comments = models.TextField(blank=True)
 
