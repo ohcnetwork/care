@@ -4,7 +4,7 @@ from apps.accounts import models as accounts_models
 
 
 class DistrictFilter(filters.FilterSet):
-    state = filters.CharFilter(field_name="state__id")
+    state = filters.CharFilter(field_name="state_id")
 
     class Meta:
         model = accounts_models.District
