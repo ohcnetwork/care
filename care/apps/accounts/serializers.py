@@ -28,7 +28,7 @@ class UserSerializer(rest_serializers.ModelSerializer):
             "age",
             "gender",
             "phone_number",
-            "district"
+            "district",
         )
 
 
@@ -52,11 +52,7 @@ class DistrictSerializer(rest_serializers.ModelSerializer):
 
     class Meta:
         model = accounts_models.District
-        fields = (
-            "id",
-            "name",
-            "state_id"
-        )
+        fields = ("id", "name", "state_id")
 
 
 class LoginSerializer(rest_serializers.Serializer):
