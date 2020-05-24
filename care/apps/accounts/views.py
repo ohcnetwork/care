@@ -28,6 +28,14 @@ class UserViewSet(rest_viewsets.ModelViewSet):
     serializer_class = accounts_serializers.UserSerializer
 
 
+class UserTypeListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
+    """
+    User Type list view
+    """
+    queryset = accounts_models.UserType.objects.all()
+    serializer_class = accounts_serializers.UserTypeSerializer
+
+
 class StateListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
     """
     State list API view

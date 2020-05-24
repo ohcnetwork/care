@@ -147,7 +147,7 @@ class InventoryItem(models.Model):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name + " with unit " + self.unit + " with minimum stock "
+        return f"{self.name} with unit {self.unit} with minimum stock"
 
 
 class Inventory(commons_models.TimeStampModel):
@@ -172,6 +172,9 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_users"
     )
+
+    def __str__(self):
+        return f"{self.user.first_name} - {self.facility.name}"
 
 
 class TestingLab(models.Model):

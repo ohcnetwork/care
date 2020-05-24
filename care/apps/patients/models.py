@@ -273,3 +273,16 @@ class PatientFacility(SoftDeleteTimeStampedModel):
 
     class Meta:
         unique_together = ("facility", "patient_facility_id")
+
+
+class PatientTimeLine(models.Model):
+    """
+    Model to store timelines of a patient
+    """
+
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.date.today)
+    description = models.TextField()
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.date}"

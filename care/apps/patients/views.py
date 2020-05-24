@@ -6,10 +6,11 @@ from rest_framework import (
     status as rest_status,
     viewsets as rest_viewsets,
 )
-
+from apps.commons import pagination as commons_pagination
 from apps.patients import (
     models as patient_models,
     serializers as patient_serializers,
+    filters as patients_filters,
 )
 from apps.commons import permissions as commons_permissions
 
@@ -42,3 +43,19 @@ class PatientStatusViewSet(rest_viewsets.ModelViewSet):
 
     queryset = patient_models.PatientStatus.objects.all()
     serializer_class = patient_serializers.PatientStatusSerializer
+
+
+class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
+    """
+    ViewSet for Patient Timeline List
+    """
+
+    serializer_class = patient_serializers.PatientTimeLineSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = patients_filters.PatientTimelineFilter
+    pagination_class = commons_pagination.CustomPagination
+
+    def get_queryset(self):
+        return patients_models.PatientTimeLine.objects.filter(
+            patient_id=self.kwargs.get("patient_id")
+        )

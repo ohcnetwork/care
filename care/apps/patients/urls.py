@@ -1,7 +1,7 @@
 from rest_framework.routers import SimpleRouter
-
 from apps.patients import views as patients_views
 
+app_name = "patients"
 routers = SimpleRouter()
 
 routers.register(
@@ -15,5 +15,10 @@ routers.register(
     "current-status", patients_views.PatientStatusViewSet, basename="patient_status"
 )
 routers.register("", patients_views.PatientViewSet, basename="patient")
+routers.register(
+    "timeline/(?P<patient_id>\d+)",
+    patients_views.PatientTimeLineViewSet,
+    basename="patient_timeline",
+)
 
 urlpatterns = routers.urls
