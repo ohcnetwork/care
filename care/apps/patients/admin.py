@@ -16,22 +16,22 @@ class PatientDiseaseInline(admin.TabularInline):
     extra = 1
 
 
-class PatientFacilityInline(admin.TabularInline):
-    model = models.PatientFacility
-    min_num = 0
-    extra = 1
+# class PatientFacilityInline(admin.TabularInline):
+#     model = models.PatientFacility
+#     min_num = 0
+#     extra = 1
 
 
-class PatientCovidStatusInline(admin.TabularInline):
-    model = models.PatientCovidStatus
-    min_num = 0
-    extra = 1
+# class PatientCovidStatusInline(admin.TabularInline):
+#     model = models.PatientCovidStatus
+#     min_num = 0
+#     extra = 1
 
 
-class PatientClinicalStatusInline(admin.TabularInline):
-    model = models.PatientClinicalStatus
-    min_num = 0
-    extra = 1
+# class PatientClinicalStatusInline(admin.TabularInline):
+#     model = models.PatientClinicalStatus
+#     min_num = 0
+#     extra = 1
 
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
@@ -39,9 +39,9 @@ class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     inlines = [
         PatientSymptomInline,
         PatientDiseaseInline,
-        PatientFacilityInline,
-        PatientCovidStatusInline,
-        PatientClinicalStatusInline,
+        # PatientFacilityInline,
+        # PatientCovidStatusInline,
+        # PatientClinicalStatusInline,
     ]
     djangoql_completion_enabled_by_default = True
 

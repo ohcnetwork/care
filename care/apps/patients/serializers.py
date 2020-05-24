@@ -7,48 +7,28 @@ from apps.facility import models as facility_models
 
 class PatientClinicalStatusSerializer(rest_serializers.ModelSerializer):
     class Meta:
-        model = patient_models.PatientClinicalStatus
-        fields = (
-            "patient",
-            "clinical",
-        )
-        read_only_fields = ("patient",)
+        model = patient_models.ClinicalStatus
+        fields = ("clinical",)
 
 
 class PatientCovidStatusSerializer(rest_serializers.ModelSerializer):
     class Meta:
-        model = patient_models.PatientCovidStatus
-        fields = (
-            "patient",
-            "covid",
-        )
-        read_only_fields = ("patient",)
+        model = patient_models.CovidStatus
+        fields = ("covid",)
 
 
 class PatientFacilitySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientFacility
         fields = (
-            "patient",
             "status",
             "facility",
             "patient_facility_id",
         )
-        read_only_fields = (
-            "patient",
-            "facility",
-        )
+        read_only_fields = ("facility",)
 
 
 class PatientSerializer(rest_serializers.ModelSerializer):
-    clinicals = PatientClinicalStatusSerializer(
-        source="patientclinicalstatus_set", many=True
-    )
-    patient_facility = PatientFacilitySerializer(
-        source="patientfacility_set", many=True
-    )
-    covids = PatientCovidStatusSerializer(source="patientcovidstatus_set", many=True)
-
     class Meta:
         model = patient_models.Patient
         fields = (
@@ -94,7 +74,7 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "symptoms",
             "diseases",
             "clinicals",
-            "covids",
+            "covid_status",
             "patient_facility",
             "home_isolation",
         )
@@ -108,33 +88,6 @@ class PatientSerializer(rest_serializers.ModelSerializer):
             "symptoms",
             "diseases",
         )
-
-    def create(self, validated_data):
-        patient_status = validated_data.pop("patientfacility_set")
-        clinicals = validated_data.pop("patientclinicalstatus_set")
-        covids = validated_data.pop("patientcovidstatus_set")
-        instance = super(PatientSerializer, self).create(validated_data)
-        patient_models.PatientFacility.objects.bulk_create(
-            [
-                patient_models.PatientFacility(
-                    **status, facility=validated_data["facility"], patient=instance
-                )
-                for status in patient_status
-            ]
-        )
-        patient_models.PatientCovidStatus.objects.bulk_create(
-            [
-                patient_models.PatientCovidStatus(**covid, patient=instance)
-                for covid in covids
-            ]
-        )
-        patient_models.PatientClinicalStatus.objects.bulk_create(
-            [
-                patient_models.PatientClinicalStatus(**clinical, patient=instance)
-                for clinical in clinicals
-            ]
-        )
-        return instance
 
 
 class PatientGroupSerializer(rest_serializers.ModelSerializer):
