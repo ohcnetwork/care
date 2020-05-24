@@ -29,6 +29,19 @@ class UserSerializer(rest_serializers.ModelSerializer):
             "gender",
             "phone_number",
             "district",
+            "user_type"
+        )
+
+
+class UserTypeSerializer(rest_serializers.ModelSerializer):
+    """
+    User type serializer
+    """
+    class Meta:
+        model = accounts_models.UserType
+        fields = (
+            "id",
+            "name",
         )
 
 
