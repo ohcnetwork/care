@@ -205,3 +205,30 @@ class PatientTimeLine(models.Model):
 
     def __str__(self):
         return f"{self.patient.name} - {self.date}"
+
+
+class PatientFamily(models.Model):
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    name = models.CharField(max_length=55)
+    relation = models.CharField(max_length=55)
+    age_month = models.PositiveIntegerField()
+    age_year = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=15)
+    address = EncryptedTextField(default="")
+    gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
+
+    def __str__(self):
+        return f"{self.patient.name} {self.relation}'s {self.name}"
+
+
+class PortieCallingDetail(SoftDeleteTimeStampedModel):
+    
+    portie = models.ForeignKey(User, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)
+    patient_family = models.ForeignKey(PatientFamily, on_delete=models.CASCADE, null=True, blank=True)
+    called_at = models.DateTimeField()
+    able_to_connect = models.BooleanField(default=True)
+    comments = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.portie.name} called {self.patient.name} at {self.called_at}"
