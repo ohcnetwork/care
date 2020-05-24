@@ -1,11 +1,10 @@
 import datetime
-
 from django.db import models
 from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
-from apps.commons.constants import GENDER_CHOICES
+from apps.commons.constants import GENDER_CHOICES, FIELDS_CHARACTER_LIMITS
 from apps.commons.models import SoftDeleteTimeStampedModel
 from apps.commons.validators import phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -13,6 +12,22 @@ from partial_index import PQ, PartialIndex
 from apps.patients import constants
 from simple_history.models import HistoricalRecords
 from libs.jsonfield import JSONField
+
+
+class PatientGroup(SoftDeleteTimeStampedModel):
+    """
+    model to represent patient Group
+    """
+
+    name = models.CharField(
+        max_length=FIELDS_CHARACTER_LIMITS["NAME"],
+        help_text="Name of the patient group",
+    )
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}<>{self.description}"
 
 
 class Patient(SoftDeleteTimeStampedModel):
@@ -30,14 +45,6 @@ class Patient(SoftDeleteTimeStampedModel):
         ("O+", "O+"),
         ("O-", "O-"),
     ]
-    DISEASE_STATUS_CHOICES = [
-        (constants.DISEASE_STATUS_CHOICES.SU, "SUSPECTED"),
-        (constants.DISEASE_STATUS_CHOICES.PO, "POSITIVE"),
-        (constants.DISEASE_STATUS_CHOICES.NE, "NEGATIVE"),
-        (constants.DISEASE_STATUS_CHOICES.RE, "RECOVERY"),
-        (constants.DISEASE_STATUS_CHOICES.RD, "RECOVERED"),
-        (constants.DISEASE_STATUS_CHOICES.EX, "EXPIRED"),
-    ]
     SOURCE_CHOICES = [
         (constants.SOURCE_CHOICES.CA, "CARE"),
         (constants.SOURCE_CHOICES.CT, "COVID_TRACKER"),
@@ -53,28 +60,35 @@ class Patient(SoftDeleteTimeStampedModel):
     icmr_id = models.CharField(max_length=15, blank=True)
     govt_id = models.CharField(max_length=15, blank=True)
     name = EncryptedCharField(max_length=200)
-    age = models.PositiveIntegerField(null=True, blank=True)
+    month = models.PositiveIntegerField(null=True, blank=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
     nationality = models.CharField(
-        max_length=255, default="", verbose_name="Nationality of Patient"
+        max_length=255, verbose_name="Nationality of Patient", default="indian"
     )
     passport_no = models.CharField(
-        max_length=255, default="", verbose_name="Passport Number of Foreign Patients"
+        max_length=255,
+        verbose_name="Passport Number of Foreign Patients",
+        unique=True,
+        null=True,
+        blank=True,
     )
     aadhar_no = models.CharField(
-        max_length=255, default="", verbose_name="Aadhar Number of Patient"
+        max_length=255,
+        verbose_name="Aadhar Number of Patient",
+        unique=True,
+        null=True,
+        blank=True,
     )
     is_medical_worker = models.BooleanField(
         default=False, verbose_name="Is the Patient a Medical Worker"
     )
     blood_group = models.CharField(
         choices=BLOOD_GROUP_CHOICES,
-        null=True,
-        blank=True,
         max_length=4,
         verbose_name="Blood Group of Patient",
     )
@@ -94,6 +108,9 @@ class Patient(SoftDeleteTimeStampedModel):
         blank=True,
         verbose_name="Countries Patient has Travelled to",
         editable=False,
+    )
+    home_isolation = models.BooleanField(
+        default=False, verbose_name="does the patient is home isolated"
     )
     countries_travelled = JSONField(
         null=True, blank=True, verbose_name="Countries Patient has Travelled to"
@@ -119,12 +136,6 @@ class Patient(SoftDeleteTimeStampedModel):
         District, on_delete=models.SET_NULL, null=True, blank=True
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
-    disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES,
-        default=constants.DISEASE_STATUS_CHOICES.SU,
-        blank=True,
-        verbose_name="Disease Status",
-    )
     number_of_aged_dependents = models.IntegerField(
         default=0,
         verbose_name="Number of people aged above 60 living with the patient",
@@ -146,10 +157,54 @@ class Patient(SoftDeleteTimeStampedModel):
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
+    cluster_group = models.ForeignKey(
+        PatientGroup,
+        on_delete=models.PROTECT,
+        related_name="patients",
+        null=True,
+        blank=True,
+    )
+    clinical_status_updated_at = models.DateTimeField(null=True, blank=True)
+    portea_called_at = models.DateTimeField(null=True, blank=True)
+    portea_able_to_connect = models.BooleanField(
+        null=True, blank=True, verbose_name="Is the portea able to connect"
+    )
     symptoms = models.ManyToManyField("CovidSymptom", through="PatientSymptom")
     diseases = models.ManyToManyField("Disease", through="PatientDisease")
+    covid_status = models.ForeignKey(
+        "CovidStatus",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="covid_status",
+    )
+    clinicals = models.ForeignKey(
+        "ClinicalStatus",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="clinical_status",
+    )
+    current_facility = models.ForeignKey(
+        "PatientFacility",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="current_facility",
+    )
+    history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
     objects = ActiveObjectsManager()
+
+    class Meta:
+        unique_together = (
+            "aadhar_no",
+            "passport_no",
+            "cluster_group",
+        )
+
+    def __str__(self):
+        return "{} - {}".format(self.name, self.get_gender_display())
 
 
 class PatientDisease(SoftDeleteTimeStampedModel):
@@ -178,17 +233,43 @@ class Disease(models.Model):
         return f"{self.name}"
 
 
+class PatientStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class CovidStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class ClinicalStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class PatientFacility(SoftDeleteTimeStampedModel):
     """
     model to represent patient facility
     """
 
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     patient_facility_id = models.CharField(max_length=15)
+    patient_status = models.ForeignKey(
+        "PatientStatus", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
-        return f"{self.patient.name}<>{self.facility.name}"
+        return f"{self.facility.name}"
 
     class Meta:
         unique_together = ("facility", "patient_facility_id")
@@ -208,7 +289,7 @@ class PatientTimeLine(models.Model):
 
 
 class PatientFamily(models.Model):
-    patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     name = models.CharField(max_length=55)
     relation = models.CharField(max_length=55)
     age_month = models.PositiveIntegerField()
@@ -222,10 +303,14 @@ class PatientFamily(models.Model):
 
 
 class PortieCallingDetail(SoftDeleteTimeStampedModel):
-    
+
     portie = models.ForeignKey(User, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)
-    patient_family = models.ForeignKey(PatientFamily, on_delete=models.CASCADE, null=True, blank=True)
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, null=True, blank=True
+    )
+    patient_family = models.ForeignKey(
+        PatientFamily, on_delete=models.CASCADE, null=True, blank=True
+    )
     called_at = models.DateTimeField()
     able_to_connect = models.BooleanField(default=True)
     comments = models.TextField(blank=True)

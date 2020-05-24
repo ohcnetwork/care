@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import QuerySet, signals
 
+
 class SoftDeleteQuerySet(QuerySet):
     def delete(self):
         self.update(active=False)

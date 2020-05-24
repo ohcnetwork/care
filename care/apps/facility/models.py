@@ -36,16 +36,10 @@ class Facility(commons_models.TimeStampModel):
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(
-        accounts_models.LocalBody,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True,
     )
     district = models.ForeignKey(
-        accounts_models.District,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        accounts_models.District, on_delete=models.SET_NULL, null=True, blank=True,
     )
     state = models.ForeignKey(
         accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True
