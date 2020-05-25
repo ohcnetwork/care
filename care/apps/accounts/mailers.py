@@ -113,7 +113,7 @@ class ForgotPasswordMailer(BaseMailer):
             {
                 "user": user,
                 "reset_password_url": f"""
-                {accounts_constants.RESET_PASSWORD_BASE_URL}/{self.kwargs.get('uid')}/{self.kwargs.get('token')}
+                {settings.WEBAPP_BASE_URL}/{accounts_constants.RESET_PASSWORD_BASE_URL}/{self.kwargs.get('uid')}/{self.kwargs.get('token')}
             """,
             }
         )

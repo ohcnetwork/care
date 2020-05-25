@@ -346,3 +346,5 @@ class Settings(LoggerSettingsMixin, Configuration):
             }
         }
     }
+
+    WEBAPP_BASE_URL = 'http://localhost:3000/'
