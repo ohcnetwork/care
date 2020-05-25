@@ -55,7 +55,6 @@ class Facility(commons_models.TimeStampModel):
     total_patient = models.PositiveIntegerField(default=0)
     positive_patient = models.PositiveIntegerField(default=0)
     negative_patient = models.PositiveIntegerField(default=0)
-    created_at = models.DateField(auto_now_add=True)
 
     users = models.ManyToManyField(
         User,

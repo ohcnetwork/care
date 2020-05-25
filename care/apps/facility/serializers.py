@@ -24,7 +24,6 @@ class FacilitySerializer(rest_serializers.ModelSerializer):
             "total_patient",
             "positive_patient",
             "negative_patient",
-            "created_at",
         )
 
 

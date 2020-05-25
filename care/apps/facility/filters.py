@@ -20,7 +20,8 @@ class FacilityFilter(filters.FilterSet):
     negative_patient = filters.RangeFilter(
         field_name="negative_patient", lookup_expr="range"
     )
-    created_at = filters.DateFromToRangeFilter(field_name="created_at")
+    created_at = filters.DateTimeFromToRangeFilter(field_name="created_at")
+    updated_at = filters.DateTimeFromToRangeFilter(field_name="updated_at")
 
     class Meta:
         model = facility_models.Facility
@@ -35,5 +36,6 @@ class FacilityFilter(filters.FilterSet):
             "total_patient",
             "positive_patient",
             "negative_patient",
-            # "created_at",
+            "created_at",
+            "updated_at",
         )
