@@ -34,3 +34,15 @@ class FacilityUserSerializer(rest_serializer.ModelSerializer):
             "user",
             "created_by",
         )
+
+
+class InventorySerializer(rest_serializer.ModelSerializer):
+    class Meta:
+        model = facility_models.Inventory
+        fields = (
+            "facility",
+            "item",
+            "required_quantity",
+            "current_quantity",
+            "created_by",
+        )

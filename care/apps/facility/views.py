@@ -1,8 +1,13 @@
 from rest_framework import viewsets, mixins, permissions
 
-from apps.commons import constants as commons_constants
+from django_filters import rest_framework as filters
 
-from apps.facility import models as facility_models, serializers as facility_serializers
+from apps.commons import constants as commons_constants
+from apps.facility import (
+    models as facility_models,
+    serializers as facility_serializers,
+    filters as facility_filters,
+)
 
 
 class FacilityViewSet(
@@ -36,3 +41,19 @@ class FacilityUserViewSet(
     queryset = facility_models.FacilityUser.objects.all()
     serializer_class = facility_serializers.FacilityUserSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class InventorySerializerViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    ViewSet for Inventory add, list and update
+    """
+
+    queryset = facility_models.Inventory.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = facility_filters.InventoryFilter
+    serializer_class = facility_serializers.InventorySerializer
