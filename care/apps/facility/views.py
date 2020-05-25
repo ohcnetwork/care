@@ -19,8 +19,15 @@ class FacilityViewSet(
 
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilitySerializer
-    filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter,)
-    ordering_fields = ('total_patient', 'positive_patient', 'negative_patient',)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_filters.OrderingFilter,
+    )
+    ordering_fields = (
+        "total_patient",
+        "positive_patient",
+        "negative_patient",
+    )
     filterset_class = facility_filters.FacilityFilter
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = commons_pagination.CustomPagination

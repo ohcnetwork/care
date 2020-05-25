@@ -24,12 +24,11 @@ class FacilitySerializer(rest_serializers.ModelSerializer):
             "total_patient",
             "positive_patient",
             "negative_patient",
-            "created_at"
+            "created_at",
         )
 
 
 class FacilityUserSerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = facility_models.FacilityUser
         fields = (
@@ -40,9 +39,9 @@ class FacilityUserSerializer(rest_serializers.ModelSerializer):
 
 
 class FacilityTypeSerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = facility_models.FacilityType
         fields = (
-            "id", "name",
+            "id",
+            "name",
         )

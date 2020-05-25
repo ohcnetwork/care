@@ -4,24 +4,22 @@ from apps.facility import models as facility_models
 
 
 class FacilityFilter(filters.FilterSet):
-    code = filters.CharFilter(
-        field_name="facility_code", lookup_expr="istartswith"
-    )
-    name = filters.CharFilter(
-        field_name="name", lookup_expr="istartswith"
-    )
-    address =  filters.CharFilter(
-        field_name="address", lookup_expr="istartswith"
-    )
-    facility_type_name =  filters.CharFilter(
+    code = filters.CharFilter(field_name="facility_code", lookup_expr="istartswith")
+    name = filters.CharFilter(field_name="name", lookup_expr="istartswith")
+    address = filters.CharFilter(field_name="address", lookup_expr="istartswith")
+    facility_type_name = filters.CharFilter(
         field_name="facility_type__name", lookup_expr="istartswith"
     )
     owned_by_name = filters.CharFilter(
         field_name="owned_by__name", lookup_expr="istartswith"
     )
-    total_patient = filters.RangeFilter(field_name='total_patient', lookup_expr='range')
-    positive_patient = filters.RangeFilter(field_name='positive_patient', lookup_expr='range')
-    negative_patient = filters.RangeFilter(field_name='negative_patient', lookup_expr='range')
+    total_patient = filters.RangeFilter(field_name="total_patient", lookup_expr="range")
+    positive_patient = filters.RangeFilter(
+        field_name="positive_patient", lookup_expr="range"
+    )
+    negative_patient = filters.RangeFilter(
+        field_name="negative_patient", lookup_expr="range"
+    )
     created_at = filters.DateFromToRangeFilter(field_name="created_at")
 
     class Meta:

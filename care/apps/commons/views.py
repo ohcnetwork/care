@@ -14,6 +14,7 @@ class OwnershiptTypeViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVie
     """
     ViewSet for Ownership Type List
     """
+
     queryset = commons_models.OwnershipType.objects.all()
     serializer_class = commons_serializers.OwnershipTypeSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)

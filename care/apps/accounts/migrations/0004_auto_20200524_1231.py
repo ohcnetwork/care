@@ -6,68 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0003_care_platform'),
+        ("accounts", "0003_care_platform"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='district',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='district',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='district',
-            name='updated_at',
-        ),
-        migrations.RemoveField(
-            model_name='localbody',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='localbody',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='localbody',
-            name='updated_at',
-        ),
-        migrations.RemoveField(
-            model_name='skill',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='skill',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='skill',
-            name='updated_at',
-        ),
-        migrations.RemoveField(
-            model_name='state',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='state',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='state',
-            name='updated_at',
-        ),
-        migrations.RemoveField(
-            model_name='usertype',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='usertype',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='usertype',
-            name='updated_at',
-        ),
+        migrations.RemoveField(model_name="district", name="active",),
+        migrations.RemoveField(model_name="district", name="created_at",),
+        migrations.RemoveField(model_name="district", name="updated_at",),
+        migrations.RemoveField(model_name="localbody", name="active",),
+        migrations.RemoveField(model_name="localbody", name="created_at",),
+        migrations.RemoveField(model_name="localbody", name="updated_at",),
+        migrations.RemoveField(model_name="skill", name="active",),
+        migrations.RemoveField(model_name="skill", name="created_at",),
+        migrations.RemoveField(model_name="skill", name="updated_at",),
+        migrations.RemoveField(model_name="state", name="active",),
+        migrations.RemoveField(model_name="state", name="created_at",),
+        migrations.RemoveField(model_name="state", name="updated_at",),
+        migrations.RemoveField(model_name="usertype", name="active",),
+        migrations.RemoveField(model_name="usertype", name="created_at",),
+        migrations.RemoveField(model_name="usertype", name="updated_at",),
     ]
