@@ -60,7 +60,7 @@ class FacilityInfrastructureSerializer(rest_serializer.ModelSerializer):
             "total_bed",
             "occupied_bed",
             "available_bed",
-            "created_by"
+            "created_by",
         )
 
 
