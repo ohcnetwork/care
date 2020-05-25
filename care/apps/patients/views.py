@@ -101,3 +101,14 @@ class PatientSampleTestViewSet(
 
     queryset = patient_models.PatientSampleTest.objects.all()
     serializer_class = patient_serializers.PatientSampleTestSerializer
+
+
+class PatientDetailViewSet(rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet):
+    """
+    ViewSet for Patient Detail
+    """
+
+    serializer_class = patient_serializers.PatientDetailsSerializer
+    pagination_class = commons_pagination.CustomPagination
+    lookup_field = 'id'
+    queryset = patient_models.Patient.objects.all()
