@@ -27,4 +27,5 @@ routers.register(
 )
 routers.register("", patients_views.PatientViewSet, basename="patient")
 
+routers.register("", patients_views.PatientViewSet, basename="patient")
 urlpatterns = routers.urls

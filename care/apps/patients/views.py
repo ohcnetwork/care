@@ -30,6 +30,8 @@ class PatientViewSet(
 
     serializer_class = patient_serializers.PatientListSerializer
     pagination_class = commons_pagination.CustomPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = patients_filters.PatientFilter
 
     def get_queryset(self):
         queryset = patient_models.Patient.objects.all()

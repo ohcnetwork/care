@@ -4,7 +4,10 @@ from apps.accounts.models import District, State, LocalBody
 from apps.commons.models import ActiveObjectsManager
 from apps.facility.models import Facility, TestingLab
 from apps.accounts.models import User
-from apps.commons.constants import GENDER_CHOICES, FIELDS_CHARACTER_LIMITS
+from apps.commons.constants import (
+    GENDER_CHOICES,
+    FIELDS_CHARACTER_LIMITS,
+)
 from apps.commons.models import SoftDeleteTimeStampedModel
 from apps.commons.validators import phone_number_regex
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
@@ -51,12 +54,6 @@ class Patient(SoftDeleteTimeStampedModel):
         (constants.SOURCE_CHOICES.ST, "STAY"),
     ]
 
-    PATIENT_STATUS_CHOICES = (
-        (constants.HOME_ISOLATION, "Home Isolation"),
-        (constants.RECOVERED, "Recovered"),
-        (constants.DEAD, "Dead"),
-        (constants.FACILITY_STATUS, "Facility Status"),
-    )
     source = models.IntegerField(
         choices=SOURCE_CHOICES, default=constants.SOURCE_CHOICES.CA
     )
@@ -197,7 +194,7 @@ class Patient(SoftDeleteTimeStampedModel):
         related_name="current_facility",
     )
     patient_status = models.CharField(
-        max_length=25, choices=PATIENT_STATUS_CHOICES, blank=True
+        max_length=25, choices=constants.PATIENT_STATUS_CHOICES, blank=True
     )
     history = HistoricalRecords(excluded_fields=["patient_search_id"])
 
@@ -317,7 +314,7 @@ class PortieCallingDetail(SoftDeleteTimeStampedModel):
     patient_family = models.ForeignKey(
         PatientFamily, on_delete=models.CASCADE, null=True, blank=True
     )
-    called_at = models.DateTimeField(null=True, blank=True)
+    called_at = models.DateTimeField()
     able_to_connect = models.BooleanField(default=True)
     comments = models.TextField(blank=True)
 
