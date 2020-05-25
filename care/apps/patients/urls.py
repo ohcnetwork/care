@@ -14,11 +14,13 @@ routers.register(
 routers.register(
     "current-status", patients_views.PatientStatusViewSet, basename="patient_status"
 )
-routers.register("", patients_views.PatientViewSet, basename="patient")
 routers.register(
     "timeline/(?P<patient_id>\d+)",
     patients_views.PatientTimeLineViewSet,
     basename="patient_timeline",
 )
-
+routers.register(
+    "sample-tests", patients_views.PatientSampleTestViewSet, basename="sample_test"
+)
+routers.register("", patients_views.PatientViewSet, basename="patient")
 urlpatterns = routers.urls

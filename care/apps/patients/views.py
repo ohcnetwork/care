@@ -88,3 +88,16 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
         return patient_models.PatientTimeLine.objects.filter(
             patient_id=self.kwargs.get("patient_id")
         )
+
+
+class PatientSampleTestViewSet(
+    rest_mixins.CreateModelMixin,
+    rest_mixins.UpdateModelMixin,
+    rest_viewsets.GenericViewSet,
+):
+    """
+    views for create and update patient sample test
+    """
+
+    queryset = patient_models.PatientSampleTest.objects.all()
+    serializer_class = patient_serializers.PatientSampleTestSerializer
