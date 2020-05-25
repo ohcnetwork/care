@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/v1/accounts/', include('care.apps.accounts.urls')),
     path('api/v1/facilities/', include('care.apps.facility.urls')),
     path('api/v1/patients/', include('care.apps.patients.urls')),
+    path('api/v1/commons/', include('care.apps.commons.urls')),
     # API Docs
     re_path(r"^api/swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json", ),
     re_path(r"^api/swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui", ),
