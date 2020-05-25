@@ -22,7 +22,6 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
 
 
 class PatientListSerializer(rest_serializers.ModelSerializer):
-
     status = rest_serializers.SerializerMethodField()
 
     class Meta:
@@ -153,7 +152,6 @@ class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
 
 
 class PatientFamilySerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = patient_models.PatientFamily
         fields = (
@@ -202,11 +200,12 @@ class PortieCallingDetailSerializer(rest_serializers.ModelSerializer):
 
 
 class ContactDetailsSerializer(rest_serializers.ModelSerializer):
-
     contact_number_belongs_to = rest_serializers.SerializerMethodField()
 
     def get_contact_number_belongs_to(self, instance):
-        return patient_models.PortieCallingDetail.objects.get(patient=instance).patient_family.relation if patient_models.PortieCallingDetail.objects.filter(patient=instance) else 'self'
+        return patient_models.PortieCallingDetail.objects.get(
+            patient=instance).patient_family.relation if patient_models.PortieCallingDetail.objects.filter(
+            patient=instance) else 'self'
 
     class Meta:
         model = patient_models.Patient
@@ -282,30 +281,35 @@ class PatientLabSerializer(rest_serializers.ModelSerializer):
             'status_updated_at',
         )
 
-class PatientDetailsSerializer(rest_serializers.ModelSerializer):
-    patient_family = rest_serializers.SerializerMethodField()
+
+class PersonalDetailsSerializer(rest_serializers.ModelSerializer):
+    age_years = rest_serializers.IntegerField(source="year")
+    age_months = rest_serializers.IntegerField(source="month")
+
+    class Meta:
+        model = patient_models.Patient
+        fields = (
+            "name", "icmr_id", "govt_id", "gender", "cluster_group", "age_years", "age_months",
+        )
+
+
+class PatientDetailsSerializer(rest_serializers.Serializer):
+    personal_details = rest_serializers.SerializerMethodField()
+    patient_family_details = rest_serializers.SerializerMethodField()
     portie_calling_details = rest_serializers.SerializerMethodField()
     contact_details = rest_serializers.SerializerMethodField()
     medication_details = rest_serializers.SerializerMethodField()
     patient_timeline = rest_serializers.SerializerMethodField()
     facility_details = rest_serializers.SerializerMethodField()
     patient_lab_details = rest_serializers.SerializerMethodField()
-    age_years = rest_serializers.SerializerMethodField()
-    age_months = rest_serializers.SerializerMethodField()
 
-    def get_age_years(self, instance):
-        dob = instance.date_of_birth
-        return datetime.date.today().year- dob.year
-
-    def get_age_months(self, instance):
-        dob = instance.date_of_birth
-        return (datetime.date.today().year- dob.year)*12 + (datetime.date.today().month- dob.month)
-
-    def get_patient_family(self, instance):
+    def get_patient_family_details(self, instance):
         return PatientFamilySerializer(patient_models.PatientFamily.objects.filter(patient=instance), many=True).data
 
     def get_portie_calling_details(self, instance):
-        return PortieCallingDetailSerializer(patient_models.PortieCallingDetail.objects.filter(patient=instance), many=True).data
+        return PortieCallingDetailSerializer(
+            patient_models.PortieCallingDetail.objects.filter(patient=instance), many=True
+        ).data
 
     def get_contact_details(self, instance):
         return ContactDetailsSerializer(patient_models.Patient.objects.filter(id=instance.id), many=True).data
@@ -314,18 +318,26 @@ class PatientDetailsSerializer(rest_serializers.ModelSerializer):
         return MedicationDetailsSerializer(patient_models.Patient.objects.filter(id=instance.id), many=True).data
 
     def get_facility_details(self, instance):
-        return PatientFacilityDetailsSerializer(facility_models.Facility.objects.filter(id=instance.facility.id), many=True).data
+        return PatientFacilityDetailsSerializer(
+            facility_models.Facility.objects.filter(id=instance.facility.id), many=True
+        ).data
 
     def get_patient_timeline(self, instance):
-        return PatientTimeLineSerializer(patient_models.PatientTimeLine.objects.filter(patient=instance), many=True).data
+        return PatientTimeLineSerializer(
+            patient_models.PatientTimeLine.objects.filter(patient=instance), many=True
+        ).data
 
     def get_patient_lab_details(self, instance):
         return PatientLabSerializer(patient_models.PatientSampleTest.objects.filter(patient=instance), many=True).data
 
+    def get_personal_details(self, instance):
+        print(instance)
+        return PersonalDetailsSerializer(patient_models.Patient.objects.filter(id=instance.id), many=True).data
+
     class Meta:
-        model = patient_models.Patient
+        model = None
         fields = (
-            "name", "icmr_id", "govt_id", "gender", "cluster_group", "patient_family", "age_years", "age_months",
-            "portie_calling_details", "contact_details", "medication_details", "facility_details", "patient_timeline",
-            "patient_lab_details"
+            "personal_details", "patient_family_details", "portie_calling_details", "contact_details",
+            "medication_details",
+            "facility_details", "patient_timeline", "patient_lab_details"
         )

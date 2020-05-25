@@ -103,7 +103,9 @@ class PatientSampleTestViewSet(
     serializer_class = patient_serializers.PatientSampleTestSerializer
 
 
-class PatientDetailViewSet(rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet):
+class PatientDetailViewSet(
+    rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet
+):
     """
     ViewSet for Patient Detail
     """
