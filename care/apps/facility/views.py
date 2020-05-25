@@ -2,7 +2,10 @@ from rest_framework import viewsets, mixins, permissions
 
 from django_filters import rest_framework as filters
 
-from apps.commons import constants as commons_constants
+from apps.commons import (
+    constants as commons_constants,
+    pagination as commons_pagination,
+)
 from apps.facility import (
     models as facility_models,
     serializers as facility_serializers,
@@ -57,3 +60,4 @@ class InventorySerializerViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
+    pagination_class = commons_pagination.CustomPagination
