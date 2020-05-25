@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from apps.commons import constants as common_constants
@@ -30,9 +31,6 @@ class PatientFilter(filters.FilterSet):
     district = filters.CharFilter(field_name="district")
     cluster = filters.CharFilter(field_name="cluster_group")
     covid_status = filters.CharFilter(field_name="covid_status")
-    patient_status = filters.ChoiceFilter(
-        field_name="patient_status", choices=patient_constants.PATIENT_STATUS_CHOICES
-    )
     clinical_status = filters.CharFilter(field_name="clinical_status")
     clinical_status_updated_at = filters.DateFromToRangeFilter(
         field_name="clinical_status_updated_at"
@@ -43,9 +41,18 @@ class PatientFilter(filters.FilterSet):
     facility_district = filters.CharFilter(field_name="facility__district")
     facility_type = filters.CharFilter(field_name="facility__facility_type")
     facility_owned_by = filters.CharFilter(field_name="facility__owned_by")
-    current_facility_status = filters.CharFilter(
-        field_name="current_facility__patient_status__name"
+    patient_status = filters.CharFilter(
+        field_name="current_facility__patient_status__name",
+        method="filter_patient_status",
     )
+
+    def filter_patient_status(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(current_facility__patient_status__name=value)
+                | Q(patient_status=value)
+            )
+        return queryset
 
     class Meta:
         model = patients_models.Patient
@@ -71,5 +78,4 @@ class PatientFilter(filters.FilterSet):
             "facility_district",
             "facility_type",
             "facility_owned_by",
-            "current_facility_status",
         )
