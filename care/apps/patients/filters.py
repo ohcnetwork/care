@@ -1,7 +1,8 @@
 from django_filters import rest_framework as filters
 
-from apps.commons.constants import GENDER_CHOICES
+from apps.commons import constants as common_constants
 from apps.patients import models as patients_models
+from apps.patients import constants as patient_constants
 
 
 class PatientTimelineFilter(filters.FilterSet):
@@ -19,7 +20,9 @@ class PatientFilter(filters.FilterSet):
     icmr = filters.CharFilter(field_name="icmr_id", lookup_expr="istartswith")
     govt = filters.CharFilter(field_name="govt_id", lookup_expr="istartswith")
     facility = filters.CharFilter(field_name="facility")
-    gender = filters.ChoiceFilter(choices=GENDER_CHOICES)
+    gender = filters.ChoiceFilter(
+        field_name="gender", choices=common_constants.GENDER_CHOICES
+    )
     years = filters.CharFilter(field_name="year")
     months = filters.CharFilter(field_name="month")
     contact = filters.CharFilter(field_name="phone_number", lookup_expr="istartswith")
@@ -27,6 +30,9 @@ class PatientFilter(filters.FilterSet):
     district = filters.CharFilter(field_name="district")
     cluster = filters.CharFilter(field_name="cluster_group")
     covid_status = filters.CharFilter(field_name="covid_status")
+    patient_status = filters.ChoiceFilter(
+        field_name="patient_status", choices=patient_constants.PATIENT_STATUS_CHOICES
+    )
     clinical_status = filters.CharFilter(field_name="clinical_status")
     clinical_status_updated_at = filters.DateFromToRangeFilter(
         field_name="clinical_status_updated_at"
@@ -53,6 +59,7 @@ class PatientFilter(filters.FilterSet):
             "district",
             "cluster",
             "covid_status",
+            "patient_status",
             "clinical_status",
             "clinical_status_updated_at",
             "portea_called_at",
