@@ -61,6 +61,7 @@ class Facility(commons_models.TimeStampModel):
     total_patient = models.PositiveIntegerField(default=0)
     positive_patient = models.PositiveIntegerField(default=0)
     negative_patient = models.PositiveIntegerField(default=0)
+    created_at = models.DateField(auto_now_add=True)
 
     users = models.ManyToManyField(
         User,
@@ -68,6 +69,7 @@ class Facility(commons_models.TimeStampModel):
         related_name="facilities",
         through_fields=("facility", "user"),
     )
+
 
     class Meta:
         verbose_name_plural = "Facilities"
