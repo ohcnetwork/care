@@ -11,3 +11,9 @@ GENDER_CHOICES = (
 )
 
 FIELDS_CHARACTER_LIMITS = {"NAME": 255, "PHONE_NUMBER": 14, "LOCALBODY_CODE": 20}
+
+
+# User Type Constants
+FACILITY_USER = "Facility User"
+MANAGER = "Manager"
+PORTEA = "Portea"

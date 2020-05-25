@@ -75,13 +75,17 @@ SUGGESTION_CHOICES = [
     (SuggestionChoices.R, "REFERRAL"),
 ]
 
-ADMIT_CHOICES = namedtuple("type", ["NA", "IR", "ICU", "ICV", "HI"])(None, 1, 2, 3, 20)
+ADMIT_CHOICES = namedtuple("type", ["NA", "IWO", "IO", "IR", "ICU", "ICV", "HI"])(
+    None, 1, 2, 3, 4, 5, 6
+)
 
 SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "OT"])(
     0, 1, 2, 3, 4, 5, 6
 )
 
-SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["P", "N", "A", "I"])(1, 2, 3, 4)
+SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["SS", "PO", "NG", "PP", "AW", "TI"])(
+    1, 2, 3, 4, 5, 6
+)
 
 SAMPLE_FLOW_RULES = {
     # previous rule      # next valid rules
@@ -118,8 +122,8 @@ SAMPLE_TEST_FLOW_CHOICES = [
 
 SOURCE_CHOICES = namedtuple("type", ["CA", "CT", "ST"])(10, 20, 30)
 
-DISEASE_STATUS_CHOICES = namedtuple("type", ["SU", "PO", "NE", "RE", "RD", "EX"])(
-    1, 2, 3, 4, 5, 6
+DISEASE_STATUS_CHOICES = namedtuple("type", ["NT", "SU", "PO", "NE", "RE", "RD", "EX"])(
+    1, 2, 3, 4, 5, 6, 7
 )
 
 OCCUPATION_CHOICES = namedtuple("type", ["MW", "GE", "PE", "HM", "WA", "OT"])(
@@ -152,3 +156,18 @@ HEALTH_CARE_WITH_PPE = 7
 SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
 # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
 TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
+
+
+# Patient Status cosntants
+HOME_ISOLATION = "home-isolation"
+RECOVERED = "recovered"
+DEAD = "dead"
+FACILITY_STATUS = "facility-status"
+
+# Paitient status Choices
+PATIENT_STATUS_CHOICES = (
+    (HOME_ISOLATION, "Home Isolation"),
+    (RECOVERED, "Recovered"),
+    (DEAD, "Dead"),
+    (FACILITY_STATUS, "Facility Status"),
+)

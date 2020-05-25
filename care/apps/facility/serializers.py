@@ -7,6 +7,7 @@ class FacilitySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.Facility
         fields = (
+            "id",
             "name",
             "facility_code",
             "facility_type",
@@ -18,9 +19,7 @@ class FacilitySerializer(rest_serializers.ModelSerializer):
             "phone_number",
             "corona_testing",
             "created_by",
-            "users",
             "owned_by",
-            "district",
             "total_patient",
             "positive_patient",
             "negative_patient",
@@ -43,4 +42,16 @@ class FacilityTypeSerializer(rest_serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+        )
+
+
+class InventorySerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.Inventory
+        fields = (
+            "facility",
+            "item",
+            "required_quantity",
+            "current_quantity",
+            "created_by",
         )

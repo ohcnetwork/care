@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django_filters import rest_framework as filters
@@ -18,11 +19,22 @@ from apps.accounts import (
 )
 from apps.commons import permissions as commons_permissions
 
+logger = logging.getLogger(__name__)
+
 
 class UserViewSet(rest_viewsets.ModelViewSet):
 
     queryset = accounts_models.User.objects.all()
     serializer_class = accounts_serializers.UserSerializer
+
+
+class UserTypeListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
+    """
+    User Type list view
+    """
+
+    queryset = accounts_models.UserType.objects.all()
+    serializer_class = accounts_serializers.UserTypeSerializer
 
 
 class StateListViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
@@ -84,8 +96,10 @@ class ForgotPasswordLinkView(rest_generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+        else:
+            logger.info("Payload: %s, Error: %s", request.data, serializer.errors)
         return Response(status=rest_status.HTTP_200_OK)
 
 

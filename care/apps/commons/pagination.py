@@ -8,6 +8,6 @@ class CustomPagination(LimitOffsetPagination):
     Custom pagination class used for pagination on list page
     """
 
-    default_limit = 1
+    default_limit = 4
     page_size_query_param = "page_size"
     max_limit = 500
