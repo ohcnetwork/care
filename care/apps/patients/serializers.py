@@ -147,3 +147,18 @@ class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
             "able_to_connect",
             "comments",
         )
+
+
+class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.PatientSampleTest
+        fields = (
+            "id",
+            "patient",
+            "testing_lab",
+            "doctor_name",
+            "result",
+            "date_of_sample",
+            "date_of_result",
+            "status_updated_at",
+        )

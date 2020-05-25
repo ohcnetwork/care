@@ -96,8 +96,21 @@ class PortieCallingDetailViewSet(
     rest_viewsets.GenericViewSet,
 ):
     """
-    views for create and update patient sample test
+    views for create and update portie calling detail
     """
 
     queryset = patient_models.PortieCallingDetail.objects.all()
     serializer_class = patient_serializers.PortieCallingDetailSerialzier
+
+
+class PatientSampleTestViewSet(
+    rest_mixins.CreateModelMixin,
+    rest_mixins.UpdateModelMixin,
+    rest_viewsets.GenericViewSet,
+):
+    """
+    views for create and update patient sample test
+    """
+
+    queryset = patient_models.PatientSampleTest.objects.all()
+    serializer_class = patient_serializers.PatientSampleTestSerializer
