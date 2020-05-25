@@ -112,9 +112,9 @@ class ForgotPasswordMailer(BaseMailer):
         self.context.update(
             {
                 "user": user,
-                "reset_password_url": f"""
-                {settings.WEBAPP_BASE_URL}/{accounts_constants.RESET_PASSWORD_BASE_URL}/{self.kwargs.get('uid')}/{self.kwargs.get('token')}
-            """,
+                "reset_password_url":
+                    f"{settings.WEBAPP_BASE_URL}/{accounts_constants.RESET_PASSWORD_BASE_URL}/"
+                    f"{self.kwargs.get('uid')}/{self.kwargs.get('token')}",
             }
         )
         self.to_email_list = [user.email]
