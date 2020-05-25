@@ -44,7 +44,10 @@ class FacilityUserViewSet(
 
 
 class InventorySerializerViewSet(
-    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
 ):
     """
     ViewSet for Inventory add, list and update

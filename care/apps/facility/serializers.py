@@ -44,5 +44,5 @@ class InventorySerializer(rest_serializer.ModelSerializer):
             "item",
             "required_quantity",
             "current_quantity",
-            "created_by"
+            "created_by",
         )
