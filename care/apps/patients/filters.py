@@ -43,6 +43,9 @@ class PatientFilter(filters.FilterSet):
     facility_district = filters.CharFilter(field_name="facility__district")
     facility_type = filters.CharFilter(field_name="facility__facility_type")
     facility_owned_by = filters.CharFilter(field_name="facility__owned_by")
+    current_facility_status = filters.CharFilter(
+        field_name="current_facility__patient_status__name"
+    )
 
     class Meta:
         model = patients_models.Patient
@@ -68,4 +71,5 @@ class PatientFilter(filters.FilterSet):
             "facility_district",
             "facility_type",
             "facility_owned_by",
+            "current_facility_status",
         )
