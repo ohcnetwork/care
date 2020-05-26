@@ -54,6 +54,13 @@ class PatientClinicalStatusStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdm
     djangoql_completion_enabled_by_default = True
 
 
+class PatientTransferAdmin(ImportExportModelAdmin):
+    raw_id_fields = ("from_patient_facility", "to_facility",)
+    list_display = ("__str__", "status",)
+    list_filter = ("status",)
+    search_fields = ("from_patient_facility__patient__name",)
+
+
 admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
 admin.site.register(models.Disease, DiseaseAdmin)
@@ -64,3 +71,4 @@ admin.site.register(models.CovidStatus, PatientCovidStatusStatusAdmin)
 admin.site.register(models.ClinicalStatus, PatientClinicalStatusStatusAdmin)
 admin.site.register(models.PatientTimeLine)
 admin.site.register(models.PatientSampleTest)
+admin.site.register(models.PatientTransfer, PatientTransferAdmin)
