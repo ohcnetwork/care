@@ -83,15 +83,20 @@ class PatientFilter(filters.FilterSet):
 
 class PatientTransferFilter(filters.FilterSet):
     gender = filters.ChoiceFilter(
-        field_name="from_patient_facility__patient__gender", choices=common_constants.GENDER_CHOICES
+        field_name="from_patient_facility__patient__gender",
+        choices=common_constants.GENDER_CHOICES,
     )
     years = filters.CharFilter(field_name="from_patient_facility__patient__year")
     months = filters.CharFilter(field_name="from_patient_facility__patient__month")
     from_facility = filters.CharFilter(field_name="from_patient_facility_id")
     to_facility = filters.CharFilter(field_name="to_facility_id")
     requested_at = filters.DateTimeFromToRangeFilter(field_name="created_at")
-    status_updated_at = filters.DateTimeFromToRangeFilter(field_name="status_updated_at")
-    status = filters.ChoiceFilter(field_name="status", choices=patient_constants.TRANSFER_STATUS_CHOICES)
+    status_updated_at = filters.DateTimeFromToRangeFilter(
+        field_name="status_updated_at"
+    )
+    status = filters.ChoiceFilter(
+        field_name="status", choices=patient_constants.TRANSFER_STATUS_CHOICES
+    )
 
     class Meta:
         model = patients_models.PatientTransfer
