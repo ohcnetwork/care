@@ -55,8 +55,14 @@ class PatientClinicalStatusStatusAdmin(DjangoQLSearchMixin, ImportExportModelAdm
 
 
 class PatientTransferAdmin(ImportExportModelAdmin):
-    raw_id_fields = ("from_patient_facility", "to_facility",)
-    list_display = ("__str__", "status",)
+    raw_id_fields = (
+        "from_patient_facility",
+        "to_facility",
+    )
+    list_display = (
+        "__str__",
+        "status",
+    )
     list_filter = ("status",)
     search_fields = ("from_patient_facility__patient__name",)
 

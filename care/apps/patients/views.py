@@ -110,15 +110,20 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
     """
     ViewSet for Patient Transfer List
     """
+
     queryset = patient_models.PatientTransfer.objects.all()
     serializer_class = patient_serializers.PatientTransferSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)
     pagination_class = commons_pagination.CustomPagination
-    filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter, rest_filters.SearchFilter)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_filters.OrderingFilter,
+        rest_filters.SearchFilter,
+    )
     filterset_class = patients_filters.PatientTransferFilter
     search_fields = (
-        '^from_patient_facility__patient__icmr_id',
-        '^from_patient_facility__patient__govt_id',
-        '^from_patient_facility__facility__name',
-        '^to_facility__name',
+        "^from_patient_facility__patient__icmr_id",
+        "^from_patient_facility__patient__govt_id",
+        "^from_patient_facility__facility__name",
+        "^to_facility__name",
     )
