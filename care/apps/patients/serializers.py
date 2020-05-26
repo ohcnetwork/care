@@ -19,22 +19,51 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
         read_only_fields = ("facility",)
 
 
+class GenderField(rest_serializers.RelatedField):
+    def to_representation(self, value):
+        if value == 1:
+            return 'Male'
+        if value == 2:
+            return 'Female'
+        else:
+            return 'Others'
+
+
 class PatientListSerializer(rest_serializers.ModelSerializer):
 
     status = rest_serializers.SerializerMethodField()
+    gender = GenderField(queryset=patient_models.Patient.objects.none())
+    ownership_type = rest_serializers.CharField()
+    facility_type = rest_serializers.CharField()
+    facility_name = rest_serializers.CharField()
+    facility_district = rest_serializers.CharField()
 
     class Meta:
         model = patient_models.Patient
         fields = (
-            "id",
+            "icmr_id",
+            "govt_id",
             "facility",
-            "nearest_facility",
             "name",
+            "gender",
             "year",
             "month",
-            "gender",
             "phone_number",
             "address",
+            "district",
+            "cluster_group",
+            "status",
+            "covid_status",
+            "clinical_status",
+            "clinical_status_updated_at",
+            "portea_called_at",
+            "portea_able_to_connect",
+            "facility_name",
+            "facility_district",
+            "facility_type",
+            "ownership_type",
+            "nearest_facility",
+            "id",
             "date_of_birth",
             "year_of_birth",
             "nationality",
@@ -44,7 +73,6 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "blood_group",
             "contact_with_confirmed_carrier",
             "state",
-            "district",
             "contact_with_suspected_carrier",
             "estimated_contact_date",
             "past_travel",
@@ -61,14 +89,8 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "number_of_chronic_diseased_dependents",
             "patient_search_id",
             "date_of_receipt_of_information",
-            "cluster_group",
-            "clinical_status_updated_at",
-            "portea_called_at",
-            "portea_able_to_connect",
             "symptoms",
             "diseases",
-            "status",
-            "covid_status",
             "current_facility",
         )
         extra_kwargs = {
