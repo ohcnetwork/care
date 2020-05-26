@@ -47,10 +47,10 @@ class PatientViewSet(
             )
         return queryset.annotate(
             facility_status=F("patientfacility__patient_status__name"),
-            facility_name=F("facility__name"),
-            facility_type=F("facility__facility_type__name"),
-            ownership_type=F("facility__owned_by__name"),
-            facility_district=F("facility__district__name"),
+            facility_name=F("patientfacility__facility__name"),
+            facility_type=F("patientfacility__facility__facility_type__name"),
+            ownership_type=F("patientfacility__facility__owned_by__name"),
+            facility_district=F("patientfacility__facility__district__name"),
         )
 
 
