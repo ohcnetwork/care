@@ -34,3 +34,5 @@ class Settings(base.Settings):
         }
     }
     ########## END DATABASE CONFIGURATION
+
+    WEBAPP_BASE_URL = 'localhost:3000'

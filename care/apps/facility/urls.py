@@ -8,5 +8,11 @@ routers.register("facility", facility_views.FacilityViewSet, basename="facility"
 routers.register(
     "facility-users", facility_views.FacilityUserViewSet, basename="facility_user"
 )
+routers.register(
+    "inventories", facility_views.InventorySerializerViewSet, basename="inventory"
+)
+routers.register(
+    "inventory-items", facility_views.InventoryItemViewSet, basename="inventory_items"
+)
 
 urlpatterns = routers.urls
