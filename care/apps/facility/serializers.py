@@ -45,8 +45,7 @@ class FacilityTypeSerializer(rest_serializers.ModelSerializer):
         )
 
 
-class InventorySerializer(rest_serializers.ModelSerializer):
-class FacilityStaffSerializer(rest_serializer.ModelSerializer):
+class FacilityStaffSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.FacilityStaff
         fields = (
@@ -59,7 +58,7 @@ class FacilityStaffSerializer(rest_serializer.ModelSerializer):
         )
 
 
-class FacilityInfrastructureSerializer(rest_serializer.ModelSerializer):
+class FacilityInfrastructureSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.FacilityInfrastructure
         fields = (
@@ -74,7 +73,7 @@ class FacilityInfrastructureSerializer(rest_serializer.ModelSerializer):
         )
 
 
-class InventorySerializer(rest_serializer.ModelSerializer):
+class InventorySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.Inventory
         fields = (
@@ -89,7 +88,7 @@ class InventorySerializer(rest_serializer.ModelSerializer):
         read_only_fields = ("updated_at",)
 
 
-class InventoryItemSerializer(rest_serializer.ModelSerializer):
+class InventoryItemSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.InventoryItem
         fields = (
