@@ -1,5 +1,4 @@
-from rest_framework import viewsets, mixins, permissions
-
+from rest_framework import viewsets, mixins, permissions, filters as rest_filters
 from django_filters import rest_framework as filters
 
 from apps.commons import (
@@ -57,7 +56,14 @@ class InventorySerializerViewSet(
     """
 
     queryset = facility_models.Inventory.objects.all()
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
+    ordering_fields = (
+        "facility__name",
+        "item__name",
+        "required_quantity",
+        "current_quantity",
+        "updated_at",
+    )
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
     pagination_class = commons_pagination.CustomPagination

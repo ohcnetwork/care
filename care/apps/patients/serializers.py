@@ -22,11 +22,11 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
 class GenderField(rest_serializers.RelatedField):
     def to_representation(self, value):
         if value == 1:
-            return 'Male'
+            return "Male"
         if value == 2:
-            return 'Female'
+            return "Female"
         else:
-            return 'Others'
+            return "Others"
 
 
 class PatientListSerializer(rest_serializers.ModelSerializer):
