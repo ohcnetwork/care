@@ -9,6 +9,9 @@ routers.register(
     "facility-users", facility_views.FacilityUserViewSet, basename="facility_user"
 )
 routers.register(
+    "facility-type", facility_views.FacilityTypeViewSet, basename="facility_type"
+)
+routers.register(
     "inventories", facility_views.InventorySerializerViewSet, basename="inventory"
 )
 routers.register(

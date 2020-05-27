@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins, permissions
+from rest_framework import viewsets, mixins, permissions, filters as rest_filters
 
 from django_filters import rest_framework as filters
 
@@ -22,7 +22,18 @@ class FacilityViewSet(
 
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilitySerializer
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_filters.OrderingFilter,
+    )
+    ordering_fields = (
+        "total_patient",
+        "positive_patient",
+        "negative_patient",
+    )
+    filterset_class = facility_filters.FacilityFilter
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = commons_pagination.CustomPagination
 
     def get_queryset(self):
         filter_kwargs = {}
@@ -46,6 +57,16 @@ class FacilityUserViewSet(
     permission_classes = (permissions.IsAuthenticated,)
 
 
+class FacilityTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    ViewSet for Faciity type list
+    """
+
+    queryset = facility_models.FacilityType.objects.all()
+    serializer_class = facility_serializers.FacilityTypeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
 class InventorySerializerViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
@@ -61,6 +82,7 @@ class InventorySerializerViewSet(
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
     pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class InventoryItemViewSet(
