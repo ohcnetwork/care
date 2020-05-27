@@ -144,3 +144,16 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
         "^from_patient_facility__facility__name",
         "^to_facility__name",
     )
+
+
+class PatientDetailViewSet(
+    rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet
+):
+    """
+    ViewSet for Patient Detail
+    """
+
+    serializer_class = patient_serializers.PatientDetailsSerializer
+    pagination_class = commons_pagination.CustomPagination
+    lookup_field = 'id'
+    queryset = patient_models.Patient.objects.all()

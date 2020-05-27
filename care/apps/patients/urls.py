@@ -33,4 +33,10 @@ routers.register(
 routers.register("", patients_views.PatientViewSet, basename="patient")
 
 routers.register("", patients_views.PatientViewSet, basename="patient")
+routers.register(
+    "details",
+    patients_views.PatientDetailViewSet,
+    basename="patient_details",
+)
+
 urlpatterns = routers.urls
