@@ -1,9 +1,9 @@
-from rest_framework import serializers as rest_serializer
+from rest_framework import serializers as rest_serializers
 
 from apps.facility import models as facility_models
 
 
-class FacilitySerializer(rest_serializer.ModelSerializer):
+class FacilitySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.Facility
         fields = (
@@ -26,11 +26,32 @@ class FacilitySerializer(rest_serializer.ModelSerializer):
         )
 
 
-class FacilityUserSerializer(rest_serializer.ModelSerializer):
+class FacilityUserSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.FacilityUser
         fields = (
             "facility",
             "user",
+            "created_by",
+        )
+
+
+class FacilityTypeSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.FacilityType
+        fields = (
+            "id",
+            "name",
+        )
+
+
+class InventorySerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.Inventory
+        fields = (
+            "facility",
+            "item",
+            "required_quantity",
+            "current_quantity",
             "created_by",
         )

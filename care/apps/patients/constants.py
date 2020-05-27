@@ -163,3 +163,11 @@ HOME_ISOLATION = "home-isolation"
 RECOVERED = "recovered"
 DEAD = "dead"
 FACILITY_STATUS = "facility-status"
+
+# Paitient status Choices
+PATIENT_STATUS_CHOICES = (
+    (HOME_ISOLATION, "Home Isolation"),
+    (RECOVERED, "Recovered"),
+    (DEAD, "Dead"),
+    (FACILITY_STATUS, "Facility Status"),
+)

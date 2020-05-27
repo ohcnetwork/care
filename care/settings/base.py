@@ -346,3 +346,6 @@ class Settings(LoggerSettingsMixin, Configuration):
             }
         }
     }
+
+    # WebApp Base URL
+    WEBAPP_BASE_URL = ""
