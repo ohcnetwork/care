@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.utils.translation import ugettext as _
 from rest_framework import serializers as rest_serializers
 from rest_framework import exceptions as rest_exceptions
@@ -175,4 +177,21 @@ class PatientTransferSerializer(rest_serializers.ModelSerializer):
 
     class Meta:
         model = patient_models.PatientTransfer
-        fields = ("patient", "from_facility", "new_facility", "requested_at", "status_updated_at", "comments",)
+        fields = (
+            "id", "patient", "from_facility", "new_facility", "requested_at", "status", "status_updated_at", "comments",
+        )
+
+
+class PatientTransferUpdateSerializer(rest_serializers.ModelSerializer):
+    """
+    Serializer for updating status related details about Patient transfer
+    """
+
+    class Meta:
+        model = patient_models.PatientTransfer
+        fields = ("status", "status_updated_at", "comments",)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('status') != instance.status:
+            validated_data['status_updated_at'] = datetime.now()
+        return super().update(instance, validated_data)

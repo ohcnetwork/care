@@ -106,10 +106,11 @@ class PatientSampleTestViewSet(
     serializer_class = patient_serializers.PatientSampleTestSerializer
 
 
-class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
+class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_mixins.UpdateModelMixin, rest_viewsets.GenericViewSet):
     """
     ViewSet for Patient Transfer List
     """
+    http_method_names = ('patch', 'get')
     queryset = patient_models.PatientTransfer.objects.all()
     serializer_class = patient_serializers.PatientTransferSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)
@@ -122,3 +123,8 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
         '^from_patient_facility__facility__name',
         '^to_facility__name',
     )
+
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return patient_serializers.PatientTransferUpdateSerializer
+        return self.serializer_class
