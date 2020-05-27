@@ -67,7 +67,7 @@ class FacilityTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class InventorySerializerViewSet(
+class InventoryViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,
@@ -81,6 +81,38 @@ class InventorySerializerViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
+    pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class FacilityStaffViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    ViewSet for facility staff add, list and update
+    """
+
+    queryset = facility_models.FacilityStaff.objects.all()
+    serializer_class = facility_serializers.FacilityStaffSerializer
+    pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class FacilityInfrastructureViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    ViewSet for facility infrastructure add, list and update
+    """
+
+    queryset = facility_models.FacilityInfrastructure.objects.all()
+    serializer_class = facility_serializers.FacilityInfrastructureSerializer
     pagination_class = commons_pagination.CustomPagination
     permission_classes = (permissions.IsAuthenticated,)
 
