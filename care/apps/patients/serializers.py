@@ -62,36 +62,6 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "facility_district",
             "facility_type",
             "ownership_type",
-            "nearest_facility",
-            "id",
-            "date_of_birth",
-            "year_of_birth",
-            "nationality",
-            "passport_no",
-            "aadhar_no",
-            "is_medical_worker",
-            "blood_group",
-            "contact_with_confirmed_carrier",
-            "state",
-            "contact_with_suspected_carrier",
-            "estimated_contact_date",
-            "past_travel",
-            "is_active",
-            "countries_travelled_old",
-            "countries_travelled",
-            "date_of_return",
-            "present_health",
-            "ongoing_medication",
-            "has_SARI",
-            "local_body",
-            "number_of_aged_dependents",
-            "created_by",
-            "number_of_chronic_diseased_dependents",
-            "patient_search_id",
-            "date_of_receipt_of_information",
-            "symptoms",
-            "diseases",
-            "current_facility",
         )
         extra_kwargs = {
             "facility": {"required": True},
@@ -154,6 +124,21 @@ class PatientTimeLineSerializer(rest_serializers.ModelSerializer):
         fields = (
             "date",
             "description",
+        )
+
+
+class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.PortieCallingDetail
+        fields = (
+            "id",
+            "portie",
+            "patient",
+            "patient_family",
+            "called_at",
+            "able_to_connect",
+            "able_to_connect",
+            "comments",
         )
 
 

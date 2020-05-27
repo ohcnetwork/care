@@ -21,7 +21,18 @@ class FacilityViewSet(
 
     queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilitySerializer
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_filters.OrderingFilter,
+    )
+    ordering_fields = (
+        "total_patient",
+        "positive_patient",
+        "negative_patient",
+    )
+    filterset_class = facility_filters.FacilityFilter
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = commons_pagination.CustomPagination
 
     def get_queryset(self):
         filter_kwargs = {}
@@ -45,7 +56,17 @@ class FacilityUserViewSet(
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class InventorySerializerViewSet(
+class FacilityTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    ViewSet for Faciity type list
+    """
+
+    queryset = facility_models.FacilityType.objects.all()
+    serializer_class = facility_serializers.FacilityTypeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class InventoryViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,
@@ -67,6 +88,39 @@ class InventorySerializerViewSet(
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
     pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class FacilityStaffViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    ViewSet for facility staff add, list and update
+    """
+
+    queryset = facility_models.FacilityStaff.objects.all()
+    serializer_class = facility_serializers.FacilityStaffSerializer
+    pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class FacilityInfrastructureViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    ViewSet for facility infrastructure add, list and update
+    """
+
+    queryset = facility_models.FacilityInfrastructure.objects.all()
+    serializer_class = facility_serializers.FacilityInfrastructureSerializer
+    pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class InventoryItemViewSet(
@@ -79,3 +133,4 @@ class InventoryItemViewSet(
     queryset = facility_models.InventoryItem.objects.all()
     serializer_class = facility_serializers.InventoryItemSerializer
     pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
