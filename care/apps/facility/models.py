@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator, RegexValidator, EmailValidator
 from django.db import models
 
 from location_field.models.spatial import LocationField
@@ -101,8 +101,14 @@ class FacilityStaff(commons_models.SoftDeleteTimeStampedModel):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     name = models.CharField(max_length=256)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField(max_length=50)
+    phone_number = models.CharField(
+        max_length=14, validators=[commons_validators.phone_number_regex]
+    )
+    email = models.EmailField(
+        max_length=50,
+        help_text="email of the facility staff",
+        validators=[EmailValidator],
+    )
     designation = models.ForeignKey(
         StaffDesignation, on_delete=models.CASCADE, null=True, blank=True
     )

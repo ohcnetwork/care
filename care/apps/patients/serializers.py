@@ -21,57 +21,49 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
         read_only_fields = ("facility",)
 
 
+class GenderField(rest_serializers.RelatedField):
+    def to_representation(self, value):
+        if value == 1:
+            return "Male"
+        if value == 2:
+            return "Female"
+        else:
+            return "Others"
+
+
 class PatientListSerializer(rest_serializers.ModelSerializer):
 
     status = rest_serializers.SerializerMethodField()
+    gender = GenderField(queryset=patient_models.Patient.objects.none())
+    ownership_type = rest_serializers.CharField()
+    facility_type = rest_serializers.CharField()
+    facility_name = rest_serializers.CharField()
+    facility_district = rest_serializers.CharField()
 
     class Meta:
         model = patient_models.Patient
         fields = (
-            "id",
+            "icmr_id",
+            "govt_id",
             "facility",
-            "nearest_facility",
             "name",
+            "gender",
             "year",
             "month",
-            "gender",
             "phone_number",
             "address",
-            "date_of_birth",
-            "year_of_birth",
-            "nationality",
-            "passport_no",
-            "aadhar_no",
-            "is_medical_worker",
-            "blood_group",
-            "contact_with_confirmed_carrier",
-            "state",
             "district",
-            "contact_with_suspected_carrier",
-            "estimated_contact_date",
-            "past_travel",
-            "is_active",
-            "countries_travelled_old",
-            "countries_travelled",
-            "date_of_return",
-            "present_health",
-            "ongoing_medication",
-            "has_SARI",
-            "local_body",
-            "number_of_aged_dependents",
-            "created_by",
-            "number_of_chronic_diseased_dependents",
-            "patient_search_id",
-            "date_of_receipt_of_information",
             "cluster_group",
+            "status",
+            "covid_status",
+            "clinical_status",
             "clinical_status_updated_at",
             "portea_called_at",
             "portea_able_to_connect",
-            "symptoms",
-            "diseases",
-            "status",
-            "covid_status",
-            "current_facility",
+            "facility_name",
+            "facility_district",
+            "facility_type",
+            "ownership_type"
         )
         extra_kwargs = {
             "facility": {"required": True},
@@ -137,6 +129,20 @@ class PatientTimeLineSerializer(rest_serializers.ModelSerializer):
         )
 
 
+class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.PortieCallingDetail
+        fields = (
+            "portie",
+            "patient",
+            "patient_family",
+            "called_at",
+            "able_to_connect",
+            "able_to_connect",
+            "comments",
+        )
+
+
 class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientSampleTest
@@ -153,27 +159,39 @@ class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
 
 
 class PatientTransferFacilitySerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = facility_models.Facility
-        fields = ('facility_code', 'name',)
+        fields = (
+            "facility_code",
+            "name",
+        )
 
 
 class PatientTransferPatientSerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = patient_models.Patient
-        fields = ('icmr_id', 'govt_id', 'name', 'gender', 'month', 'year', 'phone_number',)
+        fields = (
+            "icmr_id",
+            "govt_id",
+            "name",
+            "gender",
+            "month",
+            "year",
+            "phone_number",
+        )
 
 
 class PatientTransferSerializer(rest_serializers.ModelSerializer):
     """
     Serializer for patient transfer related details
     """
-    patient = PatientTransferPatientSerializer(source='from_patient_facility.patient')
-    from_facility = PatientTransferFacilitySerializer(source='from_patient_facility.facility')
-    new_facility = PatientTransferFacilitySerializer(source='to_facility')
-    requested_at = rest_serializers.DateTimeField(source='created_at')
+
+    patient = PatientTransferPatientSerializer(source="from_patient_facility.patient")
+    from_facility = PatientTransferFacilitySerializer(
+        source="from_patient_facility.facility"
+    )
+    new_facility = PatientTransferFacilitySerializer(source="to_facility")
+    requested_at = rest_serializers.DateTimeField(source="created_at")
 
     class Meta:
         model = patient_models.PatientTransfer
