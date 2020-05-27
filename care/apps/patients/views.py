@@ -3,6 +3,7 @@ from django.db.models import F
 from django_filters import rest_framework as filters
 
 from rest_framework import (
+    filters as rest_filters,
     generics as rest_generics,
     mixins as rest_mixins,
     permissions as rest_permissions,
@@ -48,7 +49,11 @@ class PatientViewSet(
                 patientfacility__facility__facilityuser__user=self.request.user
             )
         return queryset.annotate(
-            facility_status=F("patientfacility__patient_status__name")
+            facility_status=F("patientfacility__patient_status__name"),
+            facility_name=F("patientfacility__facility__name"),
+            facility_type=F("patientfacility__facility__facility_type__name"),
+            ownership_type=F("patientfacility__facility__owned_by__name"),
+            facility_district=F("patientfacility__facility__district__name"),
         )
 
 
@@ -92,6 +97,19 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
         )
 
 
+class PortieCallingDetailViewSet(
+    rest_mixins.CreateModelMixin,
+    rest_mixins.UpdateModelMixin,
+    rest_viewsets.GenericViewSet,
+):
+    """
+    views for create and update portie calling detail
+    """
+
+    queryset = patient_models.PortieCallingDetail.objects.all()
+    serializer_class = patient_serializers.PortieCallingDetailSerialzier
+
+
 class PatientSampleTestViewSet(
     rest_mixins.CreateModelMixin,
     rest_mixins.UpdateModelMixin,
@@ -103,3 +121,26 @@ class PatientSampleTestViewSet(
 
     queryset = patient_models.PatientSampleTest.objects.all()
     serializer_class = patient_serializers.PatientSampleTestSerializer
+
+
+class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericViewSet):
+    """
+    ViewSet for Patient Transfer List
+    """
+
+    queryset = patient_models.PatientTransfer.objects.all()
+    serializer_class = patient_serializers.PatientTransferSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,)
+    pagination_class = commons_pagination.CustomPagination
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_filters.OrderingFilter,
+        rest_filters.SearchFilter,
+    )
+    filterset_class = patients_filters.PatientTransferFilter
+    search_fields = (
+        "^from_patient_facility__patient__icmr_id",
+        "^from_patient_facility__patient__govt_id",
+        "^from_patient_facility__facility__name",
+        "^to_facility__name",
+    )
