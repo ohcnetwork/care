@@ -14,13 +14,11 @@ routers.register(
     "infrastructures",
     facility_views.FacilityInfrastructureViewSet,
     basename="infrastructure",
-)    
+)
 routers.register(
     "facility-type", facility_views.FacilityTypeViewSet, basename="facility_type"
 )
-routers.register(
-    "inventories", facility_views.InventoryViewSet, basename="inventory"
-)
+routers.register("inventories", facility_views.InventoryViewSet, basename="inventory")
 routers.register(
     "inventory-items", facility_views.InventoryItemViewSet, basename="inventory_items"
 )
