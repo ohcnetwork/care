@@ -357,3 +357,36 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
 
     def __str__(self):
         return f"{self.patient.name} at {self.date_of_sample}"
+
+
+class PatientTransfer(SoftDeleteTimeStampedModel):
+    """
+    Model to store details about the transfer of patient from one facility to another
+    """
+
+    from_patient_facility = models.ForeignKey(
+        PatientFacility,
+        on_delete=models.CASCADE,
+        help_text="Current patient facility of a patient",
+    )
+    to_facility = models.ForeignKey(
+        Facility,
+        on_delete=models.CASCADE,
+        help_text="New Facility in which the patient can be transferred",
+    )
+    status = models.PositiveSmallIntegerField(
+        choices=constants.TRANSFER_STATUS_CHOICES,
+        default=constants.TRANSFER_STATUS.PENDING,
+    )
+    status_updated_at = models.DateTimeField(
+        null=True, blank=True, help_text="Date and time at wihich the status is updated"
+    )
+    comments = models.TextField(
+        null=True, blank=True, help_text="comments related to patient transfer request"
+    )
+
+    def __str__(self):
+        return f"""
+            Patient: {self.from_patient_facility.patient.name} - From: {self.from_patient_facility.facility.name} 
+            - To: {self.to_facility.name}
+        """

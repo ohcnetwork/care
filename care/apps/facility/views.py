@@ -61,3 +61,15 @@ class InventorySerializerViewSet(
     filterset_class = facility_filters.InventoryFilter
     serializer_class = facility_serializers.InventorySerializer
     pagination_class = commons_pagination.CustomPagination
+
+
+class InventoryItemViewSet(
+    mixins.ListModelMixin, viewsets.GenericViewSet,
+):
+    """
+    ViewSet for Inventory Item add, list and update
+    """
+
+    queryset = facility_models.InventoryItem.objects.all()
+    serializer_class = facility_serializers.InventoryItemSerializer
+    pagination_class = commons_pagination.CustomPagination
