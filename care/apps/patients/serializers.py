@@ -157,6 +157,20 @@ class PatientTimeLineSerializer(rest_serializers.ModelSerializer):
         )
 
 
+class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.PortieCallingDetail
+        fields = (
+            "portie",
+            "patient",
+            "patient_family",
+            "called_at",
+            "able_to_connect",
+            "able_to_connect",
+            "comments",
+        )
+
+
 class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientSampleTest

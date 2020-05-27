@@ -20,6 +20,9 @@ routers.register(
     basename="patient_timeline",
 )
 routers.register(
+    "daily-callers", patients_views.PortieCallingDetailViewSet, basename="daily_caller"
+)
+routers.register(
     "sample-tests", patients_views.PatientSampleTestViewSet, basename="sample_test"
 )
 routers.register(
@@ -27,5 +30,7 @@ routers.register(
     patients_views.PatientTransferViewSet,
     basename="patient_transfer",
 )
+routers.register("", patients_views.PatientViewSet, basename="patient")
+
 routers.register("", patients_views.PatientViewSet, basename="patient")
 urlpatterns = routers.urls
