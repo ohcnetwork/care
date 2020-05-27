@@ -61,7 +61,7 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "facility_name",
             "facility_district",
             "facility_type",
-            "ownership_type"
+            "ownership_type",
         )
         extra_kwargs = {
             "facility": {"required": True},
@@ -131,6 +131,7 @@ class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PortieCallingDetail
         fields = (
+            "id",
             "portie",
             "patient",
             "patient_family",
