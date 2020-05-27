@@ -14,5 +14,8 @@ routers.register(
 routers.register(
     "inventories", facility_views.InventorySerializerViewSet, basename="inventory"
 )
+routers.register(
+    "inventory-items", facility_views.InventoryItemViewSet, basename="inventory_items"
+)
 
 urlpatterns = routers.urls

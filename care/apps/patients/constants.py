@@ -171,3 +171,14 @@ PATIENT_STATUS_CHOICES = (
     (DEAD, "Dead"),
     (FACILITY_STATUS, "Facility Status"),
 )
+
+# Patient Transfer Constants
+TRANSFER_STATUS = namedtuple("TRANSFER_STATUS", ["PENDING", "ACCEPTED", "REJECTED"])(
+    PENDING=1, ACCEPTED=2, REJECTED=3
+)
+
+TRANSFER_STATUS_CHOICES = (
+    (TRANSFER_STATUS.PENDING, "Pending"),
+    (TRANSFER_STATUS.ACCEPTED, "Accepted"),
+    (TRANSFER_STATUS.REJECTED, "Rejected"),
+)

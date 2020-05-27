@@ -22,11 +22,11 @@ class PatientFacilitySerializer(rest_serializers.ModelSerializer):
 class GenderField(rest_serializers.RelatedField):
     def to_representation(self, value):
         if value == 1:
-            return 'Male'
+            return "Male"
         if value == 2:
-            return 'Female'
+            return "Female"
         else:
-            return 'Others'
+            return "Others"
 
 
 class PatientListSerializer(rest_serializers.ModelSerializer):
@@ -127,6 +127,20 @@ class PatientTimeLineSerializer(rest_serializers.ModelSerializer):
         )
 
 
+class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.PortieCallingDetail
+        fields = (
+            "portie",
+            "patient",
+            "patient_family",
+            "called_at",
+            "able_to_connect",
+            "able_to_connect",
+            "comments",
+        )
+
+
 class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = patient_models.PatientSampleTest
@@ -139,4 +153,51 @@ class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
             "date_of_sample",
             "date_of_result",
             "status_updated_at",
+        )
+
+
+class PatientTransferFacilitySerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.Facility
+        fields = (
+            "facility_code",
+            "name",
+        )
+
+
+class PatientTransferPatientSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = patient_models.Patient
+        fields = (
+            "icmr_id",
+            "govt_id",
+            "name",
+            "gender",
+            "month",
+            "year",
+            "phone_number",
+        )
+
+
+class PatientTransferSerializer(rest_serializers.ModelSerializer):
+    """
+    Serializer for patient transfer related details
+    """
+
+    patient = PatientTransferPatientSerializer(source="from_patient_facility.patient")
+    from_facility = PatientTransferFacilitySerializer(
+        source="from_patient_facility.facility"
+    )
+    new_facility = PatientTransferFacilitySerializer(source="to_facility")
+    requested_at = rest_serializers.DateTimeField(source="created_at")
+
+    class Meta:
+        model = patient_models.PatientTransfer
+        fields = (
+            "patient",
+            "from_facility",
+            "new_facility",
+            "requested_at",
+            "status_updated_at",
+            "comments",
         )
