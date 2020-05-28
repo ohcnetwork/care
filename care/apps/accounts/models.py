@@ -120,7 +120,8 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
     """
     Model to represent a user
     """
-    name = models.CharField(_('name'), max_length=255)
+
+    name = models.CharField(_("name"), max_length=255)
     email = models.EmailField(_("email address"), unique=True, blank=True)
     user_type = models.ForeignKey(
         UserType, on_delete=models.CASCADE, null=True, blank=True
