@@ -149,3 +149,15 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_mixins.UpdateModel
         if self.action == 'partial_update':
             return patient_serializers.PatientTransferUpdateSerializer
         return self.serializer_class
+
+class PatientDetailViewSet(
+    rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet
+):
+    """
+    ViewSet for Patient Detail
+    """
+
+    serializer_class = patient_serializers.PatientDetailsSerializer
+    pagination_class = commons_pagination.CustomPagination
+    lookup_field = 'id'
+    queryset = patient_models.Patient.objects.all()
