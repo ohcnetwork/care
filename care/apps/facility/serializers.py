@@ -86,6 +86,13 @@ class InventorySerializer(rest_serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("updated_at",)
+        extra_kwargs = {
+            "created_by": {"required": False},
+        }
+
+    def validate(self, attrs):
+        attrs["created_by"] = self.context["request"].user
+        return super(InventorySerializer, self).validate(attrs)
 
 
 class InventoryItemSerializer(rest_serializers.ModelSerializer):

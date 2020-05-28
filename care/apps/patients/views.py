@@ -155,5 +155,5 @@ class PatientDetailViewSet(
 
     serializer_class = patient_serializers.PatientDetailsSerializer
     pagination_class = commons_pagination.CustomPagination
-    lookup_field = 'id'
+    lookup_field = "id"
     queryset = patient_models.Patient.objects.all()
