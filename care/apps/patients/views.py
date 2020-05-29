@@ -12,6 +12,7 @@ from rest_framework import (
 )
 from apps.commons import (
     constants as commons_constants,
+    filters as commons_filters,
     pagination as commons_pagination,
 )
 from apps.patients import (
@@ -134,7 +135,7 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_mixins.UpdateModel
     pagination_class = commons_pagination.CustomPagination
     filter_backends = (
         filters.DjangoFilterBackend,
-        rest_filters.OrderingFilter,
+        commons_filters.ReplaceFieldsOrderingFilter,
         rest_filters.SearchFilter,
     )
     filterset_class = patients_filters.PatientTransferFilter
@@ -144,6 +145,18 @@ class PatientTransferViewSet(rest_mixins.ListModelMixin, rest_mixins.UpdateModel
         "^from_patient_facility__facility__name",
         "^to_facility__name",
     )
+    ordering_fields = (
+        "icmr_id", "govt_id",
+    )
+    related_ordering_fields_map = {
+        "icmr_id": "from_patient_facility__patient__icmr_id",
+        "govt_id": "from_patient_facility__patient__govt_id",
+        "patient_name": "from_patient_facility__patient__name",
+        "gender": "from_patient_facility__patient__gender",
+        "month": "from_patient_facility__patient__month",
+        "year": "from_patient_facility__patient__year",
+        "phone_number": "from_patient_facility__patient__phone_number",
+    }
 
     def get_serializer_class(self):
         if self.action == 'partial_update':
