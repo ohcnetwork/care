@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 
+from apps.accounts import models as accounts_models
 from apps.facility import models as facility_models
 
 
@@ -22,6 +23,10 @@ class FacilityFilter(filters.FilterSet):
     )
     created_at = filters.DateTimeFromToRangeFilter(field_name="created_at")
     updated_at = filters.DateTimeFromToRangeFilter(field_name="updated_at")
+    district = filters.filters.ModelMultipleChoiceFilter(
+        field_name='district',
+        queryset=accounts_models.District.objects.all()
+    )
 
     class Meta:
         model = facility_models.Facility
