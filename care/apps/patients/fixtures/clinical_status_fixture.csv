@@ -1,9 +1,9 @@
-name,description
-Asymptomatic,dummy
-Mild symptoms,dummy
-severe symptoms,dummy
-inward without oxygen,dummy
-inward with oxygen,dummy
-ICU without ventilator,dummy
-ICU with ventilator,dummy
-Other,dummy
+id,name,description
+1,Asymptomatic,dummy
+2,Mild symptoms,dummy
+3,severe symptoms,dummy
+4,inward without oxygen,dummy
+5,inward with oxygen,dummy
+6,ICU without ventilator,dummy
+7,ICU with ventilator,dummy
+8,Other,dummy
