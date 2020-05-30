@@ -118,14 +118,8 @@ FACILITY_TYPES = [
     (FACILITY_TYPES_CHOICES.CORONA_CARE_CENTRE, "Corona Care Centre"),
 ]
 
-LAB_OWNERSHIP_CHOICES = namedtuple(
-    "LAB_OWNERSHIP_CHOICES", [
-        "GOVERNMENT",
-        "PRIVATE"
-    ]
-)(
-    1,
-    2
+LAB_OWNERSHIP_CHOICES = namedtuple("LAB_OWNERSHIP_CHOICES", ["GOVERNMENT", "PRIVATE"])(
+    1, 2
 )
 
 DOCTOR_TYPES_CHOICES = namedtuple(

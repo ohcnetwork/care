@@ -6,22 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0008_care_platform'),
+        ("facility", "0008_care_platform"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='inventoryitem',
-            name='unit',
-        ),
+        migrations.RemoveField(model_name="inventoryitem", name="unit",),
         migrations.AlterField(
-            model_name='inventoryitem',
-            name='description',
+            model_name="inventoryitem",
+            name="description",
             field=models.TextField(blank=True),
         ),
         migrations.AlterField(
-            model_name='inventoryitem',
-            name='name',
+            model_name="inventoryitem",
+            name="name",
             field=models.CharField(max_length=30, unique=True),
         ),
     ]

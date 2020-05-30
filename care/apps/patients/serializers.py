@@ -186,18 +186,28 @@ class PatientTransferSerializer(rest_serializers.ModelSerializer):
     Serializer for patient transfer related details
     """
 
-    patient_name = rest_serializers.CharField(source="from_patient_facility.patient.name")
+    patient_name = rest_serializers.CharField(
+        source="from_patient_facility.patient.name"
+    )
     icmr_id = rest_serializers.CharField(source="from_patient_facility.patient.icmr_id")
     govt_id = rest_serializers.CharField(source="from_patient_facility.patient.govt_id")
     gender = rest_serializers.CharField(source="from_patient_facility.patient.gender")
     month = rest_serializers.CharField(source="from_patient_facility.patient.month")
     year = rest_serializers.CharField(source="from_patient_facility.patient.year")
-    phone_number = rest_serializers.CharField(source="from_patient_facility.patient.phone_number")
-    from_facility_id = rest_serializers.CharField(source="from_patient_facility.facility.facility_code")
-    from_facility_name = rest_serializers.CharField(source="from_patient_facility.facility.name")
+    phone_number = rest_serializers.CharField(
+        source="from_patient_facility.patient.phone_number"
+    )
+    from_facility_id = rest_serializers.CharField(
+        source="from_patient_facility.facility.facility_code"
+    )
+    from_facility_name = rest_serializers.CharField(
+        source="from_patient_facility.facility.name"
+    )
     to_facility_id = rest_serializers.CharField(source="to_facility.facility_code")
     to_facility_name = rest_serializers.CharField(source="to_facility.name")
-    requested_at = rest_serializers.DateTimeField(source="created_at", format="%m/%d/%Y %I:%M %p")
+    requested_at = rest_serializers.DateTimeField(
+        source="created_at", format="%m/%d/%Y %I:%M %p"
+    )
     status_updated_at = rest_serializers.DateTimeField(format="%m/%d/%Y %I:%M %p")
 
     class Meta:
@@ -227,12 +237,17 @@ class PatientTransferUpdateSerializer(rest_serializers.ModelSerializer):
 
     class Meta:
         model = patient_models.PatientTransfer
-        fields = ("status", "status_updated_at", "comments",)
+        fields = (
+            "status",
+            "status_updated_at",
+            "comments",
+        )
 
     def update(self, instance, validated_data):
-        if validated_data.get('status') != instance.status:
-            validated_data['status_updated_at'] = datetime.now()
+        if validated_data.get("status") != instance.status:
+            validated_data["status_updated_at"] = datetime.now()
         return super().update(instance, validated_data)
+
 
 class PatientFamilySerializer(rest_serializers.ModelSerializer):
     class Meta:

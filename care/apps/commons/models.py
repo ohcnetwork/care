@@ -87,10 +87,17 @@ class AddressModel(models.Model):
     """
     Abstract model for Address fields
     """
+
     address = models.TextField()
-    district = models.ForeignKey('accounts.District', on_delete=models.PROTECT, null=True, blank=True)
-    state = models.ForeignKey('accounts.State', on_delete=models.PROTECT, null=True, blank=True)
-    pincode = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{1,6}$')], null=True, blank=True)
+    district = models.ForeignKey(
+        "accounts.District", on_delete=models.PROTECT, null=True, blank=True
+    )
+    state = models.ForeignKey(
+        "accounts.State", on_delete=models.PROTECT, null=True, blank=True
+    )
+    pincode = models.CharField(
+        max_length=6, validators=[RegexValidator(r"^\d{1,6}$")], null=True, blank=True
+    )
 
     class Meta(object):
         abstract = True

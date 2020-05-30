@@ -6,16 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('patients', '0010_patienttransfer'),
+        ("patients", "0010_patienttransfer"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='historicalpatient',
-            name='year_of_birth',
-        ),
-        migrations.RemoveField(
-            model_name='patient',
-            name='year_of_birth',
-        ),
+        migrations.RemoveField(model_name="historicalpatient", name="year_of_birth",),
+        migrations.RemoveField(model_name="patient", name="year_of_birth",),
     ]

@@ -6,17 +6,16 @@ from apps.facility import models as facility_models
 
 class FacilityFilter(filters.FilterSet):
     district = filters.filters.ModelMultipleChoiceFilter(
-        field_name='district',
-        queryset=accounts_models.District.objects.all()
+        field_name="district", queryset=accounts_models.District.objects.all()
     )
 
     class Meta:
         model = facility_models.Facility
         fields = {
-            "positive_patient": ['exact', 'range', 'gt', 'lt'],
-            "negative_patient": ['exact', 'range', 'gt', 'lt'],
-            "total_patient": ['exact', 'range', 'gt', 'lt'],
-            "district": ['exact']
+            "positive_patient": ["exact", "range", "gt", "lt"],
+            "negative_patient": ["exact", "range", "gt", "lt"],
+            "total_patient": ["exact", "range", "gt", "lt"],
+            "district": ["exact"],
         }
 
 

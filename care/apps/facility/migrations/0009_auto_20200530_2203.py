@@ -8,44 +8,76 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0005_auto_20200525_0251'),
-        ('facility', '0008_care_platform'),
+        ("accounts", "0005_auto_20200525_0251"),
+        ("facility", "0008_care_platform"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='testinglab',
-            name='lab_ownership_type',
-            field=models.IntegerField(choices=[(1, 'GOVERNMENT'), (2, 'PRIVATE')], default=1),
+            model_name="testinglab",
+            name="lab_ownership_type",
+            field=models.IntegerField(
+                choices=[(1, "GOVERNMENT"), (2, "PRIVATE")], default=1
+            ),
         ),
         migrations.AddField(
-            model_name='testinglab',
-            name='pincode',
-            field=models.CharField(blank=True, max_length=6, null=True, validators=[django.core.validators.RegexValidator('^\\d{1,6}$')]),
+            model_name="testinglab",
+            name="pincode",
+            field=models.CharField(
+                blank=True,
+                max_length=6,
+                null=True,
+                validators=[django.core.validators.RegexValidator("^\\d{1,6}$")],
+            ),
         ),
         migrations.AddField(
-            model_name='testinglab',
-            name='state',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='accounts.State'),
+            model_name="testinglab",
+            name="state",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="accounts.State",
+            ),
         ),
         migrations.AlterField(
-            model_name='facility',
-            name='district',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='accounts.District'),
+            model_name="facility",
+            name="district",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="accounts.District",
+            ),
         ),
         migrations.AlterField(
-            model_name='facility',
-            name='pincode',
-            field=models.CharField(blank=True, max_length=6, null=True, validators=[django.core.validators.RegexValidator('^\\d{1,6}$')]),
+            model_name="facility",
+            name="pincode",
+            field=models.CharField(
+                blank=True,
+                max_length=6,
+                null=True,
+                validators=[django.core.validators.RegexValidator("^\\d{1,6}$")],
+            ),
         ),
         migrations.AlterField(
-            model_name='facility',
-            name='state',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='accounts.State'),
+            model_name="facility",
+            name="state",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="accounts.State",
+            ),
         ),
         migrations.AlterField(
-            model_name='testinglab',
-            name='district',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='accounts.District'),
+            model_name="testinglab",
+            name="district",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="accounts.District",
+            ),
         ),
     ]

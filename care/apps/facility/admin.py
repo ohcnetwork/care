@@ -61,7 +61,7 @@ class InventoryAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class InventoryItemAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
-    search_fields = ("name", )
+    search_fields = ("name",)
     djangoql_completion_enabled_by_default = True
 
 

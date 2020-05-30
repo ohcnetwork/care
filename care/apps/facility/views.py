@@ -54,7 +54,7 @@ class FacilityViewSet(
         print(self.request.user.user_type)
         if self.request.user.user_type:
             if self.request.user.user_type.name == commons_constants.FACILITY_USER:
-                print('2121')
+                print("2121")
                 filter_kwargs["facilityuser__user"] = self.request.user
             elif self.request.user.user_type.name == commons_constants.PORTEA:
                 filter_kwargs["id__in"] = []
@@ -64,8 +64,8 @@ class FacilityViewSet(
     def short(self, *args, **kwargs):
         return Response(
             facility_serializers.FacilityShortSerializer(
-                instance=facility_models.Facility.objects.order_by('name').all(),
-                many=True
+                instance=facility_models.Facility.objects.order_by("name").all(),
+                many=True,
             ).data
         )
 
@@ -101,6 +101,7 @@ class InventoryViewSet(
     """
     ViewSet for Inventory add, list and update
     """
+
     queryset = facility_models.Inventory.objects.all()
     filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
     ordering_fields = (
@@ -162,7 +163,7 @@ class InventoryItemViewSet(
     ViewSet for Inventory Item add, list and update
     """
 
-    queryset = facility_models.InventoryItem.objects.order_by('name').all()
+    queryset = facility_models.InventoryItem.objects.order_by("name").all()
     serializer_class = facility_serializers.InventoryItemSerializer
     pagination_class = None
     permission_classes = (permissions.IsAuthenticated,)

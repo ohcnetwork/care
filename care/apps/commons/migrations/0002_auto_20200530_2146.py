@@ -6,20 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('commons', '0001_care_platform'),
+        ("commons", "0001_care_platform"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='ownershiptype',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='ownershiptype',
-            name='created_at',
-        ),
-        migrations.RemoveField(
-            model_name='ownershiptype',
-            name='updated_at',
-        ),
+        migrations.RemoveField(model_name="ownershiptype", name="active",),
+        migrations.RemoveField(model_name="ownershiptype", name="created_at",),
+        migrations.RemoveField(model_name="ownershiptype", name="updated_at",),
     ]

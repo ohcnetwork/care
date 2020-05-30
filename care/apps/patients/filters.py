@@ -2,10 +2,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from apps.commons import constants as common_constants
-from apps.patients import (
-    models as patients_models,
-    constants as patient_constants
-)
+from apps.patients import models as patients_models, constants as patient_constants
 from apps.accounts import models as accounts_models
 
 
@@ -32,20 +29,20 @@ class PatientFilter(filters.FilterSet):
     contact = filters.CharFilter(field_name="phone_number", lookup_expr="istartswith")
     address = filters.CharFilter(field_name="address", lookup_expr="istartswith")
     district = filters.MultipleChoiceFilter(
-        field_name='district',
-        choices = accounts_models.District.objects.all().values_list('id','name'),
+        field_name="district",
+        choices=accounts_models.District.objects.all().values_list("id", "name"),
     )
     cluster_group = filters.MultipleChoiceFilter(
         field_name="cluster_group",
-        choices = patients_models.PatientGroup.objects.all().values_list('id', 'name'),
+        choices=patients_models.PatientGroup.objects.all().values_list("id", "name"),
     )
     covid_status = filters.MultipleChoiceFilter(
         field_name="covid_status",
-        choices = patients_models.CovidStatus.objects.all().values_list('id', 'name'),
+        choices=patients_models.CovidStatus.objects.all().values_list("id", "name"),
     )
     clinical_status = filters.MultipleChoiceFilter(
         field_name="clinical_status",
-        choices=patients_models.ClinicalStatus.objects.all().values_list('id', 'name'),
+        choices=patients_models.ClinicalStatus.objects.all().values_list("id", "name"),
     )
     clinical_status_updated_at = filters.DateFromToRangeFilter(
         field_name="clinical_status_updated_at"
@@ -54,7 +51,7 @@ class PatientFilter(filters.FilterSet):
     portea_able_to_connect = filters.BooleanFilter(field_name="portea_able_to_connect")
     facility_name = filters.MultipleChoiceFilter(
         field_name="facility",
-        choices = patients_models.Facility.objects.all().values_list('id', 'name'),
+        choices=patients_models.Facility.objects.all().values_list("id", "name"),
     )
     facility_district = filters.CharFilter(field_name="facility__district")
     facility_type = filters.CharFilter(field_name="facility__facility_type")
@@ -62,7 +59,7 @@ class PatientFilter(filters.FilterSet):
     patient_status = filters.MultipleChoiceFilter(
         field_name="patient_status",
         # method="filter_patient_status",
-        choices=patient_constants.PATIENT_STATUS_CHOICES
+        choices=patient_constants.PATIENT_STATUS_CHOICES,
     )
 
     def filter_patient_status(self, queryset, name, value):
