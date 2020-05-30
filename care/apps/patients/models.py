@@ -151,9 +151,6 @@ class Patient(SoftDeleteTimeStampedModel):
         default=True,
         help_text="Not active when discharged, or removed from the watchlist",
     )
-    patient_search_id = EncryptedIntegerField(
-        help_text="FKey to PatientSearch", null=True
-    )
     date_of_receipt_of_information = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's information received date"
     )
@@ -195,7 +192,7 @@ class Patient(SoftDeleteTimeStampedModel):
     patient_status = models.CharField(
         max_length=25, choices=constants.PATIENT_STATUS_CHOICES, blank=True
     )
-    history = HistoricalRecords(excluded_fields=["patient_search_id"])
+    history = HistoricalRecords()
 
     objects = ActiveObjectsManager()
 
