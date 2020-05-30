@@ -34,14 +34,15 @@ class GenderField(rest_serializers.RelatedField):
 class PatientListSerializer(rest_serializers.ModelSerializer):
     patient_status = rest_serializers.SerializerMethodField()
     gender = GenderField(queryset=patient_models.Patient.objects.none())
-    ownership_type = rest_serializers.CharField()
-    facility_type = rest_serializers.CharField()
-    facility_name = rest_serializers.CharField()
-    facility_district = rest_serializers.CharField()
+    ownership_type = rest_serializers.CharField(read_only=True)
+    facility_type = rest_serializers.CharField(read_only=True)
+    facility_name = rest_serializers.CharField(read_only=True)
+    facility_district = rest_serializers.CharField(read_only=True)
 
     class Meta:
         model = patient_models.Patient
         fields = (
+            "id",
             "icmr_id",
             "govt_id",
             "facility",
@@ -50,6 +51,7 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "year",
             "month",
             "phone_number",
+            "phone_number_belongs_to",
             "address",
             "district",
             "cluster_group",
@@ -279,7 +281,7 @@ class PortieCallingDetailSerializer(rest_serializers.ModelSerializer):
         return instance.patient.phone_number
 
     def get_patient_relation(self, instance):
-        return instance.patient_family.relation
+        return instance.patient_family.relation if instance.patient_family else 'Self'
 
     def get_status(self, instance):
         return instance.able_to_connect
@@ -298,16 +300,6 @@ class PortieCallingDetailSerializer(rest_serializers.ModelSerializer):
 
 
 class ContactDetailsSerializer(rest_serializers.ModelSerializer):
-    contact_number_belongs_to = rest_serializers.SerializerMethodField()
-
-    def get_contact_number_belongs_to(self, instance):
-        return (
-            patient_models.PortieCallingDetail.objects.get(
-                patient=instance
-            ).patient_family.relation
-            if patient_models.PortieCallingDetail.objects.filter(patient=instance)
-            else "self"
-        )
 
     class Meta:
         model = patient_models.Patient
@@ -316,7 +308,7 @@ class ContactDetailsSerializer(rest_serializers.ModelSerializer):
             "address",
             "district",
             "state",
-            "contact_number_belongs_to",
+            "phone_number_belongs_to",
             "local_body",
         )
 
@@ -421,7 +413,7 @@ class PatientDetailsSerializer(rest_serializers.Serializer):
 
     def get_contact_details(self, instance):
         return ContactDetailsSerializer(
-            patient_models.Patient.objects.filter(id=instance.id), many=True
+            instance
         ).data
 
     def get_medication_details(self, instance):

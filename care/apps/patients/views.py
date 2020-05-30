@@ -24,9 +24,7 @@ from apps.patients import (
 from apps.facility import models as facility_models
 
 class PatientViewSet(
-    rest_viewsets.GenericViewSet,
-    rest_mixins.ListModelMixin,
-    rest_mixins.RetrieveModelMixin,
+    rest_viewsets.ModelViewSet
 ):
 
     serializer_class = patient_serializers.PatientListSerializer
@@ -43,6 +41,10 @@ class PatientViewSet(
         "facility",
         "year",
     )
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = patient_serializers.PatientDetailsSerializer
+        return super().retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = patient_models.Patient.objects.all()
@@ -209,34 +211,3 @@ class PatientTransferViewSet(
         if self.action == "partial_update":
             return patient_serializers.PatientTransferUpdateSerializer
         return self.serializer_class
-
-
-class PatientDetailViewSet(
-    rest_mixins.RetrieveModelMixin, rest_viewsets.GenericViewSet
-):
-    """
-    ViewSet for Patient Detail
-    """
-
-    serializer_class = patient_serializers.PatientDetailsSerializer
-    pagination_class = commons_pagination.CustomPagination
-    lookup_field = "id"
-
-    def get_queryset(self):
-        queryset = patient_models.Patient.objects.all()
-        if (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.PORTEA
-        ):
-            queryset = queryset.filter(patient_status=patients_constants.HOME_ISOLATION)
-        elif (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
-        ):
-            facility_ids = list(facility_models.FacilityUser.objects.filter(
-                user_id=self.request.user.id
-            ).values_list('facility_id', flat=True))
-            queryset = queryset.filter(
-                patientfacility__facility_id__in=facility_ids
-            )
-        return queryset

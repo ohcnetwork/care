@@ -68,6 +68,7 @@ class Patient(SoftDeleteTimeStampedModel):
     year = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
+    phone_number_belongs_to = models.PositiveSmallIntegerField(default=1)
     address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
     nationality = models.CharField(
