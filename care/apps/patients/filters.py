@@ -2,8 +2,11 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from apps.commons import constants as common_constants
-from apps.patients import models as patients_models
-from apps.patients import constants as patient_constants
+from apps.patients import (
+    models as patients_models,
+    constants as patient_constants
+)
+from apps.accounts import models as accounts_models
 
 
 class PatientTimelineFilter(filters.FilterSet):
@@ -21,29 +24,45 @@ class PatientFilter(filters.FilterSet):
     icmr = filters.CharFilter(field_name="icmr_id", lookup_expr="istartswith")
     govt = filters.CharFilter(field_name="govt_id", lookup_expr="istartswith")
     facility = filters.CharFilter(field_name="facility")
-    gender = filters.ChoiceFilter(
+    gender = filters.MultipleChoiceFilter(
         field_name="gender", choices=common_constants.GENDER_CHOICES
     )
-    years = filters.CharFilter(field_name="year")
-    months = filters.CharFilter(field_name="month")
+    year = filters.RangeFilter(field_name="year", lookup_expr="range")
+    month = filters.RangeFilter(field_name="month", lookup_expr="range")
     contact = filters.CharFilter(field_name="phone_number", lookup_expr="istartswith")
     address = filters.CharFilter(field_name="address", lookup_expr="istartswith")
-    district = filters.CharFilter(field_name="district")
-    cluster = filters.CharFilter(field_name="cluster_group")
-    covid_status = filters.CharFilter(field_name="covid_status")
-    clinical_status = filters.CharFilter(field_name="clinical_status")
+    district = filters.MultipleChoiceFilter(
+        field_name='district',
+        choices = accounts_models.District.objects.all().values_list('id','name'),
+    )
+    cluster_group = filters.MultipleChoiceFilter(
+        field_name="cluster_group",
+        choices = patients_models.PatientGroup.objects.all().values_list('id', 'name'),
+    )
+    covid_status = filters.MultipleChoiceFilter(
+        field_name="covid_status",
+        choices = patients_models.CovidStatus.objects.all().values_list('id', 'name'),
+    )
+    clinical_status = filters.MultipleChoiceFilter(
+        field_name="clinical_status",
+        choices=patients_models.ClinicalStatus.objects.all().values_list('id', 'name'),
+    )
     clinical_status_updated_at = filters.DateFromToRangeFilter(
         field_name="clinical_status_updated_at"
     )
     portea_called_at = filters.DateFromToRangeFilter(field_name="portea_called_at")
     portea_able_to_connect = filters.BooleanFilter(field_name="portea_able_to_connect")
-    facility_name = filters.CharFilter(field_name="facility__name")
+    facility_name = filters.MultipleChoiceFilter(
+        field_name="facility",
+        choices = patients_models.Facility.objects.all().values_list('id', 'name'),
+    )
     facility_district = filters.CharFilter(field_name="facility__district")
     facility_type = filters.CharFilter(field_name="facility__facility_type")
     facility_owned_by = filters.CharFilter(field_name="facility__owned_by")
-    patient_status = filters.CharFilter(
-        field_name="current_facility__patient_status__name",
-        method="filter_patient_status",
+    patient_status = filters.MultipleChoiceFilter(
+        field_name="patient_status",
+        # method="filter_patient_status",
+        choices=patient_constants.PATIENT_STATUS_CHOICES
     )
 
     def filter_patient_status(self, queryset, name, value):
@@ -62,12 +81,12 @@ class PatientFilter(filters.FilterSet):
             "govt",
             "facility",
             "gender",
-            "years",
-            "months",
+            "year",
+            "month",
             "contact",
             "address",
             "district",
-            "cluster",
+            "cluster_group",
             "covid_status",
             "patient_status",
             "clinical_status",

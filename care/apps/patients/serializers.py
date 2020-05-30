@@ -32,7 +32,7 @@ class GenderField(rest_serializers.RelatedField):
 
 
 class PatientListSerializer(rest_serializers.ModelSerializer):
-    status = rest_serializers.SerializerMethodField()
+    patient_status = rest_serializers.SerializerMethodField()
     gender = GenderField(queryset=patient_models.Patient.objects.none())
     ownership_type = rest_serializers.CharField()
     facility_type = rest_serializers.CharField()
@@ -53,7 +53,7 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "address",
             "district",
             "cluster_group",
-            "status",
+            "patient_status",
             "covid_status",
             "clinical_status",
             "clinical_status_updated_at",
@@ -75,7 +75,7 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "diseases",
         )
 
-    def get_status(self, instance):
+    def get_patient_status(self, instance):
         if instance.patient_status == patient_constants.FACILITY_STATUS:
             return instance.facility_status
         return instance.patient_status
