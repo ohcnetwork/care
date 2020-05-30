@@ -21,7 +21,6 @@ class FacilityViewSet(
     ViewSet for Facility list and create
     """
 
-    queryset = facility_models.Facility.objects.all()
     serializer_class = facility_serializers.FacilitySerializer
     filter_backends = (
         filters.DjangoFilterBackend,
@@ -46,16 +45,17 @@ class FacilityViewSet(
         "negative_patient",
     )
     filterset_class = facility_filters.FacilityFilter
-    permission_classes = (permissions.IsAuthenticated,)
     pagination_class = commons_pagination.CustomPagination
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         filter_kwargs = {}
-        print(self.request.user.user_type)
         if self.request.user.user_type:
             if self.request.user.user_type.name == commons_constants.FACILITY_USER:
-                print("2121")
-                filter_kwargs["facilityuser__user"] = self.request.user
+                facility_ids = list(facility_models.FacilityUser.objects.filter(
+                    user_id=self.request.user.id
+                ).values_list('facility_id', flat=True))
+                filter_kwargs["facility_id__in"] = facility_ids
             elif self.request.user.user_type.name == commons_constants.PORTEA:
                 filter_kwargs["id__in"] = []
         return facility_models.Facility.objects.filter(**filter_kwargs)
@@ -77,9 +77,18 @@ class FacilityUserViewSet(
     ViewSet for FacilityUser add and remove
     """
 
-    queryset = facility_models.FacilityUser.objects.all()
     serializer_class = facility_serializers.FacilityUserSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = facility_models.FacilityUser.objects.all()
+        filter_kwargs = {}
+        if self.request.user.user_type:
+            if self.request.user.user_type.name == commons_constants.FACILITY_USER:
+                filter_kwargs["user"] = self.request.user
+            elif self.request.user.user_type.name == commons_constants.PORTEA:
+                return facility_models.FacilityUser.objects.none()
+        return queryset.filter(**filter_kwargs)
 
 
 class FacilityTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -142,6 +142,13 @@ class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
             "comments",
         )
 
+    def validate_patient(self, patient):
+        if patient.patient_status != patient_constants.HOME_ISOLATION:
+            raise rest_serializers.ValidationError(
+                _('Calling detail can be added only for home Isolated patient.')
+            )
+        return patient
+
 
 class PatientSampleTestSerializer(rest_serializers.ModelSerializer):
     class Meta:
@@ -438,7 +445,6 @@ class PatientDetailsSerializer(rest_serializers.Serializer):
         ).data
 
     def get_personal_details(self, instance):
-        print(instance)
         return PersonalDetailsSerializer(
             patient_models.Patient.objects.filter(id=instance.id), many=True
         ).data
