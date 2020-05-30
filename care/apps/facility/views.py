@@ -101,7 +101,6 @@ class InventoryViewSet(
     """
     ViewSet for Inventory add, list and update
     """
-
     queryset = facility_models.Inventory.objects.all()
     filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
     ordering_fields = (
@@ -115,6 +114,13 @@ class InventoryViewSet(
     serializer_class = facility_serializers.InventorySerializer
     pagination_class = commons_pagination.CustomPagination
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_serializer_class(self):
+        return (
+            facility_serializers.InventoryUpdateSerializer
+            if self.request.method in ("PATCH", "PUT")
+            else self.serializer_class
+        )
 
 
 class FacilityStaffViewSet(

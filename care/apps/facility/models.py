@@ -155,20 +155,23 @@ class InventoryItem(models.Model):
         return f"{self.name}"
 
 
-
 class Inventory(commons_models.TimeStampModel):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility", on_delete=models.CASCADE,
     )
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     required_quantity = models.PositiveIntegerField(default=0)
     current_quantity = models.PositiveIntegerField(default=0)
-    created_by = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
+    updated_by = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
 
     history = HistoricalRecords()
 
+    def __str__(self):
+        return f"{self.facility}::{self.item}"
+
     class Meta:
         verbose_name_plural = "Inventories"
+        unique_together = (("facility", "item"), )
 
 
 class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
