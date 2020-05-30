@@ -141,6 +141,9 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skill = models.ForeignKey(Skill, on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
+    preferred_districts = models.ManyToManyField(
+        District, through='accounts.UserDistrictPreference', related_name='preferred_users'
+    )
     history = HistoricalRecords()
 
     REQUIRED_FIELDS = ["email", "phone_number", "age", "gender"]
@@ -157,3 +160,12 @@ class User(AbstractUser, commons_models.SoftDeleteTimeStampedModel):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
+
+
+class UserDistrictPreference(models.Model):
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('user', 'district')
