@@ -53,7 +53,7 @@ class PatientViewSet(
             queryset = queryset.filter(patient_status=patients_constants.HOME_ISOLATION)
         elif (
             self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_USER
+            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
             facility_ids = list(facility_models.FacilityUser.objects.filter(
                 user_id=self.request.user.id
@@ -115,7 +115,7 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
             queryset = queryset.filter(patient__patient_status=patients_constants.HOME_ISOLATION)
         elif (
                 self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_USER
+            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
             facility_ids = list(facility_models.FacilityUser.objects.filter(
                 user_id=self.request.user.id
@@ -141,7 +141,7 @@ class PortieCallingDetailViewSet(
         queryset = patient_models.PortieCallingDetail.objects.all()
         if (
                 self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_USER
+            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
             facility_ids = list(facility_models.FacilityUser.objects.filter(
                 user_id=self.request.user.id
@@ -231,7 +231,7 @@ class PatientDetailViewSet(
             queryset = queryset.filter(patient_status=patients_constants.HOME_ISOLATION)
         elif (
             self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_USER
+            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
             facility_ids = list(facility_models.FacilityUser.objects.filter(
                 user_id=self.request.user.id

@@ -51,7 +51,7 @@ class FacilityViewSet(
     def get_queryset(self):
         filter_kwargs = {}
         if self.request.user.user_type:
-            if self.request.user.user_type.name == commons_constants.FACILITY_USER:
+            if self.request.user.user_type.name == commons_constants.FACILITY_MANAGER:
                 facility_ids = list(facility_models.FacilityUser.objects.filter(
                     user_id=self.request.user.id
                 ).values_list('facility_id', flat=True))
@@ -84,7 +84,7 @@ class FacilityUserViewSet(
         queryset = facility_models.FacilityUser.objects.all()
         filter_kwargs = {}
         if self.request.user.user_type:
-            if self.request.user.user_type.name == commons_constants.FACILITY_USER:
+            if self.request.user.user_type.name == commons_constants.FACILITY_MANAGER:
                 filter_kwargs["user"] = self.request.user
             elif self.request.user.user_type.name == commons_constants.PORTEA:
                 return facility_models.FacilityUser.objects.none()
