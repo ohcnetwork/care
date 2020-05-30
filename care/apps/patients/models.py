@@ -70,7 +70,6 @@ class Patient(SoftDeleteTimeStampedModel):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
-    year_of_birth = models.IntegerField(default=0, null=True)
     nationality = models.CharField(
         max_length=255, verbose_name="Nationality of Patient", default="indian"
     )
