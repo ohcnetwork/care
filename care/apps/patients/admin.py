@@ -70,7 +70,7 @@ class PatientTransferAdmin(ImportExportModelAdmin):
 admin.site.register(models.Patient, PatientAdmin)
 admin.site.register(models.PatientFacility)
 admin.site.register(models.Disease, DiseaseAdmin)
-admin.site.register(models.PatientGroup)
+admin.site.register(models.PatientGroup, ImportExportModelAdmin)
 admin.site.register(models.CovidSymptom, CovidSymptomAdmin)
 admin.site.register(models.PatientStatus, PatientStatusAdmin)
 admin.site.register(models.CovidStatus, PatientCovidStatusStatusAdmin)

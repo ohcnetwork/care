@@ -24,6 +24,7 @@ class Command(BaseCommand):
             ('apps/facility/fixtures/ownership_type.csv', 'commons.OwnershipType'),
             ('apps/facility/fixtures/facility_fixture.csv', 'facility.Facility'),
             ('apps/patients/fixtures/patient_status_fixture.csv', 'patients.PatientStatus'),
+            ('apps/patients/fixtures/patient_group.csv', 'patients.PatientGroup'),
             ('apps/patients/fixtures/clinical_status_fixture.csv', 'patients.ClinicalStatus'),
             ('apps/patients/fixtures/covid_status_fixture.csv', 'patients.CovidStatus'),
         ]
