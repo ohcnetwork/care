@@ -2,14 +2,8 @@
 import os
 import csv
 import json
-import pandas as pd
-from os.path import isfile, join
-from subprocess import call
 
-from django.apps.registry import apps
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.core import management
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
@@ -21,9 +15,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         fixtures = [
+            ('apps/accounts/fixtures/user_type.csv', 'accounts.UserType'),
             ('apps/accounts/fixtures/state_fixture.csv', 'accounts.State'),
             ('apps/accounts/fixtures/districts_fixture.csv', 'accounts.District'),
             ('apps/facility/fixtures/testing_lab_fixture.csv', 'facility.TestingLab'),
+            ('apps/facility/fixtures/facility_type.csv', 'facility.FacilityType'),
+            ('apps/facility/fixtures/ownership_type.csv', 'commons.OwnershipType'),
             ('apps/facility/fixtures/facility_fixture.csv', 'facility.Facility'),
             ('apps/patients/fixtures/patient_status_fixture.csv', 'patients.PatientStatus'),
             ('apps/patients/fixtures/clinical_status_fixture.csv', 'patients.ClinicalStatus'),

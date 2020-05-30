@@ -46,6 +46,10 @@ class FacilityAdmin(DjangoQLSearchMixin, ImportExportModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+class FacilityTypeAdmin(ImportExportModelAdmin):
+    search_fields = ["name"]
+
+
 class FacilityStaffAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     djangoql_completion_enabled_by_default = True
@@ -82,6 +86,6 @@ admin.site.register(facility_models.InventoryItem, InventoryItemAdmin)
 admin.site.register(facility_models.Inventory, InventoryAdmin)
 admin.site.register(facility_models.FacilityUser)
 admin.site.register(facility_models.TestingLab, TestingLabAdmin)
-admin.site.register(facility_models.FacilityType)
+admin.site.register(facility_models.FacilityType, FacilityTypeAdmin)
 admin.site.register(facility_models.RoomType)
 admin.site.register(facility_models.BedType)
