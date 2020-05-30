@@ -28,26 +28,18 @@ class FacilityType(models.Model):
         return f"{self.name}"
 
 
-class Facility(commons_models.TimeStampModel):
+class Facility(commons_models.TimeStampModel, commons_models.AddressModel):
     name = models.CharField(max_length=1000)
     facility_code = models.CharField(max_length=50)
     facility_type = models.ForeignKey(FacilityType, on_delete=models.CASCADE)
     owned_by = models.ForeignKey(commons_models.OwnershipType, on_delete=models.CASCADE)
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
-    address = models.TextField()
     local_body = models.ForeignKey(
         accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True,
-    )
-    district = models.ForeignKey(
-        accounts_models.District, on_delete=models.SET_NULL, null=True, blank=True,
-    )
-    state = models.ForeignKey(
-        accounts_models.State, on_delete=models.SET_NULL, null=True, blank=True
     )
     phone_number = models.CharField(
         max_length=14, blank=True, validators=[commons_validators.phone_number_regex]
     )
-    pincode = models.CharField(max_length=6)
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True
@@ -183,7 +175,7 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
         return f"{self.user.first_name} - {self.facility.name}"
 
 
-class TestingLab(models.Model):
+class TestingLab(commons_models.AddressModel):
     """
     model for the lab associated with the patient sample test
     """
@@ -197,6 +189,10 @@ class TestingLab(models.Model):
         (commons_facility_constants.LAB_TYPE_CHOICES.TT, "THYROID TESTS"),
         (commons_facility_constants.LAB_TYPE_CHOICES.UL, "URINALYSIS"),
     ]
+    LAB_OWNERSHIP_CHOICES = [
+        (commons_facility_constants.LAB_OWNERSHIP_CHOICES.GOVERNMENT, "GOVERNMENT"),
+        (commons_facility_constants.LAB_OWNERSHIP_CHOICES.PRIVATE, "PRIVATE")
+    ]
     code = models.CharField(
         max_length=commons_constants.FIELDS_CHARACTER_LIMITS["LOCALBODY_CODE"],
         help_text="code of the Testing Lab",
@@ -206,12 +202,11 @@ class TestingLab(models.Model):
         max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
         help_text="Name of the Testing Lab",
     )
-    address = models.TextField()
+    lab_ownership_type = models.IntegerField(
+        choices=LAB_OWNERSHIP_CHOICES, default=commons_facility_constants.LAB_OWNERSHIP_CHOICES.GOVERNMENT
+    )
     lab_type = models.IntegerField(
         choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
-    )
-    district = models.ForeignKey(
-        accounts_models.District, on_delete=models.PROTECT, related_name="labs",
     )
 
     def __str__(self):
