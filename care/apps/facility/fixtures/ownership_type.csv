@@ -1,4 +1,4 @@
-id,active,created_at,updated_at,name
-3,1,2020-05-30 18:32:58,2020-05-30 18:33:52,Private
-2,1,2020-05-30 18:32:48,2020-05-30 18:32:48,State Govt
-1,1,2020-05-30 18:17:46,2020-05-30 18:17:46,Central Govt
+id,name
+3,Private
+2,State Govt
+1,Central Govt
