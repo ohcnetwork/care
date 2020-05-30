@@ -1,5 +1,7 @@
+from rest_framework.decorators import action
 from rest_framework import viewsets, mixins, permissions, filters as rest_filters
 from django_filters import rest_framework as filters
+from rest_framework.response import Response
 
 from apps.commons import (
     constants as commons_constants,
@@ -57,6 +59,15 @@ class FacilityViewSet(
             elif self.request.user.user_type.name == commons_constants.PORTEA:
                 filter_kwargs["id__in"] = []
         return facility_models.Facility.objects.filter(**filter_kwargs)
+
+    @action(detail=False)
+    def short(self, *args, **kwargs):
+        return Response(
+            facility_serializers.FacilityShortSerializer(
+                instance=facility_models.Facility.objects.order_by('name').all(),
+                many=True
+            ).data
+        )
 
 
 class FacilityUserViewSet(

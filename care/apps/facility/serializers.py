@@ -3,6 +3,15 @@ from rest_framework import serializers as rest_serializers
 from apps.facility import models as facility_models
 
 
+class FacilityShortSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.Facility
+        fields = (
+            "id",
+            "name",
+        )
+
+
 class FacilitySerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.Facility
