@@ -110,6 +110,4 @@ class InventoryItemSerializer(rest_serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "description",
-            "unit",
         )

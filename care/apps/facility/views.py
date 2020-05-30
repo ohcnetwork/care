@@ -156,7 +156,7 @@ class InventoryItemViewSet(
     ViewSet for Inventory Item add, list and update
     """
 
-    queryset = facility_models.InventoryItem.objects.all()
+    queryset = facility_models.InventoryItem.objects.order_by('name').all()
     serializer_class = facility_serializers.InventoryItemSerializer
-    pagination_class = commons_pagination.CustomPagination
+    pagination_class = None
     permission_classes = (permissions.IsAuthenticated,)

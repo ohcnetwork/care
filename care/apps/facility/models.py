@@ -148,12 +148,12 @@ class FacilityInfrastructure(commons_models.TimeStampModel):
 
 
 class InventoryItem(models.Model):
-    name = models.CharField(max_length=256)
-    description = models.TextField()
-    unit = models.CharField(max_length=20)
+    name = models.CharField(max_length=30, unique=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.name} with unit {self.unit} with minimum stock"
+        return f"{self.name}"
+
 
 
 class Inventory(commons_models.TimeStampModel):
