@@ -29,7 +29,11 @@ Care Platform is a back-end project for managing corona related process in hospi
    ```
    python manage.py migrate
    ```
-7. Start server
+7. Load Initial data
+    ```
+    python manage.py setupdata
+    ```
+8. Start server
    ```
    python manage.py runserver
    ```
