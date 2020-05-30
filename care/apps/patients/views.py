@@ -45,7 +45,6 @@ class PatientViewSet(
     )
 
     def get_queryset(self):
-        print(self.request.query_params)
         queryset = patient_models.Patient.objects.all()
         if (
             self.request.user.user_type
