@@ -35,6 +35,8 @@ class Command(BaseCommand):
                 "patients.ClinicalStatus",
             ),
             ("apps/patients/fixtures/covid_status_fixture.csv", "patients.CovidStatus"),
+            ("apps/patients/fixtures/patients_fixture_dummy.csv", "patients.Patient"),
+            ("apps/patients/fixtures/patients_facilities_dummy.csv", "patients.PatientFacility"),
         ]
 
         json_fixtures_path, json_fixtures_name = self.get_json_fixtures(fixtures)
