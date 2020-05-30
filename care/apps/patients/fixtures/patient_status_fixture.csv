@@ -1,6 +1,6 @@
-name,description
-Home Isolation,Dummy
-Admitted to Facility,Dummy
-Transferred to another Facility,Dummy
-Discharged,Dummy
-Dead,Dummy
+id,name,description
+1,Home Isolation,Dummy
+2,Admitted to Facility,Dummy
+3,Transferred to another Facility,Dummy
+4,Discharged,Dummy
+5,Dead,Dummy
