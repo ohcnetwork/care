@@ -158,7 +158,6 @@ class FacilityInfrastructureViewSet(
     permission_classes = (permissions.IsAuthenticated,)
 
 
-
 class InventoryItemViewSet(
     mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
@@ -171,6 +170,7 @@ class InventoryItemViewSet(
     pagination_class = None
     permission_classes = (permissions.IsAuthenticated,)
 
+
 class RoomTypeViewSet(
     mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
@@ -178,6 +178,7 @@ class RoomTypeViewSet(
     serializer_class = facility_serializers.RoomTypeSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = commons_pagination.CustomPagination
+
 
 class BedTypeViewSet(
     mixins.ListModelMixin, viewsets.GenericViewSet,
