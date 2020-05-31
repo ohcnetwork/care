@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+
 from rest_framework import serializers as rest_serializers
 
 from apps.facility import models as facility_models
@@ -98,6 +100,13 @@ class InventorySerializer(rest_serializers.ModelSerializer):
             "current_quantity": {"required": True},
             "updated_at": {"read_only": True},
         }
+        validators = [
+            rest_serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=("facility", "item"),
+                message=_("This Inventory have already added, Update existing one."),
+            )
+        ]
 
     def validate(self, attrs):
         attrs["updated_by"] = self.context["request"].user

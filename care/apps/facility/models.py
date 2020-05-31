@@ -34,25 +34,16 @@ class Facility(commons_models.TimeStampModel, commons_models.AddressModel):
     facility_type = models.ForeignKey(FacilityType, on_delete=models.CASCADE)
     owned_by = models.ForeignKey(commons_models.OwnershipType, on_delete=models.CASCADE)
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
-    local_body = models.ForeignKey(
-        accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True,
-    )
-    phone_number = models.CharField(
-        max_length=14, blank=True, validators=[commons_validators.phone_number_regex]
-    )
+    local_body = models.ForeignKey(accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True,)
+    phone_number = models.CharField(max_length=14, blank=True, validators=[commons_validators.phone_number_regex])
     corona_testing = models.BooleanField(default=False)
-    created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True
-    )
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     total_patient = models.PositiveIntegerField(default=0)
     positive_patient = models.PositiveIntegerField(default=0)
     negative_patient = models.PositiveIntegerField(default=0)
 
     users = models.ManyToManyField(
-        User,
-        through="FacilityUser",
-        related_name="facilities",
-        through_fields=("facility", "user"),
+        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
     )
 
     class Meta:
@@ -75,9 +66,7 @@ class Facility(commons_models.TimeStampModel, commons_models.AddressModel):
         super().save(*args, **kwargs)
 
         if is_create:
-            FacilityUser.objects.create(
-                facility=self, user=self.created_by, created_by=self.created_by
-            )
+            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
 
 
 class StaffDesignation(models.Model):
@@ -89,21 +78,11 @@ class StaffDesignation(models.Model):
 
 
 class FacilityStaff(commons_models.SoftDeleteTimeStampedModel):
-    facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
-    )
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=256)
-    phone_number = models.CharField(
-        max_length=14, validators=[commons_validators.phone_number_regex]
-    )
-    email = models.EmailField(
-        max_length=50,
-        help_text="email of the facility staff",
-        validators=[EmailValidator],
-    )
-    designation = models.ForeignKey(
-        StaffDesignation, on_delete=models.CASCADE, null=True, blank=True
-    )
+    phone_number = models.CharField(max_length=14, validators=[commons_validators.phone_number_regex])
+    email = models.EmailField(max_length=50, help_text="email of the facility staff", validators=[EmailValidator],)
+    designation = models.ForeignKey(StaffDesignation, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return str(self.name) + " for facility " + str(self.facility)
@@ -126,9 +105,7 @@ class BedType(models.Model):
 
 
 class FacilityInfrastructure(commons_models.TimeStampModel):
-    facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
-    )
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     bed_type = models.ForeignKey(BedType, on_delete=models.CASCADE)
     total_bed = models.PositiveIntegerField(default=0)
@@ -168,9 +145,7 @@ class FacilityUser(commons_models.SoftDeleteTimeStampedModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_incharge = models.BooleanField(default=True)
-    created_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="created_users"
-    )
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
 
     def __str__(self):
         return f"{self.user.first_name} - {self.facility.name}"
@@ -200,16 +175,12 @@ class TestingLab(commons_models.AddressModel):
         unique=True,
     )
     name = models.CharField(
-        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
-        help_text="Name of the Testing Lab",
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"], help_text="Name of the Testing Lab",
     )
     lab_ownership_type = models.IntegerField(
-        choices=LAB_OWNERSHIP_CHOICES,
-        default=commons_facility_constants.LAB_OWNERSHIP_CHOICES.GOVERNMENT,
+        choices=LAB_OWNERSHIP_CHOICES, default=commons_facility_constants.LAB_OWNERSHIP_CHOICES.GOVERNMENT,
     )
-    lab_type = models.IntegerField(
-        choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC
-    )
+    lab_type = models.IntegerField(choices=LAB_TYPE_CHOICES, default=commons_facility_constants.LAB_TYPE_CHOICES.BC)
 
     def __str__(self):
         return f"{self.name}<>{self.district.name}"

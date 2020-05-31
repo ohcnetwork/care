@@ -47,19 +47,13 @@ class PatientViewSet(rest_viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = patient_models.Patient.objects.all()
-        if (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.PORTEA
-        ):
+        if self.request.user.user_type and self.request.user.user_type == commons_constants.PORTEA:
             queryset = queryset.filter(patient_status=patients_constants.HOME_ISOLATION)
-        elif (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
-        ):
+        elif self.request.user.user_type and self.request.user.user_type == commons_constants.FACILITY_MANAGER:
             facility_ids = list(
-                facility_models.FacilityUser.objects.filter(
-                    user_id=self.request.user.id
-                ).values_list("facility_id", flat=True)
+                facility_models.FacilityUser.objects.filter(user_id=self.request.user.id).values_list(
+                    "facility_id", flat=True
+                )
             )
             queryset = queryset.filter(patientfacility__facility_id__in=facility_ids)
         return queryset.annotate(
@@ -106,35 +100,21 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
     pagination_class = commons_pagination.CustomPagination
 
     def get_queryset(self):
-        queryset = patient_models.PatientTimeLine.objects.filter(
-            patient_id=self.kwargs.get("patient_id")
-        )
-        if (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.PORTEA
-        ):
-            queryset = queryset.filter(
-                patient__patient_status=patients_constants.HOME_ISOLATION
-            )
-        elif (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
-        ):
+        queryset = patient_models.PatientTimeLine.objects.filter(patient_id=self.kwargs.get("patient_id"))
+        if self.request.user.user_type and self.request.user.user_type == commons_constants.PORTEA:
+            queryset = queryset.filter(patient__patient_status=patients_constants.HOME_ISOLATION)
+        elif self.request.user.user_type and self.request.user.user_type == commons_constants.FACILITY_MANAGER:
             facility_ids = list(
-                facility_models.FacilityUser.objects.filter(
-                    user_id=self.request.user.id
-                ).values_list("facility_id", flat=True)
+                facility_models.FacilityUser.objects.filter(user_id=self.request.user.id).values_list(
+                    "facility_id", flat=True
+                )
             )
-            queryset = queryset.filter(
-                patient__patientfacility__facility_id__in=facility_ids
-            )
+            queryset = queryset.filter(patient__patientfacility__facility_id__in=facility_ids)
         return queryset
 
 
 class PortieCallingDetailViewSet(
-    rest_mixins.CreateModelMixin,
-    rest_mixins.UpdateModelMixin,
-    rest_viewsets.GenericViewSet,
+    rest_mixins.CreateModelMixin, rest_mixins.UpdateModelMixin, rest_viewsets.GenericViewSet,
 ):
     """
     views for create and update portie calling detail
@@ -144,25 +124,18 @@ class PortieCallingDetailViewSet(
 
     def get_queryset(self):
         queryset = patient_models.PortieCallingDetail.objects.all()
-        if (
-            self.request.user.user_type
-            and self.request.user.user_type == commons_constants.FACILITY_MANAGER
-        ):
+        if self.request.user.user_type and self.request.user.user_type == commons_constants.FACILITY_MANAGER:
             facility_ids = list(
-                facility_models.FacilityUser.objects.filter(
-                    user_id=self.request.user.id
-                ).values_list("facility_id", flat=True)
+                facility_models.FacilityUser.objects.filter(user_id=self.request.user.id).values_list(
+                    "facility_id", flat=True
+                )
             )
-            queryset = queryset.filter(
-                patient__patientfacility__facility_id__in=facility_ids
-            )
+            queryset = queryset.filter(patient__patientfacility__facility_id__in=facility_ids)
         return queryset
 
 
 class PatientSampleTestViewSet(
-    rest_mixins.CreateModelMixin,
-    rest_mixins.UpdateModelMixin,
-    rest_viewsets.GenericViewSet,
+    rest_mixins.CreateModelMixin, rest_mixins.UpdateModelMixin, rest_viewsets.GenericViewSet,
 ):
     """
     views for create and update patient sample test
@@ -173,9 +146,7 @@ class PatientSampleTestViewSet(
 
 
 class PatientTransferViewSet(
-    rest_mixins.ListModelMixin,
-    rest_mixins.UpdateModelMixin,
-    rest_viewsets.GenericViewSet,
+    rest_mixins.ListModelMixin, rest_mixins.UpdateModelMixin, rest_viewsets.GenericViewSet,
 ):
     """
     ViewSet for Patient Transfer List

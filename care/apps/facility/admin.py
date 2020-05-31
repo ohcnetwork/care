@@ -14,9 +14,7 @@ class DistrictFilter(SimpleListFilter):
     parameter_name = "district"
 
     def lookups(self, request, model_admin):
-        district = facility_models.Facility.objects.values_list(
-            "district__name", flat=True
-        )
+        district = facility_models.Facility.objects.values_list("district__name", flat=True)
         return list(map(lambda x: (x, x), set(district)))
 
     def queryset(self, request, queryset):

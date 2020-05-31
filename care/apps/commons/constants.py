@@ -1,8 +1,6 @@
 import collections
 
-GENDERS = collections.namedtuple("GENDERS", ["MALE", "FEMALE", "NON_BINARY"])(
-    MALE=1, FEMALE=2, NON_BINARY=3,
-)
+GENDERS = collections.namedtuple("GENDERS", ["MALE", "FEMALE", "NON_BINARY"])(MALE=1, FEMALE=2, NON_BINARY=3,)
 
 GENDER_CHOICES = (
     (GENDERS.MALE, "Male"),

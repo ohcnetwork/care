@@ -12,9 +12,7 @@ class ReplaceFieldsOrderingFilter(filters.OrderingFilter):
             for field in [param.strip() for param in params.split(",")]:
                 if field.lstrip("-") in related_ordering_fields_map:
                     if field[0] == "-":
-                        fields.append(
-                            "-" + related_ordering_fields_map[field.lstrip("-")]
-                        )
+                        fields.append("-" + related_ordering_fields_map[field.lstrip("-")])
                     else:
                         fields.append(related_ordering_fields_map[field.lstrip("-")])
                 else:
@@ -29,12 +27,8 @@ class ReplaceFieldsOrderingFilter(filters.OrderingFilter):
         related_ordering_fields_map = getattr(view, "related_ordering_fields_map", None)
         valid_fields = getattr(view, "ordering_fields", self.ordering_fields)
         valid_fields = [
-            related_ordering_fields_map[field]
-            if (field in related_ordering_fields_map.keys())
-            else field
+            related_ordering_fields_map[field] if (field in related_ordering_fields_map.keys()) else field
             for field in valid_fields
         ]
-        valid_fields = [
-            (item, item) if isinstance(item, str) else item for item in valid_fields
-        ]
+        valid_fields = [(item, item) if isinstance(item, str) else item for item in valid_fields]
         return valid_fields

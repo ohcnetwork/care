@@ -6,6 +6,7 @@ from django.core.management import call_command
 
 from apps.commons import utils as commons_utils
 
+
 class Command(BaseCommand):
     """
     Command to set-up the data in dB for use.
@@ -14,13 +15,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         fixtures = [
             ("apps/patients/fixtures/patients_fixture_test.csv", "patients.Patient"),
-            ("apps/patients/fixtures/patients_facilities_test.csv", "patients.PatientFacility"),
+            ("apps/patients/fixtures/patients_facilities_test.csv", "patients.PatientFacility",),
         ]
 
         """
         handling unique togetherness of PatientFacility
         """
-        apps.get_model('patients.PatientFacility').objects.hard_delete()
+        apps.get_model("patients.PatientFacility").objects.hard_delete()
 
         json_fixtures_path, json_fixtures_name = commons_utils.get_json_fixtures(fixtures)
         for json_fixture in json_fixtures_name:

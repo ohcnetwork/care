@@ -14,9 +14,7 @@ from apps.facility import (
 )
 
 
-class FacilityViewSet(
-    mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
-):
+class FacilityViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     ViewSet for Facility list and create
     """
@@ -53,9 +51,9 @@ class FacilityViewSet(
         if self.request.user.user_type:
             if self.request.user.user_type.name == commons_constants.FACILITY_MANAGER:
                 facility_ids = list(
-                    facility_models.FacilityUser.objects.filter(
-                        user_id=self.request.user.id
-                    ).values_list("facility_id", flat=True)
+                    facility_models.FacilityUser.objects.filter(user_id=self.request.user.id).values_list(
+                        "facility_id", flat=True
+                    )
                 )
                 filter_kwargs["facility_id__in"] = facility_ids
             elif self.request.user.user_type.name == commons_constants.PORTEA:
@@ -66,15 +64,12 @@ class FacilityViewSet(
     def short(self, *args, **kwargs):
         return Response(
             facility_serializers.FacilityShortSerializer(
-                instance=facility_models.Facility.objects.order_by("name").all(),
-                many=True,
+                instance=facility_models.Facility.objects.order_by("name").all(), many=True,
             ).data
         )
 
 
-class FacilityUserViewSet(
-    mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
-):
+class FacilityUserViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     """
     ViewSet for FacilityUser add and remove
     """
@@ -104,10 +99,7 @@ class FacilityTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class InventoryViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
     """
     ViewSet for Inventory add, list and update
@@ -136,10 +128,7 @@ class InventoryViewSet(
 
 
 class FacilityStaffViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
     """
     ViewSet for facility staff add, list and update
@@ -152,10 +141,7 @@ class FacilityStaffViewSet(
 
 
 class FacilityInfrastructureViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
     """
     ViewSet for facility infrastructure add, list and update
