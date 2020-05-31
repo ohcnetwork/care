@@ -14,6 +14,10 @@ class StateAdmin(ImportExportModelAdmin):
     search_fields = ("name",)
 
 
+class UserTypeAdmin(ImportExportModelAdmin):
+    search_fields = ("name",)
+
+
 class DistrictAdmin(ImportExportModelAdmin):
     raw_id_fields = ("state",)
     search_fields = ("name",)
@@ -37,58 +41,25 @@ class UserModelAdmin(UserAdmin):
     form = accounts_forms.UserChangeForm
     add_form = accounts_forms.UserCreationForm
 
-    list_display = ("first_name", "last_name", "email", "active", "user_type")
+    list_display = ("name", "email", "active", "user_type")
     list_display_links = (
-        "first_name",
-        "last_name",
+        "name",
         "email",
     )
     list_filter = ("active",)
 
     search_fields = (
-        "first_name",
-        "last_name",
+        "name",
         "email",
     )
 
     add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": (
-                    "username",
-                    "email",
-                    "password1",
-                    "password2",
-                    "age",
-                    "gender",
-                    "phone_number",
-                ),
-            },
-        ),
+        (None, {"classes": ("wide",), "fields": ("username", "email", "password1", "password2", "phone_number",),},),
     )
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (
-            _("Personal info"),
-            {
-                "fields": (
-                    "first_name",
-                    "last_name",
-                    "phone_number",
-                    "user_type",
-                    "age",
-                    "gender",
-                    "skill",
-                    "verified",
-                    "district",
-                    "state",
-                    "local_body",
-                )
-            },
-        ),
+        (_("Personal info"), {"fields": ("name", "phone_number", "user_type",)},),
         (_("Permissions"), {"fields": ("active",)}),
         (_("Important dates"), {"fields": ("last_login",)}),
     )
@@ -102,3 +73,5 @@ admin.site.register(accounts_models.District, DistrictAdmin)
 admin.site.register(accounts_models.LocalBody, LocalBodyAdmin)
 admin.site.register(accounts_models.Skill, SkillAdmin)
 admin.site.register(accounts_models.User, UserModelAdmin)
+admin.site.register(accounts_models.UserType, UserTypeAdmin)
+admin.site.register(accounts_models.UserDistrictPreference)

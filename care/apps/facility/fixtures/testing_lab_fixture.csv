@@ -1,18 +1,35 @@
-address,district,name,code
-"Hotel Apra Inn, 156/61 WEA Colony, Ajmal Khan Road, karol Bagh",1,dummy,1
-"Swami Parmanand Prakritik Chikitsalaya Yoga & Anushandhan kendra, West Vinod Nagar",2,dummy,2
-"Yogesh Kansal, Shrine Hospital, Main Bawana Road, Sector 17, Rohini(connected with MVH Hospital)",3,dummy,3
-"Maharaja Agrasen Bhawan CS Pocket 12, Rithala Road, Sector 5,Rohini",4,dummy,4
-"Khosla Hospital, Shalimar Bagh",4,dummy,5
-"Shri Satnam Bhawan, Block C-3, Phase-2, Ashok Vihar, Delhi",4,dummy,6
-"Qamtine facility, DUSIB FLATS, SE Block, Sultan Puri",4,dummy,7
-"Prime Stay B & B, Haiderpur, Shalimar Bagh",4,dummy,8
-"Hotel Park, Shahdara",4,dummy,9
-"Chatterpur Beleamonde Hotel, MANDIR Road, Sahoorpur Extension, IIPM, Satbari, New Delhi road, Sahoorpur",5,dummy,10
-"Bensups Hospital, Dwarka",6,dummy,11
-"BH Salvas, Chandan Park, Jharoda Road, Najafgarh",7,dummy,12
-"The Exotica Grand, 1/12, West Patel Nagar",7,dummy,13
-"Golden Tulip Hotel, Hari Nagar",8,dummy,14
-"Swift Hotel In, Meera Bagh",8,dummy,15
-"Hotel Amrapati Grand, 2/16 East Patel Nagar",8,dummy,16
-,8,dummy,17
+id,address,district,name,code,lab_ownership_type,state,pincode
+1,"Sri Aurobindo Marg, Ansari Nagar East",4,All India Institute of Medical Sciences,10001,1,1,110029
+2,"AIIMS New Delhi",4,Department of Microbiology,10002,1,1
+3,"Connaught Place",4,Lady Hardinge Medical College,10003,1,1,110001
+4,"National Centre for Disease Control, 22, Sham Nath Marg, Civil Lines",4,Respiratory Virus Lab,10004,1,1,110054
+5,"National Centre for Disease Control, 22, Sham Nath Marg, Civil Lines",4,Biotechnology Lab,10005,1,1,110054
+6,"Type III, President's Estate",4,Ram Manohar Lohia Hospital,10006,1,1,110001
+7,"D1 ILBS Road, Vasant Kunj",4,Institute of Liver and Biliary Sciences,10007,1,1,110070
+8,"Military Hospital Road Near, Subroto Park, DhaulaKuan",4,Army Hospital Research & Referral,10008,1,1,110010
+9,"2, Bahadur Shah Zafar Marg",4,Maulana Azad Medical College,10009,1,1,110002
+10,"Ansari Nagar East",4,VardhmanMahavir Medical College and Safdarjung Hospital,10010,1,1,110029
+11,"Jawaharlal Nehru Marg, Delhi Gate",4,State TB Training and Demonstration Centre,10011,1,1
+12,"National Institute of TB and Respiratory Diseases (NITRD)",4,Department of Microbiology,10012,1,1
+13,"Tahirpur Rd, GTB Enclave, Dilshad Garden",4,University College of Medical Sciences,10013,1,1
+14,"Mahatma Gandhi Marg, Kirby Place, Delhi Cantonment",4,Army Base Hospital,10014,1,1
+15,"CSIR",4,IGIB,10015,1,1
+16,"Tahirpur",4,Rajiv Gandhi Super Speciality Hospital,10016,1,1
+17,"Delhi University, Vijay Nagar Marg, Art Faculty, University Enclave",4,Vallabhbhai Patel Chest Institute,10017,1,1
+18,"National Reference laboratory, B7 Rd, Block E, Sector 18, Rohini",4,Dr Lal PathLabs,10018,2,1,110085
+19,"C2/1 SDA Aurbindo Marg",4,Dr.Dang’s Lab,10019,2,1,110016
+20,"SaritaVihar",4,Laboratory Services Indraprastha Apollo Hospitals,10020,2,1,110076
+21,"Max Super Speciality Hospital, 1, Press Enclave Road, Saket",4,Max lab,10021,2,1,110017
+22,"Sarhadi Gandhi Marg, Old Rajinder Nagar, Rajinder Nagar",4,Sir Ganga Ram hospital clinical laboratory services,10022,2,1,110060
+23,"3-Factory Road, Adjacent Safdarjung Hospital",4,ONCQUEST Laboratories Limited,10023,2,1,110029
+24,"515-516, behind Gupta Properties, Close to Welcome Hotel (ITC, Sector 19, Pocket 1, Dwarka",4,Prognosis Laboratories,10024,2,1,110075
+25,"Molecular Laboratory, Third Floor,City Imaging Building, 4B/18, Tilak Nagar, Near haldiram",4,City X Ray & Scan Clinic Pvt. Ltd.,10025,2,1,110018
+26,"H-11, Green Park Extension",4,Lifeline Laboratory,10026,2,1,110016
+27,"Dr. B.L. Kapur Memorial Hospital, 5, Pusa Road",4,Department of Laboratory Services,10027,2,1,110005
+28,"Action Cancer Hospital, A-4, PaschimVihar (East)",4,Deptt. of Laboratory Services,10028,2,1
+29,"4B/4, Tilak Nagar",4,Star Imaging & Path Lab Pvt Ltd,10029,2
+30,"3, MMTC, Geetanjali Enclave",4,Genestrings Diagnostic Centre Pvt Ltd,10030,2
+31,"A divison of Sterling Accuris Wellness Pvt Ltd, C65, Block C, Phase I, Okhla",4,Sterling Accuris Diagnostics,10031,2
+32,"Plot No 10, Avtar Enclave, Opposite Metro Pillar 227, PaschimVihar, Rohtak Road",4,CRL Diagnostics Pvt Ltd,10032,2
+33,"HCMCT, Manipal Hospital, Main Road, Sector 6, Dwarka",4,Dept of Lab Medicine,10033,2
+34,"S 13 Greater Kailash Part 1",4,Dr P Bhasin Path Labs (P) Ltd,10034,2

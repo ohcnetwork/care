@@ -69,9 +69,7 @@ class LoginView(rest_generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(
-            self.login_response_serializer(serializer.validated_data["user"]).data
-        )
+        return Response(self.login_response_serializer(serializer.validated_data["user"]).data)
 
 
 class LogoutView(APIView):
@@ -139,7 +137,4 @@ class PasswordResetView(rest_generics.GenericAPIView):
         serializer = self.get_serializer(instance=self.user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(
-            self.response_serializer_class(self.user).data,
-            status=rest_status.HTTP_200_OK,
-        )
+        return Response(self.response_serializer_class(self.user).data, status=rest_status.HTTP_200_OK,)

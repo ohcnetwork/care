@@ -1,6 +1,17 @@
+from django.utils.translation import ugettext as _
+
 from rest_framework import serializers as rest_serializers
 
 from apps.facility import models as facility_models
+
+
+class FacilityShortSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.Facility
+        fields = (
+            "id",
+            "name",
+        )
 
 
 class FacilitySerializer(rest_serializers.ModelSerializer):
@@ -81,10 +92,33 @@ class InventorySerializer(rest_serializers.ModelSerializer):
             "item",
             "required_quantity",
             "current_quantity",
-            "created_by",
             "updated_at",
         )
-        read_only_fields = ("updated_at",)
+        extra_kwargs = {
+            "required_quantity": {"required": True},
+            "current_quantity": {"required": True},
+            "updated_at": {"read_only": True},
+        }
+        validators = [
+            rest_serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=("facility", "item"),
+                message=_("This Inventory have already added, Update existing one."),
+            )
+        ]
+
+    def validate(self, attrs):
+        attrs["updated_by"] = self.context["request"].user
+        return super(InventorySerializer, self).validate(attrs)
+
+
+class InventoryUpdateSerializer(InventorySerializer):
+    class Meta(InventorySerializer.Meta):
+        fields = (
+            "id",
+            "required_quantity",
+            "current_quantity",
+        )
 
 
 class InventoryItemSerializer(rest_serializers.ModelSerializer):
@@ -93,8 +127,6 @@ class InventoryItemSerializer(rest_serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "description",
-            "unit",
         )
 
 class RoomTypeSerializer(rest_serializers.ModelSerializer):

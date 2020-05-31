@@ -67,10 +67,24 @@ class PatientTransferAdmin(ImportExportModelAdmin):
     search_fields = ("from_patient_facility__patient__name",)
 
 
+class PatientFacilityAdmin(admin.ModelAdmin):
+    raw_id_fields = (
+        "patient",
+        "facility",
+    )
+    list_display = (
+        "patient",
+        "facility",
+        "patient_status"
+    )
+    list_filter = ("patient_status",)
+    search_fields = ("patient__name",)
+
+
 admin.site.register(models.Patient, PatientAdmin)
-admin.site.register(models.PatientFacility)
+admin.site.register(models.PatientFacility, PatientFacilityAdmin)
 admin.site.register(models.Disease, DiseaseAdmin)
-admin.site.register(models.PatientGroup)
+admin.site.register(models.PatientGroup, ImportExportModelAdmin)
 admin.site.register(models.CovidSymptom, CovidSymptomAdmin)
 admin.site.register(models.PatientStatus, PatientStatusAdmin)
 admin.site.register(models.CovidStatus, PatientCovidStatusStatusAdmin)

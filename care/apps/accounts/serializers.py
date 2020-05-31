@@ -17,20 +17,22 @@ User = get_user_model()
 
 
 class UserSerializer(rest_serializers.ModelSerializer):
+    associated_facilities = rest_serializers.SerializerMethodField()
+
     class Meta:
         model = accounts_models.User
         fields = (
             "id",
-            "first_name",
-            "last_name",
+            "name",
             "email",
-            "local_body",
-            "age",
-            "gender",
             "phone_number",
-            "district",
             "user_type",
+            "preferred_districts",
+            "associated_facilities",
         )
+
+    def get_associated_facilities(self, instance):
+        return instance.facilityuser_set.values_list("facility_id", flat=True)
 
 
 class UserTypeSerializer(rest_serializers.ModelSerializer):
@@ -75,9 +77,7 @@ class LoginSerializer(rest_serializers.Serializer):
     """
 
     email = rest_serializers.CharField(label=_("Email"))
-    password = rest_serializers.CharField(
-        label=_("Password"), style={"input_type": "password"}
-    )
+    password = rest_serializers.CharField(label=_("Password"), style={"input_type": "password"})
 
     def validate(self, attrs):
         email = attrs.get("email")
@@ -86,9 +86,7 @@ class LoginSerializer(rest_serializers.Serializer):
         if email and password:
             user = accounts_models.User.objects.filter(email=email).first()
             if not user or not user.check_password(password):
-                msg = _(
-                    "Your Email or Password is incorrect.Please try again, or click Forgot Password."
-                )
+                msg = _("Your Email or Password is incorrect.Please try again, or click Forgot Password.")
                 raise rest_serializers.ValidationError(msg)
         else:
             msg = _("Email/Password parameter is missing or invalid.")
@@ -132,9 +130,7 @@ class ForgotPasswordLinkSerializer(rest_serializers.Serializer):
     def validate_email(self, email):
         self.user = User.all_objects.filter(email=email).first()
         if not self.user:
-            raise rest_serializers.ValidationError(
-                "This email does not exist in our records"
-            )
+            raise rest_serializers.ValidationError("This email does not exist in our records")
         return email
 
     def save(self):
@@ -181,7 +177,5 @@ class ResetPasswordSerializer(BaseSetPasswordSerializer):
         try:
             user.save()
         except IntegrityError:
-            raise rest_serializers.ValidationError(
-                "Some Error Occurred. Please try again later."
-            )
+            raise rest_serializers.ValidationError("Some Error Occurred. Please try again later.")
         return user

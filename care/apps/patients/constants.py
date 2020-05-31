@@ -1,8 +1,6 @@
 from collections import namedtuple
 
-CURRENT_HEALTH_CHOICES = namedtuple("type", ["ND", "RV", "WR", "SQ", "BT"])(
-    0, 1, 2, 3, 4
-)
+CURRENT_HEALTH_CHOICES = namedtuple("type", ["ND", "RV", "WR", "SQ", "BT"])(0, 1, 2, 3, 4)
 
 
 CATEGORY_CHOICES = [
@@ -13,25 +11,7 @@ CATEGORY_CHOICES = [
 ]
 
 SYMPTOM_TYPE_CHOICES = namedtuple(
-    "type",
-    [
-        "AS",
-        "FV",
-        "ST",
-        "CO",
-        "BT",
-        "MY",
-        "AD",
-        "VD",
-        "OT",
-        "SA",
-        "SP",
-        "NA",
-        "CP",
-        "HP",
-        "ND",
-        "BA",
-    ],
+    "type", ["AS", "FV", "ST", "CO", "BT", "MY", "AD", "VD", "OT", "SA", "SP", "NA", "CP", "HP", "ND", "BA",],
 )(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
 
 SYMPTOM_CHOICES = [
@@ -53,9 +33,7 @@ SYMPTOM_CHOICES = [
     (SYMPTOM_TYPE_CHOICES.BA, "BODY ACHE"),
 ]
 
-DISEASE_CHOICES_MAP = namedtuple("type", ["NO", "DB", "HD", "HT", "KD", "LA", "CA"])(
-    1, 2, 3, 4, 5, 6, 7
-)
+DISEASE_CHOICES_MAP = namedtuple("type", ["NO", "DB", "HD", "HT", "KD", "LA", "CA"])(1, 2, 3, 4, 5, 6, 7)
 
 DISEASE_CHOICES = [
     (DISEASE_CHOICES_MAP.NO, "NO DISEASE"),
@@ -75,40 +53,23 @@ SUGGESTION_CHOICES = [
     (SuggestionChoices.R, "REFERRAL"),
 ]
 
-ADMIT_CHOICES = namedtuple("type", ["NA", "IWO", "IO", "IR", "ICU", "ICV", "HI"])(
-    None, 1, 2, 3, 4, 5, 6
-)
+ADMIT_CHOICES = namedtuple("type", ["NA", "IWO", "IO", "IR", "ICU", "ICV", "HI"])(None, 1, 2, 3, 4, 5, 6)
 
-SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "OT"])(
-    0, 1, 2, 3, 4, 5, 6
-)
+SAMPLE_TYPE_CHOICES = namedtuple("type", ["UN", "BA", "TS", "BE", "AS", "CS", "OT"])(0, 1, 2, 3, 4, 5, 6)
 
-SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["SS", "PO", "NG", "PP", "AW", "TI"])(
-    1, 2, 3, 4, 5, 6
-)
+SAMPLE_TEST_RESULT_MAP = namedtuple("type", ["SS", "PO", "NG", "PP", "AW", "TI"])(1, 2, 3, 4, 5, 6)
 
 SAMPLE_FLOW_RULES = {
     # previous rule      # next valid rules
     "REQUEST_SUBMITTED": {"APPROVED", "DENIED",},
-    "APPROVED": {
-        "SENT_TO_COLLECTON_CENTRE",
-        "RECEIVED_AND_FORWARED",
-        "RECEIVED_AT_LAB",
-        "COMPLETED",
-    },
+    "APPROVED": {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED",},
     "DENIED": {"REQUEST_SUBMITTED"},
-    "SENT_TO_COLLECTON_CENTRE": {
-        "RECEIVED_AND_FORWARED",
-        "RECEIVED_AT_LAB",
-        "COMPLETED",
-    },
+    "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED",},
     "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB", "COMPLETED"},
     "RECEIVED_AT_LAB": {"COMPLETED"},
 }
 
-SAMPLE_TEST_FLOW_MAP = namedtuple("type", ["RS", "AP", "DN", "SC", "RF", "RL", "CT"])(
-    1, 2, 3, 4, 5, 6, 7
-)
+SAMPLE_TEST_FLOW_MAP = namedtuple("type", ["RS", "AP", "DN", "SC", "RF", "RL", "CT"])(1, 2, 3, 4, 5, 6, 7)
 
 SAMPLE_TEST_FLOW_CHOICES = [
     (SAMPLE_TEST_FLOW_MAP.RS, "REQUEST_SUBMITTED"),
@@ -122,20 +83,16 @@ SAMPLE_TEST_FLOW_CHOICES = [
 
 SOURCE_CHOICES = namedtuple("type", ["CA", "CT", "ST"])(10, 20, 30)
 
-DISEASE_STATUS_CHOICES = namedtuple("type", ["NT", "SU", "PO", "NE", "RE", "RD", "EX"])(
-    1, 2, 3, 4, 5, 6, 7
-)
+DISEASE_STATUS_CHOICES = namedtuple("type", ["NT", "SU", "PO", "NE", "RE", "RD", "EX"])(1, 2, 3, 4, 5, 6, 7)
 
-OCCUPATION_CHOICES = namedtuple("type", ["MW", "GE", "PE", "HM", "WA", "OT"])(
-    2, 3, 4, 5, 6, 7
-)
+OCCUPATION_CHOICES = namedtuple("type", ["MW", "GE", "PE", "HM", "WA", "OT"])(2, 3, 4, 5, 6, 7)
 
-RELATION_CHOICES = namedtuple(
-    "type", ["FM", "FR", "RL", "NG", "TT", "WH", "WS", "WO", "WP", "OT"]
-)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-MODE_CONTACT_CHOICES = namedtuple(
-    "type", ["TBF", "DPC", "CUI", "LSH", "CLWP", "CPA", "HCWP", "SSWE", "TTWE"]
-)(1, 2, 3, 4, 5, 6, 7, 8, 9)
+RELATION_CHOICES = namedtuple("type", ["FM", "FR", "RL", "NG", "TT", "WH", "WS", "WO", "WP", "OT"])(
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+)
+MODE_CONTACT_CHOICES = namedtuple("type", ["TBF", "DPC", "CUI", "LSH", "CLWP", "CPA", "HCWP", "SSWE", "TTWE"])(
+    1, 2, 3, 4, 5, 6, 7, 8, 9
+)
 # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
 TOUCHED_BODY_FLUIDS = 1
 # "2. Had direct physical contact with the body of the patient
@@ -173,9 +130,7 @@ PATIENT_STATUS_CHOICES = (
 )
 
 # Patient Transfer Constants
-TRANSFER_STATUS = namedtuple("TRANSFER_STATUS", ["PENDING", "ACCEPTED", "REJECTED"])(
-    PENDING=1, ACCEPTED=2, REJECTED=3
-)
+TRANSFER_STATUS = namedtuple("TRANSFER_STATUS", ["PENDING", "ACCEPTED", "REJECTED"])(PENDING=1, ACCEPTED=2, REJECTED=3)
 
 TRANSFER_STATUS_CHOICES = (
     (TRANSFER_STATUS.PENDING, "Pending"),

@@ -70,12 +70,7 @@ class BaseMailer:
             to=to_email_list,
             bcc=bcc,
             cc=cc,
-            alternatives=[
-                (
-                    render_to_string("{}{}.html".format(template_name, "msg"), context),
-                    "text/html",
-                ),
-            ],
+            alternatives=[(render_to_string("{}{}.html".format(template_name, "msg"), context), "text/html",),],
         )
         # attach file
         if file_path:
