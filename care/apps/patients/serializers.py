@@ -147,7 +147,7 @@ class PortieCallingDetailSerialzier(rest_serializers.ModelSerializer):
     def validate_patient(self, patient):
         if patient.patient_status != patient_constants.HOME_ISOLATION:
             raise rest_serializers.ValidationError(
-                _('Calling detail can be added only for home Isolated patient.')
+                _("Calling detail can be added only for home Isolated patient.")
             )
         return patient
 
@@ -281,7 +281,7 @@ class PortieCallingDetailSerializer(rest_serializers.ModelSerializer):
         return instance.patient.phone_number
 
     def get_patient_relation(self, instance):
-        return instance.patient_family.relation if instance.patient_family else 'Self'
+        return instance.patient_family.relation if instance.patient_family else "Self"
 
     def get_status(self, instance):
         return instance.able_to_connect
@@ -300,7 +300,6 @@ class PortieCallingDetailSerializer(rest_serializers.ModelSerializer):
 
 
 class ContactDetailsSerializer(rest_serializers.ModelSerializer):
-
     class Meta:
         model = patient_models.Patient
         fields = (
@@ -412,9 +411,7 @@ class PatientDetailsSerializer(rest_serializers.Serializer):
         ).data
 
     def get_contact_details(self, instance):
-        return ContactDetailsSerializer(
-            instance
-        ).data
+        return ContactDetailsSerializer(instance).data
 
     def get_medication_details(self, instance):
         return MedicationDetailsSerializer(

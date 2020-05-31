@@ -23,9 +23,8 @@ from apps.patients import (
 )
 from apps.facility import models as facility_models
 
-class PatientViewSet(
-    rest_viewsets.ModelViewSet
-):
+
+class PatientViewSet(rest_viewsets.ModelViewSet):
 
     serializer_class = patient_serializers.PatientListSerializer
     pagination_class = commons_pagination.CustomPagination
@@ -57,12 +56,12 @@ class PatientViewSet(
             self.request.user.user_type
             and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
-            facility_ids = list(facility_models.FacilityUser.objects.filter(
-                user_id=self.request.user.id
-            ).values_list('facility_id', flat=True))
-            queryset = queryset.filter(
-                patientfacility__facility_id__in=facility_ids
+            facility_ids = list(
+                facility_models.FacilityUser.objects.filter(
+                    user_id=self.request.user.id
+                ).values_list("facility_id", flat=True)
             )
+            queryset = queryset.filter(patientfacility__facility_id__in=facility_ids)
         return queryset.annotate(
             facility_status=F("patientfacility__patient_status__name"),
             facility_name=F("patientfacility__facility__name"),
@@ -114,14 +113,18 @@ class PatientTimeLineViewSet(rest_mixins.ListModelMixin, rest_viewsets.GenericVi
             self.request.user.user_type
             and self.request.user.user_type == commons_constants.PORTEA
         ):
-            queryset = queryset.filter(patient__patient_status=patients_constants.HOME_ISOLATION)
+            queryset = queryset.filter(
+                patient__patient_status=patients_constants.HOME_ISOLATION
+            )
         elif (
-                self.request.user.user_type
+            self.request.user.user_type
             and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
-            facility_ids = list(facility_models.FacilityUser.objects.filter(
-                user_id=self.request.user.id
-            ).values_list('facility_id', flat=True))
+            facility_ids = list(
+                facility_models.FacilityUser.objects.filter(
+                    user_id=self.request.user.id
+                ).values_list("facility_id", flat=True)
+            )
             queryset = queryset.filter(
                 patient__patientfacility__facility_id__in=facility_ids
             )
@@ -142,12 +145,14 @@ class PortieCallingDetailViewSet(
     def get_queryset(self):
         queryset = patient_models.PortieCallingDetail.objects.all()
         if (
-                self.request.user.user_type
+            self.request.user.user_type
             and self.request.user.user_type == commons_constants.FACILITY_MANAGER
         ):
-            facility_ids = list(facility_models.FacilityUser.objects.filter(
-                user_id=self.request.user.id
-            ).values_list('facility_id', flat=True))
+            facility_ids = list(
+                facility_models.FacilityUser.objects.filter(
+                    user_id=self.request.user.id
+                ).values_list("facility_id", flat=True)
+            )
             queryset = queryset.filter(
                 patient__patientfacility__facility_id__in=facility_ids
             )

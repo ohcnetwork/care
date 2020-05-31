@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('patients', '0012_remove_patient_patient_search_id'),
+        ("patients", "0012_remove_patient_patient_search_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatient',
-            name='phone_number_belongs_to',
+            model_name="historicalpatient",
+            name="phone_number_belongs_to",
             field=models.PositiveSmallIntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='patient',
-            name='phone_number_belongs_to',
+            model_name="patient",
+            name="phone_number_belongs_to",
             field=models.PositiveSmallIntegerField(default=1),
         ),
     ]

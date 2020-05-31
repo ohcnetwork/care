@@ -30,7 +30,7 @@ class UserSerializer(rest_serializers.ModelSerializer):
             "phone_number",
             "district",
             "user_type",
-            "preferred_districts"
+            "preferred_districts",
         )
 
 

@@ -41,17 +41,15 @@ class UserModelAdmin(UserAdmin):
     form = accounts_forms.UserChangeForm
     add_form = accounts_forms.UserCreationForm
 
-    list_display = ("first_name", "last_name", "email", "active", "user_type")
+    list_display = ("name", "email", "active", "user_type")
     list_display_links = (
-        "first_name",
-        "last_name",
+        "name",
         "email",
     )
     list_filter = ("active",)
 
     search_fields = (
-        "first_name",
-        "last_name",
+        "name",
         "email",
     )
 
@@ -65,8 +63,6 @@ class UserModelAdmin(UserAdmin):
                     "email",
                     "password1",
                     "password2",
-                    "age",
-                    "gender",
                     "phone_number",
                 ),
             },
@@ -75,24 +71,7 @@ class UserModelAdmin(UserAdmin):
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (
-            _("Personal info"),
-            {
-                "fields": (
-                    "first_name",
-                    "last_name",
-                    "phone_number",
-                    "user_type",
-                    "age",
-                    "gender",
-                    "skill",
-                    "verified",
-                    "district",
-                    "state",
-                    "local_body",
-                )
-            },
-        ),
+        (_("Personal info"), {"fields": ("name", "phone_number", "user_type",)},),
         (_("Permissions"), {"fields": ("active",)}),
         (_("Important dates"), {"fields": ("last_login",)}),
     )

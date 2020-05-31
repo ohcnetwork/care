@@ -8,24 +8,46 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0005_auto_20200525_0251'),
+        ("accounts", "0005_auto_20200525_0251"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserDistrictPreference',
+            name="UserDistrictPreference",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('district', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.District')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "district",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="accounts.District",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'unique_together': {('user', 'district')},
-            },
+            options={"unique_together": {("user", "district")},},
         ),
         migrations.AddField(
-            model_name='user',
-            name='preferred_districts',
-            field=models.ManyToManyField(related_name='preferred_users', through='accounts.UserDistrictPreference', to='accounts.District'),
+            model_name="user",
+            name="preferred_districts",
+            field=models.ManyToManyField(
+                related_name="preferred_users",
+                through="accounts.UserDistrictPreference",
+                to="accounts.District",
+            ),
         ),
     ]
