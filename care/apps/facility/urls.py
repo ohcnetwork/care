@@ -22,5 +22,12 @@ routers.register("inventories", facility_views.InventoryViewSet, basename="inven
 routers.register(
     "inventory-items", facility_views.InventoryItemViewSet, basename="inventory_items"
 )
+routers.register(
+    "room-type", facility_views.RoomTypeViewSet, basename="room_items"
+)
+routers.register(
+    "bed-type", facility_views.BedTypeViewSet, basename="bed_items"
+)
+
 
 urlpatterns = routers.urls

@@ -62,14 +62,13 @@ class FacilityInfrastructureSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = facility_models.FacilityInfrastructure
         fields = (
-            "id",
             "facility",
             "room_type",
             "bed_type",
             "total_bed",
             "occupied_bed",
             "available_bed",
-            "created_by",
+            "updated_at"
         )
 
 
@@ -96,4 +95,22 @@ class InventoryItemSerializer(rest_serializers.ModelSerializer):
             "name",
             "description",
             "unit",
+        )
+
+class RoomTypeSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.RoomType
+        fields = (
+            "id",
+            "name",
+            "description"
+        )
+
+class BedTypeSerializer(rest_serializers.ModelSerializer):
+    class Meta:
+        model = facility_models.RoomType
+        fields = (
+            "id",
+            "name",
+            "description"
         )
