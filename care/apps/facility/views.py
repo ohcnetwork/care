@@ -123,9 +123,7 @@ class FacilityInfrastructureViewSet(
         filters.DjangoFilterBackend,
         rest_filters.OrderingFilter,
     )
-    ordering_fields = (
-        "facility__name"
-    )
+    filterset_class = facility_filters.FacilityInfrastructureFilter
     pagination_class = commons_pagination.CustomPagination
     permission_classes = (permissions.IsAuthenticated,)
 

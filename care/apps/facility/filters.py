@@ -61,3 +61,28 @@ class InventoryFilter(filters.FilterSet):
             "required_quantity",
             "current_quantity",
         )
+
+
+class FacilityInfrastructureFilter(filters.FilterSet):
+    facility = filters.ModelMultipleChoiceFilter(
+        queryset=facility_models.Facility.objects.all()
+    )
+    room_type = filters.ModelMultipleChoiceFilter(
+        queryset=facility_models.RoomType.objects.all()
+    )
+    bed_type = filters.ModelMultipleChoiceFilter(
+        queryset=facility_models.BedType.objects.all()
+    )
+    total_bed = filters.RangeFilter(field_name="total_bed", lookup_expr="range")
+    occupied_bed = filters.RangeFilter(field_name="occupied_bed", lookup_expr="range")
+    available_bed = filters.RangeFilter(field_name="available_bed", lookup_expr="range")
+    class Meta:
+        model = facility_models.FacilityInfrastructure
+        fields = (
+            "facility",
+            "room_type",
+            "bed_type",
+            "total_bed",
+            "occupied_bed",
+            "available_bed",
+        )
