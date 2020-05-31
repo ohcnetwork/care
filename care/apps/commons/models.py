@@ -1,3 +1,5 @@
+from fernet_fields import EncryptedTextField
+
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import QuerySet, signals
@@ -88,7 +90,7 @@ class AddressModel(models.Model):
     Abstract model for Address fields
     """
 
-    address = models.TextField()
+    address = EncryptedTextField(default="")
     district = models.ForeignKey(
         "accounts.District", on_delete=models.PROTECT, null=True, blank=True
     )

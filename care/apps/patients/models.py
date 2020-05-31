@@ -1,15 +1,12 @@
 import datetime
 from django.db import models
-from apps.accounts.models import District, State, LocalBody
-from apps.commons.models import ActiveObjectsManager
-from apps.facility.models import Facility, TestingLab
-from apps.accounts.models import User
-from apps.commons.constants import (
-    GENDER_CHOICES,
-    FIELDS_CHARACTER_LIMITS,
+from apps.accounts import models as accounts_models
+from apps.commons import (
+    models as commons_models,
+    constants as commons_constants,
+    validators as commons_validators
 )
-from apps.commons.models import SoftDeleteTimeStampedModel
-from apps.commons.validators import phone_number_regex
+from apps.facility.models import Facility, TestingLab
 from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
 from partial_index import PQ, PartialIndex
 from apps.patients import constants
@@ -17,13 +14,13 @@ from simple_history.models import HistoricalRecords
 from libs.jsonfield import JSONField
 
 
-class PatientGroup(SoftDeleteTimeStampedModel):
+class PatientGroup(commons_models.SoftDeleteTimeStampedModel):
     """
     model to represent patient Group
     """
 
     name = models.CharField(
-        max_length=FIELDS_CHARACTER_LIMITS["NAME"],
+        max_length=commons_constants.FIELDS_CHARACTER_LIMITS["NAME"],
         help_text="Name of the patient group",
     )
     description = models.TextField()
@@ -33,7 +30,7 @@ class PatientGroup(SoftDeleteTimeStampedModel):
         return f"{self.name}<>{self.description}"
 
 
-class Patient(SoftDeleteTimeStampedModel):
+class Patient(commons_models.SoftDeleteTimeStampedModel, commons_models.AddressModel):
     """
     Model to represent a patient
     """
@@ -66,10 +63,9 @@ class Patient(SoftDeleteTimeStampedModel):
     name = EncryptedCharField(max_length=200)
     month = models.PositiveIntegerField(null=True, blank=True)
     year = models.PositiveIntegerField(null=True, blank=True)
-    gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
+    gender = models.IntegerField(choices=commons_constants.GENDER_CHOICES, blank=False)
+    phone_number = EncryptedCharField(max_length=14, validators=[commons_validators.phone_number_regex])
     phone_number_belongs_to = models.PositiveSmallIntegerField(default=1)
-    address = EncryptedTextField(default="")
     date_of_birth = models.DateField(default=None, null=True)
     nationality = models.CharField(
         max_length=255, verbose_name="Nationality of Patient", default="indian"
@@ -131,12 +127,8 @@ class Patient(SoftDeleteTimeStampedModel):
         default=False, verbose_name="Does the Patient Suffer from SARI"
     )
     local_body = models.ForeignKey(
-        LocalBody, on_delete=models.SET_NULL, null=True, blank=True
+        accounts_models.LocalBody, on_delete=models.SET_NULL, null=True, blank=True
     )
-    district = models.ForeignKey(
-        District, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
     number_of_aged_dependents = models.IntegerField(
         default=0,
         verbose_name="Number of people aged above 60 living with the patient",
@@ -147,7 +139,7 @@ class Patient(SoftDeleteTimeStampedModel):
         verbose_name="Number of people who have chronic diseases living with the patient",
         blank=True,
     )
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(accounts_models.User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(
         default=True,
         help_text="Not active when discharged, or removed from the watchlist",
@@ -195,7 +187,7 @@ class Patient(SoftDeleteTimeStampedModel):
     )
     history = HistoricalRecords()
 
-    objects = ActiveObjectsManager()
+    objects = commons_models.ActiveObjectsManager()
 
     class Meta:
         unique_together = (
@@ -208,12 +200,12 @@ class Patient(SoftDeleteTimeStampedModel):
         return "{} - {}".format(self.name, self.get_gender_display())
 
 
-class PatientDisease(SoftDeleteTimeStampedModel):
+class PatientDisease(commons_models.SoftDeleteTimeStampedModel):
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     disease = models.ForeignKey("Disease", on_delete=models.CASCADE)
 
 
-class PatientSymptom(SoftDeleteTimeStampedModel):
+class PatientSymptom(commons_models.SoftDeleteTimeStampedModel):
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     symptom = models.ForeignKey("CovidSymptom", on_delete=models.CASCADE)
 
@@ -258,7 +250,7 @@ class ClinicalStatus(models.Model):
         return f"{self.name}"
 
 
-class PatientFacility(SoftDeleteTimeStampedModel):
+class PatientFacility(commons_models.SoftDeleteTimeStampedModel):
     """
     model to represent patient facility
     """
@@ -288,23 +280,22 @@ class PatientTimeLine(models.Model):
         return f"{self.patient.name} - {self.date}"
 
 
-class PatientFamily(models.Model):
+class PatientFamily(commons_models.SoftDeleteTimeStampedModel, commons_models.AddressModel):
     patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
     name = models.CharField(max_length=55)
     relation = models.CharField(max_length=55)
     age_month = models.PositiveIntegerField()
     age_year = models.PositiveIntegerField()
     phone_number = models.CharField(max_length=15)
-    address = EncryptedTextField(default="")
-    gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
+    gender = models.IntegerField(choices=commons_constants.GENDER_CHOICES, blank=False)
 
     def __str__(self):
         return f"{self.patient.name} {self.relation}'s {self.name}"
 
 
-class PortieCallingDetail(SoftDeleteTimeStampedModel):
+class PortieCallingDetail(commons_models.SoftDeleteTimeStampedModel):
 
-    portie = models.ForeignKey(User, on_delete=models.CASCADE)
+    portie = models.ForeignKey(accounts_models.User, on_delete=models.CASCADE)
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -319,7 +310,7 @@ class PortieCallingDetail(SoftDeleteTimeStampedModel):
         return f"{self.portie.name} called {self.patient.name} at {self.called_at}"
 
 
-class PatientSampleTest(SoftDeleteTimeStampedModel):
+class PatientSampleTest(commons_models.SoftDeleteTimeStampedModel):
     """
     model for the patient sample test
     """
@@ -356,7 +347,7 @@ class PatientSampleTest(SoftDeleteTimeStampedModel):
         return f"{self.patient.name} at {self.date_of_sample}"
 
 
-class PatientTransfer(SoftDeleteTimeStampedModel):
+class PatientTransfer(commons_models.SoftDeleteTimeStampedModel):
     """
     Model to store details about the transfer of patient from one facility to another
     """
