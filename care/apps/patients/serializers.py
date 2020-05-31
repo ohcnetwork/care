@@ -45,7 +45,6 @@ class PatientListSerializer(rest_serializers.ModelSerializer):
             "id",
             "icmr_id",
             "govt_id",
-            "facility",
             "name",
             "gender",
             "year",
