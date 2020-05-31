@@ -17,6 +17,8 @@ User = get_user_model()
 
 
 class UserSerializer(rest_serializers.ModelSerializer):
+    associated_facilities = rest_serializers.SerializerMethodField()
+
     class Meta:
         model = accounts_models.User
         fields = (
@@ -26,7 +28,11 @@ class UserSerializer(rest_serializers.ModelSerializer):
             "phone_number",
             "user_type",
             "preferred_districts",
+            "associated_facilities",
         )
+
+    def get_associated_facilities(self, instance):
+        return instance.facilityuser_set.values_list("facility_id", flat=True)
 
 
 class UserTypeSerializer(rest_serializers.ModelSerializer):
