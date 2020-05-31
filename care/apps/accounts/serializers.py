@@ -32,7 +32,7 @@ class UserSerializer(rest_serializers.ModelSerializer):
         )
 
     def get_associated_facilities(self, instance):
-        return instance.facilityuser_set.values_list('facility_id', flat=True)
+        return instance.facilityuser_set.values_list("facility_id", flat=True)
 
 
 class UserTypeSerializer(rest_serializers.ModelSerializer):
