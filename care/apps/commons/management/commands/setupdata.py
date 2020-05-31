@@ -23,6 +23,8 @@ class Command(BaseCommand):
                 "facility.InventoryItem",
             ),
             ("apps/facility/fixtures/testing_lab_fixture.csv", "facility.TestingLab"),
+            ("apps/facility/fixtures/bed_type.csv", "facility.RoomType"),
+            ("apps/facility/fixtures/room_type.csv", "facility.BedType"),
             ("apps/facility/fixtures/facility_type.csv", "facility.FacilityType"),
             ("apps/facility/fixtures/ownership_type.csv", "commons.OwnershipType"),
             ("apps/facility/fixtures/facility_fixture.csv", "facility.Facility"),
