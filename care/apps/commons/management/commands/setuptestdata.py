@@ -1,5 +1,6 @@
 import os
 
+from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
@@ -15,6 +16,11 @@ class Command(BaseCommand):
             ("apps/patients/fixtures/patients_fixture_test.csv", "patients.Patient"),
             ("apps/patients/fixtures/patients_facilities_test.csv", "patients.PatientFacility"),
         ]
+
+        """
+        handling unique togetherness of PatientFacility
+        """
+        apps.get_model('patients.PatientFacility').objects.hard_delete()
 
         json_fixtures_path, json_fixtures_name = commons_utils.get_json_fixtures(fixtures)
         for json_fixture in json_fixtures_name:
