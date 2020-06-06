@@ -10,6 +10,13 @@ phone_number_regex = RegexValidator(
 )
 
 
+def reverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0]] = choice[1]
+    return output
+
+
 class BaseManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
