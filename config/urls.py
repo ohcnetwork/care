@@ -31,7 +31,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", home_view, name="home"),
-    #path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
+    # path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
     # API Docs
     url(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json",),
     url(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui",),
@@ -40,6 +40,7 @@ urlpatterns = [
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("api/v1/password_reset/", include("django_rest_passwordreset.urls", namespace="password_reset")),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

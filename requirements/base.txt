@@ -36,6 +36,7 @@ django-maintenance-mode==0.14.0 # Maintenance mode
 django-phonenumber-field==4.0.0
 phonenumberslite==8.12.1
 django-queryset-csv==1.1.0
+django-rest-passwordreset==1.1.0
 
 # Testing
 # ------------------------------------------------------------------------------

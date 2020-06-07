@@ -75,3 +75,6 @@ if os.name == "nt":
 
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-eager-propagates
 CELERY_TASK_EAGER_PROPAGATES = True
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
