@@ -1,4 +1,4 @@
-from django.core import mail
+from django.core.mail import EmailMessage
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -32,10 +32,8 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     email_html_message = render_to_string("email/user_reset_password.html", context)
     email_plaintext_message = render_to_string("email/user_reset_password.txt", context)
 
-    mail.send_mail(
-        "Password Reset for Care",
-        "",
-        settings.DEFAULT_FROM_EMAIL,
-        [reset_password_token.user.email],
-        html_message=email_html_message,
+    msg = EmailMessage(
+        "Password Reset for Care", email_html_message, settings.DEFAULT_FROM_EMAIL, (reset_password_token.user.email,)
     )
+    msg.content_subtype = "html"  # Main content is now text/html
+    msg.send()
