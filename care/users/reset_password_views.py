@@ -1,28 +1,33 @@
 from datetime import timedelta
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
-from django.contrib.auth.password_validation import validate_password, get_password_validators
-from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
-from django.conf import settings
-from rest_framework import status, serializers, exceptions
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
 
-from django_rest_passwordreset.serializers import EmailSerializer, PasswordTokenSerializer, TokenSerializer
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import get_password_validators, validate_password
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from django_rest_passwordreset.models import (
     ResetPasswordToken,
     clear_expired,
-    get_password_reset_token_expiry_time,
     get_password_reset_lookup_field,
+    get_password_reset_token_expiry_time,
 )
-from django_rest_passwordreset.signals import reset_password_token_created, pre_password_reset, post_password_reset
+from django_rest_passwordreset.serializers import PasswordTokenSerializer, TokenSerializer
+from django_rest_passwordreset.signals import post_password_reset, pre_password_reset, reset_password_token_created
+from rest_framework import exceptions, serializers, status
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
 User = get_user_model()
 
+# TODO Ratelimiting for both endpoints
 
 HTTP_USER_AGENT_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT")
 HTTP_IP_ADDRESS_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR")
+
+
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField()
 
 
 class ResetPasswordConfirm(GenericAPIView):
@@ -90,12 +95,12 @@ class ResetPasswordRequestToken(GenericAPIView):
 
     throttle_classes = ()
     permission_classes = ()
-    serializer_class = EmailSerializer
+    serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data["email"]
+        username = serializer.validated_data["username"]
 
         # before we continue, delete all existing expired tokens
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
@@ -106,8 +111,8 @@ class ResetPasswordRequestToken(GenericAPIView):
         # delete all tokens where created_at < now - 24 hours
         clear_expired(now_minus_expiry_time)
 
-        # find a user by email address (case insensitive search)
-        users = User.objects.filter(**{"{}__iexact".format(get_password_reset_lookup_field()): email})
+        # find a user
+        users = User.objects.filter(**{"{}__exact".format(get_password_reset_lookup_field()): username})
 
         active_user_found = False
 
@@ -154,7 +159,3 @@ class ResetPasswordRequestToken(GenericAPIView):
                 reset_password_token_created.send(sender=self.__class__, instance=self, reset_password_token=token)
         # done
         return Response({"status": "OK"})
-
-
-reset_password_confirm = ResetPasswordConfirm.as_view()
-reset_password_request_token = ResetPasswordRequestToken.as_view()
