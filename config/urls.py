@@ -15,6 +15,8 @@ from config import api_router
 from .auth_views import TokenObtainPairView
 from .views import home_view
 
+from care.users.reset_password_views import ResetPasswordConfirm, ResetPasswordRequestToken
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Care API",
@@ -40,7 +42,8 @@ urlpatterns = [
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("api/v1/password_reset/", include("django_rest_passwordreset.urls", namespace="password_reset")),
+    path("api/v1/password_reset/", ResetPasswordRequestToken.as_view(), name="password_reset_request"),
+    path("api/v1/password_reset/confirm/", ResetPasswordConfirm.as_view(), name="password_reset_confirm"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
