@@ -49,6 +49,8 @@ FACILITY_TYPES = [
     (950, "Corona Testing Labs"),
     # Use 10xx for Corona Care Center
     (1000, "Corona Care Centre"),
+    # Use 11xx for First Line Treatment Centre
+    (1100, "First Line Treatment Centre"),
 ]
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
