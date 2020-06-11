@@ -10,6 +10,11 @@ from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientSearchViewSet, PatientViewSet
 from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
+from care.facility.api.viewsets.inventory import (
+    FacilityInventoryItemViewSet,
+    FacilityInventoryLogViewSet,
+    FacilityInventorySummaryViewSet,
+)
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -42,11 +47,15 @@ router.register("test_sample", PatientSampleViewSet)
 # Summarisation
 router.register("facility_summary", FacilityCapacitySummary, basename="summary-facility")
 
+router.register("items", FacilityInventoryItemViewSet)
+
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
 facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)
+facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
+facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)

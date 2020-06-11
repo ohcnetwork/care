@@ -19,6 +19,10 @@ from .models import (
     PatientRegistration,
     Room,
     StaffRoomAllocation,
+    FacilityInventoryItemTag,
+    FacilityInventoryUnit,
+    FacilityInventoryUnitConverter,
+    FacilityInventoryItem,
 )
 
 
@@ -160,3 +164,7 @@ admin.site.register(PatientRegistration, PatientAdmin)
 admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
+admin.site.register(FacilityInventoryUnit)
+admin.site.register(FacilityInventoryUnitConverter)
+admin.site.register(FacilityInventoryItem)
+admin.site.register(FacilityInventoryItemTag)

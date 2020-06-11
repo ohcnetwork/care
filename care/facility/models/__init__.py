@@ -7,3 +7,4 @@ from .patient import *  # noqa
 from .patient_consultation import *  # noqa
 from .patient_sample import *  # noqa
 from .patient_tele_consultation import *  # noqa
+from .inventory import *
