@@ -182,6 +182,7 @@ class UserListSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
 
     class Meta:
         model = User
