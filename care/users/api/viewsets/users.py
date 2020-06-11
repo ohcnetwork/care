@@ -4,13 +4,16 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from rest_framework import mixins
+from rest_framework.viewsets import GenericViewSet
 from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
 
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, GenericViewSet,
+):
     """
     A viewset for viewing and manipulating user instances.
     """
