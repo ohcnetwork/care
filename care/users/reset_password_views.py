@@ -26,7 +26,7 @@ HTTP_USER_AGENT_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_
 HTTP_IP_ADDRESS_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR")
 
 
-class UserSerializer(serializers.Serializer):
+class ResetPasswordUserSerializer(serializers.Serializer):
     username = serializers.CharField()
 
 
@@ -95,7 +95,7 @@ class ResetPasswordRequestToken(GenericAPIView):
 
     throttle_classes = ()
     permission_classes = ()
-    serializer_class = UserSerializer
+    serializer_class = ResetPasswordUserSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
