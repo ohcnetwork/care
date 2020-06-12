@@ -22,23 +22,27 @@ class UserViewSet(
     lookup_field = "username"
 
     def get_permissions(self):
-        if self.request.method == "POST":
-            return [
-                DRYPermissions(),
-            ]
-        else:
-            return [
-                IsAuthenticated(),
-                DRYPermissions(),
-            ]
+        return [
+            DRYPermissions(),
+            IsAuthenticated(),
+        ]
+        # if self.request.method == "POST":
+        #     return [
+        #         DRYPermissions(),
+        #     ]
+        # else:
+        #     return [
+        #         IsAuthenticated(),
+        #         DRYPermissions(),
+        #     ]
 
     def get_serializer_class(self):
         if self.action == "list" and not self.request.user.is_superuser:
             return UserListSerializer
         elif self.action == "add_user":
             return UserCreateSerializer
-        elif self.action == "create":
-            return SignUpSerializer
+        # elif self.action == "create":
+        #     return SignUpSerializer
         else:
             return UserSerializer
 
