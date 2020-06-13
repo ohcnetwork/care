@@ -65,6 +65,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "facility_type",
             "address",
             "location",
+            "pincode",
             "oxygen_capacity",
             "phone_number",
             "local_body_object",

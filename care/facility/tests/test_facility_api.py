@@ -22,6 +22,7 @@ class TestFacility(TestBase):
             "facility_type": 1,
             "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
+            "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
         }
@@ -36,6 +37,7 @@ class TestFacility(TestBase):
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "pincode": facility.pincode,
             "local_body": None,
             "local_body_object": None,
             "district": facility.district.id,
@@ -63,6 +65,7 @@ class TestFacility(TestBase):
             "facility_type": "Educational Inst",
             "address": facility.address,
             "location": {"latitude": facility.location.tuple[1], "longitude": facility.location.tuple[0],},
+            "pincode": facility.pincode,
             "local_body": None,
             "local_body_object": None,
             "district": facility.district.id,

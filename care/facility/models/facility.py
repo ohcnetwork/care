@@ -71,6 +71,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
 
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
