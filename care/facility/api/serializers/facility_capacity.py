@@ -15,7 +15,12 @@ class FacilityCapacitySerializer(serializers.ModelSerializer):
             "id",
             "room_type_text",
         )
-        exclude = TIMESTAMP_FIELDS + ("facility", "external_id")
+        exclude = (
+            "facility",
+            "external_id",
+            "created_date",
+            "deleted",
+        )
 
 
 class FacilityCapacityHistorySerializer(serializers.ModelSerializer):
