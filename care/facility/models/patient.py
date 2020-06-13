@@ -142,6 +142,16 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self.year_of_birth = (
             self.date_of_birth.year if self.date_of_birth is not None else datetime.datetime.now().year - self.age
         )
+
+        today = datetime.date.today()
+
+        if (not self.age) and (self.date_of_birth):
+            self.age = (
+                today.year
+                - self.date_of_birth.year
+                - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+            )
+
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
             if self.date_of_receipt_of_information is not None
