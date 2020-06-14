@@ -30,7 +30,6 @@ class FacilityInventoryUnitSerializer(serializers.ModelSerializer):
 
 
 class FacilityInventoryItemSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="external_id", read_only=True)
     default_unit = FacilityInventoryUnitSerializer()
     allowed_units = FacilityInventoryUnitSerializer(many=True)
     tags = FacilityInventoryItemTagSerializer(many=True)
