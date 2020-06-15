@@ -87,7 +87,7 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
 
         if not instance.date_of_sample and validated_data.get("status") in [
             PatientSample.SAMPLE_TEST_FLOW_MAP[key]
-            for key in {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"}
+            for key in ["SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"]
         ]:
             validated_data["date_of_sample"] = timezone.now()
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
