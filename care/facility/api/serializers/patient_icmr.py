@@ -137,6 +137,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
             "hospital_name",
             "hospital_pincode",
             "doctor_name",
+            "is_repeated_test",
         )
 
 

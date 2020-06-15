@@ -165,6 +165,10 @@ class PatientSampleICMR(PatientSample):
             else None
         )
 
+    @property
+    def is_repeated_test(self):
+        return PatientSample.objects.filter(patient=self.patient).count() > 1
+
 
 class PatientConsultationICMR(PatientConsultation):
     class Meta:
