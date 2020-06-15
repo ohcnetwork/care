@@ -112,6 +112,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     hospitalization_date = serializers.DateField()
     hospital_phone_number = serializers.CharField(source="consultation.facility.phone_number")
     hospital_name = serializers.CharField(source="consultation.facility.name")
+    hospital_pincode = serializers.CharField(source="consultation.facility.pincode")
 
     medical_conditions = serializers.ListSerializer(child=ChoiceField(choices=DISEASE_CHOICES))
 
@@ -134,6 +135,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
             "is_unusual_course",
             "hospital_phone_number",
             "hospital_name",
+            "hospital_pincode",
             "doctor_name",
         )
 
