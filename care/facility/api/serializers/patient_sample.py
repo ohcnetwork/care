@@ -37,6 +37,8 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)
 
+    icmr_category = ChoiceField(choices=PatientSample.PATIENT_ICMR_CATEGORY, required=False)
+
     patient = ExternalIdSerializerField(required=False, queryset=PatientRegistration.objects.all())
     consultation = ExternalIdSerializerField(required=False, queryset=PatientConsultation.objects.all())
 

@@ -18,6 +18,16 @@ class PatientSample(FacilityBaseModel):
     SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
     SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
 
+    PATIENT_ICMR_CATEGORY = [
+        (0, "Cat 0"),
+        (10, "Cat 1"),
+        (20, "Cat 2"),
+        (30, "Cat 3"),
+        (40, "Cat 4"),
+        (50, "Cat 5a"),
+        (60, "Cat 5b"),
+    ]
+
     SAMPLE_TEST_FLOW_MAP = {
         "REQUEST_SUBMITTED": 1,
         "APPROVED": 2,
@@ -54,6 +64,8 @@ class PatientSample(FacilityBaseModel):
     is_atypical_presentation = models.BooleanField(default=False)
     atypical_presentation = models.TextField(default="")
     is_unusual_course = models.BooleanField(default=False)
+
+    icmr_category = models.IntegerField(choices=PATIENT_ICMR_CATEGORY, default=0)
 
     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])

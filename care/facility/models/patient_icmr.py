@@ -127,7 +127,7 @@ class PatientSampleICMR(PatientSample):
 
     @property
     def is_repeated_sample(self):
-        return None
+        return PatientSample.objects.filter(patient=self.patient).count() > 1
 
     @property
     def lab_name(self):
@@ -164,10 +164,6 @@ class PatientSampleICMR(PatientSample):
             if self.consultation and self.consultation.symptoms_onset_date
             else None
         )
-
-    @property
-    def is_repeated_test(self):
-        return PatientSample.objects.filter(patient=self.patient).count() > 1
 
 
 class PatientConsultationICMR(PatientConsultation):
