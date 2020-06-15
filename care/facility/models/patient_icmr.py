@@ -154,7 +154,7 @@ class PatientSampleICMR(PatientSample):
         return [
             symptom
             for symptom in self.consultation.symptoms
-            if SYMPTOM_CHOICES[0][0] not in self.consultation.symptoms.choices.keys()
+            # if SYMPTOM_CHOICES[0][0] not in self.consultation.symptoms.choices.keys()
         ]
 
     @property
