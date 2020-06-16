@@ -57,6 +57,11 @@ class FacilityInventoryItemViewSet(
         return super(FacilityInventoryItemViewSet, self).retrieve(request, *args, **kwargs)
 
 
+class FacilityInventoryLogFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    item = filters.NumberFilter(field_name="item__id")
+
+
 class FacilityInventoryLogViewSet(
     UserAccessMixin, RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet,
 ):
@@ -67,6 +72,8 @@ class FacilityInventoryLogViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityInventoryLogFilter
 
     def get_queryset(self):
         user = self.request.user
