@@ -10,9 +10,16 @@ from care.facility.api.serializers.inventory import (
     FacilityInventoryItemSerializer,
     FacilityInventoryLogSerializer,
     FacilityInventorySummarySerializer,
+    FacilityInventoryMinQuantitySerializer,
 )
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
-from care.facility.models import FacilityInventoryItem, FacilityInventoryLog, FacilityInventorySummary, Facility
+from care.facility.models import (
+    FacilityInventoryItem,
+    FacilityInventoryLog,
+    FacilityInventorySummary,
+    Facility,
+    FacilityInventoryMinQuantity,
+)
 from care.users.models import User
 
 
@@ -56,6 +63,41 @@ class FacilityInventoryLogViewSet(
     lookup_field = "external_id"
     serializer_class = FacilityInventoryLogSerializer
     queryset = FacilityInventoryLog.objects.filter(deleted=False)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        if user.is_superuser:
+            return queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            return queryset.filter(facility__district=user.district)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return queryset.filter(facility__state=user.state)
+        return queryset.filter(facility__users__id__exact=user.id)
+
+    def get_object(self):
+        return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
+
+    def get_facility(self):
+        facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
+        if not self.request.user.is_superuser:
+            facility_qs.filter(users__id__exact=self.request.user.id)
+        return get_object_or_404(facility_qs)
+
+    def perform_create(self, serializer):
+        serializer.save(facility=self.get_facility())
+
+
+class FacilityInventoryMinQuantityViewSet(
+    UserAccessMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet,
+):
+    lookup_field = "external_id"
+    serializer_class = FacilityInventoryMinQuantitySerializer
+    queryset = FacilityInventoryMinQuantity.objects.filter(deleted=False)
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,

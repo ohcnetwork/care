@@ -14,6 +14,7 @@ from care.facility.api.viewsets.inventory import (
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
     FacilityInventorySummaryViewSet,
+    FacilityInventoryMinQuantityViewSet,
 )
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
@@ -56,6 +57,8 @@ facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)
 facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
+facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
+
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)

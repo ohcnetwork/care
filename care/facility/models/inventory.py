@@ -96,3 +96,16 @@ class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "item"], unique=True, where=PQ(deleted=False))]
+
+
+class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionMixin):
+    """
+    Used to Specify the min value of an item for a particular item
+    """
+
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    item = models.ForeignKey(FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False)
+    min_quantity = models.FloatField(default=0)
+
+    class Meta:
+        indexes = [PartialIndex(fields=["facility", "item"], unique=True, where=PQ(deleted=False))]
