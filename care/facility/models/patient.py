@@ -46,6 +46,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
     address = EncryptedTextField(default="")
 
+    pincode = models.IntegerField(default=0, blank=False)
+
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
 

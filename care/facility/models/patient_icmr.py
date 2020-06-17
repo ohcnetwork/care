@@ -64,10 +64,6 @@ class PatientIcmr(PatientRegistration):
         return ""
 
     @property
-    def pincode(self):
-        return ""
-
-    @property
     def local_body_name(self):
         return "" if self.local_body is None else self.local_body.name
 
