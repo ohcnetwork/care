@@ -1,5 +1,5 @@
 import datetime
-
+from dateutil.relativedelta import *
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
@@ -45,13 +45,10 @@ class PatientIcmr(PatientRegistration):
 
     @property
     def age_years(self):
-        if self.date_of_birth is None and self.year_of_birth is None:
-            age_years = self.age
-        elif self.year_of_birth is not None:
-            age_years = datetime.datetime.now().year - self.year_of_birth
+        if self.year_of_birth is not None:
+            age_years = datetime.datetime.now().year - self.year_of_birth - 1
         else:
-            diff_days = (datetime.datetime.now().date() - self.date_of_birth).days
-            age_years = int(diff_days / 365)
+            age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
         return age_years
 
     @property
@@ -59,9 +56,7 @@ class PatientIcmr(PatientRegistration):
         if self.date_of_birth is None or self.year_of_birth is None:
             age_months = 0
         else:
-            diff_days = (datetime.datetime.now().date() - self.date_of_birth).days
-            age_years = int(diff_days / 365)
-            age_months = int((diff_days - age_years * 365) / 12)
+            age_months = relativedelta(datetime.datetime.now(), self.date_of_birth).months
         return age_months
 
     @property
