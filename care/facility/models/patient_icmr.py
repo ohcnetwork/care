@@ -45,10 +45,12 @@ class PatientIcmr(PatientRegistration):
 
     @property
     def age_years(self):
-        if self.year_of_birth is not None:
-            age_years = datetime.datetime.now().year - self.year_of_birth - 1
-        else:
+        if self.date_of_birth is not None:
             age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
+        else:
+            age_years = relativedelta(
+                datetime.datetime.now(), datetime.datetime(year=self.year_of_birth, month=1, day=1)
+            ).years
         return age_years
 
     @property
