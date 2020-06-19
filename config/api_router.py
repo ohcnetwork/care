@@ -16,6 +16,8 @@ from care.facility.api.viewsets.inventory import (
     FacilityInventorySummaryViewSet,
     FacilityInventoryMinQuantityViewSet,
 )
+from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
+
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -44,6 +46,8 @@ router.register("local_body", LocalBodyViewSet)
 # Patient Sample
 router.register("test_sample", PatientSampleViewSet)
 
+# Patient Search
+router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
 router.register("facility_summary", FacilityCapacitySummary, basename="summary-facility")

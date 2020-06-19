@@ -164,6 +164,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         super().save(*args, **kwargs)
         if is_create or self.patient_search_id is None:
             ps = PatientSearch.objects.create(
+                patient_external_id=self.external_id,
                 name=self.name,
                 gender=self.gender,
                 phone_number=self.phone_number,
@@ -171,17 +172,20 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 year_of_birth=self.year_of_birth,
                 state_id=self.state_id,
                 patient_id=self.pk,
+                facility=self.facility,
             )
             self.patient_search_id = ps.pk
             self.save()
         else:
             PatientSearch.objects.filter(pk=self.patient_search_id).update(
+                patient_external_id=self.external_id,
                 name=self.name,
                 gender=self.gender,
                 phone_number=self.phone_number,
                 date_of_birth=self.date_of_birth,
                 year_of_birth=self.year_of_birth,
                 state_id=self.state_id,
+                facility=self.facility,
             )
 
 
@@ -194,6 +198,9 @@ class PatientSearch(PatientBaseModel):
     date_of_birth = models.DateField(null=True)
     year_of_birth = models.IntegerField()
     state_id = models.IntegerField()
+
+    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
+    patient_external_id = EncryptedCharField(max_length=100, default="")
 
     class Meta:
         indexes = [
@@ -208,11 +215,6 @@ class PatientSearch(PatientBaseModel):
         elif request.user.user_type >= User.TYPE_VALUE_MAP["Staff"] and request.user.verified:
             return True
         return False
-
-    @property
-    def facility_id(self):
-        facility_ids = PatientRegistration.objects.filter(id=self.patient_id).values_list("facility__external_id")
-        return facility_ids[0][0] if len(facility_ids) > 0 else None
 
 
 class PatientMetaInfo(models.Model):
