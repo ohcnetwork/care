@@ -39,7 +39,7 @@ class ICMRPersonalDetails(serializers.ModelSerializer):
 
 class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
     sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES)
-    collection_date = serializers.DateField()
+    created_date = serializers.DateTimeField()
     label = serializers.CharField()
     is_repeated_sample = serializers.BooleanField(allow_null=True)
     lab_name = serializers.CharField()
@@ -51,12 +51,13 @@ class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
         model = PatientSampleICMR
         fields = (
             "sample_type",
-            "collection_date",
+            "created_date",
             "label",
             "is_repeated_sample",
             "lab_name",
             "lab_pincode",
             "icmr_category",
+            "icmr_label",
         )
 
 

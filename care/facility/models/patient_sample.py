@@ -67,6 +67,8 @@ class PatientSample(FacilityBaseModel):
 
     icmr_category = models.IntegerField(choices=PATIENT_ICMR_CATEGORY, default=0)
 
+    icmr_label = models.CharField(max_length=200, default="")
+
     status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
     result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
 
