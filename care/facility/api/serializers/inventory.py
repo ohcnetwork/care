@@ -163,8 +163,9 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        if instance.item != validated_data["item"]:
-            raise serializers.ValidationError({"item": [f"Item cannot be Changed"]})
+        if "item" in validated_data:
+            if instance.item != validated_data["item"]:
+                raise serializers.ValidationError({"item": [f"Item cannot be Changed"]})
 
         item = validated_data["item"]
 
