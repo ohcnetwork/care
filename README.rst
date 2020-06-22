@@ -222,6 +222,8 @@ Email Server
 In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use `MailHog`_ when generating the project a local SMTP server with a web interface will be available.
 
 #. `Download the latest MailHog release`_ for your OS.
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_shield)
+
 
 #. Rename the build to ``MailHog``.
 
@@ -266,3 +268,7 @@ Heroku
 See detailed `cookiecutter-django Heroku documentation`_.
 
 .. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
