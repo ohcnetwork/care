@@ -135,6 +135,13 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         patient = PatientRegistration.objects.get(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
+
+        if patient.allow_transfer == False:
+            return Response(
+                {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

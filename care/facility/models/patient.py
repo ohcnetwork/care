@@ -109,6 +109,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Patient's information received date"
     )
 
+    allow_transfer = models.BooleanField(default=True)
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()
@@ -173,6 +175,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 state_id=self.state_id,
                 patient_id=self.pk,
                 facility=self.facility,
+                allow_transfer=self.allow_transfer,
             )
             self.patient_search_id = ps.pk
             self.save()
@@ -186,6 +189,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 year_of_birth=self.year_of_birth,
                 state_id=self.state_id,
                 facility=self.facility,
+                allow_transfer=self.allow_transfer,
             )
 
 
@@ -201,6 +205,8 @@ class PatientSearch(PatientBaseModel):
 
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     patient_external_id = EncryptedCharField(max_length=100, default="")
+
+    allow_transfer = models.BooleanField(default=True)
 
     class Meta:
         indexes = [
