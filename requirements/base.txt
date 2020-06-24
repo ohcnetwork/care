@@ -37,6 +37,8 @@ django-phonenumber-field==4.0.0
 phonenumberslite==8.12.1
 django-queryset-csv==1.1.0
 django-rest-passwordreset==1.1.0
+django-easy-pdf==0.1.1 # For Converting Html to pdf
+
 
 # Testing
 # ------------------------------------------------------------------------------
@@ -54,3 +56,7 @@ newrelic
 # ------------------------------------------------------------------------------
 celery==4.4.2
 django-celery-beat==2.0.0
+
+# PDF Printing Tools
+# ------------------------------------------------------------------------------
+WeasyPrint==51

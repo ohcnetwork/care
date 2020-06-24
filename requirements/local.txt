@@ -27,3 +27,9 @@ django-coverage-plugin==1.8.0  # https://github.com/nedbat/django_coverage_plugi
 # -------------------------------
 django-test-without-migrations==0.6
 freezegun==0.3.15
+
+
+# WatchDog
+# -------------------------------
+watchdog==0.10.2
+argh==0.26.2
