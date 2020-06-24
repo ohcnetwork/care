@@ -55,7 +55,7 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 # CollectFast
-COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
+#
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -175,9 +175,12 @@ if USE_S3:
     AWS_LOCATION = "static"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
     STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 else:
     STATIC_URL = "/staticfiles/"
     STATIC_ROOT = str(ROOT_DIR("staticfiles"))
+    STATICFILES_STORAGE = "django.core.files.storage.FileSystemStorage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.filesystem.FileSystemStrategy"
 
 STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
 
@@ -352,10 +355,10 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_TIME_LIMIT = 5 * 60
+CELERY_TASK_TIME_LIMIT = 1800 * 5
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSc:wqheduler"
 

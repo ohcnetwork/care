@@ -1,0 +1,14 @@
+
+<h3>{{patient.name}}<h3>
+<h3>{{patient.age}}<h3>
+
+{{consultation.existing_medication}}
+
+{% for daily_round in daily_rounds %}
+{{daily_round.id}}
+{% endfor %}
+
+{% for sample in samples %}
+{{sample.id}}
+{% endfor %}
+
