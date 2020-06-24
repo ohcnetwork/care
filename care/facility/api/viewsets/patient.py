@@ -2,11 +2,12 @@ import datetime
 import json
 from json import JSONDecodeError
 from config.celery_app import app
-
+from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
@@ -128,6 +129,11 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             EXPIRED = 6
 
         """
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            queryset = self.filter_queryset(self.get_queryset()).values(*PatientRegistration.CSV_MAPPING.keys())
+            return render_to_csv_response(
+                queryset, field_header_map=PatientRegistration.CSV_MAPPING
+            )
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
     @action(detail=True, methods=["GET"])
