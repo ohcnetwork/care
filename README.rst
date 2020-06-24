@@ -1,11 +1,9 @@
 Care
 ====
 
-Auto Deployed to https://api.care.coronasafe.in for master Branch. 
+Auto Deployed to https://careapi.coronasafe.in for master Branch. 
 
 Report bugs at https://bugs.coronasafe.in
-
-Issue tracker : https://bugs.coronasafe.network/projects/CARE/issues
 
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
@@ -222,6 +220,8 @@ Email Server
 In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use `MailHog`_ when generating the project a local SMTP server with a web interface will be available.
 
 #. `Download the latest MailHog release`_ for your OS.
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_shield)
+
 
 #. Rename the build to ``MailHog``.
 
@@ -266,3 +266,7 @@ Heroku
 See detailed `cookiecutter-django Heroku documentation`_.
 
 .. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
