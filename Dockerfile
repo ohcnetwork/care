@@ -10,7 +10,7 @@ RUN apt-get update \
   # Translations dependencies
   && apt-get install -y gettext \
   # Html to PDF Converter Requirements
-  && apt-get install -y  python3-setuptools python3-wheel python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
+  && apt-get install -y  chromium-browser \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*

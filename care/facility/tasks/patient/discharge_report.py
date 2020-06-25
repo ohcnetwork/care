@@ -1,13 +1,23 @@
-from io import BytesIO
-
 import celery
-from django.conf import settings
-from django.core.files import File
+import random
+import time
+import string
 from django.core.files.storage import default_storage
+from io import BytesIO
+from django.core.files import File
+from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from easy_pdf.rendering import render_to_pdf
+from django.conf import settings
+from care.facility.models import PatientRegistration, PatientSample, PatientConsultation, DailyRound
 
-from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample
+from weasyprint import HTML
+
+from hardcopy import bytestring_to_pdf
+
+
+def randomString(stringLength):
+    letters = string.ascii_letters
+    return "".join(random.choice(letters) for i in range(stringLength))
 
 
 @celery.task()
@@ -22,16 +32,26 @@ def generate_discharge_report(patient, email):
         consultation = None
         samples = None
         daily_rounds = None
-    content = render_to_pdf(
+
+    html_string = render_to_string(
         "patient_pdf_template.html",
         {"patient": patient, "samples": samples, "consultation": consultation, "dailyround": daily_rounds},
     )
+    filename = str(int(round(time.time() * 1000))) + randomString(10) + ".pdf"
+    bytestring_to_pdf(
+        html_string.encode(),
+        default_storage.open(filename, "w+"),
+        **{"no-margins": None, "disable-gpu": None, "window-size": "2480,3508"},
+    )
+
+    file = default_storage.open(filename, "rb")
+
     msg = EmailMessage(
         "Patient Discharge Summary", "Please find the attached file", settings.DEFAULT_FROM_EMAIL, (email,),
     )
 
-    file = File(BytesIO(content))
-
     msg.content_subtype = "html"  # Main content is now text/html
     msg.attach(patient.name + "-Discharge_Summary", file.read(), "application/pdf")
     msg.send()
+
+    default_storage.delete(filename)

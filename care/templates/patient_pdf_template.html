@@ -1,14 +1,219 @@
-
-<h3>{{patient.name}}<h3>
-<h3>{{patient.age}}<h3>
-
-{{consultation.existing_medication}}
-
-{% for daily_round in daily_rounds %}
-{{daily_round.id}}
-{% endfor %}
-
-{% for sample in samples %}
-{{sample.id}}
-{% endfor %}
-
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      @media print {
+@page { margin: 0; }
+body { margin: 1.6cm; }
+}
+      </style> 
+  </head>
+  <body class="max-w-5xl mx-auto mt-4">
+  <div class="bg-white shadow overflow-hidden  sm:rounded-lg">
+  <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Patient Discharge Summary
+    </h3>
+    <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+      Created on _dd_mm_yyyy_
+    </p>
+  </div>
+  <div class="px-4 py-5 sm:px-6">
+    <dl class="">
+    <div class="flex flex-wrap justify-between">
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Full name
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.name}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Age
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.age}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Birth
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.date_of_birth}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Gender
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.gender}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Admission
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.admission_date}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Discharge
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.discharge_date}}
+        </dd>
+      </div>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Symptoms
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.symptoms}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          History of Present Illness
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.existing_medication}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Clinical Condition on Admission
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.examination_details}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Prescribed Medication
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.prescribed_medication}}
+        </dd>
+      </div>
+    </dl>
+  </div>
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      LAB REPORT
+    </h3>
+  </div>
+  <div class="px-4 py-5 sm:px-6">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Result On
+                </th>
+                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Sample type
+                </th>
+                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Diagnosis
+                </th>
+                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Result
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for sample in samples %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                  {{sample.date_of_result}}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{sample.sample_type}}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{sample.diagnosis}}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{sample.result}}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Daily Summary
+    </h3>
+  </div>
+  {% for daily_round in daily_rounds %}
+    <div class="bg-white shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          {{daily_round.created_date}}
+        </h3>
+        <div class="mt-2 max-w-xl text-sm leading-5 text-gray-500">
+          <div class="flex justify-between">
+            <div class="sm:col-span-1">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Category
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900">
+                {{daily_round.patient_category}}
+              </dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Current health
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900">
+                {{daily_round.current_health}}
+              </dd>
+            </div>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Physical Examination Details
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.physical_examination_info}}
+            </dd>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Other Details
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.other_details}}
+            </dd>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Symptoms
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.additional_symptoms}}
+            </dd>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+  </body>
+</html>
