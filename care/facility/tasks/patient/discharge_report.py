@@ -38,7 +38,7 @@ def generate_discharge_report(patient, email):
             "patient": patient,
             "samples": samples,
             "consultation": consultation,
-            "dailyround": daily_rounds,
+            "dailyrounds": daily_rounds,
             "date": date,
         },
     )
