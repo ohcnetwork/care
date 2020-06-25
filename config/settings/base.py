@@ -378,4 +378,4 @@ DJANGO_REST_LOOKUP_FIELD = "username"
 
 CHROME_WINDOW_SIZE = "2480,3508"
 
-CHROME_PATH = "/usr/bin/google-chrome"
+CHROME_PATH = "/usr/bin/google-chrome-stable"
