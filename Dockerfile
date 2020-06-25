@@ -10,10 +10,13 @@ RUN apt-get update \
   # Translations dependencies
   && apt-get install -y gettext \
   # Html to PDF Converter Requirements
-  && apt-get install -y  chromium-browser \
+  # && apt-get install -y  chromium-browser \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
 RUN addgroup --system django \
   && adduser --system --ingroup django django
