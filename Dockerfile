@@ -15,27 +15,21 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y \
-  apt-transport-https \
-  ca-certificates \
-  curl \
-  gnupg \
-  --no-install-recommends \
-  && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && echo "deb https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-  && apt-get update && apt-get install -y \
-  google-chrome \
-  fontconfig \
-  fonts-ipafont-gothic \
-  fonts-wqy-zenhei \
-  fonts-thai-tlwg \
-  fonts-kacst \
-  fonts-symbola \
-  fonts-noto \
-  fonts-freefont-ttf \
-  --no-install-recommends \
-  && apt-get purge --auto-remove -y curl gnupg \
-  && rm -rf /var/lib/apt/lists/*
+# Install x11vnc.
+RUN apt-get install -y x11vnc
+# Install xvfb.
+RUN apt-get install -y xvfb
+# Install fluxbox.
+RUN apt-get install -y fluxbox
+# Install wget.
+RUN apt-get install -y wget
+# Install wmctrl.
+RUN apt-get install -y wmctrl
+# Set the Chrome repo.
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+# Install Chrome.
+RUN apt-get update && apt-get -y install google-chrome-stable
 
 RUN addgroup --system django \
   && adduser --system --ingroup django django
