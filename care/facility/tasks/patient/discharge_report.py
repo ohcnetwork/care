@@ -34,21 +34,23 @@ def generate_discharge_report(patient, email):
         "patient_pdf_template.html",
         {"patient": patient, "samples": samples, "consultation": consultation, "dailyround": daily_rounds},
     )
+    print(1)
     filename = str(int(round(time.time() * 1000))) + randomString(10) + ".pdf"
+    print(2)
     bytestring_to_pdf(
         html_string.encode(),
         default_storage.open(filename, "w+"),
         **{"no-margins": None, "disable-gpu": None, "window-size": "2480,3508"},
     )
-
+    print(3)
     file = default_storage.open(filename, "rb")
-
+    print(4)
     msg = EmailMessage(
         "Patient Discharge Summary", "Please find the attached file", settings.DEFAULT_FROM_EMAIL, (email,),
     )
-
+    print(5)
     msg.content_subtype = "html"  # Main content is now text/html
     msg.attach(patient.name + "-Discharge_Summary", file.read(), "application/pdf")
     msg.send()
-
+    print(6)
     default_storage.delete(filename)
