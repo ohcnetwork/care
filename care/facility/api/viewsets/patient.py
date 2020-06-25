@@ -136,9 +136,9 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         patient.__class__ = PatientIcmr
         return Response(data=PatientICMRSerializer(patient).data)
 
-    @action(detail=True, methods=["GET"])
+    @action(detail=True, methods=["POST"])
     def discharge_summary(self, request, *args, **kwargs):
-        email = request.GET.get("email", "")
+        email = request.POST.get("email", "")
         if validate_email(email) == False:
             return Response({"email": "Invalid Email Provided"}, status=status.HTTP_400_BAD_REQUEST)
         patient = self.get_object()
