@@ -4,15 +4,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
     <style>
       @media print {
 @page { margin: 0; }
 body { margin: 1.6cm; }
 }
-      </style> 
+      </style>
   </head>
-  <body class="max-w-5xl mx-auto mt-4">
-  <div class="bg-white shadow overflow-hidden  sm:rounded-lg">
+  <body class="max-w-5xl mx-auto mt-4 text-sm">
+  <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
   <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Patient Discharge Summary
@@ -53,7 +54,7 @@ body { margin: 1.6cm; }
           Gender
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
-          {{patient.get_gender_display}} 
+          {{patient.get_gender_display}}
         </dd>
       </div>
       <div class="w-1/2 mt-4">
@@ -115,20 +116,20 @@ body { margin: 1.6cm; }
   <div class="px-4 py-5 sm:px-6">
     <div class="flex flex-col">
       <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+        <div class="align-middle inline-block min-w-full">
           <table class="min-w-full">
             <thead>
               <tr>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Requested on
                 </th>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Sample type
                 </th>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Diagnosis
                 </th>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Result
                 </th>
               </tr>
@@ -136,17 +137,17 @@ body { margin: 1.6cm; }
             <tbody>
             {% for sample in samples %}
               <tr class="bg-white">
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 font-medium text-gray-900">
                   {{sample.date_of_result}}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                  {{sample.get_sample_type_display}} 
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+                  {{sample.get_sample_type_display}}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
                   {{sample.diagnosis}}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                  {{sample.get_result_display}} 
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+                  {{sample.get_result_display}}
                 </td>
               </tr>
               {% endfor %}
@@ -162,7 +163,7 @@ body { margin: 1.6cm; }
     </h3>
   </div>
   {% for daily_round in daily_rounds %}
-    <div class="bg-white shadow sm:rounded-lg">
+    <div class="rounded mt-4 border border-gray-200 rounded-lg">
       <div class="px-4 py-5 sm:p-6">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
           {{daily_round.created_date}}
@@ -174,7 +175,7 @@ body { margin: 1.6cm; }
                 Category
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900">
-                {{daily_round.get_patient_category_display}} 
+                {{daily_round.get_patient_category_display}}
               </dd>
             </div>
             <div class="sm:col-span-1">
