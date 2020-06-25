@@ -8,7 +8,7 @@ RUN apt-get update \
   # psycopg2 dependencies
   && apt-get install -y libpq-dev \
   # Translations dependencies
-  && apt-get install -y gettext wget curl \
+  && apt-get install -y gettext wget curl gnupg2 \
   # Html to PDF Converter Requirements
   # && apt-get install -y  chromium-browser \
   # cleaning up unused files
