@@ -16,7 +16,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install x11vnc.
-RUN apt-get install -y x11vnc
+# RUN apt-get install -y x11vnc
 # Install xvfb.
 RUN apt-get install -y xvfb
 # Install fluxbox.
