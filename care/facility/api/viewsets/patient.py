@@ -138,8 +138,10 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def discharge_summary(self, request, *args, **kwargs):
-        email = request.POST.get("email", "")
-        if validate_email(email) == False:
+        email = request.data.get("email", "")
+        try:
+            validate_email(email)
+        except:
             return Response({"email": "Invalid Email Provided"}, status=status.HTTP_400_BAD_REQUEST)
         patient = self.get_object()
         generate_discharge_report.delay(patient.id, email)
