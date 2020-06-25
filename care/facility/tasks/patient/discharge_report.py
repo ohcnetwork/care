@@ -1,18 +1,15 @@
-import celery
 import random
-import time
 import string
-from django.core.files.storage import default_storage
-from io import BytesIO
-from django.core.files import File
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
+import time
+
+import celery
 from django.conf import settings
-from care.facility.models import PatientRegistration, PatientSample, PatientConsultation, DailyRound
-
-from weasyprint import HTML
-
+from django.core.files.storage import default_storage
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from hardcopy import bytestring_to_pdf
+
+from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample
 
 
 def randomString(stringLength):
