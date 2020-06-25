@@ -16,7 +16,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -f -y install
 
 RUN addgroup --system django \
   && adduser --system --ingroup django django
