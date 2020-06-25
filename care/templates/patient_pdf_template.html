@@ -53,7 +53,7 @@ body { margin: 1.6cm; }
           Gender
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
-          {{patient.gender}}
+          {{patient.get_gender_display}} 
         </dd>
       </div>
       <div class="w-1/2 mt-4">
@@ -120,7 +120,7 @@ body { margin: 1.6cm; }
             <thead>
               <tr>
                 <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Result On
+                  Requested on
                 </th>
                 <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Sample type
@@ -140,13 +140,13 @@ body { margin: 1.6cm; }
                   {{sample.date_of_result}}
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                  {{sample.sample_type}}
+                  {{sample.get_sample_type_display}} 
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {{sample.diagnosis}}
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                  {{sample.result}}
+                  {{sample.get_result_display}} 
                 </td>
               </tr>
               {% endfor %}
@@ -174,7 +174,7 @@ body { margin: 1.6cm; }
                 Category
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900">
-                {{daily_round.patient_category}}
+                {{daily_round.get_patient_category_display}} 
               </dd>
             </div>
             <div class="sm:col-span-1">
