@@ -50,7 +50,7 @@ def generate_discharge_report(patient, email):
     )
     print(5)
     msg.content_subtype = "html"  # Main content is now text/html
-    msg.attach(patient.name + "-Discharge_Summary", file.read(), "application/pdf")
+    msg.attach(patient.name + "-Discharge_Summary.pdf", file.read(), "application/pdf")
     msg.send()
     print(6)
     default_storage.delete(filename)

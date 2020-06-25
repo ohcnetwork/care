@@ -44,6 +44,7 @@ RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 RUN chown django /start
 
+RUN mkdir care/media
 
 COPY --chown=django:django . /app
 
