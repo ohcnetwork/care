@@ -335,6 +335,7 @@ pip-selfcheck.json
 
 MailHog
 care/media/*
+!care/media/needthisfolder
 
 .pytest_cache/
 
