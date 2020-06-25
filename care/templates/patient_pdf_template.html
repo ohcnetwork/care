@@ -138,7 +138,7 @@ body { margin: 1.6cm; }
             {% for sample in samples %}
               <tr class="bg-white">
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 font-medium text-gray-900">
-                  {{sample.date_of_result}}
+                  {{sample.created_date}}
                 </td>
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
                   {{sample.get_sample_type_display}}
@@ -162,7 +162,7 @@ body { margin: 1.6cm; }
       Daily Summary
     </h3>
   </div>
-  {% for daily_round in daily_rounds %}
+  {% for daily_round in dailyrounds %}
     <div class="rounded mt-4 border border-gray-200 rounded-lg">
       <div class="px-4 py-5 sm:p-6">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
