@@ -137,6 +137,15 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         return Response(data=PatientICMRSerializer(patient).data)
 
     @action(detail=True, methods=["POST"])
+    def discharge_patient(self, request, *args, **kwargs):
+        discharged = bool(request.data.get("discharge", False))
+        patient = self.get_object()
+        patient.is_active = discharged
+        patient.allow_transfer = discharged
+        patient.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["POST"])
     def discharge_summary(self, request, *args, **kwargs):
         email = request.data.get("email", "")
         try:
