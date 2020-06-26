@@ -1,8 +1,10 @@
 import datetime
 import json
 from json import JSONDecodeError
+from config.celery_app import app
 
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.validators import validate_email
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -28,6 +30,10 @@ from care.facility.models import Facility, FacilityPatientStatsHistory, PatientR
 from care.facility.models.patient_base import DiseaseStatusEnum
 from care.facility.models.patient_icmr import PatientIcmr
 from care.users.models import User
+
+from care.facility.tasks.patient.discharge_report import generate_discharge_report
+
+from config.celery_app import app
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -131,10 +137,37 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         return Response(data=PatientICMRSerializer(patient).data)
 
     @action(detail=True, methods=["POST"])
+    def discharge_patient(self, request, *args, **kwargs):
+        discharged = bool(request.data.get("discharge", False))
+        patient = self.get_object()
+        patient.is_active = discharged
+        patient.allow_transfer = not discharged
+        patient.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["POST"])
+    def discharge_summary(self, request, *args, **kwargs):
+        email = request.data.get("email", "")
+        try:
+            validate_email(email)
+        except:
+            return Response({"email": "Invalid Email Provided"}, status=status.HTTP_400_BAD_REQUEST)
+        patient = self.get_object()
+        generate_discharge_report.delay(patient.id, email)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
+
+        if patient.allow_transfer == False:
+            return Response(
+                {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

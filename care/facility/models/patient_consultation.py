@@ -57,7 +57,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         ]
 
 
-class DailyRound(models.Model):
+class DailyRound(PatientBaseModel):
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)

@@ -38,6 +38,7 @@ phonenumberslite==8.12.1
 django-queryset-csv==1.1.0
 django-rest-passwordreset==1.1.0
 
+
 # Testing
 # ------------------------------------------------------------------------------
 mypy==0.770  # https://github.com/python/mypy
@@ -54,3 +55,7 @@ newrelic
 # ------------------------------------------------------------------------------
 celery==4.4.2
 django-celery-beat==2.0.0
+
+# PDF Printing Tools
+# ------------------------------------------------------------------------------
+django-hardcopy==0.1.4

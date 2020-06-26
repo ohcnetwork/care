@@ -334,7 +334,8 @@ pip-selfcheck.json
 ### Project template
 
 MailHog
-care/media/
+care/media/*
+!care/media/needthisfolder
 
 .pytest_cache/
 

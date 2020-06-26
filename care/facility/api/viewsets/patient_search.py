@@ -16,6 +16,7 @@ from django_filters import rest_framework as filters
 class PatientSearchFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    is_active = filters.BooleanFilter(field_name="is_active")
 
 
 class PatientScopedSearchViewSet(ListModelMixin, GenericViewSet):

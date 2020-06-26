@@ -62,4 +62,5 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DailyRound
-        fields = "__all__"
+        exclude = TIMESTAMP_FIELDS
+
