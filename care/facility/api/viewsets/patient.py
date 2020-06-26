@@ -141,7 +141,7 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         discharged = bool(request.data.get("discharge", False))
         patient = self.get_object()
         patient.is_active = discharged
-        patient.allow_transfer = discharged
+        patient.allow_transfer = not discharged
         patient.save()
         return Response(status=status.HTTP_200_OK)
 

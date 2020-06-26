@@ -192,6 +192,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 state_id=self.state_id,
                 facility=self.facility,
                 allow_transfer=self.allow_transfer,
+                is_active=self.is_active,
             )
 
 
@@ -209,6 +210,7 @@ class PatientSearch(PatientBaseModel):
     patient_external_id = EncryptedCharField(max_length=100, default="")
 
     allow_transfer = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         indexes = [
