@@ -56,6 +56,7 @@ class PatientListSerializer(serializers.ModelSerializer):
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
+            "allergies",
             "external_id",
         )
         read_only = TIMESTAMP_FIELDS
