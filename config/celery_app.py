@@ -13,5 +13,6 @@ app = Celery("care")
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
+app.conf.update(enable_utc=False, timezone="Asia/Kolkata")
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
