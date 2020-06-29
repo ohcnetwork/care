@@ -93,14 +93,14 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
-                    request.user.district == self.district
+                    request.user.district == self.patient.district
                     or (self.patient.facility and request.user.district == self.patient.facility.district)
                 )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
-                    request.user.state == self.state
+                    request.user.state == self.patient.state
                     or (self.patient.facility and request.user.state == self.patient.facility.district)
                 )
             )
@@ -113,14 +113,14 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
-                    request.user.district == self.district
+                    request.user.district == self.patient.district
                     or (self.patient.facility and request.user.district == self.patient.facility.district)
                 )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
-                    request.user.state == self.state
+                    request.user.state == self.patient.state
                     or (self.patient.facility and request.user.state == self.patient.facility.district)
                 )
             )
