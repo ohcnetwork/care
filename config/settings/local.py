@@ -78,3 +78,10 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Simple JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=1000000000)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=3000000000)),
+    "ROTATE_REFRESH_TOKENS": True,
+}

@@ -21,7 +21,7 @@ from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
-from care.facility.summarisation.facility_capacity import FacilityCapacitySummary
+from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -50,7 +50,7 @@ router.register("test_sample", PatientSampleViewSet)
 router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
-router.register("facility_summary", FacilityCapacitySummary, basename="summary-facility")
+router.register("facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility")
 
 router.register("items", FacilityInventoryItemViewSet)
 

@@ -26,6 +26,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "Asia/Kolkata"
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -361,6 +362,7 @@ CELERY_TASK_TIME_LIMIT = 1800 * 5
 CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSc:wqheduler"
+CELERY_TIMEZONE = "Asia/Kolkata"
 
 
 CSV_REQUEST_PARAMETER = "csv"
