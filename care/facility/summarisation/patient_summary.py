@@ -1,21 +1,16 @@
-from datetime import timedelta
-
-from django.db.models import Q,Subquery
+from django.db.models import Q, Subquery
 from django.utils.timezone import now
 
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
-from rest_framework import serializers, status, viewsets
+
+from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import FacilityRelatedSummary,Facility,PatientConsultation
+from care.facility.models import FacilityRelatedSummary, Facility, PatientConsultation
 from care.users.models import User
 
 
@@ -25,8 +20,7 @@ class PatientSummarySerializer(serializers.ModelSerializer):
         exclude = ("id", "s_type", "facility")
 
 class PatientSummaryViewSet(
-    RetrieveModelMixin, ListModelMixin, GenericViewSet,
-):
+    RetrieveModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="PatientSummary").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
@@ -54,22 +48,23 @@ def PatientSummary():
         if facility_id not in patient_summary:
             latest_patient_consultations = PatientConsultation.objects.filter(facility=facility_id).distinct('patient').values('pk')
             facility_patients = PatientConsultation.objects.filter(pk__in=Subquery(latest_patient_consultations))
-            '''
-            Total Number of Patients
-            '''
-            total_patients_icu = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=2)).count()
-            total_patients_ventilator = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=3)).count()
-            total_patients_isolation = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=1)).count()
-            total_patients_home_quarantine = facility_patients.filter(Q(patient__is_active=True) & Q(suggestion='HI')).count()
+
+            icu = Q(patient__is_active=True) & Q(admitted_to=2)
+            ventilator = Q(patient__is_active=True) & Q(admitted_to=3)
+            isolation = Q(patient__is_active=True) & Q(admitted_to=1)
+            home_quarantine = Q(patient__is_active=True) & Q(suggestion='HI')
+
+            total_patients_icu = facility_patients.filter(icu).count()
+            total_patients_ventilator = facility_patients.filter(ventilator).count()
+            total_patients_isolation = facility_patients.filter(isolation).count()
+            total_patients_home_quarantine = facility_patients.filter(home_quarantine).count()
 
             facility_patients_today = facility_patients.filter(created_date__startswith=now().date())
-            '''
-            Number Patients Consulted Today
-            '''
-            today_patients_icu = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=2)).count()
-            today_patients_isolation = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=1)).count()
-            today_patients_ventilator = facility_patients.filter(Q(patient__is_active=True) & Q(admitted_to=3)).count()
-            today_patients_home_quarantine = facility_patients.filter(Q(patient__is_active=True) & Q(suggestion='HI')).count()
+
+            today_patients_icu = facility_patients_today.filter(icu).count()
+            today_patients_isolation = facility_patients_today.filter(isolation).count()
+            today_patients_ventilator = facility_patients_today.filter(ventilator).count()
+            today_patients_home_quarantine = facility_patients_today.filter(home_quarantine).count()
 
             patient_summary[facility_id] = {
                 "facility_name": facility_object.name,
@@ -85,14 +80,11 @@ def PatientSummary():
                 }
 
     for i in list(patient_summary.keys()):
-        if FacilityRelatedSummary.objects.filter(facility_id=i).filter(s_type="PatientSummary").filter(created_date__startswith=now().date()).exists():
-            facility = FacilityRelatedSummary.objects.get(facility_id=i,s_type="PatientSummary",created_date__startswith=now().date())
+        object_filter = Q(s_type="PatientSummary") & Q(created_date__startswith=now().date())
+        if FacilityRelatedSummary.objects.filter(facility_id=i).filter(object_filter).exists():
+            facility = FacilityRelatedSummary.objects.filter(object_filter).get(facility_id=i)
             facility.created_date = now()
             facility.data.pop('modified_date')
-            '''
-            Check for any changes in number of
-            Patients in category
-            '''
             if facility.data == patient_summary[i]:
                 pass
             else:
