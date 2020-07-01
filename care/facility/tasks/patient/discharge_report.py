@@ -20,8 +20,8 @@ def randomString(stringLength):
 
 
 @celery.task()
-def generate_discharge_report(patient, email):
-    patient = PatientRegistration.objects.get(id=patient)
+def generate_discharge_report(patient_id, email):
+    patient = PatientRegistration.objects.get(id=patient_id)
     consultation = PatientConsultation.objects.filter(patient=patient).order_by("-created_date")
     if consultation.exists():
         consultation = consultation.first()
