@@ -7,8 +7,10 @@ from care.facility.models.facility import Facility
 from django.contrib.postgres.fields import JSONField
 
 
-SUMMARY_CHOICES = (("FacilityCapacity", "FacilityCapacity"),)
-
+SUMMARY_CHOICES = (
+        ("FacilityCapacity", "FacilityCapacity"),
+        ("PatientSummary", "PatientSummary"),
+    )
 
 class FacilityRelatedSummary(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, unique=True, db_index=True)
