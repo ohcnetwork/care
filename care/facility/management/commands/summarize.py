@@ -5,6 +5,7 @@ from care.facility.api.serializers.facility_capacity import FacilityCapacitySeri
 from care.facility.models import FacilityCapacity, FacilityRelatedSummary
 
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummary
+from care.facility.summarisation.patient_summary import PatientSummary
 
 
 class Command(BaseCommand):
@@ -15,6 +16,7 @@ class Command(BaseCommand):
     help = "Force Create Summary Objects"
 
     def handle(self, *args, **options):
+        PatientSummary()
+        print("Patients Summarised")
         FacilityCapacitySummary()
         print("Capacity Summarised")
-
