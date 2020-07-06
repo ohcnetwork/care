@@ -12,6 +12,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),
         (SuggestionChoices.R, "REFERRAL"),
+        (SuggestionChoices.OP, "OP CONSULTATION"),
     ]
 
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="consultations")
@@ -23,7 +24,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
-    suggestion = models.CharField(max_length=3, choices=SUGGESTION_CHOICES)
+    consultation_notes = models.TextField(null=True, blank=True)
+    suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )

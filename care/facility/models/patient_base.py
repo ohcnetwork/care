@@ -73,4 +73,4 @@ BLOOD_GROUP_CHOICES = [
     ("O+", "O+"),
     ("O-", "O-"),
 ]
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R")
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP")
