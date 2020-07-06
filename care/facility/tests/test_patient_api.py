@@ -44,7 +44,7 @@ class TestPatient(TestBase):
             "pincode": patient.pincode,
             "nationality": patient.nationality,
             "passport_no": patient.passport_no,
-            "aadhar_no": patient.aadhar_no,
+            # "aadhar_no": patient.aadhar_no,
             "contact_with_confirmed_carrier": patient.contact_with_confirmed_carrier,
             "contact_with_suspected_carrier": patient.contact_with_suspected_carrier,
             "estimated_contact_date": patient.estimated_contact_date,
@@ -56,6 +56,7 @@ class TestPatient(TestBase):
             "facility": facility_id,
             "facility_object": self.get_facility_representation(patient.facility),
             "blood_group": patient.blood_group,
+            "allow_transfer": patient.allow_transfer,
             "date_of_return": patient.date_of_return,
             "disease_status": self._get_disease_state_representation(patient.disease_status),
             "number_of_aged_dependents": patient.number_of_aged_dependents,
@@ -123,9 +124,11 @@ class TestPatient(TestBase):
             "date_of_birth": mock_equal,
             "nationality": patient.nationality,
             "passport_no": patient.passport_no,
-            "aadhar_no": patient.aadhar_no,
+            # "aadhar_no": patient.aadhar_no,
             "is_medical_worker": patient.is_medical_worker,
             "blood_group": patient.blood_group,
+            "allergies": patient.allergies,
+            "allow_transfer": patient.allow_transfer,
             "ongoing_medication": patient.ongoing_medication,
             "date_of_return": patient.date_of_return,
             "disease_status": self._get_disease_state_representation(patient.disease_status),
@@ -297,7 +300,7 @@ class TestPatient(TestBase):
             "meta_info",
             "nationality",
             "passport_no",
-            "aadhar_no",
+            # "aadhar_no",
         ]
         for key in keys_to_pop:
             data.pop(key)

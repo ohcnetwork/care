@@ -170,6 +170,8 @@ class TestBase(APITestCase):
             "date_of_birth": datetime.date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
+            "allergies": "",
+            "allow_transfer": True,
             "blood_group": "O+",
             "ongoing_medication": "",
             "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),

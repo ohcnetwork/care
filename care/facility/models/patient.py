@@ -53,7 +53,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     nationality = models.CharField(max_length=255, default="", verbose_name="Nationality of Patient")
     passport_no = models.CharField(max_length=255, default="", verbose_name="Passport Number of Foreign Patients")
-    aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
+    # aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
 
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
@@ -111,7 +111,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Patient's information received date"
     )
 
-    allow_transfer = models.BooleanField(default=True)
+    allow_transfer = models.BooleanField(default=False)
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 

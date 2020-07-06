@@ -30,7 +30,7 @@ class ICMRPersonalDetails(serializers.ModelSerializer):
             "address",
             "pincode",
             "passport_no",
-            "aadhar_no",
+            # "aadhar_no",
             "local_body_name",
             "district_name",
             "state_name",
