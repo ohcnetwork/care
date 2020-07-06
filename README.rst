@@ -1,5 +1,8 @@
 Care
 ====
+    
+Care is a Corona Care Center management app for the Govt of Kerala
+====
 
 Auto Deployed to https://careapi.coronasafe.in for master Branch. 
 
@@ -13,9 +16,11 @@ Report bugs at https://bugs.coronasafe.in
     :target: https://circleci.com/gh/coronasafe/care    
 .. image:: https://github.com/coronasafe/care/workflows/Code%20scanning%20-%20action/badge.svg
     :alt: Code scanning
-
-Care is a Corona Care Center management app for the Govt of Kerala
-
+.. image:: https://github.com/coronasafe/care/workflows/OSSAR/badge.svg
+    :alt: Ossar   
+.. image:: https://github.com/coronasafe/care/workflows/Anchore%20Container%20Scan/badge.svg
+    :alt: Container Scanner
+   
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
