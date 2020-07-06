@@ -4,9 +4,36 @@ orbs:
   aws-ecr: circleci/aws-ecr@6.8.0
   aws-eks: circleci/aws-eks@0.2.6
 
+jobs:
+  Test-Build:
+    docker:
+      - image: vichuhari100/care-base:latest
+      - image: circleci/postgres:latest-postgis
+        environment:
+          POSTGRES_DB: care_test
+    steps:
+      - checkout
+      - restore_cache:
+          key: v2-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      - run:
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          key: v2-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - venv
+      - run:
+          name: Running tests
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate && python3 manage.py test
+
 workflows:
   deploy-to-staging:
     jobs:
+      - Test-Build
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -21,7 +48,7 @@ workflows:
           name: deploy-to-staging
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
           requires:
             - aws-ecr/build-and-push-image
@@ -29,7 +56,7 @@ workflows:
           name: update-scheduler-staging
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_STAGING_SCHEDULER_NAME}"
           requires:
             - aws-ecr/build-and-push-image
@@ -37,7 +64,7 @@ workflows:
           name: update-worker-staging
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_STAGING_WORKER_NAME}"
           requires:
             - aws-ecr/build-and-push-image
@@ -56,7 +83,7 @@ workflows:
       - aws-eks/update-container-image:
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_PRODUCTION_DEPLOYMENT_NAME}"
           requires:
             - aws-ecr/build-and-push-image
@@ -64,7 +91,7 @@ workflows:
           name: update-scheduler-production
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_PRODUCTION_SCHEDULER_NAME}"
           requires:
             - aws-ecr/build-and-push-image
@@ -72,7 +99,7 @@ workflows:
           name: update-worker
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
           resource-name: "${EKS_PRODUCTION_WORKER_NAME}"
           requires:
             - aws-ecr/build-and-push-image
