@@ -86,6 +86,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
+    is_antenatal = models.BooleanField(default=False, verbose_name="Does the patient require Prenatal Care ?")
+
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
