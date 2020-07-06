@@ -11,6 +11,7 @@ jobs:
       - image: circleci/postgres:latest-postgis
         environment:
           POSTGRES_DB: care_test
+          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - checkout
       - restore_cache:
