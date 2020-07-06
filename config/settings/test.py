@@ -46,6 +46,6 @@ INSTALLED_APPS += [  # noqa F405
     "test_without_migrations",
 ]
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care_test")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care-test")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"

@@ -8,9 +8,14 @@ jobs:
   Test-Build:
     docker:
       - image: vichuhari100/care-base:latest
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: care
+          DATABASE_URL: "postgis://care@localhost/care-test"
       - image: circleci/postgres:latest-postgis
         environment:
-          POSTGRES_DB: care_test
+          POSTGRES_USER: care
+          POSTGRES_DB: care-test
           POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - checkout
