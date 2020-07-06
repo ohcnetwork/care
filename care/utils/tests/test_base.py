@@ -170,6 +170,7 @@ class TestBase(APITestCase):
             "date_of_birth": datetime.date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
+            "is_antenatal": False,
             "allergies": "",
             "allow_transfer": True,
             "blood_group": "O+",
@@ -368,6 +369,7 @@ class TestBase(APITestCase):
             "admitted_to": None,
             "admission_date": None,
             "discharge_date": None,
+            "consultation_notes": "",
             "created_date": mock_equal,
             "modified_date": mock_equal,
         }

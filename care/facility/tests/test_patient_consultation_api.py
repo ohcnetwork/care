@@ -51,6 +51,7 @@ class TestPatientConsultationApi(TestBase):
             "admitted_to": obj.admitted_to,
             "admission_date": obj.admission_date,
             "discharge_date": obj.discharge_date,
+            "consultation_notes": obj.consultation_notes,
             "created_date": obj.created_date,
             "modified_date": obj.modified_date,
             "bed_number": obj.bed_number,
