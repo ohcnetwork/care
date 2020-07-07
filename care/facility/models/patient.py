@@ -14,6 +14,7 @@ from care.facility.models import (
     LocalBody,
     PatientBaseModel,
     State,
+    reverse_choices,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
@@ -197,6 +198,36 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 is_active=self.is_active,
             )
 
+    REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
+
+    CSV_MAPPING = {
+        "facility": "Facility",
+        "nearest_facility" : "Nearest Facility",
+        "date_of_birth" : "Date Of Birth",
+        "age" : "Age",
+        "gender": "Gender",
+        "local_body" : "Local Body",
+        "district" : "District",
+        "state" : "State",
+        "nationality" : "Nationality",
+        "disease_status" : "Disease Status",
+        "number_of_aged_dependents" : "Number of people aged above 60 living with the patient",
+        "number_of_chronic_diseased_dependents" : "Number of people who have chronic diseases living with the patient",
+        "blood_group" : "Blood Group",
+        "is_medical_worker" : "Is the Patient a Medical Worker",
+        "contact_with_confirmed_carrier" : "Confirmed Contact with a Covid19 Carrier",
+        "contact_with_suspected_carrier" : "Suspected Contact with a Covid19 Carrier",
+        "estimated_contact_date" : "Estimated Contact Date",
+        "past_travel" : "Travelled to Any Foreign Countries in the last 28 Days",
+        "countries_travelled" : "Countries Patient has Travelled to",
+        "date_of_return" : "Return Date from the Last Country if Travelled",
+        "present_health" : "Patient's Current Health Details",
+        "ongoing_medication" : "Already pescribed medication if any",
+        "has_SARI" : "Does the Patient Suffer from SARI",
+        "date_of_receipt_of_information" : "Patient's information received date",
+    }
+
+    CSV_MAKE_PRETTY = {"gender": (lambda x: REVERSE_GENDER_CHOICES[x])}
 
 class PatientSearch(PatientBaseModel):
     patient_id = EncryptedIntegerField()
