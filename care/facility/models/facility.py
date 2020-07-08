@@ -23,6 +23,8 @@ ROOM_TYPES = [
     (20, "Ventilator"),
 ]
 
+REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+
 FACILITY_TYPES = [
     (1, "Educational Inst"),
     (2, "Private Hospital"),
@@ -62,6 +64,8 @@ DOCTOR_TYPES = [
     (4, "Paediatrics"),
     (5, "Other Speciality"),
 ]
+
+REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
@@ -175,6 +179,13 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     class Meta:
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
 
+    CSV_RELATED_MAPPING = {
+        "hospitaldoctors__area": "Doctors Area",
+        "hospitaldoctors__count": "Doctors Count",
+    }
+
+    CSV_MAKE_PRETTY = {"hospitaldoctors__area": (lambda x: REVERSE_DOCTOR_TYPES[x])}
+
 
 class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
@@ -186,6 +197,15 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+
+    CSV_RELATED_MAPPING = {
+        "facilitycapacity__room_type": "Room Type",
+        "facilitycapacity__total_capacity": "Total Capacity",
+        "facilitycapacity__current_capacity": "Current Capacity",
+        "facilitycapacity__modified_date": "Updated Date",
+    }
+
+    CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
 
 
 class FacilityStaff(FacilityBaseModel):

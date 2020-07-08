@@ -17,7 +17,13 @@ from care.facility.api.serializers.facility import (
     FacilityUpsertSerializer,
 )
 from care.facility.api.serializers.patient import PatientListSerializer
-from care.facility.models import Facility, FacilityCapacity, PatientRegistration
+from care.facility.models import (
+    Facility,
+    FacilityCapacity,
+    PatientRegistration,
+    HospitalDoctors,
+    FacilityPatientStatsHistory,
+)
 from care.users.models import User
 from config.utils import get_psql_search_tokens
 
@@ -71,6 +77,10 @@ class FacilityViewSet(viewsets.ModelViewSet):
     filterset_class = FacilityFilter
     lookup_field = "external_id"
 
+    FACILITY_CAPACITY_CSV_KEY = "capacity"
+    FACILITY_DOCTORS_CSV_KEY = "doctors"
+    FACILITY_TRIAGE_CSV_KEY = "triage"
+
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
@@ -96,10 +106,20 @@ class FacilityViewSet(viewsets.ModelViewSet):
         - `search_text` - string. Searches across name, district name and state name.
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(*Facility.CSV_MAPPING.keys())
-            return render_to_csv_response(
-                queryset, field_header_map=Facility.CSV_MAPPING, field_serializer_map=Facility.CSV_MAKE_PRETTY
-            )
+            mapping = Facility.CSV_MAPPING
+            pretty_mapping = Facility.CSV_MAKE_PRETTY
+            if self.FACILITY_CAPACITY_CSV_KEY in request.GET:
+                mapping.update(FacilityCapacity.CSV_RELATED_MAPPING)
+                pretty_mapping.update(FacilityCapacity.CSV_MAKE_PRETTY)
+            elif self.FACILITY_DOCTORS_CSV_KEY in request.GET:
+                mapping.update(HospitalDoctors.CSV_RELATED_MAPPING)
+                pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY)
+            elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
+                mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING)
+                pretty_mapping.update(FacilityPatientStatsHistory.CSV_MAKE_PRETTY)
+
+            queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
+            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
