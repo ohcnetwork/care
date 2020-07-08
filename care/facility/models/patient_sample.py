@@ -77,6 +77,13 @@ class PatientSample(FacilityBaseModel):
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
 
+    testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs) -> None:
+        if self.testing_facility is None:
+            self.testing_facility = self.patient.facility
+        super().save(*args, **kwargs)
+
     @property
     def flow(self):
         try:
@@ -93,6 +100,9 @@ class PatientSample(FacilityBaseModel):
         return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
 
     def has_object_read_permission(self, request):
+        if self.testing_facility:
+            test_facility = request.user in self.testing_facility.users.all()
+
         return (
             request.user.is_superuser
             or request.user == self.consultation.facility.created_by
@@ -104,21 +114,22 @@ class PatientSample(FacilityBaseModel):
                 request.user.state == self.consultation.facility.state
                 and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
             )
-            or request.user in self.consultation.patient.facility.users.all()
+            or request.user in self.patient.facility.users.all()
+            or test_facility
         )
 
     def has_object_update_permission(self, request):
         if not self.has_object_read_permission(request):
             return False
-        if request.user.is_superuser:
-            return True
-        map_ = self.SAMPLE_TEST_FLOW_CHOICES
-        if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
-            return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+        # if request.user.is_superuser:
+        #     return True
+        # map_ = self.SAMPLE_TEST_FLOW_CHOICES
+        # if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
+        #     return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        # elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
+        #     return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        # elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
+        #     return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
         # The view shall raise a 400
         return True
 
