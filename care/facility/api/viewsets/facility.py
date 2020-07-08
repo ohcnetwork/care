@@ -5,7 +5,7 @@ from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -221,3 +221,10 @@ class FacilityViewSet(viewsets.ModelViewSet):
     #         "local_body", "district", "state"
     #     )
     #     return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)
+
+
+class AllFacilityViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
+):
+    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
+    serializer_class = FacilityBasicInfoSerializer

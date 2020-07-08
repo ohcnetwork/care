@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
-from care.facility.api.viewsets.facility import FacilityViewSet
+from care.facility.api.viewsets.facility import FacilityViewSet, AllFacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientSearchViewSet, PatientViewSet
@@ -31,6 +31,7 @@ else:
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
+router.register("getallfacilities", AllFacilityViewSet)
 
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
