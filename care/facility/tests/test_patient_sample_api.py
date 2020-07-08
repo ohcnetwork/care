@@ -58,6 +58,7 @@ class TestPatientSampleApi(TestBase):
             "patient": str(patient.external_id),
             "consultation": str(consultation.external_id),
             "sample_type": "BA/ETA",
+            "testing_facility": str(patient.facility.external_id),
         }
 
     @classmethod
