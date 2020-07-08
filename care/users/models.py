@@ -3,7 +3,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 from django.urls import reverse
 
-from care.facility.models import reverse_choices
+
+def reverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0]] = choice[1]
+    return output
+
 
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
