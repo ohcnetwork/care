@@ -17,6 +17,7 @@ class PatientSearchFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
     is_active = filters.BooleanFilter(field_name="is_active")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class PatientScopedSearchViewSet(ListModelMixin, GenericViewSet):
