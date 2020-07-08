@@ -228,3 +228,6 @@ class AllFacilityViewSet(
 ):
     queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityFilter
+    lookup_field = "external_id"
