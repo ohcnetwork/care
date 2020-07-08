@@ -132,7 +132,9 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
             queryset = self.filter_queryset(self.get_queryset()).values(*PatientRegistration.CSV_MAPPING.keys())
             return render_to_csv_response(
-                queryset, field_header_map=PatientRegistration.CSV_MAPPING
+                queryset,
+                field_header_map=PatientRegistration.CSV_MAPPING,
+                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
             )
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 

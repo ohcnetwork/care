@@ -3,6 +3,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 from django.urls import reverse
 
+from care.facility.models import reverse_choices
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
@@ -21,6 +23,7 @@ DISTRICT_CHOICES = [
 ]
 
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
+REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
 
 phone_number_regex = RegexValidator(
     regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
