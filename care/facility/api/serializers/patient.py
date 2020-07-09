@@ -18,7 +18,7 @@ from care.facility.models import (
     PatientRegistration,
     PatientSearch,
 )
-from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
+from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum, BLOOD_GROUP_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
@@ -43,6 +43,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
 
+    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 

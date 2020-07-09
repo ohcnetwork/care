@@ -59,7 +59,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES, null=True, blank=True, max_length=4, verbose_name="Blood Group of Patient"
+        choices=BLOOD_GROUP_CHOICES, null=True, blank=False, max_length=4, verbose_name="Blood Group of Patient"
     )
 
     contact_with_confirmed_carrier = models.BooleanField(
