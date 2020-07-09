@@ -89,39 +89,18 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
     def has_object_read_permission(self, request):
         return (
             request.user.is_superuser
-            or (self.patient.facility and request.user in self.patient.facility.users.all())
+            or (
+                self.patient.facility and request.user in self.patient.facility.users.filter(user=request.user).exists()
+            )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    request.user.district == self.patient.district
-                    or (self.patient.facility and request.user.district == self.patient.facility.district)
-                )
+                and (self.patient.facility and request.user.district == self.patient.facility.district)
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    request.user.state == self.patient.state
-                    or (self.patient.facility and request.user.state == self.patient.facility.district)
-                )
+                and (self.patient.facility and request.user.state == self.patient.facility.district)
             )
         )
 
     def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or (self.patient.facility and self.patient.facility.users.filter(user=request.user).exists())
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    request.user.district == self.patient.district
-                    or (self.patient.facility and request.user.district == self.patient.facility.district)
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    request.user.state == self.patient.state
-                    or (self.patient.facility and request.user.state == self.patient.facility.district)
-                )
-            )
-        )
+        return self.has_object_read_permission(request)
