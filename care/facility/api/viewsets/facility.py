@@ -106,18 +106,17 @@ class FacilityViewSet(viewsets.ModelViewSet):
         - `search_text` - string. Searches across name, district name and state name.
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            mapping = Facility.CSV_MAPPING
-            pretty_mapping = Facility.CSV_MAKE_PRETTY
+            mapping = Facility.CSV_MAPPING.copy()
+            pretty_mapping = Facility.CSV_MAKE_PRETTY.copy()
             if self.FACILITY_CAPACITY_CSV_KEY in request.GET:
-                mapping.update(FacilityCapacity.CSV_RELATED_MAPPING)
-                pretty_mapping.update(FacilityCapacity.CSV_MAKE_PRETTY)
+                mapping.update(FacilityCapacity.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(FacilityCapacity.CSV_MAKE_PRETTY.copy())
             elif self.FACILITY_DOCTORS_CSV_KEY in request.GET:
-                mapping.update(HospitalDoctors.CSV_RELATED_MAPPING)
-                pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY)
+                mapping.update(HospitalDoctors.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY.copy())
             elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
-                mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING)
-                pretty_mapping.update(FacilityPatientStatsHistory.CSV_MAKE_PRETTY)
-
+                mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy())
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
 

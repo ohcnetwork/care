@@ -353,7 +353,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
     num_patient_referred = models.IntegerField(default=0)
 
     CSV_RELATED_MAPPING = {
-        "facilitypatientstatshistory__entry_date": "Room Type",
+        "facilitypatientstatshistory__entry_date": "Entry Date",
         "facilitypatientstatshistory__num_patients_visited": "Vistited Patients",
         "facilitypatientstatshistory__num_patients_home_quarantine": "Home Quarantined Patients",
         "facilitypatientstatshistory__num_patients_isolation": "Patients Isolated",
