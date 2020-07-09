@@ -89,7 +89,9 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
     def has_object_read_permission(self, request):
         return (
             request.user.is_superuser
-            or (self.patient.facility and request.user in self.patient.facility.users.all())
+            or (
+                self.patient.facility and request.user in self.patient.facility.users.filter(user=request.user).exists()
+            )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (self.patient.facility and request.user.district == self.patient.facility.district)
