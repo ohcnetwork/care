@@ -73,38 +73,56 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
+        return DailyRound.has_read_permission(request)
+
+    @staticmethod
+    def has_read_permission(request):
         return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and (
+            (
                 request.user
                 in PatientConsultation.objects.get(
                     external_id=request.parser_context["kwargs"]["consultation_external_id"]
                 ).facility.users.all()
             )
-        )
-
-    @staticmethod
-    def has_read_permission(request):
-        return request.user.is_superuser or (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and (
-                request.user
-                in PatientConsultation.objects.get(
-                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.users.all()
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    request.user.district
+                    == PatientConsultation.objects.get(
+                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
+                    ).facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    request.user.state
+                    == PatientConsultation.objects.get(
+                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
+                    ).facility.state
+                )
             )
         )
 
     def has_object_read_permission(self, request):
         return (
             request.user.is_superuser
-            or request.user in (self.consultation.facility.created_by, self.consultation.patient.created_by,)
-            or request.user in self.consultation.patient.facility.users.all()
+            or (self.consultation.patient.facility and request.user in self.consultation.patient.facility.users.all())
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.district == self.consultation.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.state == self.consultation.patient.facility.district
+                )
+            )
         )
 
     def has_object_write_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user in (self.consultation.facility.created_by, self.consultation.patient.created_by,)
-            or request.user in self.consultation.facility.users.all()
-        )
+        return self.has_object_read_permission(request)
