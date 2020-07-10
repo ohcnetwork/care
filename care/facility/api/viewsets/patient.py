@@ -138,12 +138,6 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             )
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
-    @action(detail=True, methods=["GET"])
-    def icmr_sample(self, *args, **kwargs):
-        patient = self.get_object()
-        patient.__class__ = PatientIcmr
-        return Response(data=PatientICMRSerializer(patient).data)
-
     @action(detail=True, methods=["POST"])
     def discharge_patient(self, request, *args, **kwargs):
         discharged = bool(request.data.get("discharge", False))

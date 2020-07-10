@@ -118,7 +118,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     hospital_name = serializers.CharField(source="consultation.facility.name")
     hospital_pincode = serializers.CharField(source="consultation.facility.pincode")
 
-    medical_conditions = serializers.ListSerializer(child=ChoiceField(choices=DISEASE_CHOICES))
+    medical_conditions_list = serializers.ListSerializer(child=ChoiceField(choices=DISEASE_CHOICES))
 
     class Meta:
         model = PatientSampleICMR
@@ -129,7 +129,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
             "has_sari",
             "has_ari",
             # Section B.4
-            "medical_conditions",
+            "medical_conditions_list",
             # Section B.5
             "hospitalization_date",
             "diagnosis",
@@ -153,7 +153,7 @@ class PatientICMRSerializer(serializers.ModelSerializer):
     medical_conditions = ICMRMedicalConditionSerializer()
 
     class Meta:
-        model = PatientIcmr
+        model = PatientSampleICMR
         fields = (
             "id",
             "personal_details",

@@ -14,34 +14,34 @@ class PatientIcmr(PatientRegistration):
     class Meta:
         proxy = True
 
-    @property
-    def personal_details(self):
-        return self
+    # @property
+    # def personal_details(self):
+    #     return self
 
-    @property
-    def specimen_details(self):
-        instance = self.patientsample_set.last()
-        if instance is not None:
-            instance.__class__ = PatientSampleICMR
-        return instance
+    # @property
+    # def specimen_details(self):
+    #     instance = self.patientsample_set.last()
+    #     if instance is not None:
+    #         instance.__class__ = PatientSampleICMR
+    #     return instance
 
-    @property
-    def patient_category(self):
-        instance = self.consultations.last()
-        if instance:
-            instance.__class__ = PatientConsultationICMR
-        return instance
+    # @property
+    # def patient_category(self):
+    #     instance = self.consultations.last()
+    #     if instance:
+    #         instance.__class__ = PatientConsultationICMR
+    #     return instance
 
-    @property
-    def exposure_history(self):
-        return self
+    # @property
+    # def exposure_history(self):
+    #     return self
 
-    @property
-    def medical_conditions(self):
-        instance = self.patientsample_set.last()
-        if instance is not None:
-            instance.__class__ = PatientSampleICMR
-        return instance
+    # @property
+    # def medical_conditions(self):
+    #     instance = self.patientsample_set.last()
+    #     if instance is not None:
+    #         instance.__class__ = PatientSampleICMR
+    #     return instance
 
     @property
     def age_years(self):
@@ -110,6 +110,39 @@ class PatientSampleICMR(PatientSample):
     class Meta:
         proxy = True
 
+    # Start Proxying to PatientIcmr Patient Registration Object
+    @property
+    def personal_details(self):
+        instance = self.patient
+        if instance is not None:
+            instance.__class__ = PatientIcmr
+        return instance
+
+    # Proxy to this Serializer
+    @property
+    def specimen_details(self):
+        return self
+
+    # Proxy to this Serializer
+    @property
+    def patient_category(self):
+        instance = self.consultation
+        if instance is not None:
+            instance.__class__ = PatientConsultationICMR
+        return instance
+
+    # Proxy to this Serializer
+    @property
+    def exposure_history(self):
+        instance = self.patient
+        if instance is not None:
+            instance.__class__ = PatientIcmr
+        return instance
+
+    @property
+    def medical_conditions(self):
+        return self
+
     @property
     def collection_date(self):
         return self.date_of_sample.date() if self.date_of_sample else None
@@ -137,7 +170,7 @@ class PatientSampleICMR(PatientSample):
         )
 
     @property
-    def medical_conditions(self):
+    def medical_conditions_list(self):
         return [
             item.disease for item in self.patient.medical_history.all() if item.disease != DISEASE_CHOICES_MAP["NO"]
         ]
