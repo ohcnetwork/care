@@ -20,6 +20,7 @@ class PatientSampleFilterBackend(DRYPermissionFiltersBase):
             pass
         else:
             q_objects = Q(patient__facility__users__id__exact=request.user.id)
+            q_objects |= Q(testing_facility__users__id__exact=request.user.id)
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 q_objects |= Q(consultation__facility__state=request.user.state)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
