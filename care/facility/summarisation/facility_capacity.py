@@ -28,7 +28,7 @@ class FacilityCapacitySummaryViewSet(
     RetrieveModelMixin, ListModelMixin, GenericViewSet,
 ):
     lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.all().order_by("-created_date")
+    queryset = FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
     serializer_class = FacilityCapacitySummarySerializer
 
