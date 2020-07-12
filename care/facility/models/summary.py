@@ -10,7 +10,9 @@ from django.contrib.postgres.fields import JSONField
 SUMMARY_CHOICES = (
         ("FacilityCapacity", "FacilityCapacity"),
         ("PatientSummary", "PatientSummary"),
+        ("TestSummary", "TestSummary")
     )
+
 
 class FacilityRelatedSummary(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, unique=True, db_index=True)
