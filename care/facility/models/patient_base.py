@@ -72,5 +72,6 @@ BLOOD_GROUP_CHOICES = [
     ("AB-", "AB-"),
     ("O+", "O+"),
     ("O-", "O-"),
+    ("UNK", "UNKNOWN"),
 ]
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP")
