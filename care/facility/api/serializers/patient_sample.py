@@ -47,7 +47,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
 
     notes = serializers.CharField(required=False, allow_blank=True)
 
-    testing_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    testing_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
     testing_facility_object = FacilityBasicInfoSerializer(source="testing_facility", read_only=True)
 
     class Meta:
