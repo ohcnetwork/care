@@ -1,17 +1,16 @@
 from uuid import uuid4
 
-from django.core.validators import RegexValidator
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from care.facility.models.facility import Facility
-from django.contrib.postgres.fields import JSONField
-
 
 SUMMARY_CHOICES = (
-        ("FacilityCapacity", "FacilityCapacity"),
-        ("PatientSummary", "PatientSummary"),
-        ("TestSummary", "TestSummary")
-    )
+    ("FacilityCapacity", "FacilityCapacity"),
+    ("PatientSummary", "PatientSummary"),
+    ("TestSummary", "TestSummary"),
+    ("TriageSummary", "TriageSummary"),
+)
 
 
 class FacilityRelatedSummary(models.Model):
