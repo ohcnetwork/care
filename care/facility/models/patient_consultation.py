@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from multiselectfield import MultiSelectField
 
@@ -25,6 +26,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
+    course_in_facility = models.TextField(null=True, blank=True)
+    discharge_advice = JSONField(default=dict)
+    prescriptions = JSONField(default=dict)  # To be Used Later on
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
