@@ -426,13 +426,13 @@ class TestPatient(TestBase):
         response = self.client.get(f"{self.get_url()}search/?phone_number={self.patient.phone_number}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_icmr_sample__should_render(self):
-        patient = self.clone_object(self.patient, save=False)
-        patient.created_by = self.user
-        patient.save()
+    # def test_icmr_sample__should_render(self):
+    #     patient = self.clone_object(self.patient, save=False)
+    #     patient.created_by = self.user
+    #     patient.save()
 
-        response = self.client.get(self.get_url(str(patient.external_id), "icmr_sample"))
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+    #     response = self.client.get(self.get_url(str(patient.external_id), "icmr_sample"))
+    #     self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_patient_transfer(self):
         patient = self.clone_object(self.patient)

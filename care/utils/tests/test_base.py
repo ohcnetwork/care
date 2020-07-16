@@ -370,6 +370,9 @@ class TestBase(APITestCase):
             "admission_date": None,
             "discharge_date": None,
             "consultation_notes": "",
+            "course_in_facility": "",
+            "discharge_advice": {},
+            "prescriptions": {},
             "created_date": mock_equal,
             "modified_date": mock_equal,
         }
