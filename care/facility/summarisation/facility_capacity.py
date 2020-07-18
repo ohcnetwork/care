@@ -20,8 +20,8 @@ from care.users.models import User
 
 
 class FacilitySummaryFilter(filters.FilterSet):
-    start_date = filters.DateFilter(name="created_date", lookup_type="gte")
-    end_date = filters.DateFilter(name="created_date", lookup_type="lte")
+    start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
+    end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
 
 
 class FacilityCapacitySummarySerializer(serializers.ModelSerializer):
