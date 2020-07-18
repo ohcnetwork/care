@@ -14,7 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.models import Facility, FacilityPatientStatsHistory, FacilityRelatedSummary
 
 
-class PatientSummarySerializer(serializers.ModelSerializer):
+class PatientTriageSerializer(serializers.ModelSerializer):
     class Meta:
         model = FacilityRelatedSummary
         exclude = ("id", "s_type", "facility")
@@ -24,7 +24,7 @@ class TriageSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
-    serializer_class = PatientSummarySerializer
+    serializer_class = PatientTriageSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -49,7 +49,7 @@ def TriageSummary():
             total_patients_home_quarantine=Sum("num_patients_home_quarantine"),
             total_patients_isolation=Sum("num_patients_isolation"),
             total_patients_referred=Sum("num_patient_referred"),
-            total_count=Count('id'),
+            total_count=Count("id"),
         )
         total_count = facility_patient_data.get("total_count")
         total_patients_home_quarantine = facility_patient_data.get("total_patients_home_quarantine")
