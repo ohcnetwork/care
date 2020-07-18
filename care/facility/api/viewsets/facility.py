@@ -253,6 +253,7 @@ class AllFacilityViewSet(
 
     def get_queryset(self):
         search_text = self.request.query_params.get("search_text")
+        queryset = self.queryset
         if search_text:
             vector = SearchVector("name", "district__name", "state__name")
             query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
