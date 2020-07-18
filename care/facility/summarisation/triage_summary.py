@@ -12,6 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import Facility, FacilityPatientStatsHistory, FacilityRelatedSummary
 from care.facility.summarisation.facility_capacity import FacilitySummaryFilter
+from care.users.models import User
 
 
 class PatientTriageSerializer(serializers.ModelSerializer):
@@ -34,9 +35,9 @@ class TriageSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         queryset = self.queryset
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= settings.AUTH_USER_MODEL.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return queryset.filter(facility__district=user.district)
-        elif self.request.user.user_type >= settings.AUTH_USER_MODEL.TYPE_VALUE_MAP["StateLabAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
         return queryset.filter(facility__users__id__exact=user.id)
 
