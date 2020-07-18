@@ -5,6 +5,7 @@ from celery.schedules import crontab
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django_filters import rest_framework as filters
 from rest_framework import serializers, status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -16,6 +17,11 @@ from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FacilityCapacity, FacilityRelatedSummary
 from care.users.models import User
+
+
+class FacilitySummaryFilter(filters.FilterSet):
+    start_date = filters.DateFilter(name="created_date", lookup_type="gte")
+    end_date = filters.DateFilter(name="created_date", lookup_type="lte")
 
 
 class FacilityCapacitySummarySerializer(serializers.ModelSerializer):
@@ -31,6 +37,9 @@ class FacilityCapacitySummaryViewSet(
     queryset = FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
     serializer_class = FacilityCapacitySummarySerializer
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilitySummaryFilter
 
     def get_queryset(self):
         user = self.request.user

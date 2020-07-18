@@ -1,10 +1,9 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-
 from django.conf import settings
-from django.db.models import Sum, Count
+from django.db.models import Count, Sum
 from django.utils import timezone
-
+from django_filters import rest_framework as filters
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -12,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import Facility, FacilityPatientStatsHistory, FacilityRelatedSummary
+from care.facility.summarisation.facility_capacity import FacilitySummaryFilter
 
 
 class PatientTriageSerializer(serializers.ModelSerializer):
@@ -25,6 +25,9 @@ class TriageSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
     serializer_class = PatientTriageSerializer
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilitySummaryFilter
 
     def get_queryset(self):
         user = self.request.user
