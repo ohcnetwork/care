@@ -18,12 +18,10 @@ from care.facility.api.serializers.facility_capacity import FacilityCapacitySeri
 from care.facility.models import FacilityCapacity, FacilityRelatedSummary
 from care.users.models import User
 
-from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-
 
 class FacilitySummarySerializer(serializers.ModelSerializer):
 
-    facility = FacilityBasicInfoSerializer()
+    facility = FacilitySerializer()
 
     class Meta:
         model = FacilityRelatedSummary
