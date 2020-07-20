@@ -46,7 +46,7 @@ RUN chown django /start
 
 COPY --chown=django:django . /app
 
-# USER django
+USER django
 
 WORKDIR /app
 
