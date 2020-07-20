@@ -46,6 +46,7 @@ DISEASE_CHOICES_MAP = {
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
 CATEGORY_CHOICES = [
+    ("ASYM", "ASYMPTOMATIC"),
     ("Mild", "Category-A"),
     ("Moderate", "Category-B"),
     ("Severe", "Category-C"),
