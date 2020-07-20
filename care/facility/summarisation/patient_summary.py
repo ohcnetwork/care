@@ -10,21 +10,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import Facility, FacilityRelatedSummary, PatientConsultation
-from care.facility.summarisation.facility_capacity import FacilitySummaryFilter
+from care.facility.summarisation.facility_capacity import FacilitySummaryFilter, FacilitySummarySerializer
 from care.users.models import User
-
-
-class PatientSummarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FacilityRelatedSummary
-        exclude = ("id", "s_type", "facility")
 
 
 class PatientSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="PatientSummary").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
-    serializer_class = PatientSummarySerializer
+    serializer_class = FacilitySummarySerializer
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter

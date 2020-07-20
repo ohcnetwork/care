@@ -18,16 +18,24 @@ from care.facility.api.serializers.facility_capacity import FacilityCapacitySeri
 from care.facility.models import FacilityCapacity, FacilityRelatedSummary
 from care.users.models import User
 
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+
+
+class FacilitySummarySerializer(serializers.ModelSerializer):
+
+    facility = FacilityBasicInfoSerializer()
+
+    class Meta:
+        model = FacilityRelatedSummary
+        exclude = (
+            "id",
+            "s_type",
+        )
+
 
 class FacilitySummaryFilter(filters.FilterSet):
     start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
     end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
-
-
-class FacilityCapacitySummarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FacilityRelatedSummary
-        exclude = ("id", "s_type", "facility")
 
 
 class FacilityCapacitySummaryViewSet(
@@ -36,7 +44,7 @@ class FacilityCapacitySummaryViewSet(
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
-    serializer_class = FacilityCapacitySummarySerializer
+    serializer_class = FacilitySummarySerializer
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
