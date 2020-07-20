@@ -8,7 +8,7 @@ RUN apt-get update \
   # psycopg2 dependencies
   && apt-get install -y libpq-dev \
   # Translations dependencies
-  && apt-get install -y gettext wget curl gnupg2 \
+  && apt-get install -y gettext wget curl gnupg2 vim \
   # Html to PDF Converter Requirements
   # && apt-get install -y  chromium-browser \
   # cleaning up unused files
@@ -46,7 +46,7 @@ RUN chown django /start
 
 COPY --chown=django:django . /app
 
-USER django
+# USER django
 
 WORKDIR /app
 
