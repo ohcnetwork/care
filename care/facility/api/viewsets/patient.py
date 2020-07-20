@@ -169,7 +169,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
                 {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
-
+        patient.is_active = True
+        patient.allow_transfer = False
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
