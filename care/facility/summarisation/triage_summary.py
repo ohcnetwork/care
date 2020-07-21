@@ -50,16 +50,20 @@ def TriageSummary():
             total_count=Count("id"),
         )
         total_count = facility_patient_data.get("total_count")
-        total_patients_home_quarantine = facility_patient_data.get("total_patients_home_quarantine")
-        total_patients_referred = facility_patient_data.get("total_patients_referred")
-        total_patients_isolation = facility_patient_data.get("total_patients_visited")
-        total_patients_visited = facility_patient_data.get("total_patients_isolation")
-        try:
+        if total_count:
+            total_patients_home_quarantine = facility_patient_data.get("total_patients_home_quarantine")
+            total_patients_referred = facility_patient_data.get("total_patients_referred")
+            total_patients_isolation = facility_patient_data.get("total_patients_visited")
+            total_patients_visited = facility_patient_data.get("total_patients_isolation")
             avg_patients_home_quarantine = int(total_patients_home_quarantine / total_count)
             avg_patients_referred = int(total_patients_referred / total_count)
             avg_patients_isolation = int(total_patients_isolation / total_count)
             avg_patients_visited = int(total_patients_visited / total_count)
-        except ZeroDivisionError:
+        else : 
+            total_patients_home_quarantine = 0
+            total_patients_referred = 0
+            total_patients_isolation = 0
+            total_patients_visited = 0
             avg_patients_home_quarantine = 0
             avg_patients_referred = 0
             avg_patients_isolation = 0
