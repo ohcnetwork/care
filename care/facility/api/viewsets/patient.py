@@ -41,7 +41,7 @@ class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
-
+    is_active = filters.BooleanFilter(field_name="is_active")
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
