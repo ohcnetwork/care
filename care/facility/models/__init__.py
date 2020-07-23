@@ -9,3 +9,4 @@ from .patient_sample import *  # noqa
 from .patient_tele_consultation import *  # noqa
 from .inventory import *
 from .summary import *
+from .shifting import *

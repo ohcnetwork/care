@@ -32,7 +32,8 @@ class ShiftingRequest(FacilityBaseModel):
         (40, "DESTINATION APPROVED"),
         (50, "DESTINATION REJECTED"),
         (60, "AWAITING TRANSPORTATION"),
-        (70, "COMPLETED"),
+        (70, "TRANSFER IN PROGRESS"),
+        (80, "COMPLETED"),
     )
 
     orgin_facility = models.ForeignKey("Facility", on_delete=models.PROTECT, related_name="requesting_facility")

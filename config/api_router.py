@@ -18,6 +18,8 @@ from care.facility.api.viewsets.inventory import (
 )
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
 
+from care.facility.api.viewsets.shifting import ShiftingViewSet
+
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -60,8 +62,9 @@ router.register("patient_summary", PatientSummaryViewSet, basename="summary-pati
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
 
-
 router.register("items", FacilityInventoryItemViewSet)
+
+router.register("shift", ShiftingViewSet, basename="patient-shift")
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
@@ -75,6 +78,7 @@ facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityVie
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
+
 
 consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
