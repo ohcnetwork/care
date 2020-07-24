@@ -199,14 +199,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             )
 
     CSV_MAPPING = {
-        "facility": "Facility",
-        "nearest_facility": "Nearest Facility",
+        "external_id": "Patient ID",
+        "facility__name": "Facility Name",
+        "nearest_facility__name": "Nearest Facility",
         "date_of_birth": "Date Of Birth",
         "age": "Age",
         "gender": "Gender",
-        "local_body": "Local Body",
-        "district": "District",
-        "state": "State",
+        "local_body__name": "Local Body",
+        "district__name": "District",
+        "state__name": "State",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
         "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
