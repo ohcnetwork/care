@@ -15,9 +15,15 @@ from care.facility.models import (
     PatientBaseModel,
     State,
     reverse_choices,
+    pretty_boolean,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
+from care.facility.models.patient_base import (
+    BLOOD_GROUP_CHOICES,
+    DISEASE_STATUS_CHOICES,
+    REVERSE_BLOOD_GROUP_CHOICES,
+    REVERSE_DISEASE_STATUS_CHOICES,
+)
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
@@ -226,7 +232,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "date_of_receipt_of_information": "Patient's information received date",
     }
 
-    CSV_MAKE_PRETTY = {"gender": (lambda x: REVERSE_GENDER_CHOICES[x])}
+    CSV_MAKE_PRETTY = {
+        "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
+        "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
+        "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
+        "is_medical_worker": pretty_boolean,
+    }
 
 
 class PatientSearch(PatientBaseModel):

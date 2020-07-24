@@ -1,6 +1,14 @@
 import enum
 from types import SimpleNamespace
 
+
+def reverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0]] = choice[1]
+    return output
+
+
 CURRENT_HEALTH_CHOICES = [
     (0, "NO DATA"),
     (1, "REQUIRES VENTILATOR"),
@@ -76,3 +84,6 @@ BLOOD_GROUP_CHOICES = [
     ("UNK", "UNKNOWN"),
 ]
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP")
+
+REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
+REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)

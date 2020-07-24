@@ -10,6 +10,12 @@ phone_number_regex = RegexValidator(
 )
 
 
+def pretty_boolean(val, a="YES", b="NO"):
+    if val:
+        return a
+    return b
+
+
 def reverse_choices(choices):
     output = {}
     for choice in choices:
