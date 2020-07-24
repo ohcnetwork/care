@@ -21,20 +21,25 @@ class UserViewSet(
     queryset = User.objects.all().select_related("local_body", "district", "state")
     lookup_field = "username"
 
-    def get_permissions(self):
-        return [
-            DRYPermissions(),
-            IsAuthenticated(),
-        ]
-        # if self.request.method == "POST":
-        #     return [
-        #         DRYPermissions(),
-        #     ]
-        # else:
-        #     return [
-        #         IsAuthenticated(),
-        #         DRYPermissions(),
-        #     ]
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+
+    # def get_permissions(self):
+    #     return [
+    #         DRYPermissions(),
+    #         IsAuthenticated(),
+    #     ]
+    # if self.request.method == "POST":
+    #     return [
+    #         DRYPermissions(),
+    #     ]
+    # else:
+    #     return [
+    #         IsAuthenticated(),
+    #         DRYPermissions(),
+    #     ]
 
     def get_serializer_class(self):
         if self.action == "list" and not self.request.user.is_superuser:
