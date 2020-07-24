@@ -35,10 +35,11 @@ class FacilitySummarySerializer(serializers.ModelSerializer):
 class FacilitySummaryFilter(filters.FilterSet):
     start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
     end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class FacilityCapacitySummaryViewSet(
-    RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    ListModelMixin, GenericViewSet,
 ):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity").order_by("-created_date")
@@ -58,9 +59,6 @@ class FacilityCapacitySummaryViewSet(
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
         return queryset.filter(facility__users__id__exact=user.id)
-
-    def get_object(self):
-        return get_object_or_404(self.get_queryset(), facility__external_id=self.kwargs.get("external_id"))
 
 
 def FacilityCapacitySummary():
@@ -92,7 +90,7 @@ def FacilityCapacitySummary():
     return True
 
 
-@periodic_task(run_every=crontab(hour="*", minute="5"))
+@periodic_task(run_every=crontab(minute="*/15"))
 def run_midnight():
     FacilityCapacitySummary()
     print("Summarised Capacities")

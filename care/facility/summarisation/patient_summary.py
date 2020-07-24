@@ -14,7 +14,7 @@ from care.facility.summarisation.facility_capacity import FacilitySummaryFilter,
 from care.users.models import User
 
 
-class PatientSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
+class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="PatientSummary").order_by("-created_date")
     permission_classes = (IsAuthenticated,)
@@ -33,9 +33,6 @@ class PatientSummaryViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
         return queryset.filter(facility__users__id__exact=user.id)
-
-    def get_object(self):
-        return get_object_or_404(self.get_queryset(), facility__external_id=self.kwargs.get("external_id"))
 
 
 def PatientSummary():
