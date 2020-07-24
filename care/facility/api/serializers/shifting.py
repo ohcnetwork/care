@@ -13,6 +13,8 @@ from care.facility.api.serializers.patient import PatientListSerializer, Patient
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 
+from care.facility.models import Facility, PatientRegistration
+
 
 class ShiftingSerializer(serializers.ModelSerializer):
 
@@ -34,6 +36,30 @@ class ShiftingSerializer(serializers.ModelSerializer):
     assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
+
+    def create(self, validated_data):
+
+        # Do Validity checks for each of these data
+
+        orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
+        validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
+
+        shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
+        validated_data["shifting_approving_facility_id"] = Facility.objects.get(
+            external_id=shifting_approving_facility_external_id
+        ).id
+
+        if "assigned_facility" in validated_data:
+            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
+            if assigned_facility_external_id:
+                validated_data["assigned_facility_id"] = Facility.objects.get(
+                    external_id=assigned_facility_external_id
+                ).id
+
+        patient_external_id = validated_data.pop("patient")["external_id"]
+        validated_data["patient_id"] = PatientRegistration.objects.get(external_id=patient_external_id).id
+
+        return super().create(validated_data)
 
     class Meta:
         model = ShiftingRequest

@@ -15,6 +15,7 @@ from care.facility.models import (
     PatientBaseModel,
     State,
     reverse_choices,
+    PatientRegistration,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
@@ -43,6 +44,7 @@ class ShiftingRequest(FacilityBaseModel):
     assigned_facility = models.ForeignKey(
         "Facility", on_delete=models.SET_NULL, null=True, related_name="assigned_facility"
     )
+    patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="patient")
     emergency = models.BooleanField(default=False)
     is_up_shift = models.BooleanField(default=False)  # False for Down , True for UP
     reason = models.TextField(default="", blank=True)
