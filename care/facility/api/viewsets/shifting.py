@@ -37,6 +37,7 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
 class ShiftingFilterSet(filters.FilterSet):
     status = filters.ChoiceFilter(choices=ShiftingRequest.STATUS_CHOICES)
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
     shifting_approving_facility = filters.UUIDFilter(field_name="shifting_approving_facility__external_id")
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
