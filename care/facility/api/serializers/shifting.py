@@ -37,6 +37,28 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
+    def update(self, instance, validated_data):
+
+        # Dont allow editing origin or patient
+        if "orgin_facility" in validated_data:
+            validated_data.pop("assigned_facility")
+        if "patient" in validated_data:
+            validated_data.pop("patient")
+
+        shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
+        validated_data["shifting_approving_facility_id"] = Facility.objects.get(
+            external_id=shifting_approving_facility_external_id
+        ).id
+
+        if "assigned_facility" in validated_data:
+            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
+            if assigned_facility_external_id:
+                validated_data["assigned_facility_id"] = Facility.objects.get(
+                    external_id=assigned_facility_external_id
+                ).id
+
+        return super().update(instance, validated_data)
+
     def create(self, validated_data):
 
         # Do Validity checks for each of these data
