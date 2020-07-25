@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
-from django.db.models import F, Value
+from django.db.models import DateTimeField, F, Value
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -142,8 +142,17 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
                 **{f"patient__{key}": value for key, value in PatientRegistration.CSV_MAKE_PRETTY.items()},
                 **PatientConsultation.CSV_MAKE_PRETTY,
             }
+            consultation_qs = PatientConsultation.objects.all()
+            if not request.user.is_superuser:
+                if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+                    consultation_qs = consultation_qs.filter(patient__facility__state=request.user.state)
+                elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+                    consultation_qs = consultation_qs.filter(patient__facility__district=request.user.district)
+                consultation_qs = consultation_qs.filter(
+                    Q(patient__created_by=request.user) | Q(patient__facility__users__id__exact=request.user.id)
+                ).distinct("id")
             consultation_qs = (
-                PatientConsultation.objects.order_by("patient__external_id", "-id")
+                consultation_qs.order_by("patient__external_id", "-id")
                 .distinct("patient__external_id")
                 .select_related(
                     "patient",
@@ -153,10 +162,13 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
                     "patient__district",
                     "patient__state",
                 )
+                .annotate(consultation_created_date=F("created_date"))
                 .values(*csv_mapping)
             )
+
             patient_without_consultation_qs = (
-                PatientRegistration.objects.filter(consultations__isnull=True)
+                self.get_queryset()
+                .filter(consultations__isnull=True)
                 .annotate(
                     **{f"patient__{key}": F(key) for key in PatientRegistration.CSV_MAPPING.keys()},
                     **{
@@ -164,13 +176,13 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
                         for key, defaults in PatientConsultation.CSV_DATATYPE_DEFAULT_MAPPING.items()
                     },
                 )
+                .annotate(consultation_created_date=Value(None, DateTimeField()))
                 .select_related(
                     "facility", "nearest_facility", "facility__local_body", "facility__district", "facility__state",
                 )
                 .values(*csv_mapping)
             )
             queryset = consultation_qs.union(patient_without_consultation_qs)
-            print(queryset.query)
             return render_to_csv_response(queryset, field_header_map=csv_mapping, field_serializer_map=csv_make_pretty,)
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 

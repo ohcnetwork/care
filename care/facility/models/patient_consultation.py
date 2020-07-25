@@ -48,6 +48,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     bed_number = models.CharField(max_length=100, null=True, blank=True)
 
     CSV_MAPPING = {
+        "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
