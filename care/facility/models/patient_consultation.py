@@ -4,7 +4,14 @@ from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
-from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import (
+    ADMIT_CHOICES,
+    CURRENT_HEALTH_CHOICES,
+    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    SYMPTOM_CHOICES,
+    SuggestionChoices,
+    reverse_choices,
+)
 from care.users.models import User
 
 
@@ -15,6 +22,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         (SuggestionChoices.R, "REFERRAL"),
         (SuggestionChoices.OP, "OP CONSULTATION"),
     ]
+    REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
@@ -38,6 +46,30 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)
+
+    CSV_MAPPING = {
+        "consultation_created_date": "Date of Consultation",
+        "admission_date": "Date of Admission",
+        "symptoms_onset_date": "Date of Onset of Symptoms",
+        "symptoms": "Symptoms at time of consultation",
+        "category": "Category",
+        "examination_details": "Examination Details",
+        "suggestion": "Suggestion",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
+    }
+
+    CSV_DATATYPE_DEFAULT_MAPPING = {
+        "admission_date": (None, models.DateTimeField(),),
+        "symptoms_onset_date": (None, models.DateTimeField(),),
+        "symptoms": ("-", models.CharField(),),
+        "category": ("-", models.CharField(),),
+        "examination_details": ("-", models.CharField(),),
+        "suggestion": ("-", models.CharField(),),
+    }
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
