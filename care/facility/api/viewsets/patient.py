@@ -1,10 +1,11 @@
 import datetime
 import json
 from json import JSONDecodeError
-from config.celery_app import app
+
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
+from django.db.models import F, Value
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -27,14 +28,16 @@ from care.facility.api.serializers.patient import (
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
-from care.facility.models import Facility, FacilityPatientStatsHistory, PatientRegistration, PatientSearch
+from care.facility.models import (
+    Facility,
+    FacilityPatientStatsHistory,
+    PatientConsultation,
+    PatientRegistration,
+    PatientSearch,
+)
 from care.facility.models.patient_base import DiseaseStatusEnum
-from care.facility.models.patient_icmr import PatientIcmr
-from care.users.models import User
-
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
-
-from config.celery_app import app
+from care.users.models import User
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -42,6 +45,7 @@ class PatientFilterSet(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
     is_active = filters.BooleanFilter(field_name="is_active")
+
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
@@ -130,12 +134,44 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
 
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(*PatientRegistration.CSV_MAPPING.keys())
-            return render_to_csv_response(
-                queryset,
-                field_header_map=PatientRegistration.CSV_MAPPING,
-                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
+            csv_mapping = {
+                **{f"patient__{key}": value for key, value in PatientRegistration.CSV_MAPPING.items()},
+                **PatientConsultation.CSV_MAPPING,
+            }
+            csv_make_pretty = {
+                **{f"patient__{key}": value for key, value in PatientRegistration.CSV_MAKE_PRETTY.items()},
+                **PatientConsultation.CSV_MAKE_PRETTY,
+            }
+            consultation_qs = (
+                PatientConsultation.objects.order_by("patient__external_id", "-id")
+                .distinct("patient__external_id")
+                .select_related(
+                    "patient",
+                    "patient__facility",
+                    "patient__nearest_facility",
+                    "patient__local_body",
+                    "patient__district",
+                    "patient__state",
+                )
+                .values(*csv_mapping)
             )
+            patient_without_consultation_qs = (
+                PatientRegistration.objects.filter(consultations__isnull=True)
+                .annotate(
+                    **{f"patient__{key}": F(key) for key in PatientRegistration.CSV_MAPPING.keys()},
+                    **{
+                        key: Value(*defaults)
+                        for key, defaults in PatientConsultation.CSV_DATATYPE_DEFAULT_MAPPING.items()
+                    },
+                )
+                .select_related(
+                    "facility", "nearest_facility", "facility__local_body", "facility__district", "facility__state",
+                )
+                .values(*csv_mapping)
+            )
+            queryset = consultation_qs.union(patient_without_consultation_qs)
+            print(queryset.query)
+            return render_to_csv_response(queryset, field_header_map=csv_mapping, field_serializer_map=csv_make_pretty,)
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
     @action(detail=True, methods=["POST"])
@@ -153,7 +189,7 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         email = request.data.get("email", "")
         try:
             validate_email(email)
-        except:
+        except Exception:
             email = request.user.email
         generate_discharge_report.delay(patient.id, email)
         return Response(status=status.HTTP_200_OK)
@@ -164,7 +200,7 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
 
-        if patient.allow_transfer == False:
+        if patient.allow_transfer is False:
             return Response(
                 {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
                 status=status.HTTP_406_NOT_ACCEPTABLE,
