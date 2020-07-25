@@ -7,13 +7,12 @@ import requests
 
 def validatecaptcha(request):
     recaptcha_response = request.POST.get(settings.GOOGLE_CAPTCHA_POST_KEY)
+    print(request)
     values = {
         "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
         "response": recaptcha_response,
     }
-    captcha_response = requests.post(
-        "https://www.google.com/recaptcha/api/siteverify", data=values
-    )
+    captcha_response = requests.post("https://www.google.com/recaptcha/api/siteverify", data=values)
     result = captcha_response.json()
 
     if result["success"] is True:
@@ -24,19 +23,13 @@ def validatecaptcha(request):
 def ratelimit(request, group="", keys=[None], increment=True):
     checkcaptcha = False
     for key in keys:
-        if key == 'ip':
+        if key == "ip":
             group = group
-            key = 'ip'
+            key = "ip"
         else:
             group = group + "-{}".format(key)
             key = settings.GETKEY
-        if is_ratelimited(
-            request,
-            group=group,
-            key=key,
-            rate=settings.DJANGO_RATE_LIMIT,
-            increment=True,
-        ):
+        if is_ratelimited(request, group=group, key=key, rate=settings.DJANGO_RATE_LIMIT, increment=True,):
             checkcaptcha = True
 
     if checkcaptcha:
