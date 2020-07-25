@@ -6,8 +6,7 @@ import requests
 
 
 def validatecaptcha(request):
-    recaptcha_response = request.POST.get(settings.GOOGLE_CAPTCHA_POST_KEY)
-    print(request)
+    recaptcha_response = request.data.get(settings.GOOGLE_CAPTCHA_POST_KEY)
     values = {
         "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
         "response": recaptcha_response,
