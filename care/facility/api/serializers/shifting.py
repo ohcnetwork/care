@@ -41,14 +41,16 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         # Dont allow editing origin or patient
         if "orgin_facility" in validated_data:
-            validated_data.pop("assigned_facility")
+            validated_data.pop("orgin_facility")
         if "patient" in validated_data:
             validated_data.pop("patient")
 
-        shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
-        validated_data["shifting_approving_facility_id"] = Facility.objects.get(
-            external_id=shifting_approving_facility_external_id
-        ).id
+        if "shifting_approving_facility" in validated_data:
+            shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
+            if shifting_approving_facility_external_id:
+                validated_data["shifting_approving_facility_id"] = Facility.objects.get(
+                    external_id=shifting_approving_facility_external_id
+                ).id
 
         if "assigned_facility" in validated_data:
             assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
