@@ -10,7 +10,15 @@ from rest_framework.response import Response
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer
-from care.facility.models import PatientConsultation, PatientRegistration, PatientSample, User, ShiftingRequest
+from care.facility.models import (
+    PatientConsultation,
+    PatientRegistration,
+    PatientSample,
+    User,
+    ShiftingRequest,
+    SHIFTING_STATUS_CHOICES,
+    REVERSE_SHIFTING_STATUS_CHOICES,
+)
 from care.facility.models.patient_icmr import PatientSampleICMR
 
 
@@ -35,7 +43,16 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
 
 
 class ShiftingFilterSet(filters.FilterSet):
-    status = filters.ChoiceFilter(choices=ShiftingRequest.STATUS_CHOICES)
+    def get_status(
+        self, queryset, field_name, value,
+    ):
+        if value:
+            if value in REVERSE_SHIFTING_STATUS_CHOICES:
+                return queryset.filter(status=REVERSE_SHIFTING_STATUS_CHOICES[value])
+        return queryset
+
+    status = filters.CharFilter(method="get_status", field_name="status")
+
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")

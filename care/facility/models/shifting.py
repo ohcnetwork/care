@@ -16,6 +16,7 @@ from care.facility.models import (
     State,
     reverse_choices,
     PatientRegistration,
+    reverse_choices,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
@@ -24,18 +25,21 @@ from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
 
-class ShiftingRequest(FacilityBaseModel):
+SHIFTING_STATUS_CHOICES = (
+    (10, "PENDING"),
+    (20, "APPROVED"),
+    (30, "REJECTED"),
+    (40, "DESTINATION APPROVED"),
+    (50, "DESTINATION REJECTED"),
+    (60, "AWAITING TRANSPORTATION"),
+    (70, "TRANSFER IN PROGRESS"),
+    (80, "COMPLETED"),
+)
 
-    STATUS_CHOICES = (
-        (10, "PENDING"),
-        (20, "APPROVED"),
-        (30, "REJECTED"),
-        (40, "DESTINATION APPROVED"),
-        (50, "DESTINATION REJECTED"),
-        (60, "AWAITING TRANSPORTATION"),
-        (70, "TRANSFER IN PROGRESS"),
-        (80, "COMPLETED"),
-    )
+REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
+
+
+class ShiftingRequest(FacilityBaseModel):
 
     orgin_facility = models.ForeignKey("Facility", on_delete=models.PROTECT, related_name="requesting_facility")
     shifting_approving_facility = models.ForeignKey(
@@ -50,4 +54,4 @@ class ShiftingRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
     comments = models.TextField(default="", blank=True)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=10, null=False, blank=False)
+    status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
