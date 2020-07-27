@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
     <style>
       @media print {
-@page { margin: 0; }
-body { margin: 1.6cm; }
-}
-      </style>
+      @page { margin: 0; }
+      body { margin: 1.6cm; }
+      }
+    </style>
   </head>
   <body class="max-w-5xl mx-auto mt-4 text-sm">
   <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
-  <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+  <div>
+      <div class="flex justify-between items-center w-1/2 mx-auto">
+      <img class='h-24' src="https://cdn.coronasafe.network/dhslogo.png"/>
+      <img class='h-28' src="https://cdn.coronasafe.network/kgovtlogo.png"/>
+      <img class='h-28' src="https://cdn.coronasafe.network/nhm.jpg"/>
+    </div>
+  </div>
+  <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between">
+  <div class="mt-4">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Patient Discharge Summary
     </h3>
@@ -22,6 +30,8 @@ body { margin: 1.6cm; }
       Created on {{date}}
     </p>
   </div>
+   <img class='h-12' src="https://cdn.coronasafe.network/coronaSafeLogo.png"/>
+   </div>
   <div class="px-4 py-5 sm:px-6">
     <dl class="">
     <div class="flex flex-wrap justify-between">
@@ -100,14 +110,76 @@ body { margin: 1.6cm; }
       </div>
       <div class="mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
-          Prescribed Medication
+          Summary
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          Fix: consultation.summary
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Treatment Given
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
           {{consultation.prescribed_medication}}
         </dd>
       </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+         FollowUp Advice
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+         Fix: consultation.followup_advice
+        </dd>
+      </div>
     </dl>
   </div>
+  {% if consultation.discharge_advice %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Prescription / Discharge Advice
+    </h3>
+  </div>
+  <div class="mt-4">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+            <tr>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Medicine
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Dosage
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Days
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+          {% for prescription in consultation.discharge_advice %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                  {{ prescription['medicine'] }}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                {{ prescription['dosage'] }}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{ prescription['days'] }}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if samples %}
   <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       LAB REPORT
@@ -157,6 +229,8 @@ body { margin: 1.6cm; }
       </div>
     </div>
   </div>
+  {% endif %}
+  {% if dailyrounds %}
   <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Daily Summary
@@ -215,53 +289,7 @@ body { margin: 1.6cm; }
       </div>
     </div>
   {% endfor %}
-
-
-<div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
-    <h3 class="text-lg leading-6 font-medium text-gray-900">
-      Prescription
-    </h3>
-  </div>
-
-
-  <div class="mt-4">
-  <div class="flex flex-col">
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
-        <table class="min-w-full">
-          <thead>
-          <tr>
-            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-              Medicine
-            </th>
-            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-              Dosage
-            </th>
-            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-              Days
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-         {% for prescription in consultation.prescription %}
-            <tr class="bg-white">
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-                {{ prescription.medicine }}
-              </td>
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-              {{ prescription.dosage }}
-              </td>
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                {{ prescription.days }}
-              </td>
-            </tr>
-           {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
+  {% endif %}
 </div>
   </body>
 </html>
