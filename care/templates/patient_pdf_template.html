@@ -15,7 +15,7 @@
   <body class="max-w-5xl mx-auto mt-4 text-sm">
   <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
   <div>
-      <div class="flex justify-between items-center w-1/2 mx-auto">
+      <div class="flex justify-between items-center w-3/4 mx-auto">
       <img class='h-24' src="https://cdn.coronasafe.network/dhslogo.png"/>
       <img class='h-28' src="https://cdn.coronasafe.network/kgovtlogo.png"/>
       <img class='h-28' src="https://cdn.coronasafe.network/nhm.jpg"/>
@@ -67,6 +67,25 @@
           {{patient.get_gender_display}}
         </dd>
       </div>
+      
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Address
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.address}}
+        </dd>
+      </div>
+      
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Phone Number
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.phone_number}}
+        </dd>
+      </div>     
+      
       <div class="w-1/2 mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
           Date of Admission
@@ -110,15 +129,7 @@
       </div>
       <div class="mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
-          Summary
-        </dt>
-        <dd class="mt-1 text-sm leading-5 text-gray-900">
-          Fix: consultation.summary
-        </dd>
-      </div>
-      <div class="mt-4">
-        <dt class="text-sm leading-5 font-medium text-gray-500">
-          Treatment Given
+          Treatment Summary
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
           {{consultation.prescribed_medication}}
@@ -126,10 +137,10 @@
       </div>
       <div class="mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
-         FollowUp Advice
+         Advice
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
-         Fix: consultation.followup_advice
+        {{consultation.consultation_notes}}
         </dd>
       </div>
     </dl>
@@ -137,7 +148,7 @@
   {% if consultation.discharge_advice %}
   <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
-      Prescription / Discharge Advice
+      Medications
     </h3>
   </div>
   <div class="mt-4">
@@ -151,7 +162,7 @@
                 Medicine
               </th>
               <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                Dosage
+                Frequency
               </th>
               <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Days
