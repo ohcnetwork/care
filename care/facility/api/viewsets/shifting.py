@@ -42,13 +42,23 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
         return queryset
 
 
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
+inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
+
+
 class ShiftingFilterSet(filters.FilterSet):
     def get_status(
         self, queryset, field_name, value,
     ):
         if value:
-            if value in REVERSE_SHIFTING_STATUS_CHOICES:
-                return queryset.filter(status=REVERSE_SHIFTING_STATUS_CHOICES[value])
+            if value in inverse_shifting_status:
+                return queryset.filter(status=inverse_shifting_status[value])
         return queryset
 
     status = filters.CharFilter(method="get_status", field_name="status")
