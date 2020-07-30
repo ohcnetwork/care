@@ -4,16 +4,27 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import ShiftingRequest, SHIFTING_STATUS_CHOICES
+from care.facility.api.serializers.patient import PatientDetailSerializer, PatientListSerializer
+from care.facility.models import (
+    SHIFTING_STATUS_CHOICES,
+    Facility,
+    PatientRegistration,
+    ShiftingRequest,
+    User,
+)
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
-from care.facility.api.serializers.patient import PatientListSerializer, PatientDetailSerializer
 
-from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
 
-from care.facility.models import Facility, PatientRegistration
+
+REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 class ShiftingSerializer(serializers.ModelSerializer):
@@ -37,7 +48,49 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
+    def __init__(self, instance=None, data={}, **kwargs):
+        if instance:
+            kwargs["partial"] = True
+        super().__init__(instance=instance, data=data, **kwargs)
+
+    def has_facility_permission(self, user, facility):
+        return (
+            user.is_superuser
+            or (facility and user in facility.users.all())
+            or (
+                user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (facility and user.district == facility.district)
+            )
+            or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+        )
+
     def update(self, instance, validated_data):
+
+        LIMITED_RECIEVING_STATUS_ = ["DESTINATION APPROVED", "DESTINATION REJECTED"]
+        LIMITED_RECIEVING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
+        LIMITED_SHIFTING_STATUS_ = [
+            "APPROVED",
+            "REJECTED",
+            "AWAITING TRANSPORTATION",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+        ]
+        LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
+        LIMITED_ORGIN_STATUS = []
+
+        user = self.context["request"].user
+
+        if "status" in validated_data:
+            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+                if instance.assigned_facility:
+                    if not self.has_facility_permission(user, instance.assigned_facility):
+                        validated_data.pop("status")
+                else:                
+                    validated_data.pop("status")
+            else:
+                if validated_data["status"] in LIMITED_SHIFTING_STATUS_:
+                    if not self.has_facility_permission(user, instance.shifting_approving_facility):
+                        validated_data.pop("status")
 
         # Dont allow editing origin or patient
         if "orgin_facility" in validated_data:
@@ -78,6 +131,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if "assigned_facility" in validated_data:
             assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
             if assigned_facility_external_id:
+
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
                 ).id
@@ -99,4 +153,3 @@ class ShiftingDetailSerializer(ShiftingSerializer):
     class Meta:
         model = ShiftingRequest
         exclude = ("modified_date",)
-
