@@ -66,7 +66,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        LIMITED_RECIEVING_STATUS_ = ["DESTINATION APPROVED", "DESTINATION REJECTED"]
+        LIMITED_RECIEVING_STATUS_ = []
         LIMITED_RECIEVING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
         LIMITED_SHIFTING_STATUS_ = [
             "APPROVED",
@@ -74,6 +74,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "AWAITING TRANSPORTATION",
             "TRANSFER IN PROGRESS",
             "COMPLETED",
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
         ]
         LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
         LIMITED_ORGIN_STATUS = []
@@ -85,9 +87,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if instance.assigned_facility:
                     if not self.has_facility_permission(user, instance.assigned_facility):
                         validated_data.pop("status")
-                else:                
+                else:
                     validated_data.pop("status")
-            else:
+            elif "status" in validated_data:
                 if validated_data["status"] in LIMITED_SHIFTING_STATUS_:
                     if not self.has_facility_permission(user, instance.shifting_approving_facility):
                         validated_data.pop("status")
