@@ -7,6 +7,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
 from django.db.models import DateTimeField, F, Value
 from django.db.models.query_utils import Q
+from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -193,6 +194,13 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         patient.is_active = discharged
         patient.allow_transfer = not discharged
         patient.save()
+
+        last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+        if last_consultation:
+            if last_consultation.discharge_date is None:
+                last_consultation.discharge_date = localtime(now())
+                last_consultation.save()
+
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["POST"])
