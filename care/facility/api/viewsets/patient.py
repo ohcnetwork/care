@@ -46,6 +46,14 @@ class PatientFilterSet(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
     is_active = filters.BooleanFilter(field_name="is_active")
+    allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
+
+    def __init__(self, data=None, queryset=None, **kwargs):
+        temp_data = data.copy()
+        if "is_active" not in data:
+            temp_data["is_active"] = True
+        data = temp_data
+        super().__init__(data=data, queryset=queryset, **kwargs)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -194,7 +202,6 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         patient.is_active = discharged
         patient.allow_transfer = not discharged
         patient.save()
-
         last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         if last_consultation:
             if last_consultation.discharge_date is None:
