@@ -64,6 +64,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         # Do Validity checks for each of these data
+        if "status" in validated_data:
+            validated_data.pop("status")
 
         orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
         validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
