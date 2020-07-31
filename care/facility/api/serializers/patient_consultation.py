@@ -1,3 +1,4 @@
+from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -26,7 +27,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("discharge_date",)
         exclude = (
             "deleted",
             "external_id",
@@ -39,6 +40,26 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         except KeyError:
             bed_number = None
         return bed_number
+
+    def update(self, instance, validated_data):
+        if instance.discharge_date:
+            return ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+
+        if instance.suggestion == SuggestionChoices.OP:
+            instance.discharge_date = localtime(now())
+            instance.save()
+
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+
+        consultation = super().create(validated_data)
+
+        if consultation.suggestion == SuggestionChoices.OP:
+            consultation.discharge_date = localtime(now())
+            consultation.save()
+
+        return consultation
 
     def validate(self, obj):
         validated = super().validate(obj)
@@ -63,4 +84,3 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyRound
         exclude = TIMESTAMP_FIELDS
-
