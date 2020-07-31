@@ -24,7 +24,7 @@
   </div>
    <div class="mt-2 text-center w-full font-bold text-3xl">
     {{patient.facility.name}}
-   </div>   
+   </div>
   <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between">
   <div class="mt-4">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -74,7 +74,7 @@
           {{patient.get_gender_display}}
         </dd>
       </div>
-      
+
       <div class="w-1/2 mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
           Address
@@ -83,7 +83,7 @@
           {{patient.address}}
         </dd>
       </div>
-      
+
       <div class="w-1/2 mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
           Phone Number
@@ -91,8 +91,8 @@
         <dd class="mt-1 text-sm leading-5 text-gray-900">
           {{patient.phone_number}}
         </dd>
-      </div>     
-      
+      </div>
+
       <div class="w-1/2 mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
           Date of Admission
@@ -197,11 +197,45 @@
     </div>
   </div>
   {% endif %}
-  
+
   {% if diseases %}
-    {% for disease in diseases %}
-      {{disease.details}}
-    {% endfor %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Comorbidities
+    </h3>
+  </div>
+  <div class="mt-4">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+            <tr>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Comorbidity
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Details
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+          {% for disease in diseases %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                  {{disease.get_disease_display}}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{disease.details}}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   {% endif %}
 
   {% if samples %}
