@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.timezone import make_aware
 from hardcopy import bytestring_to_pdf
 
-from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample
+from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample, Disease
 
 
 def randomString(stringLength):
@@ -23,6 +23,7 @@ def randomString(stringLength):
 def generate_discharge_report(patient_id, email):
     patient = PatientRegistration.objects.get(id=patient_id)
     consultation = PatientConsultation.objects.filter(patient=patient).order_by("-created_date")
+    diseases = Disease.objects.filter(patient=patient)
     if consultation.exists():
         consultation = consultation.first()
         samples = PatientSample.objects.filter(patient=patient, consultation=consultation)
@@ -40,6 +41,7 @@ def generate_discharge_report(patient_id, email):
             "consultation": consultation,
             "dailyrounds": daily_rounds,
             "date": date,
+            "diseases" : diseases,
         },
     )
     filename = str(int(round(time.time() * 1000))) + randomString(10) + ".pdf"
