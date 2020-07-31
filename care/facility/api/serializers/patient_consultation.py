@@ -58,6 +58,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if consultation.suggestion == SuggestionChoices.OP:
             consultation.discharge_date = localtime(now())
             consultation.save()
+            patient = consultation.patient
+            patient.is_active = False
+            patient.allow_transfer = True
+            patient.save()
 
         return consultation
 
