@@ -50,6 +50,7 @@ DISEASE_CHOICES_MAP = {
     "Kidney Diseases": 5,
     "Lung Diseases/Asthma": 6,
     "Cancer": 7,
+    "OTHER": 8,
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
