@@ -48,10 +48,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
-    def __init__(self, instance=None, data={}, **kwargs):
+    def __init__(self, instance=None, **kwargs):
         if instance:
             kwargs["partial"] = True
-        super().__init__(instance=instance, data=data, **kwargs)
+        super().__init__(instance=instance, **kwargs)
 
     def has_facility_permission(self, user, facility):
         return (
