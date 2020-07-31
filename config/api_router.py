@@ -7,7 +7,11 @@ from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, Ambulan
 from care.facility.api.viewsets.facility import FacilityViewSet, AllFacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
-from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientSearchViewSet, PatientViewSet
+from care.facility.api.viewsets.patient import (
+    FacilityPatientStatsHistoryViewSet,
+    PatientSearchViewSet,
+    PatientViewSet,
+)
 from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.inventory import (
@@ -17,7 +21,8 @@ from care.facility.api.viewsets.inventory import (
     FacilityInventoryMinQuantityViewSet,
 )
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
-
+from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
+from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.shifting import ShiftingViewSet
 
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet
@@ -42,6 +47,12 @@ router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
 
 router.register("patient/search", PatientSearchViewSet)
+
+router.register("otp/token", PatientMobileOTPViewSet)
+
+router.register("otp/patient", OTPPatientDataViewSet)
+
+
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
 

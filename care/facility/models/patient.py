@@ -7,6 +7,7 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
+    BaseModel,
     DISEASE_CHOICES,
     BaseManager,
     District,
@@ -379,3 +380,9 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
             "facility",
             "entry_date",
         )
+
+
+class PatientMobileOTP(BaseModel):
+    is_used = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    otp = models.CharField(max_length=10)
