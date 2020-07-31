@@ -45,15 +45,7 @@ class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
-    is_active = filters.BooleanFilter(field_name="is_active")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
-
-    def __init__(self, data=None, queryset=None, **kwargs):
-        temp_data = data.copy()
-        if "is_active" not in data:
-            temp_data["is_active"] = True
-        data = temp_data
-        super().__init__(data=data, queryset=queryset, **kwargs)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -113,6 +105,8 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
             disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
             return queryset.filter(disease_status=disease_status)
 
+        if self.action == "list":
+            queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
         return queryset
 
     def get_serializer_class(self):
