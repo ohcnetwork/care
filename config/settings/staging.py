@@ -154,4 +154,4 @@ sentry_sdk.init(
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-IS_PRODUCTION = True
+IS_PRODUCTION = False
