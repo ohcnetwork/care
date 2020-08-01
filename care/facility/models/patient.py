@@ -111,7 +111,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
 
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_assigned_to")
+    last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_last_edited_by")
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_created_by")
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )

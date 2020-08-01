@@ -107,10 +107,11 @@ class Skill(models.Model):
 
 class User(AbstractUser):
     TYPE_VALUE_MAP = {
-        "Doctor": 5,
+        "Pharmacist": 3,
+        "Volunteer": 5,
         "Staff": 10,
-        "Patient": 15,
-        "Volunteer": 20,
+        "Doctor": 15,
+        "Reserved": 20,
         "DistrictLabAdmin": 25,
         "DistrictAdmin": 30,
         "StateLabAdmin": 35,
