@@ -27,7 +27,7 @@ from care.facility.models import (
 from care.users.models import User
 from config.utils import get_psql_search_tokens
 
-from care.users.api.serializers.user import UserListSerializer
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
 class FacilityFilter(filters.FilterSet):
@@ -154,7 +154,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
         if user_type_filter:
             users = users.filter(user_type=user_type_filter)
         users = users.order_by("-last_login")
-        data = UserListSerializer(users, many=True)
+        data = UserBaseMinimumSerializer(users, many=True)
         return Response(data.data)
 
     @action(methods=["POST"], detail=False)

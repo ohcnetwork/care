@@ -178,6 +178,20 @@ class UserSerializer(SignUpSerializer):
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
 
+class UserBaseMinimumSerializer(serializers.ModelSerializer):
+    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "user_type",
+            "last_login",
+        )
+
+
 class UserListSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
@@ -196,3 +210,4 @@ class UserListSerializer(serializers.ModelSerializer):
             "user_type",
             "last_login",
         )
+
