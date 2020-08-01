@@ -27,6 +27,8 @@ from care.facility.models import (
 from care.users.models import User
 from config.utils import get_psql_search_tokens
 
+from care.users.api.serializers.user import UserListSerializer
+
 
 class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
@@ -141,6 +143,19 @@ class FacilityViewSet(viewsets.ModelViewSet):
         - `district` current supports only Kerala, will be changing when the UI is ready to support any district
         """
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
+
+    @action(methods=["GET"], detail=True)
+    def get_users(self, request, external_id):
+        user_type_filter = None
+        if "user_type" in request.GET:
+            if request.GET["user_type"] in User.TYPE_VALUE_MAP:
+                user_type_filter = User.TYPE_VALUE_MAP[request.GET["user_type"]]
+        users = self.get_object().users.all()
+        if user_type_filter:
+            users = users.filter(user_type=user_type_filter)
+        users = users.order_by("-last_login")
+        data = UserListSerializer(users, many=True)
+        return Response(data.data)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):

@@ -8,11 +8,11 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import TokenVerifyView
 
 from config import api_router
 
-from .auth_views import TokenObtainPairView
+from .auth_views import TokenObtainPairView, TokenRefreshView
 from .views import home_view
 
 from care.users.reset_password_views import ResetPasswordConfirm, ResetPasswordRequestToken
