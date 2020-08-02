@@ -1,20 +1,14 @@
+from django.contrib.auth import authenticate, get_user_model
+from django.utils.timezone import localtime, now
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import authenticate
-from rest_framework import generics, status
-
-from django.contrib.auth import get_user_model
-
-from rest_framework import serializers
-
-from rest_framework_simplejwt.serializers import PasswordField
+from rest_framework import generics, serializers, status
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
-
+from rest_framework_simplejwt.serializers import PasswordField
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from rest_framework_simplejwt.views import TokenViewBase
 
 from config.ratelimit import ratelimit
-
 
 User = get_user_model()
 
@@ -71,6 +65,35 @@ class TokenObtainSerializer(serializers.Serializer):
         raise NotImplementedError("Must implement `get_token` method for `TokenObtainSerializer` subclasses")
 
 
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        refresh = RefreshToken(attrs["refresh"])
+
+        data = {"access": str(refresh.access_token)}
+
+        if api_settings.ROTATE_REFRESH_TOKENS:
+            if api_settings.BLACKLIST_AFTER_ROTATION:
+                try:
+                    # Attempt to blacklist the given refresh token
+                    refresh.blacklist()
+                except AttributeError:
+                    # If blacklist app not installed, `blacklist` method will
+                    # not be present
+                    pass
+
+            refresh.set_jti()
+            refresh.set_exp()
+
+            data["refresh"] = str(refresh)
+
+        # Updating users active status
+        User.objects.filter(id=refresh["user_id"]).update(last_login=localtime(now()))
+
+        return data
+
+
 class TokenObtainPairSerializer(TokenObtainSerializer):
     @classmethod
     def get_token(cls, user):
@@ -80,9 +103,10 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         data = super().validate(attrs)
 
         refresh = self.get_token(self.user)
-
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
+
+        User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
 
         return data
 
@@ -95,3 +119,11 @@ class TokenObtainPairView(TokenViewBase):
 
     serializer_class = TokenObtainPairSerializer
 
+
+class TokenRefreshView(TokenViewBase):
+    """
+    Takes a refresh type JSON web token and returns an access type JSON web
+    token if the refresh token is valid.
+    """
+
+    serializer_class = TokenRefreshSerializer

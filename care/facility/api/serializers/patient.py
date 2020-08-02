@@ -26,6 +26,9 @@ from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
 
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
+
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
     occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
@@ -110,6 +113,10 @@ class PatientDetailSerializer(PatientListSerializer):
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = PatientRegistration
