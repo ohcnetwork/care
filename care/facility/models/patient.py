@@ -49,10 +49,16 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
     name = EncryptedCharField(max_length=200)
+    name_new = models.CharField(max_length=200, default="")
+
     age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
+
     phone_number = EncryptedCharField(max_length=14, validators=[phone_number_regex])
+    phone_number_new = models.CharField(max_length=14, validators=[phone_number_regex], default="")
+
     address = EncryptedTextField(default="")
+    address_new = models.TextField(default="")
 
     pincode = models.IntegerField(default=0, blank=False)
 
@@ -111,10 +117,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
 
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_assigned_to")
-    last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_last_edited_by")
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
+    last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_last_edited_by")
 
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True , related_name="patient_created_by")
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_created_by")
     is_active = models.BooleanField(
         default=True, help_text="Not active when discharged, or removed from the watchlist",
     )
