@@ -65,6 +65,7 @@ class ShiftingFilterSet(filters.FilterSet):
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
+    patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
     shifting_approving_facility = filters.UUIDFilter(field_name="shifting_approving_facility__external_id")
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")

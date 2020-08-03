@@ -38,6 +38,7 @@ class PatientSampleFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(field_name="consultation__facility__district__name", lookup_expr="icontains")
     status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
+    patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
 
 
 class PatientSampleViewSet(viewsets.ModelViewSet):

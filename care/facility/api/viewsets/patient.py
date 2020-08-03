@@ -47,6 +47,8 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     assigned_to = filters.NumberFilter(field_name="assigned_to")
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
