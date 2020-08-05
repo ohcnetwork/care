@@ -48,6 +48,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
+    ip_no = models.CharField(max_length=100 ,default="" ) 
+
     name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 

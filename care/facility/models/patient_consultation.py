@@ -26,6 +26,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="consultations")
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    diagnosis = models.TextField(default="")
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
