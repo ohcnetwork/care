@@ -217,6 +217,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     CSV_MAPPING = {
         "external_id": "Patient ID",
         "name" : "Patient Name",
+        "phone_number" : "Patient Phone Number",
         "date_of_birth" : "Date of Birth",
         "year_of_birth" : "Year of Birth",
         "facility__name": "Facility Name",
