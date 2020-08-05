@@ -42,6 +42,17 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
+    class ActionEnum(enum.Enum):
+        PENDING = 10
+        SPECIALIST_REQUIRED = 30
+        PLAN_FOR_HOME_CARE = 40
+        FOLLOW_UP_NOT_REQUIRED = 50
+        COMPLETE = 60
+        REVIEW = 70
+        NOT_REACHABLE = 80
+
+    ActionChoices = [(e.value, e.name) for e in ActionEnum]
+
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
@@ -121,6 +132,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_last_edited_by")
+
+    action = models.IntegerField(choices=ActionChoices, default=ActionEnum.PENDING.value)
+    review_time = models.DateTimeField(null=True, blank=True, verbose_name="Patient's next review time")
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_created_by")
     is_active = models.BooleanField(

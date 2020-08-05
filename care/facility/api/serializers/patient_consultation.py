@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -31,6 +32,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
+    action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True)
+    review_time = serializers.IntegerField(default=-1, write_only=True)
+
     class Meta:
         model = PatientConsultation
         read_only = TIMESTAMP_FIELDS + ("discharge_date",)
@@ -52,6 +56,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             instance.discharge_date = localtime(now())
             instance.save()
 
+        if "action" in validated_data:
+            patient = instance.patient
+            patient.action = validated_data["action"]
+            if "review_time" in validated_data:
+                if validated_data["review_time"] >= 0:
+                    patient.review_time = localtime(now()) + timedelta(minutes=validated_data["review_time"])
+            patient.save()
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -64,6 +76,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             patient.is_active = False
             patient.allow_transfer = True
         patient.last_consultation = consultation
+
+        if "action" in validated_data:
+            patient.action = validated_data["action"]
+        if "review_time" in validated_data:
+            if validated_data["review_time"] >= 0:
+                patient.review_time = localtime(now()) + timedelta(minutes=validated_data["review_time"])
+
         patient.save()
 
         return consultation
@@ -80,6 +99,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             and not validated.get("admission_date")
         ):
             raise ValidationError({"admission_date": [f"This field is required as the patient has been admitted."]})
+
+        if "action" in validated:
+            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
+                if "review_time" not in validated:
+                    raise ValidationError(
+                        {"review_time": [f"This field is required as the patient has been requested Review."]}
+                    )
+                if validated["review_time"] <= 0:
+                    raise ValidationError({"review_time": [f"This field value is must be greater than 0."]})
         return validated
 
 
