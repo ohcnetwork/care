@@ -38,7 +38,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         read_only = TIMESTAMP_FIELDS + ("discharge_date",)
-        exclude = ("deleted", "external_id", "last_consultation")
+        exclude = ("deleted", "external_id")
 
     def validate_bed_number(self, bed_number):
         try:
