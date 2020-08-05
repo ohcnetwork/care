@@ -146,7 +146,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShiftingRequest
-        exclude = ("modified_date",)
+        exclude = ("deleted",)
+        read_only_fields = TIMESTAMP_FIELDS
 
 
 class ShiftingDetailSerializer(ShiftingSerializer):
@@ -155,4 +156,5 @@ class ShiftingDetailSerializer(ShiftingSerializer):
 
     class Meta:
         model = ShiftingRequest
-        exclude = ("modified_date",)
+        exclude = ("deleted",)
+        read_only_fields = TIMESTAMP_FIELDS
