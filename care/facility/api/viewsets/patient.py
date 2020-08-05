@@ -46,7 +46,6 @@ class PatientFilterSet(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
-    assigned_to = filters.NumberFilter(field_name="assigned_to")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(field_name="ip_no", lookup_expr="icontains")
 
@@ -93,7 +92,6 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
         "nearest_facility__local_body",
         "nearest_facility__district",
         "nearest_facility__state",
-        "assigned_to",
     )
     serializer_class = PatientDetailSerializer
     filter_backends = (

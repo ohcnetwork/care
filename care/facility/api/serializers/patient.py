@@ -18,16 +18,14 @@ from care.facility.models import (
     PatientRegistration,
     PatientSearch,
 )
-from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum, BLOOD_GROUP_CHOICES
+from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
-
-from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.users.models import User
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
@@ -114,9 +112,7 @@ class PatientDetailSerializer(PatientListSerializer):
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
 
-    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
-
-    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    last_edited = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -129,7 +125,7 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("last_edited",)
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -184,6 +180,9 @@ class PatientDetailSerializer(PatientListSerializer):
                 contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
+            patient.last_edited = self.context["request"].user
+            patient.save()
+
             return patient
 
     def update(self, instance, validated_data):
@@ -216,6 +215,9 @@ class PatientDetailSerializer(PatientListSerializer):
             if contacted_patients:
                 contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
+
+            patient.last_edited = self.context["request"].user
+            patient.save()
 
             return patient
 

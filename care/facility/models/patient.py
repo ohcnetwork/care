@@ -18,6 +18,7 @@ from care.facility.models import (
     reverse_choices,
     pretty_boolean,
 )
+from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
@@ -48,7 +49,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
-    ip_no = models.CharField(max_length=100 ,default="" ) 
+    ip_no = models.CharField(max_length=100, default="")
 
     name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
@@ -119,7 +120,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
     )
 
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
     last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_last_edited_by")
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_created_by")
@@ -133,6 +133,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     allow_transfer = models.BooleanField(default=False)
+
+    last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -218,10 +220,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     CSV_MAPPING = {
         "external_id": "Patient ID",
-        "name" : "Patient Name",
-        "phone_number" : "Patient Phone Number",
-        "date_of_birth" : "Date of Birth",
-        "year_of_birth" : "Year of Birth",
+        "name": "Patient Name",
+        "phone_number": "Patient Phone Number",
+        "date_of_birth": "Date of Birth",
+        "year_of_birth": "Year of Birth",
         "facility__name": "Facility Name",
         "nearest_facility__name": "Nearest Facility",
         "date_of_birth": "Date Of Birth",

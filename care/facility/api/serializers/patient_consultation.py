@@ -7,6 +7,8 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
@@ -25,13 +27,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+
     class Meta:
         model = PatientConsultation
         read_only = TIMESTAMP_FIELDS + ("discharge_date",)
-        exclude = (
-            "deleted",
-            "external_id",
-        )
+        exclude = ("deleted", "external_id", "last_consultation")
 
     def validate_bed_number(self, bed_number):
         try:
@@ -54,14 +57,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         consultation = super().create(validated_data)
-
+        patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
             consultation.discharge_date = localtime(now())
             consultation.save()
-            patient = consultation.patient
             patient.is_active = False
             patient.allow_transfer = True
-            patient.save()
+        patient.last_consultation = consultation
+        patient.save()
 
         return consultation
 
