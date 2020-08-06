@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class UserViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, GenericViewSet,
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet,
 ):
     """
     A viewset for viewing and manipulating user instances.
