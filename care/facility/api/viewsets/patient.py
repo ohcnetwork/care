@@ -36,13 +36,16 @@ from care.facility.models import (
     PatientRegistration,
     PatientSearch,
 )
-from care.facility.models.patient_base import DiseaseStatusEnum
+from care.facility.models.patient_base import DiseaseStatusEnum, DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
+
+from care.utils.filters import CareChoiceFilter
 
 
 class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
+    disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
@@ -101,11 +104,11 @@ class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     filterset_class = PatientFilterSet
 
     def get_queryset(self):
-        filter_query = self.request.query_params.get("disease_status")
+        # filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
-        if filter_query:
-            disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
-            return queryset.filter(disease_status=disease_status)
+        # if filter_query:
+        #     disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
+        #     return queryset.filter(disease_status=disease_status)
 
         if self.action == "list":
             queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))

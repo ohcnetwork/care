@@ -73,6 +73,10 @@ class DiseaseStatusEnum(enum.IntEnum):
 
 
 DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
+DISEASE_STATUS_DICT = {}
+for i in DISEASE_STATUS_CHOICES:
+    DISEASE_STATUS_DICT[i[1]] = i[0]
+
 BLOOD_GROUP_CHOICES = [
     ("A+", "A+"),
     ("A-", "A-"),
