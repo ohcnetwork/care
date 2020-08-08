@@ -56,17 +56,29 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             instance.discharge_date = localtime(now())
             instance.save()
 
-        if "action" in validated_data:
+        if "action" in validated_data or "review_time" in validated_data:
             patient = instance.patient
-            patient.action = validated_data["action"]
+
+            if "action" in validated_data:
+                action = validated_data.pop("action")
+                patient.action = action
+
             if "review_time" in validated_data:
-                if validated_data["review_time"] >= 0:
-                    patient.review_time = localtime(now()) + timedelta(minutes=validated_data["review_time"])
+                review_time = validated_data.pop("review_time")
+                if review_time >= 0:
+                    patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
 
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+
+        action = -1
+        review_time = -1
+        if "action" in validated_data:
+            action = validated_data.pop("action")
+        if "review_time" in validated_data:
+            review_time = validated_data.pop("review_time")
 
         consultation = super().create(validated_data)
         patient = consultation.patient
@@ -77,11 +89,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             patient.allow_transfer = True
         patient.last_consultation = consultation
 
-        if "action" in validated_data:
-            patient.action = validated_data["action"]
-        if "review_time" in validated_data:
-            if validated_data["review_time"] >= 0:
-                patient.review_time = localtime(now()) + timedelta(minutes=validated_data["review_time"])
+        if action != -1:
+            patient.action = action
+        if review_time > 0:
+            patient.review_time = localtime(now()) + timedelta(minutes=review_time)
 
         patient.save()
 
