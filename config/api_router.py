@@ -33,6 +33,7 @@ from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 
+from care.facility.api.viewsets.prescription_supplier import PrescriptionSupplierConsultationViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -55,6 +56,8 @@ router.register("otp/patient", OTPPatientDataViewSet)
 
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
+
+router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
