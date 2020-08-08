@@ -9,6 +9,7 @@ class CareChoiceFilter(CharFilter):
         super().__init__(*args, **kwargs)
 
     def filter(self, qs, value):
-        value = self.choice_dict[value]
+        if len(value) > 0:
+            value = self.choice_dict[value]
         return super().filter(qs, value)
 
