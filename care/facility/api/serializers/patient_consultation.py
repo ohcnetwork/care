@@ -32,8 +32,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
-    action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True)
-    review_time = serializers.IntegerField(default=-1, write_only=True)
+    action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
+    review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
 
     class Meta:
         model = PatientConsultation
