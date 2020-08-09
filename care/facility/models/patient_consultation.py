@@ -25,6 +25,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="consultations")
+
+    ip_no = models.CharField(max_length=100, default="")
+
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
     diagnosis = models.TextField(default="")
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)

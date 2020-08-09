@@ -50,7 +50,7 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    ip_no = filters.CharFilter(field_name="ip_no", lookup_expr="icontains")
+    ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
