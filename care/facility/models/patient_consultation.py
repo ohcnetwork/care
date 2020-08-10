@@ -55,6 +55,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
 
+    doctor = models.CharField(max_length=100, null=True, blank=True)
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
