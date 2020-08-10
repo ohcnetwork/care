@@ -15,11 +15,8 @@
   </head>
   <body class="max-w-5xl mx-auto mt-4 text-sm">
   <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
-  <div>
-      <div class="flex justify-between items-center w-3/4 mx-auto">
-      <img class='h-24' src="https://cdn.coronasafe.network/dhslogo.png"/>
+  <div class="mx-auto flex justify-center">
       <img class='h-28' src="https://cdn.coronasafe.network/kgovtlogo.png"/>
-      <img class='h-28' src="https://cdn.coronasafe.network/nhm.jpg"/>
     </div>
   </div>
    <div class="mt-2 text-center w-full font-bold text-3xl">
@@ -30,12 +27,19 @@
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Patient Discharge Summary
     </h3>
-    <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+    <p class="mt-1 text-sm leading-5 text-gray-500">
       Created on {{date}}
     </p>
-    <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-      Id {{patient.external_id}}
-    </p>
+    <div class="flex w-full justify-between">
+      <p class="mt-1 text-sm  leading-5 text-gray-500 mr-10">
+        Id:  {{patient.external_id}}
+      </p>
+        {% if consultation.ip_no %}
+      <p class="mt-1 text-sm leading-5 text-gray-500">
+        IP No:  {{consultation.ip_no}
+      </p>
+  {% endif %}
+    </div>
   </div>
    <img class='h-12' src="https://cdn.coronasafe.network/coronaSafeLogo.png"/>
    </div>
@@ -109,6 +113,14 @@
           {{consultation.discharge_date}}
         </dd>
       </div>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Diagnosis
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.diagnosis}}
+        </dd>
       </div>
       <div class="mt-4">
         <dt class="text-sm leading-5 font-medium text-gray-500">
@@ -258,7 +270,7 @@
                   Sample type
                 </th>
                 <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Diagnosis
+                  Label
                 </th>
                 <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Result
@@ -275,7 +287,7 @@
                   {{sample.get_sample_type_display}}
                 </td>
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
-                  {{sample.diagnosis}}
+                  {{sample.label}}
                 </td>
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
                   {{sample.get_result_display}}
@@ -350,5 +362,13 @@
   {% endfor %}
   {% endif %}
 </div>
+      <div class="m-4">
+        <div class="text-sm leading-5 font-bold text-gray-500">
+          Verified By
+        </div>
+        <div class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.verified_by}}
+        </div>
+      </div>
   </body>
 </html>
