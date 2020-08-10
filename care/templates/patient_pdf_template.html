@@ -287,7 +287,7 @@
                   {{sample.get_sample_type_display}}
                 </td>
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
-                  {{sample.label}}
+                  {{sample.icmr_label}}
                 </td>
                 <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
                   {{sample.get_result_display}}
@@ -367,7 +367,7 @@
           Verified By
         </div>
         <div class="mt-1 text-sm leading-5 text-gray-900">
-          {{consultation.verified_by}}
+          {{consultation.verified_by|linebreaks}}
         </div>
       </div>
   </body>
