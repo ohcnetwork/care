@@ -76,27 +76,31 @@ class ShiftingFilterSet(filters.FilterSet):
 class ShiftingViewSet(viewsets.ModelViewSet):
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
-    queryset = ShiftingRequest.objects.all().select_related(
-        "orgin_facility",
-        "orgin_facility__local_body",
-        "orgin_facility__district",
-        "orgin_facility__state",
-        "shifting_approving_facility",
-        "shifting_approving_facility__local_body",
-        "shifting_approving_facility__district",
-        "shifting_approving_facility__state",
-        "assigned_facility",
-        "assigned_facility__local_body",
-        "assigned_facility__district",
-        "assigned_facility__state",
-        "patient",
-        "patient__local_body",
-        "patient__district",
-        "patient__state",
-        "patient__facility",
-        "patient__facility__local_body",
-        "patient__facility__district",
-        "patient__facility__state",
+    queryset = (
+        ShiftingRequest.objects.all()
+        .select_related(
+            "orgin_facility",
+            "orgin_facility__local_body",
+            "orgin_facility__district",
+            "orgin_facility__state",
+            "shifting_approving_facility",
+            "shifting_approving_facility__local_body",
+            "shifting_approving_facility__district",
+            "shifting_approving_facility__state",
+            "assigned_facility",
+            "assigned_facility__local_body",
+            "assigned_facility__district",
+            "assigned_facility__state",
+            "patient",
+            "patient__local_body",
+            "patient__district",
+            "patient__state",
+            "patient__facility",
+            "patient__facility__local_body",
+            "patient__facility__district",
+            "patient__facility__state",
+        )
+        .order_by("-created_date")
     )  # Get Related Fields also here TODO
     permission_classes = (IsAuthenticated,)
     filter_backends = (
