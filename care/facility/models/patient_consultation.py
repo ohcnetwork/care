@@ -29,7 +29,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     ip_no = models.CharField(max_length=100, default="")
 
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
-    diagnosis = models.TextField(default="")
+    diagnosis = models.TextField(default="", null=True, blank=True)
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
