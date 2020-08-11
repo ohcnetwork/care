@@ -60,16 +60,16 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
-    name_old = EncryptedCharField(max_length=200, default="")
+    # name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 
     age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
 
-    phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
+    # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex], default="")
 
-    address_old = EncryptedTextField(default="")
+    # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
 
     pincode = models.IntegerField(default=0, blank=False)
