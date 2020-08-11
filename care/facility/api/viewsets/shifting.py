@@ -100,7 +100,7 @@ class ShiftingViewSet(viewsets.ModelViewSet):
             "patient__facility__district",
             "patient__facility__state",
         )
-        .order_by("-created_date")
+        .order_by("-id")
     )  # Get Related Fields also here TODO
     permission_classes = (IsAuthenticated,)
     filter_backends = (
