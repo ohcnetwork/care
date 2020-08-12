@@ -41,14 +41,14 @@ def generate_discharge_report(patient_id, email):
             "consultation": consultation,
             "dailyrounds": daily_rounds,
             "date": date,
-            "diseases" : diseases,
+            "diseases": diseases,
         },
     )
     filename = str(int(round(time.time() * 1000))) + randomString(10) + ".pdf"
     bytestring_to_pdf(
         html_string.encode(),
         default_storage.open(filename, "w+"),
-        **{"no-margins": None, "disable-gpu": None, "window-size": "2480,3508"},
+        **{"no-margins": None, "disable-gpu": None, "disable-dev-shm-usage": False, "window-size": "2480,3508"},
     )
     file = default_storage.open(filename, "rb")
     msg = EmailMessage(

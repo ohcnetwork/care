@@ -50,7 +50,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if instance.discharge_date:
-            return ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+            raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())
