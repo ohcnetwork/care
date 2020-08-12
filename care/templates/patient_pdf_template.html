@@ -191,13 +191,13 @@
             <tbody>
           {% for prescription in consultation.discharge_advice %}
               <tr class="bg-white">
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                <td class="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                   {{ prescription.medicine }}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
                 {{ prescription.dosage }}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
                   {{ prescription.days }}
                 </td>
               </tr>
@@ -329,7 +329,7 @@
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900">
                 {{daily_round.get_current_health_display}}
-              </dd>
+              </dd> Perscription Table a
             </div>
           </div>
           <div class="mt-4">
