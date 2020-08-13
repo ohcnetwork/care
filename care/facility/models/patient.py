@@ -393,6 +393,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
     num_patients_home_quarantine = models.IntegerField(default=0)
     num_patients_isolation = models.IntegerField(default=0)
     num_patient_referred = models.IntegerField(default=0)
+    num_patient_confirmed_positive = models.IntegerField(default=0)
 
     CSV_RELATED_MAPPING = {
         "facilitypatientstatshistory__entry_date": "Entry Date",
@@ -400,6 +401,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
         "facilitypatientstatshistory__num_patients_home_quarantine": "Home Quarantined Patients",
         "facilitypatientstatshistory__num_patients_isolation": "Patients Isolated",
         "facilitypatientstatshistory__num_patient_referred": "Patients Reffered",
+        "facilitypatientstatshistory__num_patient_confirmed_positive": "Patients Confirmed Positive",
     }
 
     CSV_MAKE_PRETTY = {}
