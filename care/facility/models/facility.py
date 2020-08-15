@@ -6,7 +6,10 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
-from care.facility.models.mixins.permissions.facility import FacilityPermissionMixin, FacilityRelatedPermissionMixin
+from care.facility.models.mixins.permissions.facility import (
+    FacilityPermissionMixin,
+    FacilityRelatedPermissionMixin,
+)
 from care.users.models import District, LocalBody, State
 
 
@@ -54,6 +57,8 @@ FACILITY_TYPES = [
     (1000, "Corona Care Centre"),
     # Use 11xx for First Line Treatment Centre
     (1100, "First Line Treatment Centre"),
+    # Use 12xx for Second Line Treatment Center
+    (1200, "Second Line Treatment Center"),
     # Use 13xx for Shifting Centers
     (1300, "Shifting Centre"),
 ]
@@ -80,17 +85,28 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
-    local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.SET_NULL, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     oxygen_capacity = models.IntegerField(default=0)
-    phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, blank=True, validators=[phone_number_regex]
+    )
     corona_testing = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     users = models.ManyToManyField(
-        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
+        User,
+        through="FacilityUser",
+        related_name="facilities",
+        through_fields=("facility", "user"),
     )
 
     class Meta:
@@ -116,7 +132,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         super().save(*args, **kwargs)
 
         if is_create:
-            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
+            FacilityUser.objects.create(
+                facility=self, user=self.created_by, created_by=self.created_by
+            )
 
     CSV_MAPPING = {
         "name": "Facility Name",
@@ -142,15 +160,22 @@ class FacilityLocalGovtBody(models.Model):
     But in other cases, and in cases of incomplete data, we will only have information till a district level
     """
 
-    facility = models.OneToOneField(Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL)
-    local_body = models.ForeignKey(LocalBody, null=True, blank=True, on_delete=models.SET_NULL)
-    district = models.ForeignKey(District, null=True, blank=True, on_delete=models.SET_NULL)
+    facility = models.OneToOneField(
+        Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    local_body = models.ForeignKey(
+        LocalBody, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    district = models.ForeignKey(
+        District, null=True, blank=True, on_delete=models.SET_NULL
+    )
 
     class Meta:
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False) | models.Q(district__isnull=False),
+                check=models.Q(local_body__isnull=False)
+                | models.Q(district__isnull=False),
             )
         ]
 
@@ -172,7 +197,9 @@ class FacilityLocalGovtBody(models.Model):
 
 
 class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
 
@@ -180,7 +207,11 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
+        indexes = [
+            PartialIndex(
+                fields=["facility", "area"], unique=True, where=PQ(deleted=False)
+            )
+        ]
 
     CSV_RELATED_MAPPING = {
         "hospitaldoctors__area": "Doctors Area",
@@ -191,7 +222,9 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
 
 class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -199,7 +232,11 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     history = HistoricalRecords()
 
     class Meta:
-        indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+        indexes = [
+            PartialIndex(
+                fields=["facility", "room_type"], unique=True, where=PQ(deleted=False)
+            )
+        ]
 
     CSV_RELATED_MAPPING = {
         "facilitycapacity__room_type": "Room Type",
@@ -212,7 +249,9 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
 
 class FacilityStaff(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
@@ -220,8 +259,12 @@ class FacilityStaff(FacilityBaseModel):
 
 
 class FacilityVolunteer(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
-    volunteer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
+    volunteer = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=False, blank=False
+    )
 
     def __str__(self):
         return str(self.volunteer) + " for facility " + str(self.facility)
@@ -234,11 +277,15 @@ class FacilityVolunteer(FacilityBaseModel):
 
 
 class Building(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     num_floors = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    num_buildings = models.IntegerField(validators=[MinValueValidator(0)], default=0)  # For Internal Use only
+    num_buildings = models.IntegerField(
+        validators=[MinValueValidator(0)], default=0
+    )  # For Internal Use only
 
     def __str__(self):
         return self.name + " under " + str(self.facility)
@@ -251,7 +298,9 @@ class Building(FacilityBaseModel):
 
 
 class Room(FacilityBaseModel):
-    building = models.ForeignKey("Building", on_delete=models.CASCADE, null=False, blank=False)
+    building = models.ForeignKey(
+        "Building", on_delete=models.CASCADE, null=False, blank=False
+    )
     num = models.CharField(max_length=1000)
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     beds_capacity = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -282,16 +331,32 @@ class InventoryItem(FacilityBaseModel):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name + " with unit " + self.unit + " with minimum stock " + str(self.minimum_stock)
+        return (
+            self.name
+            + " with unit "
+            + self.unit
+            + " with minimum stock "
+            + str(self.minimum_stock)
+        )
 
 
 class Inventory(FacilityBaseModel):
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, null=False, blank=False
+    )
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     quantitiy = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
     def __str__(self):
-        return self.item.name + " : " + str(self.quantitiy) + " " + self.item.unit + " in " + str(self.facility)
+        return (
+            self.item.name
+            + " : "
+            + str(self.quantitiy)
+            + " "
+            + self.item.unit
+            + " in "
+            + str(self.facility)
+        )
 
     class Meta:
         verbose_name_plural = "Inventories"
@@ -299,7 +364,9 @@ class Inventory(FacilityBaseModel):
 
 class InventoryLog(FacilityBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
-    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     prev_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     new_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
@@ -322,7 +389,9 @@ class InventoryLog(FacilityBaseModel):
 class FacilityUser(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="created_users"
+    )
 
     class Meta:
         unique_together = (
