@@ -83,18 +83,22 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
-    queryset = PatientRegistration.objects.all().select_related(
-        "local_body",
-        "district",
-        "state",
-        "facility",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        "nearest_facility",
-        "nearest_facility__local_body",
-        "nearest_facility__district",
-        "nearest_facility__state",
+    queryset = (
+        PatientRegistration.objects.all()
+        .select_related(
+            "local_body",
+            "district",
+            "state",
+            "facility",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            "nearest_facility",
+            "nearest_facility__local_body",
+            "nearest_facility__district",
+            "nearest_facility__state",
+        )
+        .order_by("-id")
     )
     serializer_class = PatientDetailSerializer
     filter_backends = (
