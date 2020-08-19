@@ -25,6 +25,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
+    REVERSE_SYMPTOM_CATEGORY_CHOICES,
 )
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
@@ -260,6 +261,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
+        # Consultation Data
+        "last_consultation__created_date": "Date of Consultation",
+        "last_consultation__admission_date": "Date of Admission",
+        "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
+        "last_consultation__symptoms": "Symptoms at time of consultation",
+        "last_consultation__category": "Category",
+        "last_consultation__examination_details": "Examination Details",
+        "last_consultation__suggestion": "Suggestion",
     }
 
     CSV_MAKE_PRETTY = {
@@ -267,6 +276,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
         "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
         "is_medical_worker": pretty_boolean,
+        # Consultation Data
+        "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
     }
 
 
