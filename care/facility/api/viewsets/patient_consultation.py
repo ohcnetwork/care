@@ -32,9 +32,7 @@ class PatientConsultationViewSet(ModelViewSet):
             return self.queryset.filter(patient__facility__district=self.request.user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(patient__facility__state=self.request.user.state)
-        return self.queryset.filter(
-            Q(patient__created_by=self.request.user) | Q(facility__users__id__exact=self.request.user.id)
-        ).distinct("id")
+        return self.queryset.filter(facility__users__id__exact=self.request.user.id).distinct("id")
 
     def list(self, request, *args, **kwargs):
         """
