@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -11,13 +11,13 @@ from rest_framework.response import Response
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer
 from care.facility.models import (
+    REVERSE_SHIFTING_STATUS_CHOICES,
+    SHIFTING_STATUS_CHOICES,
     PatientConsultation,
     PatientRegistration,
     PatientSample,
-    User,
     ShiftingRequest,
-    SHIFTING_STATUS_CHOICES,
-    REVERSE_SHIFTING_STATUS_CHOICES,
+    User,
 )
 from care.facility.models.patient_icmr import PatientSampleICMR
 
@@ -101,7 +101,7 @@ class ShiftingViewSet(viewsets.ModelViewSet):
             "patient__facility__state",
         )
         .order_by("-id")
-    )  # Get Related Fields also here TODO
+    )
     permission_classes = (IsAuthenticated,)
     filter_backends = (
         ShiftingFilterBackend,
@@ -114,3 +114,17 @@ class ShiftingViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             serializer_class = ShiftingDetailSerializer
         return serializer_class
+
+    @action(detail=True, methods=["POST"])
+    def transfer(self, request, *args, **kwargs):
+        shifting_obj = self.get_object()
+        if shifting_obj.assigned_facility and shifting_obj.status >= 70:
+            if shifting_obj.patient:
+                patient = shifting_obj.patient
+                patient.facility = shifting_obj.assigned_facility
+                patient.is_active = True
+                patient.allow_transfer = False
+                patient.save()
+                return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
+
