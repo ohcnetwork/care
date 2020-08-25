@@ -64,9 +64,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
-                queryset = queryset.filter(
-                    Q(created_by=request.user) | Q(facility__users__id__exact=request.user.id)
-                ).distinct("id")
+                queryset = queryset.filter(facility__users__id__exact=request.user.id).distinct("id")
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
