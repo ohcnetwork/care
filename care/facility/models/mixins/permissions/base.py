@@ -16,7 +16,7 @@ class BasePermissionMixin:
         )
 
     def has_object_read_permission(self, request):
-        return (request.user.is_superuser or request.user.verified) and (
+        return (request.user.is_superuser) or (
             (hasattr(self, "created_by") and request.user == self.created_by)
             or (
                 hasattr(self, "district")
@@ -31,7 +31,7 @@ class BasePermissionMixin:
         )
 
     def has_object_update_permission(self, request):
-        return (request.user.is_superuser or request.user.verified) and (
+        return (request.user.is_superuser) or (
             (hasattr(self, "created_by") and request.user == self.created_by)
             or (
                 hasattr(self, "district")

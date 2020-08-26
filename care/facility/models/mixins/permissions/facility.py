@@ -38,6 +38,7 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
                 and request.user.user_type >= User.TYPE_VALUE_MAP["StateAdmin"]
                 and request.user.state == facility.state
             )
+            or (request.user in facility.users.all())
         )
 
     def has_object_read_permission(self, request):
