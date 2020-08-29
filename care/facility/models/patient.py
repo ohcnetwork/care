@@ -26,15 +26,28 @@ from care.facility.models.patient_base import (
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_ADMIT_CHOICES,
 )
-from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
+from care.users.models import (
+    GENDER_CHOICES,
+    REVERSE_GENDER_CHOICES,
+    User,
+    phone_number_regex,
+)
 from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
-    PATIENT_SEARCH_KEYS = ["name", "gender", "phone_number", "date_of_birth", "year_of_birth", "state_id"]
+    PATIENT_SEARCH_KEYS = [
+        "name",
+        "gender",
+        "phone_number",
+        "date_of_birth",
+        "year_of_birth",
+        "state_id",
+    ]
 
     class SourceEnum(enum.Enum):
         CARE = 10
@@ -57,7 +70,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility"
+        "Facility", on_delete=models.SET_NULL, null=True, related_name="nearest_facility",
     )
     meta_info = models.OneToOneField("PatientMetaInfo", on_delete=models.SET_NULL, null=True)
 
@@ -85,7 +98,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES, null=True, blank=False, max_length=4, verbose_name="Blood Group of Patient"
+        choices=BLOOD_GROUP_CHOICES, null=True, blank=False, max_length=4, verbose_name="Blood Group of Patient",
     )
 
     contact_with_confirmed_carrier = models.BooleanField(
@@ -100,11 +113,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=False, verbose_name="Travelled to Any Foreign Countries in the last 28 Days",
     )
     countries_travelled_old = models.TextField(
-        null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False
+        null=True, blank=True, verbose_name="Countries Patient has Travelled to", editable=False,
     )
     countries_travelled = JSONField(null=True, blank=True, verbose_name="Countries Patient has Travelled to")
     date_of_return = models.DateTimeField(
-        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled"
+        blank=True, null=True, verbose_name="Return Date from the Last Country if Travelled",
     )
 
     allergies = models.TextField(default="", blank=True, verbose_name="Patient's Known Allergies")
@@ -120,17 +133,17 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status"
+        choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status",
     )
 
     number_of_aged_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True
+        default=0, verbose_name="Number of people aged above 60 living with the patient", blank=True,
     )
     number_of_chronic_diseased_dependents = models.IntegerField(
-        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True
+        default=0, verbose_name="Number of people who have chronic diseases living with the patient", blank=True,
     )
 
-    last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_last_edited_by")
+    last_edited = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_last_edited_by",)
 
     action = models.IntegerField(choices=ActionChoices, default=ActionEnum.PENDING.value)
     review_time = models.DateTimeField(null=True, blank=True, verbose_name="Patient's next review time")
@@ -236,10 +249,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "name": "Patient Name",
         "phone_number": "Patient Phone Number",
         "date_of_birth": "Date of Birth",
-        "year_of_birth": "Year of Birth",
+        # "year_of_birth": "Year of Birth",
         "facility__name": "Facility Name",
-        "nearest_facility__name": "Nearest Facility",
-        "date_of_birth": "Date Of Birth",
+        # "nearest_facility__name": "Nearest Facility",
         "age": "Age",
         "gender": "Gender",
         "local_body__name": "Local Body",
@@ -247,6 +259,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "state__name": "State",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
+        "last_consultation__admitted": "Admission Status",
+        "last_consultation__admitted_to": "Admission Room Type",
+        # Reffered or transferred
+        # remarks
         "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
         "number_of_chronic_diseased_dependents": "Number of people who have chronic diseases living with the patient",
         "blood_group": "Blood Group",
@@ -262,13 +278,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
         # Consultation Data
-        "last_consultation__created_date": "Date of Consultation",
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
         "last_consultation__symptoms": "Symptoms at time of consultation",
         "last_consultation__category": "Category",
         "last_consultation__examination_details": "Examination Details",
         "last_consultation__suggestion": "Suggestion",
+        "last_consultation__created_date": "Date of Consultation",
+        "last_consultation__discharge_date": "Date of Discharge",
     }
 
     CSV_MAKE_PRETTY = {
@@ -279,6 +296,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
+        "last_consultation__admitted": pretty_boolean,
+        "last_consultation__admitted_to": (lambda x: REVERSE_ADMIT_CHOICES.get(x, "-")),
     }
 
 
@@ -369,7 +388,7 @@ class PatientContactDetails(models.Model):
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients")
     patient_in_contact = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts"
+        PatientRegistration, on_delete=models.PROTECT, null=True, related_name="contacts",
     )
     relation_with_patient = models.IntegerField(choices=RelationChoices)
     mode_of_contact = models.IntegerField(choices=ModeOfContactChoices)
