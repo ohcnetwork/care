@@ -88,7 +88,7 @@ BLOOD_GROUP_CHOICES = [
     ("O-", "O-"),
     ("UNK", "UNKNOWN"),
 ]
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP")
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
