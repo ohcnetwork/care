@@ -22,6 +22,8 @@ ADMIT_CHOICES = [
     (2, "ICU"),
     (3, "ICU with Ventilator"),
     (20, "Home Isolation"),
+    (30, "Gynaecology Ward"),
+    (40, "Paediatric Ward"),
 ]
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
