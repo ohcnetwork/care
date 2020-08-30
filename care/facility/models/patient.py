@@ -259,6 +259,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
+        "address": "Address",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
         "last_consultation__admitted": "Admission Status",
