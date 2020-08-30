@@ -128,6 +128,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_antenatal = models.BooleanField(default=False, verbose_name="Does the patient require Prenatal Care ?")
 
+    ward = models.CharField(max_length=255, default="", verbose_name="Ward of Patient", blank=False)
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
@@ -254,6 +255,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # "nearest_facility__name": "Nearest Facility",
         "age": "Age",
         "gender": "Gender",
+        "ward": "Ward",
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
