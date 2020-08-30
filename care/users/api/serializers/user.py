@@ -186,6 +186,8 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "first_name",
+            "username",
+            "email",
             "last_name",
             "user_type",
             "last_login",

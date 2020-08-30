@@ -113,11 +113,11 @@ class PatientDetailSerializer(PatientListSerializer):
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = PatientRegistration
         exclude = (
-            "created_by",
             "deleted",
             "patient_search_id",
             "year_of_birth",
@@ -125,7 +125,7 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited",)
+        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by")
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()

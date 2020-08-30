@@ -1,4 +1,5 @@
 from datetime import timedelta
+
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -35,9 +36,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
 
+    last_edited_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+
     class Meta:
         model = PatientConsultation
-        read_only = TIMESTAMP_FIELDS + ("discharge_date",)
+        read_only = TIMESTAMP_FIELDS + ("discharge_date", "last_edited_by", "created_by")
         exclude = ("deleted", "external_id")
 
     def validate_bed_number(self, bed_number):
@@ -49,6 +53,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
+
+        instance.last_edited_by = self.context["request"].user
+
         if instance.discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
 
@@ -81,6 +88,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             review_time = validated_data.pop("review_time")
 
         consultation = super().create(validated_data)
+        consultation.created_by = self.context["request"].user
+        consultation.last_edited_by = self.context["request"].user
+        consultation.save()
+
         patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
             consultation.discharge_date = localtime(now())

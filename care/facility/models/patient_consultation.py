@@ -57,6 +57,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     verified_by = models.TextField(default="", null=True, blank=True)
 
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_user")
+
+    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
