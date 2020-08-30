@@ -22,6 +22,8 @@ ADMIT_CHOICES = [
     (2, "ICU"),
     (3, "ICU with Ventilator"),
     (20, "Home Isolation"),
+    (30, "Gynaecology Ward"),
+    (40, "Paediatric Ward"),
 ]
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
@@ -88,8 +90,9 @@ BLOOD_GROUP_CHOICES = [
     ("O-", "O-"),
     ("UNK", "UNKNOWN"),
 ]
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP")
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)

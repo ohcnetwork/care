@@ -21,6 +21,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         (SuggestionChoices.A, "ADMISSION"),
         (SuggestionChoices.R, "REFERRAL"),
         (SuggestionChoices.OP, "OP CONSULTATION"),
+        (SuggestionChoices.DC, "DOMICILIARY CARE"),
     ]
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
@@ -56,6 +57,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
 
     verified_by = models.TextField(default="", null=True, blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_user")
+
+    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",

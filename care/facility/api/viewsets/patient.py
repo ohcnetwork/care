@@ -329,8 +329,8 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                     {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
                 )
 
-            if not self.request.user.is_superuser:
-                search_fields["state_id"] = self.request.user.state_id
+            # if not self.request.user.is_superuser:
+            #     search_fields["state_id"] = self.request.user.state_id
 
             if "age" in search_fields:
                 age = search_fields.pop("age")
