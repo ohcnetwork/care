@@ -133,6 +133,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
+    is_migrant_worker = models.BooleanField(default=False, verbose_name="Is Patient a Migrant Worker",)
+
     disease_status = models.IntegerField(
         choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status",
     )
