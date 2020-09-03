@@ -68,11 +68,14 @@ class ShiftingFilterSet(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    patient_phone_number = filters.CharFilter(field_name="patient__phone_number", lookup_expr="icontains")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
     shifting_approving_facility = filters.UUIDFilter(field_name="shifting_approving_facility__external_id")
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
     emergency = filters.BooleanFilter(field_name="emergency")
     is_up_shift = filters.BooleanFilter(field_name="is_up_shift")
+    created_date = filters.DateFromToRangeFilter(field_name="created_date")
+    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
 
 
 class ShiftingViewSet(viewsets.ModelViewSet):
