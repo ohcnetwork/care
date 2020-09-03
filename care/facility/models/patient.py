@@ -159,6 +159,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Patient's information received date"
     )
 
+    test_id = models.CharField(default="", max_length=100, null=True, blank=True)
+
     allow_transfer = models.BooleanField(default=False)
 
     last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
@@ -262,6 +264,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "address": "Address",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
+        "state_test_id" : "State Test ID",
         "last_consultation__admitted": "Admission Status",
         "last_consultation__admitted_to": "Admission Room Type",
         # Reffered or transferred

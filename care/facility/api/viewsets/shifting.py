@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.db import transaction
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -128,3 +130,12 @@ class ShiftingViewSet(viewsets.ModelViewSet):
                 return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            queryset = self.filter_queryset(self.get_queryset()).values(*ShiftingRequest.CSV_MAPPING.keys())
+            return render_to_csv_response(
+                queryset,
+                field_header_map=ShiftingRequest.CSV_MAPPING,
+                field_serializer_map=ShiftingRequest.CSV_MAKE_PRETTY,
+            )
+        return super(ShiftingViewSet, self).list(request, *args, **kwargs)

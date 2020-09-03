@@ -52,8 +52,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     discharge_date = models.DateTimeField(null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)
 
-    test_id = models.CharField(default="", max_length=100, null=True, blank=True)
-
     is_telemedicine = models.BooleanField(default=False)
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
@@ -79,14 +77,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
     }
 
-    CSV_DATATYPE_DEFAULT_MAPPING = {
-        "admission_date": (None, models.DateTimeField(),),
-        "symptoms_onset_date": (None, models.DateTimeField(),),
-        "symptoms": ("-", models.CharField(),),
-        "category": ("-", models.CharField(),),
-        "examination_details": ("-", models.CharField(),),
-        "suggestion": ("-", models.CharField(),),
-    }
+    # CSV_DATATYPE_DEFAULT_MAPPING = {
+    #     "admission_date": (None, models.DateTimeField(),),
+    #     "symptoms_onset_date": (None, models.DateTimeField(),),
+    #     "symptoms": ("-", models.CharField(),),
+    #     "category": ("-", models.CharField(),),
+    #     "examination_details": ("-", models.CharField(),),
+    #     "suggestion": ("-", models.CharField(),),
+    # }
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
