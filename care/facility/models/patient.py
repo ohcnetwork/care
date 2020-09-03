@@ -86,7 +86,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
 
-    pincode = models.IntegerField(default=0, blank=False)
+    pincode = models.IntegerField(default=0, blank=True, null=True)
 
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
@@ -264,7 +264,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "address": "Address",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
-        "state_test_id" : "State Test ID",
+        "state_test_id": "State Test ID",
         "last_consultation__admitted": "Admission Status",
         "last_consultation__admitted_to": "Admission Room Type",
         # Reffered or transferred
