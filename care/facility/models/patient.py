@@ -83,6 +83,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex], default="")
 
+    emergency_phone_number = models.CharField(max_length=14, validators=[phone_number_regex], default="")
+
     # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
 
