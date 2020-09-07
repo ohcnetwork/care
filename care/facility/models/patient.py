@@ -272,7 +272,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "address": "Address",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
-        "state_test_id": "State Test ID",
+        # "state_test_id": "State Test ID",
         "last_consultation__admitted": "Admission Status",
         "last_consultation__admitted_to": "Admission Room Type",
         # Reffered or transferred
