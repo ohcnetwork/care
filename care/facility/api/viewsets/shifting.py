@@ -130,6 +130,8 @@ class ShiftingViewSet(viewsets.ModelViewSet):
                 patient.is_active = True
                 patient.allow_transfer = False
                 patient.save()
+                shifting_obj.status = 80
+                shifting_obj.save(update_fields=["status"])
                 return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
