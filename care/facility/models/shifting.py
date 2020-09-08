@@ -17,6 +17,7 @@ from care.facility.models import (
     reverse_choices,
     PatientRegistration,
     reverse_choices,
+    pretty_boolean,
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
@@ -55,3 +56,23 @@ class ShiftingRequest(FacilityBaseModel):
     vehicle_preference = models.TextField(default="", blank=True)
     comments = models.TextField(default="", blank=True)
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
+
+    CSV_MAPPING = {
+        "created_date": "Created Date",
+        "modified_date": "Modified Date",
+        "patient__name": "Patient Name",
+        "orgin_facility__name": "From Facility",
+        "assigned_facility__name": "To Facility",
+        "shifting_approving_facility__name": "Approving Facility",
+        "status": "Current Status",
+        "is_up_shift": "Upshift",
+        "emergency": "Emergency Shift",
+        "vehicle_preference": "Vehicle Preference",
+        "reason": "Reason for Shifting",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "status": (lambda x: REVERSE_SHIFTING_STATUS_CHOICES.get(x, "-")),
+        "is_up_shift": pretty_boolean,
+        "emergency": pretty_boolean,
+    }

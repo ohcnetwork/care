@@ -83,10 +83,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex], default="")
 
+    emergency_phone_number = models.CharField(max_length=14, validators=[phone_number_regex], default="")
+
     # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
 
-    pincode = models.IntegerField(default=0, blank=False)
+    pincode = models.IntegerField(default=0, blank=True, null=True)
 
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(default=0, null=True)
@@ -133,6 +135,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
+    is_migrant_worker = models.BooleanField(default=False, verbose_name="Is Patient a Migrant Worker",)
+
     disease_status = models.IntegerField(
         choices=DISEASE_STATUS_CHOICES, default=1, blank=True, verbose_name="Disease Status",
     )
@@ -159,9 +163,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Patient's information received date"
     )
 
+    test_id = models.CharField(default="", max_length=100, null=True, blank=True)
+
     allow_transfer = models.BooleanField(default=False)
 
     last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
+
+    will_donate_blood = models.BooleanField(default=False, verbose_name="Is Patient Willing to donate Blood",)
+
+    fit_for_blood_donation = models.BooleanField(default=False, verbose_name="Is Patient fit for donating Blood",)
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -262,6 +272,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "address": "Address",
         "nationality": "Nationality",
         "disease_status": "Disease Status",
+        # "state_test_id": "State Test ID",
         "last_consultation__admitted": "Admission Status",
         "last_consultation__admitted_to": "Admission Room Type",
         # Reffered or transferred
