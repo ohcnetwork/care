@@ -136,7 +136,7 @@ class DailyRound(PatientBaseModel):
                 request.user
                 in PatientConsultation.objects.get(
                     external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.users.all()
+                ).patient.facility.users.all()
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -144,7 +144,7 @@ class DailyRound(PatientBaseModel):
                     request.user.district
                     == PatientConsultation.objects.get(
                         external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).facility.district
+                    ).patient.facility.district
                 )
             )
             or (
@@ -153,7 +153,7 @@ class DailyRound(PatientBaseModel):
                     request.user.state
                     == PatientConsultation.objects.get(
                         external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).facility.state
+                    ).patient.facility.state
                 )
             )
         )
