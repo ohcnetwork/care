@@ -90,12 +90,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
+        """
+        # Removing Patient Hospital Change on Referral
         if not self.pk or self.referred_to is not None:
             # pk is None when the consultation is created
             # referred to is not null when the person is being referred to a new facility
             self.patient.facility = self.referred_to or self.facility
             self.patient.save()
-
+        """
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
@@ -134,7 +136,7 @@ class DailyRound(PatientBaseModel):
                 request.user
                 in PatientConsultation.objects.get(
                     external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).facility.users.all()
+                ).patient.facility.users.all()
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -142,7 +144,7 @@ class DailyRound(PatientBaseModel):
                     request.user.district
                     == PatientConsultation.objects.get(
                         external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).facility.district
+                    ).patient.facility.district
                 )
             )
             or (
@@ -151,7 +153,7 @@ class DailyRound(PatientBaseModel):
                     request.user.state
                     == PatientConsultation.objects.get(
                         external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).facility.state
+                    ).patient.facility.state
                 )
             )
         )
