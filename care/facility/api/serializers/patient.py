@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import transaction
-from django.utils.timezone import make_aware
+from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -277,4 +277,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
+        PatientConsultation.objects.filter(patient=self.instance, discharge_date__isnull=True).update(
+            discharge_date=localtime(now())
+        )
         self.instance.save()
