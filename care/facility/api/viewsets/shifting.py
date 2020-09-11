@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from django.db.models.query_utils import Q
+from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -132,6 +133,10 @@ class ShiftingViewSet(viewsets.ModelViewSet):
                 patient.save()
                 shifting_obj.status = 80
                 shifting_obj.save(update_fields=["status"])
+                # Discharge from all other active consultations
+                PatientConsultation.objects.filter(patient=patient, discharge_date__isnull=True).update(
+                    discharge_date=localtime(now())
+                )
                 return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
