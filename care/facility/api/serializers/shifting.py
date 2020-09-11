@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -143,6 +144,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         validated_data["orgin_facility_id"] = patient.facility.id
         validated_data["patient_id"] = patient.id
+
+        if ShiftingRequest.objects.filter(~Q(status__in=[30, 50, 80]), patient=patient).exists():
+            raise ValidationError({"request": ["Shifting Request for Patient already exists"]})
 
         return super().create(validated_data)
 
