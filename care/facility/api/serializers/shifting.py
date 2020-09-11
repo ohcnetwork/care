@@ -117,7 +117,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             validated_data.pop("status")
 
         orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
-        validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
+        # validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
 
         shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
         validated_data["shifting_approving_facility_id"] = Facility.objects.get(
@@ -140,6 +140,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if patient.allow_transfer == False:
             patient.allow_transfer = True
             patient.save()
+
+        validated_data["orgin_facility_id"] = patient.facility.id
         validated_data["patient_id"] = patient.id
 
         return super().create(validated_data)
