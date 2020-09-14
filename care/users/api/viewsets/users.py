@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import mixins
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
+from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
 
 User = get_user_model()
@@ -70,3 +71,42 @@ class UserViewSet(
         response_data = UserCreateSerializer(user).data
         response_data["password"] = password
         return Response(data=response_data, status=status.HTTP_201_CREATED)
+
+    def has_facility_permission(self, user, facility):
+        return (
+            user.is_superuser
+            or (facility and user in facility.users.all())
+            or (
+                user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (facility and user.district == facility.district)
+            )
+            or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+        )
+
+    @action(detail=True, methods=["PUT"])
+    def add_facility(self, request, *args, **kwargs):
+        user = self.get_object()
+        requesting_user = request.user
+        if "facility" not in request.data:
+            raise ValidationError({"facility": "required"})
+        facility = Facility.objects.filter(external_id=request.data["facility"]).first()
+        if not facility:
+            raise ValidationError({"facility": "Does not Exist"})
+        if not self.has_facility_permission(requesting_user, facility):
+            raise ValidationError({"facility": "Facility Access not Present"})
+        FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
+        return Response(status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["DELETE"])
+    def delete_facility(self, request, *args, **kwargs):
+        user = self.get_object()
+        requesting_user = request.user
+        if "facility" not in request.data:
+            raise ValidationError({"facility": "required"})
+        facility = Facility.objects.filter(external_id=request.data["facility"]).first()
+        if not facility:
+            raise ValidationError({"facility": "Does not Exist"})
+        if not self.has_facility_permission(requesting_user, facility):
+            raise ValidationError({"facility": "Facility Access not Present"})
+        FacilityUser.objects.filter(facility=facility, user=user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
