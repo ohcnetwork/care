@@ -109,6 +109,7 @@ class User(AbstractUser):
     TYPE_VALUE_MAP = {
         "Pharmacist": 3,
         "Volunteer": 5,
+        "StaffReadOnly": 9,
         "Staff": 10,
         "Doctor": 15,
         "DistrictLabAdmin": 25,

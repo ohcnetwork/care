@@ -4,7 +4,7 @@ from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
-from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
+from dry_rest_permissions.generics import DRYPermissions, DRYPermissionFiltersBase
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -108,7 +108,7 @@ class ShiftingViewSet(viewsets.ModelViewSet):
         )
         .order_by("-id")
     )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         ShiftingFilterBackend,
         filters.DjangoFilterBackend,

@@ -78,3 +78,29 @@ class ShiftingRequest(FacilityBaseModel):
         "is_up_shift": pretty_boolean,
         "emergency": pretty_boolean,
     }
+
+    @staticmethod
+    def has_write_permission(request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
+        return True
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    def has_object_update_permission(self, request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
+        return True

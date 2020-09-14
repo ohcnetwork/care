@@ -127,6 +127,12 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
         return DailyRound.has_read_permission(request)
 
     @staticmethod
@@ -179,4 +185,10 @@ class DailyRound(PatientBaseModel):
         )
 
     def has_object_write_permission(self, request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
         return self.has_object_read_permission(request)
