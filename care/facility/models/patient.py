@@ -211,12 +211,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
         today = datetime.date.today()
 
-        if (not self.age) and (self.date_of_birth):
+        if self.date_of_birth:
             self.age = (
                 today.year
                 - self.date_of_birth.year
                 - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
             )
+        elif self.year_of_birth:
+            self.age = today.year - self.year_of_birth
 
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
