@@ -111,10 +111,11 @@ class User(AbstractUser):
         "Volunteer": 5,
         "Staff": 10,
         "Doctor": 15,
-        "Reserved": 20,
         "DistrictLabAdmin": 25,
+        "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
         "StateLabAdmin": 35,
+        "StateReadOnlyAdmin": 39,
         "StateAdmin": 40,
     }
 
