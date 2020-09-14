@@ -61,6 +61,8 @@ class ShiftingRequest(FacilityBaseModel):
         "created_date": "Created Date",
         "modified_date": "Modified Date",
         "patient__name": "Patient Name",
+        "patient__phone_number": "Patient Phone Number",
+        "patient__age": "Patient Age",
         "orgin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
