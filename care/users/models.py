@@ -112,6 +112,7 @@ class User(AbstractUser):
         "StaffReadOnly": 9,
         "Staff": 10,
         "Doctor": 15,
+        "Reserved": 20,
         "DistrictLabAdmin": 25,
         "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
