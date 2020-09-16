@@ -33,14 +33,17 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
             q_objects = Q(orgin_facility__users__id__exact=request.user.id)
             q_objects |= Q(shifting_approving_facility__users__id__exact=request.user.id)
             q_objects |= Q(assigned_facility__users__id__exact=request.user.id)
+            q_objects |= Q(patient__facility__users__id__exact=request.user.id)
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 q_objects |= Q(orgin_facility__state=request.user.state)
                 q_objects |= Q(shifting_approving_facility__state=request.user.state)
                 q_objects |= Q(assigned_facility__state=request.user.state)
+                q_objects |= Q(patient__facility__state=request.user.state)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects |= Q(orgin_facility__district=request.user.district)
                 q_objects |= Q(shifting_approving_facility__district=request.user.district)
                 q_objects |= Q(assigned_facility__district=request.user.district)
+                q_objects |= Q(patient__facility__district=request.user.district)
             queryset = queryset.filter(q_objects).distinct("id")
         return queryset
 
