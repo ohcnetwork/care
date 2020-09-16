@@ -112,6 +112,10 @@ class PatientDetailSerializer(PatientListSerializer):
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
 
+    test_type = ChoiceField(
+        choices=PatientRegistration.TestTypeChoices, required=False, default=PatientRegistration.TestTypeEnum.UNK.value
+    )
+
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
 

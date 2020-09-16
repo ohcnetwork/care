@@ -67,6 +67,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     ActionChoices = [(e.value, e.name) for e in ActionEnum]
 
+    class TestTypeEnum(enum.Enum):
+        UNK = 10
+        ANTIGEN = 20
+        RTPCR = 30
+        CBNAT = 40
+        TRUNAT = 50
+
+    TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
+
     source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
@@ -164,6 +173,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     test_id = models.CharField(default="", max_length=100, null=True, blank=True)
+
+    # Issue #600 Care_Fe
+    date_of_test = models.DateTimeField(null=True, blank=True, verbose_name="Patient's test Date")
+    srf_id = models.CharField(max_length=200, blank=True, default="")
+    test_type = models.IntegerField(choices=TestTypeChoices, default=TestTypeEnum.UNK.value)
 
     allow_transfer = models.BooleanField(default=False)
 
