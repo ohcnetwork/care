@@ -21,7 +21,7 @@ from care.facility.models import (
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
-from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
+from care.users.models import User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
@@ -55,6 +55,10 @@ class ShiftingRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
     comments = models.TextField(default="", blank=True)
+    refering_facility_contact_name = models.TextField(default="", blank=True)
+    refering_facility_contact_number = models.CharField(
+        max_length=14, validators=[phone_number_regex], default="", blank=True
+    )
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
 
     CSV_MAPPING = {
