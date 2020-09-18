@@ -61,6 +61,8 @@ FACILITY_TYPES = [
     (1200, "Second Line Treatment Center"),
     # Use 13xx for Shifting Centers
     (1300, "Shifting Centre"),
+    # Use 14xx for Covid Management Centers.
+    (1400, "Covid Management Center"),
 ]
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
