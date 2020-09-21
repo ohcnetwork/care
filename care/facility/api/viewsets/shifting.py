@@ -25,6 +25,16 @@ from care.facility.models import (
 from care.facility.models.patient_icmr import PatientSampleICMR
 
 
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
+inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
+
+
 class ShiftingFilterBackend(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser:
@@ -32,7 +42,7 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
         else:
             q_objects = Q(orgin_facility__users__id__exact=request.user.id)
             q_objects |= Q(shifting_approving_facility__users__id__exact=request.user.id)
-            q_objects |= Q(assigned_facility__users__id__exact=request.user.id)
+            q_objects |= Q(assigned_facility__users__id__exact=request.user.id, status__gte=20)
             q_objects |= Q(patient__facility__users__id__exact=request.user.id)
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 q_objects |= Q(orgin_facility__state=request.user.state)
@@ -46,16 +56,6 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
                 q_objects |= Q(patient__facility__district=request.user.district)
             queryset = queryset.filter(q_objects).distinct("id")
         return queryset
-
-
-def inverse_choices(choices):
-    output = {}
-    for choice in choices:
-        output[choice[1]] = choice[0]
-    return output
-
-
-inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 class ShiftingFilterSet(filters.FilterSet):

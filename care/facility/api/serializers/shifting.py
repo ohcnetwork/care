@@ -61,7 +61,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        LIMITED_RECIEVING_STATUS_ = []
+        LIMITED_RECIEVING_STATUS_ = [
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            "COMPLETED",
+        ]
         LIMITED_RECIEVING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
         LIMITED_SHIFTING_STATUS_ = [
             "APPROVED",
@@ -69,8 +73,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "AWAITING TRANSPORTATION",
             "TRANSFER IN PROGRESS",
             "COMPLETED",
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
         ]
         LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
         LIMITED_ORGIN_STATUS = []
