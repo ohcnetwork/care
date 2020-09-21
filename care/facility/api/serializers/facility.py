@@ -61,6 +61,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         fields = [
             "id",
             "name",
+            "ward",
             "local_body",
             "district",
             "state",
