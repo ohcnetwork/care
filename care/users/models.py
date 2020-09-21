@@ -85,6 +85,22 @@ class LocalBody(models.Model):
         return f"{self.name} ({self.body_type})"
 
 
+class Ward(models.Model):
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            "local_body",
+            "name",
+            "number",
+        )
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()

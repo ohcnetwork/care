@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from care.users.models import District, LocalBody, State
+from care.users.models import District, LocalBody, State, Ward
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -18,4 +18,10 @@ class DistrictSerializer(serializers.ModelSerializer):
 class LocalBodySerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalBody
+        fields = "__all__"
+
+
+class WardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ward
         fields = "__all__"

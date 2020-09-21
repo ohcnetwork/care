@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from djqscsv import render_to_csv_response
 
 from care.users.forms import UserChangeForm, UserCreationForm
-from care.users.models import District, LocalBody, Skill, State
+from care.users.models import District, LocalBody, Ward, Skill, State
 
 User = get_user_model()
 
@@ -62,6 +62,11 @@ class DistrictAdmin(admin.ModelAdmin):
 
 @admin.register(LocalBody)
 class LocalBodyAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Ward)
+class WardAdmin(admin.ModelAdmin):
     pass
 
 
