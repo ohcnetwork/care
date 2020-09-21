@@ -59,6 +59,7 @@ class ShiftingRequest(FacilityBaseModel):
     refering_facility_contact_number = models.CharField(
         max_length=14, validators=[phone_number_regex], default="", blank=True
     )
+    is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
 
     CSV_MAPPING = {
