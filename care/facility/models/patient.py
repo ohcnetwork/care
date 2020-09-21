@@ -10,6 +10,7 @@ from care.facility.models import (
     BaseModel,
     DISEASE_CHOICES,
     BaseManager,
+    Ward,
     District,
     FacilityBaseModel,
     LocalBody,
@@ -139,7 +140,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_antenatal = models.BooleanField(default=False, verbose_name="Does the patient require Prenatal Care ?")
 
-    ward = models.CharField(max_length=255, default="", verbose_name="Ward of Patient", blank=False)
+    ward_old = models.CharField(max_length=255, default="", verbose_name="Ward of Patient", blank=False)
+
+    ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)

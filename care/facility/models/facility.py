@@ -10,7 +10,7 @@ from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
 )
-from care.users.models import District, LocalBody, State
+from care.users.models import District, LocalBody, State, Ward
 
 
 User = get_user_model()
@@ -87,6 +87,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
+    ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)

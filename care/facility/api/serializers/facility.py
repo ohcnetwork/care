@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -21,6 +21,7 @@ class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
 
 class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
+    ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
@@ -37,6 +38,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "local_body",
             "district",
             "state",
+            "ward_object",
             "local_body_object",
             "district_object",
             "state_object",
@@ -68,6 +70,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "pincode",
             "oxygen_capacity",
             "phone_number",
+            "ward_object",
             "local_body_object",
             "district_object",
             "state_object",
