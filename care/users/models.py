@@ -177,7 +177,6 @@ class User(AbstractUser):
         "district__name": "District",
         "state__name": "State",
         "user_type": "User Type",
-        "created_by__username": "Created By Username",
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
