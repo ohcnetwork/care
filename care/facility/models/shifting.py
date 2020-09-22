@@ -101,6 +101,12 @@ class ShiftingRequest(FacilityBaseModel):
     def has_object_read_permission(self, request):
         return True
 
+    def has_object_write_permission(self, request):
+        return True
+
+    def has_object_transfer_permission(self, request):
+        return True
+
     def has_object_update_permission(self, request):
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
