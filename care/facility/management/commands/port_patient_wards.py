@@ -20,17 +20,19 @@ class Command(BaseCommand):
         failed = 0
         success = 0
         for patient in qs:
-            old_ward = patient.ward_old
-            print(old_ward)
-            if not old_ward:
-                continue
-            local_body = patient.local_body
-            ward_object = Ward.objects.filter(local_body=local_body, number=old_ward).first()
-            if ward_object is None:
+            try:
+                old_ward = patient.ward_old
+                if not old_ward:
+                    continue
+                local_body = patient.local_body
+                ward_object = Ward.objects.filter(local_body=local_body, number=old_ward).first()
+                if ward_object is None:
+                    failed += 1
+                else:
+                    success += 1
+                    patient.ward = ward_object
+                    patient.save()
+            except Exception as e:
                 failed += 1
-            else:
-                success += 1
-                patient.ward = ward_object
-                patient.save()
         print(str(failed), " failed operations ", str(success), " sucessfull operations")
 
