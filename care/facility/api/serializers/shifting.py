@@ -80,8 +80,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
 
         if "is_kasp" in validated_data:
-            if not self.has_facility_permission(user, instance.shifting_approving_facility):
-                raise ValidationError({"kasp": ["Permission Denied"]})
+            if validated_data["is_kasp"] != instance.is_kasp:  # Check only when changed
+                if not self.has_facility_permission(user, instance.shifting_approving_facility):
+                    raise ValidationError({"kasp": ["Permission Denied"]})
 
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
