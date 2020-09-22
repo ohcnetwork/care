@@ -78,7 +78,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
         LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
-        print(validated_data["status"])
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
