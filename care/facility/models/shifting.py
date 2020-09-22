@@ -21,7 +21,7 @@ from care.facility.models import (
 )
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
-from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
+from care.users.models import User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
@@ -55,12 +55,19 @@ class ShiftingRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
     comments = models.TextField(default="", blank=True)
+    refering_facility_contact_name = models.TextField(default="", blank=True)
+    refering_facility_contact_number = models.CharField(
+        max_length=14, validators=[phone_number_regex], default="", blank=True
+    )
+    is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
 
     CSV_MAPPING = {
         "created_date": "Created Date",
         "modified_date": "Modified Date",
         "patient__name": "Patient Name",
+        "patient__phone_number": "Patient Phone Number",
+        "patient__age": "Patient Age",
         "orgin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
@@ -76,3 +83,29 @@ class ShiftingRequest(FacilityBaseModel):
         "is_up_shift": pretty_boolean,
         "emergency": pretty_boolean,
     }
+
+    @staticmethod
+    def has_write_permission(request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
+        return True
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    def has_object_update_permission(self, request):
+        if (
+            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
+        ):
+            return False
+        return True

@@ -67,7 +67,7 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
 class FacilityViewSet(viewsets.ModelViewSet):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
+    queryset = Facility.objects.filter(is_active=True).select_related("ward", "local_body", "district", "state")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,

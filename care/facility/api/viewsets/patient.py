@@ -35,6 +35,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     PatientSearch,
+    CATEGORY_CHOICES,
 )
 from care.facility.models.patient_base import DiseaseStatusEnum, DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
@@ -51,6 +52,9 @@ class PatientFilterSet(filters.FilterSet):
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
+    gender = filters.BooleanFilter(field_name="gender")
+    age = filters.NumericRangeFilter(field_name="age")
+    category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
+from djqscsv import render_to_csv_response
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.patient_sample import PatientSample
@@ -11,7 +12,12 @@ from .models import (
     Disease,
     Facility,
     FacilityCapacity,
+    FacilityInventoryItem,
+    FacilityInventoryItemTag,
+    FacilityInventoryUnit,
+    FacilityInventoryUnitConverter,
     FacilityStaff,
+    FacilityUser,
     FacilityVolunteer,
     Inventory,
     InventoryItem,
@@ -19,10 +25,6 @@ from .models import (
     PatientRegistration,
     Room,
     StaffRoomAllocation,
-    FacilityInventoryItemTag,
-    FacilityInventoryUnit,
-    FacilityInventoryUnitConverter,
-    FacilityInventoryItem,
 )
 
 
@@ -148,10 +150,27 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+class ExportCsvMixin:
+    def export_as_csv(self, request, queryset):
+
+        queryset = FacilityUser.objects.all().values(*FacilityUser.CSV_MAPPING.keys())
+        return render_to_csv_response(
+            queryset, field_header_map=FacilityUser.CSV_MAPPING, field_serializer_map=FacilityUser.CSV_MAKE_PRETTY,
+        )
+
+    export_as_csv.short_description = "Export Selected"
+
+
+class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
+    djangoql_completion_enabled_by_default = True
+    actions = ["export_as_csv"]
+
+
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
 admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(FacilityUser, FacilityUserAdmin)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)

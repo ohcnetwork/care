@@ -11,6 +11,15 @@ def reverse_choices(choices):
     return output
 
 
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
+REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
+
+phone_number_regex = RegexValidator(
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
+    code="invalid_mobile",
+)
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
@@ -27,15 +36,6 @@ DISTRICT_CHOICES = [
     (13, "Kannur"),
     (14, "Kasargode"),
 ]
-
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
-REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
-
-phone_number_regex = RegexValidator(
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-    code="invalid_mobile",
-)
 
 
 class State(models.Model):
@@ -85,6 +85,22 @@ class LocalBody(models.Model):
         return f"{self.name} ({self.body_type})"
 
 
+class Ward(models.Model):
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            "local_body",
+            "name",
+            "number",
+        )
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
@@ -109,16 +125,21 @@ class User(AbstractUser):
     TYPE_VALUE_MAP = {
         "Pharmacist": 3,
         "Volunteer": 5,
+        "StaffReadOnly": 9,
         "Staff": 10,
         "Doctor": 15,
         "Reserved": 20,
         "DistrictLabAdmin": 25,
+        "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
         "StateLabAdmin": 35,
+        "StateReadOnlyAdmin": 39,
         "StateAdmin": 40,
     }
 
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
+
+    REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
@@ -133,6 +154,8 @@ class User(AbstractUser):
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
+    objects = CustomUserManager()
+
     REQUIRED_FIELDS = [
         "user_type",
         "email",
@@ -142,7 +165,22 @@ class User(AbstractUser):
         "district",
     ]
 
-    objects = CustomUserManager()
+    CSV_MAPPING = {
+        "username": "Username",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "phone_number": "Phone Number",
+        "gender": "Gender",
+        "age": "Age",
+        "verified": "verified",
+        "local_body__name": "Local Body",
+        "district__name": "District",
+        "state__name": "State",
+        "user_type": "User Type",
+        "created_by__username": "Created By Username",
+    }
+
+    CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
 
     @staticmethod
     def has_read_permission(request):

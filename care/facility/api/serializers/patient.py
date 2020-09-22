@@ -21,7 +21,7 @@ from care.facility.models import (
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
@@ -40,6 +40,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = serializers.UUIDField(source="facility.external_id", allow_null=True, read_only=True)
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
+    ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
@@ -111,6 +112,10 @@ class PatientDetailSerializer(PatientListSerializer):
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
     contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
+
+    test_type = ChoiceField(
+        choices=PatientRegistration.TestTypeChoices, required=False, default=PatientRegistration.TestTypeEnum.UNK.value
+    )
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
