@@ -78,17 +78,22 @@ class ShiftingSerializer(serializers.ModelSerializer):
         LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
+
+        if "is_kasp" in validated_data:
+            if not self.has_facility_permission(user, instance.shifting_approving_facility):
+                raise ValidationError({"kasp": ["Permission Denied"]})
+
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
                     if not self.has_facility_permission(user, instance.assigned_facility):
-                        validated_data.pop("status")
+                        raise ValidationError({"status": ["Permission Denied"]})
                 else:
-                    validated_data.pop("status")
+                    raise ValidationError({"status": ["Permission Denied"]})
             elif "status" in validated_data:
                 if validated_data["status"] in LIMITED_SHIFTING_STATUS:
                     if not self.has_facility_permission(user, instance.shifting_approving_facility):
-                        validated_data.pop("status")
+                        raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
         if "orgin_facility" in validated_data:
@@ -117,6 +122,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
         # Do Validity checks for each of these data
         if "status" in validated_data:
             validated_data.pop("status")
+
+        validated_data["is_kasp"] = False
 
         orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
         # validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
