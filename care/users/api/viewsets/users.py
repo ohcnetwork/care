@@ -19,7 +19,7 @@ class UserViewSet(
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.all().select_related("local_body", "district", "state")
+    queryset = User.objects.filter(is_superuser=False).select_related("local_body", "district", "state")
     lookup_field = "username"
 
     permission_classes = (
