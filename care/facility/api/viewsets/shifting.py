@@ -10,6 +10,8 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import mixins
+from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer
@@ -82,7 +84,9 @@ class ShiftingFilterSet(filters.FilterSet):
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
 
 
-class ShiftingViewSet(viewsets.ModelViewSet):
+class ShiftingViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+):
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
     queryset = (
