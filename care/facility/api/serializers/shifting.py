@@ -73,6 +73,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "AWAITING TRANSPORTATION",
             "TRANSFER IN PROGRESS",
             "COMPLETED",
+            "PENDING",
         ]
         LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
         LIMITED_ORGIN_STATUS = []
