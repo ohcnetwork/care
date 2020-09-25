@@ -186,9 +186,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
 
-    will_donate_blood = models.BooleanField(default=False, verbose_name="Is Patient Willing to donate Blood",)
+    will_donate_blood = models.BooleanField(default=None, null=True, verbose_name="Is Patient Willing to donate Blood",)
 
-    fit_for_blood_donation = models.BooleanField(default=False, verbose_name="Is Patient fit for donating Blood",)
+    fit_for_blood_donation = models.BooleanField(
+        default=None, null=True, verbose_name="Is Patient fit for donating Blood",
+    )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
