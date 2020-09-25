@@ -96,6 +96,6 @@ def TriageSummary():
         facility_triage_summary.save()
 
 
-@periodic_task(run_every=crontab(hour=23, minute=59))
+@periodic_task(run_every=crontab(hour="*/4", minute=59))
 def run_midnight():
     TriageSummary()
