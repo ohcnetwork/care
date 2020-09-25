@@ -62,12 +62,12 @@ class DistrictAdmin(admin.ModelAdmin):
 
 @admin.register(LocalBody)
 class LocalBodyAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ["name"]
 
 
 @admin.register(Ward)
 class WardAdmin(admin.ModelAdmin):
-    pass
+    autocomplete_fields = ["local_body"]
 
 
 admin.site.register(Skill)
