@@ -22,6 +22,18 @@ def inverse_choices(choices):
 REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
+def has_facility_permission(user, facility):
+    return (
+        user.is_superuser
+        or (facility and user in facility.users.all())
+        or (
+            user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+            and (facility and user.district == facility.district)
+        )
+        or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+    )
+
+
 class ShiftingSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
@@ -48,17 +60,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
             kwargs["partial"] = True
         super().__init__(instance=instance, **kwargs)
 
-    def has_facility_permission(self, user, facility):
-        return (
-            user.is_superuser
-            or (facility and user in facility.users.all())
-            or (
-                user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (facility and user.district == facility.district)
-            )
-            or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
-        )
-
     def update(self, instance, validated_data):
 
         LIMITED_RECIEVING_STATUS_ = [
@@ -82,19 +83,19 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"] != instance.is_kasp:  # Check only when changed
-                if not self.has_facility_permission(user, instance.shifting_approving_facility):
+                if not has_facility_permission(user, instance.shifting_approving_facility):
                     raise ValidationError({"kasp": ["Permission Denied"]})
 
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
-                    if not self.has_facility_permission(user, instance.assigned_facility):
+                    if not has_facility_permission(user, instance.assigned_facility):
                         raise ValidationError({"status": ["Permission Denied"]})
                 else:
                     raise ValidationError({"status": ["Permission Denied"]})
             elif "status" in validated_data:
                 if validated_data["status"] in LIMITED_SHIFTING_STATUS:
-                    if not self.has_facility_permission(user, instance.shifting_approving_facility):
+                    if not has_facility_permission(user, instance.shifting_approving_facility):
                         raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
