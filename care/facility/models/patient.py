@@ -72,8 +72,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         UNK = 10
         ANTIGEN = 20
         RTPCR = 30
-        CBNAT = 40
-        TRUNAT = 50
+        CBNAAT = 40
+        TRUENAT = 50
 
     TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
 
