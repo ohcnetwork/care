@@ -1,8 +1,9 @@
+from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
-from django.db.models.query_utils import Q
+from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
@@ -14,7 +15,9 @@ class PatientConsultationFilter(filters.FilterSet):
     facility = filters.NumberFilter(field_name="facility_id")
 
 
-class PatientConsultationViewSet(ModelViewSet):
+class PatientConsultationViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+):
     lookup_field = "external_id"
     serializer_class = PatientConsultationSerializer
     permission_classes = (
@@ -45,7 +48,9 @@ class PatientConsultationViewSet(ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class DailyRoundsViewSet(ModelViewSet):
+class DailyRoundsViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+):
     serializer_class = DailyRoundSerializer
     permission_classes = (
         IsAuthenticated,

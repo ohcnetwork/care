@@ -64,7 +64,13 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
         return queryset
 
 
-class FacilityViewSet(viewsets.ModelViewSet):
+class FacilityViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """Viewset for facility CRUD operations."""
 
     queryset = Facility.objects.filter(is_active=True).select_related("ward", "local_body", "district", "state")

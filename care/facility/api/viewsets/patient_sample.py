@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -41,7 +41,13 @@ class PatientSampleFilterSet(filters.FilterSet):
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
 
 
-class PatientSampleViewSet(viewsets.ModelViewSet):
+class PatientSampleViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     serializer_class = PatientSampleSerializer
     lookup_field = "external_id"
     queryset = (
