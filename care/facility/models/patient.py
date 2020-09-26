@@ -72,8 +72,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         UNK = 10
         ANTIGEN = 20
         RTPCR = 30
-        CBNAT = 40
-        TRUNAT = 50
+        CBNAAT = 40
+        TRUENAT = 50
 
     TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
 
@@ -186,9 +186,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
 
-    will_donate_blood = models.BooleanField(default=False, verbose_name="Is Patient Willing to donate Blood",)
+    will_donate_blood = models.BooleanField(default=None, null=True, verbose_name="Is Patient Willing to donate Blood",)
 
-    fit_for_blood_donation = models.BooleanField(default=False, verbose_name="Is Patient fit for donating Blood",)
+    fit_for_blood_donation = models.BooleanField(
+        default=None, null=True, verbose_name="Is Patient fit for donating Blood",
+    )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -284,7 +286,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # "nearest_facility__name": "Nearest Facility",
         "age": "Age",
         "gender": "Gender",
-        "ward": "Ward",
+        "ward__name": "Ward Name",
+        "ward__number": "Ward Number",
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
@@ -310,6 +313,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
+        "will_donate_blood": "Will Patient Donate Blood?",
+        "fit_for_blood_donation": "Is Patient Fit for Blood Donation?",
+        "date_of_test": "Date of Sample Test",
+        "srf_id": "SRF Test Id",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
@@ -326,6 +333,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
         "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
         "is_medical_worker": pretty_boolean,
+        "will_donate_blood": pretty_boolean,
+        "fit_for_blood_donation": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),

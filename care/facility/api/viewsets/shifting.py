@@ -14,7 +14,7 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
-from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer
+from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer, has_facility_permission
 from care.facility.models import (
     REVERSE_SHIFTING_STATUS_CHOICES,
     SHIFTING_STATUS_CHOICES,
@@ -136,20 +136,23 @@ class ShiftingViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         shifting_obj = self.get_object()
-        if shifting_obj.assigned_facility and shifting_obj.status >= 70:
-            if shifting_obj.patient:
-                patient = shifting_obj.patient
-                patient.facility = shifting_obj.assigned_facility
-                patient.is_active = True
-                patient.allow_transfer = False
-                patient.save()
-                shifting_obj.status = 80
-                shifting_obj.save(update_fields=["status"])
-                # Discharge from all other active consultations
-                PatientConsultation.objects.filter(patient=patient, discharge_date__isnull=True).update(
-                    discharge_date=localtime(now())
-                )
-                return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
+        if has_facility_permission(request.user, shifting_obj.shifting_approving_facility) or has_facility_permission(
+            request.user, shifting_obj.assigned_facility
+        ):
+            if shifting_obj.assigned_facility and shifting_obj.status >= 70:
+                if shifting_obj.patient:
+                    patient = shifting_obj.patient
+                    patient.facility = shifting_obj.assigned_facility
+                    patient.is_active = True
+                    patient.allow_transfer = False
+                    patient.save()
+                    shifting_obj.status = 80
+                    shifting_obj.save(update_fields=["status"])
+                    # Discharge from all other active consultations
+                    PatientConsultation.objects.filter(patient=patient, discharge_date__isnull=True).update(
+                        discharge_date=localtime(now())
+                    )
+                    return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):

@@ -130,6 +130,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "name": "Facility Name",
         "facility_type": "Facility Type",
         "address": "Address",
+        "ward__name": "Ward Name",
+        "ward__number": "Ward Number",
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
