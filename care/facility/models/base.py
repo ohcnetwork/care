@@ -10,7 +10,9 @@ phone_number_regex = RegexValidator(
 )
 
 
-def pretty_boolean(val, a="YES", b="NO"):
+def pretty_boolean(val, a="YES", b="NO", c="Not Specified"):
+    if val is None:
+        return c
     if val:
         return a
     return b
