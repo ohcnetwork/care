@@ -309,6 +309,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "past_travel": "Travelled to Any Foreign Countries in the last 28 Days",
         "countries_travelled": "Countries Patient has Travelled to",
         "date_of_return": "Return Date from the Last Country if Travelled",
+        "is_migrant_worker": "Is the Patient a Migrant Worker",
         "present_health": "Patient's Current Health Details",
         "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
@@ -335,6 +336,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "is_medical_worker": pretty_boolean,
         "will_donate_blood": pretty_boolean,
         "fit_for_blood_donation": pretty_boolean,
+        "is_migrant_worker": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
