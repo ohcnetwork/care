@@ -118,7 +118,7 @@ class ShiftingViewSet(
             "patient__facility__district",
             "patient__facility__state",
         )
-        .order_by("-modified_date")
+        .order_by("-modified_date", "-id")
     )
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
