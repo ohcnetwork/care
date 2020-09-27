@@ -48,7 +48,7 @@ workflows:
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1},latest"
           executor:
-            name: "ubuntu-1604:201903-01"
+            image: "ubuntu-1604:201903-01"
             use-docker-layer-caching: true
           filters:
             branches:
