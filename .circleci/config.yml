@@ -53,7 +53,7 @@ workflows:
           region: AWS_DEFAULT_REGION
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1},latest"
-          executor: main-executor
+          # executor: main-executor
           filters:
             branches:
               only: master
