@@ -69,13 +69,17 @@ class UserViewSet(
         user = serializer.create(serializer.validated_data)
 
         response_data = UserCreateSerializer(user).data
-        response_data["password"] = password
+        # response_data["password"] = password
         return Response(data=response_data, status=status.HTTP_201_CREATED)
 
     def has_facility_permission(self, user, facility):
         return (
             user.is_superuser
             or (facility and user in facility.users.all())
+            or (
+                user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                and (facility and user.local_body == facility.local_body)
+            )
             or (
                 user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (facility and user.district == facility.district)

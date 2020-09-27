@@ -146,6 +146,7 @@ class User(AbstractUser):
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
+    ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
