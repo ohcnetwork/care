@@ -4,6 +4,12 @@ orbs:
   aws-ecr: circleci/aws-ecr@6.8.0
   aws-eks: circleci/aws-eks@0.2.6
 
+executors:
+  main-executor:
+    machine:
+      image: "ubuntu-1604:201903-01"
+      docker_layer_caching: true
+
 jobs:
   Test-Build:
     docker:
@@ -47,9 +53,7 @@ workflows:
           region: AWS_DEFAULT_REGION
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1},latest"
-          executor:
-            image: "ubuntu-1604:201903-01"
-            use-docker-layer-caching: true
+          executor: main-executor
           filters:
             branches:
               only: master
