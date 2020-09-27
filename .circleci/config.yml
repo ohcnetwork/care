@@ -47,6 +47,9 @@ workflows:
           region: AWS_DEFAULT_REGION
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1},latest"
+          executor:
+            name: "ubuntu-1604:201903-01"
+            use-docker-layer-caching: true
           filters:
             branches:
               only: master
