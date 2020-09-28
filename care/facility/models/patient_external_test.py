@@ -14,7 +14,7 @@ class PatientExternalTest(FacilityBaseModel):
     mobile_number = models.CharField(max_length=15)
     is_repeat = models.BooleanField()
     patient_status = models.CharField(max_length=15)
-    ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=False, blank=False)
+    ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=False, blank=False)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
     lab_name = models.CharField(max_length=255)
@@ -24,6 +24,23 @@ class PatientExternalTest(FacilityBaseModel):
     sample_collection_date = models.DateTimeField()
     result_date = models.DateTimeField()
 
-    header_csv_mapping = {
+    HEADER_CSV_MAPPING = {
         "srf_id": "SRF-ID",
+        "name": "Patient Name",
+        "age": "Age",
+        "age_in": "Age In",
+        "gender": "Gender",
+        "address": "Patient Address",
+        "mobile_number": "Contact Number",
+        "is_repeat": "Is Repeat",
+        "patient_status": "Patient Status",
+        "ward": "Ward",
+        "local_body": "LSGD",
+        "lab_name": "LabName",
+        "test_type": "Testing Kit Used",
+        "sample_type": "Sample Type",
+        "result": "Final Result",
+        "sample_collection_date": "Sample Collection Date",
+        # "result_date": "",
     }
+
