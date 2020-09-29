@@ -192,6 +192,31 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=None, null=True, verbose_name="Is Patient fit for donating Blood",
     )
 
+    # IDSP REQUIREMENTS
+    village = models.CharField(
+        max_length=255, default=None, verbose_name="Vilalge Name of Patient (IDSP Req)", null=True, blank=True
+    )
+    designation_of_health_care_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Designation of Health Care Worker (IDSP Req)", null=True, blank=True
+    )
+    instituion_of_health_care_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Institution of Healtcare Worker (IDSP Req)", null=True, blank=True
+    )
+    transit_details = models.CharField(
+        max_length=255, default=None, verbose_name="Transit Details (IDSP Req)", null=True, blank=True
+    )
+    frontline_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Front Line Worker (IDSP Req)", null=True, blank=True
+    )
+    date_of_result = models.DateTimeField(null=True, blank=True, default=None, verbose_name="Patient's result Date")
+    number_of_primary_contacts = models.IntegerField(
+        null=True, default=None, blank=True, verbose_name="Number of Primary Contacts"
+    )
+    number_of_secondary_contacts = models.IntegerField(
+        null=True, default=None, blank=True, verbose_name="Number of Secondary Contacts"
+    )
+    # IDSP Requirements End
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()
