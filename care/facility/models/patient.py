@@ -343,6 +343,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "fit_for_blood_donation": "Is Patient Fit for Blood Donation?",
         "date_of_test": "Date of Sample Test",
         "srf_id": "SRF Test Id",
+        # IDSP Data
+        "village": "Village",
+        "designation_of_health_care_worker": "Designation of Health Care Worker",
+        "instituion_of_health_care_worker": "Institution of Health Care Worker",
+        "transit_details": "Transit Details",
+        "frontline_worker": "FrontLine Worker",
+        "date_of_result": "Date of Result",
+        "number_of_primary_contacts": "Number of Primary Contacts",
+        "number_of_secondary_contacts": "Number of Secondary Contacts",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
