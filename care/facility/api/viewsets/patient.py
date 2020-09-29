@@ -11,7 +11,7 @@ from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import serializers, status, viewsets
+from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
@@ -30,17 +30,16 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
+    CATEGORY_CHOICES,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
     PatientRegistration,
     PatientSearch,
-    CATEGORY_CHOICES,
 )
-from care.facility.models.patient_base import DiseaseStatusEnum, DISEASE_STATUS_DICT
+from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
-
 from care.utils.filters import CareChoiceFilter
 
 
@@ -82,7 +81,14 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
         return queryset.filter(facility_id__isnull=show_without_facility)
 
 
-class PatientViewSet(HistoryMixin, viewsets.ModelViewSet):
+class PatientViewSet(
+    HistoryMixin,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
+):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     queryset = (

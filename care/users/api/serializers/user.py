@@ -28,6 +28,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
+            "ward",
             "local_body",
             "district",
             "state",
@@ -74,6 +75,16 @@ class UserCreateSerializer(SignUpSerializer):
                 )
         return facility_ids
 
+    def validate_ward(self, value):
+        if (
+            value is not None
+            and value != self.context["created_by"].ward
+            and not self.context["created_by"].is_superuser
+            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+        ):
+            raise serializers.ValidationError("Cannot create for a different Ward")
+        return value
+
     def validate_local_body(self, value):
         if (
             value is not None
@@ -111,8 +122,13 @@ class UserCreateSerializer(SignUpSerializer):
         ):
             raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
 
-        if not validated.get("local_body") and not validated.get("district") and not validated.get("state"):
-            raise exceptions.ValidationError({"__all__": ["One of local body, district or state is required"]})
+        if (
+            not validated.get("ward")
+            and not validated.get("local_body")
+            and not validated.get("district")
+            and not validated.get("state")
+        ):
+            raise exceptions.ValidationError({"__all__": ["One of ward, local body, district or state is required"]})
 
         return validated
 
@@ -120,6 +136,8 @@ class UserCreateSerializer(SignUpSerializer):
         queryset = Facility.objects.all()
         if user.is_superuser:
             pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
+            queryset = queryset.filter(local_body=user.local_body)
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(district=user.district)
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -173,7 +191,7 @@ class UserSerializer(SignUpSerializer):
             "district_object",
             "state_object",
         )
-        read_only_fields = ("is_superuser", "verified")
+        read_only_fields = ("is_superuser", "verified", "user_type", "ward", "local_body", "district", "state")
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
 

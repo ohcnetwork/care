@@ -25,6 +25,8 @@ from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.shifting import ShiftingViewSet
 
+from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
+
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -59,6 +61,8 @@ router.register("otp/patient", OTPPatientDataViewSet)
 
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
+
+router.register("external_result", PatientExternalTestViewSet)
 
 router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
 router.register("pharmacy/prescription", PrescriptionSupplierViewSet)

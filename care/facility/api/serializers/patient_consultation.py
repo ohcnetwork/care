@@ -144,3 +144,16 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "created_date",
             "modified_date",
         )
+
+    def update(self, instance, validated_data):
+
+        if instance.consultation.discharge_date:
+            raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+
+    def validate(self, obj):
+        validated = super().validate(obj)
+
+        if validated["consultation"].discharge_date:
+            raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+
+        return validated

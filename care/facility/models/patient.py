@@ -192,6 +192,31 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=None, null=True, verbose_name="Is Patient fit for donating Blood",
     )
 
+    # IDSP REQUIREMENTS
+    village = models.CharField(
+        max_length=255, default=None, verbose_name="Vilalge Name of Patient (IDSP Req)", null=True, blank=True
+    )
+    designation_of_health_care_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Designation of Health Care Worker (IDSP Req)", null=True, blank=True
+    )
+    instituion_of_health_care_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Institution of Healtcare Worker (IDSP Req)", null=True, blank=True
+    )
+    transit_details = models.CharField(
+        max_length=255, default=None, verbose_name="Transit Details (IDSP Req)", null=True, blank=True
+    )
+    frontline_worker = models.CharField(
+        max_length=255, default=None, verbose_name="Front Line Worker (IDSP Req)", null=True, blank=True
+    )
+    date_of_result = models.DateTimeField(null=True, blank=True, default=None, verbose_name="Patient's result Date")
+    number_of_primary_contacts = models.IntegerField(
+        null=True, default=None, blank=True, verbose_name="Number of Primary Contacts"
+    )
+    number_of_secondary_contacts = models.IntegerField(
+        null=True, default=None, blank=True, verbose_name="Number of Secondary Contacts"
+    )
+    # IDSP Requirements End
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()
@@ -309,6 +334,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "past_travel": "Travelled to Any Foreign Countries in the last 28 Days",
         "countries_travelled": "Countries Patient has Travelled to",
         "date_of_return": "Return Date from the Last Country if Travelled",
+        "is_migrant_worker": "Is the Patient a Migrant Worker",
         "present_health": "Patient's Current Health Details",
         "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
@@ -317,6 +343,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "fit_for_blood_donation": "Is Patient Fit for Blood Donation?",
         "date_of_test": "Date of Sample Test",
         "srf_id": "SRF Test Id",
+        # IDSP Data
+        "village": "Village",
+        "designation_of_health_care_worker": "Designation of Health Care Worker",
+        "instituion_of_health_care_worker": "Institution of Health Care Worker",
+        "transit_details": "Transit Details",
+        "frontline_worker": "FrontLine Worker",
+        "date_of_result": "Date of Result",
+        "number_of_primary_contacts": "Number of Primary Contacts",
+        "number_of_secondary_contacts": "Number of Secondary Contacts",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
@@ -335,6 +370,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "is_medical_worker": pretty_boolean,
         "will_donate_blood": pretty_boolean,
         "fit_for_blood_donation": pretty_boolean,
+        "is_migrant_worker": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),

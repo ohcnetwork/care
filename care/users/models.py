@@ -123,12 +123,15 @@ class Skill(models.Model):
 
 class User(AbstractUser):
     TYPE_VALUE_MAP = {
+        "Transaportation": 2,
         "Pharmacist": 3,
         "Volunteer": 5,
         "StaffReadOnly": 9,
         "Staff": 10,
         "Doctor": 15,
         "Reserved": 20,
+        "WardAdmin": 21,
+        "LocalBodyAdmin": 23,
         "DistrictLabAdmin": 25,
         "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
@@ -143,6 +146,7 @@ class User(AbstractUser):
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
+    ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
