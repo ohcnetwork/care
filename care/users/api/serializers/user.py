@@ -136,12 +136,12 @@ class UserCreateSerializer(SignUpSerializer):
         queryset = Facility.objects.all()
         if user.is_superuser:
             pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
-            queryset = queryset.filter(local_body=user.local_body)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(district=user.district)
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=user.district)
+        elif user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
+            queryset = queryset.filter(local_body=user.local_body)
         else:
             queryset = queryset.filter(users__id__exact=user.id)
         return queryset
