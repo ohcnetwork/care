@@ -28,6 +28,7 @@ from care.facility.models.mixins.permissions.facility import FacilityRelatedPerm
 
 SHIFTING_STATUS_CHOICES = (
     (10, "PENDING"),
+    (15, "ON HOLD"),
     (20, "APPROVED"),
     (30, "REJECTED"),
     (40, "DESTINATION APPROVED"),
