@@ -65,7 +65,7 @@ class PatientExternalTestViewSet(
         return False
 
     @action(methods=["POST"], detail=False)
-    def upload_csv(self, request, *args, **kwargs):
+    def bulk_upsert(self, request, *args, **kwargs):
         if not self.check_upload_permission():
             raise PermissionDenied("Permission to Endpoint Denied")
         # if len(request.FILES.keys()) != 1:
