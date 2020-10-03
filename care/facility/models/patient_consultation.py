@@ -115,6 +115,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 class DailyRound(PatientBaseModel):
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
     temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
+    spo2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True, default=None)
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
