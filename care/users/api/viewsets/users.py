@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from dry_rest_permissions.generics import DRYPermissions
+from requests.api import request
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -8,6 +9,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 
 User = get_user_model()
 
@@ -86,6 +88,13 @@ class UserViewSet(
             )
             or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
         )
+
+    @action(detail=True, methods=["GET"])
+    def get_facilities(self, request, *args, **kwargs):
+        user = self.get_object()
+        facilities = Facility.objects.filter(users=user).select_related("local_body", "district", "state", "ward")
+        facilities = FacilityBasicInfoSerializer(facilities, many=True)
+        return Response(facilities.data)
 
     @action(detail=True, methods=["PUT"])
     def add_facility(self, request, *args, **kwargs):
