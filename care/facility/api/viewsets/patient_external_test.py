@@ -68,19 +68,22 @@ class PatientExternalTestViewSet(
     def upload_csv(self, request, *args, **kwargs):
         if not self.check_upload_permission():
             raise PermissionDenied("Permission to Endpoint Denied")
-        if len(request.FILES.keys()) != 1:
-            raise ValidationError({"file": "Upload 1 File at a time"})
-        csv_file = request.FILES[list(request.FILES.keys())[0]]
-        csv_file.seek(0)
-        reader = csv.DictReader(io.StringIO(csv_file.read().decode("utf-8-sig")))
+        # if len(request.FILES.keys()) != 1:
+        #     raise ValidationError({"file": "Upload 1 File at a time"})
+        # csv_file = request.FILES[list(request.FILES.keys())[0]]
+        # csv_file.seek(0)
+        # reader = csv.DictReader(io.StringIO(csv_file.read().decode("utf-8-sig")))
+        if "sample_tests" not in request.data:
+            raise ValidationError({"sample_tests": "No Data was provided"})
+        if type(request.data["sample_tests"]) != type([]):
+            raise ValidationError({"sample_tests": "Data should be provided as a list"})
         errors = {}
         counter = 0
-        for row in reader:
+        for sample in request.data["sample_tests"]:
             counter += 1
-            object_data = {}
-            for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
-                object_data[attribute] = row[PatientExternalTest.HEADER_CSV_MAPPING[attribute]]
-            serialiser_obj = PatientExternalTestSerializer(data=object_data)
+            # for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
+            #     object_data[attribute] = row[PatientExternalTest.HEADER_CSV_MAPPING[attribute]]
+            serialiser_obj = PatientExternalTestSerializer(data=sample)
             serialiser_obj.is_valid()
             errors[counter] = prettyerrors(serialiser_obj._errors)
         if list(errors.keys()):
