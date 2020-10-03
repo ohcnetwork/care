@@ -138,6 +138,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
+    action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
+    review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+
     class Meta:
         model = DailyRound
         exclude = (
@@ -150,13 +153,51 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         if instance.consultation.discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
 
+        if "action" in validated_data or "review_time" in validated_data:
+            patient = instance.consultation.patient
+
+            if "action" in validated_data:
+                action = validated_data.pop("action")
+                patient.action = action
+
+            if "review_time" in validated_data:
+                review_time = validated_data.pop("review_time")
+                if review_time >= 0:
+                    patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+            patient.save()
+
         return super().update(instance, validated_data)
 
+    def create(self, validated_data):
+
+        if "action" in validated_data or "review_time" in validated_data:
+            patient = validated_data["consultation"].consultation.patient
+
+            if "action" in validated_data:
+                action = validated_data.pop("action")
+                patient.action = action
+
+            if "review_time" in validated_data:
+                review_time = validated_data.pop("review_time")
+                if review_time >= 0:
+                    patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+            patient.save()
+
+        return super().create(validated_data)
 
     def validate(self, obj):
         validated = super().validate(obj)
 
         if validated["consultation"].discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+
+        if "action" in validated:
+            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
+                if "review_time" not in validated:
+                    raise ValidationError(
+                        {"review_time": [f"This field is required as the patient has been requested Review."]}
+                    )
+                if validated["review_time"] <= 0:
+                    raise ValidationError({"review_time": [f"This field value is must be greater than 0."]})
 
         return validated
