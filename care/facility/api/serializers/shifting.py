@@ -71,7 +71,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
         LIMITED_SHIFTING_STATUS_ = [
             "APPROVED",
             "REJECTED",
-            "AWAITING TRANSPORTATION",
+            "PATIENT TO BE PICKED UP",
+            "TRANSPORTATION TO BE ARRANGED",
             "TRANSFER IN PROGRESS",
             "COMPLETED",
             "PENDING",
