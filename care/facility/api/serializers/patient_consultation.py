@@ -171,7 +171,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         if "action" in validated_data or "review_time" in validated_data:
-            patient = validated_data["consultation"].consultation.patient
+            patient = validated_data["consultation"].patient
 
             if "action" in validated_data:
                 action = validated_data.pop("action")
