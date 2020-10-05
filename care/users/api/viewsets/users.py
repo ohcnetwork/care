@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from dry_rest_permissions.generics import DRYPermissions
 from requests.api import request
 from rest_framework import mixins, status, viewsets
@@ -7,11 +8,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
+
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
-from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 
 User = get_user_model()
+
+
+def remove_facility_user_cache(user_id):
+    key = "user_facilities:" + str(user_id)
+    cache.delete(key)
+    return True
 
 
 class UserViewSet(
@@ -98,7 +106,10 @@ class UserViewSet(
 
     @action(detail=True, methods=["PUT"])
     def add_facility(self, request, *args, **kwargs):
+        # Remove User Facility Cache
         user = self.get_object()
+        remove_facility_user_cache(user.id)
+        # Cache Deleted
         requesting_user = request.user
         if "facility" not in request.data:
             raise ValidationError({"facility": "required"})
@@ -112,7 +123,10 @@ class UserViewSet(
 
     @action(detail=True, methods=["DELETE"])
     def delete_facility(self, request, *args, **kwargs):
+        # Remove User Facility Cache
         user = self.get_object()
+        remove_facility_user_cache(user.id)
+        # Cache Deleted
         requesting_user = request.user
         if "facility" not in request.data:
             raise ValidationError({"facility": "required"})

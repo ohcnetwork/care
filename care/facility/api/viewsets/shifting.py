@@ -1,16 +1,16 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
-from dry_rest_permissions.generics import DRYPermissions, DRYPermissionFiltersBase
-from rest_framework import status, viewsets
+from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
@@ -24,6 +24,7 @@ from care.facility.models import (
     ShiftingRequest,
     User,
 )
+from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.patient_icmr import PatientSampleICMR
 
 
@@ -34,6 +35,17 @@ def inverse_choices(choices):
     return output
 
 
+def get_accessible_facilities(user):
+    user_id = str(user.id)
+    key = "user_facilities:" + user_id
+    hit = cache.get(key)
+    if not hit:
+        facility_ids = list(FacilityUser.objects.filter(user_id=user_id).values_list("facility__id", flat=True))
+        cache.set(key, facility_ids)
+        return facility_ids
+    return hit
+
+
 inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
@@ -42,21 +54,22 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
         if request.user.is_superuser:
             pass
         else:
-            q_objects = Q(orgin_facility__users__id__exact=request.user.id)
-            q_objects |= Q(shifting_approving_facility__users__id__exact=request.user.id)
-            q_objects |= Q(assigned_facility__users__id__exact=request.user.id, status__gte=20)
-            q_objects |= Q(patient__facility__users__id__exact=request.user.id)
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                q_objects |= Q(orgin_facility__state=request.user.state)
+                q_objects = Q(orgin_facility__state=request.user.state)
                 q_objects |= Q(shifting_approving_facility__state=request.user.state)
                 q_objects |= Q(assigned_facility__state=request.user.state)
-                q_objects |= Q(patient__facility__state=request.user.state)
+                return queryset.filter(q_objects)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                q_objects |= Q(orgin_facility__district=request.user.district)
+                q_objects = Q(orgin_facility__district=request.user.district)
                 q_objects |= Q(shifting_approving_facility__district=request.user.district)
                 q_objects |= Q(assigned_facility__district=request.user.district)
-                q_objects |= Q(patient__facility__district=request.user.district)
-            queryset = queryset.filter(q_objects).distinct("id")
+                return queryset.filter(q_objects)
+            facility_ids = get_accessible_facilities(request.user)
+            q_objects = Q(orgin_facility__id__in=facility_ids)
+            q_objects |= Q(shifting_approving_facility__id__in=facility_ids)
+            q_objects |= Q(assigned_facility__id__in=facility_ids, status__gte=20)
+            q_objects |= Q(patient__facility__id__in=facility_ids)
+            queryset = queryset.filter(q_objects)
         return queryset
 
 
@@ -89,37 +102,35 @@ class ShiftingViewSet(
 ):
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
-    queryset = (
-        ShiftingRequest.objects.all()
-        .select_related(
-            "orgin_facility",
-            "orgin_facility__ward",
-            "orgin_facility__local_body",
-            "orgin_facility__district",
-            "orgin_facility__state",
-            "shifting_approving_facility",
-            "shifting_approving_facility__ward",
-            "shifting_approving_facility__local_body",
-            "shifting_approving_facility__district",
-            "shifting_approving_facility__state",
-            "assigned_facility",
-            "assigned_facility__ward",
-            "assigned_facility__local_body",
-            "assigned_facility__district",
-            "assigned_facility__state",
-            "patient",
-            "patient__ward",
-            "patient__local_body",
-            "patient__district",
-            "patient__state",
-            "patient__facility",
-            "patient__facility__ward",
-            "patient__facility__local_body",
-            "patient__facility__district",
-            "patient__facility__state",
-        )
-        .order_by("id")
+    queryset = ShiftingRequest.objects.all().select_related(
+        "orgin_facility",
+        "orgin_facility__ward",
+        "orgin_facility__local_body",
+        "orgin_facility__district",
+        "orgin_facility__state",
+        "shifting_approving_facility",
+        "shifting_approving_facility__ward",
+        "shifting_approving_facility__local_body",
+        "shifting_approving_facility__district",
+        "shifting_approving_facility__state",
+        "assigned_facility",
+        "assigned_facility__ward",
+        "assigned_facility__local_body",
+        "assigned_facility__district",
+        "assigned_facility__state",
+        "patient",
+        "patient__ward",
+        "patient__local_body",
+        "patient__district",
+        "patient__state",
+        "patient__facility",
+        "patient__facility__ward",
+        "patient__facility__local_body",
+        "patient__facility__district",
+        "patient__facility__state",
     )
+    ordering_fields = ["id", "created_date", "modified_date", "emergency"]
+
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         ShiftingFilterBackend,
