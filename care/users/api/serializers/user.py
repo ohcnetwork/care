@@ -224,6 +224,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
+            "username",
             "local_body_object",
             "district_object",
             "state_object",
