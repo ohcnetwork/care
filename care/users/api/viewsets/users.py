@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from requests.api import request
 from rest_framework import mixins, status, viewsets
@@ -22,6 +23,33 @@ def remove_facility_user_cache(user_id):
     return True
 
 
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
+INVERSE_USER_TYPE = inverse_choices(User.TYPE_CHOICES)
+
+
+class UserFilterSet(filters.FilterSet):
+    first_name = filters.CharFilter(field_name="first_name", lookup_expr="icontains")
+    last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
+    username = filters.CharFilter(field_name="username", lookup_expr="icontains")
+    phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+
+    def get_user_type(
+        self, queryset, field_name, value,
+    ):
+        if value:
+            if value in INVERSE_USER_TYPE:
+                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+        return queryset
+
+    user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
+
+
 class UserViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet,
 ):
@@ -36,6 +64,8 @@ class UserViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserFilterSet
 
     # def get_permissions(self):
     #     return [
@@ -97,14 +127,17 @@ class UserViewSet(
             or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
         )
 
-    @action(detail=True, methods=["GET"])
+    def has_user_type_permission_elevation(self, init_user, dest_user):
+        return init_user.user_type >= dest_user.user_type
+
+    @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
         facilities = Facility.objects.filter(users=user).select_related("local_body", "district", "state", "ward")
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
         return Response(facilities.data)
 
-    @action(detail=True, methods=["PUT"])
+    @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
     def add_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
         user = self.get_object()
@@ -116,12 +149,14 @@ class UserViewSet(
         facility = Facility.objects.filter(external_id=request.data["facility"]).first()
         if not facility:
             raise ValidationError({"facility": "Does not Exist"})
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["DELETE"])
+    @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def delete_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
         user = self.get_object()
@@ -133,6 +168,8 @@ class UserViewSet(
         facility = Facility.objects.filter(external_id=request.data["facility"]).first()
         if not facility:
             raise ValidationError({"facility": "Does not Exist"})
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
