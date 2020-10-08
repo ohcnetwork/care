@@ -12,6 +12,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework import filters as rest_framework_filters
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer, has_facility_permission
@@ -132,10 +133,7 @@ class ShiftingViewSet(
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
     permission_classes = (IsAuthenticated, DRYPermissions)
-    filter_backends = (
-        ShiftingFilterBackend,
-        filters.DjangoFilterBackend,
-    )
+    filter_backends = (ShiftingFilterBackend, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
     filterset_class = ShiftingFilterSet
 
     def get_serializer_class(self):
