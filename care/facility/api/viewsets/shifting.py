@@ -94,6 +94,7 @@ class ShiftingFilterSet(filters.FilterSet):
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
     emergency = filters.BooleanFilter(field_name="emergency")
     is_up_shift = filters.BooleanFilter(field_name="is_up_shift")
+    is_kasp = filters.BooleanFilter(field_name="is_kasp")
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
 
