@@ -38,6 +38,7 @@ class UserFilterSet(filters.FilterSet):
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    last_login = filters.DateFromToRangeFilter(field_name="last_login")
 
     def get_user_type(
         self, queryset, field_name, value,
@@ -66,7 +67,7 @@ class UserViewSet(
     )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserFilterSet
-
+    # last_login
     # def get_permissions(self):
     #     return [
     #         DRYPermissions(),
