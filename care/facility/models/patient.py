@@ -217,6 +217,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     # IDSP Requirements End
 
+    # Extras
+    cluster_name = models.CharField(
+        max_length=255, default=None, verbose_name="Name/ Cluster of Contact", null=True, blank=True
+    )
+    is_declared_positive = models.BooleanField(default=None, null=True, verbose_name="Is Patient Declared Positive",)
+    date_declared_positive = models.DateTimeField(
+        null=True, blank=True, verbose_name="Date Patient is Declared Positive"
+    )
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()
