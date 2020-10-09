@@ -55,6 +55,7 @@ FACILITY_TYPES = [
     (950, "Corona Testing Labs"),
     # Use 10xx for Corona Care Center
     (1000, "Corona Care Centre"),
+    (1010, "COVID-19 Domiciliary Care Center"),
     # Use 11xx for First Line Treatment Centre
     (1100, "First Line Treatment Centre"),
     # Use 12xx for Second Line Treatment Center
