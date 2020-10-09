@@ -108,7 +108,9 @@ class UserViewSet(
             data={**request.data, "password": password}, context={"created_by": request.user}
         )
         serializer.is_valid(raise_exception=True)
-
+        username = request.data["username"]
+        if User.objects.filter(username=username).exists():
+            raise ValidationError({"username": "User with Given Username Already Exists"})
         user = serializer.create(serializer.validated_data)
 
         response_data = UserCreateSerializer(user).data
