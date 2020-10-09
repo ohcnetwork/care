@@ -158,6 +158,8 @@ class UserViewSet(
             raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
+        if self.has_facility_permission(user, facility):
+            raise ValidationError({"facility": "User Already has permission to this facility"})
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -177,5 +179,7 @@ class UserViewSet(
             raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
+        if not self.has_facility_permission(user, facility):
+            raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
