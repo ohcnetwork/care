@@ -3,6 +3,7 @@ from django.core.cache import cache
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from requests.api import request
+from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -38,6 +39,7 @@ class UserFilterSet(filters.FilterSet):
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    last_login = filters.DateFromToRangeFilter(field_name="last_login")
 
     def get_user_type(
         self, queryset, field_name, value,
@@ -64,9 +66,10 @@ class UserViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
     filterset_class = UserFilterSet
-
+    ordering_fields = ["id", "date_joined", "last_login"]
+    # last_login
     # def get_permissions(self):
     #     return [
     #         DRYPermissions(),
@@ -105,7 +108,9 @@ class UserViewSet(
             data={**request.data, "password": password}, context={"created_by": request.user}
         )
         serializer.is_valid(raise_exception=True)
-
+        username = request.data["username"]
+        if User.objects.filter(username=username).exists():
+            raise ValidationError({"username": "User with Given Username Already Exists"})
         user = serializer.create(serializer.validated_data)
 
         response_data = UserCreateSerializer(user).data
@@ -153,6 +158,8 @@ class UserViewSet(
             raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
+        if self.has_facility_permission(user, facility):
+            raise ValidationError({"facility": "User Already has permission to this facility"})
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -172,5 +179,7 @@ class UserViewSet(
             raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
+        if not self.has_facility_permission(user, facility):
+            raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

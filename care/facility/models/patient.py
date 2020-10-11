@@ -217,6 +217,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     # IDSP Requirements End
 
+    # Extras
+    cluster_name = models.CharField(
+        max_length=255, default=None, verbose_name="Name/ Cluster of Contact", null=True, blank=True
+    )
+    is_declared_positive = models.BooleanField(default=None, null=True, verbose_name="Is Patient Declared Positive",)
+    date_declared_positive = models.DateTimeField(
+        null=True, blank=True, verbose_name="Date Patient is Declared Positive"
+    )
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()
@@ -352,6 +361,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "date_of_result": "Date of Result",
         "number_of_primary_contacts": "Number of Primary Contacts",
         "number_of_secondary_contacts": "Number of Secondary Contacts",
+        "cluster_name": "Name/ Cluster of Contact",
+        "is_declared_positive": "Is Patient Declared Positive",
+        "date_declared_positive": "Date Patient is Declared Positive",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
@@ -371,6 +383,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "will_donate_blood": pretty_boolean,
         "fit_for_blood_donation": pretty_boolean,
         "is_migrant_worker": pretty_boolean,
+        "is_declared_positive": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),

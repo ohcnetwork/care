@@ -1,30 +1,13 @@
-import datetime
-import enum
-
 from django.db import models
-from fernet_fields import EncryptedCharField, EncryptedIntegerField, EncryptedTextField
-from partial_index import PQ, PartialIndex
-from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
-    DISEASE_CHOICES,
-    BaseManager,
-    District,
     FacilityBaseModel,
-    LocalBody,
-    PatientBaseModel,
-    State,
-    reverse_choices,
-    PatientRegistration,
-    reverse_choices,
     pretty_boolean,
+    reverse_choices,
+    READ_ONLY_USER_TYPES,
+    FACILITY_TYPES,
 )
-from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES
-from care.users.models import User, phone_number_regex
-from care.utils.models.jsonfield import JSONField
-from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
-
+from care.users.models import phone_number_regex
 
 SHIFTING_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -39,6 +22,14 @@ SHIFTING_STATUS_CHOICES = (
     (80, "COMPLETED"),
 )
 
+VEHICLE_CHOICES = [
+    (10, "D Level Ambulance"),
+    (20, "All double chambered Ambulance with EMT"),
+    (30, "Ambulance without EMT"),
+    (40, "Car"),
+    (50, "Auto-rickshaw"),
+]
+
 REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
 
 
@@ -48,6 +39,7 @@ class ShiftingRequest(FacilityBaseModel):
     shifting_approving_facility = models.ForeignKey(
         "Facility", on_delete=models.SET_NULL, null=True, related_name="shifting_approving_facility"
     )
+    assigned_facility_type = models.IntegerField(choices=FACILITY_TYPES, default=None, null=True)
     assigned_facility = models.ForeignKey(
         "Facility", on_delete=models.SET_NULL, null=True, related_name="assigned_facility"
     )
@@ -56,6 +48,7 @@ class ShiftingRequest(FacilityBaseModel):
     is_up_shift = models.BooleanField(default=False)  # False for Down , True for UP
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
+    preferred_vehicle_choice = models.IntegerField(choices=VEHICLE_CHOICES, default=None, null=True)
     comments = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
@@ -88,11 +81,7 @@ class ShiftingRequest(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return True
 
@@ -110,10 +99,6 @@ class ShiftingRequest(FacilityBaseModel):
         return True
 
     def has_object_update_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return True
