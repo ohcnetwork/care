@@ -61,7 +61,7 @@ class PatientFilterSet(filters.FilterSet):
     # Consultation Fields
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
-    last_consultation_admitted_to = filters.NumericRangeFilter(field_name="last_consultation__admitted_to")
+    last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
