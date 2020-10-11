@@ -123,7 +123,7 @@ class Skill(models.Model):
 
 class User(AbstractUser):
     TYPE_VALUE_MAP = {
-        "Transaportation": 2,
+        "Transportation": 2,
         "Pharmacist": 3,
         "Volunteer": 5,
         "StaffReadOnly": 9,
