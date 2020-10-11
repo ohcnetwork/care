@@ -53,11 +53,15 @@ class PatientFilterSet(filters.FilterSet):
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
-    gender = filters.BooleanFilter(field_name="gender")
+    gender = filters.NumberFilter(field_name="gender")
     age = filters.NumericRangeFilter(field_name="age")
     category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    # Consultation Fields
+    last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
+    last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
+    last_consultation_admitted_to = filters.NumericRangeFilter(field_name="last_consultation__admitted_to")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
