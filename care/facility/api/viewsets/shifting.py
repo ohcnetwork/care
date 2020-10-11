@@ -1,32 +1,20 @@
 from django.conf import settings
-from django.core.cache import cache
-from django.db import transaction
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import mixins, status, viewsets
+from rest_framework import filters as rest_framework_filters
+from rest_framework import mixins, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework import filters as rest_framework_filters
 
-from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer, has_facility_permission
-from care.facility.models import (
-    REVERSE_SHIFTING_STATUS_CHOICES,
-    SHIFTING_STATUS_CHOICES,
-    PatientConsultation,
-    PatientRegistration,
-    PatientSample,
-    ShiftingRequest,
-    User,
-)
-from care.facility.models.facility import Facility, FacilityUser
-from care.facility.models.patient_icmr import PatientSampleICMR
+from care.facility.models import SHIFTING_STATUS_CHOICES, PatientConsultation, ShiftingRequest, User
+
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def inverse_choices(choices):
@@ -34,17 +22,6 @@ def inverse_choices(choices):
     for choice in choices:
         output[choice[1]] = choice[0]
     return output
-
-
-def get_accessible_facilities(user):
-    user_id = str(user.id)
-    key = "user_facilities:" + user_id
-    hit = cache.get(key)
-    if not hit:
-        facility_ids = list(FacilityUser.objects.filter(user_id=user_id).values_list("facility__id", flat=True))
-        cache.set(key, facility_ids)
-        return facility_ids
-    return hit
 
 
 inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)

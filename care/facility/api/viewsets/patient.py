@@ -11,6 +11,7 @@ from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
+from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -40,6 +41,7 @@ from care.facility.models import (
 from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter
 
 
@@ -54,6 +56,8 @@ class PatientFilterSet(filters.FilterSet):
     gender = filters.BooleanFilter(field_name="gender")
     age = filters.NumericRangeFilter(field_name="age")
     category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
+    created_date = filters.DateFromToRangeFilter(field_name="created_date")
+    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -67,7 +71,8 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
-                queryset = queryset.filter(facility__users__id__exact=request.user.id).distinct("id")
+                allowed_facilities = get_accessible_facilities(request.user)
+                queryset = queryset.filter(facility__id__in=allowed_facilities)
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -91,28 +96,23 @@ class PatientViewSet(
 ):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
-    queryset = (
-        PatientRegistration.objects.all()
-        .select_related(
-            "local_body",
-            "district",
-            "state",
-            "facility",
-            "facility__local_body",
-            "facility__district",
-            "facility__state",
-            "nearest_facility",
-            "nearest_facility__local_body",
-            "nearest_facility__district",
-            "nearest_facility__state",
-        )
-        .order_by("-id")
+    queryset = PatientRegistration.objects.all().select_related(
+        "local_body",
+        "district",
+        "state",
+        "facility",
+        "facility__local_body",
+        "facility__district",
+        "facility__state",
+        "nearest_facility",
+        "nearest_facility__local_body",
+        "nearest_facility__district",
+        "nearest_facility__state",
     )
+    ordering_fields = ["id", "created_date", "modified_date"]
+
     serializer_class = PatientDetailSerializer
-    filter_backends = (
-        PatientDRYFilter,
-        filters.DjangoFilterBackend,
-    )
+    filter_backends = (PatientDRYFilter, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
     filterset_class = PatientFilterSet
 
     def get_queryset(self):
