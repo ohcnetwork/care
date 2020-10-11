@@ -52,7 +52,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     )
     assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
-    facility_type = ChoiceField(choices=FACILITY_TYPES)
+    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES)
     preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES)
 
     orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
