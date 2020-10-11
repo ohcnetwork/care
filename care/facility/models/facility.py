@@ -25,6 +25,8 @@ ROOM_TYPES = [
     (10, "ICU"),
     (20, "Ventilator"),
     (30, "Covid Beds"),
+    (40, "KASP Beds"),
+    (50, "KASP ICU beds"),
 ]
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
