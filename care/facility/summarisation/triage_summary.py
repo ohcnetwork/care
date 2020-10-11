@@ -30,9 +30,9 @@ class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
         queryset = self.queryset
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
             return queryset.filter(facility__district=user.district)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
             return queryset.filter(facility__state=user.state)
         return queryset.filter(facility__users__id__exact=user.id)
 
