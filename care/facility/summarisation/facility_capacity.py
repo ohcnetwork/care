@@ -1,22 +1,18 @@
-from datetime import timedelta, datetime
+from care.facility.api.serializers import patient
+from care.facility.models.patient import PatientRegistration
 from django.utils.timezone import localtime, now
 
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 from django_filters import rest_framework as filters
-from rest_framework import serializers, status, viewsets
-from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework import serializers
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
-from care.facility.models import FacilityCapacity, FacilityRelatedSummary
+from care.facility.models import FacilityCapacity, FacilityRelatedSummary, PatientRegistration
 from care.users.models import User
 
 
@@ -81,7 +77,14 @@ def FacilityCapacitySummary():
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(FacilityCapacitySerializer(capacity_object).data)
 
-    for i in list(capacity_summary.keys()):
+    for facility_id in capacity_summary:
+        # Calculate Actual Patients Discharged and Live in this Facility
+        patients_in_facility = PatientRegistration.objects.filter(facility_id=facility_id)
+        capacity_summary[facility_id]["actual_live_patients"] = patients_in_facility.count()
+        discharge_patients = patients_in_facility.filter(is_active=False)
+        capacity_summary[facility_id]["actual_discharged_patients"] = discharge_patients.count()
+
+    for i in capacity_summary:
         facility_summary_obj = None
         if FacilityRelatedSummary.objects.filter(
             s_type="FacilityCapacity", facility_id=i, created_date__gte=current_date
