@@ -113,7 +113,7 @@ class PatientViewSet(
         "nearest_facility__district",
         "nearest_facility__state",
     )
-    ordering_fields = ["id", "created_date", "modified_date"]
+    ordering_fields = ["id", "created_date", "modified_date", "review_time"]
 
     serializer_class = PatientDetailSerializer
     filter_backends = (PatientDRYFilter, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
