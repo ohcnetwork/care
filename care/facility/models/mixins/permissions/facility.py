@@ -9,7 +9,18 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     def has_object_read_permission(self, request):
         return (
-            super().has_object_read_permission(request) or request.user.is_superuser or request.user in self.users.all()
+            (request.user.is_superuser)
+            or (
+                hasattr(self, "district")
+                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                and request.user.district == self.district
+            )
+            or (
+                hasattr(self, "state")
+                and request.user.user_type >= User.TYPE_VALUE_MAP["StateAdmin"]
+                and request.user.state == self.state
+            )
+            or (request.user in self.users.all())
         )
 
     def has_object_write_permission(self, request):
@@ -19,7 +30,10 @@ class FacilityPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return super().has_write_permission(request) or request.user.is_superuser or request.user in self.users.all()
+        return request.user.is_superuser or request.user in self.users.all()
+
+    def has_object_update_permission(self, request):
+        return self.has_object_write_permission(request)
 
 
 class FacilityRelatedPermissionMixin(BasePermissionMixin):
