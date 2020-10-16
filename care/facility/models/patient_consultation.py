@@ -125,6 +125,7 @@ class DailyRound(PatientBaseModel):
     recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
+    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
 
     @staticmethod
     def has_write_permission(request):
