@@ -8,12 +8,13 @@ from care.facility.api.serializers.patient import PatientDetailSerializer, Patie
 from care.facility.models import (
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
+    VEHICLE_CHOICES,
     Facility,
     PatientRegistration,
     ShiftingRequest,
     User,
-    VEHICLE_CHOICES,
 )
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
 
 
@@ -62,6 +63,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
     assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to")
 
     def __init__(self, instance=None, **kwargs):
         if instance:

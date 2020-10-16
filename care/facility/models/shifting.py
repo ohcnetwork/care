@@ -1,13 +1,13 @@
 from django.db import models
 
 from care.facility.models import (
+    FACILITY_TYPES,
+    READ_ONLY_USER_TYPES,
     FacilityBaseModel,
     pretty_boolean,
     reverse_choices,
-    READ_ONLY_USER_TYPES,
-    FACILITY_TYPES,
 )
-from care.users.models import phone_number_regex
+from care.users.models import User, phone_number_regex
 
 SHIFTING_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -57,6 +57,7 @@ class ShiftingRequest(FacilityBaseModel):
     is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
     is_assigned_to_user = models.BooleanField(default=False)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_assigned_to",)
 
     CSV_MAPPING = {
         "created_date": "Created Date",
@@ -97,6 +98,7 @@ class ShiftingRequest(FacilityBaseModel):
         if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return True
+
     def has_object_transfer_permission(self, request):
         return True
 
