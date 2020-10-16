@@ -58,6 +58,7 @@ class PatientFilterSet(filters.FilterSet):
     category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    srf_id = filters.CharFilter(field_name="srf_id")
     # Consultation Fields
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
