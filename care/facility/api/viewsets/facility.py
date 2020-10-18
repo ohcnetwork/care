@@ -156,7 +156,10 @@ class FacilityViewSet(
         if "user_type" in request.GET:
             if request.GET["user_type"] in User.TYPE_VALUE_MAP:
                 user_type_filter = User.TYPE_VALUE_MAP[request.GET["user_type"]]
-        users = self.get_object().users.all()
+        facility = Facility.objects.filter(external_id=external_id).first()
+        if not facility:
+            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        users = facility.users.all()
         if user_type_filter:
             users = users.filter(user_type=user_type_filter)
         users = users.order_by("-last_login")
