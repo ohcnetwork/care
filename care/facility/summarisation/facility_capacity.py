@@ -80,7 +80,7 @@ def FacilityCapacitySummary():
     for facility_id in capacity_summary:
         # Calculate Actual Patients Discharged and Live in this Facility
         patients_in_facility = PatientRegistration.objects.filter(facility_id=facility_id)
-        capacity_summary[facility_id]["actual_live_patients"] = patients_in_facility.count()
+        capacity_summary[facility_id]["actual_live_patients"] = patients_in_facility.filter(is_active=True).count()
         discharge_patients = patients_in_facility.filter(is_active=False)
         capacity_summary[facility_id]["actual_discharged_patients"] = discharge_patients.count()
 
