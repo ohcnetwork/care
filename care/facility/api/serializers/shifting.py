@@ -64,7 +64,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
-    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to")
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
     def __init__(self, instance=None, **kwargs):
         if instance:
