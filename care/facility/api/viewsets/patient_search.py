@@ -40,10 +40,10 @@ class PatientScopedSearchViewSet(ListModelMixin, GenericViewSet):
         queryset = self.queryset.filter(facility__isnull=False)
         if user.is_superuser:
             return self.queryset  # Gets patient without a facility as well
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
-            return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
     def list(self, request, *args, **kwargs):

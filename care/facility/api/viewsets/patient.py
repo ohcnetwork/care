@@ -54,14 +54,25 @@ class PatientFilterSet(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
     gender = filters.NumberFilter(field_name="gender")
-    age = filters.NumericRangeFilter(field_name="age")
+    age = filters.NumberFilter(field_name="age")
+    age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
+    age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
     category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    srf_id = filters.CharFilter(field_name="srf_id")
+    # Location Based Filtering
+    district = filters.NumberFilter(field_name="district__id")
+    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    local_body = filters.NumberFilter(field_name="local_body__id")
+    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    state = filters.NumberFilter(field_name="state__id")
+    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
     last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
+    last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

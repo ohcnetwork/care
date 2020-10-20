@@ -137,6 +137,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     additional_symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES, required=False)
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
+    admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=True)
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
