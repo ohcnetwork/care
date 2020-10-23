@@ -61,6 +61,7 @@ class PatientFilterSet(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
+    is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
@@ -124,7 +125,7 @@ class PatientViewSet(
         "nearest_facility__district",
         "nearest_facility__state",
     )
-    ordering_fields = ["id", "created_date", "modified_date", "review_time"]
+    ordering_fields = ["id", "created_date", "modified_date", "review_time", "date_declared_positive"]
 
     serializer_class = PatientDetailSerializer
     filter_backends = (PatientDRYFilter, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
