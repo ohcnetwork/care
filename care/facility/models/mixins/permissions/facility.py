@@ -33,7 +33,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
         return request.user.is_superuser or request.user in self.users.all()
 
     def has_object_update_permission(self, request):
-        return self.has_object_write_permission(request)
+        return super().has_object_update_permission(request) or self.has_object_write_permission(request)
 
 
 class FacilityRelatedPermissionMixin(BasePermissionMixin):
