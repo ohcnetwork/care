@@ -12,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
-from care.facility.models import FacilityCapacity, FacilityRelatedSummary, PatientRegistration
+from care.facility.models import FacilityCapacity, FacilityRelatedSummary, PatientRegistration, Facility
 from care.users.models import User
 
 
@@ -70,19 +70,22 @@ def FacilityCapacitySummary():
     )
     capacity_summary = {}
     current_date = localtime(now()).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    for facility_obj in Facility.objects.all():
+        # Calculate Actual Patients Discharged and Live in this Facility
+        patients_in_facility = PatientRegistration.objects.filter(facility_id=facility_obj.id).select_related(
+            "state", "district", "local_body"
+        )
+        capacity_summary[facility_obj.id] = FacilitySerializer(facility_obj).data
+        capacity_summary[facility_obj.id]["actual_live_patients"] = patients_in_facility.filter(is_active=True).count()
+        discharge_patients = patients_in_facility.filter(is_active=False)
+        capacity_summary[facility_obj.id]["actual_discharged_patients"] = discharge_patients.count()
+
     for capacity_object in capacity_objects:
         facility_id = capacity_object.facility.id
         if facility_id not in capacity_summary:
-            capacity_summary[facility_id] = FacilitySerializer(capacity_object.facility).data
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(FacilityCapacitySerializer(capacity_object).data)
-
-    for facility_id in capacity_summary:
-        # Calculate Actual Patients Discharged and Live in this Facility
-        patients_in_facility = PatientRegistration.objects.filter(facility_id=facility_id)
-        capacity_summary[facility_id]["actual_live_patients"] = patients_in_facility.filter(is_active=True).count()
-        discharge_patients = patients_in_facility.filter(is_active=False)
-        capacity_summary[facility_id]["actual_discharged_patients"] = discharge_patients.count()
 
     for i in capacity_summary:
         facility_summary_obj = None
