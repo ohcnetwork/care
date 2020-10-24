@@ -17,14 +17,14 @@ class PatientExternalTest(FacilityBaseModel):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=False, blank=False)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
-    source = models.CharField(max_length=255)
-    patient_category = models.CharField(max_length=255)
+    source = models.CharField(max_length=255, blank=True , null=True)
+    patient_category = models.CharField(max_length=255 , blank=True , null=True)
     lab_name = models.CharField(max_length=255)
     test_type = models.CharField(max_length=255)
     sample_type = models.CharField(max_length=255)
     result = models.CharField(max_length=255)
-    sample_collection_date = models.DateField()
-    result_date = models.DateField()
+    sample_collection_date = models.DateField(blank=True , null=True)
+    result_date = models.DateField(blank=True , null=True)
 
     HEADER_CSV_MAPPING = {
         "srf_id": "SRF-ID",
@@ -45,6 +45,7 @@ class PatientExternalTest(FacilityBaseModel):
         "sample_type": "Sample Type",
         "result": "Final Result",
         "sample_collection_date": "Sample Collection Date",
+        "source": "Source"
         # "result_date": "",
     }
 

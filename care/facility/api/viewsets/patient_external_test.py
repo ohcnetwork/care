@@ -79,17 +79,19 @@ class PatientExternalTestViewSet(
             raise ValidationError({"sample_tests": "Data should be provided as a list"})
         errors = {}
         counter = 0
+        ser_objects = []
+        invalid = False
         for sample in request.data["sample_tests"]:
             counter += 1
             serialiser_obj = PatientExternalTestSerializer(data=sample)
-            serialiser_obj.is_valid()
+            valid = serialiser_obj.is_valid()
             current_error = prettyerrors(serialiser_obj._errors)
-            if current_error:
+            if current_error and (not valid):
                 errors[counter] = current_error
-        if list(errors.keys()):
+                invalid = True
+            ser_objects.append(serialiser_obj)
+        if invalid:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-        for sample in request.data["sample_tests"]:
-            serialiser_obj = PatientExternalTestSerializer(data=sample)
-            serialiser_obj.is_valid()
-            serialiser_obj.save()
+        for ser_object in ser_objects:
+            ser_object.save()
         return Response(status=status.HTTP_202_ACCEPTED)

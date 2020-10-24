@@ -11,8 +11,8 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
 
-    sample_collection_date = serializers.DateField(input_formats=["%Y-%m-%d"])
-    result_date = serializers.DateField(input_formats=["%Y-%m-%d"])
+    sample_collection_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
+    result_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
 
     def validate_empty_values(self, data, *args, **kwargs):
         # if "is_repeat" in data:
