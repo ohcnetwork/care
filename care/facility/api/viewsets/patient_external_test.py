@@ -81,13 +81,15 @@ class PatientExternalTestViewSet(
         counter = 0
         for sample in request.data["sample_tests"]:
             counter += 1
-            # for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
-            #     object_data[attribute] = row[PatientExternalTest.HEADER_CSV_MAPPING[attribute]]
             serialiser_obj = PatientExternalTestSerializer(data=sample)
             serialiser_obj.is_valid()
             current_error = prettyerrors(serialiser_obj._errors)
-            if(current_error):
+            if current_error:
                 errors[counter] = current_error
         if list(errors.keys()):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        for sample in request.data["sample_tests"]:
+            serialiser_obj = PatientExternalTestSerializer(data=sample)
+            serialiser_obj.is_valid()
+            serialiser_obj.save()
         return Response(status=status.HTTP_202_ACCEPTED)
