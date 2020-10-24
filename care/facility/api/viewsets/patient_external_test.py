@@ -85,7 +85,9 @@ class PatientExternalTestViewSet(
             #     object_data[attribute] = row[PatientExternalTest.HEADER_CSV_MAPPING[attribute]]
             serialiser_obj = PatientExternalTestSerializer(data=sample)
             serialiser_obj.is_valid()
-            errors[counter] = prettyerrors(serialiser_obj._errors)
+            current_error = prettyerrors(serialiser_obj._errors)
+            if(current_error):
+                errors[counter] = current_error
         if list(errors.keys()):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_202_ACCEPTED)
