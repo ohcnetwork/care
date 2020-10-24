@@ -1,16 +1,19 @@
 from django_filters import rest_framework as filters
-from rest_framework import viewsets
+from rest_framework.viewsets import GenericViewSet
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.models import District, LocalBody, State, Ward
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
-class StateViewSet(viewsets.ModelViewSet):
+
+class StateViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = StateSerializer
     queryset = State.objects.all().order_by("name")
-    http_method_names = ["get"]  # allows only reads
 
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):
@@ -25,18 +28,28 @@ class DistrictFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
-class DistrictViewSet(viewsets.ModelViewSet):
+class DistrictViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = DistrictSerializer
     queryset = District.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictFilterSet
-    http_method_names = ["get"]  # allows only reads
 
     @action(detail=True, methods=["get"])
     def local_bodies(self, *args, **kwargs):
         district = self.get_object()
         serializer = LocalBodySerializer(district.localbody_set.all().order_by("name"), many=True)
         return Response(data=serializer.data)
+
+    @method_decorator(cache_page(3600))
+    @action(detail=True, methods=["get"])
+    def get_all_local_body(self, *args, **kwargs):
+        district = self.get_object()
+        data = []
+        for lsg_object in LocalBody.objects.filter(district=district):
+            local_body_object = LocalBodySerializer(lsg_object).data
+            local_body_object["wards"] = WardSerializer(Ward.objects.filter(local_body=lsg_object), many=True).data
+            data.append(local_body_object)
+        return Response(data)
 
 
 class LocalBodyFilterSet(filters.FilterSet):
@@ -47,12 +60,11 @@ class LocalBodyFilterSet(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
-class LocalBodyViewSet(viewsets.ModelViewSet):
+class LocalBodyViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LocalBodySerializer
     queryset = LocalBody.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LocalBodyFilterSet
-    http_method_names = ["get"]  # allows only reads
 
 
 class WardFilterSet(filters.FilterSet):
@@ -65,9 +77,9 @@ class WardFilterSet(filters.FilterSet):
     ward_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
-class WardViewSet(viewsets.ModelViewSet):
+class WardViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = WardSerializer
     queryset = Ward.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = WardFilterSet
-    http_method_names = ["get"]  # allows only reads
+

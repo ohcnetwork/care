@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -34,7 +34,7 @@ class PatientExternalTestFilter(filters.FilterSet):
 
 
 class PatientExternalTestViewSet(
-    RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
     queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all()
@@ -79,13 +79,19 @@ class PatientExternalTestViewSet(
             raise ValidationError({"sample_tests": "Data should be provided as a list"})
         errors = {}
         counter = 0
+        ser_objects = []
+        invalid = False
         for sample in request.data["sample_tests"]:
             counter += 1
-            # for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
-            #     object_data[attribute] = row[PatientExternalTest.HEADER_CSV_MAPPING[attribute]]
             serialiser_obj = PatientExternalTestSerializer(data=sample)
-            serialiser_obj.is_valid()
-            errors[counter] = prettyerrors(serialiser_obj._errors)
-        if list(errors.keys()):
+            valid = serialiser_obj.is_valid()
+            current_error = prettyerrors(serialiser_obj._errors)
+            if current_error and (not valid):
+                errors[counter] = current_error
+                invalid = True
+            ser_objects.append(serialiser_obj)
+        if invalid:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        for ser_object in ser_objects:
+            ser_object.save()
         return Response(status=status.HTTP_202_ACCEPTED)
