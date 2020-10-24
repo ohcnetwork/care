@@ -128,10 +128,9 @@ class PatientDetailSerializer(PatientListSerializer):
             "year_of_birth",
             "countries_travelled_old",
             "external_id",
-            "is_active"
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by")
+        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
 
     def get_last_consultation(self, obj):
         last_consultation = PatientConsultation.objects.filter(patient=obj).last()
