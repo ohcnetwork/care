@@ -37,6 +37,8 @@ class PatientExternalTest(FacilityBaseModel):
         "is_repeat": "Is Repeat",
         "patient_status": "Patient Status",
         "ward": "Ward",
+        "district": "District",
+        "result_date": "Result Date",
         "local_body": "LSGD",
         "lab_name": "LabName",
         "test_type": "Testing Kit Used",

@@ -15,12 +15,12 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
     result_date = serializers.DateField(input_formats=["%Y-%m-%d"])
 
     def validate_empty_values(self, data, *args, **kwargs):
-        if "is_repeat" in data:
-            is_repeat = data["is_repeat"]
-            if is_repeat.lower() == "yes":
-                data["is_repeat"] = True
-            else:
-                data["is_repeat"] = False
+        # if "is_repeat" in data:
+        #     is_repeat = data["is_repeat"]
+        #     if is_repeat.lower() == "yes":
+        #         data["is_repeat"] = True
+        #     else:
+        #         data["is_repeat"] = False
         local_body = data["local_body"]
         local_body_obj = LocalBody.objects.filter(name__icontains=local_body).first()
         if local_body_obj:
