@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models import PatientExternalTest
-from care.users.models import Ward, LocalBody
+from care.users.models import District, Ward, LocalBody
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 
 
@@ -21,12 +21,29 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         #         data["is_repeat"] = True
         #     else:
         #         data["is_repeat"] = False
-        local_body = data["local_body"]
-        local_body_obj = LocalBody.objects.filter(name__icontains=local_body).first()
-        if local_body_obj:
-            data["local_body"] = local_body_obj.id
+
+        district_obj = None
+        if "district" in data:
+            district = data["district"]
+            district_obj = District.objects.filter(name__icontains=district).first()
+            if district_obj:
+                data["district"] = district_obj.id
+            else:
+                raise ValidationError({"district": ["District Does not Exist"]})
         else:
-            raise ValidationError({"local_body": ["Local Body Does not Exist"]})
+            raise ValidationError({"district": ["District Not Present in Data"]})
+
+        local_body_obj = None
+        if "local_body" in data and district_obj:
+            local_body = data["local_body"]
+            local_body_obj = LocalBody.objects.filter(name__icontains=local_body, district=district_obj).first()
+            if local_body_obj:
+                data["local_body"] = local_body_obj.id
+            else:
+                raise ValidationError({"local_body": ["Local Body Does not Exist"]})
+        else:
+            raise ValidationError({"local_body": ["Local Body Not Present in Data"]})
+
         if "ward" in data and local_body_obj:
             if data["ward"]:
                 ward_obj = Ward.objects.filter(number=data["ward"], local_body=local_body_obj).first()
