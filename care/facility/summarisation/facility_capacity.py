@@ -83,7 +83,7 @@ def FacilityCapacitySummary():
 
     for capacity_object in capacity_objects:
         facility_id = capacity_object.facility.id
-        if facility_id not in capacity_summary:
+        if "availability" not in capacity_summary[facility_id]:
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(FacilityCapacitySerializer(capacity_object).data)
 
