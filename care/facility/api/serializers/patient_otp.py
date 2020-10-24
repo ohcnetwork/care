@@ -2,6 +2,7 @@ import random
 import string
 from datetime import timedelta
 
+import boto3
 from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import localtime, now
@@ -17,6 +18,25 @@ def rand_pass(size):
     generate_pass = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(size)])
 
     return generate_pass
+
+
+def send_sms(otp, phone_number):
+
+    if settings.USE_SMS:
+        client = boto3.client(
+            "sns",
+            aws_access_key_id=settings.SNS_ACCESS_KEY,
+            aws_secret_access_key=settings.SNS_SECRET_KEY,
+            region_name=settings.SNS_REGION,
+        )
+        client.publish(
+            PhoneNumber=phone_number,
+            Message="CoronaSafe Network Patient Management System Login, OTP is {} . Please do not share this Confidential Login Token with anyone else".format(
+                otp
+            ),
+        )
+    else:
+        print(otp, phone_number)
 
 
 class PatientMobileOTPSerializer(serializers.ModelSerializer):
@@ -38,8 +58,8 @@ class PatientMobileOTPSerializer(serializers.ModelSerializer):
         otp_obj = super().create(validated_data)
         otp = rand_pass(settings.OTP_LENGTH)
 
-        print(otp)
-        # S4W8Q
+        send_sms(otp, otp_obj.phone_number)
+
         otp_obj.otp = otp
         otp_obj.save()
 

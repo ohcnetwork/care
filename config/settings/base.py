@@ -389,3 +389,7 @@ OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
 OTP_MAX_REPEATS_WINDOW = 10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
 
 OTP_LENGTH = 5
+
+# SMS
+USE_SMS = False
+
