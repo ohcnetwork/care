@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -34,7 +34,7 @@ class PatientExternalTestFilter(filters.FilterSet):
 
 
 class PatientExternalTestViewSet(
-    RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
     queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all()
