@@ -27,6 +27,12 @@ ROOM_TYPES = [
     (30, "Covid Beds"),
     (40, "KASP Beds"),
     (50, "KASP ICU beds"),
+    (60, "KASP Oxygen beds"),
+    (70, "KASP Ventilator beds"),
+    (100, "Covid Ventilators"),
+    (110, "Covid ICU"),
+    (120, "Covid Oxygen beds"),
+    (150, "Oxygen beds"),
 ]
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
