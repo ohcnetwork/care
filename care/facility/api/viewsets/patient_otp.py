@@ -40,7 +40,7 @@ class PatientMobileOTPViewSet(
             raise ValidationError({"otp": "Invalid OTP"})
 
         otp_object.is_used = True
-        # otp_object.save()
+        otp_object.save()
         # return JWT
 
         token = PatientToken()

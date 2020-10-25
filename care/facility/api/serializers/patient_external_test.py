@@ -35,6 +35,8 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
         local_body_obj = None
         if "local_body" in data and district_obj:
+            if not data["local_body"]:
+                raise ValidationError({"local_body": ["Local Body Cannot Be Empty"]})
             local_body = data["local_body"]
             local_body_obj = LocalBody.objects.filter(name__icontains=local_body, district=district_obj).first()
             if local_body_obj:

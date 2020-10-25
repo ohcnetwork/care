@@ -80,6 +80,7 @@ def FacilityCapacitySummary():
         capacity_summary[facility_obj.id]["actual_live_patients"] = patients_in_facility.filter(is_active=True).count()
         discharge_patients = patients_in_facility.filter(is_active=False)
         capacity_summary[facility_obj.id]["actual_discharged_patients"] = discharge_patients.count()
+        capacity_summary[facility_obj.id]["availability"] = []
 
     for capacity_object in capacity_objects:
         facility_id = capacity_object.facility.id

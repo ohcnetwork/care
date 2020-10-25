@@ -37,7 +37,7 @@ class PatientExternalTestViewSet(
     RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
-    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all()
+    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all().order_by("-id")
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
