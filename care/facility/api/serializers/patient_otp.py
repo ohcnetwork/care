@@ -49,7 +49,9 @@ class PatientMobileOTPSerializer(serializers.ModelSerializer):
         # Filter to only allow n sms per phone number per 6 hour
 
         sent_otps = PatientMobileOTP.objects.filter(
-            created_date__gte=(localtime(now()) - timedelta(settings.OTP_REPEAT_WINDOW))
+            created_date__gte=(localtime(now()) - timedelta(settings.OTP_REPEAT_WINDOW)),
+            is_used=False,
+            phone_number=validated_data["phone_number"],
         )
 
         if sent_otps.count() >= settings.OTP_MAX_REPEATS_WINDOW:
