@@ -24,13 +24,10 @@ class OTPPatientDataViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = PatientDetailSerializer
 
     def get_queryset(self):
-        is_service = getattr(self.request.user, "is_alternative_login", False)
+        is_otp_login = getattr(self.request.user, "is_alternative_login", False)
         queryset = self.queryset
-        if is_service:
-            patients = PatientSearch.objects.filter(phone_number=self.request.user.phone_number).values_list(
-                "id", flat=True
-            )
-            queryset = queryset.filter(id__in=patients)
+        if is_otp_login:
+            queryset = queryset.filter(phone_number=self.request.user.phone_number)
         else:
             queryset = queryset.none()
         return queryset
