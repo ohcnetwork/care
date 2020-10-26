@@ -1,19 +1,18 @@
-from care.facility.api.serializers import patient
-from care.facility.models.patient import PatientRegistration
-from django.utils.timezone import localtime, now
-
 from celery.decorators import periodic_task
 from celery.schedules import crontab
+from django.utils.decorators import method_decorator
+from django.utils.timezone import localtime, now
+from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
 from rest_framework import serializers
 from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
-from care.facility.models import FacilityCapacity, FacilityRelatedSummary, PatientRegistration, Facility
-from care.users.models import User
+from care.facility.models import Facility, FacilityCapacity, FacilityRelatedSummary, PatientRegistration
+from care.facility.models.patient import PatientRegistration
 
 
 class FacilitySummarySerializer(serializers.ModelSerializer):
@@ -46,22 +45,26 @@ class FacilityCapacitySummaryViewSet(
         .order_by("-created_date")
         .select_related("facility", "facility__state", "facility__district", "facility__local_body")
     )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-        if user.is_superuser:
-            return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-            return queryset.filter(facility__district=user.district)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-            return queryset.filter(facility__state=user.state)
-        return queryset.filter(facility__users__id__exact=user.id)
+    @method_decorator(cache_page(60 * 10))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     queryset = self.queryset
+    #     if user.is_superuser:
+    #         return queryset
+    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
+    #         return queryset.filter(facility__district=user.district)
+    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
+    #         return queryset.filter(facility__state=user.state)
+    #     return queryset.filter(facility__users__id__exact=user.id)
 
 
 def FacilityCapacitySummary():
