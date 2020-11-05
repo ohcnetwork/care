@@ -31,6 +31,7 @@ def prettyerrors(errors):
 
 class PatientExternalTestFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    srf_id = filters.CharFilter(field_name="srf_id", lookup_expr="icontains")
 
 
 class PatientExternalTestViewSet(
