@@ -18,9 +18,12 @@ class PatientPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_read_permission(self, request):
+        doctor_allowed = False
+        if self.last_consultation:
+            doctor_allowed = self.last_consultation.assigned_to = request.user
         return request.user.is_superuser or (
             (hasattr(self, "created_by") and request.user == self.created_by)
-            or (self.facility and request.user in self.facility.users.all())
+            or (self.facility and request.user in self.facility.users.all() or doctor_allowed)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
