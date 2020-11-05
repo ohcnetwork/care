@@ -158,11 +158,8 @@ class DailyRound(PatientBaseModel):
     def has_object_read_permission(self, request):
         return (
             request.user.is_superuser
-            or (
-                self.consultation.patient.facility
-                and request.user in self.consultation.patient.facility.users.all()
-                or self.consultation.assigned_to == request.user
-            )
+            or (self.consultation.patient.facility and request.user in self.consultation.patient.facility.users.all())
+            or (self.consultation.assigned_to == request.user)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
