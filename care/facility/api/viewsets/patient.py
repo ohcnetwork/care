@@ -90,7 +90,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 allowed_facilities = get_accessible_facilities(request.user)
                 filters = Q(facility__id__in=allowed_facilities)
                 filters |= Q(last_consultation__assigned_to=request.user)
-                queryset.filter(filters)
+                queryset = queryset.filter(filters)
 
         return queryset
 
@@ -128,7 +128,7 @@ class PatientViewSet(
         "nearest_facility__district",
         "nearest_facility__state",
         "last_consultation",
-        "last_consultation__assigned_to"
+        "last_consultation__assigned_to",
     )
     ordering_fields = ["id", "created_date", "modified_date", "review_time", "date_declared_positive"]
 
