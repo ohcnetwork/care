@@ -1,6 +1,6 @@
 from django.db import models
 
-from care.facility.models import FacilityBaseModel, PatientRegistration
+from care.facility.models import FacilityBaseModel, PatientRegistration, pretty_boolean
 from care.users.models import User, Ward, LocalBody, District
 
 
@@ -17,14 +17,40 @@ class PatientExternalTest(FacilityBaseModel):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=False, blank=False)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
-    source = models.CharField(max_length=255, blank=True , null=True)
-    patient_category = models.CharField(max_length=255 , blank=True , null=True)
+    source = models.CharField(max_length=255, blank=True, null=True)
+    patient_category = models.CharField(max_length=255, blank=True, null=True)
     lab_name = models.CharField(max_length=255)
     test_type = models.CharField(max_length=255)
     sample_type = models.CharField(max_length=255)
     result = models.CharField(max_length=255)
-    sample_collection_date = models.DateField(blank=True , null=True)
-    result_date = models.DateField(blank=True , null=True)
+    sample_collection_date = models.DateField(blank=True, null=True)
+    result_date = models.DateField(blank=True, null=True)
+
+    CSV_MAPPING = {
+        "name": "Patient Name",
+        "age": "Age",
+        "age_in": "Age In",
+        "result": "Final Result",
+        "srf_id": "SRF-ID",
+        "gender": "Gender",
+        "address": "Patient Address",
+        "district__name": "District",
+        "local_body__name": "LSGD",
+        "ward__name": "Ward Name",
+        "ward__number": "Ward Number",
+        "mobile_number": "Contact Number",
+        "is_repeat": "Is Repeat",
+        "patient_status": "Patient Status",
+        "sample_type": "Sample Type",
+        "test_type": "Testing Kit Used",
+        "sample_collection_date": "Sample Collection Date",
+        "result_date": "Result Date",
+        "lab_name": "LabName",
+        "source": "Source",
+        "patient_category": "Patient Category",
+    }
+
+    CSV_MAKE_PRETTY = {"is_repeat": pretty_boolean}
 
     HEADER_CSV_MAPPING = {
         "srf_id": "SRF-ID",

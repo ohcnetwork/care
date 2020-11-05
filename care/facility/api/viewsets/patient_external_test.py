@@ -1,14 +1,14 @@
-import csv
-import io
 from collections import defaultdict
 
+from django.conf import settings
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -64,6 +64,15 @@ class PatientExternalTestViewSet(
         ):
             return True
         return False
+
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            mapping = PatientExternalTest.CSV_MAPPING.copy()
+            pretty_mapping = PatientExternalTest.CSV_MAKE_PRETTY.copy()
+            queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
+            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
+
+        return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request, *args, **kwargs):
