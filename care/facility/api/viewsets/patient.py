@@ -88,7 +88,10 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
-                queryset = queryset.filter(facility__id__in=allowed_facilities)
+                filters = Q(facility__id__in=allowed_facilities)
+                filters |= Q(last_consultation__assigned_to=request.user)
+                queryset.filter(filters)
+
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -124,6 +127,8 @@ class PatientViewSet(
         "nearest_facility__local_body",
         "nearest_facility__district",
         "nearest_facility__state",
+        "last_consultation",
+        "last_consultation__assigned_to"
     )
     ordering_fields = ["id", "created_date", "modified_date", "review_time", "date_declared_positive"]
 
@@ -236,7 +241,7 @@ class PatientViewSet(
         patient = self.get_object()
         patient.is_active = discharged
         patient.allow_transfer = not discharged
-        patient.save(update_fields=["allow_transfer" , "is_active"])
+        patient.save(update_fields=["allow_transfer", "is_active"])
         last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         if last_consultation:
             if last_consultation.discharge_date is None:
