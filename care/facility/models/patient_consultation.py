@@ -139,30 +139,19 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_read_permission(request):
+        consultation = PatientConsultation.objects.get(
+            external_id=request.parser_context["kwargs"]["consultation_external_id"]
+        )
         return request.user.is_superuser or (
-            (
-                request.user
-                in PatientConsultation.objects.get(
-                    external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                ).patient.facility.users.all()
-            )
+            (request.user in consultation.patient.facility.users.all())
+            or (request.user == consultation.assigned_to)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    request.user.district
-                    == PatientConsultation.objects.get(
-                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).patient.facility.district
-                )
+                and (request.user.district == consultation.patient.facility.district)
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    request.user.state
-                    == PatientConsultation.objects.get(
-                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    ).patient.facility.state
-                )
+                and (request.user.state == consultation.patient.facility.state)
             )
         )
 
