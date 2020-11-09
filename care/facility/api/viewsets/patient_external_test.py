@@ -85,9 +85,6 @@ class PatientExternalTestViewSet(
             pretty_mapping = PatientExternalTest.CSV_MAKE_PRETTY.copy()
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
-
-        print(self.filter_queryset(self.get_queryset()).query)
-
         return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
