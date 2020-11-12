@@ -135,6 +135,9 @@ class UserViewSet(
     def has_user_type_permission_elevation(self, init_user, dest_user):
         return init_user.user_type >= dest_user.user_type
 
+    def check_facility_user_exists(self, user, facility):
+        return FacilityUser.objects.filter(facility=facility, user=user).exists()
+
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
@@ -158,7 +161,7 @@ class UserViewSet(
             raise ValidationError({"facility": "cannot Access Higher Level User"})
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
-        if self.has_facility_permission(user, facility):
+        if self.check_facility_user_exists(user, facility):
             raise ValidationError({"facility": "User Already has permission to this facility"})
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)

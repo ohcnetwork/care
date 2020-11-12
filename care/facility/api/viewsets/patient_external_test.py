@@ -1,14 +1,15 @@
-import csv
-import io
 from collections import defaultdict
 
+from django.conf import settings
 from django_filters import rest_framework as filters
+from django_filters import Filter
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -17,7 +18,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.patient_external_test import PatientExternalTestSerializer
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 from care.facility.models import PatientExternalTest
-from care.users.models import User
+from care.users.models import User, Ward
 
 
 def prettyerrors(errors):
@@ -29,8 +30,22 @@ def prettyerrors(errors):
     return dict(pretty_errors)
 
 
+class MFilter(Filter):
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        values = value.split(",")
+        _filter = {self.field_name + "__in": values, self.field_name + "__isnull": False}
+        qs = qs.filter(**_filter)
+        return qs
+
+
 class PatientExternalTestFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    srf_id = filters.CharFilter(field_name="srf_id", lookup_expr="icontains")
+    mobile_number = filters.CharFilter(field_name="mobile_number", lookup_expr="icontains")
+    wards = MFilter(field_name="ward__id")
+    districts = MFilter(field_name="district__id")
 
 
 class PatientExternalTestViewSet(
@@ -63,6 +78,14 @@ class PatientExternalTestViewSet(
         ):
             return True
         return False
+
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            mapping = PatientExternalTest.CSV_MAPPING.copy()
+            pretty_mapping = PatientExternalTest.CSV_MAKE_PRETTY.copy()
+            queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
+            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
+        return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request, *args, **kwargs):

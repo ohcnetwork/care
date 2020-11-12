@@ -74,6 +74,7 @@ class ShiftingFilterSet(filters.FilterSet):
     is_kasp = filters.BooleanFilter(field_name="is_kasp")
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    assigned_to = filters.NumberFilter(field_name="assigned_to__id")
 
 
 class ShiftingViewSet(
