@@ -66,6 +66,14 @@ LOCAL_BODY_CHOICES = (
     (50, "Others"),
 )
 
+
+def reverse_lower_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0].lower()] = choice[1]
+    return output
+
+
 REVERSE_LOCAL_BODY_CHOICES = reverse_choices(LOCAL_BODY_CHOICES)
 
 

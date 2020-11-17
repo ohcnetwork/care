@@ -42,10 +42,10 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         else:
             raise ValidationError({"district": ["District Not Present in Data"]})
 
-        if data["local_body_type"] not in REVERSE_LOCAL_BODY_CHOICES:
+        if data["local_body_type"].lower() not in REVERSE_LOCAL_BODY_CHOICES:
             raise ValidationError({"local_body_type": ["Invalid Local Body Type"]})
 
-        local_body_type = REVERSE_LOCAL_BODY_CHOICES[data["local_body_type"]]
+        local_body_type = REVERSE_LOCAL_BODY_CHOICES[data["local_body_type"].lower()]
 
         local_body_obj = None
         if "local_body" in data and district_obj:
