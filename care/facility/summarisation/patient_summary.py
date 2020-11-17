@@ -63,7 +63,9 @@ def PatientSummary():
             }
 
             patients = PatientRegistration.objects.filter(
-                is_active=True, last_consultation__discharge_date__isnull=True
+                is_active=True,
+                last_consultation__discharge_date__isnull=True,
+                last_consultation__facility=facility_object,
             )
 
             # Get Total Counts
