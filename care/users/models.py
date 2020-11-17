@@ -66,6 +66,8 @@ LOCAL_BODY_CHOICES = (
     (50, "Others"),
 )
 
+REVERSE_LOCAL_BODY_CHOICES = reverse_choices(LOCAL_BODY_CHOICES)
+
 
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
@@ -104,7 +106,9 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False).select_related("local_body", "district", "state")
+        return qs.filter(deleted=False).select_related(
+            "local_body", "district", "state"
+        )
 
     def create_superuser(self, username, email, password, **extra_fields):
         district_id = extra_fields["district"]
@@ -147,8 +151,12 @@ class User(AbstractUser):
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.PROTECT, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
@@ -197,7 +205,10 @@ class User(AbstractUser):
         try:
             return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
         except TypeError:
-            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
+            return (
+                User.TYPE_VALUE_MAP[request.data["user_type"]]
+                <= User.TYPE_VALUE_MAP["Volunteer"]
+            )
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -210,9 +221,9 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
-            "DistrictLabAdmin"
-        ]:
+        if (
+            request.data.get("district") or request.data.get("state")
+        ) and self.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False
