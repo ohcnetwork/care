@@ -9,16 +9,17 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.norification import NotificationSerializer
+from care.facility.api.serializers.notification import NotificationSerializer
 from care.facility.models.notification import Notification
 
 
 class NotificationViewSet(
     RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.all().select_related("intended_for", "caused_by")
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = "external_id"
 
     def get_queryset(self):
         user = self.request.user
