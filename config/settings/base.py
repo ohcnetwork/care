@@ -134,7 +134,9 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -200,7 +202,10 @@ TEMPLATES = [
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
-            "loaders": ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader",],
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -244,7 +249,9 @@ CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_BACKEND = env(
+    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+)
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
@@ -265,8 +272,19 @@ MANAGERS = ADMINS
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
@@ -310,8 +328,12 @@ STAFF_ACCOUNT_TYPE = 10
 
 # Simple JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)),
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)
+    ),
     "ROTATE_REFRESH_TOKENS": True,
 }
 
@@ -368,7 +390,9 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 CSV_REQUEST_PARAMETER = "csv"
 
 
-DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>")
+DEFAULT_FROM_EMAIL = env(
+    "EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>"
+)
 
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 
@@ -386,10 +410,27 @@ IS_PRODUCTION = False
 
 OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
 
-OTP_MAX_REPEATS_WINDOW = 10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
+OTP_MAX_REPEATS_WINDOW = (
+    10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
+)
 
 OTP_LENGTH = 5
 
 # SMS
 USE_SMS = False
 
+DEFAULT_VAPID_PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3OtP02wfkEojpP7tvyA64CAnVZeb
+bxFda+u+X3ZgMsBoAQK6Jul0Efxz8nGE2SlFr2CZPRqz0rPZQGAiiYugeg==
+-----END PUBLIC KEY-----"""
+
+
+DEFAULT_VAPID_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgJT2TwOHtFu/HZ1T5
+2MofEr/yxu3ULqVTcjH9Sno6ML2hRANCAATc60/TbB+QSiOk/u2/IDrgICdVl5tv
+EV1r675fdmAywGgBArom6XQR/HPycYTZKUWvYJk9GrPSs9lAYCKJi6B6
+-----END PRIVATE KEY-----"""
+
+
+VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
+VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)

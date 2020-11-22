@@ -19,7 +19,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 
 FERNET_KEYS = env.list(
-    "FERNET_SECRET_KEY", default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"]
+    "FERNET_SECRET_KEY",
+    default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"],
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))
@@ -60,11 +61,15 @@ CSRF_COOKIE_SECURE = True
 # TODO: set this to 60 seconds first and then to 518400 once you prove the former works
 SECURE_HSTS_SECONDS = 60
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-preload
 SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
 # https://docs.djangoproject.com/en/dev/ref/middleware/#x-content-type-options-nosniff
-SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+    "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
+)
 
 # STATIC
 # ------------------------
@@ -78,7 +83,10 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
     (
         "django.template.loaders.cached.Loader",
-        ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader",],
+        [
+            "django.template.loaders.filesystem.Loader",
+            "django.template.loaders.app_directories.Loader",
+        ],
     )
 ]
 
@@ -129,14 +137,33 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
-    "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
-        "django.db.backends": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
         # Errors logged by the SDK itself
         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        "django.security.DisallowedHost": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
+        "django.security.DisallowedHost": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
     },
 }
 
@@ -146,10 +173,12 @@ SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
 sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL, event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
+    level=SENTRY_LOG_LEVEL,
+    event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
 )
 sentry_sdk.init(
-    dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
+    dsn=SENTRY_DSN,
+    integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
 )
 # Your stuff...
 # ------------------------------------------------------------------------------
@@ -161,3 +190,4 @@ USE_SMS = True
 SNS_ACCESS_KEY = env("SNS_ACCESS_KEY")
 SNS_SECRET_KEY = env("SNS_SECRET_KEY")
 SNS_REGION = "ap-south-1"
+
