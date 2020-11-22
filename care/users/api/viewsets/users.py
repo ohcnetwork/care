@@ -13,7 +13,12 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.facility import Facility, FacilityUser
-from care.users.api.serializers.user import SignUpSerializer, UserCreateSerializer, UserListSerializer, UserSerializer
+from care.users.api.serializers.user import (
+    SignUpSerializer,
+    UserCreateSerializer,
+    UserListSerializer,
+    UserSerializer,
+)
 
 User = get_user_model()
 
@@ -38,7 +43,9 @@ class UserFilterSet(filters.FilterSet):
     first_name = filters.CharFilter(field_name="first_name", lookup_expr="icontains")
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
-    phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    phone_number = filters.CharFilter(
+        field_name="phone_number", lookup_expr="icontains"
+    )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
 
     def get_user_type(
@@ -53,20 +60,28 @@ class UserFilterSet(filters.FilterSet):
 
 
 class UserViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
 ):
     """
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.filter(is_superuser=False).select_related("local_body", "district", "state")
+    queryset = User.objects.filter(is_superuser=False).select_related(
+        "local_body", "district", "state"
+    )
     lookup_field = "username"
 
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    )
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     # last_login
@@ -98,19 +113,25 @@ class UserViewSet(
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+            data=UserSerializer(request.user, context={"request": request}).data,
         )
 
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
-        password = request.data.pop("password", User.objects.make_random_password(length=8))
+        password = request.data.pop(
+            "password", User.objects.make_random_password(length=8)
+        )
         serializer = UserCreateSerializer(
-            data={**request.data, "password": password}, context={"created_by": request.user}
+            data={**request.data, "password": password},
+            context={"created_by": request.user},
         )
         serializer.is_valid(raise_exception=True)
         username = request.data["username"]
         if User.objects.filter(username=username).exists():
-            raise ValidationError({"username": "User with Given Username Already Exists"})
+            raise ValidationError(
+                {"username": "User with Given Username Already Exists"}
+            )
         user = serializer.create(serializer.validated_data)
 
         response_data = UserCreateSerializer(user).data
@@ -129,7 +150,10 @@ class UserViewSet(
                 user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (facility and user.district == facility.district)
             )
-            or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+            or (
+                user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (facility and user.state == facility.state)
+            )
         )
 
     def has_user_type_permission_elevation(self, init_user, dest_user):
@@ -141,7 +165,9 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related("local_body", "district", "state", "ward")
+        facilities = Facility.objects.filter(users=user).select_related(
+            "local_body", "district", "state", "ward"
+        )
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
         return Response(facilities.data)
 
@@ -162,7 +188,9 @@ class UserViewSet(
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         if self.check_facility_user_exists(user, facility):
-            raise ValidationError({"facility": "User Already has permission to this facility"})
+            raise ValidationError(
+                {"facility": "User Already has permission to this facility"}
+            )
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -183,6 +211,19 @@ class UserViewSet(
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         if not self.has_facility_permission(user, facility):
-            raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
+            raise ValidationError(
+                {"facility": "Intended User Does not have permission to this facility"}
+            )
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["PATCH"], permission_classes=[IsAuthenticated])
+    def pnconfig(self, request, *args, **kwargs):
+        user = request.user
+        acceptable_fields = ["pf_endpoint", "pf_p256dh", "pf_auth"]
+        for field in acceptable_fields:
+            if field in request.data:
+                setattr(user, field, request.data[field])
+        user.save()
+        return Response(stauts=status.HTTP_200_OK)
+
