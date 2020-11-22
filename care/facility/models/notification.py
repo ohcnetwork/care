@@ -38,5 +38,5 @@ class Notification(FacilityBaseModel):
         choices=EventTypeChoices, default=EventType.SYSTEM_GENERATED.value
     )
     event = models.IntegerField(choices=EventChoices, default=Event.MESSAGE.value)
-    message = models.TextField(max_length=2000)
+    message = models.TextField(max_length=2000, null=True, default=None)
     caused_object_external_id = models.TextField(default=None)
