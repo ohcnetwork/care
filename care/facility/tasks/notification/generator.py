@@ -3,20 +3,50 @@ import celery
 from care.facility.models.facility import FacilityUser
 from care.facility.models.notification import Notification
 
+from pywebpush import webpush, WebPushException
+from django.conf import settings
+
 
 @celery.task()
 def generate_notifications_for_facility(facility_id, data, defer_notifications):
 
     facility_users = FacilityUser.objects.filter(facility_id=facility_id)
-    notifications = []
+    # notifications = []
     for facility_user in facility_users:
-        notifications.append(generate_message_for_user(facility_user.user, data.copy()))
-    Notification.objects.bulk_create(notifications)
-    if not defer_notifications:
-        pass
-        # Delay task to send notifications
+        generate_message_for_user(facility_user.user, data.copy())
+        if not defer_notifications:
+            send_webpush_user(facility_user.user, data["message"])
+    # Notification.objects.bulk_create(notifications)
+    # for facility_user in facility_users:
+    #     if not defer_notifications:
+    #         pass
+    #         # Delay task to send notifications
+
+
+def send_webpush_user(user, message):
+    try:
+        if user.pf_endpoint and user.pf_p256dh and user.pf_auth:
+            webpush(
+                subscription_info={
+                    "endpoint": user.pf_endpoint,
+                    "keys": {"p256dh": user.pf_p256dh, "auth": user.pf_auth},
+                },
+                data=message,
+                vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": "mailto:info@coronasafe.network",},
+            )
+    except WebPushException as ex:
+        print("Web Push Failed with Exception: {}", repr(ex))
+        if ex.response and ex.response.json():
+            extra = ex.response.json()
+            print(
+                "Remote service replied with a {}:{}, {}",
+                extra.code,
+                extra.errno,
+                extra.message,
+            )
 
 
 def generate_message_for_user(user, data):
     data["intended_for_id"] = user.id
-    return Notification(**data)
+    return Notification(**data).save()
