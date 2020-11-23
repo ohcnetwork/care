@@ -4,6 +4,7 @@ from django.db import models
 
 from care.facility.models import FacilityBaseModel
 from care.users.models import User
+from django.contrib.postgres.fields import JSONField
 
 
 class Notification(FacilityBaseModel):
@@ -39,4 +40,4 @@ class Notification(FacilityBaseModel):
     )
     event = models.IntegerField(choices=EventChoices, default=Event.MESSAGE.value)
     message = models.TextField(max_length=2000, null=True, default=None)
-    caused_object_external_id = models.TextField(default=None)
+    caused_objects = JSONField(null=True, blank=True, default=dict)

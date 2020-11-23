@@ -1,6 +1,11 @@
+from care.facility.models.patient import PatientRegistration
 from care.facility.models.notification import Notification
-from care.facility.models.facility import FacilityUser, Facility
+from care.facility.models.facility import Facility
 from care.users.models import User
+
+from care.facility.tasks.notification.generator import (
+    generate_notifications_for_facility,
+)
 
 
 class NotificationCreationException(Exception):
@@ -8,14 +13,21 @@ class NotificationCreationException(Exception):
 
 
 class NotificationGenerator:
+
+    generate_for_facility = False
+    generate_for_user = False
+    facility = None
+
     def __init__(
         self,
         event_type=Notification.EventType.SYSTEM_GENERATED,
         event=None,
         caused_by=None,
-        caused_object_external_id=None,
+        caused_object=None,
         message=None,
         defer_notifications=False,
+        facility=None,
+        generate_for_facility=False,
     ):
         if not isinstance(event_type, Notification.EventType):
             raise NotificationCreationException("Event Type Invalid")
@@ -25,32 +37,51 @@ class NotificationGenerator:
             raise NotificationCreationException(
                 "edited_by must be an instance of a user"
             )
+        if facility:
+            if not isinstance(facility, Facility):
+                raise NotificationCreationException(
+                    "facility must be an instance of Facility"
+                )
         self.event_type = event_type.value
         self.event = event.value
         self.caused_by = caused_by
-        self.caused_object_external_id = caused_object_external_id
-        self.message = message
+        self.caused_object = caused_object
+        self.caused_objects = {}
+        self.generate_cause_objects()
+        self.message = None
+        if not message:
+            self.generate_message()
+        else:
+            self.message = message
+        self.facility = facility
+        self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
 
-    def generate_notifications_for_facility(self, facility):
-        if not isinstance(facility, Facility):
-            raise NotificationCreationException(
-                "facility must be an instance of Facility"
+    def generate_message(self):
+        if isinstance(self.caused_object, PatientRegistration):
+            self.message = "Patient {} was updated by {}".format(
+                self.caused_object.name, self.caused_by.get_full_name()
             )
-        facility_users = FacilityUser.objects.filter(facility=facility)
-        for facility_user in facility_users:
-            self.generate_message_for_user(facility_user.user)
-        if not self.defer_notifications:
-            pass
-            # Delay task to send notifications
-
-    def generate_message_for_user(self, user):
-        Notification(
-            intended_for=user,
-            caused_by=self.caused_by,
-            event=self.event,
-            event_type=self.event_type,
-            message=self.message,
-            caused_object_external_id=self.caused_object_external_id,
-        ).save()
         return True
+
+    def generate_cause_objects(self):
+        if isinstance(self.caused_object, PatientRegistration):
+            self.caused_objects["patient"] = self.caused_object.external_id
+            if self.caused_object.facility:
+                self.caused_objects[
+                    "facility"
+                ] = self.caused_object.facility.external_id
+        return True
+
+    def generate(self):
+        data = {
+            "caused_by_id": self.caused_by.id,
+            "event": self.event,
+            "event_type": self.event_type,
+            "caused_objects": self.caused_objects,
+            "message": self.message,
+        }
+        generate_notifications_for_facility.delay(
+            self.facility.id, data, self.defer_notifications
+        )
+

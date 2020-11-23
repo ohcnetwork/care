@@ -23,7 +23,7 @@ class NotificationSerializer(serializers.ModelSerializer):
         exclude = ("deleted", "modified_date")
         read_only_fields = (
             "message",
-            "caused_object_external_id",
+            "caused_objects",
             "created_date",
             "external_id",
         )

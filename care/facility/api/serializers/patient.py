@@ -244,8 +244,9 @@ class PatientDetailSerializer(PatientListSerializer):
             NotificationGenerator(
                 event=Notification.Event.PATIENT_CREATED,
                 caused_by=self.context["request"].user,
-                caused_object_external_id=str(patient.external_id),
-            ).generate_notifications_for_facility(patient.facility)
+                caused_object=patient,
+                facility=patient.facility,
+            ).generate()
 
             return patient
 
@@ -289,10 +290,11 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.save()
 
             NotificationGenerator(
-                event=Notification.Event.PATIENT_UPDATED,
+                event=Notification.Event.PATIENT_CREATED,
                 caused_by=self.context["request"].user,
-                caused_object_external_id=str(patient.external_id),
-            ).generate_notifications_for_facility(patient.facility)
+                caused_object=patient,
+                facility=patient.facility,
+            ).generate()
 
             return patient
 
