@@ -290,7 +290,7 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.save()
 
             NotificationGenerator(
-                event=Notification.Event.PATIENT_CREATED,
+                event=Notification.Event.PATIENT_UPDATED,
                 caused_by=self.context["request"].user,
                 caused_object=patient,
                 facility=patient.facility,
