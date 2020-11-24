@@ -59,15 +59,15 @@ class NotificationGenerator:
 
     def generate_message(self):
         if isinstance(self.caused_object, PatientRegistration):
-            if self.event == Notification.Event.PATIENT_CREATED:
+            if self.event == Notification.Event.PATIENT_CREATED.value:
                 self.message = "Patient {} was created by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
-            elif self.event == Notification.Event.PATIENT_UPDATED:
+            elif self.event == Notification.Event.PATIENT_UPDATED.value:
                 self.message = "Patient {} was updated by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
-            if self.event == Notification.Event.PATIENT_DELETED:
+            if self.event == Notification.Event.PATIENT_DELETED.value:
                 self.message = "Patient {} was deleted by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
