@@ -59,9 +59,18 @@ class NotificationGenerator:
 
     def generate_message(self):
         if isinstance(self.caused_object, PatientRegistration):
-            self.message = "Patient {} was updated by {}".format(
-                self.caused_object.name, self.caused_by.get_full_name()
-            )
+            if self.event == Notification.Event.PATIENT_CREATED:
+                self.message = "Patient {} was created by {}".format(
+                    self.caused_object.name, self.caused_by.get_full_name()
+                )
+            elif self.event == Notification.Event.PATIENT_UPDATED:
+                self.message = "Patient {} was updated by {}".format(
+                    self.caused_object.name, self.caused_by.get_full_name()
+                )
+            if self.event == Notification.Event.PATIENT_DELETED:
+                self.message = "Patient {} was deleted by {}".format(
+                    self.caused_object.name, self.caused_by.get_full_name()
+                )
         return True
 
     def generate_cause_objects(self):
