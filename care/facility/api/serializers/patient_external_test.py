@@ -16,7 +16,7 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
 
-    local_body_type = serializers.CharField(required=True, write_only=True)
+    local_body_type = serializers.CharField(required=False, write_only=True)
 
     sample_collection_date = serializers.DateField(
         input_formats=["%Y-%m-%d"], required=False
@@ -42,6 +42,10 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         else:
             raise ValidationError({"district": ["District Not Present in Data"]})
 
+        if "local_body_type" not in data:
+            raise ValidationError(
+                {"local_body_type": ["local_body_type is not present in data"]}
+            )
         if data["local_body_type"].lower() not in REVERSE_LOCAL_BODY_CHOICES:
             raise ValidationError({"local_body_type": ["Invalid Local Body Type"]})
 
