@@ -70,7 +70,7 @@ LOCAL_BODY_CHOICES = (
 def reverse_lower_choices(choices):
     output = {}
     for choice in choices:
-        output[choice[0].lower()] = choice[1]
+        output[choice[1].lower()] = choice[0]
     return output
 
 
@@ -175,8 +175,8 @@ class User(AbstractUser):
     deleted = models.BooleanField(default=False)
 
     # Notification Data
-    pf_endpoint = models.TextField(default=None , null=True)
-    pf_p256dh = models.TextField(default=None , null=True)
+    pf_endpoint = models.TextField(default=None, null=True)
+    pf_p256dh = models.TextField(default=None, null=True)
     pf_auth = models.TextField(default=None, null=True)
 
     objects = CustomUserManager()
