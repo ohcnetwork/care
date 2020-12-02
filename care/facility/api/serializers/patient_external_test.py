@@ -73,6 +73,9 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
                     data["ward"] = ward_obj.id
                 else:
                     raise ValidationError({"ward": ["Ward Does not Exist"]})
+
+        del data["local_body_type"]
+
         return super().validate_empty_values(data, *args, **kwargs)
 
     # def validate_ward(self, value):
