@@ -74,7 +74,7 @@ def reverse_lower_choices(choices):
     return output
 
 
-REVERSE_LOCAL_BODY_CHOICES = reverse_choices(LOCAL_BODY_CHOICES)
+REVERSE_LOCAL_BODY_CHOICES = reverse_lower_choices(LOCAL_BODY_CHOICES)
 
 
 class LocalBody(models.Model):
