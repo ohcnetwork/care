@@ -15,8 +15,12 @@ class PatientExternalTest(FacilityBaseModel):
     is_repeat = models.BooleanField()
     patient_status = models.CharField(max_length=15)
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=False, blank=False)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.PROTECT, null=False, blank=False
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=False, blank=False
+    )
     source = models.CharField(max_length=255, blank=True, null=True)
     patient_category = models.CharField(max_length=255, blank=True, null=True)
     lab_name = models.CharField(max_length=255)
@@ -66,6 +70,7 @@ class PatientExternalTest(FacilityBaseModel):
         "district": "District",
         "result_date": "Result Date",
         "local_body": "LSGD",
+        "local_body_type": "LSGD Type",
         "lab_name": "LabName",
         "test_type": "Testing Kit Used",
         "sample_type": "Sample Type",

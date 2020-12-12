@@ -52,28 +52,44 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
+    ip_no = filters.CharFilter(
+        field_name="last_consultation__ip_no", lookup_expr="icontains"
+    )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
-    category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
+    category = filters.ChoiceFilter(
+        field_name="last_consultation__category", choices=CATEGORY_CHOICES
+    )
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
     is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
-    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    district_name = filters.CharFilter(
+        field_name="district__name", lookup_expr="icontains"
+    )
     local_body = filters.NumberFilter(field_name="local_body__id")
-    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    local_body_name = filters.CharFilter(
+        field_name="local_body__name", lookup_expr="icontains"
+    )
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
-    last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
-    last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
-    last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
-    last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
+    last_consultation_admission_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__admission_date"
+    )
+    last_consultation_discharge_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__discharge_date"
+    )
+    last_consultation_admitted_to = filters.NumberFilter(
+        field_name="last_consultation__admitted_to"
+    )
+    last_consultation_assigned_to = filters.NumberFilter(
+        field_name="last_consultation__assigned_to"
+    )
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -96,7 +112,9 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
 
     def filter_list_queryset(self, request, queryset, view):
         try:
-            show_without_facility = json.loads(request.query_params.get("without_facility"))
+            show_without_facility = json.loads(
+                request.query_params.get("without_facility")
+            )
         except (
             JSONDecodeError,
             TypeError,
@@ -130,10 +148,20 @@ class PatientViewSet(
         "last_consultation",
         "last_consultation__assigned_to",
     )
-    ordering_fields = ["id", "created_date", "modified_date", "review_time", "date_declared_positive"]
+    ordering_fields = [
+        "id",
+        "created_date",
+        "modified_date",
+        "review_time",
+        "date_declared_positive",
+    ]
 
     serializer_class = PatientDetailSerializer
-    filter_backends = (PatientDRYFilter, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
+    filter_backends = (
+        PatientDRYFilter,
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    )
     filterset_class = PatientFilterSet
 
     def get_queryset(self):
@@ -144,7 +172,9 @@ class PatientViewSet(
         #     return queryset.filter(disease_status=disease_status)
 
         if self.action == "list":
-            queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
+            queryset = queryset.filter(
+                is_active=self.request.GET.get("is_active", True)
+            )
         return queryset
 
     def get_serializer_class(self):
@@ -175,7 +205,9 @@ class PatientViewSet(
 
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(*PatientRegistration.CSV_MAPPING.keys())
+            queryset = self.filter_queryset(self.get_queryset()).values(
+                *PatientRegistration.CSV_MAPPING.keys()
+            )
             return render_to_csv_response(
                 queryset,
                 field_header_map=PatientRegistration.CSV_MAPPING,
@@ -242,7 +274,9 @@ class PatientViewSet(
         patient.is_active = discharged
         patient.allow_transfer = not discharged
         patient.save(update_fields=["allow_transfer", "is_active"])
-        last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+        last_consultation = (
+            PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+        )
         if last_consultation:
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = localtime(now())
@@ -303,7 +337,9 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        queryset = self.queryset.filter(
+            facility__external_id=self.kwargs.get("facility_external_id")
+        )
         if user.is_superuser:
             return queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
@@ -313,10 +349,14 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
+        return get_object_or_404(
+            self.get_queryset(), external_id=self.kwargs.get("external_id")
+        )
 
     def get_facility(self):
-        facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
+        facility_qs = Facility.objects.filter(
+            external_id=self.kwargs.get("facility_external_id")
+        )
         if not self.request.user.is_superuser:
             facility_qs.filter(users__id__exact=self.request.user.id)
         return get_object_or_404(facility_qs)
@@ -333,7 +373,9 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         - entry_date_before: date in YYYY-MM-DD format, inclusive of this date
 
         """
-        return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
+        return super(FacilityPatientStatsHistoryViewSet, self).list(
+            request, *args, **kwargs
+        )
 
 
 class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
@@ -346,18 +388,32 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
         if self.action != "list":
             return super(PatientSearchViewSet, self).get_queryset()
         else:
-            serializer = PatientSearchSerializer(data=self.request.query_params, partial=True)
+            serializer = PatientSearchSerializer(
+                data=self.request.query_params, partial=True
+            )
             serializer.is_valid(raise_exception=True)
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "name", "age"]
+                search_keys = [
+                    "date_of_birth",
+                    "year_of_birth",
+                    "phone_number",
+                    "name",
+                    "age",
+                ]
             else:
                 search_keys = ["date_of_birth", "year_of_birth", "phone_number", "age"]
             search_fields = {
-                key: serializer.validated_data[key] for key in search_keys if serializer.validated_data.get(key)
+                key: serializer.validated_data[key]
+                for key in search_keys
+                if serializer.validated_data.get(key)
             }
             if not search_fields:
                 raise serializers.ValidationError(
-                    {"detail": [f"None of the search keys provided. Available: {', '.join(search_keys)}"]}
+                    {
+                        "detail": [
+                            f"None of the search keys provided. Available: {', '.join(search_keys)}"
+                        ]
+                    }
                 )
 
             # if not self.request.user.is_superuser:
