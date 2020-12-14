@@ -53,6 +53,7 @@ class PatientExternalTestFilter(filters.FilterSet):
     )
     wards = MFilter(field_name="ward__id")
     districts = MFilter(field_name="district__id")
+    local_bodies = MFilter(field_name="local_body__id")
 
 
 class PatientExternalTestViewSet(
