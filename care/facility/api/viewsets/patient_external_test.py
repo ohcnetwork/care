@@ -3,6 +3,7 @@ from collections import defaultdict
 from django.conf import settings
 from django_filters import rest_framework as filters
 from django_filters import Filter
+from django_filters.filters import DateFromToRangeFilter
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
@@ -54,6 +55,9 @@ class PatientExternalTestFilter(filters.FilterSet):
     wards = MFilter(field_name="ward__id")
     districts = MFilter(field_name="district__id")
     local_bodies = MFilter(field_name="local_body__id")
+    sample_collection_date = DateFromToRangeFilter(field_name="sample_collection_date")
+    result_date = DateFromToRangeFilter(field_name="result_date")
+    created_date = DateFromToRangeFilter(field_name="created_date")
 
 
 class PatientExternalTestViewSet(
