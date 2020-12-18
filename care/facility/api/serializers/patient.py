@@ -23,6 +23,7 @@ from care.facility.models import (
     PatientRegistration,
     PatientSearch,
 )
+from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -37,14 +38,12 @@ from care.users.api.serializers.lsg import (
     WardSerializer,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import (
     PhoneNumberIsPossibleField,
 )
 from config.serializers import ChoiceField
-
-from care.utils.notification_handler import NotificationGenerator
-from care.facility.models.notification import Notification
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):

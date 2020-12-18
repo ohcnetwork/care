@@ -1,3 +1,4 @@
+from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.notification import Notification
 from care.facility.models.facility import Facility
@@ -71,6 +72,19 @@ class NotificationGenerator:
                 self.message = "Patient {} was deleted by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
+        if isinstance(self.caused_object, PatientConsultation):
+            if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
+                self.message = "Consultation for Patient {} was created by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATED.value:
+                self.message = "Consultation for Patient {} was updated by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            if self.event == Notification.Event.PATIENT_CONSULTATION_DELETED.value:
+                self.message = "Consultation for Patient {} was deleted by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
         return True
 
     def generate_cause_objects(self):
@@ -80,6 +94,14 @@ class NotificationGenerator:
                 self.caused_objects[
                     "facility"
                 ] = self.caused_object.facility.external_id
+        if isinstance(self.caused_object, PatientConsultation):
+            self.caused_objects["consultation"] = self.caused_object.external_id
+            self.caused_objects["patient"] = self.caused_object.patient.external_id
+            if self.caused_object.patient.facility:
+                self.caused_objects[
+                    "facility"
+                ] = self.caused_object.patient.facility.external_id
+
         return True
 
     def generate(self):
