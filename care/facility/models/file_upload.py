@@ -56,7 +56,10 @@ class FileUpload(FacilityBaseModel):
         )
         signed_url = s3Client.generate_presigned_url(
             "put_object",
-            Params={"Bucket": settings.FILE_UPLOAD_BUCKET, "Key": self.internal_name,},
+            Params={
+                "Bucket": settings.FILE_UPLOAD_BUCKET,
+                "Key": self.FileType(self.file_type).name + "/" + self.internal_name,
+            },
             ExpiresIn=60 * 60,  # One Hour
         )
         return signed_url
@@ -70,7 +73,10 @@ class FileUpload(FacilityBaseModel):
         )
         signed_url = s3Client.generate_presigned_url(
             "get_object",
-            Params={"Bucket": settings.FILE_UPLOAD_BUCKET, "Key": self.internal_name,},
+            Params={
+                "Bucket": settings.FILE_UPLOAD_BUCKET,
+                "Key": self.FileType(self.file_type).name + "/" + self.internal_name,
+            },
             ExpiresIn=60 * 60,  # One Hour
         )
         return signed_url
