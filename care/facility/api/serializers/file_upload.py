@@ -1,0 +1,94 @@
+from care.facility.api.serializers import facility
+from django.core.exceptions import ValidationError
+from django.db.models import F
+from rest_framework import serializers
+
+
+from care.facility.models.file_upload import FileUpload
+
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+from config.serializers import ChoiceField
+from care.facility.models.file_upload import FileUpload
+
+from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient_consultation import PatientConsultation
+
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+
+from care.facility.api.serializers.shifting import has_facility_permission
+
+
+def check_permissions(file_type, associating_id, user):
+    try:
+        if file_type == FileUpload.FileType.PATIENT.value:
+            patient = PatientRegistration.objects.get(external_id=associating_id)
+            if not has_facility_permission(user, patient.facility):
+                raise Exception("No Permission")
+            return patient.id
+        if file_type == FileUpload.FileType.CONSULTATION.value:
+            consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if not has_facility_permission(user, consultation.facility):
+                raise Exception("No Permission")
+            return consultation.id
+        else:
+            raise Exception("Undefined File Type")
+    except Exception:
+        raise ValidationError({"permission": "denied"})
+
+
+class FileUploadCreateSerializer(serializers.ModelSerializer):
+
+    file_type = ChoiceField(choices=FileUpload.FileTypeChoices)
+
+    signed_url = serializers.CharField(read_only=True)
+    associating_id = serializers.CharField(write_only=True)
+    internal_name = serializers.CharField(read_only=True)
+    original_name = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = FileUpload
+        fields = (
+            "file_type",
+            "name",
+            "associating_id",
+            "signed_url",
+            "internal_name",
+            "original_name",
+        )
+        write_only_fields = ("associating_id",)
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        internal_id = check_permissions(
+            validated_data["file_type"], validated_data["associating_id"], user
+        )
+        validated_data["associating_id"] = internal_id
+        validated_data["uploaded_by"] = user
+        validated_data["internal_name"] = validated_data["original_name"]
+        del validated_data["original_name"]
+        return super().create(validated_data)
+
+
+class FileUploadListSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    uploaded_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = FileUpload
+        fields = ("id", "name", "uploaded_by", "created_date")
+        read_only_fields = ("associating_id", "name", "created_date")
+
+
+class FileUploadRetrieveSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    uploaded_by = UserBaseMinimumSerializer(read_only=True)
+    read_signed_url = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = FileUpload
+        fields = ("id", "name", "uploaded_by", "created_date", "read_signed_url")
+        read_only_fields = ("associating_id", "name", "created_date")

@@ -40,6 +40,7 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -56,6 +57,8 @@ else:
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
 router.register("getallfacilities", AllFacilityViewSet)
+
+router.register("files", FileUploadViewSet)
 
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
