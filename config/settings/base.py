@@ -434,3 +434,13 @@ EV1r675fdmAywGgBArom6XQR/HPycYTZKUWvYJk9GrPSs9lAYCKJi6B6
 
 VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
 VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
+
+
+#######################
+# File Upload Parameters
+
+FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
+# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+
