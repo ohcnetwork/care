@@ -19,6 +19,9 @@ class Notification(FacilityBaseModel):
         PATIENT_CREATED = 20
         PATIENT_UPDATED = 30
         PATIENT_DELETED = 40
+        PATIENT_CONSULTATION_CREATED = 50
+        PATIENT_CONSULTATION_UPDATED = 60
+        PATIENT_CONSULTATION_DELETED = 70
 
     EventChoices = [(e.value, e.name) for e in Event]
 

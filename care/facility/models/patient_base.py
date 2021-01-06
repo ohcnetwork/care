@@ -21,7 +21,7 @@ ADMIT_CHOICES = [
     (1, "Isolation Room"),
     (2, "ICU"),
     (3, "ICU with Non Invasive Ventilator"),
-    (4, "ICU with Oxygen Support"),
+    (4, "Oxygen Bed"),
     (5, "ICU with Invasive Ventilator"),
     (20, "Home Isolation"),
     (30, "Gynaecology Ward"),
