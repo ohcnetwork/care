@@ -31,7 +31,7 @@ class FileUpload(FacilityBaseModel):
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
     uploaded_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=False, blank=False
+        User, on_delete=models.PROTECT, null=True, blank=True
     )
     file_type = models.IntegerField(
         choices=FileTypeChoices, default=FileType.PATIENT.value
