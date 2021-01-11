@@ -33,7 +33,7 @@ def check_permissions(file_type, associating_id, user):
         else:
             raise Exception("Undefined File Type")
     except Exception:
-        raise ValidationError({"permission": "denied"})
+        raise serializers.ValidationError({"permission": "denied"})
 
 
 class FileUploadCreateSerializer(serializers.ModelSerializer):
