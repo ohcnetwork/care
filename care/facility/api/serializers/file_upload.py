@@ -27,7 +27,10 @@ def check_permissions(file_type, associating_id, user):
             return patient.id
         if file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
-            if not has_facility_permission(user, consultation.facility):
+            if not (
+                has_facility_permission(user, consultation.patient.facility)
+                or has_facility_permission(user, consultation.facility)
+            ):
                 raise Exception("No Permission")
             return consultation.id
         else:
