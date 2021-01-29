@@ -213,10 +213,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DailyRound
-        exclude = (
-            "created_date",
-            "modified_date",
-        )
+        exclude = ("deleted",)
 
     def update(self, instance, validated_data):
 
