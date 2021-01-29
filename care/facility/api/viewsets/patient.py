@@ -90,6 +90,9 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
     )
+    # Vaccination Filters
+    covin_id = filters.CharFilter(field_name="covin_id")
+    unvaccinated = filters.BooleanFilter(field_name="covin_id", lookup_expr="isnull")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -104,9 +107,9 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
-                filters = Q(facility__id__in=allowed_facilities)
-                filters |= Q(last_consultation__assigned_to=request.user)
-                queryset = queryset.filter(filters)
+                q_filters = Q(facility__id__in=allowed_facilities)
+                q_filters |= Q(last_consultation__assigned_to=request.user)
+                queryset = queryset.filter(q_filters)
 
         return queryset
 
