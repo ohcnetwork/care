@@ -317,7 +317,16 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # Vaccination Fields
 
-    covin_id = models.CharField(max_length=15, default=None, null=True, blank=True)
+    is_vaccinated = models.BooleanField(
+        default=False, verbose_name="Is the Patient Vaccinated Against COVID-19"
+    )
+    covin_id = models.CharField(
+        max_length=15,
+        default=None,
+        null=True,
+        blank=True,
+        verbose_name="COVID-19 Vaccination ID",
+    )
 
     # Extras
     cluster_name = models.CharField(

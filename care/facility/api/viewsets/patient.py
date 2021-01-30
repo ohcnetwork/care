@@ -92,7 +92,7 @@ class PatientFilterSet(filters.FilterSet):
     )
     # Vaccination Filters
     covin_id = filters.CharFilter(field_name="covin_id")
-    unvaccinated = filters.BooleanFilter(field_name="covin_id", lookup_expr="isnull")
+    is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
