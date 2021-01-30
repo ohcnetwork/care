@@ -276,3 +276,4 @@ See detailed `cookiecutter-django Heroku documentation`_.
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
+ 
