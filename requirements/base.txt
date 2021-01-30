@@ -6,7 +6,6 @@ whitenoise==5.0.1  # https://github.com/evansd/whitenoise
 redis==3.4.1 # https://github.com/andymccurdy/redis-py
 boto3==1.12.23 # For AWS interactions
 collectfast==2.1.0 # For Caching Static Files Hashes
-PyJWT==v1.7.1
 
 # Django
 # ------------------------------------------------------------------------------
@@ -64,3 +63,8 @@ django-hardcopy==0.1.4
 # WebPushes
 # ------------------------------------------------------------------------------
 pywebpush==1.11.0
+
+
+## Override Requirements
+PyJWT==v1.7.1
+
