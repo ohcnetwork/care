@@ -52,7 +52,7 @@ class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictSummaryFilter
 
-    # @method_decorator(cache_page(60 * 10))
+    @method_decorator(cache_page(60 * 10))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
