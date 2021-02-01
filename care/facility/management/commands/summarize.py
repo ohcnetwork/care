@@ -7,6 +7,8 @@ from care.facility.models import FacilityCapacity, FacilityRelatedSummary
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummary
 from care.facility.summarisation.patient_summary import PatientSummary
 
+from care.facility.summarisation.district.patient_summary import DistrictPatientSummary
+
 
 class Command(BaseCommand):
     """
@@ -20,3 +22,6 @@ class Command(BaseCommand):
         print("Patients Summarised")
         FacilityCapacitySummary()
         print("Capacity Summarised")
+        DistrictPatientSummary()
+        print("District Wise Patient Summarised")
+
