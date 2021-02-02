@@ -167,5 +167,5 @@ def DistrictPatientSummary():
 
 @periodic_task(run_every=crontab(hour="*/1", minute=59))
 def run_midnight():
-    DistrictSummaryFilter()
+    DistrictPatientSummary()
     print("Summarised Patients")
