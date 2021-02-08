@@ -57,6 +57,7 @@ class PatientExternalTest(FacilityBaseModel):
     CSV_MAKE_PRETTY = {"is_repeat": pretty_boolean}
 
     HEADER_CSV_MAPPING = {
+        "id": "Care External Result ID",
         "srf_id": "SRF-ID",
         "name": "Patient Name",
         "age": "Age",
