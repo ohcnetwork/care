@@ -31,6 +31,7 @@ class PatientExternalTest(FacilityBaseModel):
     result_date = models.DateField(blank=True, null=True)
 
     CSV_MAPPING = {
+        "id": "Care External Result ID",
         "name": "Patient Name",
         "age": "Age",
         "age_in": "Age In",
@@ -57,7 +58,6 @@ class PatientExternalTest(FacilityBaseModel):
     CSV_MAKE_PRETTY = {"is_repeat": pretty_boolean}
 
     HEADER_CSV_MAPPING = {
-        "id": "Care External Result ID",
         "srf_id": "SRF-ID",
         "name": "Patient Name",
         "age": "Age",
