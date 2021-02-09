@@ -31,6 +31,7 @@ class PatientExternalTest(FacilityBaseModel):
     result_date = models.DateField(blank=True, null=True)
 
     CSV_MAPPING = {
+        "id": "Care External Result ID",
         "name": "Patient Name",
         "age": "Age",
         "age_in": "Age In",
