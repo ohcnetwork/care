@@ -11,3 +11,5 @@ from .inventory import *
 from .summary import *
 from .shifting import *
 from .patient_external_test import *
+from .post_covid_data import *
+from .investigation import Investigation
