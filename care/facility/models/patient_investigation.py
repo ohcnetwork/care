@@ -38,4 +38,4 @@ class InvestigationValue(BaseModel):
     value = models.FloatField(blank=True, null=True, default=None)
     notes = models.TextField(blank=True, null=True, default=None)
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, blank=False, null=False)
-    session_id = models.ForeignKey(InvestigationSession, on_delete=models.PROTECT, blank=False, null=False)
+    session = models.ForeignKey(InvestigationSession, on_delete=models.PROTECT, blank=False, null=False)

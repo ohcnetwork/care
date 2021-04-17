@@ -97,7 +97,7 @@ class InvestigationValueViewSet(
             session.save()
 
             for value in request.data:
-                value["session_id"] = session.id
+                value["session"] = session.id
                 value["consultation"] = consultation_id
 
             serializer = self.get_serializer(data=request.data, many=True)
