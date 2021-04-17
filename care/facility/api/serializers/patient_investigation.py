@@ -33,7 +33,7 @@ class MinimalPatientInvestigationSerializer(serializers.ModelSerializer):
 class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvestigationSession
-        fields = ("external_id", "created_date")
+        fields = ("session", "created_date")
 
 
 class InvestigationValueSerializer(serializers.ModelSerializer):
