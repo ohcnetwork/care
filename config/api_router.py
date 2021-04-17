@@ -114,8 +114,8 @@ router.register("items", FacilityInventoryItemViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
-router.register("test_group", InvestigationGroupViewset)
-router.register("tests", PatientInvestigationViewSet)
+router.register("investigation/group", InvestigationGroupViewset)
+router.register("investigation", PatientInvestigationViewSet)
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")

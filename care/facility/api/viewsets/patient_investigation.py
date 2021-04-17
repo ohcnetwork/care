@@ -32,7 +32,7 @@ class GroupFilter(Filter):
         if not value:
             return qs
 
-        qs = qs.filter(group__external_id=value)
+        qs = qs.filter(groups__external_id=value)
         return qs
 
 

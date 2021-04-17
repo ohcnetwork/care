@@ -14,6 +14,9 @@ class PatientInvestigationGroupSerializer(serializers.ModelSerializer):
 
 
 class PatientInvestigationSerializer(serializers.ModelSerializer):
+
+    groups = PatientInvestigationGroupSerializer(many=True)
+
     class Meta:
         model = PatientInvestigation
         exclude = TIMESTAMP_FIELDS + ("id",)
