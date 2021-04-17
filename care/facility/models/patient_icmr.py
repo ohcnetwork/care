@@ -49,7 +49,8 @@ class PatientIcmr(PatientRegistration):
             age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
         else:
             age_years = relativedelta(
-                datetime.datetime.now(), datetime.datetime(year=self.year_of_birth, month=1, day=1)
+                datetime.datetime.now(),
+                datetime.datetime(year=self.year_of_birth, month=1, day=1),
             ).years
         return age_years
 
@@ -58,7 +59,9 @@ class PatientIcmr(PatientRegistration):
         if self.date_of_birth is None or self.year_of_birth is None:
             age_months = 0
         else:
-            age_months = relativedelta(datetime.datetime.now(), self.date_of_birth).months
+            age_months = relativedelta(
+                datetime.datetime.now(), self.date_of_birth
+            ).months
         return age_months
 
     @property
@@ -81,7 +84,9 @@ class PatientIcmr(PatientRegistration):
     def has_travel_to_foreign_last_14_days(self):
         if self.countries_travelled:
             return len(self.countries_travelled) != 0 and (
-                self.date_of_return and (self.date_of_return.date() - datetime.datetime.now().date()).days <= 14
+                self.date_of_return
+                and (self.date_of_return.date() - datetime.datetime.now().date()).days
+                <= 14
             )
 
     @property
@@ -166,13 +171,17 @@ class PatientSampleICMR(PatientSample):
     @property
     def hospitalization_date(self):
         return (
-            self.consultation.admission_date.date() if self.consultation and self.consultation.admission_date else None
+            self.consultation.admission_date.date()
+            if self.consultation and self.consultation.admission_date
+            else None
         )
 
     @property
     def medical_conditions_list(self):
         return [
-            item.disease for item in self.patient.medical_history.all() if item.disease != DISEASE_CHOICES_MAP["NO"]
+            item.disease
+            for item in self.patient.medical_history.all()
+            if item.disease != DISEASE_CHOICES_MAP["NO"]
         ]
 
     @property
@@ -197,7 +206,10 @@ class PatientConsultationICMR(PatientConsultation):
         proxy = True
 
     def is_symptomatic(self):
-        if SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys() or self.symptoms_onset_date is not None:
+        if (
+            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys()
+            or self.symptoms_onset_date is not None
+        ):
             return True
         else:
             return False
@@ -207,7 +219,10 @@ class PatientConsultationICMR(PatientConsultation):
             len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
-                and (self.patient.date_of_return.date() - datetime.datetime.now().date()).days <= 14
+                and (
+                    self.patient.date_of_return.date() - datetime.datetime.now().date()
+                ).days
+                <= 14
             )
             and self.is_symptomatic()
         )
@@ -226,7 +241,8 @@ class PatientConsultationICMR(PatientConsultation):
             self.patient.contact_with_confirmed_carrier
             and not self.is_symptomatic()
             and any(
-                contact_patient.relation_with_patient == PatientContactDetails.RelationEnum.FAMILY_MEMBER.value
+                contact_patient.relation_with_patient
+                == PatientContactDetails.RelationEnum.FAMILY_MEMBER.value
                 for contact_patient in self.patient.contacted_patients.all()
             )
         )

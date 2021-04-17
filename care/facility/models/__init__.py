@@ -11,4 +11,4 @@ from .inventory import *
 from .summary import *
 from .shifting import *
 from .patient_external_test import *
-from .patient_test import *
+from .patient_investigation import *
