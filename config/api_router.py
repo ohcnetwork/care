@@ -114,7 +114,6 @@ router.register(
 
 
 router.register("items", FacilityInventoryItemViewSet)
-router.register("investigation", InvestigationViewset)
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
 # Ref: https://github.com/alanjds/drf-nested-routers
@@ -126,21 +125,15 @@ facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 
-
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"post_covid", PostCovidDataViewSet)
-
 
 consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
-# consultation_nested_router.register(r"investigation", InvestigationViewset)
-# investigation_nested_router = NestedSimpleRouter(
-#     router, r"investigation", lookup="investigation"
-# )
-# investigation_nested_router.register(r"investigation", InvestigationViewset)
+consultation_nested_router.register(r"investigation", InvestigationViewset)
 
 app_name = "api"
 urlpatterns = [
@@ -148,8 +141,4 @@ urlpatterns = [
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
     url(r"^", include(consultation_nested_router.urls)),
-    # url(r"^", include(investigation_nested_router.urls)),
 ]
-
-# for url in investigation_nested_router.urls:
-#     print(url)

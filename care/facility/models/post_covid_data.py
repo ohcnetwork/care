@@ -1,7 +1,9 @@
-# change on delete to protect
+# at present symptoms is required. What if patient has no symptoms now?
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 from care.facility.models.base import BaseModel
+from care.facility.models.patient_consultation import PatientConsultation
 import enum
 
 
@@ -44,7 +46,11 @@ AnticoagulantModeOfTransmissionChoices = [
 
 
 class PostCovidData(BaseModel):
-    # Do we have to delete post covid data of patient if patient is deleted
+    consultation = models.OneToOneField(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        null=False
+    )
     patient = models.ForeignKey(
         "PatientRegistration",
         on_delete=models.PROTECT,
@@ -102,8 +108,8 @@ class PostCovidData(BaseModel):
 
     vitals_at_admission = JSONField(default=dict, null=True)
 
-    condition_on_admission = models.TextField(default="", null=True)
-    condition_on_discharge = models.TextField(default="", null=True)
+    condition_on_admission = models.TextField(default="", null=True, blank=True)
+    condition_on_discharge = models.TextField(default="", null=True, blank=True)
     icu_admission = models.BooleanField(default=False, null=False, blank=False)
     oxygen_requirement = models.BooleanField(default=False, null=False, blank=False)
 
@@ -111,74 +117,83 @@ class PostCovidData(BaseModel):
         choices=OxygenTypeChoices, default=1
     )
 
-    mechanical_ventiltions_niv = models.IntegerField(default=0, null=True)
-    mechanical_ventiltions_invasive = models.IntegerField(default=0, null=True)
+    mechanical_ventilations_niv = models.IntegerField(default=0, null=True)
+    mechanical_ventilations_invasive = models.IntegerField(default=0, null=True)
     antivirals = models.BooleanField(default=False, null=False)
 
     antivirals_drugs = ArrayField(
-        JSONField(default=dict, null=True),
+        models.CharField(max_length=100),
         default=list,
-        null=True
+        null=True,
+        blank=True
     )
     steroids = models.BooleanField(default=False, null=True)
     steroids_drugs = ArrayField(
         JSONField(default=dict, null=False),
         default=list,
-        null=True
+        null=True,
+        blank=True
     )
 
     anticoagulants = models.BooleanField(default=False, null=True)
     anticoagulants_drugs = ArrayField(
         JSONField(default=dict, null=False),
         default=list,
-        null=True
+        null=True,
+        blank=True
     )
 
     antibiotics = models.BooleanField(default=False, null=True)
     antibiotics_drugs = ArrayField(
         JSONField(default=dict, null=False),
         default=list,
-        null=True
+        null=True,
+        blank=True
     )
 
     antifungals = models.BooleanField(default=False, null=True)
     antifungals_drugs = ArrayField(
         JSONField(default=dict, null=False),
         default=list,
-        null=True
+        null=True,
+        blank=True
     )
 
     documented_secondary_bacterial_infection = models.TextField(
         default="",
         null=True,
-        verbose_name="any bacterial infection during treatment"
+        verbose_name="any bacterial infection during treatment",
+        blank=True
     )
     documented_fungal_infection = models.TextField(
         default="",
         null=True,
-        verbose_name="any fungal infection during treatment"
+        verbose_name="any fungal infection during treatment",
+        blank=True
     )
     newly_detected_comorbidities = models.TextField(
         default="",
         null=True,
-        verbose_name="any new disease"
+        verbose_name="any new disease",
+        blank=True
     )
     worsening_of_comorbidities = models.TextField(
         default="",
         null=True,
-        verbose_name="is any disease worsened during treatment"
+        verbose_name="is any disease worsened during treatment",
+        blank=True
     )
     at_present_symptoms = ArrayField(
         models.CharField(default="", null=False, max_length=100),
         default=dict,
-        null=False,
-        blank=False
+        null=True,
+        blank=True
     )
 
     on_examination_vitals = JSONField(default=dict, null=True, blank=False)
-    appearance_of_pallor = models.BooleanField(default=False, null=True)
-    appearance_of_cyanosis = models.BooleanField(default=False, null=True)
-    appearance_of_pedal_edema = models.BooleanField(default=False, null=True)
+    appearance_of_pallor = models.TextField(default=False, null=True)
+    appearance_of_cyanosis = models.TextField(default=False, null=True)
+    appearance_of_pedal_edema = models.TextField(default=False, null=True)
     appearance_of_pedal_edema_details = models.TextField(default="", null=True)
 
     systemic_examination = JSONField(
@@ -187,7 +202,7 @@ class PostCovidData(BaseModel):
         verbose_name="examinations of central nervous system"
     )
 
-    single_breath_count = models.TextField(default="", null=True)
-    six_minute_walk_test = models.TextField(default="", null=True)
-    concurrent_medications = models.TextField(default="", null=True)
+    single_breath_count = models.TextField(default="", null=True, blank=True)
+    six_minute_walk_test = models.TextField(default="", null=True, blank=True)
+    concurrent_medications = models.TextField(default="", null=True, blank=True)
     probable_diagnosis = models.TextField(default="", null=False, blank=False)

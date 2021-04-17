@@ -9,6 +9,7 @@ from rest_framework.exceptions import ValidationError
 from care.facility.models.patient import PatientRegistration
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.facility import Facility
 
 
 class PostCovidDataViewSet(viewsets.ModelViewSet):
@@ -29,22 +30,32 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(filters).distinct("id")
 
     def create(self, request, *args, **kwargs):
-        # /api/v1/patient/{patient_id}/post_covid
+        print("create function")
         with transaction.atomic():
             if kwargs.get("patient_external_id") is None:
                 raise ValidationError({"error": "Patient id should be provided"})
 
-            request.data["patient_id"] = PatientRegistration.objects.get(id=kwargs.get("patient_external_id"))
+            request.data["patient_id"] = PatientRegistration.objects.get(
+                external_id=kwargs.get("patient_external_id")).id
+            patient = PatientRegistration.objects.get(id=request.data["patient_id"])
 
-            data = {
-                "symptoms": [9],
-                "facility": "8298e97e-08f0-4d52-8838-0b1cd218dfe1",
-                "patient": "f10b05c8-de76-4150-ae67-3392934faa45",
-                "suggestion": "HI"  # confirm value
-            }
+            # data = {
+            #     "symptoms": [9],
+            #     "facility": patient.facility.external_id,
+            #     "patient": patient.external_id,
+            #     "suggestion": "HI"  # confirm value
+            # }
 
-            consultation = PatientConsultation(facility_id=1, patient_id=4)
+            consultation = PatientConsultation(facility_id=patient.facility.id, patient_id=patient.id)
             consultation.save()
+
+            request.data["consultation"] = consultation.id
+
+            facilities = []
+            for id in request.data["treatment_facility"]:
+                facilities.append(Facility.objects.get(external_id=id).id)
+
+            request.data["treatment_facility"] = facilities
             return super(PostCovidDataViewSet, self).create(request, *args, **kwargs)
 
     # def perform_create(self, serializer):
@@ -66,89 +77,3 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
     #         instance = serializer.create(validated_data)
     #     print(instance)
     #     return instance
-
-
-# {
-#     "symptoms": [2],
-#     "facility": "8298e97e-08f0-4d52-8838-0b1cd218dfe1",
-#     "patient": "f10b05c8-de76-4150-ae67-3392934faa45",
-#     "suggestion": "HI"
-# }
-
-# {
-#   "external_id": "1fa88f74-5716-4562-b3fc-2d963f66afb6",
-#   "post_covid_time" : 1,
-#   "date_of_onset_symptoms": "2021-04-16",
-#   "date_of_test_positive": "2021-04-16",
-#   "date_of_test_negative": "2021-04-16",
-#   "testing_centre": "string",
-#   "pre_covid_comorbidities": {},
-#   "post_covid_comorbidities": {},
-#   "treatment_duration": 0,
-#   "covid_category": 1,
-#   "vitals_at_admission": {
-#         "pr" : 10,
-#         "bp_systolic" : 10,
-#         "bp_diastolic": 10,
-#         "rr" : 10,
-#         "spo2" : 10
-#   },
-#   "condition_on_admission": "string",
-#   "condition_on_discharge": "string",
-#   "icu_admission": true,
-#   "oxygen_requirement": true,
-#   "oxygen_requirement_detail": 1,
-#   "mechanical_ventiltions_niv": 0,
-#   "mechanical_ventiltions_invasive": 0,
-#   "antivirals": true,
-#   "antivirals_drugs": [
-#     {"drug" : "some desc", "duration" : 2},
-#     {"drug" : "some desc", "duration" : 2}
-#   ],
-#   "steroids": true,
-#   "steroids_drugs": [
-#     {"drug" : "some desc", "duration" : 2},
-#     {"drug" : "some desc", "duration" : 2}
-#   ],
-#   "anticoagulants": true,
-#   "anticoagulants_drugs": [
-#     {"mode_of_transmission" : "IV", "drug" : "drug1", "duration" : 2}
-#   ],
-#   "antibiotics": true,
-#   "antibiotics_drugs": [
-#     {"drug" : "some desc", "duration" : 2},
-#     {"drug" : "some desc", "duration" : 2}
-#   ],
-#   "antifungals": true,
-#   "antifungals_drugs": [
-#     {"drug" : "some desc", "duration" : 2},
-#     {"drug" : "some desc", "duration" : 2}
-#   ],
-#   "documented_secondary_bacterial_infection": "string",
-#   "documented_fungal_infection": "string",
-#   "newly_detected_comorbidities": "string",
-#   "worsening_of_comorbidities": "string",
-#   "at_present_symptoms": [
-#     "symptom1", "symptom2"
-#   ],
-#   "appearance_of_pallor": true,
-#   "appearance_of_cyanosis": true,
-#   "appearance_of_pedal_edema": true,
-#   "appearance_of_pedal_edema_details": "string",
-#   "systemic_examination": {
-#       "respiratory" : {
-#           "wob" : "some wob",
-#           "rhonchi" : "some rhonchi",
-#           "crepitation" : "some crepitation"
-#       },
-#       "cvs" : "some cvs",
-#       "cns" : "some cns",
-#       "git" : "some git"
-#   },
-#   "single_breath_count": "string",
-#   "six_minute_walk_test": "string",
-#   "concurrent_medications": "string",
-#   "probable_diagnosis": "string",
-#   "patient": 4,
-#   "treatment_facility": [1]
-# }

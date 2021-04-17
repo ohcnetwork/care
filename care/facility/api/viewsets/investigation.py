@@ -5,6 +5,8 @@ from care.facility.models.investigation import Investigation
 from django.db import transaction
 from rest_framework.response import Response
 from care.facility.models import User
+from rest_framework.exceptions import ValidationError
+from care.facility.models.patient_consultation import PatientConsultation
 
 
 class InvestigationViewset(viewsets.ModelViewSet):
@@ -25,9 +27,15 @@ class InvestigationViewset(viewsets.ModelViewSet):
         return self.queryset.filter(filters).distinct("id")
 
     def create(self, request, *args, **kwargs):
-        # print(request.user)
         with transaction.atomic():
             if(request.user.user_type < User.TYPE_VALUE_MAP["Staff"]):
                 return Response({"status": "Access denied"}, status=status.HTTP_403_FORBIDDEN)
+
+            if kwargs.get("consultation_external_id") is None:
+                raise ValidationError("Consultation id should be provided")
+
+            request.data["consultation"] = PatientConsultation.objects.get(
+                external_id=kwargs.get("consultation_external_id")
+            ).id
 
             return super(InvestigationViewset, self).create(request, *args, **kwargs)
