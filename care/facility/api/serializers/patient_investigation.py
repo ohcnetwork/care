@@ -44,9 +44,6 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
     investigation_object = MinimalPatientInvestigationSerializer(read_only=True)
     session_object = PatientInvestigationSessionSerializer(source="session")
 
-    group = serializers.UUIDField(source="group.external_id", allow_null=True)
-    investigation = serializers.UUIDField(source="investigation.external_id")
-
     class Meta:
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
