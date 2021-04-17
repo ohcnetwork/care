@@ -85,6 +85,10 @@ class InvestigationValueViewSet(
         return self.queryset.filter(filters).distinct("id")
 
     def create(self, request, *args, **kwargs):
+
+        if not isinstance(request.data, list):
+            return Response({"error": "Data must be a list"}, status=status.HTTP_400_BAD_REQUEST)
+
         with transaction.atomic():
             consultation_id = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id")).id
 
