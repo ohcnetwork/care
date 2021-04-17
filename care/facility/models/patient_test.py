@@ -4,19 +4,16 @@ from care.facility.models.patient_consultation import PatientConsultation
 import enum
 
 
-TestTypeChoices = [
-    ("Float", "Float"),
-    ("String", "String")
-]
+TestTypeChoices = [("Float", "Float"), ("String", "String")]
 
 
-class TestGroup(BaseModel):
+class PatientTestGroup(BaseModel):
     name = models.CharField(max_length=500, blank=False, null=False)
 
 
 class PatientTest(BaseModel):
     name = models.CharField(max_length=500, blank=False, null=False)
-    group = models.ManyToManyField(TestGroup)
+    group = models.ManyToManyField(PatientTestGroup)
     unit = models.TextField()
     ideal_value = models.TextField(blank=False, null=False)
     min_value = models.FloatField(blank=True, default=None, null=True)
@@ -30,8 +27,7 @@ class TestSession(BaseModel):
 
 class TestValue(BaseModel):
     test = models.ForeignKey(PatientTest, on_delete=models.PROTECT, blank=False, null=False)
-    group = models.ForeignKey(TestGroup, on_delete=models.PROTECT, blank=True,
-                              null=True)
+    group = models.ForeignKey(PatientTestGroup, on_delete=models.PROTECT, blank=True, null=True)
     value = models.FloatField(blank=True, null=True, default=None)
     notes = models.TextField(blank=True, null=True, default=None)
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, blank=False, null=False)
