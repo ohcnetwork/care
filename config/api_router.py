@@ -51,6 +51,11 @@ from care.users.api.viewsets.lsg import (
     WardViewSet,
 )
 from care.users.api.viewsets.users import UserViewSet
+from care.facility.api.viewsets.patient_test import (
+    TestGroupViewset,
+    PatientTestViewSet,
+    TestValueViewSet
+)
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -115,6 +120,9 @@ router.register("items", FacilityInventoryItemViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
+router.register("test_group", TestGroupViewset)
+router.register("tests", PatientTestViewSet)
+
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
@@ -133,6 +141,7 @@ consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+consultation_nested_router.register(r"investigation", TestValueViewSet)
 
 app_name = "api"
 urlpatterns = [

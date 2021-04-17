@@ -26,6 +26,9 @@ from .models import (
     Room,
     StaffRoomAllocation,
     PatientExternalTest,
+    TestGroup,
+    PatientTest,
+    TestValue
 )
 
 
@@ -192,4 +195,4 @@ admin.site.register(FacilityInventoryUnit)
 admin.site.register(FacilityInventoryUnitConverter)
 admin.site.register(FacilityInventoryItem)
 admin.site.register(FacilityInventoryItemTag)
-admin.site.register(PatientExternalTest ,PatientExternalTestAdmin )
+admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
