@@ -40,11 +40,11 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
 
     id = serializers.CharField(source="external_id", read_only=True)
 
-    group_object = PatientInvestigationGroupSerializer(read_only=True)
-    investigation_object = MinimalPatientInvestigationSerializer(read_only=True)
-    session_object = PatientInvestigationSessionSerializer(source="session")
+    group_object = PatientInvestigationGroupSerializer(source="group", read_only=True)
+    investigation_object = MinimalPatientInvestigationSerializer(source="investigation", read_only=True)
+    session_object = PatientInvestigationSessionSerializer(source="session", read_only=True)
 
     class Meta:
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
-        exclude = TIMESTAMP_FIELDS + ("external_id", "consultation")
+        exclude = TIMESTAMP_FIELDS + ("external_id",)

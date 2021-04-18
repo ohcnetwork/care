@@ -21,6 +21,7 @@ from care.facility.models.patient_investigation import (
     InvestigationValue,
 )
 from care.users.models import User
+from care.utils.cache.patient_investigation import get_investigation_id
 
 
 class InvestigationGroupFilter(filters.FilterSet):
@@ -86,21 +87,26 @@ class InvestigationValueViewSet(
 
     def create(self, request, *args, **kwargs):
 
-        if not isinstance(request.data, list):
+        if "investigations" not in request.data:
+            return Response({"investigation": "is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        investigations = request.data["investigations"]
+
+        if not isinstance(investigations, list):
             return Response({"error": "Data must be a list"}, status=status.HTTP_400_BAD_REQUEST)
 
         with transaction.atomic():
             consultation_id = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id")).id
-
             session_id = uuid.uuid4()
             session = InvestigationSession(session=session_id)
             session.save()
 
-            for value in request.data:
+            for value in investigations:
                 value["session"] = session.id
+                value["investigation"] = get_investigation_id(value["investigation"])
                 value["consultation"] = consultation_id
-
-            serializer = self.get_serializer(data=request.data, many=True)
+                print(value)
+            serializer = self.get_serializer(data=investigations, many=True)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
