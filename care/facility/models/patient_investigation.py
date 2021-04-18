@@ -1,6 +1,7 @@
 from django.db import models
 from care.facility.models.base import BaseModel
 from care.facility.models.patient_consultation import PatientConsultation
+from uuid import uuid4
 
 
 TestTypeChoices = [("Float", "Float"), ("String", "String"), ("Choice", "Choice")]
@@ -28,7 +29,7 @@ class PatientInvestigation(BaseModel):
 
 
 class InvestigationSession(BaseModel):
-    session = models.UUIDField(db_index=True)
+    external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)  # session_id
 
 
 class InvestigationValue(BaseModel):

@@ -31,9 +31,12 @@ class MinimalPatientInvestigationSerializer(serializers.ModelSerializer):
 
 
 class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
+    session_external_id = serializers.UUIDField(source="external_id")
+    session_created_date = serializers.DateTimeField(source="created_date")
+
     class Meta:
         model = InvestigationSession
-        fields = ("session", "created_date")
+        exclude = TIMESTAMP_FIELDS + ("external_id", "id")
 
 
 class InvestigationValueSerializer(serializers.ModelSerializer):
@@ -48,5 +51,4 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
         exclude = TIMESTAMP_FIELDS + ("external_id",)
-
 

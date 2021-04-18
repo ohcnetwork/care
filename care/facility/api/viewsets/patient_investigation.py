@@ -1,8 +1,7 @@
-import uuid
-
 from django.db import transaction
+from django.db.models import F
 from django.db.models.query_utils import Q
-from django_filters import Filter, FilterSet
+from django_filters import Filter
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
@@ -102,7 +101,13 @@ class InvestigationValueViewSet(
     @action(detail=False, methods=["GET"])
     def get_sessions(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        return Response(PatientInvestigationSessionSerializer(queryset.distinct("session"), many=True).data)
+        return Response(
+            list(
+                queryset.annotate(
+                    session_external_id=F("session__external_id"), session_created_date=F("session__created_date")
+                ).values("session_external_id", "session_created_date")
+            )
+        )
 
     def create(self, request, *args, **kwargs):
 
@@ -116,15 +121,14 @@ class InvestigationValueViewSet(
 
         with transaction.atomic():
             consultation_id = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id")).id
-            session_id = uuid.uuid4()
-            session = InvestigationSession(session=session_id)
+            session = InvestigationSession()
             session.save()
 
             for value in investigations:
                 value["session"] = session.id
                 value["investigation"] = get_investigation_id(value["investigation"])
                 value["consultation"] = consultation_id
-                print(value)
+
             serializer = self.get_serializer(data=investigations, many=True)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
