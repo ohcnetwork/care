@@ -1,24 +1,27 @@
 import uuid
 
 from django.db import transaction
+from django.db.models.query_utils import Q
 from django_filters import Filter, FilterSet
 from django_filters import rest_framework as filters
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db.models.query_utils import Q
 
 from care.facility.api.serializers.patient_investigation import (
+    InvestigationValueSerializer,
     PatientInvestigationGroupSerializer,
     PatientInvestigationSerializer,
-    InvestigationValueSerializer,
+    PatientInvestigationSessionSerializer,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import (
-    PatientInvestigation,
-    PatientInvestigationGroup,
     InvestigationSession,
     InvestigationValue,
+    PatientInvestigation,
+    PatientInvestigationGroup,
 )
 from care.users.models import User
 from care.utils.cache.patient_investigation import get_investigation_id
@@ -58,8 +61,16 @@ class PatientInvestigationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMix
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
-
     filter_backends = (filters.DjangoFilterBackend,)
+
+
+class PatientInvestigationValueFilter(filters.FilterSet):
+    consultation = filters.CharFilter(field_name="consultation__external_id")
+    patient = filters.CharFilter(field_name="consultation__patient__external_id")
+    created_date = filters.DateFromToRangeFilter(field_name="created_date")
+    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    investigation = filters.CharFilter(field_name="investigation__external_id")
+    session = filters.CharFilter(field_name="session__external_id")
 
 
 class InvestigationValueViewSet(
@@ -73,6 +84,8 @@ class InvestigationValueViewSet(
     queryset = InvestigationValue.objects.all()
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
+    filterset_class = PatientInvestigationValueFilter
+    filter_backends = (filters.DjangoFilterBackend,)
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -84,6 +97,12 @@ class InvestigationValueViewSet(
         filters = Q(consultation__patient__facility__users__id__exact=self.request.user.id)
         filters |= Q(consultation__assigned_to=self.request.user)
         return self.queryset.filter(filters).distinct("id")
+
+    @swagger_auto_schema(responses={200: PatientInvestigationSessionSerializer(many=True)})
+    @action(detail=False, methods=["GET"])
+    def get_sessions(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        return Response(PatientInvestigationSessionSerializer(queryset.distinct("session"), many=True).data)
 
     def create(self, request, *args, **kwargs):
 

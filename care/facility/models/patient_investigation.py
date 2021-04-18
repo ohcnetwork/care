@@ -1,7 +1,6 @@
 from django.db import models
 from care.facility.models.base import BaseModel
 from care.facility.models.patient_consultation import PatientConsultation
-import enum
 
 
 TestTypeChoices = [("Float", "Float"), ("String", "String"), ("Choice", "Choice")]

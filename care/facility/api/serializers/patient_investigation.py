@@ -48,3 +48,5 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
         exclude = TIMESTAMP_FIELDS + ("external_id",)
+
+
