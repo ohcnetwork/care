@@ -64,8 +64,6 @@ class PatientInvestigationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMix
 
 
 class PatientInvestigationValueFilter(filters.FilterSet):
-    consultation = filters.CharFilter(field_name="consultation__external_id")
-    patient = filters.CharFilter(field_name="consultation__patient__external_id")
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     investigation = filters.CharFilter(field_name="investigation__external_id")
@@ -87,15 +85,16 @@ class InvestigationValueViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
 
     def get_queryset(self):
+        queryset = self.queryset.filter(consultation__external_id=self.kwargs.get("consultation_external_id"))
         if self.request.user.is_superuser:
-            return self.queryset
+            return queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            return self.queryset.filter(consultation__patient__facility__state=self.request.user.state)
+            return queryset.filter(consultation__patient__facility__state=self.request.user.state)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return self.queryset.filter(consultation__patient__facility__district=self.request.user.district)
+            return queryset.filter(consultation__patient__facility__district=self.request.user.district)
         filters = Q(consultation__patient__facility__users__id__exact=self.request.user.id)
         filters |= Q(consultation__assigned_to=self.request.user)
-        return self.queryset.filter(filters).distinct("id")
+        return queryset.filter(filters).distinct("id")
 
     @swagger_auto_schema(responses={200: PatientInvestigationSessionSerializer(many=True)})
     @action(detail=False, methods=["GET"])
