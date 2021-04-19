@@ -102,9 +102,11 @@ class InvestigationValueViewSet(
         queryset = self.filter_queryset(self.get_queryset())
         return Response(
             list(
-                queryset.annotate(
+                queryset.distinct("session")
+                .annotate(
                     session_external_id=F("session__external_id"), session_created_date=F("session__created_date")
-                ).values("session_external_id", "session_created_date")
+                )
+                .values("session_external_id", "session_created_date")
             )
         )
 
