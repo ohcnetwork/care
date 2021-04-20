@@ -26,6 +26,8 @@ from .models import (
     Room,
     StaffRoomAllocation,
     PatientExternalTest,
+    PatientInvestigationGroup,
+    PatientInvestigation,
 )
 
 
@@ -155,6 +157,14 @@ class PatientExternalTestAdmin(admin.ModelAdmin):
     pass
 
 
+class PatientTestAdmin(admin.ModelAdmin):
+    pass
+
+
+class PatientTestGroupAdmin(admin.ModelAdmin):
+    pass
+
+
 class ExportCsvMixin:
     def export_as_csv(self, request, queryset):
 
@@ -192,4 +202,6 @@ admin.site.register(FacilityInventoryUnit)
 admin.site.register(FacilityInventoryUnitConverter)
 admin.site.register(FacilityInventoryItem)
 admin.site.register(FacilityInventoryItemTag)
-admin.site.register(PatientExternalTest ,PatientExternalTestAdmin )
+admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
+admin.site.register(PatientInvestigation, PatientTestAdmin)
+admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)

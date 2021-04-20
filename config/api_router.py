@@ -40,9 +40,7 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.facility.summarisation.district.patient_summary import (
-    DistrictPatientSummaryViewSet,
-)
+from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
@@ -51,6 +49,11 @@ from care.users.api.viewsets.lsg import (
     WardViewSet,
 )
 from care.users.api.viewsets.users import UserViewSet
+from care.facility.api.viewsets.patient_investigation import (
+    InvestigationGroupViewset,
+    PatientInvestigationViewSet,
+    InvestigationValueViewSet,
+)
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -95,9 +98,7 @@ router.register("test_sample", PatientSampleViewSet)
 router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
-router.register(
-    "facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility"
-)
+router.register("facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility")
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
@@ -105,15 +106,16 @@ router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage
 # District Summary
 
 router.register(
-    "district/patient_summary",
-    DistrictPatientSummaryViewSet,
-    basename="district-summary-patient",
+    "district/patient_summary", DistrictPatientSummaryViewSet, basename="district-summary-patient",
 )
 
 
 router.register("items", FacilityInventoryItemViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
+
+router.register("investigation/group", InvestigationGroupViewset)
+router.register("investigation", PatientInvestigationViewSet)
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
@@ -129,10 +131,9 @@ patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 
 
-consultation_nested_router = NestedSimpleRouter(
-    router, r"consultation", lookup="consultation"
-)
+consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 
 app_name = "api"
 urlpatterns = [
