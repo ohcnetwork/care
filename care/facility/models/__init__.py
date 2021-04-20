@@ -12,3 +12,4 @@ from .summary import *
 from .shifting import *
 from .patient_external_test import *
 from .patient_investigation import *
+from .post_covid_data import *

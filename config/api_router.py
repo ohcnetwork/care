@@ -54,6 +54,7 @@ from care.facility.api.viewsets.patient_investigation import (
     PatientInvestigationViewSet,
     InvestigationValueViewSet,
 )
+from care.facility.api.viewsets.post_covid_data import PostCovidDataViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -129,6 +130,7 @@ facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityVie
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
+patient_nested_router.register(r"post_covid", PostCovidDataViewSet)
 
 
 consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
