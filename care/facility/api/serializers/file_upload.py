@@ -22,11 +22,18 @@ def check_permissions(file_type, associating_id, user):
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
+            if patient.last_consultation:
+                if patient.last_consultation.assigned_to:
+                    if user == patient.last_consultation.assigned_to:
+                        return patient.id
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
         if file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if consultation.assigned_to:
+                if user == consultation.assigned_to:
+                    return consultation.id
             if not (
                 has_facility_permission(user, consultation.patient.facility)
                 or has_facility_permission(user, consultation.facility)
@@ -62,9 +69,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        internal_id = check_permissions(
-            validated_data["file_type"], validated_data["associating_id"], user
-        )
+        internal_id = check_permissions(validated_data["file_type"], validated_data["associating_id"], user)
         validated_data["associating_id"] = internal_id
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
