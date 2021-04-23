@@ -25,6 +25,7 @@ from care.facility.models.patient_investigation import (
 )
 from care.users.models import User
 from care.utils.cache.patient_investigation import get_investigation_id
+from care.utils.filters import MultiSelectFilter
 
 
 class InvestigationGroupFilter(filters.FilterSet):
@@ -69,11 +70,34 @@ class PatientInvestigationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMix
     pagination_class = InvestigationResultsSetPagination
 
 
-class PatientInvestigationValueFilter(filters.FilterSet):
+class PatientInvestigationFilter(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     investigation = filters.CharFilter(field_name="investigation__external_id")
+    inverstigations = MultiSelectFilter(field_name="investigation__external_id")
+    sessions = MultiSelectFilter(field_name="session__external_id")
     session = filters.CharFilter(field_name="session__external_id")
+
+
+class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    serializer_class = InvestigationValueSerializer
+    queryset = InvestigationValue.objects.all()
+    lookup_field = "external_id"
+    permission_classes = (IsAuthenticated,)
+    filterset_class = PatientInvestigationFilter
+    filter_backends = (filters.DjangoFilterBackend,)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(consultation__patient__external_id=self.kwargs.get("patient_external_id"))
+        if self.request.user.is_superuser:
+            return queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return queryset.filter(consultation__patient__facility__state=self.request.user.state)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return queryset.filter(consultation__patient__facility__district=self.request.user.district)
+        filters = Q(consultation__patient__facility__users__id__exact=self.request.user.id)
+        filters |= Q(consultation__assigned_to=self.request.user)
+        return queryset.filter(filters).distinct("id")
 
 
 class InvestigationValueViewSet(
@@ -87,7 +111,7 @@ class InvestigationValueViewSet(
     queryset = InvestigationValue.objects.all()
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
-    filterset_class = PatientInvestigationValueFilter
+    filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
 
     def get_queryset(self):

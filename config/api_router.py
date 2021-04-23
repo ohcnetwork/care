@@ -53,6 +53,7 @@ from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,
     PatientInvestigationViewSet,
     InvestigationValueViewSet,
+    PatientInvestigationSummaryViewSet,
 )
 
 if settings.DEBUG:
@@ -129,7 +130,7 @@ facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityVie
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
-
+patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 
 consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
