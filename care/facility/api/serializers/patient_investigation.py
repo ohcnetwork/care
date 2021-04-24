@@ -52,3 +52,10 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
         read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
         exclude = TIMESTAMP_FIELDS + ("external_id",)
 
+    def update(self, instance, validated_data):
+        if instance.consultation.discharge_date:
+            raise serializers.ValidationError(
+                {"consultation": [f"Discharged Consultation data cannot be updated"]}
+            )
+
+        return super().update(instance, validated_data)
