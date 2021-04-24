@@ -150,8 +150,16 @@ class InvestigationValueViewSet(
         if not isinstance(investigations, list):
             return Response({"error": "Data must be a list"}, status=status.HTTP_400_BAD_REQUEST)
 
+        consultation = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id"))
+        consultation_id = consultation.id
+
+        if consultation.consultation.discharge_date:
+            return Response(
+                {"consultation": [f"Discharged Consultation data cannot be updated"]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         with transaction.atomic():
-            consultation_id = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id")).id
             session = InvestigationSession()
             session.save()
 
