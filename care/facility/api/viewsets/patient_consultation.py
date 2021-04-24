@@ -41,17 +41,6 @@ class PatientConsultationViewSet(
         filters |= Q(assigned_to=self.request.user)
         return self.queryset.filter(filters).distinct("id")
 
-    def create(self, request, *args, **kwargs):
-        patient = PatientRegistration.objects.get(external_id=self.kwargs["patient_external_id"])
-        if patient.last_consultation:
-            if request.user == patient.last_consultation.assigned_to:
-                return Response(
-                    {"Permission Denied": "Only Facility Admins can create consultation for a Patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        return super().create(request, *args, **kwargs)
-
     def list(self, request, *args, **kwargs):
         """
         Consultation List
