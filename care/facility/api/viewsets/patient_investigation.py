@@ -74,7 +74,7 @@ class PatientInvestigationFilter(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     investigation = filters.CharFilter(field_name="investigation__external_id")
-    inverstigations = MultiSelectFilter(field_name="investigation__external_id")
+    investigations = MultiSelectFilter(field_name="investigation__external_id")
     sessions = MultiSelectFilter(field_name="session__external_id")
     session = filters.CharFilter(field_name="session__external_id")
 
