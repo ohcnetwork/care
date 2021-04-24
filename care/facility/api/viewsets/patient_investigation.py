@@ -155,7 +155,7 @@ class InvestigationValueViewSet(
 
         if consultation.discharge_date:
             return Response(
-                {"consultation": [f"Discharged Consultation data cannot be updated"]},
+                {"consultation": ["Discharged Consultation data cannot be updated"]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
