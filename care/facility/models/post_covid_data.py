@@ -5,42 +5,23 @@ from care.facility.models.patient_consultation import PatientConsultation
 import enum
 
 
-class PostCovidTime(enum.Enum):
-    UNDER_THREE_WEEKS = 1
-    THREE_TO_TWELVE = 2
-    OVER_TWELVE_WEEKS = 3
-
-
-PostCovidTimeChoices = [(e.value, e.name) for e in PostCovidTime]
-
-
 class CovidCategory(enum.Enum):
-    MILD = 1
-    MODERATE = 2
-    SEVERE = 3
+    MILD = "Mild"
+    MODERATE = "Moderate"
+    SEVERE = "Severe"
 
 
 CovidCategoryChoices = [(e.value, e.name) for e in CovidCategory]
 
 
 class OxygenType(enum.Enum):
-    NASAL_PRONGS = 1
-    FACE_MASK = 2
-    NRBM = 3
-    FNO = 4
+    NASAL_PRONGS = "Nasal prongs"
+    FACE_MASK = "Face mask"
+    NRBM = "Nrbm"
+    FNO = "Fno"
 
 
 OxygenTypeChoices = [(e.value, e.name) for e in OxygenType]
-
-
-class AnticoagulantModeOfTransmission(enum.Enum):
-    IV = 1
-    ORAL = 2
-
-
-AnticoagulantModeOfTransmissionChoices = [
-    (e.value, e.name) for e in AnticoagulantModeOfTransmission
-]
 
 
 class PostCovidData(BaseModel):
@@ -60,7 +41,6 @@ class PostCovidData(BaseModel):
         verbose_name="Date of first appearance of symptoms"
     )
     post_covid_time = models.IntegerField(
-        choices=PostCovidTimeChoices,
         default=1,
         blank=False
     )
@@ -99,9 +79,9 @@ class PostCovidData(BaseModel):
         blank=False,
         verbose_name="Number of days for which treatment last"
     )
-    covid_category = models.IntegerField(
+    covid_category = models.CharField(
         choices=CovidCategoryChoices,
-        blank=False
+        blank=True, null=True
     )
 
     vitals_at_admission = JSONField(default=dict, null=True)
@@ -111,30 +91,30 @@ class PostCovidData(BaseModel):
     icu_admission = models.BooleanField(default=False, null=False, blank=False)
     oxygen_requirement = models.BooleanField(default=False, null=False, blank=False)
 
-    oxygen_requirement_detail = models.IntegerField(
-        choices=OxygenTypeChoices, default=1
+    oxygen_requirement_detail = models.CharField(
+        choices=OxygenTypeChoices, default=OxygenType.NASAL_PRONGS, max_length=15,
+        null=True, blank=True
     )
 
     mechanical_ventilations_niv = models.IntegerField(default=0, null=True)
     mechanical_ventilations_invasive = models.IntegerField(default=0, null=True)
     antivirals = models.BooleanField(default=False, null=False)
 
-    antivirals_drugs = ArrayField(
+    antivirals_drugs = JSONField(
         models.CharField(max_length=100),
         default=list,
         null=True,
         blank=True
     )
     steroids = models.BooleanField(default=False, null=True)
-    steroids_drugs = ArrayField(
-        JSONField(default=dict, null=False),
+    steroids_drugs = JSONField(
         default=list,
         null=True,
         blank=True
     )
 
     anticoagulants = models.BooleanField(default=False, null=True)
-    anticoagulants_drugs = ArrayField(
+    anticoagulants_drugs = JSONField(
         JSONField(default=dict, null=False),
         default=list,
         null=True,
@@ -142,16 +122,14 @@ class PostCovidData(BaseModel):
     )
 
     antibiotics = models.BooleanField(default=False, null=True)
-    antibiotics_drugs = ArrayField(
-        JSONField(default=dict, null=False),
+    antibiotics_drugs = JSONField(
         default=list,
         null=True,
         blank=True
     )
 
     antifungals = models.BooleanField(default=False, null=True)
-    antifungals_drugs = ArrayField(
-        JSONField(default=dict, null=False),
+    antifungals_drugs = JSONField(
         default=list,
         null=True,
         blank=True

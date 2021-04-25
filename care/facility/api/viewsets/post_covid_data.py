@@ -30,7 +30,6 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(filters).distinct("id")
 
     def create(self, request, *args, **kwargs):
-        print("create function")
         with transaction.atomic():
             if kwargs.get("patient_external_id") is None:
                 raise ValidationError({"error": "Patient id should be provided"})
@@ -38,13 +37,6 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
             request.data["patient_id"] = PatientRegistration.objects.get(
                 external_id=kwargs.get("patient_external_id")).id
             patient = PatientRegistration.objects.get(id=request.data["patient_id"])
-
-            # data = {
-            #     "symptoms": [9],
-            #     "facility": patient.facility.external_id,
-            #     "patient": patient.external_id,
-            #     "suggestion": "HI"  # confirm value
-            # }
 
             consultation = PatientConsultation(facility_id=patient.facility.id, patient_id=patient.id)
             consultation.save()
@@ -56,24 +48,6 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
                 facilities.append(Facility.objects.get(external_id=id).id)
 
             request.data["treatment_facility"] = facilities
+            print("heyyyy ending create")
+            print(request.data)
             return super(PostCovidDataViewSet, self).create(request, *args, **kwargs)
-
-    # def perform_create(self, serializer):
-    #     print(self.kwargs)
-    #     if self.kwargs.get("patient_external_id") is None:
-    #         raise ValidationError({"error": "Patient id should be provided"})
-
-    #     validated_data = serializer.validated_data
-    #     # try:
-    #     #     validated_data["patient"] = PatientRegistration.objects.get(
-    #     #         id=self.kwargs.get("patient_external_id")
-    #     #     )
-
-    #     # except:
-    #     #     raise ValidationError({"error": "Patient with patient id : " +
-    #     #                           self.kwargs.get("patient_external_id") + "does not exist"})
-    #     print(validated_data["treatment_facility"])
-    #     with transaction.atomic():
-    #         instance = serializer.create(validated_data)
-    #     print(instance)
-    #     return instance

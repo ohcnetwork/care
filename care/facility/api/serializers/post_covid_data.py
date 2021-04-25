@@ -16,21 +16,21 @@ ModeOfTransmissionChoices = [(e.value, e.name) for e in ModeOfTransmission]
 
 # Validator serializer for vitals_at_admission
 class VitalsAtAdmissionSerializer(serializers.Serializer):
-    pr = serializers.IntegerField(allow_null=True)
-    bp_systolic = serializers.IntegerField(allow_null=True)
-    bp_diastolic = serializers.IntegerField(allow_null=True)
-    rr = serializers.IntegerField(allow_null=True)
-    spo2 = serializers.IntegerField(allow_null=True)
+    pulse_rate = serializers.IntegerField(allow_null=True)
+    blood_pressure_systolic = serializers.IntegerField(allow_null=True)
+    blood_pressure_diastolic = serializers.IntegerField(allow_null=True)
+    respiration_rate = serializers.IntegerField(allow_null=True)
+    oxygen_saturation = serializers.IntegerField(allow_null=True)
 
 
 # Validator serializer for on_examination_vitals
 class OnExaminationVitalsSerializer(serializers.Serializer):
-    pr = serializers.IntegerField(allow_null=True)
-    bp_systolic = serializers.IntegerField(allow_null=True)
-    bp_distolic = serializers.IntegerField(allow_null=True)
-    rr = serializers.IntegerField(allow_null=True)
+    pulse_rate = serializers.IntegerField(allow_null=True)
+    blood_pressure_systolic = serializers.IntegerField(allow_null=True)
+    blood_pressure_diastolic = serializers.IntegerField(allow_null=True)
+    respiration_rate = serializers.IntegerField(allow_null=True)
     temperature = serializers.FloatField(allow_null=True)
-    spo2 = serializers.IntegerField(allow_null=True)
+    oxygen_saturation = serializers.IntegerField(allow_null=True)
 
 
 # Validator serializer for each object of steroids_drugs,
@@ -82,7 +82,6 @@ class PostCovidDataSerializer(serializers.ModelSerializer):
             "date_of_test_negative",
             "treatment_facility",
             "treatment_duration",
-            "covid_category",
             "icu_admission",
             "oxygen_requirement",
             "probable_diagnosis"
@@ -108,7 +107,7 @@ class PostCovidDataSerializer(serializers.ModelSerializer):
             return on_examination_vitals
 
         if(
-            len(on_examination_vitals) != 5 or
+            len(on_examination_vitals) != 6 or
             not OnExaminationVitalsSerializer(data=on_examination_vitals).is_valid()
         ):
             raise serializers.ValidationError("All examination vitals were not provided.")
