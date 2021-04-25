@@ -81,7 +81,7 @@ class PostCovidData(BaseModel):
     )
     covid_category = models.CharField(
         choices=CovidCategoryChoices,
-        blank=True, null=True
+        blank=False, max_length=15
     )
 
     vitals_at_admission = JSONField(default=dict, null=True)
@@ -92,8 +92,10 @@ class PostCovidData(BaseModel):
     oxygen_requirement = models.BooleanField(default=False, null=False, blank=False)
 
     oxygen_requirement_detail = models.CharField(
-        choices=OxygenTypeChoices, default=OxygenType.NASAL_PRONGS, max_length=15,
-        null=True, blank=True
+        choices=OxygenTypeChoices,
+        default=OxygenType.NASAL_PRONGS,
+        max_length=15,
+        blank=False
     )
 
     mechanical_ventilations_niv = models.IntegerField(default=0, null=True)
