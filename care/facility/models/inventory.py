@@ -66,6 +66,9 @@ class FacilityInventoryItem(models.Model):
     description = models.TextField(blank=True)
     min_quantity = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
 
 class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     """
