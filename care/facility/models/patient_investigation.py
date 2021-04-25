@@ -31,6 +31,11 @@ class PatientInvestigation(BaseModel):
 class InvestigationSession(BaseModel):
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)  # session_id
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["-created_date",]),
+        ]
+
 
 class InvestigationValue(BaseModel):
     investigation = models.ForeignKey(PatientInvestigation, on_delete=models.PROTECT, blank=False, null=False)
