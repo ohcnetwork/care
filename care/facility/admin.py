@@ -28,6 +28,7 @@ from .models import (
     PatientExternalTest,
     PatientInvestigationGroup,
     PatientInvestigation,
+    PostCovidData
 )
 
 
