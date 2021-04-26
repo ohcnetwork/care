@@ -99,7 +99,7 @@ class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveM
     def get_queryset(self):
         session_page = self.request.GET.get("session_page", 1)
         queryset = self.queryset.filter(consultation__patient__external_id=self.kwargs.get("patient_external_id"))
-        sessions = queryset.order_by("session__created_date").distinct("session__created_date")[
+        sessions = queryset.order_by("-session__created_date").distinct("session__created_date")[
             (session_page - 1) * self.SESSION_PER_PAGE : (session_page) * self.SESSION_PER_PAGE
         ]
         if not sessions.exists():
