@@ -1,24 +1,25 @@
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.inventory import (
+    FacilityInventoryBurnRateSerializer,
     FacilityInventoryItemSerializer,
     FacilityInventoryLogSerializer,
-    FacilityInventorySummarySerializer,
     FacilityInventoryMinQuantitySerializer,
+    FacilityInventorySummarySerializer,
 )
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 from care.facility.models import (
+    Facility,
+    FacilityInventoryBurnRate,
     FacilityInventoryItem,
     FacilityInventoryLog,
-    FacilityInventorySummary,
-    Facility,
     FacilityInventoryMinQuantity,
+    FacilityInventorySummary,
 )
 from care.users.models import User
 
@@ -28,7 +29,10 @@ class FacilityInventoryFilter(filters.FilterSet):
 
 
 class FacilityInventoryItemViewSet(
-    UserAccessMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    UserAccessMixin,
+    RetrieveModelMixin,
+    ListModelMixin,
+    GenericViewSet,
 ):
     serializer_class = FacilityInventoryItemSerializer
     queryset = (
@@ -63,7 +67,11 @@ class FacilityInventoryLogFilter(filters.FilterSet):
 
 
 class FacilityInventoryLogViewSet(
-    UserAccessMixin, RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet,
+    UserAccessMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    ListModelMixin,
+    GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventoryLogSerializer
@@ -100,7 +108,12 @@ class FacilityInventoryLogViewSet(
 
 
 class FacilityInventoryMinQuantityViewSet(
-    UserAccessMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet,
+    UserAccessMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    ListModelMixin,
+    GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventoryMinQuantitySerializer
@@ -135,7 +148,10 @@ class FacilityInventoryMinQuantityViewSet(
 
 
 class FacilityInventorySummaryViewSet(
-    UserAccessMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    UserAccessMixin,
+    RetrieveModelMixin,
+    ListModelMixin,
+    GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventorySummarySerializer
@@ -158,3 +174,29 @@ class FacilityInventorySummaryViewSet(
 
     def get_object(self):
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
+
+
+class FacilityInventoryBurnRateFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name="facility__name", lookup_expr="icontains")
+    item = filters.NumberFilter(field_name="item_id")
+
+
+class FacilityInventoryBurnRateViewSet(
+    UserAccessMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    GenericViewSet,
+):
+    queryset = FacilityInventoryBurnRate.objects.select_related(
+        "item", "item__default_unit", "facility__district"
+    ).all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityInventoryBurnRateFilter
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    serializer_class = FacilityInventoryBurnRateSerializer
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if self.kwargs.get("facility_external_id"):
+            queryset = queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        return self.filter_by_user_scope(queryset)
