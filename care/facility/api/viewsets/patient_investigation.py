@@ -105,7 +105,7 @@ class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveM
         investigations = self.request.GET.get("investigations", "")
         queryset = self.queryset.filter(consultation__patient__external_id=self.kwargs.get("patient_external_id"))
         sessions = (
-            queryset.filter(investigation__in=investigations.split(","))
+            queryset.filter(investigation__external_id__in=investigations.split(","))
             .order_by("-session__created_date")
             .distinct("session__created_date")[
                 (session_page - 1) * self.SESSION_PER_PAGE : (session_page) * self.SESSION_PER_PAGE
