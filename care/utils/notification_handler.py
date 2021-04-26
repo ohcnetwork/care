@@ -45,6 +45,7 @@ class NotificationGenerator:
         self.caused_by = caused_by
         self.caused_object = caused_object
         self.caused_objects = {}
+        self.extra_data = extra_data
         self.generate_cause_objects()
         self.message = None
         self.extra_users = []
@@ -54,7 +55,6 @@ class NotificationGenerator:
             self.generate_message()
         else:
             self.message = message
-        self.extra_data = extra_data
         self.facility = facility
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications

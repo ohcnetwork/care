@@ -189,12 +189,12 @@ class InvestigationValueViewSet(
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
 
-        NotificationGenerator(
-            event=Notification.Event.INVESTIGATION_SESSION_CREATED,
-            caused_by=request.user,
-            caused_object=session,
-            facility=consultation.patient.facility,
-            extra_data={"consultation": consultation},
-        ).generate()
+            NotificationGenerator(
+                event=Notification.Event.INVESTIGATION_SESSION_CREATED,
+                caused_by=request.user,
+                caused_object=session,
+                facility=consultation.patient.facility,
+                extra_data={"consultation": consultation},
+            ).generate()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
