@@ -6,7 +6,9 @@ from care.facility.models.patient_investigation import (
     PatientInvestigation,
     InvestigationSession,
 )
+from care.facility.models.notification import Notification
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.utils.notification_handler import NotificationGenerator
 
 
 class PatientInvestigationGroupSerializer(serializers.ModelSerializer):
@@ -59,6 +61,13 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if instance.consultation.discharge_date:
-            raise serializers.ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+            raise serializers.ValidationError({"consultation": ["Discharged Consultation data cannot be updated"]})
+
+        NotificationGenerator(
+            event=Notification.Event.INVESTIGATION_UPDATED,
+            caused_by=self.context["request"].user,
+            caused_object=instance,
+            facility=instance.consultation.patient.facility,
+        ).generate()
 
         return super().update(instance, validated_data)

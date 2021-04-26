@@ -16,6 +16,7 @@ from care.facility.api.serializers.patient_investigation import (
     PatientInvestigationSerializer,
     PatientInvestigationSessionSerializer,
 )
+from care.facility.models.notification import Notification
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import (
     InvestigationSession,
@@ -27,6 +28,7 @@ from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.cache.patient_investigation import get_investigation_id
 from care.utils.filters import MultiSelectFilter
+from care.utils.notification_handler import NotificationGenerator
 
 
 class InvestigationGroupFilter(filters.FilterSet):
@@ -186,4 +188,13 @@ class InvestigationValueViewSet(
             serializer = self.get_serializer(data=investigations, many=True)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
+
+        NotificationGenerator(
+            event=Notification.Event.INVESTIGATION_SESSION_CREATED,
+            caused_by=request.user,
+            caused_object=session,
+            facility=consultation.patient.facility,
+            extra_data={"consultation": consultation},
+        ).generate()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)

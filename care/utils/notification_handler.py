@@ -2,6 +2,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.notification import Notification
 from care.facility.models.facility import Facility
+from care.facility.models.patient_investigation import InvestigationValue, InvestigationSession
 from care.users.models import User
 
 from care.facility.tasks.notification.generator import generate_notifications_for_facility
@@ -28,6 +29,7 @@ class NotificationGenerator:
         facility=None,
         generate_for_facility=False,
         extra_users=None,
+        extra_data=None,
     ):
         if not isinstance(event_type, Notification.EventType):
             raise NotificationCreationException("Event Type Invalid")
@@ -52,6 +54,7 @@ class NotificationGenerator:
             self.generate_message()
         else:
             self.message = message
+        self.extra_data = extra_data
         self.facility = facility
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
@@ -93,6 +96,18 @@ class NotificationGenerator:
                 self.message = "Consultation for Patient {} was deleted by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
+        if isinstance(self.caused_object, InvestigationSession):
+            if self.event == Notification.Event.INVESTIGATION_SESSION_CREATED.value:
+                self.message = "Investigation Session for Patient {} was created by {}".format(
+                    self.extra_data["consultation"].patient.name, self.caused_by.get_full_name()
+                )
+        if isinstance(self.caused_object, InvestigationValue):
+            if self.event == Notification.Event.INVESTIGATION_UPDATED.value:
+                self.message = "Investigation Value for {} for Patient {} was updated by {}".format(
+                    self.caused_object.investigation.name,
+                    self.caused_object.consultation.patient.name,
+                    self.caused_by.get_full_name(),
+                )
         return True
 
     def generate_cause_objects(self):
@@ -105,7 +120,19 @@ class NotificationGenerator:
             self.caused_objects["patient"] = self.caused_object.patient.external_id
             if self.caused_object.patient.facility:
                 self.caused_objects["facility"] = self.caused_object.patient.facility.external_id
-
+        if isinstance(self.caused_object, InvestigationSession):
+            self.caused_objects["consultation"] = self.extra_data["consultation"].external_id
+            self.caused_objects["patient"] = self.extra_data["consultation"].patient.external_id
+            if self.extra_data["consultation"].patient.facility:
+                self.caused_objects["facility"] = self.extra_data["consultation"].patient.facility.external_id
+            self.caused_object["session"] = self.caused_object.external_id
+        if isinstance(self.caused_object, InvestigationValue):
+            self.caused_objects["consultation"] = self.caused_object.consultation.external_id
+            self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
+            if self.caused_object.consultation.patient.facility:
+                self.caused_objects["facility"] = self.caused_object.consultation.patient.facility.external_id
+            self.caused_object["session"] = self.caused_object.session.external_id
+            self.caused_object["investigation"] = self.caused_object.investigation.external_id
         return True
 
     def generate(self):
