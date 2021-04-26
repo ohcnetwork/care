@@ -16,6 +16,7 @@ from care.facility.api.serializers.patient_investigation import (
     PatientInvestigationSerializer,
     PatientInvestigationSessionSerializer,
 )
+from care.facility.models.notification import Notification
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import (
     InvestigationSession,
@@ -24,9 +25,11 @@ from care.facility.models.patient_investigation import (
     PatientInvestigationGroup,
 )
 from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.cache.patient_investigation import get_investigation_id
 from care.utils.filters import MultiSelectFilter
 from care.users.models import User
+from care.utils.notification_handler import NotificationGenerator
 
 
 class InvestigationGroupFilter(filters.FilterSet):
@@ -80,6 +83,10 @@ class PatientInvestigationFilter(filters.FilterSet):
     session = filters.CharFilter(field_name="session__external_id")
 
 
+class InvestigationSummaryResultsSetPagination(PageNumberPagination):
+    page_size = 500
+
+
 class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.all()
@@ -87,18 +94,37 @@ class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveM
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
+    pagination_class = InvestigationSummaryResultsSetPagination
+    SESSION_PER_PAGE = 5
 
     def get_queryset(self):
+        session_page = self.request.GET.get("session_page", 1)
+        try:
+            session_page = int(session_page)
+        except:
+            pass
+        investigations = self.request.GET.get("investigations", "")
         queryset = self.queryset.filter(consultation__patient__external_id=self.kwargs.get("patient_external_id"))
+        sessions = (
+            queryset.filter(investigation__external_id__in=investigations.split(","))
+            .order_by("-session__created_date")
+            .distinct("session__created_date")[
+                (session_page - 1) * self.SESSION_PER_PAGE : (session_page) * self.SESSION_PER_PAGE
+            ]
+        )
+        if not sessions.exists():
+            return self.queryset.none()
+        queryset = queryset.filter(session_id__in=sessions.values("session_id"))
         if self.request.user.is_superuser:
             return queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(consultation__patient__facility__state=self.request.user.state)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(consultation__patient__facility__district=self.request.user.district)
-        filters = Q(consultation__patient__facility__users__id__exact=self.request.user.id)
+        allowed_facilities = get_accessible_facilities(self.request.user)
+        filters = Q(consultation__patient__facility_id__in=allowed_facilities)
         filters |= Q(consultation__assigned_to=self.request.user)
-        return queryset.filter(filters).distinct("id")
+        return queryset.filter(filters)
 
 
 class InvestigationValueViewSet(
@@ -171,4 +197,13 @@ class InvestigationValueViewSet(
             serializer = self.get_serializer(data=investigations, many=True)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
+
+            NotificationGenerator(
+                event=Notification.Event.INVESTIGATION_SESSION_CREATED,
+                caused_by=request.user,
+                caused_object=session,
+                facility=consultation.patient.facility,
+                extra_data={"consultation": consultation},
+            ).generate()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
