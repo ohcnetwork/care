@@ -156,7 +156,7 @@ class NotificationGenerator:
             self.caused_object["session"] = self.caused_object.session.external_id
             self.caused_object["investigation"] = self.caused_object.investigation.external_id
         if isinstance(self.caused_object, DailyRound):
-            self.caused_objects["consultation"] = self.caused_object.consultationexternal_id
+            self.caused_objects["consultation"] = self.caused_object.consultation.external_id
             self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
             self.caused_objects["daily_round"] = self.caused_object.id
             if self.caused_object.patient.facility:
