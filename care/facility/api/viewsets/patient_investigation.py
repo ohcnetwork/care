@@ -26,6 +26,7 @@ from care.facility.models.patient_investigation import (
 from care.users.models import User
 from care.utils.cache.patient_investigation import get_investigation_id
 from care.utils.filters import MultiSelectFilter
+from care.users.models import User
 
 
 class InvestigationGroupFilter(filters.FilterSet):
@@ -141,7 +142,6 @@ class InvestigationValueViewSet(
         )
 
     def create(self, request, *args, **kwargs):
-
         if "investigations" not in request.data:
             return Response({"investigation": "is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -160,7 +160,7 @@ class InvestigationValueViewSet(
             )
 
         with transaction.atomic():
-            session = InvestigationSession()
+            session = InvestigationSession(created_by=request.user)
             session.save()
 
             for value in investigations:
