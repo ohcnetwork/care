@@ -66,8 +66,8 @@ class NotificationGenerator:
                 self.extra_users.append(self.caused_object.assigned_to.id)
         if isinstance(self.caused_object, PatientRegistration):
             if self.caused_object.last_consultation:
-                if self.caused_object.assigned_to:
-                    self.extra_users.append(self.caused_object.assigned_to.id)
+                if self.caused_object.last_consultation.assigned_to:
+                    self.extra_users.append(self.caused_object.last_consultation.assigned_to.id)
         if isinstance(self.caused_object, InvestigationSession):
             if self.extra_data["consultation"].assigned_to:
                 self.extra_users.append(self.extra_data["consultation"].assigned_to.id)
