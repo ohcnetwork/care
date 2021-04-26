@@ -33,14 +33,20 @@ repos:
         args: [--line-length=120, --safe]
         language_version: python3.7
 
+  - repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        args: [--in-place, --remove-all-unused-import]
+
   - repo: local
     hooks:
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: python
-        types: [python]
-        args: ['--config=setup.cfg']
+#      - id: flake8
+#        name: flake8
+#        entry: flake8
+#        language: python
+#        types: [python]
+#        args: ['--config=setup.cfg']
 
       - id: pre-commit-django-migrations
         name: Check django migrations
@@ -50,10 +56,10 @@ repos:
         pass_filenames: false
         require_serial: true
 
-      - id: pre-commit-django-tests
-        name: Run Django unit tests
-        entry: python manage.py test --settings=config.settings.test -n
-        language: system
-        types: [python]
-        pass_filenames: false
-        require_serial: true
+#      - id: pre-commit-django-tests
+#        name: Run Django unit tests
+#        entry: python manage.py test --settings=config.settings.test -n
+#        language: system
+#        types: [python]
+#        pass_filenames: false
+#        require_serial: true
