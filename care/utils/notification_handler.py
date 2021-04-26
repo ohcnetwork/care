@@ -147,14 +147,14 @@ class NotificationGenerator:
             self.caused_objects["patient"] = self.extra_data["consultation"].patient.external_id
             if self.extra_data["consultation"].patient.facility:
                 self.caused_objects["facility"] = self.extra_data["consultation"].patient.facility.external_id
-            self.caused_object["session"] = self.caused_object.external_id
+            self.caused_objects["session"] = self.caused_object.external_id
         if isinstance(self.caused_object, InvestigationValue):
             self.caused_objects["consultation"] = self.caused_object.consultation.external_id
             self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
             if self.caused_object.consultation.patient.facility:
                 self.caused_objects["facility"] = self.caused_object.consultation.patient.facility.external_id
-            self.caused_object["session"] = self.caused_object.session.external_id
-            self.caused_object["investigation"] = self.caused_object.investigation.external_id
+            self.caused_objects["session"] = self.caused_object.session.external_id
+            self.caused_objects["investigation"] = self.caused_object.investigation.external_id
         if isinstance(self.caused_object, DailyRound):
             self.caused_objects["consultation"] = self.caused_object.consultation.external_id
             self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
