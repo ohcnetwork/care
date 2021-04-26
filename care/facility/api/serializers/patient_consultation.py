@@ -192,6 +192,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
 
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED,
+            caused_by=self.context["request"].user,
+            caused_object=instance,
+            facility=instance.consultation.patient.facility,
+        ).generate()
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -209,7 +216,16 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
 
-        return super().create(validated_data)
+        daily_round_obj = super().create(validated_data)
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
+            caused_by=self.context["request"].user,
+            caused_object=daily_round_obj,
+            facility=daily_round_obj.consultation.patient.facility,
+        ).generate()
+
+        return daily_round_obj
 
     def validate(self, obj):
         validated = super().validate(obj)

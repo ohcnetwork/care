@@ -1,4 +1,4 @@
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import PatientConsultation, DailyRound
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.notification import Notification
 from care.facility.models.facility import Facility
@@ -74,6 +74,9 @@ class NotificationGenerator:
         if isinstance(self.caused_object, InvestigationValue):
             if self.caused_object.consultation.assigned_to:
                 self.extra_users.append(self.caused_object.consultation.assigned_to.id)
+        if isinstance(self.caused_object, DailyRound):
+            if self.caused_object.consultation.assigned_to:
+                self.extra_users.append(self.caused_object.consultation.assigned_to.id)
 
     def generate_message(self):
         if isinstance(self.caused_object, PatientRegistration):
@@ -114,6 +117,19 @@ class NotificationGenerator:
                     self.caused_object.consultation.patient.name,
                     self.caused_by.get_full_name(),
                 )
+        if isinstance(self.caused_object, DailyRound):
+            if self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED.value:
+                self.message = "Consultation for Patient {}  at facility {} was created by {}".format(
+                    self.caused_object.consultation.patient.name,
+                    self.caused_object.consultation.facility.name,
+                    self.caused_by.get_full_name(),
+                )
+            elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED.value:
+                self.message = "Consultation for Patient {}  at facility {} was updated by {}".format(
+                    self.caused_object.consultation.patient.name,
+                    self.caused_object.consultation.facility.name,
+                    self.caused_by.get_full_name(),
+                )
         return True
 
     def generate_cause_objects(self):
@@ -139,6 +155,13 @@ class NotificationGenerator:
                 self.caused_objects["facility"] = self.caused_object.consultation.patient.facility.external_id
             self.caused_object["session"] = self.caused_object.session.external_id
             self.caused_object["investigation"] = self.caused_object.investigation.external_id
+        if isinstance(self.caused_object, DailyRound):
+            self.caused_objects["consultation"] = self.caused_object.consultationexternal_id
+            self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
+            self.caused_objects["daily_round"] = self.caused_object.id
+            if self.caused_object.patient.facility:
+                self.caused_objects["facility"] = self.caused_object.consultation.facility.external_id
+
         return True
 
     def generate(self):
