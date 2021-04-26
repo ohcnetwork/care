@@ -159,7 +159,7 @@ class NotificationGenerator:
             self.caused_objects["consultation"] = self.caused_object.consultation.external_id
             self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
             self.caused_objects["daily_round"] = self.caused_object.id
-            if self.caused_object.patient.facility:
+            if self.caused_object.consultation.patient.facility:
                 self.caused_objects["facility"] = self.caused_object.consultation.facility.external_id
 
         return True
