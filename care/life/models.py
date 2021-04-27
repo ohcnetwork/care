@@ -1,5 +1,6 @@
 import enum
 from django.db import models
+from django.db.models.fields import CharField
 from care.facility.models.base import BaseModel
 from care.users.models import District, State
 
@@ -16,6 +17,7 @@ JobStatusChoices = [(e.value, e.name) for e in JobStatus]
 
 class Job(BaseModel):
     file_url = models.URLField(null=False, blank=False)
+    name = CharField(max_length=1024, default="")
     status = models.CharField(
         choices=JobStatusChoices, default=JobStatus.PENDING.value, blank=False, null=False, max_length=100
     )
