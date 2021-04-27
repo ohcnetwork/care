@@ -77,6 +77,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "state_object",
             "modified_date",
             "created_date",
+            "kasp_empanelled",
         ]
         read_only_fields = ("modified_date", "created_date")
 

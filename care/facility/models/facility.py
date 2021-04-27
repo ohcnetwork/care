@@ -92,6 +92,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
+    kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
 
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     pincode = models.IntegerField(default=None, null=True)

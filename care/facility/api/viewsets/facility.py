@@ -39,6 +39,7 @@ class FacilityFilter(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
