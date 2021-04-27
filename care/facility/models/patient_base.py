@@ -72,7 +72,6 @@ class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2
     NEGATIVE = 3
-    RECOVERY = 4
     RECOVERED = 5
     EXPIRED = 6
 
