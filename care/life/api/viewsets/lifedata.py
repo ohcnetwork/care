@@ -1,23 +1,21 @@
 from django.db.models import F
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework import serializers, status
+
 from care.life.api.serializers.lifedata import LifeDataSerializer
 from care.life.models import LifeData
-from drf_yasg.utils import swagger_auto_schema
 
 
-class LifeDataViewSet(RetrieveModelMixin, GenericViewSet):
+class LifeDataViewSet(GenericViewSet):
     queryset = LifeData.objects.all()
     serializer_class = LifeDataSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     lookup_field = "external_id"
-
-    def get_queryset(self):
-        return self.queryset.none()
 
     @swagger_auto_schema(method="post", request_body=serializers.Serializer(), responses={204: "Success"})
     @action(detail=True, methods=["POST"])
