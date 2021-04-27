@@ -1,19 +1,18 @@
+from django.db import transaction
 from django.db.models import F
+from django.utils import timezone
 from rest_framework import serializers
 
-from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models import (
-    ROOM_TYPES,
+    FacilityInventoryBurnRate,
     FacilityInventoryItem,
     FacilityInventoryItemTag,
     FacilityInventoryLog,
+    FacilityInventoryMinQuantity,
     FacilityInventorySummary,
     FacilityInventoryUnit,
     FacilityInventoryUnitConverter,
-    FacilityInventoryMinQuantity,
 )
-
-from config.serializers import ChoiceField
 
 
 class FacilityInventoryItemTagSerializer(serializers.ModelSerializer):
@@ -42,7 +41,6 @@ class FacilityInventoryItemSerializer(serializers.ModelSerializer):
 
 
 class FacilityInventoryLogSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     item_object = FacilityInventoryItemSerializer(source="item", required=False)
@@ -57,10 +55,12 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
             "facility",
         )
 
+    @transaction.atomic
     def create(self, validated_data):
 
         item = validated_data["item"]
         unit = validated_data["unit"]
+        facility = validated_data["facility"]
 
         try:
             item.allowed_units.get(id=unit.id)
@@ -86,18 +86,16 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         current_min_quantity = item.min_quantity
         current_quantity = multiplier * validated_data["quantity"]
         try:
-            summary_obj = FacilityInventorySummary.objects.get(facility=validated_data["facility"], item=item)
+            summary_obj = FacilityInventorySummary.objects.get(facility=facility, item=item)
             current_quantity = summary_obj.quantity + (multiplier * validated_data["quantity"])
             summary_obj.quantity = F("quantity") + (multiplier * validated_data["quantity"])
         except:
             summary_obj = FacilityInventorySummary(
-                facility=validated_data["facility"], item=item, quantity=multiplier * validated_data["quantity"]
+                facility=facility, item=item, quantity=multiplier * validated_data["quantity"]
             )
 
         try:
-            current_min_quantity = FacilityInventoryMinQuantity.objects.get(
-                facility=validated_data["facility"], item=item
-            ).min_quantity
+            current_min_quantity = FacilityInventoryMinQuantity.objects.get(facility=facility, item=item).min_quantity
         except:
             pass
 
@@ -106,7 +104,20 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         summary_obj.save()
 
+        self._set_burn_rate(facility, item, current_quantity)
+
         return instance
+
+    def _set_burn_rate(self, facility, item, qty):
+        previous_usage_log = FacilityInventoryLog.objects.filter(facility=facility, item=item).order_by("id").last()
+
+        if previous_usage_log:
+            time_diff = (timezone.now() - previous_usage_log.created_date).seconds
+            burn_rate = qty / (time_diff / 3600.0)
+
+            FacilityInventoryBurnRate.objects.update_or_create(
+                facility=facility, item=item, defaults={"burn_rate": burn_rate}
+            )
 
 
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):
@@ -177,3 +188,26 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
             pass
 
         return super().update(instance, validated_data)
+
+
+class FacilityInventoryBurnRateSerializer(serializers.ModelSerializer):
+    facility_id = serializers.CharField(source="facility.external_id")
+    facility_name = serializers.CharField(source="facility.name")
+    item_name = serializers.CharField(source="item.name")
+    unit_id = serializers.CharField(source="item.default_unit.id")
+    unit_name = serializers.CharField(source="item.default_unit.name")
+
+    class Meta:
+        model = FacilityInventoryBurnRate
+        FIELDS = (
+            "facility_id",
+            "facility_name",
+            "item_id",
+            "item_name",
+            "burn_rate",
+            "unit_id",
+            "unit_name",
+            # 'current_stock'
+        )
+        fields = FIELDS
+        read_only_fields = FIELDS

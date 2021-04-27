@@ -13,10 +13,8 @@ from care.facility.api.serializers.notification import NotificationSerializer
 from care.facility.models.notification import Notification
 
 
-class NotificationViewSet(
-    RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
-):
-    queryset = Notification.objects.all().select_related("intended_for", "caused_by")
+class NotificationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Notification.objects.all().select_related("intended_for", "caused_by").order_by("-created_date")
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "external_id"
@@ -25,14 +23,6 @@ class NotificationViewSet(
         user = self.request.user
         return self.queryset.filter(intended_for=user)
 
-    @action(
-        detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly]
-    )
+    @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly])
     def public_key(self, request, *args, **kwargs):
-        return Response(
-            {
-                "public_key": base64.urlsafe_b64encode(
-                    str.encode(settings.VAPID_PUBLIC_KEY)
-                )
-            }
-        )
+        return Response({"public_key": base64.urlsafe_b64encode(str.encode(settings.VAPID_PUBLIC_KEY))})
