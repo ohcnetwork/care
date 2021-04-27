@@ -42,10 +42,14 @@ from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
 
+from care.life.api.viewsets.lifedata import LifeDataViewSet
+
 if settings.DEBUG:
     router = DefaultRouter()
 else:
     router = SimpleRouter()
+
+router.register("life/data", LifeDataViewSet)
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
@@ -93,9 +97,7 @@ router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage
 # District Summary
 
 router.register(
-    "district/patient_summary",
-    DistrictPatientSummaryViewSet,
-    basename="district-summary-patient",
+    "district/patient_summary", DistrictPatientSummaryViewSet, basename="district-summary-patient",
 )
 
 

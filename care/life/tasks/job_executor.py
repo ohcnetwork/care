@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db.models import fields
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
-
+from care.life.api.serializers.lifedata import LifeDataSerializer
 from care.life.models import Job, JobStatus, LifeData
 from care.users.models import District, State
 
@@ -113,15 +113,6 @@ def run_jobs():
     for job in jobs:
         # Add Concurrency Locks if needed
         parse_file(job)
-
-
-class LifeDataSerializer(serializers.ModelSerializer):
-    state_name = serializers.CharField(source="state.name")
-    district_name = serializers.CharField(source="district.name")
-
-    class Meta:
-        model = LifeData
-        fields = "__all__"
 
 
 @periodic_task(run_every=crontab(minute="*/30"))
