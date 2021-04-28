@@ -1,6 +1,7 @@
 import csv
 import json
 from datetime import timedelta
+from os import error
 
 import boto3
 import requests
@@ -13,6 +14,7 @@ from rest_framework import serializers
 from care.life.api.serializers.lifedata import LifeDataSerializer
 from care.life.models import Job, JobStatus, LifeData
 from care.users.models import District, State
+from django.core.mail import EmailMessage
 
 rows_header = [
     "id",
@@ -57,6 +59,18 @@ choices_validation = [
 ]
 
 
+def send_email(file_name, errors, email_id):
+    errors = errors.replace("\n", "</ br>")
+    msg = EmailMessage(
+        f"CARE | CSV Parsing Errors for {file_name}",
+        "Following are the errors <br>",
+        settings.DEFAULT_FROM_EMAIL,
+        (email_id,),
+    )
+    msg.content_subtype = "html"  # Main content is now text/html
+    msg.send()
+
+
 def parse_file(job):
     job.status = JobStatus.WORKING.value
     job.save()
@@ -85,6 +99,8 @@ def parse_file(job):
     job.next_runtime = localtime(now()) + timedelta(minutes=job.periodicity)
     job.status = JobStatus.PENDING.value
     job.save()
+    if errors:
+        send_email(job.name, errors, job.contact_email)
 
 
 def get_validated_object(data, job):
