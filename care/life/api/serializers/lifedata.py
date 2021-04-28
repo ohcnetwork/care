@@ -10,4 +10,4 @@ class LifeDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LifeData
-        fields = "__all__"
+        exclude = ("id",)
