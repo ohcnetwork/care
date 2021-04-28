@@ -20,6 +20,7 @@ rows_header = [
     "category",
     "resource type",
     "address",
+    "description",
     "phone_1",
     "phone_2",
     "email",
@@ -29,11 +30,30 @@ rows_header = [
     "price",
     "source_link",
     "comment",
-    "created_on",
     "created_by",
+    "created_on",
     "verified_by",
     "last_verified_on",
-    "description",
+    "pincode",
+    "verification_status",
+    "city",
+    "hospital_available_normal_beds",
+    "hospital_available_oxygen_beds",
+    "hospital_available_icu_beds",
+    "hospital_available_ventilator_beds",
+]
+
+required_headers = [
+    "id",
+    "title",
+    "category",
+    "phone_1",
+    "district",
+    "state",
+]
+
+choices_validation = [
+    {"key": "category", "choices": ["oxygen", "medicine", "hospital", "ambulance", "helpline", "vaccine"]}
 ]
 
 
@@ -52,11 +72,11 @@ def parse_file(job):
             if start:
                 mapping = get_mapping(row)
                 start = 0
+                continue
             mapped_data = get_mapped_data(mapping, row)
             mapped_data["deleted"] = False
             validated_obj = get_validated_object(mapped_data, job)
         except Exception as e:
-            print(e)
             errors += str(e) + f" for row {row} \n"
             continue
         validated_obj.save()
@@ -68,31 +88,40 @@ def parse_file(job):
 
 
 def get_validated_object(data, job):
+
+    for field in required_headers:
+        if len(data[field].strip()) == 0:
+            raise Exception(f"Field {field} is required. ")
+    data["category"] = data["category"].lower()
+    for validation in choices_validation:
+        if data[validation["key"]] not in validation["choices"]:
+            raise Exception(f"Choice {data[validation['key']]} is not valid for field {validation['key']} ")
+
     state = State.objects.filter(name__icontains=data["state"]).first()
     if not state:
         raise Exception(f"State {data['state']} is not defined")
-
+    del data["state"]
     district = District.objects.filter(name__icontains=data["district"], state=state).first()
     if not district:
         raise Exception(f"District {data['district']} is not defined")
-
+    del data["district"]
     existing_obj = LifeData.objects.filter(created_job=job, data_id=data["id"]).first()
-    data["state"] = state
-    data["district"] = district
-    data["category"] = data["category"].lower()
     if not existing_obj:
         existing_obj = LifeData()
-    data["data_id"] = data["id"]
+    existing_obj.data_id = data["id"]
+    existing_obj.state = state
+    existing_obj.district = district
+    existing_obj.category = data["category"]
+    del data["category"]
     del data["id"]
-    for field in data:
-        setattr(existing_obj, field, data[field])
+    existing_obj.data = data
     existing_obj.created_job = job
     return existing_obj
 
 
 def get_mapped_data(mapping, row):
     validated_row = {}
-    for header in rows_header:
+    for header in list(mapping.keys()):
         validated_row[header] = row[mapping[header]]
     return validated_row
 
@@ -100,10 +129,10 @@ def get_mapped_data(mapping, row):
 def get_mapping(row):
     mapping = {}
     for j, i in enumerate(row):
-        if i in rows_header:
-            mapping[i] = j
-    if len(mapping.keys()) != len(rows_header):
-        raise Exception("Fields Missing in Header")
+        mapping[i] = j
+    for field in required_headers:
+        if field not in mapping:
+            raise Exception(f"Field {field} not present ")
     return mapping
 
 
@@ -120,7 +149,11 @@ def save_life_data():
     categories = LifeData.objects.all().select_related("state", "district").distinct("category")
     for category in categories:
         category = category.category
-        data = LifeDataSerializer(LifeData.objects.filter(category=category), many=True).data
+        serialized_data = LifeDataSerializer(LifeData.objects.filter(category=category), many=True).data
+        for index in range(len(serialized_data)):
+            data = dict(serialized_data[index])
+            data.update(data["data"])
+            serialized_data[index] = data
 
         s3 = boto3.resource(
             "s3",
@@ -130,4 +163,4 @@ def save_life_data():
         )
         s3object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.json")
 
-        s3object.put(ACL="public-read", Body=(bytes(json.dumps(data).encode("UTF-8"))))
+        s3object.put(ACL="public-read", Body=(bytes(json.dumps(serialized_data).encode("UTF-8"))))
