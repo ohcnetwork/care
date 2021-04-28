@@ -60,7 +60,7 @@ choices_validation = [
 
 
 def send_email(file_name, errors, email_id):
-    errors = errors.replace("\n", "</ br>")
+    errors = errors.replace("\n", "<br>")
     msg = EmailMessage(
         f"CARE | CSV Parsing Errors for {file_name}",
         f"Following are the errors <br> {errors}",
