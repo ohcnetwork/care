@@ -113,8 +113,10 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
         if previous_usage_log:
             time_diff = (timezone.now() - previous_usage_log.created_date).seconds
-            burn_rate = qty / (time_diff / 3600.0)
-
+            if time_diff:
+                burn_rate = qty / (time_diff / 3600.0)
+            else:
+                burn_rate = 0
             FacilityInventoryBurnRate.objects.update_or_create(
                 facility=facility, item=item, defaults={"burn_rate": burn_rate}
             )
