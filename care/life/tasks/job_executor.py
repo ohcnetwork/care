@@ -63,7 +63,7 @@ def send_email(file_name, errors, email_id):
     errors = errors.replace("\n", "</ br>")
     msg = EmailMessage(
         f"CARE | CSV Parsing Errors for {file_name}",
-        "Following are the errors <br>",
+        f"Following are the errors <br> {{errors}}",
         settings.DEFAULT_FROM_EMAIL,
         (email_id,),
     )
