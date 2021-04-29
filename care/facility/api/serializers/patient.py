@@ -201,6 +201,13 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError(
                 {"non_field_errors": [f"Either age or date_of_birth should be passed"]}
             )
+
+        if(validated["is_vaccinated"]):
+            if(validated["number_of_doses"] == 0):
+                raise serializers.ValidationError("Number of doses cannot be 0")
+            if(validated["vaccine_name"] == None):
+                raise serializers.ValidationError("Vaccine name cannot be null")
+
         return validated
 
     def create(self, validated_data):

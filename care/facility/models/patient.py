@@ -39,6 +39,7 @@ from care.utils.models.jsonfield import JSONField
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -58,6 +59,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         STAY = 30
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
+
+    class vaccineEnum(enum.Enum):
+        COVISHIELD = "CoviShield"
+        COVAXIN = "Covaxin"
+
+    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
 
     class ActionEnum(enum.Enum):
         PENDING = 10
@@ -319,6 +326,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_vaccinated = models.BooleanField(
         default=False, verbose_name="Is the Patient Vaccinated Against COVID-19"
+    )
+    number_of_doses = models.PositiveIntegerField(
+        default=0, null=False, blank=False,
+        validators=[MinValueValidator(0), MaxValueValidator(2)]
+    )
+    vaccine_name = models.CharField(
+        choices=vaccineChoices, default=None, null=True,
+        blank=False, max_length=15
     )
     covin_id = models.CharField(
         max_length=15,
