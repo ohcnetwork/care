@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.life.models import LifeData
 
 
@@ -10,4 +12,4 @@ class LifeDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LifeData
-        exclude = ("id",)
+        exclude = TIMESTAMP_FIELDS + ("id",)
