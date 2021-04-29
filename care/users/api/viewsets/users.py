@@ -39,6 +39,7 @@ class UserFilterSet(filters.FilterSet):
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
+    district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
 
     def get_user_type(
         self,
