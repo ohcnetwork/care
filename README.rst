@@ -189,6 +189,11 @@ This will now prompt for the following details - Ignore any warnings.
 - phonenumber: give your ten digit phone number here
 - password: Give the password here
 
+$ python manage.py collectstatic
+
+This will copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles. When prompted to confirm, enter "yes".
+
+
 Type checks
 ^^^^^^^^^^^
 
