@@ -26,6 +26,9 @@ class Job(BaseModel):
     periodicity = models.IntegerField(default=10)  # in Mins
     contact_email = models.EmailField()
     last_errors = models.TextField(null=True, blank=True)
+    suppress_emails = models.BooleanField(default=False)
+    email_periodicity = models.IntegerField(default=10)  # in Mins
+    email_next_sendtime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Job Submitted by {self.contact_email} is currently in {self.status} status, to be next run at {self.next_runtime}"
@@ -34,7 +37,7 @@ class Job(BaseModel):
 class LifeData(BaseModel):
     created_job = models.ForeignKey(Job, on_delete=models.CASCADE, null=False, blank=False)
     data_id = models.CharField(max_length=1024, db_index=True, null=False, blank=False)
-    category = models.CharField(max_length=1024 , db_index=True , default="")
+    category = models.CharField(max_length=1024, db_index=True, default="")
     data = JSONField(default=dict)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=False, blank=False)
