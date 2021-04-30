@@ -10,7 +10,6 @@ from celery.decorators import periodic_task
 from celery.schedules import crontab
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.db.models import fields
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 
@@ -95,17 +94,26 @@ def parse_file(job):
         except Exception as e:
             errors += str(e) + f" for row {row} \n"
             continue
+        validated_obj.deleted = False
         validated_obj.save()
     LifeData.objects.filter(deleted=True).delete()
     job.last_errors = errors
     job.next_runtime = localtime(now()) + timedelta(minutes=job.periodicity)
     job.status = JobStatus.PENDING.value
-    job.save()
+    # job.save()
     if (not job.suppress_emails) and job.email_next_sendtime < localtime(now()):
         job.email_next_sendtime = localtime(now()) + timedelta(minutes=job.email_periodicity)
         job.save()
         if errors:
             send_email(job.name, errors, job.contact_email)
+
+
+def check_data_change(row_data, existing_data):
+    fields = ["last_verified_on", "verified_by", "verification_status"]
+    for field in fields:
+        if existing_data.get(field, "") != row_data.get(field, ""):
+            return True
+    return False
 
 
 def get_validated_object(data, job):
@@ -126,9 +134,31 @@ def get_validated_object(data, job):
     if not district:
         raise Exception(f"District {data['district']} is not defined")
     del data["district"]
+
     existing_obj = LifeData.objects.filter(created_job=job, data_id=data["id"]).first()
+    existing_obj_exists = existing_obj is not None
     if not existing_obj:
         existing_obj = LifeData()
+
+    duplicate_objs = LifeData.objects.filter(
+        category=data["category"], phone_1=data["phone_1"], state=state, district=district
+    )
+    if duplicate_objs.exists():
+        data_has_changed = False
+        if existing_obj_exists:
+            data_has_changed = check_data_change(data, existing_obj.data)
+        else:
+            data_has_changed = True
+        if data_has_changed:
+            duplicate_objs.update(is_duplicate=True)
+            existing_obj.is_duplicate = False
+    else:
+        existing_obj.is_duplicate = False
+
+    phone_1 = data["phone_1"]
+    del data["phone_1"]
+    existing_obj.phone_1 = phone_1
+
     existing_obj.data_id = data["id"]
     existing_obj.state = state
     existing_obj.district = district
@@ -170,7 +200,9 @@ def save_life_data():
     categories = LifeData.objects.all().select_related("state", "district").distinct("category")
     for category in categories:
         category = category.category
-        serialized_data = LifeDataSerializer(LifeData.objects.filter(category=category), many=True).data
+        serialized_data = LifeDataSerializer(
+            LifeData.objects.filter(category=category, is_duplicate=False), many=True
+        ).data
         all_headers = {}
         for index in range(len(serialized_data)):
             data = dict(serialized_data[index])
