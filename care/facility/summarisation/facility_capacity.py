@@ -14,6 +14,8 @@ from care.facility.api.serializers.facility_capacity import FacilityCapacitySeri
 from care.facility.models import Facility, FacilityCapacity, FacilityRelatedSummary, PatientRegistration
 from care.facility.models.patient import PatientRegistration
 
+from care.facility.models.inventory import FacilityInventorySummary, FacilityInventoryBurnRate
+
 
 class FacilitySummarySerializer(serializers.ModelSerializer):
 
@@ -92,6 +94,24 @@ def FacilityCapacitySummary():
         if "availability" not in capacity_summary[facility_id]:
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(FacilityCapacitySerializer(capacity_object).data)
+
+    temp_inventory_summary_obj = {}
+    summary_objs = FacilityInventorySummary.objects.filter(facility_id=facility_id)
+    for summary_obj in summary_objs:
+        burn_rate = FacilityInventoryBurnRate.objects.filter(
+            facility_id=facility_id, item_id=summary_obj.item.id
+        ).first()
+        if burn_rate:
+            burn_rate = burn_rate.burn_rate
+        temp_inventory_summary_obj[summary_obj.item.id] = {
+            "item_name": summary_obj.item.name,
+            "stock": summary_obj.quantity,
+            "unit": summary_obj.item.unit.name,
+            "is_low": summary_obj.is_low,
+            "burn_rate": burn_rate,
+        }
+
+    capacity_summary[facility_id]["inventory"] = temp_inventory_summary_obj
 
     for i in capacity_summary:
         facility_summary_obj = None

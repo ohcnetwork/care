@@ -1,4 +1,5 @@
 import csv
+import io
 import json
 from datetime import timedelta
 from os import error
@@ -8,13 +9,14 @@ import requests
 from celery.decorators import periodic_task
 from celery.schedules import crontab
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.db.models import fields
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
+
 from care.life.api.serializers.lifedata import LifeDataSerializer
 from care.life.models import Job, JobStatus, LifeData
 from care.users.models import District, State
-from django.core.mail import EmailMessage
 
 rows_header = [
     "id",
@@ -99,8 +101,11 @@ def parse_file(job):
     job.next_runtime = localtime(now()) + timedelta(minutes=job.periodicity)
     job.status = JobStatus.PENDING.value
     job.save()
-    if errors:
-        send_email(job.name, errors, job.contact_email)
+    if (not job.suppress_emails) and job.email_next_sendtime < localtime(now()):
+        job.email_next_sendtime = localtime(now()) + timedelta(minutes=job.email_periodicity)
+        job.save()
+        if errors:
+            send_email(job.name, errors, job.contact_email)
 
 
 def get_validated_object(data, job):
@@ -166,17 +171,28 @@ def save_life_data():
     for category in categories:
         category = category.category
         serialized_data = LifeDataSerializer(LifeData.objects.filter(category=category), many=True).data
+        all_headers = {}
         for index in range(len(serialized_data)):
             data = dict(serialized_data[index])
             data.update(data["data"])
+            del data["data"]
             serialized_data[index] = data
-
+            all_headers.update(data)
+        # Create CSV File
+        csv_file = io.StringIO()
+        writer = csv.DictWriter(csv_file, fieldnames=all_headers.keys())
+        writer.writeheader()
+        writer.writerows(serialized_data)
+        csv_data = csv_file.getvalue()
+        # Write CSV and Json to S3
         s3 = boto3.resource(
             "s3",
             endpoint_url=settings.LIFE_S3_ENDPOINT,
             aws_access_key_id=settings.LIFE_S3_ACCESS_KEY,
             aws_secret_access_key=settings.LIFE_S3_SECRET,
         )
-        s3object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.json")
+        s3_json_object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.json")
+        s3_json_object.put(ACL="public-read", Body=(bytes(json.dumps(serialized_data).encode("UTF-8"))))
 
-        s3object.put(ACL="public-read", Body=(bytes(json.dumps(serialized_data).encode("UTF-8"))))
+        s3_csv_object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.csv")
+        s3_csv_object.put(ACL="public-read", Body=csv_data)

@@ -16,10 +16,7 @@ Report bugs at https://bugs.coronasafe.in
     :target: https://circleci.com/gh/coronasafe/care    
 .. image:: https://github.com/coronasafe/care/workflows/Code%20scanning%20-%20action/badge.svg
     :alt: Code scanning
-.. image:: https://github.com/coronasafe/care/workflows/OSSAR/badge.svg
-    :alt: Ossar   
-.. image:: https://github.com/coronasafe/care/workflows/Anchore%20Container%20Scan/badge.svg
-    :alt: Container Scanner
+
    
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
@@ -188,6 +185,11 @@ This will now prompt for the following details - Ignore any warnings.
 - email: give e-mail id
 - phonenumber: give your ten digit phone number here
 - password: Give the password here
+
+$ python manage.py collectstatic
+
+This will copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles. When prompted to confirm, enter "yes".
+
 
 Type checks
 ^^^^^^^^^^^

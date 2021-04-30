@@ -129,11 +129,4 @@ class FacilityInventoryBurnRate(FacilityBaseModel, FacilityRelatedPermissionMixi
             "facility",
             "item",
         )
-        indexes = [
-            Index(
-                fields=(
-                    "facility",
-                    "item",
-                )
-            )
-        ]
+        indexes = [Index(fields=("facility", "item",))]
