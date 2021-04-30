@@ -98,7 +98,7 @@ def FacilityCapacitySummary():
             temp_inventory_summary_obj[summary_obj.item.id] = {
                 "item_name": summary_obj.item.name,
                 "stock": summary_obj.quantity,
-                "unit": summary_obj.item.unit.name,
+                "unit": summary_obj.item.default_unit.name,
                 "is_low": summary_obj.is_low,
                 "burn_rate": burn_rate,
             }
