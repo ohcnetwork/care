@@ -16,6 +16,10 @@ class JobStatus(enum.Enum):
 JobStatusChoices = [(e.value, e.name) for e in JobStatus]
 
 
+class LifeDataManager(models.Manager):
+    pass
+
+
 class Job(BaseModel):
     file_url = models.URLField(null=False, blank=False)
     name = CharField(max_length=1024, default="")
@@ -39,8 +43,11 @@ class LifeData(BaseModel):
     data_id = models.CharField(max_length=1024, db_index=True, null=False, blank=False)
     category = models.CharField(max_length=1024, db_index=True, default="")
     data = JSONField(default=dict)
+    phone_1 = models.CharField(max_length=200)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=False, blank=False)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=False, blank=False)
+    is_duplicate = models.BooleanField(default=False)
     downvotes = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
 
+    objects = LifeDataManager()
