@@ -100,7 +100,7 @@ def parse_file(job):
     job.last_errors = errors
     job.next_runtime = localtime(now()) + timedelta(minutes=job.periodicity)
     job.status = JobStatus.PENDING.value
-    # job.save()
+    job.save()
     if (not job.suppress_emails) and job.email_next_sendtime < localtime(now()):
         job.email_next_sendtime = localtime(now()) + timedelta(minutes=job.email_periodicity)
         job.save()
