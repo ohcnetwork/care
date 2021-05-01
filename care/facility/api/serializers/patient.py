@@ -208,14 +208,6 @@ class PatientDetailSerializer(PatientListSerializer):
             )
 
         if validated["is_vaccinated"]:
-            if(
-                not validated.get("number_of_doses") or
-                not validated.get("vaccine_name")
-            ):
-                raise serializers.ValidationError(
-                    {"non_field_errors": [f"Number of doses and vaccine name should be passed"]}
-                )
-
             if(validated["number_of_doses"] == 0):
                 raise serializers.ValidationError("Number of doses cannot be 0")
             if(validated["vaccine_name"] == None):
