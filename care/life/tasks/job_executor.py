@@ -176,6 +176,8 @@ def get_validated_object(data, job):
 def get_mapped_data(mapping, row):
     validated_row = {}
     for header in list(mapping.keys()):
+        if len(header.strip()) == 0:
+            continue
         validated_row[header] = row[mapping[header]]
     return validated_row
 
