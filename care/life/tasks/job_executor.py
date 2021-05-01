@@ -56,7 +56,7 @@ required_headers = [
 ]
 
 choices_validation = [
-    {"key": "category", "choices": ["oxygen", "medicine", "hospital", "ambulance", "helpline", "vaccine"]}
+    {"key": "category", "choices": ["oxygen", "medicine", "hospital", "ambulance", "helpline", "vaccine", "food"]}
 ]
 
 
@@ -92,7 +92,10 @@ def parse_file(job):
             mapped_data["deleted"] = False
             validated_obj = get_validated_object(mapped_data, job)
         except Exception as e:
+            # print(e)
             errors += str(e) + f" for row {row} \n"
+            if start:
+                break
             continue
         validated_obj.deleted = False
         validated_obj.save()
@@ -180,7 +183,7 @@ def get_mapped_data(mapping, row):
 def get_mapping(row):
     mapping = {}
     for j, i in enumerate(row):
-        mapping[i] = j
+        mapping[i.strip()] = j
     for field in required_headers:
         if field not in mapping:
             raise Exception(f"Field {field} not present ")
