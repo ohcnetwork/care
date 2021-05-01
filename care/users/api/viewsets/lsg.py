@@ -13,7 +13,7 @@ from django.views.decorators.cache import cache_page
 
 class StateViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = StateSerializer
-    queryset = State.objects.all().order_by("name")
+    queryset = State.objects.all().order_by("id")
 
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):

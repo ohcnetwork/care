@@ -3,30 +3,28 @@ from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.facility.api.viewsets.ambulance import (
-    AmbulanceCreateViewSet,
-    AmbulanceViewSet,
-)
+from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
+from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.inventory import (
+    FacilityInventoryBurnRateViewSet,
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
     FacilityInventoryMinQuantityViewSet,
     FacilityInventorySummaryViewSet,
 )
-from care.facility.api.viewsets.notification import Notification, NotificationViewSet
-from care.facility.api.viewsets.patient import (
-    FacilityPatientStatsHistoryViewSet,
-    PatientSearchViewSet,
-    PatientViewSet,
-)
-from care.facility.api.viewsets.patient_consultation import (
-    DailyRoundsViewSet,
-    PatientConsultationViewSet,
-)
+from care.facility.api.viewsets.notification import NotificationViewSet
+from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientSearchViewSet, PatientViewSet
+from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
+from care.facility.api.viewsets.patient_investigation import (
+    InvestigationGroupViewset,
+    InvestigationValueViewSet,
+    PatientInvestigationSummaryViewSet,
+    PatientInvestigationViewSet,
+)
 from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
@@ -36,30 +34,22 @@ from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierViewSet,
 )
 from care.facility.api.viewsets.shifting import ShiftingViewSet
+from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
-from care.facility.api.viewsets.file_upload import FileUploadViewSet
-from care.users.api.viewsets.lsg import (
-    DistrictViewSet,
-    LocalBodyViewSet,
-    StateViewSet,
-    WardViewSet,
-)
+from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
-from care.facility.api.viewsets.patient_investigation import (
-    InvestigationGroupViewset,
-    PatientInvestigationViewSet,
-    InvestigationValueViewSet,
-    PatientInvestigationSummaryViewSet,
-)
+
+from care.life.api.viewsets.lifedata import LifeDataViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
 else:
     router = SimpleRouter()
+
+router.register("life/data", LifeDataViewSet)
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
@@ -112,6 +102,7 @@ router.register(
 
 
 router.register("items", FacilityInventoryItemViewSet)
+router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
@@ -126,6 +117,7 @@ facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryVie
 facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
+facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
