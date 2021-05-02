@@ -233,3 +233,4 @@ def save_life_data():
 
         s3_csv_object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.csv")
         s3_csv_object.put(ACL="public-read", Body=csv_data)
+
