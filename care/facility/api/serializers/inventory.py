@@ -101,15 +101,20 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
         summary_obj.is_low = current_quantity < current_min_quantity
 
+        if not validated_data["is_incoming"]:
+            self._set_burn_rate(facility, item, current_quantity)
+
         instance = super().create(validated_data)
         summary_obj.save()
-
-        self._set_burn_rate(facility, item, current_quantity)
 
         return instance
 
     def _set_burn_rate(self, facility, item, qty):
-        previous_usage_log = FacilityInventoryLog.objects.filter(facility=facility, item=item).order_by("id").last()
+        previous_usage_log = (
+            FacilityInventoryLog.objects.filter(facility=facility, item=item, is_incoming=False)
+            .order_by("-id")
+            .first()
+        )
 
         if previous_usage_log:
             time_diff = (timezone.now() - previous_usage_log.created_date).seconds
