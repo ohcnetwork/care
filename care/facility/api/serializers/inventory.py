@@ -48,12 +48,8 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacilityInventoryLog
-        read_only_fields = ("id", "external_id", "created_by")
-        exclude = (
-            "deleted",
-            "modified_date",
-            "facility",
-        )
+        read_only_fields = ("id", "external_id", "created_by", "current_stock")
+        exclude = ("deleted", "modified_date", "facility")
 
     @transaction.atomic
     def create(self, validated_data):
@@ -94,12 +90,17 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
                 facility=facility, item=item, quantity=multiplier * validated_data["quantity"]
             )
 
+        if current_quantity < 0:
+            raise serializers.ValidationError({"stock": [f"Stock not Available"]})
+
         try:
             current_min_quantity = FacilityInventoryMinQuantity.objects.get(facility=facility, item=item).min_quantity
         except:
             pass
 
         summary_obj.is_low = current_quantity < current_min_quantity
+
+        validated_data["current_stock"] = current_quantity
 
         if not validated_data["is_incoming"]:
             self._set_burn_rate(facility, item, validated_data["quantity"])
