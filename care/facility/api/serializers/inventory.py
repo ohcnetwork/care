@@ -102,7 +102,7 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         summary_obj.is_low = current_quantity < current_min_quantity
 
         if not validated_data["is_incoming"]:
-            self._set_burn_rate(facility, item, current_quantity)
+            self._set_burn_rate(facility, item, validated_data["quantity"])
 
         instance = super().create(validated_data)
         summary_obj.save()
