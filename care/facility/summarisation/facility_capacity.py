@@ -1,5 +1,6 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
+from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
 from django.views.decorators.cache import cache_page
@@ -12,9 +13,8 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import Facility, FacilityCapacity, FacilityRelatedSummary, PatientRegistration
+from care.facility.models.inventory import FacilityInventoryBurnRate, FacilityInventoryLog, FacilityInventorySummary
 from care.facility.models.patient import PatientRegistration
-
-from care.facility.models.inventory import FacilityInventorySummary, FacilityInventoryBurnRate
 
 
 class FacilitySummarySerializer(serializers.ModelSerializer):
@@ -93,6 +93,26 @@ def FacilityCapacitySummary():
             burn_rate = FacilityInventoryBurnRate.objects.filter(
                 facility_id=facility_obj.id, item_id=summary_obj.item.id
             ).first()
+            log_query = FacilityInventoryLog.objects.filter(
+                facility_id=facility_obj.id, item_id=summary_obj.item.id, created_date__gte=current_date
+            )
+            start_log = log_query.order_by("created_date").first()
+            end_log = log_query.order_by("-created_date").first()
+            start_stock = summary_obj.quantity
+            if start_log:
+                start_stock = start_log.current_stock
+            end_stock = start_stock
+            if end_log:
+                end_stock = end_log.current_stock
+            total_consumed = 0
+            temp1 = log_query.filter(is_incoming=False).aggregate(Sum("quantity_in_default_unit"))
+            if temp1:
+                total_consumed = temp1["quantity_in_default_unit__sum"]
+            total_added = 0
+            temp2 = log_query.filter(is_incoming=True).aggregate(Sum("quantity_in_default_unit"))
+            if temp2:
+                total_added = temp2["quantity_in_default_unit__sum"]
+
             if burn_rate:
                 burn_rate = burn_rate.burn_rate
             temp_inventory_summary_obj[summary_obj.item.id] = {
@@ -101,6 +121,10 @@ def FacilityCapacitySummary():
                 "unit": summary_obj.item.default_unit.name,
                 "is_low": summary_obj.is_low,
                 "burn_rate": burn_rate,
+                "start_stock": start_stock,
+                "end_stock": end_stock,
+                "total_consumed": total_consumed,
+                "total_added": total_added,
                 "modified_date": summary_obj.modified_date.astimezone().isoformat(),
             }
         capacity_summary[facility_obj.id]["inventory"] = temp_inventory_summary_obj
