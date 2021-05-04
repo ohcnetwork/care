@@ -100,7 +100,7 @@ def FacilityCapacitySummary():
             end_log = log_query.order_by("-created_date").first()
             start_stock = summary_obj.quantity
             if start_log:
-                start_stock = start_log.current_stock
+                start_stock = start_log.current_stock - start_log.quantity_in_default_unit
             end_stock = start_stock
             if end_log:
                 end_stock = end_log.current_stock
