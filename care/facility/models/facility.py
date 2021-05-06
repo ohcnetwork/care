@@ -103,6 +103,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     oxygen_capacity = models.IntegerField(default=0)
+    type_b_cylinders = models.IntegerField(default=0)
+    type_c_cylinders = models.IntegerField(default=0)
+    type_d_cylinders = models.IntegerField(default=0)
+
     phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -147,6 +151,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "state__name": "State",
         "oxygen_capacity": "Oxygen Capacity",
         "phone_number": "Phone Number",
+        "type_b_cylinders": "B Type Oxygen Cylinder",
+        "type_c_cylinders": "C Type Oxygen Cylinder",
+        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
