@@ -1,11 +1,87 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@6.8.0
+  aws-ecr: circleci/aws-ecr@6.15.3
   aws-eks: circleci/aws-eks@0.2.6
 
+executors:
+  main-executor:
+    machine:
+      image: "ubuntu-1604:201903-01"
+      docker_layer_caching: true
+
+jobs:
+  Test-Build:
+    docker:
+      - image: vichuhari100/care-base:latest
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: care
+          DATABASE_URL: "postgis://care@localhost/care-test"
+      - image: circleci/postgres:latest-postgis
+        environment:
+          POSTGRES_USER: care
+          POSTGRES_DB: care-test
+          POSTGRES_HOST_AUTH_METHOD: trust
+    steps:
+      - checkout
+      - restore_cache:
+          key: v2-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/local.txt" }}
+      - run:
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/local.txt
+      - save_cache:
+          key: v2-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/local.txt" }}
+          paths:
+            - venv
+      - run:
+          name: Running tests
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate && python3 manage.py test
+
 workflows:
-  deploy-to-staging-and-production:
+  deploy-to-staging:
+    jobs:
+      - Test-Build
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          region: AWS_DEFAULT_REGION
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1},latest"
+          # executor: main-executor
+          filters:
+            branches:
+              only: master
+      - aws-eks/update-container-image:
+          name: deploy-to-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
+      - aws-eks/update-container-image:
+          name: update-scheduler-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_STAGING_SCHEDULER_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
+      - aws-eks/update-container-image:
+          name: update-worker-staging
+          cluster-name: "${EKS_CLUSTER_NAME}"
+          aws-region: "${AWS_DEFAULT_REGION}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_STAGING_WORKER_NAME}"
+          requires:
+            - aws-ecr/build-and-push-image
+  deploy-to-production:
     jobs:
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
@@ -13,42 +89,30 @@ workflows:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           region: AWS_DEFAULT_REGION
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          tag: "${CIRCLE_SHA1}"
+          tag: "${CIRCLE_SHA1},production-latest"
           filters:
             branches:
-              only: master
+              only: production
       - aws-eks/update-container-image:
-          name: migrate-and-collectstatic-staging
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
-          resource-name: "${EKS_STAGING_INITIALSETUP_DEPLOYMENT_NAME}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_PRODUCTION_DEPLOYMENT_NAME}"
           requires:
             - aws-ecr/build-and-push-image
       - aws-eks/update-container-image:
-          name: deploy-to-staging
+          name: update-scheduler-production
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
-          resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_PRODUCTION_SCHEDULER_NAME}"
           requires:
-            - migrate-and-collectstatic-staging
-      - hold-for-production:
-          type: approval
-          requires:
-            - deploy-to-staging
+            - aws-ecr/build-and-push-image
       - aws-eks/update-container-image:
-          name: migrate-and-collectstatic-production
+          name: update-worker
           cluster-name: "${EKS_CLUSTER_NAME}"
           aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
-          resource-name: "${EKS_PRODUCTION_INITIALSETUP_DEPLOYMENT_NAME}"
+          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          resource-name: "${EKS_PRODUCTION_WORKER_NAME}"
           requires:
-            - hold-for-production
-      - aws-eks/update-container-image:
-          cluster-name: "${EKS_CLUSTER_NAME}"
-          aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: '${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}'
-          resource-name: "${EKS_PRODUCTION_DEPLOYMENT_NAME}"
-          requires:
-            - migrate-and-collectstatic-production
+            - aws-ecr/build-and-push-image

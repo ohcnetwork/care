@@ -1,26 +1,33 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-
-from care.facility.models.patient_sample import PatientSample
-
 from djangoql.admin import DjangoQLSearchMixin
+from djqscsv import render_to_csv_response
+
+from care.facility.models.ambulance import Ambulance, AmbulanceDriver
+from care.facility.models.patient_sample import PatientSample
+from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
 from .models import (
-    Ambulance,
-    AmbulanceDriver,
     Building,
+    Disease,
     Facility,
     FacilityCapacity,
+    FacilityInventoryItem,
+    FacilityInventoryItemTag,
+    FacilityInventoryUnit,
+    FacilityInventoryUnitConverter,
     FacilityStaff,
+    FacilityUser,
     FacilityVolunteer,
     Inventory,
     InventoryItem,
     InventoryLog,
     PatientRegistration,
-    PatientTeleConsultation,
     Room,
     StaffRoomAllocation,
-    Disease,
+    PatientExternalTest,
+    PatientInvestigationGroup,
+    PatientInvestigation,
 )
 
 
@@ -146,10 +153,39 @@ class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+class PatientExternalTestAdmin(admin.ModelAdmin):
+    pass
+
+
+class PatientTestAdmin(admin.ModelAdmin):
+    pass
+
+
+class PatientTestGroupAdmin(admin.ModelAdmin):
+    pass
+
+
+class ExportCsvMixin:
+    def export_as_csv(self, request, queryset):
+
+        queryset = FacilityUser.objects.all().values(*FacilityUser.CSV_MAPPING.keys())
+        return render_to_csv_response(
+            queryset, field_header_map=FacilityUser.CSV_MAPPING, field_serializer_map=FacilityUser.CSV_MAKE_PRETTY,
+        )
+
+    export_as_csv.short_description = "Export Selected"
+
+
+class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
+    djangoql_completion_enabled_by_default = True
+    actions = ["export_as_csv"]
+
+
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
 admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
+admin.site.register(FacilityUser, FacilityUserAdmin)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
@@ -162,3 +198,10 @@ admin.site.register(PatientRegistration, PatientAdmin)
 admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
+admin.site.register(FacilityInventoryUnit)
+admin.site.register(FacilityInventoryUnitConverter)
+admin.site.register(FacilityInventoryItem)
+admin.site.register(FacilityInventoryItemTag)
+admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
+admin.site.register(PatientInvestigation, PatientTestAdmin)
+admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)

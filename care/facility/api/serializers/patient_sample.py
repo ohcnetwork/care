@@ -1,12 +1,12 @@
-import datetime
-
-from django.utils.timezone import make_aware
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.patient_sample import PatientSample, PatientSampleFlow
+from care.facility.models import PatientConsultation, PatientRegistration, Facility
+from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
@@ -19,6 +19,7 @@ class PatientSampleFlowSerializer(serializers.ModelSerializer):
 
 
 class PatientSampleSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
     patient_name = serializers.CharField(read_only=True, source="patient.name")
     patient_has_sari = serializers.BooleanField(read_only=True, source="patient.has_SARI")
     patient_has_confirmed_contact = serializers.BooleanField(
@@ -29,24 +30,38 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     )
     patient_travel_history = serializers.CharField(read_only=True, source="patient.countries_travelled")
 
-    facility = serializers.IntegerField(read_only=True, source="consultation.facility_id")
+    facility = ExternalIdSerializerField(read_only=True, source="consultation.facility")
     facility_object = FacilityBasicInfoSerializer(source="consultation.facility", read_only=True)
 
+    sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES, required=False)
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False)
 
-    patient = serializers.IntegerField(required=False, source="patient_id")
-    consultation = serializers.IntegerField(required=False, source="consultation_id")
+    icmr_category = ChoiceField(choices=PatientSample.PATIENT_ICMR_CATEGORY, required=False)
+
+    patient = ExternalIdSerializerField(required=False, queryset=PatientRegistration.objects.all())
+    consultation = ExternalIdSerializerField(required=False, queryset=PatientConsultation.objects.all())
 
     date_of_sample = serializers.DateTimeField(required=False)
     date_of_result = serializers.DateTimeField(required=False)
 
+    notes = serializers.CharField(required=False, allow_blank=True)
+
+    testing_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    testing_facility_object = FacilityBasicInfoSerializer(source="testing_facility", read_only=True)
+
     class Meta:
         model = PatientSample
-        read_only_fields = ("facility",)
-        exclude = TIMESTAMP_FIELDS
+        read_only_fields = (
+            "id",
+            "facility",
+        )
+        exclude = TIMESTAMP_FIELDS + ("external_id",)
 
     def create(self, validated_data):
+        validated_data.pop("status", None)
+        validated_data.pop("result", None)
+
         return super(PatientSampleSerializer, self).create(validated_data)
 
 
@@ -72,12 +87,18 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": [f"is required as the test is complete"]})
 
-        if validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["SENT_TO_COLLECTON_CENTRE"]:
-            validated_data["date_of_sample"] = make_aware(datetime.datetime.now())
+        if validated_data.get("result") is None and validated_data.get("date_of_result") is not None:
+            raise ValidationError({"date_of_result": [f"cannot be provided without result"]})
+
+        if not instance.date_of_sample and validated_data.get("status") in [
+            PatientSample.SAMPLE_TEST_FLOW_MAP[key]
+            for key in ["SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"]
+        ]:
+            validated_data["date_of_sample"] = timezone.now()
         elif validated_data.get("status") == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]:
             validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
-        elif validated_data.get("result") is not None:
-            validated_data["date_of_result"] = make_aware(datetime.datetime.now())
+        elif validated_data.get("result") is not None and validated_data.get("date_of_result") is None:
+            validated_data["date_of_result"] = timezone.now()
 
         return super().update(instance, validated_data)
 

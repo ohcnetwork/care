@@ -12,9 +12,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.mixins import UserAccessMixin
 from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
-from care.facility.models import Ambulance
+from care.facility.api.viewsets import UserAccessMixin
+from care.facility.models.ambulance import Ambulance
 
 
 class AmbulanceFilterSet(filters.FilterSet):
@@ -73,7 +73,7 @@ class AmbulanceViewSet(
 
 
 class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False)
     filter_backends = (filters.DjangoFilterBackend,)

@@ -8,12 +8,14 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import TokenVerifyView
 
 from config import api_router
 
-from .auth_views import TokenObtainPairView
+from .auth_views import TokenObtainPairView, TokenRefreshView
 from .views import home_view
+
+from care.users.reset_password_views import ResetPasswordConfirm, ResetPasswordRequestToken
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -31,7 +33,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", home_view, name="home"),
-    path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
+    # path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
     # API Docs
     url(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json",),
     url(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui",),
@@ -40,12 +42,14 @@ urlpatterns = [
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("api/v1/password_reset/", ResetPasswordRequestToken.as_view(), name="password_reset_request"),
+    path("api/v1/password_reset/confirm/", ResetPasswordConfirm.as_view(), name="password_reset_confirm"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("users/", include("care.users.urls", namespace="users")),
+    # path("users/", include("care.users.urls", namespace="users")),
     # path("accounts/", include("allauth.urls")),
-    path("facility/", include("care.facility.urls", namespace="facility")),
+    # path("facility/", include("care.facility.urls", namespace="facility")),
     # RESTful APIs
     path("api/v1/", include(api_router.urlpatterns)),
     url(r"^watchman/", include("watchman.urls")),

@@ -334,7 +334,8 @@ pip-selfcheck.json
 ### Project template
 
 MailHog
-care/media/
+care/media/*
+!care/media/needthisfolder
 
 .pytest_cache/
 
@@ -345,3 +346,6 @@ care/media/
 
 .vscode
 .idea/
+test_db
+
+celerybeat-schedule

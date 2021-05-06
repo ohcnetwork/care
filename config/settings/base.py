@@ -27,6 +27,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "Asia/Kolkata"
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -56,7 +57,7 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 # CollectFast
-COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
+#
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -91,10 +92,13 @@ THIRD_PARTY_APPS = [
     "watchman",
     "djangoql",
     "maintenance_mode",
+    "django.contrib.postgres",
+    "django_celery_beat",
+    "django_rest_passwordreset",
     "automated_logging",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
+LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.life"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -175,9 +179,12 @@ if USE_S3:
     AWS_LOCATION = "static"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
     STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 else:
     STATIC_URL = "/staticfiles/"
     STATIC_ROOT = str(ROOT_DIR("staticfiles"))
+    STATICFILES_STORAGE = "django.core.files.storage.FileSystemStorage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.filesystem.FileSystemStrategy"
 
 STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
 
@@ -196,7 +203,10 @@ TEMPLATES = [
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
-            "loaders": ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader",],
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -263,12 +273,27 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
     "handlers": {
-        "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",},
-        "db": {"level": "INFO", "class": "automated_logging.handlers.DatabaseHandler",},
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "db": {
+            "level": "INFO",
+            "class": "automated_logging.handlers.DatabaseHandler",
+        },
     },
     "loggers": {
-        "automated_logging": {"level": "INFO", "handlers": ["db"], "propagate": True,},
-        "django": {"level": "INFO", "handlers": ["db"], "propagate": True,},
+        "automated_logging": {
+            "level": "INFO",
+            "handlers": ["db"],
+            "propagate": True,
+        },
+        "django": {
+            "level": "INFO",
+            "handlers": ["db"],
+            "propagate": True,
+        },
     },
 }
 
@@ -329,7 +354,6 @@ REST_FRAMEWORK = {
 
 
 ACCOUNT_EMAIL_VERIFICATION = False
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGOUT_REDIRECT_URL = "/"
 STAFF_ACCOUNT_TYPE = 10
 
@@ -362,3 +386,92 @@ GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 CORS_ORIGIN_ALLOW_ALL = True
 
 MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
+
+
+# Celery
+# ------------------------------------------------------------------------------
+if USE_TZ:
+    # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-timezone
+    CELERY_TIMEZONE = TIME_ZONE
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
+CELERY_ACCEPT_CONTENT = ["json"]
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
+CELERY_TASK_SERIALIZER = "json"
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
+CELERY_RESULT_SERIALIZER = "json"
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-time-limit
+# TODO: set to whatever value is adequate in your circumstances
+CELERY_TASK_TIME_LIMIT = 1800 * 5
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
+# TODO: set to whatever value is adequate in your circumstances
+CELERY_TASK_SOFT_TIME_LIMIT = 1800
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSc:wqheduler"
+CELERY_TIMEZONE = "Asia/Kolkata"
+
+
+CSV_REQUEST_PARAMETER = "csv"
+
+
+DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>")
+
+CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
+
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
+
+DJANGO_REST_LOOKUP_FIELD = "username"
+
+CHROME_WINDOW_SIZE = "2480,3508"
+
+CHROME_PATH = "/usr/bin/google-chrome-stable"
+
+IS_PRODUCTION = False
+
+OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
+
+OTP_MAX_REPEATS_WINDOW = 10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
+
+OTP_LENGTH = 5
+
+# SMS
+USE_SMS = False
+
+DEFAULT_VAPID_PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3OtP02wfkEojpP7tvyA64CAnVZeb
+bxFda+u+X3ZgMsBoAQK6Jul0Efxz8nGE2SlFr2CZPRqz0rPZQGAiiYugeg==
+-----END PUBLIC KEY-----"""
+
+
+DEFAULT_VAPID_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgJT2TwOHtFu/HZ1T5
+2MofEr/yxu3ULqVTcjH9Sno6ML2hRANCAATc60/TbB+QSiOk/u2/IDrgICdVl5tv
+EV1r675fdmAywGgBArom6XQR/HPycYTZKUWvYJk9GrPSs9lAYCKJi6B6
+-----END PRIVATE KEY-----"""
+
+
+VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
+VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
+
+
+#######################
+# File Upload Parameters
+
+FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
+# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+
+
+#######################
+# Life Parameters
+
+LIFE_S3_ENDPOINT = env("LIFE_S3_ENDPOINT", default="")
+LIFE_S3_ACCESS_KEY = env("LIFE_S3_ACCESS_KEY", default="")
+LIFE_S3_SECRET = env("LIFE_S3_SECRET", default="")
+LIFE_S3_BUCKET = env("LIFE_S3_BUCKET", default="")

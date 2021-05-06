@@ -1,0 +1,374 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
+    <style>
+      @media print {
+      pre, div, dt, dd, blockquote {page-break-inside: avoid;}
+      @page { margin: 0; }
+      body { margin: 1.6cm; }
+      }
+    </style>
+  </head>
+  <body class="max-w-5xl mx-auto mt-4 text-sm">
+  <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
+  <div class="mx-auto flex justify-center">
+      <img class='h-28' src="https://cdn.coronasafe.network/kgovtlogo.png"/>
+    </div>
+  </div>
+   <div class="mt-2 text-center w-full font-bold text-3xl">
+    {{patient.facility.name}}
+   </div>
+  <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between">
+  <div class="mt-4">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Patient Discharge Summary
+    </h3>
+    <p class="mt-1 text-sm leading-5 text-gray-500">
+      Created on {{date}}
+    </p>
+    <div class="flex w-full justify-between">
+      <p class="mt-1 text-sm  leading-5 text-gray-500 mr-10">
+        Id:  {{patient.external_id}}
+      </p>
+        {% if consultation.ip_no %}
+      <p class="mt-1 text-sm leading-5 text-gray-500">
+        IP No:  {{consultation.ip_no}}
+      </p>
+  {% endif %}
+    </div>
+  </div>
+   <img class='h-12' src="https://cdn.coronasafe.network/coronaSafeLogo.png"/>
+   </div>
+  <div class="px-4 py-5 sm:px-6">
+    <dl class="">
+    <div class="flex flex-wrap justify-between">
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Full name
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.name}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Age
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.age}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Birth
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.date_of_birth}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Gender
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.get_gender_display}}
+        </dd>
+      </div>
+
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Address
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.address}}
+        </dd>
+      </div>
+
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Phone Number
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{patient.phone_number}}
+        </dd>
+      </div>
+
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Admission
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.admission_date}}
+        </dd>
+      </div>
+      <div class="w-1/2 mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Date of Discharge
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.discharge_date}}
+        </dd>
+      </div>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Diagnosis
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.diagnosis}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Symptoms
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.symptoms}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          History of Present Illness
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.existing_medication}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Clinical Condition on Admission
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.examination_details}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+          Treatment Summary
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.prescribed_medication}}
+        </dd>
+      </div>
+      <div class="mt-4">
+        <dt class="text-sm leading-5 font-medium text-gray-500">
+         Advice
+        </dt>
+        <dd class="mt-1 text-sm leading-5 text-gray-900">
+        {{consultation.consultation_notes}}
+        </dd>
+      </div>
+    </dl>
+  </div>
+  {% if consultation.discharge_advice %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Medications
+    </h3>
+  </div>
+  <div class="mt-4">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+            <tr>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Medicine
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Frequency
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Days
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+          {% for prescription in consultation.discharge_advice %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
+                  {{ prescription.medicine }}
+                </td>
+                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                {{ prescription.dosage }}
+                </td>
+                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                  {{ prescription.days }}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if diseases %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Comorbidities
+    </h3>
+  </div>
+  <div class="mt-4">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+            <tr>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Comorbidity
+              </th>
+              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Details
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+          {% for disease in diseases %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                  {{disease.get_disease_display}}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{disease.details}}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if samples %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      LAB REPORT
+    </h3>
+  </div>
+  <div class="px-4 py-5 sm:px-6">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full">
+          <table class="min-w-full">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Requested on
+                </th>
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Sample type
+                </th>
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Label
+                </th>
+                <th class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Result
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for sample in samples %}
+              <tr class="bg-white">
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 font-medium text-gray-900">
+                  {{sample.created_date}}
+                </td>
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+                  {{sample.get_sample_type_display}}
+                </td>
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+                  {{sample.icmr_label}}
+                </td>
+                <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+                  {{sample.get_result_display}}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if dailyrounds %}
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Daily Summary
+    </h3>
+  </div>
+  {% for daily_round in dailyrounds %}
+    <div class="rounded mt-4 border border-gray-200 rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          {{daily_round.created_date}}
+        </h3>
+        <div class="mt-2 max-w-xl text-sm leading-5 text-gray-500">
+          <div class="flex justify-between">
+            <div class="sm:col-span-1">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Category
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900">
+                {{daily_round.get_patient_category_display}}
+              </dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Current health
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900">
+                {{daily_round.get_current_health_display}}
+              </dd>
+            </div>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Physical Examination Details
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.physical_examination_info}}
+            </dd>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Other Details
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.other_details}}
+            </dd>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Symptoms
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{daily_round.additional_symptoms}}
+            </dd>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>
+      <div class="m-4">
+        <div class="text-sm leading-5 font-bold text-gray-500">
+          Verified By
+        </div>
+        <div class="mt-1 text-sm leading-5 text-gray-900">
+          {{consultation.verified_by|linebreaks}}
+        </div>
+      </div>
+  </body>
+</html>

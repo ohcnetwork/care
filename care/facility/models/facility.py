@@ -1,46 +1,41 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.users.models import District, LocalBody, State
+from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
+from care.facility.models.mixins.permissions.facility import (
+    FacilityPermissionMixin,
+    FacilityRelatedPermissionMixin,
+)
+from care.users.models import District, LocalBody, State, Ward
+
 
 User = get_user_model()
-
-
-class SoftDeleteManager(models.Manager):
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(deleted=False)
-
-
-class FacilityBaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = SoftDeleteManager()
-
-    class Meta:
-        abstract = True
-
-    def delete(self, *args):
-        self.deleted = True
-        self.save()
-
 
 # Facility Model Start
 
 ROOM_TYPES = [
     (0, "Total"),
-    (1, "Normal"),
+    (1, "General Bed"),
     (2, "Hostel"),
     (3, "Single Room with Attached Bathroom"),
     (10, "ICU"),
     (20, "Ventilator"),
+    (30, "Covid Beds"),
+    (40, "KASP Beds"),
+    (50, "KASP ICU beds"),
+    (60, "KASP Oxygen beds"),
+    (70, "KASP Ventilator beds"),
+    (100, "Covid Ventilators"),
+    (110, "Covid ICU"),
+    (120, "Covid Oxygen beds"),
+    (150, "Oxygen beds"),
 ]
+
+REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -51,7 +46,35 @@ FACILITY_TYPES = [
     (6, "Lodge"),
     (7, "TeleMedicine"),
     (8, "Govt Hospital"),
+    (9, "Labs"),
+    # Use 8xx for Govt owned hospitals and health centres
+    (800, "Primary Health Centres"),
+    (801, "24x7 Public Health Centres"),
+    (802, "Family Health Centres"),
+    (803, "Community Health Centres"),
+    (820, "Urban Primary Health Center"),
+    (830, "Taluk Hospitals"),
+    (831, "Taluk Headquarters Hospitals"),
+    (840, "Women and Child Health Centres"),
+    (850, "General hospitals"),  # TODO: same as 8, need to merge
+    (860, "District Hospitals"),
+    (870, "Govt Medical College Hospitals"),
+    # Use 9xx for Labs
+    (950, "Corona Testing Labs"),
+    # Use 10xx for Corona Care Center
+    (1000, "Corona Care Centre"),
+    (1010, "COVID-19 Domiciliary Care Center"),
+    # Use 11xx for First Line Treatment Centre
+    (1100, "First Line Treatment Centre"),
+    # Use 12xx for Second Line Treatment Center
+    (1200, "Second Line Treatment Center"),
+    # Use 13xx for Shifting Centers
+    (1300, "Shifting Centre"),
+    # Use 14xx for Covid Management Centers.
+    (1400, "Covid Management Center"),
 ]
+
+REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 
 DOCTOR_TYPES = [
     (1, "General Medicine"),
@@ -61,31 +84,36 @@ DOCTOR_TYPES = [
     (5, "Other Speciality"),
 ]
 
-AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
-
-phone_number_regex = RegexValidator(
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-    code="invalid_mobile",
-)
+REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
 
-class Facility(FacilityBaseModel):
+class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
+    kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
 
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
+    ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
     oxygen_capacity = models.IntegerField(default=0)
+    type_b_cylinders = models.IntegerField(default=0)
+    type_c_cylinders = models.IntegerField(default=0)
+    type_d_cylinders = models.IntegerField(default=0)
+
     phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    users = models.ManyToManyField(
+        User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
+    )
 
     class Meta:
         verbose_name_plural = "Facilities"
@@ -93,40 +121,8 @@ class Facility(FacilityBaseModel):
     def __str__(self):
         return f"{self.name}"
 
-    @staticmethod
-    def has_bulk_upsert_permission(request):
+    def has_object_destroy_permission(self, request):
         return request.user.is_superuser
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -137,7 +133,30 @@ class Facility(FacilityBaseModel):
             self.district = self.local_body.district
         if self.district is not None:
             self.state = self.district.state
+
+        is_create = self.pk is None
         super().save(*args, **kwargs)
+
+        if is_create:
+            FacilityUser.objects.create(facility=self, user=self.created_by, created_by=self.created_by)
+
+    CSV_MAPPING = {
+        "name": "Facility Name",
+        "facility_type": "Facility Type",
+        "address": "Address",
+        "ward__name": "Ward Name",
+        "ward__number": "Ward Number",
+        "local_body__name": "Local Body",
+        "district__name": "District",
+        "state__name": "State",
+        "oxygen_capacity": "Oxygen Capacity",
+        "phone_number": "Phone Number",
+        "type_b_cylinders": "B Type Oxygen Cylinder",
+        "type_c_cylinders": "C Type Oxygen Cylinder",
+        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
+    }
+
+    CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -179,7 +198,7 @@ class FacilityLocalGovtBody(models.Model):
         super().save(*args, **kwargs)
 
 
-class HospitalDoctors(FacilityBaseModel):
+class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
@@ -190,39 +209,15 @@ class HospitalDoctors(FacilityBaseModel):
     class Meta:
         indexes = [PartialIndex(fields=["facility", "area"], unique=True, where=PQ(deleted=False))]
 
-    @staticmethod
-    def has_read_permission(request):
-        return True
+    CSV_RELATED_MAPPING = {
+        "hospitaldoctors__area": "Doctors Area",
+        "hospitaldoctors__count": "Doctors Count",
+    }
 
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
+    CSV_MAKE_PRETTY = {"hospitaldoctors__area": (lambda x: REVERSE_DOCTOR_TYPES[x])}
 
 
-class FacilityCapacity(FacilityBaseModel):
+class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -233,44 +228,14 @@ class FacilityCapacity(FacilityBaseModel):
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
 
-    def save(self, *args, **kwargs) -> None:
-        """
-        Update Date Modified
-        """
-        super().save(*args, **kwargs)
-        # self.facility.modified_date = self.modified_date
-        self.facility.save()
+    CSV_RELATED_MAPPING = {
+        "facilitycapacity__room_type": "Room Type",
+        "facilitycapacity__total_capacity": "Total Capacity",
+        "facilitycapacity__current_capacity": "Current Capacity",
+        "facilitycapacity__modified_date": "Updated Date",
+    }
 
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
-
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-        )
+    CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
 
 
 class FacilityStaff(FacilityBaseModel):
@@ -381,101 +346,20 @@ class InventoryLog(FacilityBaseModel):
 # Inventory Model End
 
 
-class Ambulance(FacilityBaseModel):
-    vehicle_number_regex = RegexValidator(
-        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
-        message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
-        code="invalid_vehicle_number",
-    )
-    INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
+class FacilityUser(models.Model):
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_users")
 
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
-
-    owner_name = models.CharField(max_length=255)
-    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    owner_is_smart_phone = models.BooleanField(default=True)
-
-    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-
-    primary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
-    )
-    secondary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
-    )
-    third_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
-    )
-
-    has_oxygen = models.BooleanField()
-    has_ventilator = models.BooleanField()
-    has_suction_machine = models.BooleanField()
-    has_defibrillator = models.BooleanField()
-
-    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
-
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
-
-    price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    has_free_service = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    @property
-    def drivers(self):
-        return self.ambulancedriver_set.filter(deleted=False)
-
-    def __str__(self):
-        return f"Ambulance - {self.owner_name}({self.owner_phone_number})"
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
+    class Meta:
+        unique_together = (
+            "facility",
+            "user",
         )
 
-    @staticmethod
-    def has_write_permission(request):
-        return True
-
-    def has_object_write_permission(self, request):
-        return request.user.is_superuser
-
-    def has_object_update_permission(self, request):
-        return (
-            request.user.is_superuser
-            or request.user == self.created_by
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
-            )
-        )
-
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(
-    #             name="ambulance_free_or_price",
-    #             check=models.Q(price_per_km__isnull=False)
-    #             | models.Q(has_free_service=True),
-    #         )
-    #     ]
-
-
-class AmbulanceDriver(FacilityBaseModel):
-    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
-    is_smart_phone = models.BooleanField()
-
-    def __str__(self):
-        return f"Driver: {self.name}({self.phone_number})"
+    CSV_MAPPING = {
+        "facility__name": "Facility Name",
+        "user__username": "User Username",
+        "created_by__username": "Created By Username",
+    }
+    CSV_MAKE_PRETTY = {}

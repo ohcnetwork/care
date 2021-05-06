@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -20,13 +20,15 @@ class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
 
 
 class FacilityBasicInfoSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
 
     def get_facility_type(self, facility):
-        return {"id": facility.facility_type, "name": FACILITY_TYPES[facility.facility_type - 1][1]}
+        return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
 
     class Meta:
         model = Facility
@@ -36,6 +38,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "local_body",
             "district",
             "state",
+            "ward_object",
             "local_body_object",
             "district_object",
             "state_object",
@@ -58,19 +61,23 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         fields = [
             "id",
             "name",
+            "ward",
             "local_body",
             "district",
             "state",
             "facility_type",
             "address",
             "location",
+            "pincode",
             "oxygen_capacity",
             "phone_number",
+            "ward_object",
             "local_body_object",
             "district_object",
             "state_object",
             "modified_date",
             "created_date",
+            "kasp_empanelled",
         ]
         read_only_fields = ("modified_date", "created_date")
 

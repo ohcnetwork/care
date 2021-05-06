@@ -2,24 +2,28 @@ import abc
 import datetime
 from collections import OrderedDict
 from typing import Any, Dict
+from uuid import uuid4
 
 import dateparser
 from django.contrib.gis.geos import Point
-from django.utils.timezone import make_aware
 from pytz import unicode
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
+    CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    SYMPTOM_CHOICES,
     Disease,
     DiseaseStatusEnum,
     Facility,
     LocalBody,
+    PatientConsultation,
     PatientRegistration,
     User,
 )
 from care.users.models import District, State
-from config.tests.helper import EverythingEquals
+from config.tests.helper import EverythingEquals, mock_equal
 
 
 class TestBase(APITestCase):
@@ -36,6 +40,7 @@ class TestBase(APITestCase):
             "phone_number": "5554446667",
             "age": 30,
             "gender": 2,
+            "verified": True,
             "username": username,
             "password": "bar",
             "district": district,
@@ -60,18 +65,23 @@ class TestBase(APITestCase):
         return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
 
     @classmethod
-    def create_facility(cls, district: District, **kwargs):
+    def create_facility(cls, district: District, user: User = None, **kwargs):
+        user = user or cls.user
         data = {
             "name": "Foo",
             "district": district,
             "facility_type": 1,
             "address": "8/88, 1st Cross, 1st Main, Boo Layout",
             "location": Point(24.452545, 49.878248),
+            "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
+            "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        f = Facility(**data)
+        f.save()
+        return f
 
     @classmethod
     def create_patient(cls, **kwargs):
@@ -146,6 +156,7 @@ class TestBase(APITestCase):
             "facility_type": 1,
             "address": f"Address {datetime.datetime.now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
+            "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
             "capacity": [],
@@ -156,19 +167,23 @@ class TestBase(APITestCase):
         return {
             "name": "Foo",
             "age": 32,
+            "date_of_birth": datetime.date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
+            "is_antenatal": False,
+            "allergies": "",
+            "allow_transfer": True,
             "blood_group": "O+",
             "ongoing_medication": "",
-            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),
             "disease_status": "SUSPECTED",
-            "phone_number": "8888888888",
+            "phone_number": "+918888888888",
             "address": "Global citizen",
             "contact_with_confirmed_carrier": True,
             "contact_with_suspected_carrier": True,
             "estimated_contact_date": None,
             "past_travel": False,
-            "countries_travelled": "",
+            "countries_travelled": ["Italy"],
             "present_health": "Fine",
             "has_SARI": False,
             "is_active": True,
@@ -178,6 +193,7 @@ class TestBase(APITestCase):
             "number_of_aged_dependents": 2,
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
+            "date_of_receipt_of_information": datetime.datetime(2020, 4, 1, 15, 30, 00),
         }
 
     @classmethod
@@ -218,11 +234,16 @@ class TestBase(APITestCase):
         return f"{url}/"
 
     @classmethod
-    def clone_object(cls, obj):
+    def clone_object(cls, obj, save=True):
         new_obj = obj._meta.model.objects.get(pk=obj.id)
         new_obj.pk = None
         new_obj.id = None
-        new_obj.save()
+        try:
+            new_obj.external_id = uuid4()
+        except AttributeError:
+            pass
+        if save:
+            new_obj.save()
         return new_obj
 
     @abc.abstractmethod
@@ -303,7 +324,64 @@ class TestBase(APITestCase):
                 return_value = value
                 if isinstance(value, (str, unicode,)):
                     return_value = dateparser.parse(value)
-                return return_value.astimezone(tz=datetime.timezone.utc)
+                return (
+                    return_value.astimezone(tz=datetime.timezone.utc)
+                    if isinstance(return_value, datetime.datetime)
+                    else return_value
+                )
             return value
 
         return dict_to_matching_type(d)
+
+    def execute_list(self, user=None):
+        user = user or self.user
+        self.client.force_authenticate(user)
+        response = self.client.get(self.get_url(), format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response
+
+    def get_facility_representation(self, facility):
+        if facility is None:
+            return facility
+        else:
+            return {
+                "id": str(facility.external_id),
+                "name": facility.name,
+                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
+                **self.get_local_body_district_state_representation(facility),
+            }
+
+    @classmethod
+    def get_consultation_data(cls):
+        return {
+            "patient": cls.patient,
+            "facility": cls.facility,
+            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
+            "other_symptoms": "No other symptoms",
+            "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
+            "category": CATEGORY_CHOICES[0][0],
+            "examination_details": "examination_details",
+            "existing_medication": "existing_medication",
+            "prescribed_medication": "prescribed_medication",
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "referred_to": None,
+            "admitted": False,
+            "admitted_to": None,
+            "admission_date": None,
+            "discharge_date": None,
+            "consultation_notes": "",
+            "course_in_facility": "",
+            "discharge_advice": {},
+            "prescriptions": {},
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
+        }
+
+    @classmethod
+    def create_consultation(cls, patient=None, facility=None, referred_to=None, **kwargs) -> PatientConsultation:
+        data = cls.get_consultation_data()
+        kwargs.update(
+            {"patient": patient or cls.patient, "facility": facility or cls.facility, "referred_to": referred_to}
+        )
+        data.update(kwargs)
+        return PatientConsultation.objects.create(**data)

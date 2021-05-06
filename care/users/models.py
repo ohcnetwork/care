@@ -3,6 +3,23 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 from django.urls import reverse
 
+
+def reverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0]] = choice[1]
+    return output
+
+
+GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
+REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
+
+phone_number_regex = RegexValidator(
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
+    code="invalid_mobile",
+)
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
@@ -19,14 +36,6 @@ DISTRICT_CHOICES = [
     (13, "Kannur"),
     (14, "Kasargode"),
 ]
-
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
-
-phone_number_regex = RegexValidator(
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
-    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-    code="invalid_mobile",
-)
 
 
 class State(models.Model):
@@ -58,6 +67,16 @@ LOCAL_BODY_CHOICES = (
 )
 
 
+def reverse_lower_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1].lower()] = choice[0]
+    return output
+
+
+REVERSE_LOCAL_BODY_CHOICES = reverse_lower_choices(LOCAL_BODY_CHOICES)
+
+
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
 
@@ -76,10 +95,28 @@ class LocalBody(models.Model):
         return f"{self.name} ({self.body_type})"
 
 
+class Ward(models.Model):
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            "local_body",
+            "name",
+            "number",
+        )
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        return qs.filter(deleted=False).select_related(
+            "local_body", "district", "state"
+        )
 
     def create_superuser(self, username, email, password, **extra_fields):
         district_id = extra_fields["district"]
@@ -98,21 +135,36 @@ class Skill(models.Model):
 
 class User(AbstractUser):
     TYPE_VALUE_MAP = {
-        "Doctor": 5,
+        "Transportation": 2,
+        "Pharmacist": 3,
+        "Volunteer": 5,
+        "StaffReadOnly": 9,
         "Staff": 10,
-        "Patient": 15,
-        "Volunteer": 20,
+        "Doctor": 15,
+        "Reserved": 20,
+        "WardAdmin": 21,
+        "LocalBodyAdmin": 23,
         "DistrictLabAdmin": 25,
+        "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
         "StateLabAdmin": 35,
+        "StateReadOnlyAdmin": 39,
+        "StateAdmin": 40,
     }
 
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
+    REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)
+
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.PROTECT, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
@@ -121,6 +173,13 @@ class User(AbstractUser):
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
+    # Notification Data
+    pf_endpoint = models.TextField(default=None, null=True)
+    pf_p256dh = models.TextField(default=None, null=True)
+    pf_auth = models.TextField(default=None, null=True)
+
+    objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
         "user_type",
@@ -131,7 +190,21 @@ class User(AbstractUser):
         "district",
     ]
 
-    objects = CustomUserManager()
+    CSV_MAPPING = {
+        "username": "Username",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "phone_number": "Phone Number",
+        "gender": "Gender",
+        "age": "Age",
+        "verified": "verified",
+        "local_body__name": "Local Body",
+        "district__name": "District",
+        "state__name": "State",
+        "user_type": "User Type",
+    }
+
+    CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
 
     @staticmethod
     def has_read_permission(request):
@@ -145,7 +218,10 @@ class User(AbstractUser):
         try:
             return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
         except TypeError:
-            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
+            return (
+                User.TYPE_VALUE_MAP[request.data["user_type"]]
+                <= User.TYPE_VALUE_MAP["Volunteer"]
+            )
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -158,13 +234,17 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
-            "DistrictLabAdmin"
-        ]:
+        if (
+            request.data.get("district") or request.data.get("state")
+        ) and self.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False
         return True
+
+    @staticmethod
+    def has_add_user_permission(request):
+        return request.user.is_superuser or request.user.verified
 
     def delete(self, *args, **kwargs):
         self.deleted = True
@@ -183,3 +263,4 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
+

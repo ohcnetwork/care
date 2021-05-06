@@ -1,16 +1,23 @@
 Care
 ====
+    
+Care is a Corona Care Center management app for the Govt of Kerala
+====
+
+Auto Deployed to https://careapi.coronasafe.in for master Branch. 
+
+Report bugs with Github Issues
 
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
    :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
-
 .. image:: https://img.shields.io/circleci/build/github/coronasafe/care/master?style=flat-square
     :alt: Circle CI build
-    :target: https://circleci.com/gh/coronasafe/care
+    :target: https://circleci.com/gh/coronasafe/care    
+.. image:: https://github.com/coronasafe/care/workflows/Code%20scanning%20-%20action/badge.svg
+    :alt: Code scanning
 
-Care is a Corona Care Center management app for the Govt of Kerala
-
+   
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
@@ -81,7 +88,7 @@ Login to the postgres shell and run:
 
  CREATE DATABASE care;
  GRANT ALL PRIVILEGES ON DATABASE care TO postgres;
- \q;
+ \q
 
 You may replace `care` with the database name of your preference
 
@@ -179,6 +186,11 @@ This will now prompt for the following details - Ignore any warnings.
 - phonenumber: give your ten digit phone number here
 - password: Give the password here
 
+$ python manage.py collectstatic
+
+This will copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles. When prompted to confirm, enter "yes".
+
+
 Type checks
 ^^^^^^^^^^^
 
@@ -216,6 +228,8 @@ Email Server
 In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use `MailHog`_ when generating the project a local SMTP server with a web interface will be available.
 
 #. `Download the latest MailHog release`_ for your OS.
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_shield)
+
 
 #. Rename the build to ``MailHog``.
 
@@ -260,3 +274,8 @@ Heroku
 See detailed `cookiecutter-django Heroku documentation`_.
 
 .. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
+ 

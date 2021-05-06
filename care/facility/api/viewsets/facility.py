@@ -1,7 +1,11 @@
+from django.conf import settings
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db import transaction
+from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,8 +17,17 @@ from care.facility.api.serializers.facility import (
     FacilityUpsertSerializer,
 )
 from care.facility.api.serializers.patient import PatientListSerializer
-from care.facility.models import Facility, FacilityCapacity, PatientRegistration
+from care.facility.models import (
+    Facility,
+    FacilityCapacity,
+    PatientRegistration,
+    HospitalDoctors,
+    FacilityPatientStatsHistory,
+)
 from care.users.models import User
+from config.utils import get_psql_search_tokens
+
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
 class FacilityFilter(filters.FilterSet):
@@ -26,22 +39,42 @@ class FacilityFilter(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser or request.query_params.get("all") == "true":
-            return queryset
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=request.user.state)
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return queryset.filter(district=request.user.district)
+            queryset = queryset.filter(district=request.user.district)
         else:
-            return queryset.filter(created_by=request.user)
+            queryset = queryset.filter(users__id__exact=request.user.id)
+
+        search_text = request.query_params.get("search_text")
+        if search_text:
+            vector = SearchVector("name", "district__name", "state__name")
+            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+            queryset = (
+                queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+                .filter(search_text=query)
+                .order_by("-rank")
+            )
+        return queryset
 
 
-class FacilityViewSet(viewsets.ModelViewSet):
+class FacilityViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
+    queryset = Facility.objects.filter(is_active=True).select_related("ward", "local_body", "district", "state")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -51,6 +84,11 @@ class FacilityViewSet(viewsets.ModelViewSet):
         filters.DjangoFilterBackend,
     )
     filterset_class = FacilityFilter
+    lookup_field = "external_id"
+
+    FACILITY_CAPACITY_CSV_KEY = "capacity"
+    FACILITY_DOCTORS_CSV_KEY = "doctors"
+    FACILITY_TRIAGE_CSV_KEY = "triage"
 
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
@@ -74,7 +112,23 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
         Other query params
         - `all` - bool. Returns all facilities with a limited dataset, accessible to all users.
+        - `search_text` - string. Searches across name, district name and state name.
         """
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            mapping = Facility.CSV_MAPPING.copy()
+            pretty_mapping = Facility.CSV_MAKE_PRETTY.copy()
+            if self.FACILITY_CAPACITY_CSV_KEY in request.GET:
+                mapping.update(FacilityCapacity.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(FacilityCapacity.CSV_MAKE_PRETTY.copy())
+            elif self.FACILITY_DOCTORS_CSV_KEY in request.GET:
+                mapping.update(HospitalDoctors.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY.copy())
+            elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
+                mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING.copy())
+                pretty_mapping.update(FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy())
+            queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
+            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
+
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
@@ -96,6 +150,22 @@ class FacilityViewSet(viewsets.ModelViewSet):
         - `district` current supports only Kerala, will be changing when the UI is ready to support any district
         """
         return super(FacilityViewSet, self).update(request, *args, **kwargs)
+
+    @action(methods=["GET"], detail=True)
+    def get_users(self, request, external_id):
+        user_type_filter = None
+        if "user_type" in request.GET:
+            if request.GET["user_type"] in User.TYPE_VALUE_MAP:
+                user_type_filter = User.TYPE_VALUE_MAP[request.GET["user_type"]]
+        facility = Facility.objects.filter(external_id=external_id).first()
+        if not facility:
+            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        users = facility.users.all()
+        if user_type_filter:
+            users = users.filter(user_type=user_type_filter)
+        users = users.order_by("-last_login")
+        data = UserBaseMinimumSerializer(users, many=True)
+        return Response(data.data)
 
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request):
@@ -189,9 +259,32 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=["get"], detail=True)
-    def patients(self, *args, **kwargs):
-        queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
-            "local_body", "district", "state"
-        )
-        return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)
+    # @action(methods=["get"], detail=True)
+    # def patients(self, *args, **kwargs):
+    #     queryset = PatientRegistration.objects.filter(facility_id=kwargs["pk"]).select_related(
+    #         "local_body", "district", "state"
+    #     )
+    #     return self.get_paginated_response(PatientListSerializer(self.paginate_queryset(queryset), many=True).data)
+
+
+class AllFacilityViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
+):
+    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
+    serializer_class = FacilityBasicInfoSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityFilter
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        search_text = self.request.query_params.get("search_text")
+        queryset = self.queryset
+        if search_text:
+            vector = SearchVector("name", "district__name", "state__name")
+            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+            queryset = (
+                self.queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+                .filter(search_text=query)
+                .order_by("-rank")
+            )
+        return queryset
