@@ -11,8 +11,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.shifting import ShiftingDetailSerializer, ShiftingSerializer, has_facility_permission
-from care.facility.models import SHIFTING_STATUS_CHOICES, PatientConsultation, ShiftingRequest, User
+from care.facility.api.serializers.shifting import (
+    ShiftingDetailSerializer,
+    ShiftingSerializer,
+    has_facility_permission,
+)
+from care.facility.models import (
+    SHIFTING_STATUS_CHOICES,
+    BREATHLESSNESS_CHOICES,
+    PatientConsultation,
+    ShiftingRequest,
+    User,
+)
 
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
@@ -25,6 +35,7 @@ def inverse_choices(choices):
 
 
 inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
+inverse_breathlessness_level = inverse_choices(BREATHLESSNESS_CHOICES)
 
 
 class ShiftingFilterBackend(DRYPermissionFiltersBase):
@@ -52,6 +63,14 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
 
 
 class ShiftingFilterSet(filters.FilterSet):
+    def get_breathlessness_level(
+        self, queryset, field_name, value,
+    ):
+        if value:
+            if value in inverse_breathlessness_level:
+                return queryset.filter(status=inverse_breathlessness_level[value])
+        return queryset
+
     def get_status(
         self, queryset, field_name, value,
     ):
@@ -61,6 +80,7 @@ class ShiftingFilterSet(filters.FilterSet):
         return queryset
 
     status = filters.CharFilter(method="get_status", field_name="status")
+    breathlessness_level = filters.CharFilter(method="get_breathlessness_level", field_name="breathlessness_level")
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
@@ -112,7 +132,7 @@ class ShiftingViewSet(
         "patient__facility__state",
         "assigned_to",
         "created_by",
-        "last_edited_by"
+        "last_edited_by",
     )
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
