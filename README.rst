@@ -6,7 +6,7 @@ Care is a Corona Care Center management app for the Govt of Kerala
 
 Auto Deployed to https://careapi.coronasafe.in for master Branch. 
 
-Report bugs at https://bugs.coronasafe.in
+Report bugs with Github Issues
 
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
