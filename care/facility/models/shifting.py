@@ -59,6 +59,11 @@ class ShiftingRequest(FacilityBaseModel):
     is_assigned_to_user = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_assigned_to",)
 
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_created_by",)
+    last_edited_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="shifting_last_edited_by"
+    )
+
     CSV_MAPPING = {
         "created_date": "Created Date",
         "modified_date": "Modified Date",

@@ -75,6 +75,8 @@ class ShiftingFilterSet(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     assigned_to = filters.NumberFilter(field_name="assigned_to__id")
+    created_by = filters.NumberFilter(field_name="created_by__id")
+    last_edited_by = filters.NumberFilter(field_name="last_edited_by__id")
 
 
 class ShiftingViewSet(
@@ -108,6 +110,9 @@ class ShiftingViewSet(
         "patient__facility__local_body",
         "patient__facility__district",
         "patient__facility__state",
+        "assigned_to",
+        "created_by",
+        "last_edited_by"
     )
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
