@@ -107,6 +107,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     type_c_cylinders = models.IntegerField(default=0)
     type_d_cylinders = models.IntegerField(default=0)
 
+    expected_oxygen_requirement = models.IntegerField(default=0)
+
     phone_number = models.CharField(max_length=14, blank=True, validators=[phone_number_regex])
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
