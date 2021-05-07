@@ -46,7 +46,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
-    breathlessness_level = ChoiceField(choices=BREATHLESSNESS_CHOICES)
+    breathlessness_level = ChoiceField(choices=BREATHLESSNESS_CHOICES, required=False)
 
     patient_object = PatientListSerializer(source="patient", read_only=True, required=False)
 
