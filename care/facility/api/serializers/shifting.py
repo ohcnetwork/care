@@ -8,6 +8,7 @@ from care.facility.api.serializers.patient import PatientDetailSerializer, Patie
 from care.facility.models import (
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
+    BREATHLESSNESS_CHOICES,
     VEHICLE_CHOICES,
     Facility,
     PatientRegistration,
@@ -45,6 +46,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
+    breathlessness_level = ChoiceField(choices=BREATHLESSNESS_CHOICES, required=False)
+
     patient_object = PatientListSerializer(source="patient", read_only=True, required=False)
 
     orgin_facility_object = FacilityBasicInfoSerializer(source="orgin_facility", read_only=True, required=False)
@@ -65,6 +68,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    last_edited_by_object = UserBaseMinimumSerializer(source="last_edited_by", read_only=True)
 
     def __init__(self, instance=None, **kwargs):
         if instance:
@@ -99,6 +104,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if not has_facility_permission(user, instance.shifting_approving_facility):
                     raise ValidationError({"kasp": ["Permission Denied"]})
 
+        if "breathlessness_level" in validated_data:
+            if not has_facility_permission(user, instance.shifting_approving_facility):
+                del validated_data["breathlessness_level"]
+
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
@@ -130,6 +139,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
                 ).id
+
+        instance.last_edited_by = self.context["request"].user
 
         return super().update(instance, validated_data)
 
@@ -171,6 +182,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if ShiftingRequest.objects.filter(~Q(status__in=[30, 50, 80]), patient=patient).exists():
             raise ValidationError({"request": ["Shifting Request for Patient already exists"]})
+
+        validated_data["created_by"] = self.context["request"].user
+        validated_data["last_edited_by"] = self.context["request"].user
 
         return super().create(validated_data)
 
