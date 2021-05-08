@@ -184,9 +184,9 @@ class NotificationGenerator:
             if isinstance(self.caused_object, ShiftingRequest):
                 generate_sms_for_user(
                     [
-                        self.caused_by.refering_facility_contact_number,
-                        self.caused_by.patient.phone_number,
-                        self.caused_by.patient.emergency_phone_number,
+                        self.caused_object.refering_facility_contact_number,
+                        self.caused_object.patient.phone_number,
+                        self.caused_object.patient.emergency_phone_number,
                     ],
                     self.message,
                 )
