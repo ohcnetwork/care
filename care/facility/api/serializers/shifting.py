@@ -149,7 +149,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
         new_instance = super().update(instance, validated_data)
 
         if validated_data["status"] != old_status:
-            if validated_data["status"] == "DESTINATION APPROVED":
+            if validated_data["status"] == 40:
                 NotificationGenerator(
                     event=Notification.Event.SHIFTING_UPDATED,
                     caused_by=self.context["request"].user,
