@@ -133,7 +133,7 @@ class NotificationGenerator:
                     self.caused_object.consultation.facility.name,
                     self.caused_by.get_full_name(),
                 )
-        if isinstance(self.caused_by, ShiftingRequest):
+        if isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
                 if self.caused_by.assigned_to:
                     self.message = "Your Shifting Request to {} has been approved , Your Assigned Contact is {} available at {}".format(
