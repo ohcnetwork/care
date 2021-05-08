@@ -6,16 +6,18 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.api.serializers.patient import PatientDetailSerializer, PatientListSerializer
 from care.facility.models import (
+    BREATHLESSNESS_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
-    BREATHLESSNESS_CHOICES,
     VEHICLE_CHOICES,
     Facility,
     PatientRegistration,
     ShiftingRequest,
     User,
 )
+from care.facility.models.notification import Notification
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.notification_handler import NotificationGenerator
 from config.serializers import ChoiceField
 
 
@@ -142,7 +144,21 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         instance.last_edited_by = self.context["request"].user
 
-        return super().update(instance, validated_data)
+        old_status = instance.status
+
+        new_instance = super().update(instance, validated_data)
+
+        if validated_data["status"] != old_status:
+            if validated_data["status"] == "DESTINATION APPROVED":
+                NotificationGenerator(
+                    event=Notification.Event.SHIFTING_UPDATED,
+                    caused_by=self.context["request"].user,
+                    caused_object=new_instance,
+                    facility=new_instance.shifting_approving_facility,
+                    generate_sms=True,
+                ).generate()
+
+        return new_instance
 
     def create(self, validated_data):
 
