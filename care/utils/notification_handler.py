@@ -136,7 +136,7 @@ class NotificationGenerator:
         if isinstance(self.caused_by, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
                 if self.caused_by.assigned_to:
-                    self.message = "Your Shifting Request to {} has been approved , Your Assigned Person is {} available at {}".format(
+                    self.message = "Your Shifting Request to {} has been approved , Your Assigned Contact is {} available at {}".format(
                         self.caused_by.assigned_facility.name,
                         self.caused_by.assigned_to.get_full_name(),
                         self.caused_by.assigned_to.phone_number,
@@ -181,7 +181,7 @@ class NotificationGenerator:
 
     def generate(self):
         if self.generate_sms:
-            if isinstance(self.caused_by, ShiftingRequest):
+            if isinstance(self.caused_object, ShiftingRequest):
                 generate_sms_for_user(
                     [
                         self.caused_by.refering_facility_contact_number,
