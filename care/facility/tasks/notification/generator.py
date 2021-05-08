@@ -11,7 +11,7 @@ from care.utils.sms.sendSMS import sendSMS
 
 @celery.task()
 def generate_sms_for_user(phone_numbers, message):
-    sendSMS(phone_numbers, message)
+    sendSMS(phone_numbers, message, many=True)
 
 
 @celery.task()
