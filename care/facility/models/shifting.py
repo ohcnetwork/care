@@ -95,6 +95,11 @@ class ShiftingRequest(FacilityBaseModel):
         "emergency": pretty_boolean,
     }
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["status", "deleted"]),
+        ]
+
     @staticmethod
     def has_write_permission(request):
         if request.user.user_type in READ_ONLY_USER_TYPES:
