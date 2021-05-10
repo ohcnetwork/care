@@ -302,7 +302,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 100,
+    "PAGE_SIZE": 15,
 }
 
 # Your stuff...
@@ -431,5 +431,4 @@ LIFE_S3_ENDPOINT = env("LIFE_S3_ENDPOINT", default="")
 LIFE_S3_ACCESS_KEY = env("LIFE_S3_ACCESS_KEY", default="")
 LIFE_S3_SECRET = env("LIFE_S3_SECRET", default="")
 LIFE_S3_BUCKET = env("LIFE_S3_BUCKET", default="")
-
 
