@@ -169,9 +169,11 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+    created_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = DailyRound
+        read_only = TIMESTAMP_FIELDS + ("created_by",)
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
@@ -215,6 +217,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 if review_time >= 0:
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
+
+        validated_data["created_by"] = self.context["request"].user
 
         daily_round_obj = super().create(validated_data)
 

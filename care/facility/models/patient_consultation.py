@@ -126,6 +126,7 @@ class DailyRound(PatientBaseModel):
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
     admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     @staticmethod
     def has_write_permission(request):
