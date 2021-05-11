@@ -47,6 +47,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -307,7 +308,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 100,
+    "PAGE_SIZE": 15,
 }
 
 # Your stuff...

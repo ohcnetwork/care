@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.utils.translation import ugettext_lazy as _
 
 
 def reverse_choices(choices):
@@ -133,7 +135,24 @@ class Skill(models.Model):
         return self.name
 
 
+class UsernameValidator(UnicodeUsernameValidator):
+    regex = r'^[\w.@+-]+[^.@+-_]$'
+    message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
+
+
 class User(AbstractUser):
+    username_validator = UsernameValidator()
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={
+            'unique': _("A user with that username already exists.")
+        },
+    )
+
     TYPE_VALUE_MAP = {
         "Transportation": 2,
         "Pharmacist": 3,
@@ -263,4 +282,3 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
-
