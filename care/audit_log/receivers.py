@@ -19,13 +19,12 @@ from care.audit_log.helpers import (
     seperate_hashable_dict,
 )
 from care.audit_log.middleware import AuditLogMiddleware
-from care.audit_log.models import Log, Request
 
 logger = logging.getLogger(__name__)
 
 Event = NamedTuple(
     "Event",
-    [("request_id", str), ("model", str), ("actor", AbstractUser), ("entity_id", Union[int, str]), ("changes", dict)],
+    [("model", str), ("actor", AbstractUser), ("entity_id", Union[int, str]), ("changes", dict)],
 )
 
 
@@ -81,48 +80,26 @@ def pre_save_signal(sender, instance, **kwargs) -> None:
             return
 
     current_user = AuditLogMiddleware.get_current_user()
-    current_request_id = AuditLogMiddleware.get_current_request_id()
-    current_request = AuditLogMiddleware.get_current_request()
 
-    request, _ = Request.objects.get_or_create(
-        request_id=current_request_id,
-        defaults={
-            "method": current_request.method,
-            "path": current_request.path,
-            "actor": current_user,
-            "request_id": current_request_id,
-        },
-    )
-
-    instance._meta.dal.event = Event(
-        model=model_name, actor=current_user, entity_id=instance.pk, changes=changes, request_id=request.pk
-    )
+    instance._meta.dal.event = Event(model=model_name, actor=current_user, entity_id=instance.pk, changes=changes)
 
 
 def _post_processor(instance, event: Optional[Event], operation: Operation):
-    request_id = getattr(event, "request_id", None)
+    request_id = AuditLogMiddleware.get_current_request_id()
+    actor = AuditLogMiddleware.get_current_user()
     model_name = get_model_name(instance)
 
-    if not request_id:
-        if operation == Operation.DELETE:
-            request = Request.objects.get(request_id=AuditLogMiddleware.get_current_request_id())
-            request_id = request.pk
-        else:
-            logger.debug("No event found")
-            return
+    if not event and operation != Operation.DELETE:
+        logger.debug(f"Event not received for {operation}. Ignoring.")
+        return
+
     try:
-        json.dumps(event.changes if event else dict(), cls=LogJsonEncoder)
+        changes = json.dumps(event.changes if event else dict(), cls=LogJsonEncoder)
     except Exception:
         logger.warning(f"Failed to log {event}", exc_info=True)
         return
 
-    Log.objects.create(
-        request_id=request_id,
-        operation=operation,
-        model=model_name,
-        entity_id=instance.pk,
-        changes=event.changes if event else dict(),
-    )
+    logger.info(f"AUDIT_LOG::{request_id}|{actor}|{operation.value}|{model_name}|ID:{instance.pk}|{changes}")
 
 
 @receiver(post_save, weak=False)

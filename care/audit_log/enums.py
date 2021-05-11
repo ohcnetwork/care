@@ -1,10 +1,10 @@
 from enum import Enum
 
 
-class Operation(int, Enum):
-    INSERT = 1
-    UPDATE = 0
-    DELETE = -1
+class Operation(Enum):
+    INSERT = "insert"
+    UPDATE = "update"
+    DELETE = "delete"
 
 
 DjangoOperations = [(e.value, o.lower()) for o, e in Operation.__members__.items()]
