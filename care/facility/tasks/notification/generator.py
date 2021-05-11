@@ -1,11 +1,17 @@
 import celery
+from django.conf import settings
+from pywebpush import WebPushException, webpush
 
-from care.users.models import User
 from care.facility.models.facility import FacilityUser
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientRegistration
+from care.users.models import User
+from care.utils.sms.sendSMS import sendSMS
 
-from pywebpush import webpush, WebPushException
-from django.conf import settings
+
+@celery.task()
+def generate_sms_for_user(phone_numbers, message):
+    sendSMS(phone_numbers, message, many=True)
 
 
 @celery.task()

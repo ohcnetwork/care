@@ -64,7 +64,7 @@ class ShiftingRequest(FacilityBaseModel):
     is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False)
 
-    breathlessness_level = models.IntegerField(choices=BREATHLESSNESS_CHOICES, default=10, null=False , blank=False)
+    breathlessness_level = models.IntegerField(choices=BREATHLESSNESS_CHOICES, default=10, null=False, blank=False)
 
     is_assigned_to_user = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_assigned_to",)
@@ -94,6 +94,11 @@ class ShiftingRequest(FacilityBaseModel):
         "is_up_shift": pretty_boolean,
         "emergency": pretty_boolean,
     }
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["status", "deleted"]),
+        ]
 
     @staticmethod
     def has_write_permission(request):

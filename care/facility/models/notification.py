@@ -28,6 +28,7 @@ class Notification(FacilityBaseModel):
         CONSULTATION_FILE_UPLOAD_CREATED = 110
         PATIENT_CONSULTATION_UPDATE_CREATED = 120
         PATIENT_CONSULTATION_UPDATE_UPDATED = 130
+        SHIFTING_UPDATED = 200
 
     EventChoices = [(e.value, e.name) for e in Event]
 
