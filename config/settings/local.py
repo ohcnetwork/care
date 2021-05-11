@@ -13,8 +13,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default="eXZQzOzx8gV38rDG0Z0fFZWweUGl3LwMZ
 # with all given keys in order. This is useful for key rotation: place a new key at the head of the list
 # for use with all new or changed data, but existing values encrypted with old keys will still be accessible
 FERNET_KEYS = [env("FERNET_SECRET_KEY_1", default="f685a83652d782188382a3f2696e623a764c8012b1488d2fc5bc6460cddc7878")]
-# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "*"]
+# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hostsRUNSERVER_PLUS_PRINT_SQL_TRUNCATE
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -97,3 +96,5 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=3000000000)),
     "ROTATE_REFRESH_TOKENS": True,
 }
+
+RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
