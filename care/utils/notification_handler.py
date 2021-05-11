@@ -142,8 +142,9 @@ class NotificationGenerator:
                         self.caused_object.assigned_to.phone_number,
                     )
                 else:
-                    self.message = "Your Shifting Request to {} has been approved in Care.".format(
-                        self.caused_object.assigned_facility.name
+                    self.message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
+                        self.caused_object.assigned_facility.name,
+                        self.caused_object.shifting_approving_facility.phone_number,
                     )
         return True
 
