@@ -169,15 +169,19 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+    created_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = DailyRound
+        read_only = TIMESTAMP_FIELDS + ("created_by",)
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
 
         if instance.consultation.discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
+
+        instance.last_edited_by = self.context["request"].user
 
         if "action" in validated_data or "review_time" in validated_data:
             patient = instance.consultation.patient
@@ -215,6 +219,19 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 if review_time >= 0:
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
+
+        validated_data["created_by"] = self.context["request"].user
+
+        validated_data["is_telemedicine"] = False
+        if(
+            validated_data["consultation"].created_by == validated_data["created_by"]
+            and validated_data["consultation"].is_telemedicine
+        ):
+            validated_data["is_telemedicine"] = True
+
+        consultation = validated_data["consultation"]
+        consultation.updated_by_telemedicine = validated_data["is_telemedicine"]
+        consultation.save()
 
         daily_round_obj = super().create(validated_data)
 

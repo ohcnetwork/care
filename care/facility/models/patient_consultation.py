@@ -61,6 +61,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_user")
 
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
+    updated_by_telemedicine = models.BooleanField(default=False)
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
@@ -126,6 +127,19 @@ class DailyRound(PatientBaseModel):
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
     admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
+    is_telemedicine = models.BooleanField(
+        default=False,
+        null=False,
+        blank=False
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_daily_round"
+    )
+    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                                       related_name="last_edited_daily_round")
 
     @staticmethod
     def has_write_permission(request):
