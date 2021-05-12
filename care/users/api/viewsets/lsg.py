@@ -1,19 +1,24 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
-from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.models import District, LocalBody, State, Ward
 
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+
+class PaginataionOverrideClass(PageNumberPagination):
+    page_size = 500
 
 
 class StateViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = StateSerializer
     queryset = State.objects.all().order_by("id")
+    pagination_class = PaginataionOverrideClass
 
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):
@@ -33,6 +38,7 @@ class DistrictViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = District.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictFilterSet
+    pagination_class = PaginataionOverrideClass
 
     @action(detail=True, methods=["get"])
     def local_bodies(self, *args, **kwargs):
@@ -65,6 +71,7 @@ class LocalBodyViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = LocalBody.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LocalBodyFilterSet
+    pagination_class = PaginataionOverrideClass
 
 
 class WardFilterSet(filters.FilterSet):
@@ -82,4 +89,5 @@ class WardViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Ward.objects.all().order_by("name")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = WardFilterSet
+    pagination_class = PaginataionOverrideClass
 
