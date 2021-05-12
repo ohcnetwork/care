@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.patient_sample import (
@@ -41,6 +42,11 @@ class PatientSampleFilterSet(filters.FilterSet):
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
 
 
+class PaginataionOverrideClass(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+
 class PatientSampleViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -72,6 +78,7 @@ class PatientSampleViewSet(
     )
     filterset_class = PatientSampleFilterSet
     http_method_names = ["get", "post", "patch", "delete"]
+    pagination_class = PaginataionOverrideClass
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class

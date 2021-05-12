@@ -5,11 +5,16 @@ from rest_framework import mixins, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.pagination import PageNumberPagination
 
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from care.facility.models.patient import PatientRegistration
 from care.users.models import User
+
+
+class PaginataionOverrideClass(PageNumberPagination):
+    page_size = 5
 
 
 class PatientConsultationFilter(filters.FilterSet):
@@ -29,6 +34,7 @@ class PatientConsultationViewSet(
     queryset = PatientConsultation.objects.all().select_related("facility").order_by("-id")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationFilter
+    pagination_class = PaginataionOverrideClass
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -61,6 +67,7 @@ class DailyRoundsViewSet(
         DRYPermissions,
     )
     queryset = DailyRound.objects.all().order_by("-id")
+    pagination_class = PaginataionOverrideClass
 
     def get_queryset(self):
         queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])

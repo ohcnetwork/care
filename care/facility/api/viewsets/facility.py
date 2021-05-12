@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from simple_history.utils import bulk_create_with_history
+from rest_framework.pagination import PageNumberPagination
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -65,6 +66,10 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
         return queryset
 
 
+class PaginataionOverrideClass(PageNumberPagination):
+    page_size = 14
+
+
 class FacilityViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -84,6 +89,7 @@ class FacilityViewSet(
         filters.DjangoFilterBackend,
     )
     filterset_class = FacilityFilter
+    pagination_class = PaginataionOverrideClass
     lookup_field = "external_id"
 
     FACILITY_CAPACITY_CSV_KEY = "capacity"
