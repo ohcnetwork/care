@@ -115,10 +115,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 return ValidationError(
                     {"Permission Denied": "Only Facility Admins can create consultation for a Patient"},
                 )
-        
-        if(validated_data["patient"].last_consultation):
-            if(not validated_data["patient"].last_consultation.discharge_date ):
-                raise ValidationError({"consultation" : "Exists please Edit Existing Consultation"})
+
+        if validated_data["patient"].last_consultation:
+            if not validated_data["patient"].last_consultation.discharge_date:
+                raise ValidationError({"consultation": "Exists please Edit Existing Consultation"})
 
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
@@ -187,9 +187,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
-
-        print("Sdfsdfsdfsd", instance)
-
         if instance.consultation.discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
 
@@ -235,13 +232,15 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
 
-        daily_round_obj = super().create(validated_data)
-
         validated_data["created_by_telemedicine"] = False
         validated_data["last_updated_by_telemedicine"] = False
-        if self.context["request"].user == daily_round_obj.consultation.assigned_to:
+
+        if self.context["request"].user == validated_data["consultation"].assigned_to:
             validated_data["created_by_telemedicine"] = True
             validated_data["last_updated_by_telemedicine"] = True
+
+        daily_round_obj = super().create(validated_data)
+
         daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
         daily_round_obj.consultation.save(update_fields=["last_updated_by_telemedicine"])
 
