@@ -18,7 +18,8 @@ from config.auth_views import CaptchaRequiredException
 class LifeDataViewSet(GenericViewSet):
     queryset = LifeData.objects.all()
     serializer_class = LifeDataSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = []
+    authentication_classes = []
     lookup_field = "external_id"
 
     @swagger_auto_schema(method="post", request_body=serializers.Serializer(), responses={204: "Success"})

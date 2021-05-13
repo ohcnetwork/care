@@ -29,10 +29,7 @@ class FacilityInventoryFilter(filters.FilterSet):
 
 
 class FacilityInventoryItemViewSet(
-    UserAccessMixin,
-    RetrieveModelMixin,
-    ListModelMixin,
-    GenericViewSet,
+    UserAccessMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet,
 ):
     serializer_class = FacilityInventoryItemSerializer
     queryset = (
@@ -67,15 +64,11 @@ class FacilityInventoryLogFilter(filters.FilterSet):
 
 
 class FacilityInventoryLogViewSet(
-    UserAccessMixin,
-    RetrieveModelMixin,
-    CreateModelMixin,
-    ListModelMixin,
-    GenericViewSet,
+    UserAccessMixin, RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventoryLogSerializer
-    queryset = FacilityInventoryLog.objects.filter(deleted=False)
+    queryset = FacilityInventoryLog.objects.select_related("item", "unit").order_by("-created_date")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -108,12 +101,7 @@ class FacilityInventoryLogViewSet(
 
 
 class FacilityInventoryMinQuantityViewSet(
-    UserAccessMixin,
-    RetrieveModelMixin,
-    CreateModelMixin,
-    UpdateModelMixin,
-    ListModelMixin,
-    GenericViewSet,
+    UserAccessMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventoryMinQuantitySerializer
@@ -148,10 +136,7 @@ class FacilityInventoryMinQuantityViewSet(
 
 
 class FacilityInventorySummaryViewSet(
-    UserAccessMixin,
-    RetrieveModelMixin,
-    ListModelMixin,
-    GenericViewSet,
+    UserAccessMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = FacilityInventorySummarySerializer
@@ -182,10 +167,7 @@ class FacilityInventoryBurnRateFilter(filters.FilterSet):
 
 
 class FacilityInventoryBurnRateViewSet(
-    UserAccessMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    GenericViewSet,
+    UserAccessMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet,
 ):
     queryset = FacilityInventoryBurnRate.objects.select_related(
         "item", "item__default_unit", "facility__district"

@@ -56,7 +56,7 @@ required_headers = [
 ]
 
 choices_validation = [
-    {"key": "category", "choices": ["oxygen", "medicine", "hospital", "ambulance", "helpline", "vaccine"]}
+    {"key": "category", "choices": ["oxygen", "medicine", "hospital", "ambulance", "helpline", "vaccine", "food"]}
 ]
 
 
@@ -92,7 +92,10 @@ def parse_file(job):
             mapped_data["deleted"] = False
             validated_obj = get_validated_object(mapped_data, job)
         except Exception as e:
+            # print(e)
             errors += str(e) + f" for row {row} \n"
+            if start:
+                break
             continue
         validated_obj.deleted = False
         validated_obj.save()
@@ -173,6 +176,8 @@ def get_validated_object(data, job):
 def get_mapped_data(mapping, row):
     validated_row = {}
     for header in list(mapping.keys()):
+        if len(header.strip()) == 0:
+            continue
         validated_row[header] = row[mapping[header]]
     return validated_row
 
@@ -180,7 +185,7 @@ def get_mapped_data(mapping, row):
 def get_mapping(row):
     mapping = {}
     for j, i in enumerate(row):
-        mapping[i] = j
+        mapping[i.strip()] = j
     for field in required_headers:
         if field not in mapping:
             raise Exception(f"Field {field} not present ")
@@ -228,3 +233,4 @@ def save_life_data():
 
         s3_csv_object = s3.Object(settings.LIFE_S3_BUCKET, f"{category}.csv")
         s3_csv_object.put(ACL="public-read", Body=csv_data)
+

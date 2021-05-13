@@ -1,3 +1,4 @@
+from care.facility.models.shifting import ShiftingRequest
 from care.facility.models.patient_consultation import PatientConsultation, DailyRound
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.notification import Notification
@@ -5,7 +6,7 @@ from care.facility.models.facility import Facility
 from care.facility.models.patient_investigation import InvestigationValue, InvestigationSession
 from care.users.models import User
 
-from care.facility.tasks.notification.generator import generate_notifications_for_facility
+from care.facility.tasks.notification.generator import generate_notifications_for_facility, generate_sms_for_user
 
 
 class NotificationCreationException(Exception):
@@ -30,6 +31,7 @@ class NotificationGenerator:
         generate_for_facility=False,
         extra_users=None,
         extra_data=None,
+        generate_sms=False,
     ):
         if not isinstance(event_type, Notification.EventType):
             raise NotificationCreationException("Event Type Invalid")
@@ -59,6 +61,7 @@ class NotificationGenerator:
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
         self.generate_extra_users()
+        self.generate_sms = generate_sms
 
     def generate_extra_users(self):
         if isinstance(self.caused_object, PatientConsultation):
@@ -130,6 +133,19 @@ class NotificationGenerator:
                     self.caused_object.consultation.facility.name,
                     self.caused_by.get_full_name(),
                 )
+        if isinstance(self.caused_object, ShiftingRequest):
+            if self.event == Notification.Event.SHIFTING_UPDATED.value:
+                if self.caused_object.assigned_to:
+                    self.message = "Your Shifting Request to {} has been approved , Your Assigned Contact is {} available at {}".format(
+                        self.caused_object.assigned_facility.name,
+                        self.caused_object.assigned_to.get_full_name(),
+                        self.caused_object.assigned_to.phone_number,
+                    )
+                else:
+                    self.message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
+                        self.caused_object.assigned_facility.name,
+                        self.caused_object.shifting_approving_facility.phone_number,
+                    )
         return True
 
     def generate_cause_objects(self):
@@ -165,13 +181,24 @@ class NotificationGenerator:
         return True
 
     def generate(self):
-        data = {
-            "caused_by_id": self.caused_by.id,
-            "event": self.event,
-            "event_type": self.event_type,
-            "caused_objects": self.caused_objects,
-            "message": self.message,
-            "extra_users": self.extra_users,
-        }
-        generate_notifications_for_facility.delay(self.facility.id, data, self.defer_notifications)
+        if self.generate_sms:
+            if isinstance(self.caused_object, ShiftingRequest):
+                generate_sms_for_user(
+                    [
+                        self.caused_object.refering_facility_contact_number,
+                        self.caused_object.patient.phone_number,
+                        self.caused_object.patient.emergency_phone_number,
+                    ],
+                    self.message,
+                )
+        else:
+            data = {
+                "caused_by_id": self.caused_by.id,
+                "event": self.event,
+                "event_type": self.event_type,
+                "caused_objects": self.caused_objects,
+                "message": self.message,
+                "extra_users": self.extra_users,
+            }
+            generate_notifications_for_facility.delay(self.facility.id, data, self.defer_notifications)
 

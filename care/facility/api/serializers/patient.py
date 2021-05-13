@@ -9,9 +9,7 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilitySerializer,
 )
-from care.facility.api.serializers.patient_consultation import (
-    PatientConsultationSerializer,
-)
+from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
     GENDER_CHOICES,
@@ -40,9 +38,7 @@ from care.users.api.serializers.lsg import (
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import (
-    PhoneNumberIsPossibleField,
-)
+from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
 
 
@@ -56,9 +52,7 @@ class PatientMetaInfoSerializer(serializers.ModelSerializer):
 
 class PatientListSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    facility = serializers.UUIDField(
-        source="facility.external_id", allow_null=True, read_only=True
-    )
+    facility = serializers.UUIDField(source="facility.external_id", allow_null=True, read_only=True)
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
@@ -66,9 +60,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
 
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
-    disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
-    )
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
     class Meta:
@@ -91,9 +83,7 @@ class PatientContactDetailsSerializer(serializers.ModelSerializer):
     relation_with_patient = ChoiceField(choices=PatientContactDetails.RelationChoices)
     mode_of_contact = ChoiceField(choices=PatientContactDetails.ModeOfContactChoices)
 
-    patient_in_contact_object = PatientListSerializer(
-        read_only=True, source="patient_in_contact"
-    )
+    patient_in_contact_object = PatientListSerializer(read_only=True, source="patient_in_contact")
     patient_in_contact = serializers.UUIDField(source="patient_in_contact.external_id")
 
     class Meta:
@@ -123,34 +113,21 @@ class PatientDetailSerializer(PatientListSerializer):
             fields = "__all__"
 
     phone_number = PhoneNumberIsPossibleField()
-    facility = serializers.UUIDField(
-        source="facility.external_id", allow_null=True, required=False
-    )
-    medical_history = serializers.ListSerializer(
-        child=MedicalHistorySerializer(), required=False
-    )
+    facility = serializers.UUIDField(source="facility.external_id", allow_null=True, required=False)
+    medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True
-    )
+    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
     last_consultation = serializers.SerializerMethodField(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
-    nearest_facility_object = FacilitySerializer(
-        source="nearest_facility", read_only=True
-    )
+    # nearest_facility_object = FacilitySerializer(
+    #     source="nearest_facility", read_only=True
+    # )
 
-    source = ChoiceField(
-        choices=PatientRegistration.SourceChoices,
-        default=PatientRegistration.SourceEnum.CARE.value,
-    )
-    disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
-    )
+    source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value,)
+    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
-    contacted_patients = PatientContactDetailsSerializer(
-        many=True, required=False, allow_null=True
-    )
+    contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
 
     test_type = ChoiceField(
         choices=PatientRegistration.TestTypeChoices,
@@ -213,6 +190,7 @@ class PatientDetailSerializer(PatientListSerializer):
             if(validated["vaccine_name"] == None):
                 raise serializers.ValidationError("Vaccine name cannot be null")
 
+
         return validated
 
     def create(self, validated_data):
@@ -224,9 +202,7 @@ class PatientDetailSerializer(PatientListSerializer):
             if "facility" in validated_data:
                 external_id = validated_data.pop("facility")["external_id"]
                 if external_id:
-                    validated_data["facility_id"] = Facility.objects.get(
-                        external_id=external_id
-                    ).id
+                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
@@ -244,8 +220,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
             if contacted_patients:
                 contacted_patient_objs = [
-                    PatientContactDetails(**data, patient=patient)
-                    for data in contacted_patients
+                    PatientContactDetails(**data, patient=patient) for data in contacted_patients
                 ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
@@ -270,9 +245,7 @@ class PatientDetailSerializer(PatientListSerializer):
             if "facility" in validated_data:
                 external_id = validated_data.pop("facility")["external_id"]
                 if external_id:
-                    validated_data["facility_id"] = Facility.objects.get(
-                        external_id=external_id
-                    ).id
+                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
 
             patient = super().update(instance, validated_data)
             Disease.objects.filter(patient=patient).update(deleted=True)
@@ -292,8 +265,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
             if contacted_patients:
                 contacted_patient_objs = [
-                    PatientContactDetails(**data, patient=patient)
-                    for data in contacted_patients
+                    PatientContactDetails(**data, patient=patient) for data in contacted_patients
                 ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
@@ -312,12 +284,8 @@ class PatientDetailSerializer(PatientListSerializer):
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    entry_date = serializers.DateField(
-        default=make_aware(datetime.datetime.today()).date()
-    )
-    facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), read_only=True
-    )
+    entry_date = serializers.DateField(default=make_aware(datetime.datetime.today()).date())
+    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), read_only=True)
 
     class Meta:
         model = FacilityPatientStatsHistory
@@ -347,19 +315,12 @@ class PatientSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientSearch
-        exclude = (
-            "date_of_birth",
-            "year_of_birth",
-            "external_id",
-            "id",
-        ) + TIMESTAMP_FIELDS
+        exclude = ("date_of_birth", "year_of_birth", "external_id", "id",) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
-    facility = ExternalIdSerializerField(
-        write_only=True, queryset=Facility.objects.all()
-    )
+    facility = ExternalIdSerializerField(write_only=True, queryset=Facility.objects.all())
     patient = serializers.UUIDField(source="external_id", read_only=True)
 
     class Meta:
@@ -376,7 +337,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
-        PatientConsultation.objects.filter(
-            patient=self.instance, discharge_date__isnull=True
-        ).update(discharge_date=localtime(now()))
+        PatientConsultation.objects.filter(patient=self.instance, discharge_date__isnull=True).update(
+            discharge_date=localtime(now())
+        )
         self.instance.save()
