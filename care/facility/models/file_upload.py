@@ -31,7 +31,7 @@ class FileUpload(FacilityBaseModel):
         IDENTITY_PROOF = "IDENTITY_PROOF"
 
     FileTypeChoices = [(e.value, e.name) for e in FileType]
-    FileCategoryChoices = [(e.value, e.name) for e in FileType]
+    FileCategoryChoices = [(e.value, e.name) for e in FileCategory]
 
     name = models.CharField(max_length=2000)
     internal_name = models.CharField(max_length=2000)
@@ -39,7 +39,9 @@ class FileUpload(FacilityBaseModel):
     upload_completed = models.BooleanField(default=False)
     uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     file_type = models.IntegerField(choices=FileTypeChoices, default=FileType.PATIENT.value)
-    file_category = models.CharField(choices=FileCategoryChoices, default=FileCategory.UNSPECIFIED.value)
+    file_category = models.CharField(
+        choices=FileCategoryChoices, default=FileCategory.UNSPECIFIED.value, max_length=100
+    )
 
     def save(self, *args, **kwargs):
         if "force_insert" in kwargs or (not self.internal_name):
