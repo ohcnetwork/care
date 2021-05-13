@@ -9,7 +9,6 @@ from django.db.models import DateTimeField, F, Value
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
-from care.utils.filters import MultiSelectFilter
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
@@ -17,6 +16,7 @@ from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -43,7 +43,7 @@ from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatus
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter
+from care.utils.filters import CareChoiceFilter, MultiSelectFilter
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -81,14 +81,7 @@ class PatientFilterSet(filters.FilterSet):
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
 
 
-class PatientDRYFilter(DRYPermissionFiltersBase):
-    def filter_queryset(self, request, queryset, view):
-        if view.action == "list":
-            queryset = self.filter_list_queryset(request, queryset, view)
-
-        if not request.user.is_superuser:
-            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                queryset = queryset.filter(facility__state=request.user.state)
+class PatientDRYFilter(DRYPermissionFiltersBase):DiseaseStatusEnum
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
@@ -355,11 +348,16 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
 
 
+class PatientSearchSetPagination(PageNumberPagination):
+    page_size = 200
+
+
 class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
     queryset = PatientSearch.objects.all()
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
+    pagination_class = PatientSearchSetPagination
 
     def get_queryset(self):
         if self.action != "list":
