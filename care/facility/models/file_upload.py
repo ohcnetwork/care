@@ -24,18 +24,22 @@ class FileUpload(FacilityBaseModel):
         PATIENT = 1
         CONSULTATION = 2
 
+    class FileCategory(enum.Enum):
+        UNSPECIFIED = "UNSPECIFIED"
+        XRAY = "XRAY"
+        AUDIO = "AUDIO"
+        IDENTITY_PROOF = "IDENTITY_PROOF"
+
     FileTypeChoices = [(e.value, e.name) for e in FileType]
+    FileCategoryChoices = [(e.value, e.name) for e in FileType]
 
     name = models.CharField(max_length=2000)
     internal_name = models.CharField(max_length=2000)
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
-    uploaded_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=True, blank=True
-    )
-    file_type = models.IntegerField(
-        choices=FileTypeChoices, default=FileType.PATIENT.value
-    )
+    uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    file_type = models.IntegerField(choices=FileTypeChoices, default=FileType.PATIENT.value)
+    file_category = models.CharField(choices=FileCategoryChoices, default=FileCategory.UNSPECIFIED.value)
 
     def save(self, *args, **kwargs):
         if "force_insert" in kwargs or (not self.internal_name):
