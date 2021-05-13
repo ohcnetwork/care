@@ -178,7 +178,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DailyRound
-        read_only_fields = ("last_updated_by_telemedicine",)
+        read_only_fields = ("last_updated_by_telemedicine", "created_by_telemedicine")
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
