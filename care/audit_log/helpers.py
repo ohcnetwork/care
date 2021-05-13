@@ -12,17 +12,7 @@ def remove_non_member_fields(d: dict):
 
 
 def seperate_hashable_dict(d: dict):
-    non_hashable = {
-        k: v
-        for k, v in d.items()
-        if isinstance(
-            v,
-            (
-                list,
-                dict,
-            ),
-        )
-    }
+    non_hashable = {k: v for k, v in d.items() if isinstance(v, (list, dict,),)}
     hashable = {k: v for k, v in d.items() if k not in non_hashable}
     return hashable, non_hashable
 
@@ -83,6 +73,7 @@ def candidate_in_scope(candidate: str, scope: List, is_application: bool = False
 
 @lru_cache()
 def exclude_model(model_name):
+    return True
     if candidate_in_scope(model_name, settings.AUDIT_LOG["globals"]["exclude"]["applications"], is_application=True):
         return True
 
