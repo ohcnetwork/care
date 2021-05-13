@@ -32,6 +32,8 @@ REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 def has_facility_permission(user, facility):
+    if not facility:
+        return False
     return (
         user.is_superuser
         or (facility and user in facility.users.all())
@@ -99,6 +101,18 @@ class ShiftingSerializer(serializers.ModelSerializer):
         LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
         LIMITED_ORGIN_STATUS = []
 
+        RECIEVING_REQUIRED_STATUS_ = [
+            "APPROVED",
+            "REJECTED",
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            "TRANSPORTATION TO BE ARRANGED",
+            "PATIENT TO BE PICKED UP",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+        ]
+        RECIEVING_REQUIRED_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in RECIEVING_REQUIRED_STATUS_]
+
         user = self.context["request"].user
 
         if "is_kasp" in validated_data:
@@ -111,16 +125,21 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 del validated_data["breathlessness_level"]
 
         if "status" in validated_data:
-            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+            if (
+                validated_data["status"] in LIMITED_RECIEVING_STATUS
+                and validated_data["status"] in LIMITED_SHIFTING_STATUS
+            ):
+                assigned = has_facility_permission(user, instance.assigned_facility)
+                shifting = has_facility_permission(user, instance.shifting_approving_facility)
+                if not (assigned or shifting):
+                    raise ValidationError({"status": ["Permission Denied"]})
+            elif validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
                     if not has_facility_permission(user, instance.assigned_facility):
                         raise ValidationError({"status": ["Permission Denied"]})
-                else:
+            elif validated_data["status"] in LIMITED_SHIFTING_STATUS:
+                if not has_facility_permission(user, instance.shifting_approving_facility):
                     raise ValidationError({"status": ["Permission Denied"]})
-            elif "status" in validated_data:
-                if validated_data["status"] in LIMITED_SHIFTING_STATUS:
-                    if not has_facility_permission(user, instance.shifting_approving_facility):
-                        raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
         if "orgin_facility" in validated_data:
@@ -141,6 +160,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
                 ).id
+
+        if (not instance.assigned_facility) and ("assigned_facility" not in validated_data):
+            if "status" in validated_data:
+                if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+                    raise ValidationError({"status": ["Destination Facility is required for moving to this stage."]})
 
         instance.last_edited_by = self.context["request"].user
 
