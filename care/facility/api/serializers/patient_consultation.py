@@ -115,6 +115,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 return ValidationError(
                     {"Permission Denied": "Only Facility Admins can create consultation for a Patient"},
                 )
+        
+        if(validated_data["patient"].last_consultation):
+            if(not validated_data["patient"].last_consultation.discharge_date ):
+                raise ValidationError({"consultation" : "Exists please Edit Existing Consultation"})
+
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
