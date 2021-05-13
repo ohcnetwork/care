@@ -89,41 +89,34 @@ class PostCovidDataSerializer(serializers.ModelSerializer):
         extra_kwargs = {i: {'required': True} for i in required_fields}
 
     def validate_vitals_at_admission(self, vitals_at_admission):
-        if vitals_at_admission == None:
-            return vitals_at_admission
-
-        v = VitalsAtAdmissionSerializer(data=vitals_at_admission)
-
-        if(
-            len(vitals_at_admission) != 5 or
-            not v.is_valid()
-        ):
-            raise serializers.ValidationError("All vitals at admission were not provided.")
+        if vitals_at_admission is not None:
+            v = VitalsAtAdmissionSerializer(data=vitals_at_admission)
+            if(
+                len(vitals_at_admission) != 5 or
+                not v.is_valid()
+            ):
+                raise serializers.ValidationError("All vitals at admission were not provided.")
 
         return vitals_at_admission
 
     def validate_on_examination_vitals(self, on_examination_vitals):
-        if on_examination_vitals == None:
-            return on_examination_vitals
-
-        if(
-            len(on_examination_vitals) != 6 or
-            not OnExaminationVitalsSerializer(data=on_examination_vitals).is_valid()
-        ):
-            raise serializers.ValidationError("All examination vitals were not provided.")
+        if on_examination_vitals is not None:
+            if(
+                len(on_examination_vitals) != 6 or
+                not OnExaminationVitalsSerializer(data=on_examination_vitals).is_valid()
+            ):
+                raise serializers.ValidationError("All examination vitals were not provided.")
 
         return on_examination_vitals
 
     def validateDrugs(self, drugs, drugName):
-        if drugs == None:
-            return
-
-        for drug_info in drugs:
-            if(
-                len(drug_info) != 2 or
-                not DrugInfoSerializer(data=drug_info).is_valid()
-            ):
-                raise serializers.ValidationError("Invalid drug information of {} drugs".format(drugName))
+        if drugs is not None:
+            for drug_info in drugs:
+                if(
+                    len(drug_info) != 2 or
+                    not DrugInfoSerializer(data=drug_info).is_valid()
+                ):
+                    raise serializers.ValidationError("Invalid drug information of {} drugs".format(drugName))
 
     def validate_steroids_drugs(self, steroids_drugs):
         self.validateDrugs(steroids_drugs, "steroid")
@@ -138,29 +131,27 @@ class PostCovidDataSerializer(serializers.ModelSerializer):
         return antifungals_drugs
 
     def validate_anticoagulants_drugs(self, anticoagulants_drugs):
-        if anticoagulants_drugs == None:
-            return anticoagulants_drugs
-
-        for drug_info in anticoagulants_drugs:
-            if(
-                len(drug_info) != 3 or
-                not AnticoagulantDrugInfoSerializer(data=drug_info).is_valid()
-            ):
-                raise serializers.ValidationError(
-                    "Invalid drug information of anticoagulants drugs"
-                )
+        if anticoagulants_drugs is not None:
+            for drug_info in anticoagulants_drugs:
+                if(
+                    len(drug_info) != 3 or
+                    not AnticoagulantDrugInfoSerializer(data=drug_info).is_valid()
+                ):
+                    raise serializers.ValidationError(
+                        "Invalid drug information of anticoagulants drugs"
+                    )
 
         return anticoagulants_drugs
 
     def validate_systemic_examination(self, systemic_examination):
-        if systemic_examination == None:
-            return systemic_examination
+        if systemic_examination is not None:
+            if(
+                len(systemic_examination) != 4 or
+                not SystemicExaminationSerializer(data=systemic_examination).is_valid()
+            ):
+                raise serializers.ValidationError("Invalid systemic examination information")
 
-        if(
-            len(systemic_examination) != 4 or
-            not SystemicExaminationSerializer(data=systemic_examination).is_valid()
-        ):
-            raise serializers.ValidationError("Invalid systemic examination information")
+        return systemic_examination
 
     def validate(self, data):
         if data['date_of_test_positive'] > data['date_of_test_negative']:
@@ -169,7 +160,3 @@ class PostCovidDataSerializer(serializers.ModelSerializer):
             )
 
         return super().validate(data)
-
-    def create(self, *args, **kwargs):
-        print("args : ", args, kwargs)
-        return super().create(*args, **kwargs)

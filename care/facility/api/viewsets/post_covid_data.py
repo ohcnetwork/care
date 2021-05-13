@@ -34,20 +34,18 @@ class PostCovidDataViewSet(viewsets.ModelViewSet):
             if kwargs.get("patient_external_id") is None:
                 raise ValidationError({"error": "Patient id should be provided"})
 
-            request.data["patient_id"] = PatientRegistration.objects.get(
-                external_id=kwargs.get("patient_external_id")).id
-            patient = PatientRegistration.objects.get(id=request.data["patient_id"])
+            patient = PatientRegistration.objects.get(external_id=kwargs["patient_external_id"])
+            request.data["patient"] = patient.id
 
             consultation = PatientConsultation(facility_id=patient.facility.id, patient_id=patient.id)
             consultation.save()
 
             request.data["consultation"] = consultation.id
 
-            facilities = []
-            for id in request.data["treatment_facility"]:
-                facilities.append(Facility.objects.get(external_id=id).id)
+            request.data["treatment_facility"] = list(
+                Facility.objects
+                .values_list('id', flat=True)
+                .filter(external_id__in=request.data["treatment_facility"])
+            )
 
-            request.data["treatment_facility"] = facilities
-            print("heyyyy ending create")
-            print(request.data)
             return super(PostCovidDataViewSet, self).create(request, *args, **kwargs)
