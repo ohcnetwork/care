@@ -70,6 +70,7 @@ class FacilityViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """Viewset for facility CRUD operations."""
@@ -95,6 +96,11 @@ class FacilityViewSet(
             return FacilityBasicInfoSerializer
         else:
             return FacilitySerializer
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return super().destroy(request, *args, **kwargs)
+        return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
         """
