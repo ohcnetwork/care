@@ -125,15 +125,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 del validated_data["breathlessness_level"]
 
         if "status" in validated_data:
-            if (
-                validated_data["status"] in LIMITED_RECIEVING_STATUS
-                and validated_data["status"] in LIMITED_SHIFTING_STATUS
-            ):
-                assigned = has_facility_permission(user, instance.assigned_facility)
-                shifting = has_facility_permission(user, instance.shifting_approving_facility)
-                if not (assigned or shifting):
-                    raise ValidationError({"status": ["Permission Denied"]})
-            elif validated_data["status"] in LIMITED_RECIEVING_STATUS:
+            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
                     if not has_facility_permission(user, instance.assigned_facility):
                         raise ValidationError({"status": ["Permission Denied"]})
