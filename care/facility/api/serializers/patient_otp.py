@@ -4,13 +4,13 @@ from datetime import timedelta
 
 import boto3
 from django.conf import settings
-from django.db import transaction
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models.patient import PatientMobileOTP
+
+from care.utils.sms.sendSMS import sendSMS
 
 
 def rand_pass(size):
@@ -23,15 +23,9 @@ def rand_pass(size):
 def send_sms(otp, phone_number):
 
     if settings.USE_SMS:
-        client = boto3.client(
-            "sns",
-            aws_access_key_id=settings.SNS_ACCESS_KEY,
-            aws_secret_access_key=settings.SNS_SECRET_KEY,
-            region_name=settings.SNS_REGION,
-        )
-        client.publish(
-            PhoneNumber=phone_number,
-            Message="CoronaSafe Network Patient Management System Login, OTP is {} . Please do not share this Confidential Login Token with anyone else".format(
+        sendSMS(
+            phone_number,
+            "CoronaSafe Network Patient Management System Login, OTP is {} . Please do not share this Confidential Login Token with anyone else".format(
                 otp
             ),
         )

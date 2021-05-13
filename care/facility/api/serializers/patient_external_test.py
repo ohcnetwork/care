@@ -18,9 +18,7 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
     local_body_type = serializers.CharField(required=False, write_only=True)
 
-    sample_collection_date = serializers.DateField(
-        input_formats=["%Y-%m-%d"], required=False
-    )
+    sample_collection_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
     result_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
 
     def validate_empty_values(self, data, *args, **kwargs):
@@ -30,7 +28,6 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         #         data["is_repeat"] = True
         #     else:
         #         data["is_repeat"] = False
-        print(data)
         district_obj = None
         if "district" in data:
             district = data["district"]
@@ -43,14 +40,10 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
             raise ValidationError({"district": ["District Not Present in Data"]})
 
         if "local_body_type" not in data:
-            raise ValidationError(
-                {"local_body_type": ["local_body_type is not present in data"]}
-            )
+            raise ValidationError({"local_body_type": ["local_body_type is not present in data"]})
 
         if not data["local_body_type"]:
-            raise ValidationError(
-                {"local_body_type": ["local_body_type cannot be empty"]}
-            )
+            raise ValidationError({"local_body_type": ["local_body_type cannot be empty"]})
 
         if data["local_body_type"].lower() not in REVERSE_LOCAL_BODY_CHOICES:
             raise ValidationError({"local_body_type": ["Invalid Local Body Type"]})
@@ -63,9 +56,7 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
                 raise ValidationError({"local_body": ["Local Body Cannot Be Empty"]})
             local_body = data["local_body"]
             local_body_obj = LocalBody.objects.filter(
-                name__icontains=local_body,
-                district=district_obj,
-                body_type=local_body_type,
+                name__icontains=local_body, district=district_obj, body_type=local_body_type,
             ).first()
             if local_body_obj:
                 data["local_body"] = local_body_obj.id
@@ -80,9 +71,7 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
             except Exception:
                 raise ValidationError({"ward": ["Ward must be an integer value"]})
             if data["ward"]:
-                ward_obj = Ward.objects.filter(
-                    number=data["ward"], local_body=local_body_obj
-                ).first()
+                ward_obj = Ward.objects.filter(number=data["ward"], local_body=local_body_obj).first()
                 if ward_obj:
                     data["ward"] = ward_obj.id
                 else:

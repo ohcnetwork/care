@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@6.8.0
+  aws-ecr: circleci/aws-ecr@6.15.3
   aws-eks: circleci/aws-eks@0.2.6
 
 executors:
@@ -45,7 +45,6 @@ jobs:
 workflows:
   deploy-to-staging:
     jobs:
-      - Test-Build
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID

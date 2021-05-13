@@ -77,6 +77,11 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "state_object",
             "modified_date",
             "created_date",
+            "kasp_empanelled",
+            "expected_oxygen_requirement",
+            "type_b_cylinders",
+            "type_c_cylinders",
+            "type_d_cylinders",
         ]
         read_only_fields = ("modified_date", "created_date")
 

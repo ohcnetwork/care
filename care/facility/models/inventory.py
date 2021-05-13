@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Index
 from partial_index import PQ, PartialIndex
 
-from care.facility.models import Facility, FacilityBaseModel, phone_number_regex, reverse_choices
+from care.facility.models import FacilityBaseModel
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 
 User = get_user_model()
@@ -66,6 +66,9 @@ class FacilityInventoryItem(models.Model):
     description = models.TextField(blank=True)
     min_quantity = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
 
 class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     """
@@ -77,6 +80,8 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     item = models.ForeignKey(FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False)
+    current_stock = models.FloatField(default=0)
+    quantity_in_default_unit = models.FloatField(default=0)
     quantity = models.FloatField(default=0)
     unit = models.ForeignKey(FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False)
     is_incoming = models.BooleanField()
@@ -109,3 +114,21 @@ class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionM
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "item"], unique=True, where=PQ(deleted=False))]
+
+
+class FacilityInventoryBurnRate(FacilityBaseModel, FacilityRelatedPermissionMixin):
+    """
+    Used to store the current burn rate of item.
+    """
+
+    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
+    item = models.ForeignKey(FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False)
+    burn_rate = models.FloatField(default=0)
+    current_stock = models.FloatField(default=0)
+
+    class Meta:
+        unique_together = (
+            "facility",
+            "item",
+        )
+        indexes = [Index(fields=("facility", "item",))]

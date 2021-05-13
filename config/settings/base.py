@@ -47,6 +47,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ THIRD_PARTY_APPS = [
     "django_rest_passwordreset",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility"]
+LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.life", "care.audit_log.apps.AuditLogConfig"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -134,9 +135,7 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -159,6 +158,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
+    "care.audit_log.middleware.AuditLogMiddleware",
 ]
 
 # STATIC
@@ -249,9 +249,7 @@ CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
-)
+EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
@@ -272,12 +270,7 @@ MANAGERS = ADMINS
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
-    },
+    "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
     "handlers": {
         "console": {
             "level": "DEBUG",
@@ -315,7 +308,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 100,
+    "PAGE_SIZE": 15,
 }
 
 # Your stuff...
@@ -328,12 +321,8 @@ STAFF_ACCOUNT_TYPE = 10
 
 # Simple JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)
-    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)),
     "ROTATE_REFRESH_TOKENS": True,
 }
 
@@ -360,7 +349,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
-
 # Celery
 # ------------------------------------------------------------------------------
 if USE_TZ:
@@ -386,13 +374,9 @@ CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSc:wqheduler"
 CELERY_TIMEZONE = "Asia/Kolkata"
 
-
 CSV_REQUEST_PARAMETER = "csv"
 
-
-DEFAULT_FROM_EMAIL = env(
-    "EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>"
-)
+DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>")
 
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 
@@ -410,9 +394,7 @@ IS_PRODUCTION = False
 
 OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
 
-OTP_MAX_REPEATS_WINDOW = (
-    10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
-)
+OTP_MAX_REPEATS_WINDOW = 10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
 
 OTP_LENGTH = 5
 
@@ -424,17 +406,14 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3OtP02wfkEojpP7tvyA64CAnVZeb
 bxFda+u+X3ZgMsBoAQK6Jul0Efxz8nGE2SlFr2CZPRqz0rPZQGAiiYugeg==
 -----END PUBLIC KEY-----"""
 
-
 DEFAULT_VAPID_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgJT2TwOHtFu/HZ1T5
 2MofEr/yxu3ULqVTcjH9Sno6ML2hRANCAATc60/TbB+QSiOk/u2/IDrgICdVl5tv
 EV1r675fdmAywGgBArom6XQR/HPycYTZKUWvYJk9GrPSs9lAYCKJi6B6
 -----END PRIVATE KEY-----"""
 
-
 VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
 VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
-
 
 #######################
 # File Upload Parameters
@@ -444,3 +423,35 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
 
+#######################
+# Life Parameters
+
+LIFE_S3_ENDPOINT = env("LIFE_S3_ENDPOINT", default="")
+LIFE_S3_ACCESS_KEY = env("LIFE_S3_ACCESS_KEY", default="")
+LIFE_S3_SECRET = env("LIFE_S3_SECRET", default="")
+LIFE_S3_BUCKET = env("LIFE_S3_BUCKET", default="")
+
+# Audit logs
+AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
+AUDIT_LOG = {
+    "globals": {
+        "exclude": {
+            "applications": [
+                "plain:contenttypes",
+                "plain:admin",
+                "plain:basehttp",
+                "glob:session*",
+                "glob:auth*",
+                "plain:migrations",
+                "plain:audit_log",
+            ]
+        }
+    },
+    "models": {
+        "exclude": {
+            "applications": [],
+            "models": ["plain:facility.HistoricalPatientRegistration"],
+            "fields": {"facility.PatientRegistration": ["name", "phone_number", "emergency_phone_number", "address"]},
+        }
+    },
+}
