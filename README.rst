@@ -6,7 +6,7 @@ Care is a Corona Care Center management app for the Govt of Kerala
 
 Auto Deployed to https://careapi.coronasafe.in for master Branch. 
 
-Report bugs at https://bugs.coronasafe.in
+Report bugs with Github Issues
 
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
@@ -32,6 +32,12 @@ Report bugs at https://bugs.coronasafe.in
 
 :License: MIT
 
+License
+-------
+.. image:: https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large
+    :target: https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
+    :alt: FOSSA Status
+
 Contributing
 ------------
 
@@ -39,8 +45,5 @@ Please see the `contributing guidelines`_.
 
 .. _contributing guidelines: ./CONTRIBUTING.rst
 
-License
--------
-.. image:: https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare.svg?type=large
-    :target: https://app.fossa.com/projects/git%2Bgithub.com%2Fcoronasafe%2Fcare?ref=badge_large)
-    :alt: FOSSA Status
+
+

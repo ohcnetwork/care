@@ -80,6 +80,8 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, null=False, blank=False)
     item = models.ForeignKey(FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False)
+    current_stock = models.FloatField(default=0)
+    quantity_in_default_unit = models.FloatField(default=0)
     quantity = models.FloatField(default=0)
     unit = models.ForeignKey(FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False)
     is_incoming = models.BooleanField()

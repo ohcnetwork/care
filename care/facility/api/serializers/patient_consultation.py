@@ -83,7 +83,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     patient.review_time = localtime(now()) + timedelta(minutes=review_time)
             patient.save()
 
-        return super().update(instance, validated_data)
+        consultation = super().update(instance, validated_data)
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CONSULTATION_UPDATED,
+            caused_by=self.context["request"].user,
+            caused_object=consultation,
+            facility=consultation.patient.facility,
+        ).generate()
+
+        return consultation
 
     def create(self, validated_data):
 
@@ -125,16 +134,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             facility=patient.facility,
         ).generate()
 
-        return consultation
-
-    def update(self, instance, validated_data):
-        consultation = super().update(instance, validated_data)
-        NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_UPDATED,
-            caused_by=self.context["request"].user,
-            caused_object=consultation,
-            facility=consultation.patient.facility,
-        ).generate()
         return consultation
 
     def validate(self, obj):
