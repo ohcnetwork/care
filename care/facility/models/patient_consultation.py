@@ -53,6 +53,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     bed_number = models.CharField(max_length=100, null=True, blank=True)
 
     is_telemedicine = models.BooleanField(default=False)
+    last_updated_by_telemedicine = models.BooleanField(default=False)
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
 
@@ -126,6 +127,8 @@ class DailyRound(PatientBaseModel):
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
     admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
+    last_updated_by_telemedicine = models.BooleanField(default=False)
+    created_by_telemedicine = models.BooleanField(default=False)
 
     @staticmethod
     def has_write_permission(request):

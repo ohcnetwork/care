@@ -41,16 +41,6 @@ class PatientConsultationViewSet(
         filters |= Q(assigned_to=self.request.user)
         return self.queryset.filter(filters).distinct("id")
 
-    def list(self, request, *args, **kwargs):
-        """
-        Consultation List
-
-        Supported filters
-        - `facility` - ID
-        - `patient` - ID
-        """
-        return super().list(request, *args, **kwargs)
-
 
 class DailyRoundsViewSet(
     mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
