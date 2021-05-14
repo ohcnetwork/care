@@ -135,11 +135,7 @@ class InvestigationValueSetPagination(PageNumberPagination):
 
 
 class InvestigationValueViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet,
 ):
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.all()
@@ -189,7 +185,8 @@ class InvestigationValueViewSet(
         investigations = ValueSerializer(many=True)
 
     @swagger_auto_schema(request_body=InvestigationUpdateSerializer, responses={204: "Operation successful"})
-    def update(self, request, *args, **kwargs):
+    @action(detail=False, methods=["PUT"])
+    def batchUpdate(self, request, *args, **kwargs):
         if "investigations" not in request.data:
             return Response({"investigation": "is required"}, status=status.HTTP_400_BAD_REQUEST)
         queryset = self.get_queryset()
@@ -215,10 +212,6 @@ class InvestigationValueViewSet(
                 serializer_obj.update()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @swagger_auto_schema(request_body=InvestigationUpdateSerializer, responses={204: "Operation successful"})
-    def partial_update(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         if "investigations" not in request.data:

@@ -81,7 +81,14 @@ class PatientFilterSet(filters.FilterSet):
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
 
 
-class PatientDRYFilter(DRYPermissionFiltersBase):DiseaseStatusEnum
+class PatientDRYFilter(DRYPermissionFiltersBase):
+    def filter_queryset(self, request, queryset, view):
+        if view.action == "list":
+            queryset = self.filter_list_queryset(request, queryset, view)
+
+        if not request.user.is_superuser:
+            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+                queryset = queryset.filter(facility__state=request.user.state)
             elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(facility__district=request.user.district)
             elif view.action != "transfer":
