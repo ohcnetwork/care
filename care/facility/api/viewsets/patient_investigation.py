@@ -209,7 +209,7 @@ class InvestigationValueViewSet(
                     raise ValidationError({investigation["external_id"]: "not found"})
                 serializer_obj = InvestigationValueSerializer(instance=obj, data=investigation)
                 serializer_obj.is_valid(raise_exception=True)
-                serializer_obj.update()
+                serializer_obj.update(obj,investigation)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
