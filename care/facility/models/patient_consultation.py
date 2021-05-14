@@ -53,6 +53,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     bed_number = models.CharField(max_length=100, null=True, blank=True)
 
     is_kasp = models.BooleanField(default=False)
+    kasp_enabled_date = models.DateTimeField(null=True, blank=True)
 
     is_telemedicine = models.BooleanField(default=False)
     last_updated_by_telemedicine = models.BooleanField(default=False)

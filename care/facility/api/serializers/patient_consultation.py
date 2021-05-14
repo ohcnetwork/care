@@ -53,6 +53,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "discharge_date",
             "last_edited_by",
             "created_by",
+            "kasp_enabled_date",
         )
         exclude = ("deleted", "external_id")
 
@@ -90,6 +91,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         validated_data["last_updated_by_telemedicine"] = self.context["request"].user == instance.assigned_to
 
+        if "is_kasp" in validated_data:
+            if validated_data["is_kasp"] and (not instance.is_kasp):
+                validated_data["kasp_enabled_date"] = localtime(now())
+
         consultation = super().update(instance, validated_data)
 
         NotificationGenerator(
@@ -119,6 +124,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if validated_data["patient"].last_consultation:
             if not validated_data["patient"].last_consultation.discharge_date:
                 raise ValidationError({"consultation": "Exists please Edit Existing Consultation"})
+
+        if "is_kasp" in validated_data:
+            if validated_data["is_kasp"]:
+                validated_data["kasp_enabled_date"] = localtime(now())
 
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
