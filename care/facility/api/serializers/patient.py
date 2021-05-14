@@ -137,11 +137,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
-    vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices,
-        required=False,
-        allow_null=True
-    )
+    vaccine_name = serializers.ChoiceField(choices=PatientRegistration.vaccineChoices, required=False, allow_null=True)
 
     class Meta:
         model = PatientRegistration
@@ -175,21 +171,14 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if (
-            not self.partial
-            and not validated.get("age")
-            and not validated.get("date_of_birth")
-        ):
-            raise serializers.ValidationError(
-                {"non_field_errors": [f"Either age or date_of_birth should be passed"]}
-            )
+        if not self.partial and not validated.get("age") and not validated.get("date_of_birth"):
+            raise serializers.ValidationError({"non_field_errors": [f"Either age or date_of_birth should be passed"]})
 
-        if validated["is_vaccinated"]:
-            if(validated["number_of_doses"] == 0):
+        if validated.get("is_vaccinated"):
+            if validated.get("number_of_doses") == 0:
                 raise serializers.ValidationError("Number of doses cannot be 0")
-            if(validated["vaccine_name"] == None):
+            if validated.get("vaccine_name") == None:
                 raise serializers.ValidationError("Vaccine name cannot be null")
-
 
         return validated
 
