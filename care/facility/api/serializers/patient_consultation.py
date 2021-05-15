@@ -117,8 +117,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if validated_data["patient"].last_consultation:
             if self.context["request"].user == validated_data["patient"].last_consultation.assigned_to:
-                return ValidationError(
-                    {"Permission Denied": "Only Facility Admins can create consultation for a Patient"},
+                raise ValidationError(
+                    {"Permission Denied": "Only Facility Staff can create consultation for a Patient"},
                 )
 
         if validated_data["patient"].last_consultation:
