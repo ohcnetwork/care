@@ -6,13 +6,19 @@ from typing import List, NamedTuple
 from django.conf import settings
 from rest_framework.utils.encoders import JSONEncoder
 
+from multiselectfield.db.fields import MSFList
+
 
 def remove_non_member_fields(d: dict):
     return {k: v for k, v in d.items() if not k.startswith("_")}
 
 
+def instance_finder(v):
+    return isinstance(v, (list, dict, set, MSFList),)
+
+
 def seperate_hashable_dict(d: dict):
-    non_hashable = {k: v for k, v in d.items() if isinstance(v, (list, dict,),)}
+    non_hashable = {k: v for k, v in d.items() if instance_finder(v)}
     hashable = {k: v for k, v in d.items() if k not in non_hashable}
     return hashable, non_hashable
 
@@ -73,7 +79,6 @@ def candidate_in_scope(candidate: str, scope: List, is_application: bool = False
 
 @lru_cache()
 def exclude_model(model_name):
-    return True
     if candidate_in_scope(model_name, settings.AUDIT_LOG["globals"]["exclude"]["applications"], is_application=True):
         return True
 

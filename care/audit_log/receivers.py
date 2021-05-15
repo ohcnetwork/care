@@ -23,8 +23,7 @@ from care.audit_log.middleware import AuditLogMiddleware
 logger = logging.getLogger(__name__)
 
 Event = NamedTuple(
-    "Event",
-    [("model", str), ("actor", AbstractUser), ("entity_id", Union[int, str]), ("changes", dict)],
+    "Event", [("model", str), ("actor", AbstractUser), ("entity_id", Union[int, str]), ("changes", dict)],
 )
 
 
