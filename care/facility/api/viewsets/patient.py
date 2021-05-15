@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
 from django.db.models import DateTimeField, F, Value
+from django.db.models.expressions import ExpressionWrapper
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -38,6 +39,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     PatientSearch,
+    ShiftingRequest,
 )
 from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
@@ -302,6 +304,15 @@ class PatientViewSet(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
         response_serializer = self.get_serializer_class()(patient)
+        # Update all Active Shifting Request to Rejected
+
+        for shifting_request in ShiftingRequest.objects.filter(~Q(status__in=[30, 50, 80]), patient=patient):
+            shifting_request.status = 30
+            shifting_request.comments = (
+                shifting_request.comments
+                + f"\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
+            )
+            shifting_request.save(update_fields=["status", "comments"])
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
