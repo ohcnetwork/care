@@ -23,6 +23,7 @@ from care.facility.models import (
     PatientRegistration,
     HospitalDoctors,
     FacilityPatientStatsHistory,
+    facility,
 )
 from care.users.models import User
 from config.utils import get_psql_search_tokens
@@ -99,7 +100,12 @@ class FacilityViewSet(
 
     def destroy(self, request, *args, **kwargs):
         if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return super().destroy(request, *args, **kwargs)
+            if not PatientRegistration.objects.filter(facility=self.get_object(), is_active=True).exists():
+                return super().destroy(request, *args, **kwargs)
+            else:
+                return Response(
+                    {"facility": "cannot delete facility with active patients"}, status=status.HTTP_403_FORBIDDEN
+                )
         return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
