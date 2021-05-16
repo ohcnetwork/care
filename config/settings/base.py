@@ -454,3 +454,5 @@ AUDIT_LOG = {
         }
     },
 }
+
+SEND_SMS_NOTIFICATION = False
