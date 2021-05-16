@@ -102,8 +102,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
         LIMITED_ORGIN_STATUS = []
 
         RECIEVING_REQUIRED_STATUS_ = [
-            "APPROVED",
-            "REJECTED",
             "DESTINATION APPROVED",
             "DESTINATION REJECTED",
             "TRANSPORTATION TO BE ARRANGED",
