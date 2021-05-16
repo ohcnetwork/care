@@ -156,7 +156,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 assigned = True
 
         if "status" in validated_data:
-            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+            if validated_data["status"] in RECIEVING_REQUIRED_STATUS:
                 if (not instance.assigned_facility) and (not assigned):
                     raise ValidationError({"status": ["Destination Facility is required for moving to this stage."]})
 
