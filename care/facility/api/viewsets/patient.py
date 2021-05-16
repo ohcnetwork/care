@@ -74,6 +74,10 @@ class PatientFilterSet(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
+    is_kasp = filters.BooleanFilter(field_name="last_consultation__is_kasp")
+    last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__kasp_enabled_date"
+    )
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
     last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
