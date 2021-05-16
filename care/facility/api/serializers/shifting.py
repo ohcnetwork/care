@@ -146,16 +146,18 @@ class ShiftingSerializer(serializers.ModelSerializer):
                     external_id=shifting_approving_facility_external_id
                 ).id
 
+        assigned = False
         if "assigned_facility" in validated_data:
             assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
             if assigned_facility_external_id:
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
                 ).id
+                assigned = True
 
-        if (not instance.assigned_facility) and ("assigned_facility" not in validated_data):
-            if "status" in validated_data:
-                if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+        if "status" in validated_data:
+            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+                if (not instance.assigned_facility) and (not assigned):
                     raise ValidationError({"status": ["Destination Facility is required for moving to this stage."]})
 
         instance.last_edited_by = self.context["request"].user
