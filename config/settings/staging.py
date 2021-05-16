@@ -129,7 +129,9 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
-    "formatters": {"verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}},
+    "formatters": {
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}
+    },
     "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
@@ -146,7 +148,8 @@ SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
 sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL, event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
+    level=SENTRY_LOG_LEVEL,
+    event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
 )
 sentry_sdk.init(
     dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],

@@ -6,10 +6,10 @@ from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
 from django.db.models import DateTimeField, F, Value
+from django.db.models.expressions import ExpressionWrapper
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
-from care.utils.filters import MultiSelectFilter
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
@@ -17,6 +17,7 @@ from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -38,12 +39,13 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     PatientSearch,
+    ShiftingRequest,
 )
 from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter
+from care.utils.filters import CareChoiceFilter, MultiSelectFilter
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -63,6 +65,7 @@ class PatientFilterSet(filters.FilterSet):
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
     is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
+    date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
@@ -71,6 +74,10 @@ class PatientFilterSet(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
+    is_kasp = filters.BooleanFilter(field_name="last_consultation__is_kasp")
+    last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__kasp_enabled_date"
+    )
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
     last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
@@ -301,6 +308,15 @@ class PatientViewSet(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
         response_serializer = self.get_serializer_class()(patient)
+        # Update all Active Shifting Request to Rejected
+
+        for shifting_request in ShiftingRequest.objects.filter(~Q(status__in=[30, 50, 80]), patient=patient):
+            shifting_request.status = 30
+            shifting_request.comments = (
+                shifting_request.comments
+                + f"\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
+            )
+            shifting_request.save(update_fields=["status", "comments"])
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
@@ -355,11 +371,16 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         return super(FacilityPatientStatsHistoryViewSet, self).list(request, *args, **kwargs)
 
 
+class PatientSearchSetPagination(PageNumberPagination):
+    page_size = 200
+
+
 class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
     queryset = PatientSearch.objects.all()
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
+    pagination_class = PatientSearchSetPagination
 
     def get_queryset(self):
         if self.action != "list":

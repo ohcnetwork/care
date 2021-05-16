@@ -49,6 +49,7 @@ def check_permissions(file_type, associating_id, user):
 class FileUploadCreateSerializer(serializers.ModelSerializer):
 
     file_type = ChoiceField(choices=FileUpload.FileTypeChoices)
+    file_category = ChoiceField(choices=FileUpload.FileCategoryChoices, required=False)
 
     signed_url = serializers.CharField(read_only=True)
     associating_id = serializers.CharField(write_only=True)
@@ -59,6 +60,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         model = FileUpload
         fields = (
             "file_type",
+            "file_category",
             "name",
             "associating_id",
             "signed_url",
@@ -85,7 +87,7 @@ class FileUploadListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "uploaded_by", "created_date")
+        fields = ("id", "name", "uploaded_by", "created_date", "file_category")
         read_only_fields = ("associating_id", "name", "created_date")
 
 
@@ -98,5 +100,5 @@ class FileUploadRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "uploaded_by", "created_date", "read_signed_url")
+        fields = ("id", "name", "uploaded_by", "created_date", "read_signed_url", "file_category")
         read_only_fields = ("associating_id", "name", "created_date")
