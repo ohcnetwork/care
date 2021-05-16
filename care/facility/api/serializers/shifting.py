@@ -171,7 +171,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 NotificationGenerator(
                     event=Notification.Event.SHIFTING_UPDATED,
                     caused_by=self.context["request"].user,
-                    caused_object=new_instance,
+                    caused_object=ShiftingRequest.objects.get(id=new_instance.id),
                     facility=new_instance.shifting_approving_facility,
                     generate_sms=True,
                 ).generate()
