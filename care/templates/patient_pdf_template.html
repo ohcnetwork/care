@@ -13,7 +13,7 @@
       }
     </style>
   </head>
-  <body class="max-w-5xl mx-auto mt-4 text-sm">
+  <body class="max-w-5xl mx-10 mt-4 text-sm">
   <div class="bg-white overflow-hidden  sm:rounded-lg m-6">
   <div class="mx-auto flex justify-center">
       <img class='h-28' src="https://cdn.coronasafe.network/kgovtlogo.png"/>
@@ -102,7 +102,7 @@
           Date of Admission
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
-          {{consultation.admission_date}}
+          {{consultation.admission_date.date}}
         </dd>
       </div>
       <div class="w-1/2 mt-4">
@@ -110,7 +110,68 @@
           Date of Discharge
         </dt>
         <dd class="mt-1 text-sm leading-5 text-gray-900">
-          {{consultation.discharge_date}}
+          {{consultation.discharge_date.date}}
+          </dd>
+          </div>
+          <div class="w-1/2 mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Date of admission to care
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{patient.created_date.date}}
+            </dd>
+          </div>
+          <div class="w-1/2 mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Date of admission to current facility
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{consultation.created_date.date}}
+            </dd>
+          </div>
+          <div class="w-1/2 mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Disease Status
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {% if patient.disease_status == 1 %}
+              Suspected
+              {% elif patient.disease_status == 2 %}
+              Positive
+              {% elif patient.disease_status == 3 %}
+              Negative
+              {% elif patient.disease_status == 4 %}
+              Recovery
+              {% elif patient.disease_status == 5 %}
+              Recovered
+              {% elif patient.disease_status == 6 %}
+              Expired
+              {% endif %}
+            </dd>
+          </div>
+          <div class="w-1/2 mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              SRF ID
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{patient.srf_id}}
+            </dd>
+          </div>
+          <div class="w-1/2 mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Date of result
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{patient.date_of_result.date}}
+            </dd>
+          </div>
+          </div>
+          <div class="mt-4">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Prescriptions
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900">
+              {{consultation.prescription}}
         </dd>
       </div>
       </div>
@@ -177,13 +238,16 @@
           <table class="min-w-full">
             <thead>
             <tr>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Medicine
               </th>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Frequency
               </th>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Days
               </th>
             </tr>
@@ -191,13 +255,13 @@
             <tbody>
           {% for prescription in consultation.discharge_advice %}
               <tr class="bg-white">
-                <td class="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
+                <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
                   {{ prescription.medicine }}
                 </td>
-                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 text-sm leading-5 text-gray-500">
                 {{ prescription.dosage }}
                 </td>
-                <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 text-sm leading-5 text-gray-500">
                   {{ prescription.days }}
                 </td>
               </tr>
@@ -209,7 +273,197 @@
     </div>
   </div>
   {% endif %}
-
+  <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Consultation History
+    </h3>
+  </div>
+  <div class="mt-4">
+    <div class="flex flex-col">
+      <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+          <table class="min-w-full">
+            <thead>
+              <tr>
+                <th
+                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Facility
+                </th>
+                <th
+                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Updated On
+                </th>
+                <th
+                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Suggestion
+                </th>
+                <th
+                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Admitted
+                </th>
+                <th
+                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Admitted On
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cons in consultations %}
+              <tr class="bg-white">
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                  {{cons.facility.name}}
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {{cons.modified_date.date}}
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {% if cons.suggestion == "A" %}
+                  Admission
+                  {% elif cons.suggestion == "HI" %}
+                  Home Isolation
+                  {% elif cons.suggestion == "R" %}
+                  Referral
+                  {% elif cons.suggestion == "OP" %}
+                  OP Consultation
+                  {% elif cons.suggestion == "DC" %}
+                  Domiciliary Care
+                  {% endif %}
+  
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {% if cons.admitted %}
+                  Yes
+                  {% else %}
+                  No
+                  {% endif %}
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {% if cons.admitted %}
+                  {{cons.admission_date.date}}
+                  {% else %}
+                  <span class="block w-full text-center">-</span>
+                  {% endif %}
+                </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                </div>
+                </div>
+                </div>
+                </div>
+                <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Investigation History
+                  </h3>
+                </div>
+                <div class="mt-4">
+                  <div class="flex flex-col">
+                    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                      <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+                        <table class="min-w-full">
+                          <thead>
+                            <tr>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Name
+                              </th>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Result
+                              </th>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Range
+                              </th>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for investigation in investigations %}
+                            <tr class="bg-white">
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{investigation.investigation.name}}
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {% if investigation.value%}
+                                {{investigation.value}}
+                                {% else %}
+                                {{investigation.notes}}
+                                {% endif %}
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {% if investigation.investigation.min_value and investigation.investigation.max_value%}
+                                {{investigation.investigation.min_value}} - {{investigation.investigation.max_value}}
+                                {% else %}
+                                -
+                                {% endif %}
+                                {% if investigation.investigation.unit %}
+                                {{investigation.investigation.unit}}
+                                {% endif %}
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{investigation.created_date.date}}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Prescriptions
+                  </h3>
+                </div>
+                <div class="mt-4">
+                  <div class="flex flex-col">
+                    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                      <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+                        <table class="min-w-full">
+                          <thead>
+                            <tr>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Medicine
+                              </th>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Frequency
+                              </th>
+                              <th
+                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Days
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for daily_round in dailyrounds %}
+                            {% for prescription in daily_round.medication_given %}
+                            <tr class="bg-white">
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{prescription.medicine}}
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{prescription.dosage}}
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{prescription.days}}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
   {% if diseases %}
   <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
