@@ -3,7 +3,14 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import RESOURCE_CATEGORY_CHOICES, RESOURCE_STATUS_CHOICES, Facility, ResourceRequest, User
+from care.facility.models import (
+    RESOURCE_CATEGORY_CHOICES,
+    RESOURCE_STATUS_CHOICES,
+    Facility,
+    ResourceRequest,
+    User,
+    ResourceRequestComment,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
 
@@ -15,7 +22,7 @@ def inverse_choices(choices):
     return output
 
 
-REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(RESOURCE_STATUS_CHOICES)
+REVERSE_REQUEST_STATUS_CHOICES = inverse_choices(RESOURCE_STATUS_CHOICES)
 
 
 def has_facility_permission(user, facility):
@@ -40,7 +47,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
     orgin_facility_object = FacilityBasicInfoSerializer(source="orgin_facility", read_only=True, required=False)
     approving_facility_object = FacilityBasicInfoSerializer(
-        source="shifting_approving_facility", read_only=True, required=False
+        source="approving_facility", read_only=True, required=False
     )
     assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
@@ -48,7 +55,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
     orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
     approving_facility = serializers.UUIDField(
-        source="shifting_approving_facility.external_id", allow_null=False, required=True
+        source="approving_facility.external_id", allow_null=False, required=True
     )
     assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
 
@@ -64,8 +71,8 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         LIMITED_RECIEVING_STATUS_ = []
-        LIMITED_RECIEVING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
-        LIMITED_SHIFTING_STATUS_ = [
+        LIMITED_RECIEVING_STATUS = [REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
+        LIMITED_REQUEST_STATUS_ = [
             "ON HOLD",
             "APPROVED",
             "REJECTED",
@@ -73,7 +80,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             "TRANSFER IN PROGRESS",
             "COMPLETED",
         ]
-        LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
+        LIMITED_REQUEST_STATUS = [REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_]
         LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
@@ -83,19 +90,19 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
                 if instance.assigned_facility:
                     if not has_facility_permission(user, instance.assigned_facility):
                         raise ValidationError({"status": ["Permission Denied"]})
-            elif validated_data["status"] in LIMITED_SHIFTING_STATUS:
-                if not has_facility_permission(user, instance.shifting_approving_facility):
+            elif validated_data["status"] in LIMITED_REQUEST_STATUS:
+                if not has_facility_permission(user, instance.approving_facility):
                     raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
         if "orgin_facility" in validated_data:
             validated_data.pop("orgin_facility")
 
-        if "shifting_approving_facility" in validated_data:
-            shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
-            if shifting_approving_facility_external_id:
-                validated_data["shifting_approving_facility_id"] = Facility.objects.get(
-                    external_id=shifting_approving_facility_external_id
+        if "approving_facility" in validated_data:
+            approving_facility_external_id = validated_data.pop("approving_facility")["external_id"]
+            if approving_facility_external_id:
+                validated_data["approving_facility_id"] = Facility.objects.get(
+                    external_id=approving_facility_external_id
                 ).id
 
         if "assigned_facility" in validated_data:
@@ -117,14 +124,12 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         if "status" in validated_data:
             validated_data.pop("status")
 
-        validated_data["is_kasp"] = False
-
         orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
         validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
 
-        shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
-        validated_data["shifting_approving_facility_id"] = Facility.objects.get(
-            external_id=shifting_approving_facility_external_id
+        request_approving_facility_external_id = validated_data.pop("approving_facility")["external_id"]
+        validated_data["approving_facility_id"] = Facility.objects.get(
+            external_id=request_approving_facility_external_id
         ).id
 
         if "assigned_facility" in validated_data:
@@ -145,3 +150,17 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
         read_only_fields = TIMESTAMP_FIELDS
 
+
+class ResourceRequestCommentSerializer(serializers.ModelSerializer):
+
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+
+        return super().create(validated_data)
+
+    class Meta:
+        model = ResourceRequestComment
+        exclude = ("deleted", "request")
+        read_only_fields = TIMESTAMP_FIELDS + ("created_by",)

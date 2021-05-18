@@ -33,7 +33,7 @@ from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
 )
-from care.facility.api.viewsets.resources import ResourceRequestViewSet
+from care.facility.api.viewsets.resources import ResourceRequestViewSet, ResourceRequestCommentViewSet
 from care.facility.api.viewsets.shifting import ShiftingViewSet
 from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
@@ -108,6 +108,9 @@ router.register("shift", ShiftingViewSet, basename="patient-shift")
 
 router.register("resource", ResourceRequestViewSet, basename="resource-request")
 
+resource_nested_router = NestedSimpleRouter(router, r"resource", lookup="resource")
+resource_nested_router.register(r"comment", ResourceRequestCommentViewSet)
+
 router.register("investigation/group", InvestigationGroupViewset)
 router.register("investigation", PatientInvestigationViewSet)
 
@@ -136,4 +139,5 @@ urlpatterns = [
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
     url(r"^", include(consultation_nested_router.urls)),
+    url(r"^", include(resource_nested_router.urls)),
 ]
