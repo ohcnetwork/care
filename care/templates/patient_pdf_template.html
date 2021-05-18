@@ -255,13 +255,13 @@
             <tbody>
           {% for prescription in consultation.discharge_advice %}
               <tr class="bg-white">
-                <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
+                <td class="px-1 py-1 border-t text-sm leading-5 font-medium text-gray-900">
                   {{ prescription.medicine }}
                 </td>
-                <td class="px-1 py-1 text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t text-sm leading-5 text-gray-500">
                 {{ prescription.dosage }}
                 </td>
-                <td class="px-1 py-1 text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t text-sm leading-5 text-gray-500">
                   {{ prescription.days }}
                 </td>
               </tr>
@@ -310,13 +310,13 @@
             <tbody>
               {% for cons in consultations %}
               <tr class="bg-white">
-                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                   {{cons.facility.name}}
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {{cons.modified_date.date}}
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {% if cons.suggestion == "A" %}
                   Admission
                   {% elif cons.suggestion == "HI" %}
@@ -330,14 +330,14 @@
                   {% endif %}
   
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {% if cons.admitted %}
                   Yes
                   {% else %}
                   No
                   {% endif %}
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {% if cons.admitted %}
                   {{cons.admission_date.date}}
                   {% else %}
@@ -366,10 +366,14 @@
                             <tr>
                               <th
                                 class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                Group
+                                </th>
+                                <th
+                                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                                 Name
-                              </th>
-                              <th
-                                class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                </th>
+                                <th
+                                  class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                                 Result
                               </th>
                               <th
@@ -385,17 +389,20 @@
                           <tbody>
                             {% for investigation in investigations %}
                             <tr class="bg-white">
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                {{investigation.investigation.groups.first}}
+                              </td>
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {{investigation.investigation.name}}
                               </td>
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {% if investigation.value%}
                                 {{investigation.value}}
                                 {% else %}
                                 {{investigation.notes}}
                                 {% endif %}
                               </td>
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {% if investigation.investigation.min_value and investigation.investigation.max_value%}
                                 {{investigation.investigation.min_value}} - {{investigation.investigation.max_value}}
                                 {% else %}
@@ -405,7 +412,7 @@
                                 {{investigation.investigation.unit}}
                                 {% endif %}
                               </td>
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {{investigation.created_date.date}}
                               </td>
                             </tr>
@@ -446,13 +453,13 @@
                             {% for daily_round in dailyrounds %}
                             {% for prescription in daily_round.medication_given %}
                             <tr class="bg-white">
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {{prescription.medicine}}
                               </td>
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {{prescription.dosage}}
                               </td>
-                              <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                              <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {{prescription.days}}
                               </td>
                             </tr>
@@ -488,10 +495,10 @@
             <tbody>
           {% for disease in diseases %}
               <tr class="bg-white">
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                   {{disease.get_disease_display}}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {{disease.details}}
                 </td>
               </tr>
@@ -562,8 +569,8 @@
     </h3>
   </div>
   {% for daily_round in dailyrounds %}
-    <div class="rounded mt-4 border border-gray-200 rounded-lg">
-      <div class="px-4 py-5 sm:p-6">
+    <div class="rounded mt-2 border border-gray-200 rounded-lg">
+      <div class="px-2 py-2 sm:p-4">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
           {{daily_round.created_date}}
         </h3>
@@ -586,7 +593,7 @@
               </dd>
             </div>
           </div>
-          <div class="mt-4">
+          <div class="mt-2">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Physical Examination Details
             </dt>
@@ -594,7 +601,7 @@
               {{daily_round.physical_examination_info}}
             </dd>
           </div>
-          <div class="mt-4">
+          <div class="mt-2">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Other Details
             </dt>
@@ -602,7 +609,7 @@
               {{daily_round.other_details}}
             </dd>
           </div>
-          <div class="mt-4">
+          <div class="mt-2">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Symptoms
             </dt>
