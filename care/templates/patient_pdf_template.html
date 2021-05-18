@@ -1,3 +1,4 @@
+{% load filters %}
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -134,19 +135,7 @@
               Disease Status
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900">
-              {% if patient.disease_status == 1 %}
-              Suspected
-              {% elif patient.disease_status == 2 %}
-              Positive
-              {% elif patient.disease_status == 3 %}
-              Negative
-              {% elif patient.disease_status == 4 %}
-              Recovery
-              {% elif patient.disease_status == 5 %}
-              Recovered
-              {% elif patient.disease_status == 6 %}
-              Expired
-              {% endif %}
+              {{ disease_status }}
             </dd>
           </div>
           <div class="w-1/2 mt-4">
@@ -317,17 +306,7 @@
                   {{cons.modified_date.date}}
                 </td>
                 <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">
-                  {% if cons.suggestion == "A" %}
-                  Admission
-                  {% elif cons.suggestion == "HI" %}
-                  Home Isolation
-                  {% elif cons.suggestion == "R" %}
-                  Referral
-                  {% elif cons.suggestion == "OP" %}
-                  OP Consultation
-                  {% elif cons.suggestion == "DC" %}
-                  Domiciliary Care
-                  {% endif %}
+                  {{cons.suggestion|suggestion_string}}
   
                 </td>
                 <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 text-gray-500">

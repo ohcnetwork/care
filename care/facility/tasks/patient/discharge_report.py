@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.timezone import make_aware
 from hardcopy import bytestring_to_pdf
 
-from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample, Disease, InvestigationValue
+from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample, Disease, InvestigationValue, DiseaseStatusEnum
 
 
 def randomString(stringLength):
