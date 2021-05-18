@@ -33,16 +33,16 @@ from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
 )
+from care.facility.api.viewsets.resources import ResourceRequestViewSet
 from care.facility.api.viewsets.shifting import ShiftingViewSet
 from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.life.api.viewsets.lifedata import LifeDataViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
-
-from care.life.api.viewsets.lifedata import LifeDataViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -105,6 +105,8 @@ router.register("items", FacilityInventoryItemViewSet)
 router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
+
+router.register("resource", ResourceRequestViewSet, basename="resource-request")
 
 router.register("investigation/group", InvestigationGroupViewset)
 router.register("investigation", PatientInvestigationViewSet)
