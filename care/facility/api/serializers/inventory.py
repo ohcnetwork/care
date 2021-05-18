@@ -1,5 +1,7 @@
+from datetime import timedelta
+
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Sum
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -103,27 +105,23 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
         validated_data["current_stock"] = current_quantity
 
-        if not validated_data["is_incoming"]:
-            self._set_burn_rate(facility, item, validated_data["quantity"])
-
         instance = super().create(validated_data)
         summary_obj.save()
 
+        if not validated_data["is_incoming"]:
+            self._set_burn_rate(facility, item)
+
         return instance
 
-    def _set_burn_rate(self, facility, item, qty):
-        previous_usage_log = (
-            FacilityInventoryLog.objects.filter(facility=facility, item=item, is_incoming=False)
-            .order_by("-id")
-            .first()
-        )
+    def _set_burn_rate(self, facility, item):
+        yesterday = timezone.now() - timedelta(days=1)
 
-        if previous_usage_log:
-            time_diff = (timezone.now() - previous_usage_log.created_date).seconds
-            if time_diff:
-                burn_rate = qty / (time_diff / 3600.0)
-            else:
-                burn_rate = 0
+        previous_usage_log_sum = FacilityInventoryLog.objects.filter(
+            facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
+        ).aggregate(Sum("quantity_in_default_unit"))
+
+        if previous_usage_log_sum:
+            burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
             FacilityInventoryBurnRate.objects.update_or_create(
                 facility=facility, item=item, defaults={"burn_rate": burn_rate}
             )
