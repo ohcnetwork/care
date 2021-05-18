@@ -35,6 +35,7 @@ def generate_discharge_report(patient_id, email):
         samples = None
         daily_rounds = None
     date = make_aware(datetime.datetime.now())
+    disease_status = DiseaseStatusEnum(patient.disease_status).name.capitalize()
     html_string = render_to_string(
         "patient_pdf_template.html",
         {
@@ -46,6 +47,7 @@ def generate_discharge_report(patient_id, email):
             "date": date,
             "diseases": diseases,
             "investigations": investigations,
+            "disease_status": disease_status,
         },
     )
     filename = str(int(round(time.time() * 1000))) + randomString(10) + ".pdf"
