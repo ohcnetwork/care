@@ -85,7 +85,7 @@ class LocalBody(models.Model):
 
     name = models.CharField(max_length=255)
     body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
-    localbody_code = models.CharField(max_length=20, blank=True)
+    localbody_code = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         unique_together = (
