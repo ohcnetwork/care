@@ -47,7 +47,6 @@ def get_request_queryset(request, queryset):
         q_objects = Q(orgin_facility__id__in=facility_ids)
         q_objects |= Q(approving_facility__id__in=facility_ids)
         q_objects |= Q(assigned_facility__id__in=facility_ids, status__gte=20)
-        q_objects |= Q(patient__facility__id__in=facility_ids)
         queryset = queryset.filter(q_objects)
     return queryset
 
@@ -151,7 +150,6 @@ class ResourceRequestCommentViewSet(
             q_objects = Q(request__orgin_facility__id__in=facility_ids)
             q_objects |= Q(request__approving_facility__id__in=facility_ids)
             q_objects |= Q(request__assigned_facility__id__in=facility_ids, status__gte=20)
-            q_objects |= Q(request__patient__facility__id__in=facility_ids)
             queryset = self.queryset.filter(q_objects)
         return queryset
 
