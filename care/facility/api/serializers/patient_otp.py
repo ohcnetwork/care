@@ -14,7 +14,8 @@ from care.utils.sms.sendSMS import sendSMS
 
 
 def rand_pass(size):
-
+    if not settings.USE_SMS:
+        return "45612"
     generate_pass = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(size)])
 
     return generate_pass

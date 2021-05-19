@@ -1,10 +1,10 @@
 import glob
 import json
 from typing import Optional
-
+from collections import defaultdict
 from django.core.management.base import BaseCommand, CommandParser
 
-from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody
+from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody, State
 
 
 class Command(BaseCommand):
@@ -24,11 +24,35 @@ class Command(BaseCommand):
         counter = 0
         local_bodies = []
 
-        districts = District.objects.all()
-        district_map = {d.name: d for d in districts}
-
         # Creates a map with first char of readable value as key
         LOCAL_BODY_CHOICE_MAP = dict([(c[1][0], c[0]) for c in LOCAL_BODY_CHOICES])
+
+        state = {}
+        district = defaultdict(dict)
+
+        def get_state_obj(state_name):
+            if state_name in state:
+                return state[state_name]
+            state_obj = State.objects.filter(name=state_name).first()
+            if not state_obj:
+                print(f"Creating State {state_name}")
+                state_obj = State(name=state_name)
+                state_obj.save()
+            state[state_name] = state_obj
+            return state_obj
+
+        def get_district_obj(district_name, state_name):
+            state_obj = get_state_obj(state_name)
+            if state_name in district:
+                if district_name in district[state_name]:
+                    return district[state_name][district_name]
+            district_obj = District.objects.filter(name=district_name, state=state_obj).first()
+            if not district_obj:
+                print(f"Creating District {district_name}")
+                district_obj = District(name=district_name, state=state_obj)
+                district_obj.save()
+            district[state_name][district_name] = district_obj
+            return district_obj
 
         def create_local_bodies(local_body_list):
             """
@@ -40,12 +64,11 @@ class Command(BaseCommand):
             local_body_objs = [
                 LocalBody(
                     name=lb["name"],
-                    district=district_map[lb["district"]],
-                    localbody_code=lb["localbody_code"],
-                    body_type=LOCAL_BODY_CHOICE_MAP.get((lb["localbody_code"] or " ")[0], LOCAL_BODY_CHOICES[-1][0]),
+                    district=get_district_obj(lb["district"], lb["state"]),
+                    localbody_code=lb.get("localbody_code"),
+                    body_type=LOCAL_BODY_CHOICE_MAP.get((lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]),
                 )
                 for lb in local_body_list
-                if lb.get("district") is not None
             ]
 
             # Possible conflict is name uniqueness.
@@ -68,3 +91,6 @@ class Command(BaseCommand):
 
         if len(local_bodies) > 0:
             create_local_bodies(local_bodies)
+
+        print(state)
+        print(district)
