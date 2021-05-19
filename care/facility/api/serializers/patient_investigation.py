@@ -51,23 +51,26 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvestigationValue
-        read_only_fields = TIMESTAMP_FIELDS + ("session_id",)
+        read_only_fields = TIMESTAMP_FIELDS + ("session_id", "investigation", "consultation", "session")
         exclude = TIMESTAMP_FIELDS + ("external_id",)
-        extra_kwargs = {
-            "investigation": {"write_only": True},
-            "consultation": {"write_only": True},
-            "session": {"write_only": True},
-        }
 
     def update(self, instance, validated_data):
         if instance.consultation.discharge_date:
             raise serializers.ValidationError({"consultation": ["Discharged Consultation data cannot be updated"]})
 
-        NotificationGenerator(
-            event=Notification.Event.INVESTIGATION_UPDATED,
-            caused_by=self.context["request"].user,
-            caused_object=instance,
-            facility=instance.consultation.patient.facility,
-        ).generate()
+        # Removed since it might flood messages
+        # NotificationGenerator(
+        #     event=Notification.Event.INVESTIGATION_UPDATED,
+        #     caused_by=self.context["request"].user,
+        #     caused_object=instance,
+        #     facility=instance.consultation.patient.facility,
+        # ).generate()
 
         return super().update(instance, validated_data)
+
+
+class InvestigationValueCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvestigationValue
+        read_only_fields = TIMESTAMP_FIELDS
+        exclude = TIMESTAMP_FIELDS + ("external_id",)

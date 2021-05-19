@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  db:
+    container_name: care_db
+    image: postgis/postgis:latest
+    restart: always
+    env_file:
+      - ./docker/.local.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    container_name: care
+    build:
+      context: .
+      dockerfile: docker/DevDockerfile
+    env_file:
+      - ./docker/.local.env
+    command: python manage.py runserver 0.0.0.0:9000
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+volumes:
+  postgres-data:

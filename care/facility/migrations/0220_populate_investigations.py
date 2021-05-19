@@ -148,35 +148,36 @@ def none_or_float(val):
 
 
 def populate_investigations(apps, *args):
-    PatientInvestigation = apps.get_model("facility", "patientinvestigation")
-    PatientInvestigationGroup = apps.get_model("facility", "patientinvestigationgroup")
-    investigation_group_data = investigation_groups.split("\n")[1:]
-    investigation_group_dict = {}
-    for investigation_group in investigation_group_data:
-        current_investigation_group = investigation_group.split("\t")
-        current_obj = PatientInvestigationGroup.objects.filter(name=current_investigation_group[1]).first()
-        if not current_obj:
-            current_obj = PatientInvestigationGroup(name=current_investigation_group[1])
-            current_obj.save()
-        investigation_group_dict[current_investigation_group[0]] = current_obj
-    investigation_data = investigations.split("\n")[1:]
-    for investigation in investigation_data:
-        current_investigation = investigation.split("\t")
-        data = {
-            "name": current_investigation[0],
-            "unit": current_investigation[1],
-            "ideal_value": current_investigation[2],
-            "min_value": none_or_float(current_investigation[3]),
-            "max_value": none_or_float(current_investigation[4]),
-            "investigation_type": current_investigation[5],
-            "choices": current_investigation[6],
-        }
-        current_obj = PatientInvestigation.objects.filter(**data).first()
-        if not current_obj:
-            current_obj = PatientInvestigation(**data)
-            current_obj.save()
-        current_obj.groups.add(investigation_group_dict[current_investigation[7]])
-        current_obj.save()
+    # PatientInvestigation = apps.get_model("facility", "patientinvestigation")
+    # PatientInvestigationGroup = apps.get_model("facility", "patientinvestigationgroup")
+    # investigation_group_data = investigation_groups.split("\n")[1:]
+    # investigation_group_dict = {}
+    # for investigation_group in investigation_group_data:
+    #     current_investigation_group = investigation_group.split("\t")
+    #     current_obj = PatientInvestigationGroup.objects.filter(name=current_investigation_group[1]).first()
+    #     if not current_obj:
+    #         current_obj = PatientInvestigationGroup(name=current_investigation_group[1])
+    #         current_obj.save()
+    #     investigation_group_dict[current_investigation_group[0]] = current_obj
+    # investigation_data = investigations.split("\n")[1:]
+    # for investigation in investigation_data:
+    #     current_investigation = investigation.split("\t")
+    #     data = {
+    #         "name": current_investigation[0],
+    #         "unit": current_investigation[1],
+    #         "ideal_value": current_investigation[2],
+    #         "min_value": none_or_float(current_investigation[3]),
+    #         "max_value": none_or_float(current_investigation[4]),
+    #         "investigation_type": current_investigation[5],
+    #         "choices": current_investigation[6],
+    #     }
+    #     current_obj = PatientInvestigation.objects.filter(**data).first()
+    #     if not current_obj:
+    #         current_obj = PatientInvestigation(**data)
+    #         current_obj.save()
+    #     current_obj.groups.add(investigation_group_dict[current_investigation[7]])
+    #     current_obj.save()
+    pass  # This has been deprecated since the investigation data has been changed and is no longer consistent
 
 
 def reverse_populate_investigations(apps, *args):

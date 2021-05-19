@@ -1,16 +1,20 @@
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, query
 from django.db.models.query_utils import Q
 from django_filters import Filter
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
+from rest_framework import serializers
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from care.facility.api.serializers.patient_investigation import (
+    InvestigationValueCreateSerializer,
     InvestigationValueSerializer,
     PatientInvestigationGroupSerializer,
     PatientInvestigationSerializer,
@@ -28,7 +32,6 @@ from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.cache.patient_investigation import get_investigation_id
 from care.utils.filters import MultiSelectFilter
-from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 
 
@@ -127,12 +130,12 @@ class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveM
         return queryset.filter(filters)
 
 
+class InvestigationValueSetPagination(PageNumberPagination):
+    page_size = 200
+
+
 class InvestigationValueViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet,
 ):
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.all()
@@ -140,6 +143,12 @@ class InvestigationValueViewSet(
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
+    pagination_class = InvestigationValueSetPagination
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return InvestigationValueCreateSerializer
+        return super().get_serializer_class()
 
     def get_queryset(self):
         queryset = self.queryset.filter(consultation__external_id=self.kwargs.get("consultation_external_id"))
@@ -166,6 +175,43 @@ class InvestigationValueViewSet(
                 .values("session_external_id", "session_created_date")
             )
         )
+
+    class InvestigationUpdateSerializer(Serializer):  # Dummy for Spec
+        class ValueSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = InvestigationValue
+                fields = ("external_id", "value", "notes")
+
+        investigations = ValueSerializer(many=True)
+
+    @swagger_auto_schema(request_body=InvestigationUpdateSerializer, responses={204: "Operation successful"})
+    @action(detail=False, methods=["PUT"])
+    def batchUpdate(self, request, *args, **kwargs):
+        if "investigations" not in request.data:
+            return Response({"investigation": "is required"}, status=status.HTTP_400_BAD_REQUEST)
+        queryset = self.get_queryset()
+
+        investigations = request.data["investigations"]
+
+        if not isinstance(investigations, list):
+            return Response({"error": "Data must be a list"}, status=status.HTTP_400_BAD_REQUEST)
+
+        consultation = PatientConsultation.objects.get(external_id=kwargs.get("consultation_external_id"))
+
+        queryset = queryset.filter(consultation=consultation)
+
+        with transaction.atomic():
+            for investigation in investigations:
+                if "external_id" not in investigation:
+                    raise ValidationError({"external_id": "is required"})
+                obj = queryset.filter(external_id=investigation["external_id"]).first()
+                if not obj:
+                    raise ValidationError({investigation["external_id"]: "not found"})
+                serializer_obj = InvestigationValueSerializer(instance=obj, data=investigation)
+                serializer_obj.is_valid(raise_exception=True)
+                serializer_obj.update(obj,investigation)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, *args, **kwargs):
         if "investigations" not in request.data:
@@ -206,4 +252,4 @@ class InvestigationValueViewSet(
                 extra_data={"consultation": consultation},
             ).generate()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_204_NO_CONTENT)

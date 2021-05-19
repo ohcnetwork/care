@@ -60,6 +60,7 @@ LOCAL_BODY_CHOICES = (
     (1, "Grama Panchayath"),
     (2, "Block Panchayath"),
     (3, "District Panchayath"),
+    (4, "Nagar Panchayath"),
     # Municipality levels
     (10, "Municipality"),
     # Corporation levels
@@ -116,9 +117,7 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False).select_related(
-            "local_body", "district", "state"
-        )
+        return qs.filter(deleted=False).select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
         district_id = extra_fields["district"]
@@ -136,21 +135,19 @@ class Skill(models.Model):
 
 
 class UsernameValidator(UnicodeUsernameValidator):
-    regex = r'^[\w.@+-]+[^.@+-_]$'
+    regex = r"^[\w.@+-]+[^.@+-_]$"
     message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
 
 
 class User(AbstractUser):
     username_validator = UsernameValidator()
     username = models.CharField(
-        _('username'),
+        _("username"),
         max_length=150,
         unique=True,
-        help_text=_('150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_("150 characters or fewer. Letters, digits and @/./+/-/_ only."),
         validators=[username_validator],
-        error_messages={
-            'unique': _("A user with that username already exists.")
-        },
+        error_messages={"unique": _("A user with that username already exists.")},
     )
 
     TYPE_VALUE_MAP = {
@@ -178,12 +175,8 @@ class User(AbstractUser):
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
-    local_body = models.ForeignKey(
-        LocalBody, on_delete=models.PROTECT, null=True, blank=True
-    )
-    district = models.ForeignKey(
-        District, on_delete=models.PROTECT, null=True, blank=True
-    )
+    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
@@ -237,10 +230,7 @@ class User(AbstractUser):
         try:
             return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
         except TypeError:
-            return (
-                User.TYPE_VALUE_MAP[request.data["user_type"]]
-                <= User.TYPE_VALUE_MAP["Volunteer"]
-            )
+            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -253,9 +243,9 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (
-            request.data.get("district") or request.data.get("state")
-        ) and self.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
+            "DistrictLabAdmin"
+        ]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False

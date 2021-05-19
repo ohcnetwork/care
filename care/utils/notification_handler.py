@@ -1,12 +1,13 @@
-from care.facility.models.shifting import ShiftingRequest
-from care.facility.models.patient_consultation import PatientConsultation, DailyRound
-from care.facility.models.patient import PatientRegistration
-from care.facility.models.notification import Notification
-from care.facility.models.facility import Facility
-from care.facility.models.patient_investigation import InvestigationValue, InvestigationSession
-from care.users.models import User
+from django.conf import settings
 
+from care.facility.models.facility import Facility
+from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.models.patient_investigation import InvestigationSession, InvestigationValue
+from care.facility.models.shifting import ShiftingRequest
 from care.facility.tasks.notification.generator import generate_notifications_for_facility, generate_sms_for_user
+from care.users.models import User
 
 
 class NotificationCreationException(Exception):
@@ -135,17 +136,10 @@ class NotificationGenerator:
                 )
         if isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
-                if self.caused_object.assigned_to:
-                    self.message = "Your Shifting Request to {} has been approved , Your Assigned Contact is {} available at {}".format(
-                        self.caused_object.assigned_facility.name,
-                        self.caused_object.assigned_to.get_full_name(),
-                        self.caused_object.assigned_to.phone_number,
-                    )
-                else:
-                    self.message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
-                        self.caused_object.assigned_facility.name,
-                        self.caused_object.shifting_approving_facility.phone_number,
-                    )
+                self.message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
+                    self.caused_object.assigned_facility.name,
+                    self.caused_object.shifting_approving_facility.phone_number,
+                )
         return True
 
     def generate_cause_objects(self):
@@ -181,7 +175,7 @@ class NotificationGenerator:
         return True
 
     def generate(self):
-        if self.generate_sms:
+        if self.generate_sms and settings.SEND_SMS_NOTIFICATION:
             if isinstance(self.caused_object, ShiftingRequest):
                 generate_sms_for_user(
                     [
