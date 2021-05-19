@@ -21,6 +21,15 @@ class Command(BaseCommand):
         parser.add_argument("folder", help="path to the folder of JSONs")
 
     def handle(self, *args, **options) -> Optional[str]:
+        def get_ward_number(ward):
+            if "ward_number" in ward:
+                return ward["ward_number"]
+            return ward["ward_no"]
+
+        def get_ward_name(ward):
+            if "ward_name" in ward:
+                return ward["ward_name"]
+            return ward["name"]
 
         folder = options["folder"]
         counter = 0
@@ -36,8 +45,8 @@ class Command(BaseCommand):
             return LocalBody.objects.get(
                 name=lb["name"],
                 district=district_map[lb["district"]],
-                localbody_code=lb["localbody_code"],
-                body_type=LOCAL_BODY_CHOICE_MAP.get((lb["localbody_code"] or " ")[0], LOCAL_BODY_CHOICES[-1][0]),
+                localbody_code=lb.get("localbody_code"),
+                body_type=LOCAL_BODY_CHOICE_MAP.get((lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]),
             )
 
         for f in glob.glob(f"{folder}/*.json"):
@@ -51,9 +60,9 @@ class Command(BaseCommand):
                     for ward in wards:
                         counter += 1
                         try:
-                            obj = Ward(local_body=local_body, number=ward["ward_number"], name=ward["name"])
+                            obj = Ward(local_body=local_body, number=get_ward_number(ward), name=get_ward_name(ward))
                             obj.save()
                         except IntegrityError as e:
-                            pass
+                            print(e)
         print("Processed ", str(counter), " wards")
 
