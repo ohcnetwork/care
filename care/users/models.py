@@ -135,7 +135,7 @@ class Skill(models.Model):
 
 
 class UsernameValidator(UnicodeUsernameValidator):
-    regex = r"^[\w.@+-]+[^.@+-_]$"
+    regex = r"^[\w.@+-]+[^.@+_-]$"
     message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
 
 
