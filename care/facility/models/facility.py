@@ -72,6 +72,11 @@ FACILITY_TYPES = [
     (1300, "Shifting Centre"),
     # Use 14xx for Covid Management Centers.
     (1400, "Covid Management Center"),
+    # Use 15xx for Resource Management Centers.
+    (1500, "Request Approving Center"),
+    (1510, "Request Fulfilment Center"),
+    # Use 16xx for War Rooms.
+    (1600, "District War Room"),
 ]
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
