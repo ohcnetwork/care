@@ -167,4 +167,4 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id")
+        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
