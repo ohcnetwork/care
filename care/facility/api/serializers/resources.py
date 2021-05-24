@@ -155,6 +155,8 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
 class ResourceRequestCommentSerializer(serializers.ModelSerializer):
 
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
     def create(self, validated_data):
@@ -165,4 +167,4 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by",)
+        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id")
