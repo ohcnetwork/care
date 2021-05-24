@@ -1,3 +1,4 @@
+from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -27,6 +28,7 @@ def inverse_choices(choices):
 
 inverse_resource_status = inverse_choices(RESOURCE_STATUS_CHOICES)
 inverse_category = inverse_choices(RESOURCE_CATEGORY_CHOICES)
+inverse_sub_category = inverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 def get_request_queryset(request, queryset):
@@ -57,6 +59,14 @@ class ResourceFilterBackend(DRYPermissionFiltersBase):
 
 
 class ResourceFilterSet(filters.FilterSet):
+    def get_sub_category(
+        self, queryset, field_name, value,
+    ):
+        if value:
+            if value in inverse_sub_category:
+                return queryset.filter(status=inverse_sub_category[value])
+        return queryset
+
     def get_category(
         self, queryset, field_name, value,
     ):
@@ -75,6 +85,7 @@ class ResourceFilterSet(filters.FilterSet):
 
     status = filters.CharFilter(method="get_status", field_name="status")
     category = filters.CharFilter(method="get_category", field_name="category")
+    sub_category = filters.CharFilter(method="get_sub_category", field_name="sub_category")
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")

@@ -21,8 +21,13 @@ RESOURCE_CATEGORY_CHOICES = (
     (200, "SUPPLIES"),
 )
 
-REVERSE_RESOURCE_STATUS_CHOICES = reverse_choices(RESOURCE_STATUS_CHOICES)
-REVERSE_RESOURCE_CATEGORY_CHOICES = reverse_choices(RESOURCE_CATEGORY_CHOICES)
+RESOURCE_SUB_CATEGORY_CHOICES = (
+    (110, "LIQUID OXYGEN"),
+    (120, "B TYPE OXYGEN CYLINDER"),
+    (120, "C TYPE OXYGEN CYLINDER"),
+    (120, "JUMBO D TYPE OXYGEN CYLINDER"),
+    (1000, "UNSPECIFIED"),
+)
 
 
 class ResourceRequest(FacilityBaseModel):
@@ -44,7 +49,12 @@ class ResourceRequest(FacilityBaseModel):
     )
     status = models.IntegerField(choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False)
     category = models.IntegerField(choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False)
+    sub_category = models.IntegerField(choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False)
     priority = models.IntegerField(default=None, null=True, blank=True)
+
+    # Quantity
+    requested_quantity = models.IntegerField(default=0)
+    assigned_quantity = models.IntegerField(default=0)
 
     is_assigned_to_user = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(
