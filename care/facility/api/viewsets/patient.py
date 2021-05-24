@@ -342,7 +342,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
