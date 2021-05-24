@@ -48,14 +48,9 @@ def get_request_queryset(request, queryset):
         facility_ids = get_accessible_facilities(request.user)
         q_objects = Q(orgin_facility__id__in=facility_ids)
         q_objects |= Q(approving_facility__id__in=facility_ids)
-        q_objects |= Q(assigned_facility__id__in=facility_ids, status__gte=20)
+        q_objects |= Q(assigned_facility__id__in=facility_ids)
         queryset = queryset.filter(q_objects)
     return queryset
-
-
-class ResourceFilterBackend(DRYPermissionFiltersBase):
-    def filter_queryset(self, request, queryset, view):
-        return get_request_queryset(request, queryset)
 
 
 class ResourceFilterSet(filters.FilterSet):
@@ -127,8 +122,11 @@ class ResourceRequestViewSet(
     ordering_fields = ["id", "created_date", "modified_date", "emergency", "priority"]
 
     permission_classes = (IsAuthenticated, DRYPermissions)
-    filter_backends = (ResourceFilterBackend, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
     filterset_class = ResourceFilterSet
+
+    def get_queryset(self):
+        return get_request_queryset(self.request, self.queryset)
 
 
 class ResourceRequestCommentViewSet(
@@ -160,7 +158,7 @@ class ResourceRequestCommentViewSet(
             facility_ids = get_accessible_facilities(self.request.user)
             q_objects = Q(request__orgin_facility__id__in=facility_ids)
             q_objects |= Q(request__approving_facility__id__in=facility_ids)
-            q_objects |= Q(request__assigned_facility__id__in=facility_ids, status__gte=20)
+            q_objects |= Q(request__assigned_facility__id__in=facility_ids)
             queryset = self.queryset.filter(q_objects)
         return queryset
 
