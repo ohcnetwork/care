@@ -35,6 +35,9 @@ class FacilityPermissionMixin(BasePermissionMixin):
     def has_object_update_permission(self, request):
         return super().has_object_update_permission(request) or self.has_object_write_permission(request)
 
+    def has_object_destroy_permission(self, request):
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+
 
 class FacilityRelatedPermissionMixin(BasePermissionMixin):
     @staticmethod
