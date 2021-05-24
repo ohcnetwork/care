@@ -118,10 +118,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if not has_facility_permission(user, instance.shifting_approving_facility):
                     raise ValidationError({"kasp": ["Permission Denied"]})
 
-        if "breathlessness_level" in validated_data:
-            if not has_facility_permission(user, instance.shifting_approving_facility):
-                del validated_data["breathlessness_level"]
-
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
