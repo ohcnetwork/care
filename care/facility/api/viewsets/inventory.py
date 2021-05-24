@@ -22,6 +22,7 @@ from care.facility.models import (
     FacilityInventorySummary,
 )
 from care.users.models import User
+from care.utils.queryset.facility import get_facility_queryset
 
 
 class FacilityInventoryFilter(filters.FilterSet):
@@ -91,10 +92,8 @@ class FacilityInventoryLogViewSet(
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
 
     def get_facility(self):
-        facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
-        if not self.request.user.is_superuser:
-            facility_qs.filter(users__id__exact=self.request.user.id)
-        return get_object_or_404(facility_qs)
+        queryset = get_facility_queryset(self.request.user)
+        return get_object_or_404(queryset.filter(external_id=self.kwargs.get("facility_external_id")))
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
