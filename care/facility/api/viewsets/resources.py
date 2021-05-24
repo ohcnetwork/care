@@ -164,8 +164,7 @@ class ResourceRequestCommentViewSet(
 
     def get_request(self):
         queryset = get_request_queryset(self.request, ResourceRequest.objects.all())
-        if not self.request.user.is_superuser:
-            queryset.filter(external_id=self.kwargs.get("resource_external_id"))
+        queryset = queryset.filter(external_id=self.kwargs.get("resource_external_id"))
         return get_object_or_404(queryset)
 
     def perform_create(self, serializer):
