@@ -85,7 +85,7 @@ class LocalBody(models.Model):
 
     name = models.CharField(max_length=255)
     body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
-    localbody_code = models.CharField(max_length=20, blank=True)
+    localbody_code = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         unique_together = (
@@ -135,7 +135,7 @@ class Skill(models.Model):
 
 
 class UsernameValidator(UnicodeUsernameValidator):
-    regex = r"^[\w.@+-]+[^.@+-_]$"
+    regex = r"^[\w.@+-]+[^.@+_-]$"
     message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
 
 

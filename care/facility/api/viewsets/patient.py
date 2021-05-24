@@ -86,6 +86,7 @@ class PatientFilterSet(filters.FilterSet):
     # Vaccination Filters
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
+    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -341,7 +342,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)

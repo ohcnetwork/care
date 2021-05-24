@@ -8,6 +8,11 @@ Auto Deployed to https://careapi.coronasafe.in for master Branch.
 
 Report bugs with Github Issues
 
+.. image:: https://circleci.com/gh/coronasafe/care.svg?style=svg
+   :alt: CircleCI Badge
+   :target: https://circleci.com/gh/coronasafe/care_fe
+\
+   
 .. image:: https://api.codacy.com/project/badge/Grade/3ca2f379f8494605b52b382639510e0a
    :alt: Codacy Badge
    :target: https://app.codacy.com/gh/coronasafe/care?utm_source=github.com&utm_medium=referral&utm_content=coronasafe/care&utm_campaign=Badge_Grade_Dashboard
@@ -25,6 +30,7 @@ Report bugs with Github Issues
      :target: https://github.com/ambv/black
      :alt: Black code style
 
+\
 
 .. image:: https://i.imgur.com/V7jxjak.png
      :target: http://slack.coronasafe.in/

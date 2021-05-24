@@ -10,5 +10,6 @@ from .patient_tele_consultation import *  # noqa
 from .inventory import *
 from .summary import *
 from .shifting import *
+from .resources import *
 from .patient_external_test import *
 from .patient_investigation import *

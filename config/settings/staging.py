@@ -160,7 +160,7 @@ sentry_sdk.init(
 IS_PRODUCTION = False
 
 # SMS API KEYS
-USE_SMS = True
+USE_SMS = False
 SNS_ACCESS_KEY = env("SNS_ACCESS_KEY")
 SNS_SECRET_KEY = env("SNS_SECRET_KEY")
 SNS_REGION = "ap-south-1"
