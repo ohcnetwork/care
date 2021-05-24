@@ -115,7 +115,7 @@ class FacilityInventoryMinQuantityViewSet(
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
@@ -150,7 +150,7 @@ class FacilityInventorySummaryViewSet(
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
@@ -160,24 +160,24 @@ class FacilityInventorySummaryViewSet(
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
 
 
-class FacilityInventoryBurnRateFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name="facility__name", lookup_expr="icontains")
-    item = filters.NumberFilter(field_name="item_id")
+# class FacilityInventoryBurnRateFilter(filters.FilterSet):
+#     name = filters.CharFilter(field_name="facility__name", lookup_expr="icontains")
+#     item = filters.NumberFilter(field_name="item_id")
 
 
-class FacilityInventoryBurnRateViewSet(
-    UserAccessMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet,
-):
-    queryset = FacilityInventoryBurnRate.objects.select_related(
-        "item", "item__default_unit", "facility__district"
-    ).all()
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilityInventoryBurnRateFilter
-    permission_classes = (IsAuthenticated, DRYPermissions)
-    serializer_class = FacilityInventoryBurnRateSerializer
+# class FacilityInventoryBurnRateViewSet(
+#     UserAccessMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet,
+# ):
+#     queryset = FacilityInventoryBurnRate.objects.select_related(
+#         "item", "item__default_unit", "facility__district"
+#     ).all()
+#     filter_backends = (filters.DjangoFilterBackend,)
+#     filterset_class = FacilityInventoryBurnRateFilter
+#     permission_classes = (IsAuthenticated, DRYPermissions)
+#     serializer_class = FacilityInventoryBurnRateSerializer
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.kwargs.get("facility_external_id"):
-            queryset = queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
-        return self.filter_by_user_scope(queryset)
+#     def filter_queryset(self, queryset):
+#         queryset = super().filter_queryset(queryset)
+#         if self.kwargs.get("facility_external_id"):
+#             queryset = queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+#         return self.filter_by_user_scope(queryset)

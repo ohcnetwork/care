@@ -9,7 +9,6 @@ from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.inventory import (
-    FacilityInventoryBurnRateViewSet,
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
     FacilityInventoryMinQuantityViewSet,
@@ -102,7 +101,7 @@ router.register(
 
 
 router.register("items", FacilityInventoryItemViewSet)
-router.register("burn_rate", FacilityInventoryBurnRateViewSet)
+# router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
@@ -122,7 +121,7 @@ facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryVie
 facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
-facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
+# facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
