@@ -42,6 +42,7 @@ class ResourceRequest(FacilityBaseModel):
         "Facility", on_delete=models.SET_NULL, null=True, related_name="resource_assigned_facility"
     )
     emergency = models.BooleanField(default=False)
+    title = models.CharField(max_length=255, null=False, blank=False)
     reason = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
