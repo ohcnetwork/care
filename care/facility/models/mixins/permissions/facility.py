@@ -60,12 +60,12 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
             (hasattr(facility, "created_by") and request.user == facility.created_by)
             or (
                 hasattr(facility, "district")
-                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and request.user.district == facility.district
             )
             or (
                 hasattr(facility, "state")
-                and request.user.user_type >= User.TYPE_VALUE_MAP["StateAdmin"]
+                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and request.user.state == facility.state
             )
             or (request.user in facility.users.all())
