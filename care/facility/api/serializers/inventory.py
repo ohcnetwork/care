@@ -50,7 +50,14 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacilityInventoryLog
-        read_only_fields = ("id", "external_id", "created_by", "current_stock", "quantity_in_default_unit")
+        read_only_fields = (
+            "id",
+            "external_id",
+            "created_by",
+            "current_stock",
+            "quantity_in_default_unit",
+            "probable_accident",
+        )
         exclude = ("deleted", "modified_date", "facility")
 
     @transaction.atomic
@@ -109,22 +116,23 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         summary_obj.save()
 
         if not validated_data["is_incoming"]:
-            self._set_burn_rate(facility, item)
+            self.set_burn_rate(facility, item)
 
         return instance
 
-    def _set_burn_rate(self, facility, item):
+    def set_burn_rate(self, facility, item):
         yesterday = timezone.now() - timedelta(days=1)
 
         previous_usage_log_sum = FacilityInventoryLog.objects.filter(
-            facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
+            probable_accident=False, facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
         ).aggregate(Sum("quantity_in_default_unit"))
 
         if previous_usage_log_sum:
-            burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
-            FacilityInventoryBurnRate.objects.update_or_create(
-                facility=facility, item=item, defaults={"burn_rate": burn_rate}
-            )
+            if previous_usage_log_sum["quantity_in_default_unit__sum"]:
+                burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
+                FacilityInventoryBurnRate.objects.update_or_create(
+                    facility=facility, item=item, defaults={"burn_rate": burn_rate}
+                )
 
 
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):

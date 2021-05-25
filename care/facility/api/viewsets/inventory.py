@@ -1,8 +1,14 @@
+from django.db import transaction
+from django.http import request
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.inventory import (
@@ -20,6 +26,7 @@ from care.facility.models import (
     FacilityInventoryLog,
     FacilityInventoryMinQuantity,
     FacilityInventorySummary,
+    facility,
 )
 from care.users.models import User
 from care.utils.queryset.facility import get_facility_queryset
@@ -94,6 +101,31 @@ class FacilityInventoryLogViewSet(
     def get_facility(self):
         queryset = get_facility_queryset(self.request.user)
         return get_object_or_404(queryset.filter(external_id=self.kwargs.get("facility_external_id")))
+
+    @action(methods=["DELETE"], detail=False)
+    def delete_last(self):
+        facility = self.get_facility()
+        item = self.request.GET.get("item")
+        if not item:
+            raise ValidationError({"item": "is required"})
+        item_obj = get_object_or_404(FacilityInventoryItem.objects.filter(id=item))
+        inventory_log_object = FacilityInventoryLog.objects.filter(item=item_obj, facility=facility).order_by("-id")
+        if not inventory_log_object.exists():
+            raise ValidationError({"inventory": "Does not Exist"})
+        inventory_log_object = inventory_log_object[0]
+        data = self.get_serializer(inventory_log_object).data
+        with transaction.atomic():
+            data["is_incoming"] = not data["is_incoming"]
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(facility=facility, probable_accident=True)
+            inventory_log_object.probable_accident = True
+            inventory_log_object.save()
+            serializer.set_burn_rate(facility, item_obj)
+        return Response(status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
