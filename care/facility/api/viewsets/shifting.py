@@ -17,14 +17,15 @@ from care.facility.api.serializers.shifting import (
     has_facility_permission,
 )
 from care.facility.models import (
-    SHIFTING_STATUS_CHOICES,
     BREATHLESSNESS_CHOICES,
+    SHIFTING_STATUS_CHOICES,
     PatientConsultation,
     ShiftingRequest,
     User,
 )
-
+from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.filters import CareChoiceFilter
 
 
 def inverse_choices(choices):
@@ -79,9 +80,10 @@ class ShiftingFilterSet(filters.FilterSet):
                 return queryset.filter(status=inverse_shifting_status[value])
         return queryset
 
-    status = filters.CharFilter(method="get_status", field_name="status")
-    breathlessness_level = filters.CharFilter(method="get_breathlessness_level", field_name="breathlessness_level")
+    status = CareChoiceFilter(choice_dict=inverse_shifting_status)
+    breathlessness_level = CareChoiceFilter(choice_dict=inverse_breathlessness_level)
 
+    disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT, field_name="patient__disease_status")
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
