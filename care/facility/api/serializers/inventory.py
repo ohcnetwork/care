@@ -121,18 +121,22 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         return instance
 
     def set_burn_rate(self, facility, item):
-        yesterday = timezone.now() - timedelta(days=1)
+        set_burn_rate(facility, item)
 
-        previous_usage_log_sum = FacilityInventoryLog.objects.filter(
-            probable_accident=False, facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
-        ).aggregate(Sum("quantity_in_default_unit"))
 
-        if previous_usage_log_sum:
-            if previous_usage_log_sum["quantity_in_default_unit__sum"]:
-                burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
-                FacilityInventoryBurnRate.objects.update_or_create(
-                    facility=facility, item=item, defaults={"burn_rate": burn_rate}
-                )
+def set_burn_rate(facility, item):
+    yesterday = timezone.now() - timedelta(days=1)
+
+    previous_usage_log_sum = FacilityInventoryLog.objects.filter(
+        probable_accident=False, facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
+    ).aggregate(Sum("quantity_in_default_unit"))
+
+    if previous_usage_log_sum:
+        if previous_usage_log_sum["quantity_in_default_unit__sum"]:
+            burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
+            FacilityInventoryBurnRate.objects.update_or_create(
+                facility=facility, item=item, defaults={"burn_rate": burn_rate}
+            )
 
 
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):

@@ -17,6 +17,7 @@ from care.facility.api.serializers.inventory import (
     FacilityInventoryLogSerializer,
     FacilityInventoryMinQuantitySerializer,
     FacilityInventorySummarySerializer,
+    set_burn_rate,
 )
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 from care.facility.models import (
@@ -101,6 +102,14 @@ class FacilityInventoryLogViewSet(
     def get_facility(self):
         queryset = get_facility_queryset(self.request.user)
         return get_object_or_404(queryset.filter(external_id=self.kwargs.get("facility_external_id")))
+
+    @action(methods=["PUT"], detail=True)
+    def flag(self):
+        log_obj = get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
+        log_obj.probable_accident = not log_obj.probable_accident
+        log_obj.save()
+        set_burn_rate(log_obj.facility, log_obj.item)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=["DELETE"], detail=False)
     def delete_last(self):
