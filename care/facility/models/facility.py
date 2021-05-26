@@ -131,9 +131,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     def __str__(self):
         return f"{self.name}"
 
-    def has_object_destroy_permission(self, request):
-        return request.user.is_superuser
-
     def save(self, *args, **kwargs) -> None:
         """
         While saving, if the local body is not null, then district will be local body's district
