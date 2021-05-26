@@ -64,21 +64,6 @@ class ShiftingFilterBackend(DRYPermissionFiltersBase):
 
 
 class ShiftingFilterSet(filters.FilterSet):
-    def get_breathlessness_level(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_breathlessness_level:
-                return queryset.filter(status=inverse_breathlessness_level[value])
-        return queryset
-
-    def get_status(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_shifting_status:
-                return queryset.filter(status=inverse_shifting_status[value])
-        return queryset
 
     status = CareChoiceFilter(choice_dict=inverse_shifting_status)
     breathlessness_level = CareChoiceFilter(choice_dict=inverse_breathlessness_level)
