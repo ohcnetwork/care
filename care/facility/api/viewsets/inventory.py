@@ -97,6 +97,7 @@ class FacilityInventoryLogViewSet(
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
+        print(self.kwargs)
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
 
     def get_facility(self):
@@ -104,15 +105,16 @@ class FacilityInventoryLogViewSet(
         return get_object_or_404(queryset.filter(external_id=self.kwargs.get("facility_external_id")))
 
     @action(methods=["PUT"], detail=True)
-    def flag(self):
+    def flag(self, request, **kwargs):
         log_obj = get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
         log_obj.probable_accident = not log_obj.probable_accident
+        print(log_obj.probable_accident)
         log_obj.save()
         set_burn_rate(log_obj.facility, log_obj.item)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=["DELETE"], detail=False)
-    def delete_last(self):
+    def delete_last(self, request, **kwargs):
         facility = self.get_facility()
         item = self.request.GET.get("item")
         if not item:
