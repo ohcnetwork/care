@@ -17,6 +17,7 @@ from care.facility.models import (
     User,
 )
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.filters import CareChoiceFilter
 
 
 def inverse_choices(choices):
@@ -54,33 +55,10 @@ def get_request_queryset(request, queryset):
 
 
 class ResourceFilterSet(filters.FilterSet):
-    def get_sub_category(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_sub_category:
-                return queryset.filter(status=inverse_sub_category[value])
-        return queryset
 
-    def get_category(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_category:
-                return queryset.filter(status=inverse_category[value])
-        return queryset
-
-    def get_status(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_resource_status:
-                return queryset.filter(status=inverse_resource_status[value])
-        return queryset
-
-    status = filters.CharFilter(method="get_status", field_name="status")
-    category = filters.CharFilter(method="get_category", field_name="category")
-    sub_category = filters.CharFilter(method="get_sub_category", field_name="sub_category")
+    status = CareChoiceFilter(choice_dict=inverse_resource_status)
+    category = CareChoiceFilter(choice_dict=inverse_category)
+    sub_category = CareChoiceFilter(choice_dict=inverse_sub_category)
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")

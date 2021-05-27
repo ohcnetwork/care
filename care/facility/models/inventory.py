@@ -86,6 +86,7 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     unit = models.ForeignKey(FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False)
     is_incoming = models.BooleanField()
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    probable_accident = models.BooleanField(default=False)
 
 
 class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin):
