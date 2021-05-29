@@ -119,7 +119,7 @@ class ResourceRequestCommentViewSet(
     filter_backends = (rest_framework_filters.OrderingFilter,)
 
     def get_queryset(self):
-        self.queryset = self.queryset.filter(request__external_id=self.kwargs.get("resource_external_id"))
+        queryset = self.queryset.filter(request__external_id=self.kwargs.get("resource_external_id"))
         if self.request.user.is_superuser:
             pass
         else:
@@ -127,17 +127,17 @@ class ResourceRequestCommentViewSet(
                 q_objects = Q(request__orgin_facility__state=self.request.user.state)
                 q_objects |= Q(request__approving_facility__state=self.request.user.state)
                 q_objects |= Q(request__assigned_facility__state=self.request.user.state)
-                return self.queryset.filter(q_objects)
+                return queryset.filter(q_objects)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(request__orgin_facility__district=self.request.user.district)
                 q_objects |= Q(request__approving_facility__district=self.request.user.district)
                 q_objects |= Q(request__assigned_facility__district=self.request.user.district)
-                return self.queryset.filter(q_objects)
+                return queryset.filter(q_objects)
             facility_ids = get_accessible_facilities(self.request.user)
             q_objects = Q(request__orgin_facility__id__in=facility_ids)
             q_objects |= Q(request__approving_facility__id__in=facility_ids)
             q_objects |= Q(request__assigned_facility__id__in=facility_ids)
-            queryset = self.queryset.filter(q_objects)
+            queryset = queryset.filter(q_objects)
         return queryset
 
     def get_request(self):
