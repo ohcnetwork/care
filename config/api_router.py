@@ -39,7 +39,6 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.life.api.viewsets.lifedata import LifeDataViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -48,7 +47,6 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("life/data", LifeDataViewSet)
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)

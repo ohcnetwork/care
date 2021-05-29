@@ -97,7 +97,7 @@ THIRD_PARTY_APPS = [
     "django_rest_passwordreset",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.life", "care.audit_log.apps.AuditLogConfig"]
+LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.audit_log.apps.AuditLogConfig"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -419,13 +419,6 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
 
-#######################
-# Life Parameters
-
-LIFE_S3_ENDPOINT = env("LIFE_S3_ENDPOINT", default="")
-LIFE_S3_ACCESS_KEY = env("LIFE_S3_ACCESS_KEY", default="")
-LIFE_S3_SECRET = env("LIFE_S3_SECRET", default="")
-LIFE_S3_BUCKET = env("LIFE_S3_BUCKET", default="")
 
 # Audit logs
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
