@@ -119,7 +119,7 @@ class ResourceRequestCommentViewSet(
     filter_backends = (rest_framework_filters.OrderingFilter,)
 
     def get_queryset(self):
-        queryset = self.queryset.filter(request__external_id=self.kwargs.get("resource_external_id"))
+        self.queryset = self.queryset.filter(request__external_id=self.kwargs.get("resource_external_id"))
         if self.request.user.is_superuser:
             pass
         else:
