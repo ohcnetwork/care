@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.http import request
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
@@ -31,6 +30,7 @@ from care.facility.models import (
 )
 from care.users.models import User
 from care.utils.queryset.facility import get_facility_queryset
+from care.utils.validation.integer_validation import check_integer
 
 
 class FacilityInventoryFilter(filters.FilterSet):
@@ -100,6 +100,7 @@ class FacilityInventoryLogViewSet(
         item = self.request.GET.get("item")
         if not item:
             raise ValidationError({"item": "is required"})
+        item = check_integer(item)[0]
         item_obj = get_object_or_404(FacilityInventoryItem.objects.filter(id=item))
         inventory_log_object = FacilityInventoryLog.objects.filter(item=item_obj, facility=facility).order_by("-id")
         if not inventory_log_object.exists():

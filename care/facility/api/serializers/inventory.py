@@ -32,9 +32,9 @@ class FacilityInventoryUnitSerializer(serializers.ModelSerializer):
 
 
 class FacilityInventoryItemSerializer(serializers.ModelSerializer):
-    default_unit = FacilityInventoryUnitSerializer()
-    allowed_units = FacilityInventoryUnitSerializer(many=True)
-    tags = FacilityInventoryItemTagSerializer(many=True)
+    default_unit = FacilityInventoryUnitSerializer(read_only=True)
+    allowed_units = FacilityInventoryUnitSerializer(many=True, read_only=True)
+    tags = FacilityInventoryItemTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = FacilityInventoryItem
@@ -45,8 +45,8 @@ class FacilityInventoryItemSerializer(serializers.ModelSerializer):
 class FacilityInventoryLogSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
-    unit_object = FacilityInventoryUnitSerializer(source="unit", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
+    unit_object = FacilityInventoryUnitSerializer(source="unit", read_only=True)
 
     class Meta:
         model = FacilityInventoryLog
@@ -142,8 +142,8 @@ def set_burn_rate(facility, item):
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
-    unit_object = FacilityInventoryUnitSerializer(source="unit", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
+    unit_object = FacilityInventoryUnitSerializer(source="unit", read_only=True)
 
     class Meta:
         model = FacilityInventorySummary
@@ -159,7 +159,7 @@ class FacilityInventorySummarySerializer(serializers.ModelSerializer):
 class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
 
     class Meta:
         model = FacilityInventoryMinQuantity
