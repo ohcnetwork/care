@@ -4,9 +4,9 @@ Care
 Care is a Corona Care Center management app for the Govt of Kerala
 ====
 
-Auto Deployed to https://careapi.coronasafe.in for master Branch. 
+Auto Deployed to https://careapi.coronasafe.in for master Branch.  
 
-Report bugs with Github Issues
+Documentation is available at https://care-be-docs.coronasafe.network
 
 .. image:: https://circleci.com/gh/coronasafe/care.svg?style=svg
    :alt: CircleCI Badge

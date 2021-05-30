@@ -2,6 +2,13 @@ from django_filters.filters import CharFilter
 from django import forms
 
 
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
 class CareChoiceFilter(CharFilter):
     def __init__(self, *args, **kwargs):
         if "choice_dict" in kwargs:

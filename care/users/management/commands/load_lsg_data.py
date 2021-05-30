@@ -48,6 +48,8 @@ class Command(BaseCommand):
                     return district[state_name][district_name]
             district_obj = District.objects.filter(name=district_name, state=state_obj).first()
             if not district_obj:
+                if not district_name:
+                    return None
                 print(f"Creating District {district_name}")
                 district_obj = District(name=district_name, state=state_obj)
                 district_obj.save()
@@ -61,15 +63,21 @@ class Command(BaseCommand):
                 type of the local body will be match based on this.
                 if not found, it will be matched against the last item in the choices - "Others"
             """
-            local_body_objs = [
-                LocalBody(
-                    name=lb["name"],
-                    district=get_district_obj(lb["district"], lb["state"]),
-                    localbody_code=lb.get("localbody_code"),
-                    body_type=LOCAL_BODY_CHOICE_MAP.get((lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]),
+            local_body_objs = []
+            for lb in local_body_list:
+                dist_obj = get_district_obj(lb["district"], lb["state"])
+                if not dist_obj:
+                    continue
+                local_body_objs.append(
+                    LocalBody(
+                        name=lb["name"],
+                        district=dist_obj,
+                        localbody_code=lb.get("localbody_code"),
+                        body_type=LOCAL_BODY_CHOICE_MAP.get(
+                            (lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]
+                        ),
+                    )
                 )
-                for lb in local_body_list
-            ]
 
             # Possible conflict is name uniqueness.
             # If there is a conflict, it means that the record already exists.
@@ -91,6 +99,3 @@ class Command(BaseCommand):
 
         if len(local_bodies) > 0:
             create_local_bodies(local_bodies)
-
-        print(state)
-        print(district)

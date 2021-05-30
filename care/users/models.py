@@ -120,9 +120,12 @@ class CustomUserManager(UserManager):
         return qs.filter(deleted=False).select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
-        district_id = extra_fields["district"]
-        district = District.objects.get(id=district_id)
+        district = District.objects.all()[0]
         extra_fields["district"] = district
+        extra_fields["age"] = 20
+        extra_fields["phone_number"] = "+919696969696"
+        extra_fields["gender"] = 3
+        extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
 
 
@@ -194,12 +197,7 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
-        "user_type",
         "email",
-        "phone_number",
-        "age",
-        "gender",
-        "district",
     ]
 
     CSV_MAPPING = {
