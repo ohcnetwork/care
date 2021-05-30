@@ -48,24 +48,6 @@ class FacilityInventoryItemViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityInventoryFilter
 
-    def list(self, request, *args, **kwargs):
-        """
-        Facility Capacity List
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityInventoryItemViewSet, self).list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Facility Capacity Retrieve
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityInventoryItemViewSet, self).retrieve(request, *args, **kwargs)
-
 
 class FacilityInventoryLogFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
@@ -108,7 +90,6 @@ class FacilityInventoryLogViewSet(
     def flag(self, request, **kwargs):
         log_obj = get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
         log_obj.probable_accident = not log_obj.probable_accident
-        print(log_obj.probable_accident)
         log_obj.save()
         set_burn_rate(log_obj.facility, log_obj.item)
         return Response(status=status.HTTP_204_NO_CONTENT)
