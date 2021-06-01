@@ -17,6 +17,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
     phone_number = PhoneNumberIsPossibleField()
+    alt_phone_number = PhoneNumberIsPossibleField()
 
     class Meta:
         model = User
@@ -33,6 +34,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "district",
             "state",
             "phone_number",
+            "alt_phone_number",
             "gender",
             "age",
         )
@@ -120,7 +122,9 @@ class UserCreateSerializer(SignUpSerializer):
             validated["user_type"] > self.context["created_by"].user_type
             and not self.context["created_by"].is_superuser
         ):
-            raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
+            raise exceptions.ValidationError(
+                {"user_type": ["User cannot create another user with higher permissions"]}
+            )
 
         if (
             not validated.get("ward")
@@ -183,6 +187,7 @@ class UserSerializer(SignUpSerializer):
             "district",
             "state",
             "phone_number",
+            "alt_phone_number",
             "gender",
             "age",
             "is_superuser",
