@@ -247,6 +247,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True, blank=True, verbose_name="Date Patient is Declared Positive"
     )
 
+    # Permission Scopes
+
+    assigned_to = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank="True", related_name="root_patient_assigned_to"
+    )
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()

@@ -91,6 +91,8 @@ class PatientFilterSet(filters.FilterSet):
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
     number_of_doses = filters.NumberFilter(field_name="number_of_doses")
+    # Permission Filters
+    assigned_to = filters.NumberFilter(field_name="assigned_to")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -107,6 +109,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
+                q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
 
         return queryset
@@ -137,6 +140,7 @@ class PatientViewSet(
         "district",
         "state",
         "ward",
+        "assigned_to",
         "facility",
         "facility__ward",
         "facility__local_body",
