@@ -76,7 +76,7 @@ class FacilityViewSet(
 ):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.filter(is_active=True).select_related("ward", "local_body", "district", "state")
+    queryset = Facility.objects.all().select_related("ward", "local_body", "district", "state")
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -281,7 +281,7 @@ class FacilityViewSet(
 class AllFacilityViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
 ):
-    queryset = Facility.objects.filter(is_active=True).select_related("local_body", "district", "state")
+    queryset = Facility.objects.all().select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityFilter
