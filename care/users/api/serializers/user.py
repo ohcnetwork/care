@@ -17,7 +17,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
     phone_number = PhoneNumberIsPossibleField()
-    alt_phone_number = PhoneNumberIsPossibleField()
+    alt_phone_number = PhoneNumberIsPossibleField(required=False)
 
     class Meta:
         model = User
