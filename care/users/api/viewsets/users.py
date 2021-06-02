@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -67,12 +68,10 @@ class UserViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (
-        filters.DjangoFilterBackend,
-        rest_framework_filters.OrderingFilter,
-    )
+    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter, drf_filters.SearchFilter)
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
+    search_fields = ["first_name", "last_name", "username"]
     # last_login
     # def get_permissions(self):
     #     return [
