@@ -233,6 +233,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(2)]
     )
     vaccine_name = models.CharField(choices=vaccineChoices, default=None, null=True, blank=False, max_length=15)
+    last_vaccinated_date = models.DateTimeField(
+        null=True, blank=True, default=None, verbose_name="Patient's Last Vaccination Date")
 
     covin_id = models.CharField(
         max_length=15, default=None, null=True, blank=True, verbose_name="COVID-19 Vaccination ID",
@@ -400,6 +402,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__suggestion": "Suggestion",
         "last_consultation__created_date": "Date of Consultation",
         "last_consultation__discharge_date": "Date of Discharge",
+        "last_vaccinated_date": "Patient's Last Vaccination Date",
     }
 
     CSV_MAKE_PRETTY = {
