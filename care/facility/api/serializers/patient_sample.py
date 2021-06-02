@@ -86,6 +86,8 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             raise ValidationError({"result": [f"Result can't be updated unless test is complete"]})
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": [f"is required as the test is complete"]})
+        if choice == "COMPLETED" and instance.result != 3:
+            raise ValidationError({"result": [f"cannot change result for completed test."]})
 
         if validated_data.get("result") is None and validated_data.get("date_of_result") is not None:
             raise ValidationError({"date_of_result": [f"cannot be provided without result"]})
