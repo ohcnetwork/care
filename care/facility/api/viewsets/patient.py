@@ -81,6 +81,9 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
+    last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__symptoms_onset_date"
+    )
     last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
     last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
     last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
