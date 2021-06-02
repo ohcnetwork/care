@@ -9,6 +9,7 @@ from rest_framework import status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import filters as drf_filters
 from simple_history.utils import bulk_create_with_history
 
 from care.facility.api.serializers.facility import (
@@ -54,15 +55,15 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
         else:
             queryset = queryset.filter(users__id__exact=request.user.id)
 
-        search_text = request.query_params.get("search_text")
-        if search_text:
-            vector = SearchVector("name", "district__name", "state__name")
-            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
-            queryset = (
-                queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
-                .filter(search_text=query)
-                .order_by("-rank")
-            )
+        # search_text = request.query_params.get("search_text")
+        # if search_text:
+        #     vector = SearchVector("name", "district__name", "state__name")
+        #     query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+        #     queryset = (
+        #         queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+        #         .filter(search_text=query)
+        #         .order_by("-rank")
+        #     )
         return queryset
 
 
@@ -81,12 +82,11 @@ class FacilityViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (
-        FacilityQSPermissions,
-        filters.DjangoFilterBackend,
-    )
+    filter_backends = (FacilityQSPermissions, filters.DjangoFilterBackend, drf_filters.SearchFilter)
     filterset_class = FacilityFilter
     lookup_field = "external_id"
+
+    search_fields = ["name", "district__name", "state__name"]
 
     FACILITY_CAPACITY_CSV_KEY = "capacity"
     FACILITY_DOCTORS_CSV_KEY = "doctors"
