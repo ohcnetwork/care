@@ -6,6 +6,7 @@ from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -55,13 +56,19 @@ class UserFilterSet(filters.FilterSet):
 
 
 class UserViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet,
 ):
     """
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.filter(is_superuser=False).select_related("local_body", "district", "state")
+    queryset = User.objects.filter(is_active=True, is_superuser=False).select_related(
+        "local_body", "district", "state"
+    )
     lookup_field = "username"
 
     permission_classes = (
@@ -103,6 +110,22 @@ class UserViewSet(
         return Response(
             status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
         )
+
+    def destroy(self, request, *args, **kwargs):
+        queryset = self.queryset
+        username = kwargs["username"]
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(state=request.user.state)
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(district=request.user.district)
+        else:
+            raise ValidationError({"permission": "Denied"})
+        user = get_object_or_404(queryset.filter(username=username))
+        user.is_active = False
+        user.save(update_fields=["is_active"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
