@@ -76,7 +76,7 @@ class ResourceRequest(FacilityBaseModel):
         "modified_date": "Modified Date",
         "orgin_facility__name": "From Facility",
         "assigned_facility__name": "Assigned Facility",
-        "shifting_approving_facility__name": "Approving Facility",
+        "approving_facility__name": "Approving Facility",
         "status": "Current Status",
         "emergency": "Emergency Shift",
         "reason": "Reason for Shifting",
