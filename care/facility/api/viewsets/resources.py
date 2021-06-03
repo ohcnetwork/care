@@ -1,6 +1,7 @@
-from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
+from django.conf import settings
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins
@@ -16,6 +17,7 @@ from care.facility.models import (
     ResourceRequestComment,
     User,
 )
+from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter
 
@@ -107,6 +109,16 @@ class ResourceRequestViewSet(
     def get_queryset(self):
         return get_request_queryset(self.request, self.queryset)
 
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            queryset = self.filter_queryset(self.get_queryset()).values(*ResourceRequest.CSV_MAPPING.keys())
+            return render_to_csv_response(
+                queryset,
+                field_header_map=ResourceRequest.CSV_MAPPING,
+                field_serializer_map=ResourceRequest.CSV_MAKE_PRETTY,
+            )
+        return super().list(request, *args, **kwargs)
+
 
 class ResourceRequestCommentViewSet(
     mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
@@ -148,3 +160,4 @@ class ResourceRequestCommentViewSet(
 
     def perform_create(self, serializer):
         serializer.save(request=self.get_request())
+

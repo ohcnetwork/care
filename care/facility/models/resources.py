@@ -2,7 +2,7 @@ import enum
 
 from django.db import models
 
-from care.facility.models import READ_ONLY_USER_TYPES, FacilityBaseModel, reverse_choices
+from care.facility.models import READ_ONLY_USER_TYPES, FacilityBaseModel, reverse_choices, pretty_boolean
 from care.users.models import User, phone_number_regex
 
 
@@ -28,6 +28,9 @@ RESOURCE_SUB_CATEGORY_CHOICES = (
     (140, "JUMBO D TYPE OXYGEN CYLINDER"),
     (1000, "UNSPECIFIED"),
 )
+
+REVERSE_CATEGORY = reverse_choices(RESOURCE_CATEGORY_CHOICES)
+REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 class ResourceRequest(FacilityBaseModel):
@@ -67,6 +70,30 @@ class ResourceRequest(FacilityBaseModel):
     last_edited_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="resource_request_last_edited_by"
     )
+
+    CSV_MAPPING = {
+        "created_date": "Created Date",
+        "modified_date": "Modified Date",
+        "orgin_facility__name": "From Facility",
+        "assigned_facility__name": "Assigned Facility",
+        "shifting_approving_facility__name": "Approving Facility",
+        "status": "Current Status",
+        "emergency": "Emergency Shift",
+        "reason": "Reason for Shifting",
+        "title": "Title",
+        "category": "Category",
+        "sub_category": "Sub Category",
+        "priority": "Priority",
+        "requested_quantity": "Requested Quantity",
+        "assigned_quantity": "Assigned Quantity",
+        "assigned_to__username": "Assigned User Username",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "category": (lambda x: REVERSE_CATEGORY.get(x, "-")),
+        "sub_category": (lambda x: REVERSE_SUB_CATEGORY.get(x, "-")),
+        "emergency": pretty_boolean,
+    }
 
     class Meta:
         indexes = [
