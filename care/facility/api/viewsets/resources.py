@@ -70,6 +70,7 @@ class ResourceFilterSet(filters.FilterSet):
     created_by = filters.NumberFilter(field_name="created_by__id")
     last_edited_by = filters.NumberFilter(field_name="last_edited_by__id")
     priority = filters.NumberFilter(field_name="priority")
+    emergency = filters.BooleanFilter(field_name="emergency")
 
 
 class ResourceRequestViewSet(
