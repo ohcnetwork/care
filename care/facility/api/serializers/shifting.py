@@ -160,15 +160,16 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         new_instance = super().update(instance, validated_data)
 
-        if validated_data["status"] != old_status:
-            if validated_data["status"] == 40:
-                NotificationGenerator(
-                    event=Notification.Event.SHIFTING_UPDATED,
-                    caused_by=self.context["request"].user,
-                    caused_object=ShiftingRequest.objects.get(id=new_instance.id),
-                    facility=new_instance.shifting_approving_facility,
-                    generate_sms=True,
-                ).generate()
+        if "status" in validated_data:
+            if validated_data["status"] != old_status:
+                if validated_data["status"] == 40:
+                    NotificationGenerator(
+                        event=Notification.Event.SHIFTING_UPDATED,
+                        caused_by=self.context["request"].user,
+                        caused_object=ShiftingRequest.objects.get(id=new_instance.id),
+                        facility=new_instance.shifting_approving_facility,
+                        generate_sms=True,
+                    ).generate()
 
         return new_instance
 
