@@ -132,11 +132,12 @@ def set_burn_rate(facility, item):
     ).aggregate(Sum("quantity_in_default_unit"))
 
     if previous_usage_log_sum:
+        burn_rate = 0
         if previous_usage_log_sum["quantity_in_default_unit__sum"]:
             burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
-            FacilityInventoryBurnRate.objects.update_or_create(
-                facility=facility, item=item, defaults={"burn_rate": burn_rate}
-            )
+        FacilityInventoryBurnRate.objects.update_or_create(
+            facility=facility, item=item, defaults={"burn_rate": burn_rate}
+        )
 
 
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):
