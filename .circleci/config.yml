@@ -59,9 +59,10 @@ workflows:
       - aws-eks/update-container-image:
           name: deploy-to-staging
           cluster-name: "${EKS_CLUSTER_NAME}"
+          namespace: "staging"
           aws-region: "${AWS_DEFAULT_REGION}"
           container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
-          resource-name: "--namespace=staging ${EKS_STAGING_DEPLOYMENT_NAME}"
+          resource-name: "${EKS_STAGING_DEPLOYMENT_NAME}"
           requires:
             - aws-ecr/build-and-push-image
       - aws-eks/update-container-image:
