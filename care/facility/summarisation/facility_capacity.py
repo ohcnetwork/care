@@ -99,12 +99,15 @@ def FacilityCapacitySummary():
                 created_date__gte=current_date,
                 probable_accident=False,
             )
-            start_log = log_query.order_by("created_date").first()
+            # start_log = log_query.order_by("created_date").first()
             end_log = log_query.order_by("-created_date").first()
-            start_stock = summary_obj.quantity
-            if start_log:
-                start_stock = start_log.current_stock - start_log.quantity_in_default_unit
-            end_stock = start_stock
+            # start_stock = summary_obj.quantity_in_default_unit
+            # if start_log:
+            #     if start_log.is_incoming:  # Add current value to current stock to get correct stock
+            #         start_stock = start_log.current_stock + start_log.quantity_in_default_unit
+            #     else:
+            #         start_stock = start_log.current_stock - start_log.quantity_in_default_unit
+            end_stock = summary_obj.quantity_in_default_unit
             if end_log:
                 end_stock = end_log.current_stock
             total_consumed = 0
@@ -115,6 +118,13 @@ def FacilityCapacitySummary():
             temp2 = log_query.filter(is_incoming=True).aggregate(Sum("quantity_in_default_unit"))
             if temp2:
                 total_added = temp2["quantity_in_default_unit__sum"]
+
+            # Calculate Start Stock as
+            # end_stock = start_stock - consumption + addition
+            # start_stock = end_stock - addition + consumption
+            # This way the start stock will never veer off course
+
+            start_stock = end_stock - total_added + total_consumed
 
             if burn_rate:
                 burn_rate = burn_rate.burn_rate
