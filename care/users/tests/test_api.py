@@ -73,13 +73,13 @@ class TestSuperUser(TestBase):
         )
 
     def test_superuser_can_modify(self):
-        """Test superusers can modify the attributes for other users with user_type level equal to or lower than Volunteers"""
+        """Test superusers can modify the attributes for other users"""
         username = self.user.username
         password = "new_password"
 
         data = self.user_data.copy()
         data["username"] = username
-        # Update is only allowed for user_type levels lower than or equal Volunteer -- care/users/models.py #231
+        # Update is only allowed for user_type level sent in request body is lower than or equal Volunteer -- care/users/models.py #231
         data["user_type"] = User.TYPE_VALUE_MAP["Volunteer"]
         data["district"] = data["district"].id
         data["state"] = data["state"].id
