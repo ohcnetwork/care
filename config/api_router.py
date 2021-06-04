@@ -9,7 +9,6 @@ from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
 from care.facility.api.viewsets.inventory import (
-    FacilityInventoryBurnRateViewSet,
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
     FacilityInventoryMinQuantityViewSet,
@@ -40,7 +39,6 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.life.api.viewsets.lifedata import LifeDataViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.users import UserViewSet
 
@@ -49,7 +47,6 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("life/data", LifeDataViewSet)
 
 router.register("users", UserViewSet)
 router.register("facility", FacilityViewSet)
@@ -102,7 +99,7 @@ router.register(
 
 
 router.register("items", FacilityInventoryItemViewSet)
-router.register("burn_rate", FacilityInventoryBurnRateViewSet)
+# router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
 
@@ -122,7 +119,7 @@ facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryVie
 facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
-facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
+# facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")

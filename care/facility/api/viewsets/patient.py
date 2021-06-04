@@ -65,6 +65,7 @@ class PatientFilterSet(filters.FilterSet):
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
     is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
+    date_declared_positive = filters.DateFromToRangeFilter(field_name="date_declared_positive")
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
@@ -80,6 +81,9 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_admission_date = filters.DateFromToRangeFilter(field_name="last_consultation__admission_date")
     last_consultation_discharge_date = filters.DateFromToRangeFilter(field_name="last_consultation__discharge_date")
+    last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__symptoms_onset_date"
+    )
     last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
     last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
     last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
@@ -87,6 +91,8 @@ class PatientFilterSet(filters.FilterSet):
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
     number_of_doses = filters.NumberFilter(field_name="number_of_doses")
+    # Permission Filters
+    assigned_to = filters.NumberFilter(field_name="assigned_to")
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -103,6 +109,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
+                q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
 
         return queryset
@@ -133,6 +140,7 @@ class PatientViewSet(
         "district",
         "state",
         "ward",
+        "assigned_to",
         "facility",
         "facility__ward",
         "facility__local_body",
@@ -342,7 +350,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)

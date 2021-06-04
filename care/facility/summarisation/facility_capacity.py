@@ -94,7 +94,10 @@ def FacilityCapacitySummary():
                 facility_id=facility_obj.id, item_id=summary_obj.item.id
             ).first()
             log_query = FacilityInventoryLog.objects.filter(
-                facility_id=facility_obj.id, item_id=summary_obj.item.id, created_date__gte=current_date
+                facility_id=facility_obj.id,
+                item_id=summary_obj.item.id,
+                created_date__gte=current_date,
+                probable_accident=False,
             )
             start_log = log_query.order_by("created_date").first()
             end_log = log_query.order_by("-created_date").first()

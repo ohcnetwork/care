@@ -10,8 +10,6 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 
-from care.life.tasks.job_executor import run_jobs, save_life_data  # Dont Delete
-
 
 class FacilityBaseViewset(
     UserAccessMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,

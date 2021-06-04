@@ -32,9 +32,9 @@ class FacilityInventoryUnitSerializer(serializers.ModelSerializer):
 
 
 class FacilityInventoryItemSerializer(serializers.ModelSerializer):
-    default_unit = FacilityInventoryUnitSerializer()
-    allowed_units = FacilityInventoryUnitSerializer(many=True)
-    tags = FacilityInventoryItemTagSerializer(many=True)
+    default_unit = FacilityInventoryUnitSerializer(read_only=True)
+    allowed_units = FacilityInventoryUnitSerializer(many=True, read_only=True)
+    tags = FacilityInventoryItemTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = FacilityInventoryItem
@@ -45,12 +45,19 @@ class FacilityInventoryItemSerializer(serializers.ModelSerializer):
 class FacilityInventoryLogSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
-    unit_object = FacilityInventoryUnitSerializer(source="unit", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
+    unit_object = FacilityInventoryUnitSerializer(source="unit", read_only=True)
 
     class Meta:
         model = FacilityInventoryLog
-        read_only_fields = ("id", "external_id", "created_by", "current_stock", "quantity_in_default_unit")
+        read_only_fields = (
+            "id",
+            "external_id",
+            "created_by",
+            "current_stock",
+            "quantity_in_default_unit",
+            "probable_accident",
+        )
         exclude = ("deleted", "modified_date", "facility")
 
     @transaction.atomic
@@ -109,18 +116,23 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         summary_obj.save()
 
         if not validated_data["is_incoming"]:
-            self._set_burn_rate(facility, item)
+            self.set_burn_rate(facility, item)
 
         return instance
 
-    def _set_burn_rate(self, facility, item):
-        yesterday = timezone.now() - timedelta(days=1)
+    def set_burn_rate(self, facility, item):
+        set_burn_rate(facility, item)
 
-        previous_usage_log_sum = FacilityInventoryLog.objects.filter(
-            facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
-        ).aggregate(Sum("quantity_in_default_unit"))
 
-        if previous_usage_log_sum:
+def set_burn_rate(facility, item):
+    yesterday = timezone.now() - timedelta(days=1)
+
+    previous_usage_log_sum = FacilityInventoryLog.objects.filter(
+        probable_accident=False, facility=facility, item=item, is_incoming=False, created_date__gte=yesterday
+    ).aggregate(Sum("quantity_in_default_unit"))
+
+    if previous_usage_log_sum:
+        if previous_usage_log_sum["quantity_in_default_unit__sum"]:
             burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
             FacilityInventoryBurnRate.objects.update_or_create(
                 facility=facility, item=item, defaults={"burn_rate": burn_rate}
@@ -130,8 +142,8 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 class FacilityInventorySummarySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
-    unit_object = FacilityInventoryUnitSerializer(source="unit", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
+    unit_object = FacilityInventoryUnitSerializer(source="unit", read_only=True)
 
     class Meta:
         model = FacilityInventorySummary
@@ -147,7 +159,7 @@ class FacilityInventorySummarySerializer(serializers.ModelSerializer):
 class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    item_object = FacilityInventoryItemSerializer(source="item", required=False)
+    item_object = FacilityInventoryItemSerializer(source="item", read_only=True)
 
     class Meta:
         model = FacilityInventoryMinQuantity

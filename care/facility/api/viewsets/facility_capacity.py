@@ -27,7 +27,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
         queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
@@ -54,56 +54,3 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
         serializer.is_valid()
         return self.get_paginated_response(serializer.data)
 
-    def create(self, request, *args, **kwargs):
-        """
-        Facility Capacity Create
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).create(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        """
-        Facility Capacity List
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Facility Capacity Retrieve
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).retrieve(request, *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        """
-        Facility Capacity Updates
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        """
-        Facility Capacity Updates
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).partial_update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        """
-        Facility Capacity Delete
-
-        /facility/{facility_pk}/capacity/{pk}
-        `pk` in the API refers to the room_type.
-        """
-        return super(FacilityCapacityViewSet, self).destroy(request, *args, **kwargs)

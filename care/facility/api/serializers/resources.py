@@ -1,3 +1,4 @@
+from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -52,6 +53,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
+    sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
     orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
     approving_facility = serializers.UUIDField(
@@ -148,10 +150,12 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceRequest
         exclude = ("deleted",)
-        read_only_fields = TIMESTAMP_FIELDS
+        read_only_fields = TIMESTAMP_FIELDS + ("external_id",)
 
 
 class ResourceRequestCommentSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
@@ -163,4 +167,4 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by",)
+        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")

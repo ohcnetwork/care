@@ -32,9 +32,7 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
-from care.facility.models.mixins.permissions.facility import (
-    FacilityRelatedPermissionMixin,
-)
+from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
@@ -102,6 +100,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
+    permanent_address = models.TextField(default="")
 
     pincode = models.IntegerField(default=0, blank=True, null=True)
 
@@ -191,7 +190,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     last_consultation = models.ForeignKey(PatientConsultation, on_delete=models.SET_NULL, null=True, default=None)
 
-    will_donate_blood = models.BooleanField(default=None, null=True, verbose_name="Is Patient Willing to donate Blood",)
+    will_donate_blood = models.BooleanField(
+        default=None, null=True, verbose_name="Is Patient Willing to donate Blood",
+    )
 
     fit_for_blood_donation = models.BooleanField(
         default=None, null=True, verbose_name="Is Patient fit for donating Blood",
@@ -227,18 +228,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # IDSP Requirements End
 
     # Vaccination Fields
-    is_vaccinated = models.BooleanField(
-        default=False, verbose_name="Is the Patient Vaccinated Against COVID-19"
-    )
+    is_vaccinated = models.BooleanField(default=False, verbose_name="Is the Patient Vaccinated Against COVID-19")
     number_of_doses = models.PositiveIntegerField(
-        default=0, null=False, blank=False,
-        validators=[MinValueValidator(0), MaxValueValidator(2)]
+        default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(2)]
     )
-    vaccine_name = models.CharField(
-        choices=vaccineChoices, default=None, null=True,
-        blank=False, max_length=15
-    )
-    
+    vaccine_name = models.CharField(choices=vaccineChoices, default=None, null=True, blank=False, max_length=15)
+
     covin_id = models.CharField(
         max_length=15, default=None, null=True, blank=True, verbose_name="COVID-19 Vaccination ID",
     )
@@ -250,6 +245,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     is_declared_positive = models.BooleanField(default=None, null=True, verbose_name="Is Patient Declared Positive",)
     date_declared_positive = models.DateTimeField(
         null=True, blank=True, verbose_name="Date Patient is Declared Positive"
+    )
+
+    # Permission Scopes
+
+    assigned_to = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank="True", related_name="root_patient_assigned_to"
     )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])

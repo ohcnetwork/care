@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
 
-from care.facility.models import Facility, FacilityUser
+from care.facility.models import Facility, FacilityUser, READ_ONLY_USER_TYPES
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from care.users.models import GENDER_CHOICES
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
@@ -17,6 +17,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
     phone_number = PhoneNumberIsPossibleField()
+    alt_phone_number = PhoneNumberIsPossibleField(required=False)
 
     class Meta:
         model = User
@@ -33,6 +34,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "district",
             "state",
             "phone_number",
+            "alt_phone_number",
             "gender",
             "age",
         )
@@ -116,11 +118,18 @@ class UserCreateSerializer(SignUpSerializer):
 
     def validate(self, attrs):
         validated = super(UserCreateSerializer, self).validate(attrs)
+        if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
+            if validated["user_type"] not in READ_ONLY_USER_TYPES:
+                raise exceptions.ValidationError(
+                    {"user_type": ["Read only users can create other read only users only"]}
+                )
         if (
             validated["user_type"] > self.context["created_by"].user_type
             and not self.context["created_by"].is_superuser
         ):
-            raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
+            raise exceptions.ValidationError(
+                {"user_type": ["User cannot create another user with higher permissions"]}
+            )
 
         if (
             not validated.get("ward")
@@ -183,6 +192,7 @@ class UserSerializer(SignUpSerializer):
             "district",
             "state",
             "phone_number",
+            "alt_phone_number",
             "gender",
             "age",
             "is_superuser",

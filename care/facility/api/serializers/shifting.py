@@ -118,10 +118,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if not has_facility_permission(user, instance.shifting_approving_facility):
                     raise ValidationError({"kasp": ["Permission Denied"]})
 
-        if "breathlessness_level" in validated_data:
-            if not has_facility_permission(user, instance.shifting_approving_facility):
-                del validated_data["breathlessness_level"]
-
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
                 if instance.assigned_facility:
@@ -164,15 +160,16 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         new_instance = super().update(instance, validated_data)
 
-        if validated_data["status"] != old_status:
-            if validated_data["status"] == 40:
-                NotificationGenerator(
-                    event=Notification.Event.SHIFTING_UPDATED,
-                    caused_by=self.context["request"].user,
-                    caused_object=ShiftingRequest.objects.get(id=new_instance.id),
-                    facility=new_instance.shifting_approving_facility,
-                    generate_sms=True,
-                ).generate()
+        if "status" in validated_data:
+            if validated_data["status"] != old_status:
+                if validated_data["status"] == 40:
+                    NotificationGenerator(
+                        event=Notification.Event.SHIFTING_UPDATED,
+                        caused_by=self.context["request"].user,
+                        caused_object=ShiftingRequest.objects.get(id=new_instance.id),
+                        facility=new_instance.shifting_approving_facility,
+                        generate_sms=True,
+                    ).generate()
 
         return new_instance
 

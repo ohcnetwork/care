@@ -2,7 +2,7 @@ import enum
 
 from django.db import models
 
-from care.facility.models import READ_ONLY_USER_TYPES, FacilityBaseModel, reverse_choices
+from care.facility.models import READ_ONLY_USER_TYPES, FacilityBaseModel, reverse_choices, pretty_boolean
 from care.users.models import User, phone_number_regex
 
 
@@ -21,8 +21,16 @@ RESOURCE_CATEGORY_CHOICES = (
     (200, "SUPPLIES"),
 )
 
-REVERSE_RESOURCE_STATUS_CHOICES = reverse_choices(RESOURCE_STATUS_CHOICES)
-REVERSE_RESOURCE_CATEGORY_CHOICES = reverse_choices(RESOURCE_CATEGORY_CHOICES)
+RESOURCE_SUB_CATEGORY_CHOICES = (
+    (110, "LIQUID OXYGEN"),
+    (120, "B TYPE OXYGEN CYLINDER"),
+    (130, "C TYPE OXYGEN CYLINDER"),
+    (140, "JUMBO D TYPE OXYGEN CYLINDER"),
+    (1000, "UNSPECIFIED"),
+)
+
+REVERSE_CATEGORY = reverse_choices(RESOURCE_CATEGORY_CHOICES)
+REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 class ResourceRequest(FacilityBaseModel):
@@ -37,6 +45,7 @@ class ResourceRequest(FacilityBaseModel):
         "Facility", on_delete=models.SET_NULL, null=True, related_name="resource_assigned_facility"
     )
     emergency = models.BooleanField(default=False)
+    title = models.CharField(max_length=255, null=False, blank=False)
     reason = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
@@ -44,7 +53,12 @@ class ResourceRequest(FacilityBaseModel):
     )
     status = models.IntegerField(choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False)
     category = models.IntegerField(choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False)
+    sub_category = models.IntegerField(choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False)
     priority = models.IntegerField(default=None, null=True, blank=True)
+
+    # Quantity
+    requested_quantity = models.IntegerField(default=0)
+    assigned_quantity = models.IntegerField(default=0)
 
     is_assigned_to_user = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(
@@ -56,6 +70,30 @@ class ResourceRequest(FacilityBaseModel):
     last_edited_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="resource_request_last_edited_by"
     )
+
+    CSV_MAPPING = {
+        "created_date": "Created Date",
+        "modified_date": "Modified Date",
+        "orgin_facility__name": "From Facility",
+        "assigned_facility__name": "Assigned Facility",
+        "approving_facility__name": "Approving Facility",
+        "status": "Current Status",
+        "emergency": "Emergency Shift",
+        "reason": "Reason for Shifting",
+        "title": "Title",
+        "category": "Category",
+        "sub_category": "Sub Category",
+        "priority": "Priority",
+        "requested_quantity": "Requested Quantity",
+        "assigned_quantity": "Assigned Quantity",
+        "assigned_to__username": "Assigned User Username",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "category": (lambda x: REVERSE_CATEGORY.get(x, "-")),
+        "sub_category": (lambda x: REVERSE_SUB_CATEGORY.get(x, "-")),
+        "emergency": pretty_boolean,
+    }
 
     class Meta:
         indexes = [

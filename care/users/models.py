@@ -120,9 +120,12 @@ class CustomUserManager(UserManager):
         return qs.filter(deleted=False).select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
-        district_id = extra_fields["district"]
-        district = District.objects.get(id=district_id)
+        district = District.objects.all()[0]
         extra_fields["district"] = district
+        extra_fields["age"] = 20
+        extra_fields["phone_number"] = "+919696969696"
+        extra_fields["gender"] = 3
+        extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
 
 
@@ -135,7 +138,7 @@ class Skill(models.Model):
 
 
 class UsernameValidator(UnicodeUsernameValidator):
-    regex = r"^[\w.@+-]+[^.@+-_]$"
+    regex = r"^[\w.@+-]+[^.@+_-]$"
     message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
 
 
@@ -180,6 +183,10 @@ class User(AbstractUser):
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    alt_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex], default=None, blank=True, null=True
+    )
+
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
@@ -194,12 +201,7 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
-        "user_type",
         "email",
-        "phone_number",
-        "age",
-        "gender",
-        "district",
     ]
 
     CSV_MAPPING = {

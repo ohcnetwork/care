@@ -5,10 +5,7 @@ from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.api.serializers.facility import (
-    FacilityBasicInfoSerializer,
-    FacilitySerializer,
-)
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
@@ -22,20 +19,12 @@ from care.facility.models import (
     PatientSearch,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-)
+from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
-from care.users.api.serializers.lsg import (
-    DistrictSerializer,
-    LocalBodySerializer,
-    StateSerializer,
-    WardSerializer,
-)
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
@@ -62,6 +51,8 @@ class PatientListSerializer(serializers.ModelSerializer):
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -138,6 +129,10 @@ class PatientDetailSerializer(PatientListSerializer):
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     vaccine_name = serializers.ChoiceField(choices=PatientRegistration.vaccineChoices, required=False, allow_null=True)
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = PatientRegistration

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins
@@ -15,7 +17,9 @@ from care.facility.models import (
     ResourceRequestComment,
     User,
 )
+from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.filters import CareChoiceFilter
 
 
 def inverse_choices(choices):
@@ -27,6 +31,7 @@ def inverse_choices(choices):
 
 inverse_resource_status = inverse_choices(RESOURCE_STATUS_CHOICES)
 inverse_category = inverse_choices(RESOURCE_CATEGORY_CHOICES)
+inverse_sub_category = inverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 def get_request_queryset(request, queryset):
@@ -46,35 +51,16 @@ def get_request_queryset(request, queryset):
         facility_ids = get_accessible_facilities(request.user)
         q_objects = Q(orgin_facility__id__in=facility_ids)
         q_objects |= Q(approving_facility__id__in=facility_ids)
-        q_objects |= Q(assigned_facility__id__in=facility_ids, status__gte=20)
+        q_objects |= Q(assigned_facility__id__in=facility_ids)
         queryset = queryset.filter(q_objects)
     return queryset
 
 
-class ResourceFilterBackend(DRYPermissionFiltersBase):
-    def filter_queryset(self, request, queryset, view):
-        return get_request_queryset(request, queryset)
-
-
 class ResourceFilterSet(filters.FilterSet):
-    def get_category(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_category:
-                return queryset.filter(status=inverse_category[value])
-        return queryset
 
-    def get_status(
-        self, queryset, field_name, value,
-    ):
-        if value:
-            if value in inverse_resource_status:
-                return queryset.filter(status=inverse_resource_status[value])
-        return queryset
-
-    status = filters.CharFilter(method="get_status", field_name="status")
-    category = filters.CharFilter(method="get_category", field_name="category")
+    status = CareChoiceFilter(choice_dict=inverse_resource_status)
+    category = CareChoiceFilter(choice_dict=inverse_category)
+    sub_category = CareChoiceFilter(choice_dict=inverse_sub_category)
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
     orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
@@ -86,6 +72,7 @@ class ResourceFilterSet(filters.FilterSet):
     created_by = filters.NumberFilter(field_name="created_by__id")
     last_edited_by = filters.NumberFilter(field_name="last_edited_by__id")
     priority = filters.NumberFilter(field_name="priority")
+    emergency = filters.BooleanFilter(field_name="emergency")
 
 
 class ResourceRequestViewSet(
@@ -116,8 +103,21 @@ class ResourceRequestViewSet(
     ordering_fields = ["id", "created_date", "modified_date", "emergency", "priority"]
 
     permission_classes = (IsAuthenticated, DRYPermissions)
-    filter_backends = (ResourceFilterBackend, filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter)
     filterset_class = ResourceFilterSet
+
+    def get_queryset(self):
+        return get_request_queryset(self.request, self.queryset)
+
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            queryset = self.filter_queryset(self.get_queryset()).values(*ResourceRequest.CSV_MAPPING.keys())
+            return render_to_csv_response(
+                queryset,
+                field_header_map=ResourceRequest.CSV_MAPPING,
+                field_serializer_map=ResourceRequest.CSV_MAKE_PRETTY,
+            )
+        return super().list(request, *args, **kwargs)
 
 
 class ResourceRequestCommentViewSet(
@@ -140,24 +140,24 @@ class ResourceRequestCommentViewSet(
                 q_objects = Q(request__orgin_facility__state=self.request.user.state)
                 q_objects |= Q(request__approving_facility__state=self.request.user.state)
                 q_objects |= Q(request__assigned_facility__state=self.request.user.state)
-                return self.queryset.filter(q_objects)
+                return queryset.filter(q_objects)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(request__orgin_facility__district=self.request.user.district)
                 q_objects |= Q(request__approving_facility__district=self.request.user.district)
                 q_objects |= Q(request__assigned_facility__district=self.request.user.district)
-                return self.queryset.filter(q_objects)
+                return queryset.filter(q_objects)
             facility_ids = get_accessible_facilities(self.request.user)
             q_objects = Q(request__orgin_facility__id__in=facility_ids)
             q_objects |= Q(request__approving_facility__id__in=facility_ids)
-            q_objects |= Q(request__assigned_facility__id__in=facility_ids, status__gte=20)
-            queryset = self.queryset.filter(q_objects)
+            q_objects |= Q(request__assigned_facility__id__in=facility_ids)
+            queryset = queryset.filter(q_objects)
         return queryset
 
     def get_request(self):
         queryset = get_request_queryset(self.request, ResourceRequest.objects.all())
-        if not self.request.user.is_superuser:
-            queryset.filter(external_id=self.kwargs.get("resource_external_id"))
+        queryset = queryset.filter(external_id=self.kwargs.get("resource_external_id"))
         return get_object_or_404(queryset)
 
     def perform_create(self, serializer):
         serializer.save(request=self.get_request())
+

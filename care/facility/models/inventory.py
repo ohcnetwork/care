@@ -25,7 +25,7 @@ class FacilityInventoryUnit(models.Model):
     This Model Stores Possible Units for items that are managed in this portal
     """
 
-    name = models.CharField(max_length=255, blank=False, null=False)
+    name = models.CharField(max_length=255, blank=False, null=False, unique=True)
 
     def __str__(self):
         return self.name
@@ -86,6 +86,7 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     unit = models.ForeignKey(FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False)
     is_incoming = models.BooleanField()
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    probable_accident = models.BooleanField(default=False)
 
 
 class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin):
