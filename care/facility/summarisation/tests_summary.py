@@ -1,6 +1,7 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -33,7 +34,9 @@ class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
     #         return queryset.filter(facility__state=user.state)
     #     return queryset.filter(facility__users__id__exact=user.id)
 
-    @method_decorator(cache_page(60 *60* 10))
+    cache_limit = settings.API_CACHE_DURATION_IN_SECONDS
+
+    @method_decorator(cache_page(cache_limit))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

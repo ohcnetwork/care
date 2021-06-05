@@ -273,7 +273,7 @@ LOGGING = {
     "formatters": {
         "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}
     },
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose", }},
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
@@ -450,3 +450,4 @@ AUDIT_LOG = {
 }
 
 SEND_SMS_NOTIFICATION = False
+API_CACHE_DURATION_IN_SECONDS = 0

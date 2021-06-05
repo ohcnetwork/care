@@ -158,6 +158,7 @@ sentry_sdk.init(
 # ------------------------------------------------------------------------------
 
 IS_PRODUCTION = True
+API_CACHE_DURATION_IN_SECONDS=60 * 10
 
 # SMS API KEYS
 USE_SMS = True
