@@ -1,5 +1,6 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
+from django.conf import settings
 from django.db.models import Count, Sum
 from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
@@ -33,7 +34,9 @@ class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
     #         return queryset.filter(facility__state=user.state)
     #     return queryset.filter(facility__users__id__exact=user.id)
 
-    @method_decorator(cache_page(60 * 60 * 1))
+    cache_limit = settings.API_CACHE_DURATION_IN_SECONDS
+
+    @method_decorator(cache_page(cache_limit))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

@@ -1,5 +1,6 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
+from django.conf import settings
 from django.db.models import Q, Subquery
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -52,7 +53,9 @@ class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictSummaryFilter
 
-    @method_decorator(cache_page(60 * 10))
+    cache_limit = settings.API_CACHE_DURATION_IN_SECONDS
+
+    @method_decorator(cache_page(cache_limit))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

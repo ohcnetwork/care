@@ -4,6 +4,7 @@ from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
 from django.views.decorators.cache import cache_page
+from django.conf import settings
 from django_filters import rest_framework as filters
 from rest_framework import serializers
 from rest_framework.mixins import ListModelMixin
@@ -53,7 +54,9 @@ class FacilityCapacitySummaryViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
 
-    @method_decorator(cache_page(60 * 10))
+    cache_limit = settings.API_CACHE_DURATION_IN_SECONDS
+
+    @method_decorator(cache_page(cache_limit))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
