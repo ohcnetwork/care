@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-from django.db.models.signals import post_delete, post_save, pre_save
+from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 from care.audit_log.enums import Operation
@@ -27,6 +27,7 @@ Event = NamedTuple(
 )
 
 
+@receiver(pre_delete, weak=False)
 @receiver(pre_save, weak=False)
 @transaction.atomic
 def pre_save_signal(sender, instance, **kwargs) -> None:
@@ -93,7 +94,12 @@ def _post_processor(instance, event: Optional[Event], operation: Operation):
         return
 
     try:
-        changes = json.dumps(event.changes if event else dict(), cls=LogJsonEncoder)
+        if operation == Operation.DELETE:
+            changes = instance.__dict__
+            if "_state" in changes:
+                del changes["_state"]
+        else:
+            changes = json.dumps(event.changes if event else dict(), cls=LogJsonEncoder)
     except Exception:
         logger.warning(f"Failed to log {event}", exc_info=True)
         return
