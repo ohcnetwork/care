@@ -107,7 +107,7 @@ def FacilityCapacitySummary():
             #         start_stock = start_log.current_stock + start_log.quantity_in_default_unit
             #     else:
             #         start_stock = start_log.current_stock - start_log.quantity_in_default_unit
-            end_stock = summary_obj.quantity_in_default_unit
+            end_stock = summary_obj.quantity
             if end_log:
                 end_stock = end_log.current_stock
             total_consumed = 0
