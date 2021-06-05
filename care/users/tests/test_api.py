@@ -78,6 +78,9 @@ class TestSuperUser(TestBase):
         password = "new_password"
 
         data = self.user_data.copy()
+        data["username"] = username
+        # Update is only allowed for user_type level sent in request body is lower than or equal Volunteer -- care/users/models.py #231
+        data["user_type"] = User.TYPE_VALUE_MAP["Volunteer"]
         data["district"] = data["district"].id
         data["state"] = data["state"].id
 
@@ -89,14 +92,15 @@ class TestSuperUser(TestBase):
         # test value at the backend
         self.assertEqual(User.objects.get(username=username).age, 31)
 
-    def test_superuser_can_delete(self):
-        """Test superuser can delete other users"""
+    def test_superuser_cannot_delete(self):
+        """Test superuser cannot delete other users"""
+        """Delete method is disabled on UserViewset"""
         response = self.client.delete(f"/api/v1/users/{self.user.username}/")
         # test response code
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         # test backend response
-        with self.assertRaises(expected_exception=User.DoesNotExist):
-            User.objects.get(username=self.user_data["username"])
+        # with self.assertRaises(expected_exception=User.DoesNotExist):
+        #     User.objects.get(username=self.user_data["username"])
 
 
 class TestUser(TestBase):
@@ -147,7 +151,7 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
         # test total user count
-        self.assertEqual(res_data_json["count"], 3)  # 2 existing, plus the new one
+        self.assertEqual(res_data_json["count"], 2)  # 1 existing, plus the new one (superusers can't be listed)
         results = res_data_json["results"]
         # test presence of usernames
         self.assertIn(self.user.id, {r["id"] for r in results})
@@ -157,7 +161,7 @@ class TestUser(TestBase):
         """Test user can modify the attributes for themselves"""
         password = "new_password"
         username = self.user.username
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -174,15 +178,16 @@ class TestUser(TestBase):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_delete_others(self):
         """Test a user can't delete others"""
+        """Delete Method is disabled for UserViewset"""
         field = "username"
         response = self.client.delete(f"/api/v1/users/{self.data_2[field]}/")
         # test response code
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         # test backend response(user_2 still exists)
         self.assertEqual(
             self.data_2[field], User.objects.get(username=self.data_2[field]).username,

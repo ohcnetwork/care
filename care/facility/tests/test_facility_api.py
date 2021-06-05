@@ -41,6 +41,11 @@ class TestFacility(TestBase):
             "local_body": None,
             "local_body_object": None,
             "district": facility.district.id,
+            "expected_oxygen_requirement": 0,
+            "expected_type_b_cylinders": 0,
+            "expected_type_c_cylinders": 0,
+            "expected_type_d_cylinders": 0,
+            "kasp_empanelled": False,
             "district_object": {
                 "id": facility.district.id,
                 "name": facility.district.name,
@@ -50,6 +55,11 @@ class TestFacility(TestBase):
             "state_object": {"id": facility.district.state.id, "name": facility.district.state.name,},
             "oxygen_capacity": facility.oxygen_capacity,
             "phone_number": facility.phone_number,
+            "type_b_cylinders": 0,
+            "type_c_cylinders": 0,
+            "type_d_cylinders": 0,
+            "ward": None,
+            "ward_object": None
         }
 
     def get_detail_representation(self, facility: Any = None) -> dict:
