@@ -1,0 +1,68 @@
+[
+    {
+        "name": "Amravati Division",
+        "districts": [
+            "Akola",
+            "Amaravati",
+            "Buldhana",
+            "Yavatmal",
+            "Washim"
+        ]
+    },
+    {
+        "name": "Aurangabad Division",
+        "districts": [
+            "Aurangabad",
+            "Beed",
+            "Jalna",
+            "Osmanabad",
+            "Latur",
+            "Nanded",
+            "Parbhani",
+            "Hingoli"
+        ]
+    },
+    {
+        "name": "Konkan Division",
+        "districts": [
+            "Mumbai City",
+            "Mumbai Suburban",
+            "Thane",
+            "Palghar",
+            "Raigad",
+            "Ratnagiri",
+            "Sindhudurg"
+        ]
+    },
+    {
+        "name": "Nagpur Division",
+        "districts": [
+            "Bhandara",
+            "Chandrapur",
+            "Gadchiroli",
+            "Gondia",
+            "Nagpur",
+            "Wardha"
+        ]
+    },
+    {
+        "name": "Nashik Division",
+        "districts": [
+            "Ahmednagar",
+            "Dhule",
+            "Jalgaon",
+            "Nandurbar",
+            "Nashik"
+        ]
+    },
+    {
+        "name": "Pune Division",
+        "districts": [
+            "Kolhapur",
+            "Pune",
+            "Sangli",
+            "Satara",
+            "Solapur"
+        ]
+    }
+]
