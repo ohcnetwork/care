@@ -47,8 +47,17 @@ class State(models.Model):
         return f"{self.name}"
 
 
+class Division(models.Model):
+    name = models.CharField(max_length=255)
+    state = models.ForeignKey(State, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class District(models.Model):
     state = models.ForeignKey(State, on_delete=models.PROTECT)
+    division = models.ForeignKey(Division, related_name="districts", on_delete=models.PROTECT, null=True)
     name = models.CharField(max_length=255)
 
     def __str__(self):
