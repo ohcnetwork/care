@@ -14,6 +14,11 @@ class Notification(FacilityBaseModel):
 
     EventTypeChoices = [(e.value, e.name) for e in EventType]
 
+    class Medium(enum.Enum):
+        SYSTEM = 0
+        SMS = 100
+        WHATSAPP = 200
+
     class Event(enum.Enum):
         MESSAGE = 0
         PATIENT_CREATED = 20

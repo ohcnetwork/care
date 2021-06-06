@@ -32,7 +32,7 @@ class NotificationGenerator:
         generate_for_facility=False,
         extra_users=None,
         extra_data=None,
-        generate_sms=False,
+        notification_mediums=False,
     ):
         if not isinstance(event_type, Notification.EventType):
             raise NotificationCreationException("Event Type Invalid")
@@ -43,6 +43,8 @@ class NotificationGenerator:
         if facility:
             if not isinstance(facility, Facility):
                 raise NotificationCreationException("facility must be an instance of Facility")
+        if not notification_mediums:
+            self.notification_mediums = self._get_default_medium()
         self.event_type = event_type.value
         self.event = event.value
         self.caused_by = caused_by
@@ -50,19 +52,15 @@ class NotificationGenerator:
         self.caused_objects = {}
         self.extra_data = extra_data
         self.generate_cause_objects()
-        self.message = None
         self.extra_users = []
         if extra_users:
             self.extra_users = extra_users
-        if not message:
-            self.generate_message()
         else:
             self.message = message
         self.facility = facility
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
         self.generate_extra_users()
-        self.generate_sms = generate_sms
 
     def generate_extra_users(self):
         if isinstance(self.caused_object, PatientConsultation):
@@ -82,65 +80,86 @@ class NotificationGenerator:
             if self.caused_object.consultation.assigned_to:
                 self.extra_users.append(self.caused_object.consultation.assigned_to.id)
 
-    def generate_message(self):
+    def generate_system_message(self):
+        message = ""
         if isinstance(self.caused_object, PatientRegistration):
             if self.event == Notification.Event.PATIENT_CREATED.value:
-                self.message = "Patient {} was created by {}".format(
+                message = "Patient {} was created by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
             elif self.event == Notification.Event.PATIENT_UPDATED.value:
-                self.message = "Patient {} was updated by {}".format(
+                message = "Patient {} was updated by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
             if self.event == Notification.Event.PATIENT_DELETED.value:
-                self.message = "Patient {} was deleted by {}".format(
+                message = "Patient {} was deleted by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
-        if isinstance(self.caused_object, PatientConsultation):
+        elif isinstance(self.caused_object, PatientConsultation):
             if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
-                self.message = "Consultation for Patient {} was created by {}".format(
+                message = "Consultation for Patient {} was created by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
             elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATED.value:
-                self.message = "Consultation for Patient {} was updated by {}".format(
+                message = "Consultation for Patient {} was updated by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
             if self.event == Notification.Event.PATIENT_CONSULTATION_DELETED.value:
-                self.message = "Consultation for Patient {} was deleted by {}".format(
+                message = "Consultation for Patient {} was deleted by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
-        if isinstance(self.caused_object, InvestigationSession):
+        elif isinstance(self.caused_object, InvestigationSession):
             if self.event == Notification.Event.INVESTIGATION_SESSION_CREATED.value:
-                self.message = "Investigation Session for Patient {} was created by {}".format(
+                message = "Investigation Session for Patient {} was created by {}".format(
                     self.extra_data["consultation"].patient.name, self.caused_by.get_full_name()
                 )
-        if isinstance(self.caused_object, InvestigationValue):
+        elif isinstance(self.caused_object, InvestigationValue):
             if self.event == Notification.Event.INVESTIGATION_UPDATED.value:
-                self.message = "Investigation Value for {} for Patient {} was updated by {}".format(
+                message = "Investigation Value for {} for Patient {} was updated by {}".format(
                     self.caused_object.investigation.name,
                     self.caused_object.consultation.patient.name,
                     self.caused_by.get_full_name(),
                 )
-        if isinstance(self.caused_object, DailyRound):
+        elif isinstance(self.caused_object, DailyRound):
             if self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED.value:
-                self.message = "Consultation for Patient {}  at facility {} was created by {}".format(
+                message = "Consultation for Patient {}  at facility {} was created by {}".format(
                     self.caused_object.consultation.patient.name,
                     self.caused_object.consultation.facility.name,
                     self.caused_by.get_full_name(),
                 )
             elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED.value:
-                self.message = "Consultation for Patient {}  at facility {} was updated by {}".format(
+                message = "Consultation for Patient {}  at facility {} was updated by {}".format(
                     self.caused_object.consultation.patient.name,
                     self.caused_object.consultation.facility.name,
                     self.caused_by.get_full_name(),
                 )
+        elif isinstance(self.caused_object, ShiftingRequest):
+            if self.event == Notification.Event.SHIFTING_UPDATED.value:
+                message = "Shifting for Patient {} was updated by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name(),
+                )
+        return message
+
+    def generate_sms_message(self):
+        message = ""
         if isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
-                self.message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
+                message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
                     self.caused_object.assigned_facility.name,
                     self.caused_object.shifting_approving_facility.phone_number,
                 )
-        return True
+        return message
+
+    def generate_sms_phone_numbers(self):
+        if isinstance(self.caused_object, ShiftingRequest):
+            return [
+                self.caused_object.refering_facility_contact_number,
+                self.caused_object.patient.phone_number,
+                self.caused_object.patient.emergency_phone_number,
+            ]
+
+    def _get_default_medium(self):
+        return [Notification.Medium.SYSTEM.value]
 
     def generate_cause_objects(self):
         if isinstance(self.caused_object, PatientRegistration):
@@ -175,24 +194,19 @@ class NotificationGenerator:
         return True
 
     def generate(self):
-        if self.generate_sms and settings.SEND_SMS_NOTIFICATION:
-            if isinstance(self.caused_object, ShiftingRequest):
+        for medium in self.notification_mediums:
+            if medium == Notification.Medium.SMS.value and settings.SEND_SMS_NOTIFICATION:
                 generate_sms_for_user(
-                    [
-                        self.caused_object.refering_facility_contact_number,
-                        self.caused_object.patient.phone_number,
-                        self.caused_object.patient.emergency_phone_number,
-                    ],
-                    self.message,
+                    self.generate_sms_phone_numbers(), self.generate_sms_message(),
                 )
-        else:
-            data = {
-                "caused_by_id": self.caused_by.id,
-                "event": self.event,
-                "event_type": self.event_type,
-                "caused_objects": self.caused_objects,
-                "message": self.message,
-                "extra_users": self.extra_users,
-            }
-            generate_notifications_for_facility.delay(self.facility.id, data, self.defer_notifications)
+            if medium == Notification.Medium.SYSTEM.value:
+                data = {
+                    "caused_by_id": self.caused_by.id,
+                    "event": self.event,
+                    "event_type": self.event_type,
+                    "caused_objects": self.caused_objects,
+                    "message": self.generate_system_message(),
+                    "extra_users": self.extra_users,
+                }
+                generate_notifications_for_facility.delay(self.facility.id, data, self.defer_notifications)
 
