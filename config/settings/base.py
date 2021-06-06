@@ -304,7 +304,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 15,
+    "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
 }
 
@@ -450,3 +450,9 @@ AUDIT_LOG = {
 }
 
 SEND_SMS_NOTIFICATION = False
+
+# Whatsapp Integrations
+ENABLE_WHATSAPP = env.bool("ENABLE_WHATSAPP", False)
+WHATSAPP_API_ENDPOINT = env.bool("WHATSAPP_API_ENDPOINT", "")
+WHATSAPP_API_USERNAME = env.bool("WHATSAPP_API_USERNAME", "")
+WHATSAPP_API_PASSWORD = env.bool("WHATSAPP_API_PASSWORD", "")
