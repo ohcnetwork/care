@@ -237,6 +237,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     covin_id = models.CharField(
         max_length=15, default=None, null=True, blank=True, verbose_name="COVID-19 Vaccination ID",
     )
+    last_vaccinated_date = models.DateTimeField(null=True, blank=True, verbose_name="Date Last Vaccinated")
 
     # Extras
     cluster_name = models.CharField(

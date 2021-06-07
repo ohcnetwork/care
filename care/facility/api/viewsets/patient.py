@@ -67,6 +67,7 @@ class PatientFilterSet(filters.FilterSet):
     is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
     date_declared_positive = filters.DateFromToRangeFilter(field_name="date_declared_positive")
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
+    last_vaccinated_date = filters.DateFromToRangeFilter(field_name="last_vaccinated_date")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
