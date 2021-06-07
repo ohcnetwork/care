@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer, DivisionSerializer
 from config.serializers import ChoiceField
 
 User = get_user_model()
@@ -24,6 +24,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
+    division_object = DivisionSerializer(source="district.division", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
 
@@ -41,6 +42,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "ward_object",
             "local_body_object",
             "district_object",
+            "division_object",
             "state_object",
             "facility_type",
         )
@@ -75,6 +77,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "local_body_object",
             "district_object",
             "state_object",
+            "division_object",
             "modified_date",
             "created_date",
             "kasp_empanelled",

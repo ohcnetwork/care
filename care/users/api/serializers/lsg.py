@@ -1,11 +1,17 @@
 from rest_framework import serializers
 
-from care.users.models import District, LocalBody, State, Ward
+from care.users.models import District, Division, LocalBody, State, Ward
 
 
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
+        fields = "__all__"
+
+
+class DivisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Division
         fields = "__all__"
 
 

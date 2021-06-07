@@ -35,6 +35,7 @@ class FacilitySummaryFilter(filters.FilterSet):
     end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
     facility = filters.UUIDFilter(field_name="facility__external_id")
     district = filters.NumberFilter(field_name="facility__district__id")
+    division = filters.NumberFilter(field_name="facility__district__division__id")
     local_body = filters.NumberFilter(field_name="facility__local_body__id")
     state = filters.NumberFilter(field_name="facility__state__id")
 
@@ -46,7 +47,7 @@ class FacilityCapacitySummaryViewSet(
     queryset = (
         FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity")
         .order_by("-created_date")
-        .select_related("facility", "facility__state", "facility__district", "facility__local_body")
+        .select_related("facility", "facility__state", "facility__district", "facility__district__division", "facility__local_body")
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
