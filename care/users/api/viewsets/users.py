@@ -228,4 +228,4 @@ class UserViewSet(
             if field in request.data:
                 setattr(user, field, request.data[field])
         user.save()
-        return Response(stauts=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
