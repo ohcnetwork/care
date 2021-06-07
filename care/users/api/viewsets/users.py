@@ -36,6 +36,7 @@ INVERSE_USER_TYPE = inverse_choices(User.TYPE_CHOICES)
 
 
 class UserFilterSet(filters.FilterSet):
+    id = filters.NumberFilter(field_name="id", lookup_expr="exact")
     first_name = filters.CharFilter(field_name="first_name", lookup_expr="icontains")
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
