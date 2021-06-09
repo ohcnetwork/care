@@ -10,7 +10,7 @@ def add_divisions(apps, schema_editor):
     Division = apps.get_model("users", "division")
     State = apps.get_model("users", "state")
 
-    maharashtra_state = State.objects.get(name="Maharashtra")
+    maharashtra_state = State.objects.filter(name="Maharashtra").first()
 
     with open('data/india/maharashtra/divisions.json') as json_file:
         data = json.load(json_file)

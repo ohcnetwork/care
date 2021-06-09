@@ -37,6 +37,7 @@ class DistrictSummaryFilter(filters.FilterSet):
     start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
     end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
     district = filters.NumberFilter(field_name="district__id")
+    division = filters.NumberFilter(field_name="district__division__id")
     state = filters.NumberFilter(field_name="district__state__id")
 
 
@@ -45,7 +46,7 @@ class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
     queryset = (
         DistrictScopedSummary.objects.filter(s_type="PatientSummary")
         .order_by("-created_date")
-        .select_related("district", "district__state")
+        .select_related("district", "district__state", "district__division")
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = DistrictSummarySerializer

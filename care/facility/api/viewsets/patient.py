@@ -72,6 +72,8 @@ class PatientFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
     local_body = filters.NumberFilter(field_name="local_body__id")
     local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    division = filters.NumberFilter(field_name="district__division__id")
+    division_name = filters.CharFilter(field_name="district__division__name", lookup_expr="icontains")
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
@@ -145,6 +147,7 @@ class PatientViewSet(
         "facility__ward",
         "facility__local_body",
         "facility__district",
+        "facility__district__division",
         "facility__state",
         # "nearest_facility",
         # "nearest_facility__local_body",
