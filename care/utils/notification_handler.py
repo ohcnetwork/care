@@ -74,6 +74,8 @@ class NotificationGenerator:
                 "worker_initated": True,
             }
             notification_task_generator.delay(**data)
+            self.worker_initiated = False
+            return
         Model = apps.get_model("facility.{}".format(caused_object))
         caused_object = Model.objects.get(pk=caused_object_pk)
         caused_by = User.objects.get(id=caused_by)
@@ -84,7 +86,6 @@ class NotificationGenerator:
         self.event = event.value
         self.caused_by = caused_by
         self.caused_object = caused_object
-        print(caused_object)
         self.caused_objects = {}
         self.extra_data = extra_data
         self.generate_cause_objects()
@@ -293,6 +294,8 @@ class NotificationGenerator:
                 )
 
     def generate(self):
+        if not self.worker_initiated:
+            return
         for medium in self.notification_mediums:
             if medium == Notification.Medium.SMS.value and settings.SEND_SMS_NOTIFICATION:
                 sendSMS(self.generate_sms_phone_numbers(), self.generate_sms_message(), many=True)
