@@ -176,6 +176,9 @@ class User(AbstractUser):
         "DistrictLabAdmin": 25,
         "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
+        "DivisionLabAdmin": 31,
+        "DivisionReadOnlyAdmin":32,
+        "DivisionAdmin":33,
         "StateLabAdmin": 35,
         "StateReadOnlyAdmin": 39,
         "StateAdmin": 40,
@@ -190,6 +193,7 @@ class User(AbstractUser):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
