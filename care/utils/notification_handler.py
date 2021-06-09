@@ -1,17 +1,28 @@
-from django.conf import settings
+import json
 
-from care.facility.models.facility import Facility
+import celery
+from django.apps import apps
+from django.conf import settings
+from pywebpush import WebPushException, webpush
+
+from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from care.facility.models.patient_investigation import InvestigationSession, InvestigationValue
 from care.facility.models.shifting import ShiftingRequest
-from care.facility.tasks.notification.generator import generate_notifications_for_facility, generate_sms_for_user
 from care.users.models import User
+from care.utils.sms.sendSMS import sendSMS
+from care.utils.whatsapp.send_mesage import sendWhatsappMessage
 
 
 class NotificationCreationException(Exception):
     pass
+
+
+@celery.task()
+def notification_task_generator(**kwargs):
+    NotificationGenerator(**kwargs).generate()
 
 
 class NotificationGenerator:
@@ -26,6 +37,7 @@ class NotificationGenerator:
         event=None,
         caused_by=None,
         caused_object=None,
+        caused_object_pk=None,
         message=None,
         defer_notifications=False,
         facility=None,
@@ -33,30 +45,51 @@ class NotificationGenerator:
         extra_users=None,
         extra_data=None,
         notification_mediums=False,
+        worker_initated=False,
     ):
-        if not isinstance(event_type, Notification.EventType):
-            raise NotificationCreationException("Event Type Invalid")
-        if not isinstance(event, Notification.Event):
-            raise NotificationCreationException("Event Invalid")
-        if not isinstance(caused_by, User):
-            raise NotificationCreationException("edited_by must be an instance of a user")
-        if facility:
-            if not isinstance(facility, Facility):
-                raise NotificationCreationException("facility must be an instance of Facility")
+
+        if not worker_initated:
+            if not isinstance(event_type, Notification.EventType):
+                raise NotificationCreationException("Event Type Invalid")
+            if not isinstance(event, Notification.Event):
+                raise NotificationCreationException("Event Invalid")
+            if not isinstance(caused_by, User):
+                raise NotificationCreationException("edited_by must be an instance of a user")
+            if facility:
+                if not isinstance(facility, Facility):
+                    raise NotificationCreationException("facility must be an instance of Facility")
+            data = {
+                "event_type": event_type.value,
+                "event": event.value,
+                "caused_by": caused_by.id,
+                "caused_object": caused_object.__class__.__name__,
+                "caused_object_pk": caused_object.id,
+                "message": message,
+                "defer_notifications": defer_notifications,
+                "facility": facility.id,
+                "generate_for_facility": generate_for_facility,
+                "extra_users": extra_users,
+                "extra_data": extra_data,
+                "notification_mediums": notification_mediums,
+                "worker_initated": True,
+            }
+            notification_task_generator.delay(**data)
+        Model = apps.get_model("facility.{}".format(caused_object))
+        caused_object = Model.objects.get(pk=caused_object_pk)
+        caused_by = User.objects.get(id=caused_by)
+        facility = Facility.objects.get(id=facility)
         if not notification_mediums:
             self.notification_mediums = self._get_default_medium()
         self.event_type = event_type.value
         self.event = event.value
         self.caused_by = caused_by
         self.caused_object = caused_object
+        print(caused_object)
         self.caused_objects = {}
         self.extra_data = extra_data
         self.generate_cause_objects()
         self.extra_users = []
-        if extra_users:
-            self.extra_users = extra_users
-        else:
-            self.message = message
+        self.message = message
         self.facility = facility
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
@@ -150,6 +183,22 @@ class NotificationGenerator:
                 )
         return message
 
+    def _get_default_whatsapp_config(self):
+        return {
+            Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value: {
+                "message": "You have been assigned to a new patient in care platform for specialist teleconsultation.",
+                "header": "Specialist Consultation Requested",
+                "footer": "Click the following to link to view patient details.",
+            }
+        }
+
+    def generate_whatsapp_message(self):
+        if settings.WHATSAPP_MESSAGE_CONFIG:
+            message_dict = json.loads(settings.WHATSAPP_MESSAGE_CONFIG)
+        else:
+            message_dict = self._get_default_whatsapp_config()
+        return message_dict[self.event]
+
     def generate_sms_phone_numbers(self):
         if isinstance(self.caused_object, ShiftingRequest):
             return [
@@ -190,23 +239,75 @@ class NotificationGenerator:
             self.caused_objects["daily_round"] = self.caused_object.id
             if self.caused_object.consultation.patient.facility:
                 self.caused_objects["facility"] = self.caused_object.consultation.facility.external_id
-
         return True
+
+    def generate_whatsapp_users(self):
+        if self.event == Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value:
+            return [self.caused_object.assigned_to]
+        raise Exception("Action Does not have associated users")
+
+    def generate_system_users(self):
+        users = []
+        extra_users = self.extra_users
+        caused_user = self.caused_by
+        facility_users = FacilityUser.objects.filter(facility_id=self.facility.id)
+        for facility_user in facility_users:
+            if facility_user.user.id != caused_user.id:
+                users.append(facility_user.user)
+        for user_id in extra_users:
+            user_obj = User.objects.get(id=user_id)
+            if user_obj.id != caused_user.id:
+                users.append(user_obj)
+        return users
+
+    def generate_message_for_user(self, user, message, medium):
+        notification = Notification()
+        notification.intended_for = user
+        notification.caused_objects = self.caused_objects
+        notification.message = message
+        notification.medium_sent = medium
+        notification.event = self.event
+        notification.event_type = self.event_type
+        notification.caused_by = self.caused_by
+        notification.save()
+        return notification
+
+    def send_webpush_user(self, user, message):
+        try:
+            if user.pf_endpoint and user.pf_p256dh and user.pf_auth:
+                webpush(
+                    subscription_info={
+                        "endpoint": user.pf_endpoint,
+                        "keys": {"p256dh": user.pf_p256dh, "auth": user.pf_auth},
+                    },
+                    data=message,
+                    vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                    vapid_claims={"sub": "mailto:info@coronasafe.network",},
+                )
+        except WebPushException as ex:
+            print("Web Push Failed with Exception: {}", repr(ex))
+            if ex.response and ex.response.json():
+                extra = ex.response.json()
+                print(
+                    "Remote service replied with a {}:{}, {}", extra.code, extra.errno, extra.message,
+                )
 
     def generate(self):
         for medium in self.notification_mediums:
             if medium == Notification.Medium.SMS.value and settings.SEND_SMS_NOTIFICATION:
-                generate_sms_for_user(
-                    self.generate_sms_phone_numbers(), self.generate_sms_message(),
-                )
-            if medium == Notification.Medium.SYSTEM.value:
-                data = {
-                    "caused_by_id": self.caused_by.id,
-                    "event": self.event,
-                    "event_type": self.event_type,
-                    "caused_objects": self.caused_objects,
-                    "message": self.generate_system_message(),
-                    "extra_users": self.extra_users,
-                }
-                generate_notifications_for_facility.delay(self.facility.id, data, self.defer_notifications)
+                sendSMS(self.generate_sms_phone_numbers(), self.generate_sms_message(), many=True)
+            elif medium == Notification.Medium.SYSTEM.value:
+                message = self.generate_system_message()
+                for user in self.generate_system_users():
+                    notification_obj = self.generate_message_for_user(user, message, Notification.Medium.SYSTEM.value)
+                    if not self.defer_notifications:
+                        self.send_webpush_user(user, str(notification_obj.external_id))
+            elif medium == Notification.Medium.WHATSAPP.value and settings.ENABLE_WHATSAPP:
+                for user in self.generate_whatsapp_users():
+                    number = user.alt_phone_number
+                    notification_obj = self.generate_message_for_user(
+                        user, message, Notification.Medium.WHATSAPP.value
+                    )
+                    message = self.generate_whatsapp_message()
+                    sendWhatsappMessage(number, message, notification_obj.external_id)
 
