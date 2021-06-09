@@ -39,7 +39,7 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
+from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet, DivisionViewSet
 from care.users.api.viewsets.users import UserViewSet
 
 if settings.DEBUG:
@@ -75,6 +75,7 @@ router.register("pharmacy/prescription", PrescriptionSupplierViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
+router.register("division", DivisionViewSet)
 router.register("district", DistrictViewSet)
 router.register("local_body", LocalBodyViewSet)
 router.register("ward", WardViewSet)

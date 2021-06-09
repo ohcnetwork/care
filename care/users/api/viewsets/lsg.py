@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.users.api.serializers.lsg import DistrictSerializer, DivisionSerializer, LocalBodySerializer, StateSerializer, WardSerializer
-from care.users.models import District, LocalBody, State, Ward
+from care.users.models import District, Division, LocalBody, State, Ward
 
 from care.utils.cache.mixin import ListCacheResponseMixin
 
@@ -37,6 +37,25 @@ class StateViewSet(ListCacheResponseMixin, mixins.ListModelMixin, GenericViewSet
     def divisions(self, *args, **kwargs):
         state = self.get_object()
         serializer = DivisionSerializer(state.division_set.all().order_by("name"), many=True)
+        return Response(data=serializer.data)
+
+
+class DivisionFilterSet(filters.FilterSet):
+    state = filters.NumberFilter(field_name="state_id")
+    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+
+class DivisionViewSet(ListCacheResponseMixin, mixins.ListModelMixin, GenericViewSet):
+    serializer_class = DivisionSerializer
+    queryset = Division.objects.all().order_by("name")
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = DivisionFilterSet
+    pagination_class = PaginationOverrideClass
+
+    @method_decorator(cache_page(cache_limit))
+    @action(detail=True, methods=["get"])
+    def districts(self, *args, **kwargs):
+        division = self.get_object()
+        serializer = DistrictSerializer(division.districts.all().order_by("name"), many=True)
         return Response(data=serializer.data)
 
 
