@@ -76,14 +76,15 @@ class NotificationGenerator:
             notification_task_generator.delay(**data)
             self.worker_initiated = False
             return
+        self.worker_initiated = True
         Model = apps.get_model("facility.{}".format(caused_object))
         caused_object = Model.objects.get(pk=caused_object_pk)
         caused_by = User.objects.get(id=caused_by)
         facility = Facility.objects.get(id=facility)
         if not notification_mediums:
             self.notification_mediums = self._get_default_medium()
-        self.event_type = event_type.value
-        self.event = event.value
+        self.event_type = event_type
+        self.event = event
         self.caused_by = caused_by
         self.caused_object = caused_object
         self.caused_objects = {}
