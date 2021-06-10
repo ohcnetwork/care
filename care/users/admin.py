@@ -36,6 +36,7 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
                     "user_type",
                     "local_body",
                     "district",
+                    "division",
                     "state",
                     "phone_number",
                     "gender",
