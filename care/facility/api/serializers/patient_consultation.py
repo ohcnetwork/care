@@ -165,6 +165,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             facility=patient.facility,
         ).generate()
 
+        if consultation.assigned_to:
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                caused_by=self.context["request"].user,
+                caused_object=consultation,
+                facility=consultation.patient.facility,
+                notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP],
+            ).generate()
+
         return consultation
 
     def validate(self, obj):
