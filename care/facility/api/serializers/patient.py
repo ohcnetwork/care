@@ -48,6 +48,8 @@ class PatientListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
 
+    last_consultation = PatientConsultationSerializer(read_only=True)
+
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
@@ -108,7 +110,7 @@ class PatientDetailSerializer(PatientListSerializer):
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
-    last_consultation = serializers.SerializerMethodField(read_only=True)
+    last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(
     #     source="nearest_facility", read_only=True
@@ -146,11 +148,11 @@ class PatientDetailSerializer(PatientListSerializer):
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
 
-    def get_last_consultation(self, obj):
-        last_consultation = PatientConsultation.objects.filter(patient=obj).last()
-        if not last_consultation:
-            return None
-        return PatientConsultationSerializer(last_consultation).data
+    # def get_last_consultation(self, obj):
+    #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
+    #     if not last_consultation:
+    #         return None
+    #     return PatientConsultationSerializer(last_consultation).data
 
     def validate_facility(self, value):
         if value is not None and Facility.objects.filter(id=value).first() is None:
