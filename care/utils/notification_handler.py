@@ -328,7 +328,9 @@ class NotificationGenerator:
                 for user in self.generate_system_users():
                     notification_obj = self.generate_message_for_user(user, message, Notification.Medium.SYSTEM.value)
                     if not self.defer_notifications:
-                        self.send_webpush_user(user, str(notification_obj.external_id))
+                        self.send_webpush_user(
+                            user, json.dumps({"external_id": notification_obj.external_id, "title": message})
+                        )
             elif medium == Notification.Medium.WHATSAPP.value and settings.ENABLE_WHATSAPP:
                 for user in self.generate_whatsapp_users():
                     number = user.alt_phone_number
