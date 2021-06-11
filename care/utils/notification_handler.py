@@ -58,6 +58,12 @@ class NotificationGenerator:
             if facility:
                 if not isinstance(facility, Facility):
                     raise NotificationCreationException("facility must be an instance of Facility")
+            mediums = []
+            if notification_mediums:
+                for medium in notification_mediums:
+                    if not isinstance(medium, Notification.Medium):
+                        raise NotificationCreationException("Medium Type Invalid")
+                    mediums.append(medium.value)
             data = {
                 "event_type": event_type.value,
                 "event": event.value,
@@ -69,8 +75,8 @@ class NotificationGenerator:
                 "facility": facility.id,
                 "generate_for_facility": generate_for_facility,
                 "extra_users": extra_users,
-                "extra_data": extra_data,
-                "notification_mediums": notification_mediums,
+                "extra_data": self.serialize_extra_data(extra_data),
+                "notification_mediums": mediums,
                 "worker_initated": True,
             }
             notification_task_generator.delay(**data)
@@ -78,9 +84,10 @@ class NotificationGenerator:
             return
         self.worker_initiated = True
         Model = apps.get_model("facility.{}".format(caused_object))
-        caused_object = Model.objects.get(pk=caused_object_pk)
+        caused_object = Model.objects.get(id=caused_object_pk)
         caused_by = User.objects.get(id=caused_by)
         facility = Facility.objects.get(id=facility)
+        self.notification_mediums = notification_mediums
         if not notification_mediums:
             self.notification_mediums = self._get_default_medium()
         self.event_type = event_type
@@ -88,7 +95,7 @@ class NotificationGenerator:
         self.caused_by = caused_by
         self.caused_object = caused_object
         self.caused_objects = {}
-        self.extra_data = extra_data
+        self.extra_data = self.deserialize_extra_data(extra_data)
         self.generate_cause_objects()
         self.extra_users = []
         self.message = message
@@ -96,6 +103,22 @@ class NotificationGenerator:
         self.generate_for_facility = generate_for_facility
         self.defer_notifications = defer_notifications
         self.generate_extra_users()
+
+    def serialize_extra_data(self, extra_data):
+        if not extra_data:
+            return None
+        for key in extra_data:
+            extra_data[key] = {"model_name": extra_data[key].__class__.__name__, "model_id": extra_data[key].id}
+        return extra_data
+
+    def deserialize_extra_data(self, extra_data):
+        if not extra_data:
+            return None
+        for key in extra_data:
+            extra_data[key] = apps.get_model("facility.{}".format(extra_data[key]["model_name"])).objects.get(
+                id=extra_data[key]["model_id"]
+            )
+        return extra_data
 
     def generate_extra_users(self):
         if isinstance(self.caused_object, PatientConsultation):
@@ -214,33 +237,33 @@ class NotificationGenerator:
 
     def generate_cause_objects(self):
         if isinstance(self.caused_object, PatientRegistration):
-            self.caused_objects["patient"] = self.caused_object.external_id
+            self.caused_objects["patient"] = str(self.caused_object.external_id)
             if self.caused_object.facility:
-                self.caused_objects["facility"] = self.caused_object.facility.external_id
+                self.caused_objects["facility"] = str(self.caused_object.facility.external_id)
         if isinstance(self.caused_object, PatientConsultation):
-            self.caused_objects["consultation"] = self.caused_object.external_id
-            self.caused_objects["patient"] = self.caused_object.patient.external_id
+            self.caused_objects["consultation"] = str(self.caused_object.external_id)
+            self.caused_objects["patient"] = str(self.caused_object.patient.external_id)
             if self.caused_object.patient.facility:
-                self.caused_objects["facility"] = self.caused_object.patient.facility.external_id
+                self.caused_objects["facility"] = str(self.caused_object.patient.facility.external_id)
         if isinstance(self.caused_object, InvestigationSession):
-            self.caused_objects["consultation"] = self.extra_data["consultation"].external_id
-            self.caused_objects["patient"] = self.extra_data["consultation"].patient.external_id
+            self.caused_objects["consultation"] = str(self.extra_data["consultation"].external_id)
+            self.caused_objects["patient"] = str(self.extra_data["consultation"].patient.external_id)
             if self.extra_data["consultation"].patient.facility:
-                self.caused_objects["facility"] = self.extra_data["consultation"].patient.facility.external_id
-            self.caused_objects["session"] = self.caused_object.external_id
+                self.caused_objects["facility"] = str(self.extra_data["consultation"].patient.facility.external_id)
+            self.caused_objects["session"] = str(self.caused_object.external_id)
         if isinstance(self.caused_object, InvestigationValue):
-            self.caused_objects["consultation"] = self.caused_object.consultation.external_id
-            self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
+            self.caused_objects["consultation"] = str(self.caused_object.consultation.external_id)
+            self.caused_objects["patient"] = str(self.caused_object.consultation.patient.external_id)
             if self.caused_object.consultation.patient.facility:
-                self.caused_objects["facility"] = self.caused_object.consultation.patient.facility.external_id
-            self.caused_objects["session"] = self.caused_object.session.external_id
-            self.caused_objects["investigation"] = self.caused_object.investigation.external_id
+                self.caused_objects["facility"] = str(self.caused_object.consultation.patient.facility.external_id)
+            self.caused_objects["session"] = str(self.caused_object.session.external_id)
+            self.caused_objects["investigation"] = str(self.caused_object.investigation.external_id)
         if isinstance(self.caused_object, DailyRound):
-            self.caused_objects["consultation"] = self.caused_object.consultation.external_id
-            self.caused_objects["patient"] = self.caused_object.consultation.patient.external_id
-            self.caused_objects["daily_round"] = self.caused_object.id
+            self.caused_objects["consultation"] = str(self.caused_object.consultation.external_id)
+            self.caused_objects["patient"] = str(self.caused_object.consultation.patient.external_id)
+            self.caused_objects["daily_round"] = str(self.caused_object.id)
             if self.caused_object.consultation.patient.facility:
-                self.caused_objects["facility"] = self.caused_object.consultation.facility.external_id
+                self.caused_objects["facility"] = str(self.caused_object.consultation.facility.external_id)
         return True
 
     def generate_whatsapp_users(self):
