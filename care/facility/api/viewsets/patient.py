@@ -466,12 +466,12 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
 
 class PatientNotesViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet):
-    queryset = PatientNotes.objects.all().order_by("-created_date")
+    queryset = PatientNotes.objects.all().select_related("facility", "patient", "created_by").order_by("-created_date")
     serializer_class = PatientNotesSerializer
 
     def get_queryset(self):
         user = self.request.user
-        queryset = self.queryset
+        queryset = self.queryset.filter(patient__external_id=self.kwargs.get("patient_external_id"))
         if not user.is_superuser:
             return queryset
         if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
