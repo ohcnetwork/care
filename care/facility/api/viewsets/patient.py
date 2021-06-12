@@ -15,8 +15,9 @@ from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissio
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import ListModelMixin
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import RetrieveAPIView, get_object_or_404
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,6 +27,7 @@ from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
+    PatientNotesSerializer,
     PatientSearchSerializer,
     PatientTransferSerializer,
 )
@@ -37,6 +39,7 @@ from care.facility.models import (
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
+    PatientNotes,
     PatientRegistration,
     PatientSearch,
     ShiftingRequest,
@@ -46,6 +49,7 @@ from care.facility.tasks.patient.discharge_report import generate_discharge_repo
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.queryset.patient import get_patient_queryset
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -459,3 +463,34 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
         """
         return super(PatientSearchViewSet, self).list(request, *args, **kwargs)
+
+
+class PatientNotesViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet):
+    queryset = PatientNotes.objects.all().order_by("-created_date")
+    serializer_class = PatientNotesSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset
+        if not user.is_superuser:
+            return queryset
+        if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(patient__facility__state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(patient__facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            q_filters = Q(patient__facility__id__in=allowed_facilities)
+            q_filters |= Q(patient__last_consultation__assigned_to=user)
+            q_filters |= Q(patient__assigned_to=user)
+            queryset = queryset.filter(q_filters)
+        return queryset
+
+    def perform_create(self, serializer):
+        patient = get_object_or_404(
+            get_patient_queryset(self.request.user).filter(external_id=self.kwargs.get("patient_external_id"))
+        )
+        if not patient.is_active:
+            raise ValidationError({"patient": "Only active patients data can be updated"})
+        return serializer.save(facility=patient.facility, patient=patient, created_by=self.request.user)
+

@@ -15,7 +15,7 @@ from care.facility.api.viewsets.inventory import (
     FacilityInventorySummaryViewSet,
 )
 from care.facility.api.viewsets.notification import NotificationViewSet
-from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientSearchViewSet, PatientViewSet
+from care.facility.api.viewsets.patient import FacilityPatientStatsHistoryViewSet, PatientNotesViewSet, PatientSearchViewSet, PatientViewSet
 from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
@@ -125,6 +125,7 @@ facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityVie
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
+patient_nested_router.register(r"notes", PatientNotesViewSet)
 
 consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)

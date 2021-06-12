@@ -17,6 +17,7 @@ from care.facility.models import (
     PatientMetaInfo,
     PatientRegistration,
     PatientSearch,
+    PatientNotes,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
@@ -327,3 +328,13 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             discharge_date=localtime(now())
         )
         self.instance.save()
+
+
+class PatientNotesSerializer(serializers.ModelSerializer):
+    facility = FacilityBasicInfoSerializer(read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    class Meta:
+        model = PatientNotes
+        fields = ("note", "facility", "created_by_object", "created_date")
+        read_only_fields = ("created_date",)
