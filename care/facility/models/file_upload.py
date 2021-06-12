@@ -23,6 +23,7 @@ class FileUpload(FacilityBaseModel):
     class FileType(enum.Enum):
         PATIENT = 1
         CONSULTATION = 2
+        SAMPLE_MANAGEMENT = 3
 
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"
