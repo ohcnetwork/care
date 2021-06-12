@@ -214,14 +214,14 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.last_edited = self.context["request"].user
             patient.save()
 
-            NotificationGenerator(
-                event=Notification.Event.PATIENT_CREATED,
-                caused_by=self.context["request"].user,
-                caused_object=patient,
-                facility=patient.facility,
-            ).generate()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CREATED,
+            caused_by=self.context["request"].user,
+            caused_object=patient,
+            facility=patient.facility,
+        ).generate()
 
-            return patient
+        return patient
 
     def update(self, instance, validated_data):
         with transaction.atomic():
