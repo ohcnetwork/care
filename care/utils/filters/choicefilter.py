@@ -17,6 +17,6 @@ class CareChoiceFilter(CharFilter):
 
     def filter(self, qs, value):
         if len(value) > 0:
-            value = self.choice_dict[value]
+            value = self.choice_dict.get(value)
         return super().filter(qs, value)
 

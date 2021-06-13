@@ -5,10 +5,7 @@ from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.api.serializers.facility import (
-    FacilityBasicInfoSerializer,
-    FacilitySerializer,
-)
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models import (
     DISEASE_CHOICES,
@@ -20,22 +17,15 @@ from care.facility.models import (
     PatientMetaInfo,
     PatientRegistration,
     PatientSearch,
+    PatientNotes,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-)
+from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
-from care.users.api.serializers.lsg import (
-    DistrictSerializer,
-    LocalBodySerializer,
-    StateSerializer,
-    WardSerializer,
-)
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
@@ -59,9 +49,13 @@ class PatientListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
 
+    last_consultation = PatientConsultationSerializer(read_only=True)
+
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -117,7 +111,7 @@ class PatientDetailSerializer(PatientListSerializer):
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
-    last_consultation = serializers.SerializerMethodField(read_only=True)
+    last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(
     #     source="nearest_facility", read_only=True
@@ -139,6 +133,10 @@ class PatientDetailSerializer(PatientListSerializer):
     created_by = UserBaseMinimumSerializer(read_only=True)
     vaccine_name = serializers.ChoiceField(choices=PatientRegistration.vaccineChoices, required=False, allow_null=True)
 
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -151,11 +149,11 @@ class PatientDetailSerializer(PatientListSerializer):
         include = ("contacted_patients",)
         read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
 
-    def get_last_consultation(self, obj):
-        last_consultation = PatientConsultation.objects.filter(patient=obj).last()
-        if not last_consultation:
-            return None
-        return PatientConsultationSerializer(last_consultation).data
+    # def get_last_consultation(self, obj):
+    #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
+    #     if not last_consultation:
+    #         return None
+    #     return PatientConsultationSerializer(last_consultation).data
 
     def validate_facility(self, value):
         if value is not None and Facility.objects.filter(id=value).first() is None:
@@ -216,14 +214,14 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.last_edited = self.context["request"].user
             patient.save()
 
-            NotificationGenerator(
-                event=Notification.Event.PATIENT_CREATED,
-                caused_by=self.context["request"].user,
-                caused_object=patient,
-                facility=patient.facility,
-            ).generate()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CREATED,
+            caused_by=self.context["request"].user,
+            caused_object=patient,
+            facility=patient.facility,
+        ).generate()
 
-            return patient
+        return patient
 
     def update(self, instance, validated_data):
         with transaction.atomic():
@@ -330,3 +328,13 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             discharge_date=localtime(now())
         )
         self.instance.save()
+
+
+class PatientNotesSerializer(serializers.ModelSerializer):
+    facility = FacilityBasicInfoSerializer(read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    class Meta:
+        model = PatientNotes
+        fields = ("note", "facility", "created_by_object", "created_date")
+        read_only_fields = ("created_date",)

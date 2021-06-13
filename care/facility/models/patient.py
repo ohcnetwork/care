@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField
 from partial_index import PQ, PartialIndex
@@ -12,6 +13,7 @@ from care.facility.models import (
     BaseModel,
     DiseaseStatusEnum,
     District,
+    Facility,
     FacilityBaseModel,
     LocalBody,
     PatientBaseModel,
@@ -32,8 +34,6 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
 from care.utils.models.jsonfield import JSONField
-from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -237,6 +237,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     covin_id = models.CharField(
         max_length=15, default=None, null=True, blank=True, verbose_name="COVID-19 Vaccination ID",
     )
+    last_vaccinated_date = models.DateTimeField(null=True, blank=True, verbose_name="Date Last Vaccinated")
 
     # Extras
     cluster_name = models.CharField(
@@ -245,6 +246,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     is_declared_positive = models.BooleanField(default=None, null=True, verbose_name="Is Patient Declared Positive",)
     date_declared_positive = models.DateTimeField(
         null=True, blank=True, verbose_name="Date Patient is Declared Positive"
+    )
+
+    # Permission Scopes
+
+    assigned_to = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank="True", related_name="root_patient_assigned_to"
     )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
@@ -566,3 +573,10 @@ class PatientMobileOTP(BaseModel):
     is_used = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     otp = models.CharField(max_length=10)
+
+
+class PatientNotes(FacilityBaseModel):
+    patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, null=False, blank=False)
+    facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,)
+    note = models.TextField(default="", blank=True)

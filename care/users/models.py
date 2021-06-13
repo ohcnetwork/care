@@ -183,6 +183,10 @@ class User(AbstractUser):
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    alt_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex], default=None, blank=True, null=True
+    )
+
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)

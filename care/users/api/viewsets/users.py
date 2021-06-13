@@ -2,9 +2,11 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -34,18 +36,17 @@ INVERSE_USER_TYPE = inverse_choices(User.TYPE_CHOICES)
 
 
 class UserFilterSet(filters.FilterSet):
+    id = filters.NumberFilter(field_name="id", lookup_expr="exact")
     first_name = filters.CharFilter(field_name="first_name", lookup_expr="icontains")
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    alt_phone_number = filters.CharFilter(field_name="alt_phone_number", lookup_expr="icontains")
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
 
     def get_user_type(
-        self,
-        queryset,
-        field_name,
-        value,
+        self, queryset, field_name, value,
     ):
         if value:
             if value in INVERSE_USER_TYPE:
@@ -59,25 +60,26 @@ class UserViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet,
 ):
     """
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.filter(is_superuser=False).select_related("local_body", "district", "state")
+    queryset = User.objects.filter(is_active=True, is_superuser=False).select_related(
+        "local_body", "district", "state"
+    )
     lookup_field = "username"
 
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (
-        filters.DjangoFilterBackend,
-        rest_framework_filters.OrderingFilter,
-    )
+    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter, drf_filters.SearchFilter)
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
+    search_fields = ["first_name", "last_name", "username"]
     # last_login
     # def get_permissions(self):
     #     return [
@@ -107,16 +109,36 @@ class UserViewSet(
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK,
-            data=UserSerializer(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
         )
+
+    def destroy(self, request, *args, **kwargs):
+        queryset = self.queryset
+        username = kwargs["username"]
+        if request.user.is_superuser:
+            pass
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                state=request.user.state, user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
+            )
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                district=request.user.district,
+                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                is_superuser=False,
+            )
+        else:
+            raise ValidationError({"permission": "Denied"})
+        user = get_object_or_404(queryset.filter(username=username))
+        user.is_active = False
+        user.save(update_fields=["is_active"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         password = request.data.pop("password", User.objects.make_random_password(length=8))
         serializer = UserCreateSerializer(
-            data={**request.data, "password": password},
-            context={"created_by": request.user},
+            data={**request.data, "password": password}, context={"created_by": request.user},
         )
         serializer.is_valid(raise_exception=True)
         username = request.data["username"]
@@ -206,4 +228,4 @@ class UserViewSet(
             if field in request.data:
                 setattr(user, field, request.data[field])
         user.save()
-        return Response(stauts=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)

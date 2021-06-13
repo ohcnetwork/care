@@ -304,7 +304,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 15,
+    "PAGE_SIZE": 14,
+    "SEARCH_PARAM": "search_text",
 }
 
 # Your stuff...
@@ -449,3 +450,11 @@ AUDIT_LOG = {
 }
 
 SEND_SMS_NOTIFICATION = False
+
+# Whatsapp Integrations
+ENABLE_WHATSAPP = env.bool("ENABLE_WHATSAPP", default=False)
+WHATSAPP_API_ENDPOINT = env("WHATSAPP_API_ENDPOINT", default="")
+WHATSAPP_API_USERNAME = env("WHATSAPP_API_USERNAME", default="")
+WHATSAPP_API_PASSWORD = env("WHATSAPP_API_PASSWORD", default="")
+WHATSAPP_ENCRYPTION_KEY = env("WHATSAPP_ENCRYPTION_KEY", default="")
+WHATSAPP_MESSAGE_CONFIG = env("WHATSAPP_MESSAGE_CONFIG", default=None)

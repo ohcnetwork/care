@@ -37,4 +37,4 @@ class NotificationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, 
 
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly])
     def public_key(self, request, *args, **kwargs):
-        return Response({"public_key": base64.urlsafe_b64encode(str.encode(settings.VAPID_PUBLIC_KEY))})
+        return Response({"public_key": settings.VAPID_PUBLIC_KEY})

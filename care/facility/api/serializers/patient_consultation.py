@@ -95,6 +95,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if validated_data["is_kasp"] and (not instance.is_kasp):
                 validated_data["kasp_enabled_date"] = localtime(now())
 
+        if "assigned_to" in validated_data:
+            if validated_data["assigned_to"] != instance.assigned_to:
+                NotificationGenerator(
+                    event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                    caused_by=self.context["request"].user,
+                    caused_object=instance,
+                    facility=instance.patient.facility,
+                    notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP],
+                ).generate()
+
         consultation = super().update(instance, validated_data)
 
         NotificationGenerator(
@@ -154,6 +164,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             caused_object=consultation,
             facility=patient.facility,
         ).generate()
+
+        if consultation.assigned_to:
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                caused_by=self.context["request"].user,
+                caused_object=consultation,
+                facility=consultation.patient.facility,
+                notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP],
+            ).generate()
 
         return consultation
 

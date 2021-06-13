@@ -11,7 +11,15 @@ from django.template.loader import render_to_string
 from django.utils.timezone import make_aware
 from hardcopy import bytestring_to_pdf
 
-from care.facility.models import DailyRound, PatientConsultation, PatientRegistration, PatientSample, Disease, InvestigationValue, DiseaseStatusEnum
+from care.facility.models import (
+    DailyRound,
+    PatientConsultation,
+    PatientRegistration,
+    PatientSample,
+    Disease,
+    InvestigationValue,
+    DiseaseStatusEnum,
+)
 
 
 def randomString(stringLength):
@@ -28,12 +36,13 @@ def generate_discharge_report(patient_id, email):
         consultation = consultations.first()
         samples = PatientSample.objects.filter(patient=patient, consultation=consultation)
         daily_rounds = DailyRound.objects.filter(consultation=consultation)
-        investigations=InvestigationValue.objects.filter(consultation=consultation.id)
+        investigations = InvestigationValue.objects.filter(consultation=consultation.id)
         investigations = list(filter(lambda inv: inv.value is not None or inv.notes is not None, investigations))
     else:
         consultation = None
         samples = None
         daily_rounds = None
+        investigations = None
     date = make_aware(datetime.datetime.now())
     disease_status = DiseaseStatusEnum(patient.disease_status).name.capitalize()
     html_string = render_to_string(

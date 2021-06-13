@@ -3,7 +3,7 @@ from care.users.models import User
 
 
 def get_facility_queryset(user):
-    queryset = Facility.objects.filter(is_active=True)
+    queryset = Facility.objects.all()
     if user.is_superuser:
         pass
     elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:

@@ -209,7 +209,7 @@ class InvestigationValueViewSet(
                     raise ValidationError({investigation["external_id"]: "not found"})
                 serializer_obj = InvestigationValueSerializer(instance=obj, data=investigation)
                 serializer_obj.is_valid(raise_exception=True)
-                serializer_obj.update(obj,investigation)
+                serializer_obj.update(obj, investigation)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -244,12 +244,12 @@ class InvestigationValueViewSet(
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
 
-            NotificationGenerator(
-                event=Notification.Event.INVESTIGATION_SESSION_CREATED,
-                caused_by=request.user,
-                caused_object=session,
-                facility=consultation.patient.facility,
-                extra_data={"consultation": consultation},
-            ).generate()
+        NotificationGenerator(
+            event=Notification.Event.INVESTIGATION_SESSION_CREATED,
+            caused_by=request.user,
+            caused_object=session,
+            facility=consultation.patient.facility,
+            extra_data={"consultation": consultation},
+        ).generate()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

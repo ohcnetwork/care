@@ -46,6 +46,7 @@ class PatientSample(FacilityBaseModel):
         "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
         "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB", "COMPLETED"},
         "RECEIVED_AT_LAB": {"COMPLETED"},
+        "COMPLETED" : {"COMPLETED"}
     }
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
