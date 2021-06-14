@@ -283,19 +283,20 @@ class AllFacilityViewSet(
 ):
     queryset = Facility.objects.all().select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     filterset_class = FacilityFilter
     lookup_field = "external_id"
+    search_fields = ["name", "district__name", "state__name"]
 
     def get_queryset(self):
-        search_text = self.request.query_params.get("search_text")
+        # search_text = self.request.query_params.get("search_text")
         queryset = self.queryset
-        if search_text:
-            vector = SearchVector("name", "district__name", "state__name")
-            query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
-            queryset = (
-                self.queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
-                .filter(search_text=query)
-                .order_by("-rank")
-            )
+        # if search_text:
+        #     vector = SearchVector("name", "district__name", "state__name")
+        #     query = SearchQuery(get_psql_search_tokens(search_text), search_type="raw")
+        #     queryset = (
+        #         self.queryset.annotate(search_text=vector, rank=SearchRank(vector, query))
+        #         .filter(search_text=query)
+        #         .order_by("-rank")
+        #     )
         return queryset
