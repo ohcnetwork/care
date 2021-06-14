@@ -168,7 +168,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                         caused_by=self.context["request"].user,
                         caused_object=ShiftingRequest.objects.get(id=new_instance.id),
                         facility=new_instance.shifting_approving_facility,
-                        notification_mediums=[Notification.Medium.SYSTEM.value, Notification.Medium.SMS.value],
+                        notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.SMS],
                     ).generate()
 
         return new_instance
