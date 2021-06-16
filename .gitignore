@@ -349,3 +349,5 @@ care/media/*
 test_db
 
 celerybeat-schedule
+
+config/settings/local.py

@@ -47,7 +47,6 @@ class CustomSignupForm(forms.UserCreationForm):
             "phone_number",
             "gender",
             "age",
-            "skill",
             "username",
             "password1",
             "password2",
@@ -60,7 +59,6 @@ class CustomSignupForm(forms.UserCreationForm):
             "phone_number": "Enter Your 10 Digit Mobile Number",
             "gender": "Pick Your Gender",
             "age": "Enter Your Age",
-            "skill": "Pick Your Role",
             "username": "Enter A Username",
         }
 
@@ -77,7 +75,6 @@ class CustomSignupForm(forms.UserCreationForm):
             Field("phone_number"),
             Field("gender", autocomplete=self.autocomplete_value),
             Field("age", autocomplete=self.autocomplete_value),
-            Field("skill", autocomplete=self.autocomplete_value),
             Field("password1", autocomplete=self.autocomplete_value),
             Field("password2", autocomplete=self.autocomplete_value),
         )

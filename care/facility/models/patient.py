@@ -9,8 +9,6 @@ from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
     DISEASE_CHOICES,
-    BaseManager,
-    BaseModel,
     DiseaseStatusEnum,
     District,
     Facility,
@@ -21,6 +19,7 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
+from care.utils.models.base import BaseModel, BaseManager
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import (

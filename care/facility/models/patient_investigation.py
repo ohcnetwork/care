@@ -1,5 +1,5 @@
 from django.db import models
-from care.facility.models.base import BaseModel
+from care.utils.models.base import BaseModel
 from care.facility.models.patient_consultation import PatientConsultation
 from uuid import uuid4
 from care.users.models import User
