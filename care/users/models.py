@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import ugettext_lazy as _
+from partial_index import PQ, PartialIndex
+
 from care.utils.models.base import BaseModel
 
 
@@ -132,7 +134,7 @@ class CustomUserManager(UserManager):
 
 class Skill(BaseModel):
     name = models.CharField(max_length=255)
-    description = models.TextField(null=True , blank=True , default="")
+    description = models.TextField(null=True, blank=True, default="")
 
     def __str__(self):
         return self.name
@@ -146,6 +148,9 @@ class UsernameValidator(UnicodeUsernameValidator):
 class UserSkill(BaseModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE, null=True, blank=True)
     skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        indexes = [PartialIndex(fields=["skill", "user"], unique=True, where=PQ(deleted=False))]
 
 
 class User(AbstractUser):

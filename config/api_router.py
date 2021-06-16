@@ -47,6 +47,7 @@ from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
+from care.users.api.viewsets.userskill import UserSkillViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -55,6 +56,9 @@ else:
 
 
 router.register("users", UserViewSet)
+user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
+user_nested_rotuer.register("skill", UserSkillViewSet)
+
 router.register("skill", SkillViewSet)
 
 router.register("facility", FacilityViewSet)
@@ -142,6 +146,7 @@ consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
+    url(r"^", include(user_nested_rotuer.urls)),
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
     url(r"^", include(consultation_nested_router.urls)),

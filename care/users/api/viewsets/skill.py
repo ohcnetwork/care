@@ -3,7 +3,6 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.users.api.serializers.skill import SkillSerializer
 from care.users.models import Skill
-from care.utils.cache.mixin import ListCacheResponseMixin, RetrieveCacheResponseMixin
 from rest_framework import filters as drf_filters
 
 
