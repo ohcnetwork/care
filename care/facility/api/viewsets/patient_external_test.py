@@ -16,9 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.patient_external_test import (
-    PatientExternalTestSerializer,
-)
+from care.facility.api.serializers.patient_external_test import PatientExternalTestSerializer
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 from care.facility.models import PatientExternalTest
 from care.users.models import User, Ward
@@ -49,9 +47,7 @@ class MFilter(Filter):
 class PatientExternalTestFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     srf_id = filters.CharFilter(field_name="srf_id", lookup_expr="icontains")
-    mobile_number = filters.CharFilter(
-        field_name="mobile_number", lookup_expr="icontains"
-    )
+    mobile_number = filters.CharFilter(field_name="mobile_number", lookup_expr="icontains")
     wards = MFilter(field_name="ward__id")
     districts = MFilter(field_name="district__id")
     local_bodies = MFilter(field_name="local_body__id")
@@ -64,11 +60,7 @@ class PatientExternalTestViewSet(
     RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
-    queryset = (
-        PatientExternalTest.objects.select_related("ward", "local_body", "district")
-        .all()
-        .order_by("-id")
-    )
+    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all().order_by("-id")
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
@@ -84,12 +76,15 @@ class PatientExternalTestViewSet(
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
                 queryset = queryset.filter(local_body=self.request.user.local_body)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["WardAdmin"]:
-                queryset = queryset.filter(
-                    ward=self.request.user.ward, ward__isnull=False
-                )
+                queryset = queryset.filter(ward=self.request.user.ward, ward__isnull=False)
             else:
                 queryset = queryset.none()
         return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        if self.request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            raise PermissionDenied()
+        return super().destroy(request, *args, **kwargs)
 
     def check_upload_permission(self):
         if (
@@ -104,9 +99,7 @@ class PatientExternalTestViewSet(
             mapping = PatientExternalTest.CSV_MAPPING.copy()
             pretty_mapping = PatientExternalTest.CSV_MAKE_PRETTY.copy()
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
-            return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
-            )
+            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
         return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=False)
