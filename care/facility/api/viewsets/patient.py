@@ -92,6 +92,8 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
     last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
     last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
+    last_consultation_is_telemedicine = filters.BooleanFilter(field_name="last_consultation__is_telemedicine")
+
     # Vaccination Filters
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
