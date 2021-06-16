@@ -220,12 +220,15 @@ class UserViewSet(
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["PATCH"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["PATCH", "GET"], permission_classes=[IsAuthenticated])
     def pnconfig(self, request, *args, **kwargs):
         user = request.user
+        if request.method == "GET":
+            return Response({"pf_endpoint": user.pf_endpoint, "pf_p256dh": user.pf_p256dh, "pf_auth": user.pf_auth})
         acceptable_fields = ["pf_endpoint", "pf_p256dh", "pf_auth"]
         for field in acceptable_fields:
             if field in request.data:
                 setattr(user, field, request.data[field])
         user.save()
         return Response(status=status.HTTP_200_OK)
+
