@@ -79,7 +79,7 @@ class NotificationGenerator:
                 "notification_mediums": mediums,
                 "worker_initated": True,
             }
-            notification_task_generator.delay(**data)
+            notification_task_generator.apply_async(kwargs=data, countdown=2)
             self.worker_initiated = False
             return
         self.worker_initiated = True
