@@ -178,7 +178,7 @@ class UserSerializer(SignUpSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
-    alt_phone_number = PhoneNumberIsPossibleField(required=False)
+    alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
 
     class Meta:
         model = User
