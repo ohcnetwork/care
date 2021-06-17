@@ -13,3 +13,4 @@ from .shifting import *
 from .resources import *
 from .patient_external_test import *
 from .patient_investigation import *
+from .asset import *

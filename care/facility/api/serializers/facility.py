@@ -19,6 +19,17 @@ class FacilityLocalGovtBodySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class FacilityBareMinimumSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = (
+            "id",
+            "name",
+        )
+
+
 class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
     ward_object = WardSerializer(source="ward", read_only=True)

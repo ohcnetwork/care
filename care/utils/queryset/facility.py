@@ -1,5 +1,6 @@
 from care.facility.models.facility import Facility
 from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def get_facility_queryset(user):
@@ -11,5 +12,6 @@ def get_facility_queryset(user):
     elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
         queryset = queryset.filter(district=user.district)
     else:
-        queryset = queryset.filter(users__id__exact=user.id)
+        allowed_facilities = get_accessible_facilities(user)
+        queryset = queryset.filter(id__in=allowed_facilities)
     return queryset

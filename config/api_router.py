@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
+from care.facility.api.viewsets.asset import AssetLocationViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -131,6 +132,7 @@ facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryVie
 facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
+facility_nested_router.register(r"asset_location", AssetLocationViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 
