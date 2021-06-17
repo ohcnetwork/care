@@ -49,6 +49,7 @@ class FacilityDefaultAssetLocation(BaseModel):
 
 
 class AssetTransaction(BaseModel):
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     from_location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, related_name="from_location", null=False, blank=False
     )
