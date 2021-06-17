@@ -30,7 +30,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        if request.user.user_type <= User.TYPE_VALUE_MAP["Staff"]:  # todo Temporary
+        if request.user.user_type < User.TYPE_VALUE_MAP["Staff"]:  # todo Temporary
             return False
         return self.has_object_read_permission(request)
 
