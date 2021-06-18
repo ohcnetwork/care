@@ -107,7 +107,7 @@ router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage
 # District Summary
 
 router.register(
-    "district/patient_summary", DistrictPatientSummaryViewSet, basename="district-summary-patient",
+    "district_patient_summary", DistrictPatientSummaryViewSet, basename="district-summary-patient",
 )
 
 
