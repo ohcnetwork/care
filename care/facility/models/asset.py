@@ -32,7 +32,7 @@ class Asset(BaseModel):
     asset_type = models.IntegerField(choices=AssetTypeChoices, default=AssetType.INTERNAL.value)
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
-    is_working = models.BooleanField(default=None)
+    is_working = models.BooleanField(default=None, null=True, blank=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")
     meta = JSONField(default=dict)

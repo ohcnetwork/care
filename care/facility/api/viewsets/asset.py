@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from care.utils.queryset.facility import get_facility_queryset
-from care.facility.models.asset import AssetLocation
+from care.facility.models.asset import AssetLocation, Asset
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 
-from care.facility.api.serializers.asset import AssetLocationSerializer
+from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSerializer
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
@@ -12,6 +12,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = AssetLocation.objects.all()
     serializer_class = AssetLocationSerializer
+    lookup_field = "external_id"
 
     def get_queryset(self):
         user = self.request.user
@@ -33,3 +34,23 @@ class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+
+class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(current_location__facility__state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(current_location__facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(current_location__facility__id__in=allowed_facilities)
+        return super().get_queryset()
