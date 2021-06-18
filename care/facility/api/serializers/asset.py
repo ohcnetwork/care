@@ -1,13 +1,14 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from care.utils.queryset.facility import get_facility_queryset
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, UUIDField
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import Asset, AssetLocation, AssetTransaction
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
-from rest_framework.exceptions import ValidationError
-from django.db import transaction
 
 
 class AssetLocationSerializer(ModelSerializer):
@@ -63,3 +64,23 @@ class AssetSerializer(ModelSerializer):
                     ).save()
             updated_instance = super().update(instance, validated_data)
         return updated_instance
+
+
+class AssetBareMinimumSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = ("name", "id")
+
+
+class AssetTransactionSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset = AssetBareMinimumSerializer(read_only=True)
+    from_location = AssetLocationSerializer(read_only=True)
+    to_location = AssetLocationSerializer(read_only=True)
+    performed_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetTransaction
+        exclude = ("deleted", "external_id")
