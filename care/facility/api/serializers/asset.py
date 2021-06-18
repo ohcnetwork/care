@@ -1,3 +1,4 @@
+from re import L
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
@@ -5,7 +6,7 @@ from rest_framework.serializers import ModelSerializer, UUIDField
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
-from care.facility.models.asset import Asset, AssetLocation, AssetTransaction
+from care.facility.models.asset import Asset, AssetLocation, AssetTransaction, UserDefaultAssetLocation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
@@ -84,3 +85,11 @@ class AssetTransactionSerializer(ModelSerializer):
     class Meta:
         model = AssetTransaction
         exclude = ("deleted", "external_id")
+
+
+class UserDefaultAssetLocationSerializer(ModelSerializer):
+    location_object = AssetLocationSerializer(source="location", read_only=True)
+
+    class Meta:
+        model = UserDefaultAssetLocation
+        exclude = ("deleted", "external_id", "location", "user", "id")
