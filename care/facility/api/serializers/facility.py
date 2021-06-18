@@ -104,38 +104,39 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         return super().create(validated_data)
 
 
-class FacilityUpsertSerializer(serializers.ModelSerializer):
-    """
-    Use only for listing and upserting - Upsert based on name and district uniqueness
-    """
+# class FacilityUpsertSerializer(serializers.ModelSerializer):
+#     """
+#     DEPRACATED FROM 19/06/2021
+#     Use only for listing and upserting - Upsert based on name and district uniqueness
+#     """
 
-    capacity = serializers.ListSerializer(child=FacilityCapacitySerializer(), source="facilitycapacity_set")
-    location = PointField(required=False)
-    district = serializers.IntegerField()
+#     capacity = serializers.ListSerializer(child=FacilityCapacitySerializer(), source="facilitycapacity_set")
+#     location = PointField(required=False)
+#     district = serializers.IntegerField()
 
-    class Meta:
-        model = Facility
-        fields = [
-            "id",
-            "name",
-            "facility_type",
-            "address",
-            "district",
-            "location",
-            "oxygen_capacity",
-            "phone_number",
-            "capacity",
-            "created_by",
-        ]
+#     class Meta:
+#         model = Facility
+#         fields = [
+#             "id",
+#             "name",
+#             "facility_type",
+#             "address",
+#             "district",
+#             "location",
+#             "oxygen_capacity",
+#             "phone_number",
+#             "capacity",
+#             "created_by",
+#         ]
 
-    def validate_name(self, value):
-        return str(value).strip().replace("  ", " ")
+#     def validate_name(self, value):
+#         return str(value).strip().replace("  ", " ")
 
-    def validate_phone_number(self, value):
-        return str(value).strip().replace("  ", " ")
+#     def validate_phone_number(self, value):
+#         return str(value).strip().replace("  ", " ")
 
-    def create(self, validated_data):
-        raise NotImplementedError()
+#     def create(self, validated_data):
+#         raise NotImplementedError()
 
-    def update(self, instance, validated_data):
-        raise NotImplementedError()
+#     def update(self, instance, validated_data):
+#         raise NotImplementedError()
