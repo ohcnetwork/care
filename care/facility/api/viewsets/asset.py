@@ -11,7 +11,7 @@ from care.utils.queryset.facility import get_facility_queryset
 
 
 class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = AssetLocation.objects.all()
+    queryset = AssetLocation.objects.all().select_related("facility")
     serializer_class = AssetLocationSerializer
     lookup_field = "external_id"
 
@@ -38,7 +38,7 @@ class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 
 
 class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Asset.objects.all()
+    queryset = Asset.objects.all().select_related("current_location", "current_location__facility")
     serializer_class = AssetSerializer
     lookup_field = "external_id"
 
@@ -58,7 +58,9 @@ class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateM
 
 
 class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = AssetTransaction.objects.all()
+    queryset = AssetTransaction.objects.all().select_related(
+        "from_location", "to_location", "from_location__facility", "to_location__facility", "performed_by", "asset"
+    )
     serializer_class = AssetTransactionSerializer
 
     def get_queryset(self):
