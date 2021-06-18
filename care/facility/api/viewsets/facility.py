@@ -15,7 +15,6 @@ from simple_history.utils import bulk_create_with_history
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilitySerializer,
-    FacilityUpsertSerializer,
 )
 from care.facility.api.serializers.patient import PatientListSerializer
 from care.facility.models import (
