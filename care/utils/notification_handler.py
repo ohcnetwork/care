@@ -264,6 +264,9 @@ class NotificationGenerator:
             self.caused_objects["daily_round"] = str(self.caused_object.id)
             if self.caused_object.consultation.patient.facility:
                 self.caused_objects["facility"] = str(self.caused_object.consultation.facility.external_id)
+        if isinstance(self.caused_object, ShiftingRequest):
+            self.caused_objects["shifting"] = str(self.caused_object.external_id)
+
         return True
 
     def generate_whatsapp_users(self):
