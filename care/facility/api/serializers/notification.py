@@ -10,9 +10,8 @@ from config.serializers import ChoiceField
 
 class NotificationSerializer(serializers.ModelSerializer):
 
-    id = serializers.CharField(source="external_id", read_only=True)
+    id = serializers.UUIDField(source="external_id", read_only=True)
 
-    # intended_for = UserBaseMinimumSerializer(read_only=True)
     caused_by = UserBaseMinimumSerializer(read_only=True)
 
     event = ChoiceField(choices=Notification.EventChoices, read_only=True)
@@ -20,11 +19,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        exclude = ("deleted", "modified_date", "intended_for")
+        exclude = ("deleted", "modified_date", "intended_for", "medium_sent", "external_id")
         read_only_fields = (
             "message",
             "caused_objects",
             "created_date",
-            "external_id",
         )
 

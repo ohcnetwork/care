@@ -25,6 +25,12 @@ def notification_task_generator(**kwargs):
     NotificationGenerator(**kwargs).generate()
 
 
+def get_model_class(model_name):
+    if model_name == "User":
+        return apps.get_model("users.{}".format(model_name))
+    return apps.get_model("facility.{}".format(model_name))
+
+
 class NotificationGenerator:
 
     generate_for_facility = False
@@ -83,7 +89,7 @@ class NotificationGenerator:
             self.worker_initiated = False
             return
         self.worker_initiated = True
-        Model = apps.get_model("facility.{}".format(caused_object))
+        Model = get_model_class(caused_object)
         caused_object = Model.objects.get(id=caused_object_pk)
         caused_by = User.objects.get(id=caused_by)
         facility = Facility.objects.get(id=facility)
@@ -319,6 +325,8 @@ class NotificationGenerator:
                 print(
                     "Remote service replied with a {}:{}, {}", extra.code, extra.errno, extra.message,
                 )
+        except Exception as e:
+            print("Error When Doing WebPush", e)
 
     def generate(self):
         if not self.worker_initiated:
@@ -327,12 +335,15 @@ class NotificationGenerator:
             if medium == Notification.Medium.SMS.value and settings.SEND_SMS_NOTIFICATION:
                 sendSMS(self.generate_sms_phone_numbers(), self.generate_sms_message(), many=True)
             elif medium == Notification.Medium.SYSTEM.value:
-                message = self.generate_system_message()
+                if not self.message:
+                    self.message = self.generate_system_message()
                 for user in self.generate_system_users():
-                    notification_obj = self.generate_message_for_user(user, message, Notification.Medium.SYSTEM.value)
+                    notification_obj = self.generate_message_for_user(
+                        user, self.message, Notification.Medium.SYSTEM.value
+                    )
                     if not self.defer_notifications:
                         self.send_webpush_user(
-                            user, json.dumps({"external_id": str(notification_obj.external_id), "title": message})
+                            user, json.dumps({"external_id": str(notification_obj.external_id), "title": self.message})
                         )
             elif medium == Notification.Medium.WHATSAPP.value and settings.ENABLE_WHATSAPP:
                 for user in self.generate_whatsapp_users():
