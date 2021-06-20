@@ -1,3 +1,4 @@
+from care.facility.models import facility
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -39,7 +40,8 @@ class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin,
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(facility__id__in=allowed_facilities)
-        return super().get_queryset()
+
+        return queryset.filter(facility__external_id=self.kwargs["facility_external_id"])
 
     def get_facility(self):
         facilities = get_facility_queryset(self.request.user)
@@ -66,7 +68,7 @@ class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateM
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(current_location__facility__id__in=allowed_facilities)
-        return super().get_queryset()
+        return queryset
 
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
@@ -121,5 +123,5 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
                 Q(from_location__facility__id__in=allowed_facilities)
                 | Q(to_location__facility__id__in=allowed_facilities)
             )
-        return super().get_queryset()
+        return queryset
 
