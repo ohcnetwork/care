@@ -55,10 +55,17 @@ class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin,
         serializer.save(facility=self.get_facility())
 
 
+class AssetFilter(filters.FilterSet):
+    facility = filters.UUIDFilter(field_name="current_location__facility__external_id")
+    location = filters.UUIDFilter(field_name="current_location__external_id")
+
+
 class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = Asset.objects.all().select_related("current_location", "current_location__facility")
     serializer_class = AssetSerializer
     lookup_field = "external_id"
+    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
+    search_fields = ["name"]
 
     def get_queryset(self):
         user = self.request.user
