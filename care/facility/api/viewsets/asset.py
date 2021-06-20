@@ -1,12 +1,14 @@
-from care.facility.models import facility
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
@@ -15,18 +17,20 @@ from care.facility.api.serializers.asset import (
     AssetTransactionSerializer,
     UserDefaultAssetLocationSerializer,
 )
+from care.facility.models import facility
 from care.facility.models.asset import Asset, AssetLocation, AssetTransaction, UserDefaultAssetLocation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
-from rest_framework.serializers import Serializer, UUIDField
 
 
 class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = AssetLocation.objects.all().select_related("facility")
     serializer_class = AssetLocationSerializer
     lookup_field = "external_id"
+    filter_backends = (drf_filters.SearchFilter,)
+    search_fields = ["name"]
 
     def get_queryset(self):
         user = self.request.user

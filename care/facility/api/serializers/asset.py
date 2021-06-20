@@ -13,7 +13,7 @@ from config.serializers import ChoiceField
 
 
 class AssetLocationSerializer(ModelSerializer):
-    facility = FacilityBareMinimumSerializer(read_only=True)
+    # facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
 
     class Meta:
