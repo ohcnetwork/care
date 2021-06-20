@@ -18,7 +18,7 @@ class AssetLocationSerializer(ModelSerializer):
 
     class Meta:
         model = AssetLocation
-        exclude = ("deleted", "external_id")
+        exclude = ("deleted", "external_id", "facility")
         read_only_fields = TIMESTAMP_FIELDS
 
 
