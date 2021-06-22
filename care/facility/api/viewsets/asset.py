@@ -66,6 +66,7 @@ class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateM
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name"]
+    filterset_class = AssetFilter
 
     def get_queryset(self):
         user = self.request.user
@@ -109,11 +110,17 @@ class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateM
             raise Http404
 
 
+class AssetTransactionFilter(filters.FilterSet):
+    asset = filters.UUIDFilter(field_name="asset__external_id")
+
+
 class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AssetTransaction.objects.all().select_related(
         "from_location", "to_location", "from_location__facility", "to_location__facility", "performed_by", "asset"
     )
     serializer_class = AssetTransactionSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetTransactionFilter
 
     def get_queryset(self):
         user = self.request.user
