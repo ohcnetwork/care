@@ -348,9 +348,9 @@ class NotificationGenerator:
             elif medium == Notification.Medium.WHATSAPP.value and settings.ENABLE_WHATSAPP:
                 for user in self.generate_whatsapp_users():
                     number = user.alt_phone_number
+                    message = self.generate_whatsapp_message()
                     notification_obj = self.generate_message_for_user(
                         user, message, Notification.Medium.WHATSAPP.value
                     )
-                    message = self.generate_whatsapp_message()
                     sendWhatsappMessage(number, message, notification_obj.external_id)
 
