@@ -14,6 +14,7 @@ from care.facility.models import (
     PatientRegistration,
     ShiftingRequest,
     User,
+    ShiftingRequestComment,
 )
 from care.facility.models.notification import Notification
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -231,3 +232,20 @@ class ShiftingDetailSerializer(ShiftingSerializer):
         model = ShiftingRequest
         exclude = ("deleted",)
         read_only_fields = TIMESTAMP_FIELDS
+
+
+class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+
+        return super().create(validated_data)
+
+    class Meta:
+        model = ShiftingRequestComment
+        exclude = ("deleted", "request")
+        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")

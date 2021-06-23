@@ -126,3 +126,9 @@ class ShiftingRequest(FacilityBaseModel):
         if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return True
+
+
+class ShiftingRequestComment(FacilityBaseModel):
+    request = models.ForeignKey(ShiftingRequest, on_delete=models.PROTECT, null=False, blank=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,)
+    comment = models.TextField(default="", blank=True)

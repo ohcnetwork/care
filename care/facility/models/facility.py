@@ -16,24 +16,28 @@ from care.users.models import District, LocalBody, State, Ward
 User = get_user_model()
 
 # Facility Model Start
-
-ROOM_TYPES = [
-    (0, "Total"),
+BASE_ROOM_TYPES = [
     (1, "General Bed"),
-    (2, "Hostel"),
-    (3, "Single Room with Attached Bathroom"),
     (10, "ICU"),
     (20, "Ventilator"),
     (30, "Covid Beds"),
-    (40, "KASP Beds"),
-    (50, "KASP ICU beds"),
-    (60, "KASP Oxygen beds"),
-    (70, "KASP Ventilator beds"),
     (100, "Covid Ventilators"),
     (110, "Covid ICU"),
     (120, "Covid Oxygen beds"),
     (150, "Oxygen beds"),
 ]
+
+ROOM_TYPES = [
+    (0, "Total"),
+    (2, "Hostel"),
+    (3, "Single Room with Attached Bathroom"),
+    (40, "KASP Beds"),
+    (50, "KASP ICU beds"),
+    (60, "KASP Oxygen beds"),
+    (70, "KASP Ventilator beds"),
+]
+
+ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
 
