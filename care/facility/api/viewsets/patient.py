@@ -57,6 +57,7 @@ class PatientFilterSet(filters.FilterSet):
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     phone_number = filters.CharFilter(field_name="phone_number")
+    emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(field_name="last_consultation__ip_no", lookup_expr="icontains")
