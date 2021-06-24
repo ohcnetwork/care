@@ -26,7 +26,7 @@ from care.utils.queryset.facility import get_facility_queryset
 
 
 class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = AssetLocation.objects.all().select_related("facility")
+    queryset = AssetLocation.objects.all().select_related("facility").order_by("-created_date")
     serializer_class = AssetLocationSerializer
     lookup_field = "external_id"
     filter_backends = (drf_filters.SearchFilter,)
@@ -61,7 +61,9 @@ class AssetFilter(filters.FilterSet):
 
 
 class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Asset.objects.all().select_related("current_location", "current_location__facility")
+    queryset = (
+        Asset.objects.all().select_related("current_location", "current_location__facility").order_by("-created_date")
+    )
     serializer_class = AssetSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
