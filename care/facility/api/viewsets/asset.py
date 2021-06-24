@@ -115,8 +115,12 @@ class AssetTransactionFilter(filters.FilterSet):
 
 
 class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = AssetTransaction.objects.all().select_related(
-        "from_location", "to_location", "from_location__facility", "to_location__facility", "performed_by", "asset"
+    queryset = (
+        AssetTransaction.objects.all()
+        .select_related(
+            "from_location", "to_location", "from_location__facility", "to_location__facility", "performed_by", "asset"
+        )
+        .order_by("-created_date")
     )
     serializer_class = AssetTransactionSerializer
     filter_backends = (filters.DjangoFilterBackend,)
