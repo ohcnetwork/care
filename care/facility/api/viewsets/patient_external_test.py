@@ -10,13 +10,16 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.patient_external_test import PatientExternalTestSerializer
+from care.facility.api.serializers.patient_external_test import (
+    PatientExternalTestSerializer,
+    PatientExternalTestUpdateSerializer,
+)
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
 from care.facility.models import PatientExternalTest
 from care.users.models import User, Ward
@@ -57,7 +60,7 @@ class PatientExternalTestFilter(filters.FilterSet):
 
 
 class PatientExternalTestViewSet(
-    RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
+    RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
     queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all().order_by("-id")
@@ -80,6 +83,11 @@ class PatientExternalTestViewSet(
             else:
                 queryset = queryset.none()
         return queryset
+
+    def get_serializer_class(self):
+        if self.action == "update" or self.action == "partial_update":
+            return PatientExternalTestUpdateSerializer
+        return super().get_serializer_class()
 
     def destroy(self, request, *args, **kwargs):
         if self.request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
