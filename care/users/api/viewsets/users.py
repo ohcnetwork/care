@@ -71,7 +71,7 @@ class UserViewSet(
         "local_body", "district", "state"
     )
     lookup_field = "username"
-    lookup_value_regex = "^[\w.@+-]+[^.@+_-]$"
+    lookup_value_regex = "[^/.]+"
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
