@@ -121,15 +121,13 @@ class ResourceRequestViewSet(
 
 
 class ResourceRequestCommentViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
 ):
     serializer_class = ResourceRequestCommentSerializer
     lookup_field = "external_id"
-    queryset = ResourceRequestComment.objects.all()
-    ordering_fields = ["created_date", "modified_date"]
+    queryset = ResourceRequestComment.objects.all().order_by("-created_date")
 
     permission_classes = (IsAuthenticated,)
-    filter_backends = (rest_framework_filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(request__external_id=self.kwargs.get("resource_external_id"))

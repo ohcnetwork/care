@@ -88,3 +88,29 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         model = PatientExternalTest
         fields = "__all__"
 
+
+class PatientExternalTestUpdateSerializer(PatientExternalTestSerializer):
+    class Meta:
+        model = PatientExternalTest
+        fields = "__all__"
+        read_only_fields = (
+            "id",
+            "external_id",
+            "name",
+            "age",
+            "age_in",
+            "result",
+            "srf_id",
+            "gender",
+            "district",
+            "mobile_number",
+            "is_repeat",
+            "patient_status",
+            "sample_type",
+            "test_type",
+            "sample_collection_date",
+            "result_date",
+            "lab_name",
+            "source",
+            "patient_category",
+        )

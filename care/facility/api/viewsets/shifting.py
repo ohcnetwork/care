@@ -7,12 +7,14 @@ from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissio
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.shifting import (
     ShiftingDetailSerializer,
+    ShiftingRequestCommentSerializer,
     ShiftingSerializer,
     has_facility_permission,
 )
@@ -21,11 +23,13 @@ from care.facility.models import (
     SHIFTING_STATUS_CHOICES,
     PatientConsultation,
     ShiftingRequest,
+    ShiftingRequestComment,
     User,
 )
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter
+from care.utils.queryset.shifting import get_shifting_queryset
 
 
 def inverse_choices(choices):
@@ -41,26 +45,7 @@ inverse_breathlessness_level = inverse_choices(BREATHLESSNESS_CHOICES)
 
 class ShiftingFilterBackend(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser:
-            pass
-        else:
-            if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                q_objects = Q(orgin_facility__state=request.user.state)
-                q_objects |= Q(shifting_approving_facility__state=request.user.state)
-                q_objects |= Q(assigned_facility__state=request.user.state)
-                return queryset.filter(q_objects)
-            elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                q_objects = Q(orgin_facility__district=request.user.district)
-                q_objects |= Q(shifting_approving_facility__district=request.user.district)
-                q_objects |= Q(assigned_facility__district=request.user.district)
-                return queryset.filter(q_objects)
-            facility_ids = get_accessible_facilities(request.user)
-            q_objects = Q(orgin_facility__id__in=facility_ids)
-            q_objects |= Q(shifting_approving_facility__id__in=facility_ids)
-            q_objects |= Q(assigned_facility__id__in=facility_ids, status__gte=20)
-            q_objects |= Q(patient__facility__id__in=facility_ids)
-            queryset = queryset.filter(q_objects)
-        return queryset
+        return get_shifting_queryset(request.user)
 
 
 class ShiftingFilterSet(filters.FilterSet):
@@ -164,3 +149,44 @@ class ShiftingViewSet(
                 field_serializer_map=ShiftingRequest.CSV_MAKE_PRETTY,
             )
         return super(ShiftingViewSet, self).list(request, *args, **kwargs)
+
+
+class ShifitngRequestCommentViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
+):
+    serializer_class = ShiftingRequestCommentSerializer
+    lookup_field = "external_id"
+    queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(request__external_id=self.kwargs.get("shift_external_id"))
+        if self.request.user.is_superuser:
+            pass
+        else:
+            if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+                q_objects = Q(request__orgin_facility__state=self.request.user.state)
+                q_objects |= Q(request__shifting_approving_facility__state=self.request.user.state)
+                q_objects |= Q(request__assigned_facility__state=self.request.user.state)
+                return queryset.filter(q_objects)
+            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+                q_objects = Q(request__orgin_facility__district=self.request.user.district)
+                q_objects |= Q(request__shifting_approving_facility__district=self.request.user.district)
+                q_objects |= Q(request__assigned_facility__district=self.request.user.district)
+                return queryset.filter(q_objects)
+            facility_ids = get_accessible_facilities(self.request.user)
+            q_objects = Q(request__orgin_facility__id__in=facility_ids)
+            q_objects |= Q(request__shifting_approving_facility__id__in=facility_ids)
+            q_objects |= Q(request__assigned_facility__id__in=facility_ids)
+            q_objects |= Q(request__patient__facility__id__in=facility_ids)
+            queryset = queryset.filter(q_objects)
+        return queryset
+
+    def get_request(self):
+        queryset = get_shifting_queryset(self.request.user)
+        queryset = queryset.filter(external_id=self.kwargs.get("shift_external_id"))
+        return get_object_or_404(queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(request=self.get_request())

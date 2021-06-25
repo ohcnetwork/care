@@ -1,9 +1,12 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import ugettext_lazy as _
+from partial_index import PQ, PartialIndex
+
+from care.utils.models.base import BaseModel
 
 
 def reverse_choices(choices):
@@ -129,9 +132,9 @@ class CustomUserManager(UserManager):
         return super().create_superuser(username, email, password, **extra_fields)
 
 
-class Skill(models.Model):
+class Skill(BaseModel):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True, default="")
 
     def __str__(self):
         return self.name
@@ -140,6 +143,14 @@ class Skill(models.Model):
 class UsernameValidator(UnicodeUsernameValidator):
     regex = r"^[\w.@+-]+[^.@+_-]$"
     message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
+
+
+class UserSkill(BaseModel):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, null=True, blank=True)
+    skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        indexes = [PartialIndex(fields=["skill", "user"], unique=True, where=PQ(deleted=False))]
 
 
 class User(AbstractUser):
@@ -189,7 +200,7 @@ class User(AbstractUser):
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
-    skill = models.ForeignKey("Skill", on_delete=models.SET_NULL, null=True, blank=True)
+    skills = models.ManyToManyField("Skill", through=UserSkill)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 

@@ -17,7 +17,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     password = serializers.CharField(write_only=True)
     phone_number = PhoneNumberIsPossibleField()
-    alt_phone_number = PhoneNumberIsPossibleField(required=False)
+    alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
 
     class Meta:
         model = User
@@ -178,6 +178,7 @@ class UserSerializer(SignUpSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
+    alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
 
     class Meta:
         model = User
