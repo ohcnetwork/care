@@ -67,8 +67,10 @@ class UserViewSet(
     A viewset for viewing and manipulating user instances.
     """
 
-    queryset = User.objects.filter(is_active=True, is_superuser=False).select_related(
-        "local_body", "district", "state"
+    queryset = (
+        User.objects.filter(is_active=True, is_superuser=False)
+        .select_related("local_body", "district", "state")
+        .order_by("-last_login")
     )
     lookup_field = "username"
     lookup_value_regex = "[^/.]+"
