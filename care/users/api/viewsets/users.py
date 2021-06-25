@@ -73,7 +73,7 @@ class UserViewSet(
         .order_by("-last_login")
     )
     lookup_field = "username"
-    lookup_value_regex = "[^/.]+"
+    lookup_value_regex = "[^/]+"
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,

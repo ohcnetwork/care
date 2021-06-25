@@ -99,7 +99,7 @@ def _post_processor(instance, event: Optional[Event], operation: Operation):
             if "_state" in changes:
                 del changes["_state"]
         else:
-            changes = json.dumps(event.changes if event else dict(), cls=LogJsonEncoder)
+            changes = json.dumps(event.changes if event else {}, cls=LogJsonEncoder)
     except Exception:
         logger.warning(f"Failed to log {event}", exc_info=True)
         return
