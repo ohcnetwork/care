@@ -23,6 +23,9 @@ def check_permissions(file_type, associating_id, user):
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
+            if patient.assigned_to:
+                if user == patient.assigned_to:
+                    return patient.id
             if patient.last_consultation:
                 if patient.last_consultation.assigned_to:
                     if user == patient.last_consultation.assigned_to:
@@ -32,6 +35,9 @@ def check_permissions(file_type, associating_id, user):
             return patient.id
         elif file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if consultation.patient.assigned_to:
+                if user == consultation.patient.assigned_to:
+                    return consultation.id
             if consultation.assigned_to:
                 if user == consultation.assigned_to:
                     return consultation.id
@@ -44,6 +50,9 @@ def check_permissions(file_type, associating_id, user):
         elif file_type == FileUpload.FileType.SAMPLE_MANAGEMENT.value:
             sample = PatientSample.objects.get(external_id=associating_id)
             patient = sample.patient
+            if patient.assigned_to:
+                if user == patient.assigned_to:
+                    return sample.id
             if sample.consultation:
                 if sample.consultation.assigned_to:
                     if user == sample.consultation.assigned_to:

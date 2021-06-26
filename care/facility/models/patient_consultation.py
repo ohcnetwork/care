@@ -150,7 +150,7 @@ class DailyRound(PatientBaseModel):
         )
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
-            or (request.user == consultation.assigned_to)
+            or (request.user == consultation.assigned_to or request.user == consultation.patient.assigned_to)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (request.user.district == consultation.patient.facility.district)
@@ -165,7 +165,7 @@ class DailyRound(PatientBaseModel):
         return (
             request.user.is_superuser
             or (self.consultation.patient.facility and request.user in self.consultation.patient.facility.users.all())
-            or (self.consultation.assigned_to == request.user)
+            or (self.consultation.assigned_to == request.user or request.user == self.consultation.patient.assigned_to)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (

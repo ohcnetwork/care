@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
 from care.facility.models.patient_consultation import DailyRound, PatientConsultation
 from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 class PatientConsultationFilter(filters.FilterSet):
@@ -35,9 +36,11 @@ class PatientConsultationViewSet(
             return self.queryset.filter(patient__facility__state=self.request.user.state)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(patient__facility__district=self.request.user.district)
-        filters = Q(patient__facility__users__id__exact=self.request.user.id)
-        filters |= Q(assigned_to=self.request.user)
-        return self.queryset.filter(filters).distinct("id")
+        allowed_facilities = get_accessible_facilities(self.request.user)
+        applied_filters = Q(patient__facility__id__in=allowed_facilities)
+        applied_filters |= Q(assigned_to=self.request.user)
+        applied_filters |= Q(patient__assigned_to=self.request.user)
+        return self.queryset.filter(applied_filters)
 
 
 class DailyRoundsViewSet(
