@@ -26,6 +26,7 @@ from care.utils.queryset.facility import get_facility_queryset
 from care.utils.filters.choicefilter import inverse_choices, CareChoiceFilter
 
 inverse_asset_type = inverse_choices(Asset.AssetTypeChoices)
+inverse_asset_status = inverse_choices(Asset.StatusChoices)
 
 
 class AssetLocationViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
@@ -62,6 +63,7 @@ class AssetFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="current_location__facility__external_id")
     location = filters.UUIDFilter(field_name="current_location__external_id")
     asset_type = CareChoiceFilter(choice_dict=inverse_asset_type)
+    status = CareChoiceFilter(choice_dict=inverse_asset_status)
 
 
 class AssetViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
