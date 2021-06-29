@@ -89,28 +89,25 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PatientExternalTestUpdateSerializer(PatientExternalTestSerializer):
+class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
+
+    local_body = serializers.PrimaryKeyRelatedField(queryset=LocalBody.objects.all(), required=False)
+    ward = serializers.PrimaryKeyRelatedField(queryset=Ward.objects.all(), required=False)
+
     class Meta:
         model = PatientExternalTest
-        fields = "__all__"
-        read_only_fields = (
-            "id",
-            "external_id",
-            "name",
-            "age",
-            "age_in",
-            "result",
-            "srf_id",
-            "gender",
-            "district",
-            "mobile_number",
-            "is_repeat",
-            "patient_status",
-            "sample_type",
-            "test_type",
-            "sample_collection_date",
-            "result_date",
-            "lab_name",
-            "source",
-            "patient_category",
-        )
+        fields = ("Address", "ward", "local_body")
+
+    def update(self, instance, validated_data):
+
+        if "ward" in validated_data:
+            validated_data["local_body"] = validated_data["ward"].local_body
+
+        if "local_body" in validated_data:
+            validated_data["local_body_type"] = validated_data["local_body"].body_type
+
+        if "local_body" in validated_data:
+            if validated_data["local_body"].district != instance.district:
+                raise ValidationError({"local_body": "Only supported within same district"})
+
+        return super().update(instance, validated_data)
