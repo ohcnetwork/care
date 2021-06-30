@@ -15,7 +15,7 @@ from care.users.models import User
 
 class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = HospitalDoctorSerializer
-    queryset = HospitalDoctors.objects.filter(deleted=False)
+    queryset = HospitalDoctors.objects.filter(facility__deleted=False)
 
     permission_classes = (
         IsAuthenticated,

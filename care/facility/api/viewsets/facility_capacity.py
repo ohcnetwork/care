@@ -16,7 +16,7 @@ from care.users.models import User
 class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     lookup_field = "external_id"
     serializer_class = FacilityCapacitySerializer
-    queryset = FacilityCapacity.objects.filter(deleted=False)
+    queryset = FacilityCapacity.objects.filter(facility__deleted=False)
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
