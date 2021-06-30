@@ -96,7 +96,7 @@ class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientExternalTest
-        fields = ("Address", "ward", "local_body")
+        fields = ("address", "ward", "local_body")
 
     def update(self, instance, validated_data):
 
