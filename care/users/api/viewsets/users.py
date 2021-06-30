@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.db.models import F
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
@@ -70,7 +71,7 @@ class UserViewSet(
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
         .select_related("local_body", "district", "state")
-        .order_by("-last_login")
+        .order_by(F("last_login").desc(nulls_last=True))
     )
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
