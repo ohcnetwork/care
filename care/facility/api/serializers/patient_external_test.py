@@ -106,7 +106,6 @@ class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
         if "local_body" in validated_data:
             validated_data["local_body_type"] = validated_data["local_body"].body_type
 
-        if "local_body" in validated_data:
             if validated_data["local_body"].district != instance.district:
                 raise ValidationError({"local_body": "Only supported within same district"})
 
