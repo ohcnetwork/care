@@ -29,6 +29,7 @@ class PatientExternalTest(FacilityBaseModel):
     result = models.CharField(max_length=255)
     sample_collection_date = models.DateField(blank=True, null=True)
     result_date = models.DateField(blank=True, null=True)
+    patient_created = models.BooleanField(default=False)
 
     CSV_MAPPING = {
         "id": "Care External Result ID",

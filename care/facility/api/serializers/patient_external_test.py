@@ -2,13 +2,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models import PatientExternalTest
-from care.users.models import District, Ward, LocalBody, REVERSE_LOCAL_BODY_CHOICES
-from care.users.api.serializers.lsg import (
-    DistrictSerializer,
-    LocalBodySerializer,
-    StateSerializer,
-    WardSerializer,
-)
+from care.facility.models.patient import PatientRegistration
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
+from care.users.models import REVERSE_LOCAL_BODY_CHOICES, District, LocalBody, Ward
 
 
 class PatientExternalTestSerializer(serializers.ModelSerializer):
@@ -81,12 +77,16 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
         return super().validate_empty_values(data, *args, **kwargs)
 
-    # def validate_ward(self, value):
-    #     print(value)
+    def create(self, validated_data):
+        if "srf_id" in validated_data:
+            if PatientRegistration.objects.filter(srf_id__iexact=validated_data["srf_id"]).exists():
+                validated_data["patient_created"] = True
+        return super().create(validated_data)
 
     class Meta:
         model = PatientExternalTest
         fields = "__all__"
+        read_only_fields = ("patient_created",)
 
 
 class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):

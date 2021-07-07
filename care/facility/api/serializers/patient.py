@@ -15,13 +15,14 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     PatientContactDetails,
     PatientMetaInfo,
+    PatientNotes,
     PatientRegistration,
     PatientSearch,
-    PatientNotes,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -180,6 +181,10 @@ class PatientDetailSerializer(PatientListSerializer):
 
         return validated
 
+    def check_external_entry(self, srf_id):
+        if srf_id:
+            PatientExternalTest.objects.filter(srf_id__iexact=srf_id).update(patient_created=True)
+
     def create(self, validated_data):
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
@@ -190,6 +195,10 @@ class PatientDetailSerializer(PatientListSerializer):
                 external_id = validated_data.pop("facility")["external_id"]
                 if external_id:
                     validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
+
+            if "srf_id" in validated_data:
+                if validated_data["srf_id"]:
+                    self.check_external_entry(validated_data["srf_id"])
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
@@ -233,6 +242,10 @@ class PatientDetailSerializer(PatientListSerializer):
                 external_id = validated_data.pop("facility")["external_id"]
                 if external_id:
                     validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
+
+            if "srf_id" in validated_data:
+                if instance.srf_id != validated_data["srf_id"]:
+                    self.check_external_entry(validated_data["srf_id"])
 
             patient = super().update(instance, validated_data)
             Disease.objects.filter(patient=patient).update(deleted=True)
