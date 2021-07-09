@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
-from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.models.daily_round import DailyRound
+from care.facility.models.patient_consultation import PatientConsultation
 
 
 class DailyRoundsViewSet(

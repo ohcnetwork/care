@@ -5,10 +5,11 @@ from django.apps import apps
 from django.conf import settings
 from pywebpush import WebPushException, webpush
 
+from care.facility.models.daily_round import DailyRound
 from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientRegistration
-from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import InvestigationSession, InvestigationValue
 from care.facility.models.shifting import ShiftingRequest
 from care.users.models import User

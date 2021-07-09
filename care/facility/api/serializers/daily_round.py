@@ -5,13 +5,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models import CATEGORY_CHOICES, PatientRegistration
+from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    ADMIT_CHOICES,
-    CURRENT_HEALTH_CHOICES,
-    SYMPTOM_CHOICES,
-)
-from care.facility.models.patient_consultation import DailyRound
+from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.utils.notification_handler import NotificationGenerator
 from config.serializers import ChoiceField
 

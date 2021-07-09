@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
-from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
