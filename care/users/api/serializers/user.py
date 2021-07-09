@@ -201,8 +201,22 @@ class UserSerializer(SignUpSerializer):
             "local_body_object",
             "district_object",
             "state_object",
+            "pf_endpoint",
+            "pf_p256dh",
+            "pf_auth",
         )
-        read_only_fields = ("is_superuser", "verified", "user_type", "ward", "local_body", "district", "state")
+        read_only_fields = (
+            "is_superuser",
+            "verified",
+            "user_type",
+            "ward",
+            "local_body",
+            "district",
+            "state",
+            "pf_endpoint",
+            "pf_p256dh",
+            "pf_auth",
+        )
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
 

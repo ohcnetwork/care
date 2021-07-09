@@ -2,13 +2,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models import PatientExternalTest
-from care.users.models import District, Ward, LocalBody, REVERSE_LOCAL_BODY_CHOICES
-from care.users.api.serializers.lsg import (
-    DistrictSerializer,
-    LocalBodySerializer,
-    StateSerializer,
-    WardSerializer,
-)
+from care.facility.models.patient import PatientRegistration
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
+from care.users.models import REVERSE_LOCAL_BODY_CHOICES, District, LocalBody, Ward
 
 
 class PatientExternalTestSerializer(serializers.ModelSerializer):
@@ -81,36 +77,36 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
         return super().validate_empty_values(data, *args, **kwargs)
 
-    # def validate_ward(self, value):
-    #     print(value)
+    def create(self, validated_data):
+        if "srf_id" in validated_data:
+            if PatientRegistration.objects.filter(srf_id__iexact=validated_data["srf_id"]).exists():
+                validated_data["patient_created"] = True
+        return super().create(validated_data)
 
     class Meta:
         model = PatientExternalTest
         fields = "__all__"
+        read_only_fields = ("patient_created",)
 
 
-class PatientExternalTestUpdateSerializer(PatientExternalTestSerializer):
+class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
+
+    local_body = serializers.PrimaryKeyRelatedField(queryset=LocalBody.objects.all(), required=False)
+    ward = serializers.PrimaryKeyRelatedField(queryset=Ward.objects.all(), required=False)
+
     class Meta:
         model = PatientExternalTest
-        fields = "__all__"
-        read_only_fields = (
-            "id",
-            "external_id",
-            "name",
-            "age",
-            "age_in",
-            "result",
-            "srf_id",
-            "gender",
-            "district",
-            "mobile_number",
-            "is_repeat",
-            "patient_status",
-            "sample_type",
-            "test_type",
-            "sample_collection_date",
-            "result_date",
-            "lab_name",
-            "source",
-            "patient_category",
-        )
+        fields = ("address", "ward", "local_body","patient_created")
+
+    def update(self, instance, validated_data):
+
+        if "ward" in validated_data:
+            validated_data["local_body"] = validated_data["ward"].local_body
+
+        if "local_body" in validated_data:
+            validated_data["local_body_type"] = validated_data["local_body"].body_type
+
+            if validated_data["local_body"].district != instance.district:
+                raise ValidationError({"local_body": "Only supported within same district"})
+
+        return super().update(instance, validated_data)

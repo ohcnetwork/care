@@ -347,7 +347,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = FacilityPatientStatsHistory.objects.all().order_by("-entry_date")
+    queryset = FacilityPatientStatsHistory.objects.filter(facility__deleted=False).order_by("-entry_date")
     serializer_class = FacilityPatientStatsHistorySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityPatientStatsHistoryFilterSet

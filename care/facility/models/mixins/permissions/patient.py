@@ -20,7 +20,7 @@ class PatientPermissionMixin(BasePermissionMixin):
     def has_object_read_permission(self, request):
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = self.last_consultation.assigned_to == request.user
+            doctor_allowed = self.last_consultation.assigned_to == request.user or request.user == self.assigned_to
         return request.user.is_superuser or (
             (hasattr(self, "created_by") and request.user == self.created_by)
             or (self.facility and request.user in self.facility.users.all() or doctor_allowed)
@@ -40,7 +40,7 @@ class PatientPermissionMixin(BasePermissionMixin):
     def has_object_write_permission(self, request):
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = self.last_consultation.assigned_to == request.user
+            doctor_allowed = self.last_consultation.assigned_to == request.user or request.user == self.assigned_to
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
@@ -67,7 +67,7 @@ class PatientPermissionMixin(BasePermissionMixin):
     def has_object_update_permission(self, request):
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = self.last_consultation.assigned_to == request.user
+            doctor_allowed = self.last_consultation.assigned_to == request.user or request.user == self.assigned_to
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
@@ -103,7 +103,9 @@ class PatientPermissionMixin(BasePermissionMixin):
         ):
             return False
         new_facility = Facility.objects.filter(id=request.data.get("facility", None)).first()
-        return self.has_object_update_permission(request) or (new_facility and request.user in new_facility.users.all())
+        return self.has_object_update_permission(request) or (
+            new_facility and request.user in new_facility.users.all()
+        )
 
 
 class PatientRelatedPermissionMixin(BasePermissionMixin):
@@ -125,7 +127,7 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         return (
             request.user.is_superuser
             or (self.patient.facility and request.user in self.patient.facility.users.all())
-            or (self.assigned_to == request.user)
+            or (self.assigned_to == request.user or request.user == self.patient.assigned_to)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (self.patient.facility and request.user.district == self.patient.facility.district)

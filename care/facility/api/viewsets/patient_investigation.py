@@ -127,6 +127,7 @@ class PatientInvestigationSummaryViewSet(mixins.ListModelMixin, mixins.RetrieveM
         allowed_facilities = get_accessible_facilities(self.request.user)
         filters = Q(consultation__patient__facility_id__in=allowed_facilities)
         filters |= Q(consultation__assigned_to=self.request.user)
+        filters |= Q(consultation__patient__assigned_to=self.request.user)
         return queryset.filter(filters)
 
 
@@ -160,6 +161,7 @@ class InvestigationValueViewSet(
             return queryset.filter(consultation__patient__facility__district=self.request.user.district)
         filters = Q(consultation__patient__facility__users__id__exact=self.request.user.id)
         filters |= Q(consultation__assigned_to=self.request.user)
+        filters |= Q(consultation__patient__assigned_to=self.request.user)
         return queryset.filter(filters).distinct("id")
 
     @swagger_auto_schema(responses={200: PatientInvestigationSessionSerializer(many=True)})
