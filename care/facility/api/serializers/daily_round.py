@@ -25,7 +25,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsType, required=True)
+    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
 
     # Critical Care Components
 
