@@ -19,7 +19,6 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
-from care.utils.models.base import BaseModel, BaseManager
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import (
@@ -32,6 +31,7 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
+from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.jsonfield import JSONField
 
 

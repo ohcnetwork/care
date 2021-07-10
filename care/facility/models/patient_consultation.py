@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
@@ -12,6 +13,8 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.facility.models.json_schema.consultation import LINES_CATHETERS
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
@@ -65,6 +68,46 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
 
+    # Physical Information
+
+    height = models.FloatField(
+        default=None, null=True, verbose_name="Patient's Height in CM", validators=[MinValueValidator(0)],
+    )
+    weight = models.FloatField(
+        default=None, null=True, verbose_name="Patient's Weight in KG", validators=[MinValueValidator(0)],
+    )
+
+    # ICU Information
+
+    cpk_mb = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="Patient's CPK/MB",
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
+
+    operation = models.TextField(default=None, null=True)
+
+    # intubation details
+
+    intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
+    intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
+    cuff_pressure = models.IntegerField(
+        null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
+    )
+    ett_tt = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="ETT/TT in mmid",
+        validators=[MinValueValidator(3), MaxValueValidator(10)],
+    )
+
+    intubation_history = JSONField(default=list)
+
+    # Lines and Catheters
+
+    lines = JSONField(default=list, validators=[JSONFieldSchemaValidator(LINES_CATHETERS)])
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
@@ -113,4 +156,3 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
-
