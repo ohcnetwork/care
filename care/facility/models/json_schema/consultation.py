@@ -1,4 +1,4 @@
-DATETIME_REGEX = "^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$"
+from care.facility.models.json_schema.common import DATETIME_REGEX
 
 LINES_CATHETERS = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
@@ -11,7 +11,8 @@ LINES_CATHETERS = {
                 "type": {"type": "string"},
                 "site": {"type": "string"},
             },
-            "required": ["start_date", "types", "site"],
+            "additionalProperties": False,
+            "required": ["start_date", "type", "site"],
         }
     ],
 }
