@@ -294,7 +294,7 @@ class DailyRound(PatientBaseModel):
     feeds = JSONField(default=list, validators=[JSONFieldSchemaValidator(FEED)])
     total_intake_calculated = models.DecimalField(decimal_places=2, max_digits=6, blank=True, default=None, null=True)
     output = JSONField(default=list, validators=[JSONFieldSchemaValidator(OUTPUT)])
-    total_output = models.DecimalField(decimal_places=2, max_digits=6, blank=True, default=None, null=True)
+    total_output_calculated = models.DecimalField(decimal_places=2, max_digits=6, blank=True, default=None, null=True)
     dialysis_fluid_balance = models.IntegerField(
         default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(700)],
     )

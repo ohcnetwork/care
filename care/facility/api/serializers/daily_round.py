@@ -25,9 +25,32 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
+    rounds_type = ChoiceField(choices=DailyRound.RoundsType, required=True)
+
+    # Critical Care Components
+
+    consciousness_level = ChoiceField(choices=DailyRound.ConsciousnessChoice, required=False)
+    left_pupil_light_reaction = ChoiceField(choices=DailyRound.PupilReactionChoice, required=False)
+    right_pupil_light_reaction = ChoiceField(choices=DailyRound.PupilReactionChoice, required=False)
+    limb_response_upper_extremity_right = ChoiceField(choices=DailyRound.LimbResponseChoice, required=False)
+    limb_response_upper_extremity_left = ChoiceField(choices=DailyRound.LimbResponseChoice, required=False)
+    limb_response_lower_extremity_left = ChoiceField(choices=DailyRound.LimbResponseChoice, required=False)
+    limb_response_lower_extremity_right = ChoiceField(choices=DailyRound.LimbResponseChoice, required=False)
+    rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
+    ventilator_interface = ChoiceField(choices=DailyRound.VentilatorInterfaceChoice, required=False)
+    ventilator_mode = ChoiceField(choices=DailyRound.VentilatorModeChoice, required=False)
+    ventilator_oxygen_modality = ChoiceField(choices=DailyRound.VentilatorOxygenModalityChoice, required=False)
+    insulin_intake_frequency = ChoiceField(choices=DailyRound.InsulinIntakeFrequencyChoice, required=False)
+
     class Meta:
         model = DailyRound
-        read_only_fields = ("last_updated_by_telemedicine", "created_by_telemedicine")
+        read_only_fields = (
+            "last_updated_by_telemedicine",
+            "created_by_telemedicine",
+            "glasgow_total_calculated",
+            "total_intake_calculated",
+            "total_output_calculated",
+        )
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
