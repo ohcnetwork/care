@@ -88,7 +88,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     operation = models.TextField(default=None, null=True)
 
-    # intubation details
+    # Intubation details
 
     intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
     intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
