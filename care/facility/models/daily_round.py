@@ -135,6 +135,9 @@ class DailyRound(PatientBaseModel):
 
     consciousness_level = models.IntegerField(choices=ConsciousnessChoice, default=ConsciousnessType.UNKNOWN.value)
     consciousness_level_detail = models.TextField(default=None, null=True, blank=True)
+
+    in_prone_position = models.BooleanField(default=None, null=True, blank=True)
+
     left_pupil_size = models.IntegerField(
         default=None,
         null=True,
