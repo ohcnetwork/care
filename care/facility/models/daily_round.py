@@ -307,6 +307,29 @@ class DailyRound(PatientBaseModel):
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])
 
+    def cztn(self, value):
+        """
+        Cast Zero to null values
+        """
+        if not value:
+            return 0
+        return value
+
+    def save(self, *args, **kwargs):
+        # Calculate all automated columns and populate them
+        self.glasgow_total_calculated = (
+            self.cztn(self.glasgow_eye_open)
+            + self.cztn(self.glasgow_motor_response)
+            + self.cztn(self.glasgow_verbal_response)
+        )
+        self.total_intake_calculated = sum([x["quantity"] for x in self.infusions])
+        self.total_intake_calculated += sum([x["quantity"] for x in self.iv_fluids])
+        self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
+
+        self.total_output_calculated = sum([x["quantity"] for x in self.output])
+
+        super(DailyRound, self).save(*args, **kwargs)
+
     @staticmethod
     def has_write_permission(request):
         if (
