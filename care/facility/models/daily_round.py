@@ -127,7 +127,7 @@ class DailyRound(PatientBaseModel):
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
 
-    taken_at = models.DateTimeField(null=True, blank=True)
+    taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(choices=RoundsTypeChoice, default=RoundsType.NORMAL.value)
 
