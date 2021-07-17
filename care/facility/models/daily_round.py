@@ -299,10 +299,10 @@ class DailyRound(PatientBaseModel):
     output = JSONField(default=list, validators=[JSONFieldSchemaValidator(OUTPUT)])
     total_output_calculated = models.DecimalField(decimal_places=2, max_digits=6, blank=True, default=None, null=True)
     dialysis_fluid_balance = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(700)],
+        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
     dialysis_net_balance = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(700)],
+        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])
