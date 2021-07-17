@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from django.utils import timezone
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -44,22 +43,6 @@ class DailyRoundsViewSet(
                 external_id=self.kwargs["consultation_external_id"]
             ).id
         return super().get_serializer(*args, **kwargs)
-
-    @action(methods=["POST"], detail=False)
-    def clone_last(self, request, **kwargs):
-        consultation = get_object_or_404(
-            get_consultation_queryset(request.user).filter(external_id=self.kwargs["consultation_external_id"])
-        )
-        last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
-        if not last_objects.exists():
-            raise ValidationError({"daily_round": "No Daily Round objects available to clone"})
-        cloned_daily_round_obj = last_objects[0]
-        cloned_daily_round_obj.pk = None
-        cloned_daily_round_obj.created_date = timezone.now()
-        cloned_daily_round_obj.modified_date = timezone.now()
-        cloned_daily_round_obj.external_id = uuid4()
-        cloned_daily_round_obj.save()
-        return Response({"id": cloned_daily_round_obj.external_id})
 
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
@@ -109,3 +92,4 @@ class DailyRoundsViewSet(
             final_analytics[str(row["taken_at"])] = row_data
 
         return Response(final_analytics)
+

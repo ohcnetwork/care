@@ -1,14 +1,18 @@
 from datetime import timedelta
+from uuid import uuid4
 
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 from care.facility.models import CATEGORY_CHOICES, PatientRegistration
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.utils.notification_handler import NotificationGenerator
+from care.utils.queryset.consultation import get_consultation_queryset
 from config.serializers import ChoiceField
 
 
@@ -41,6 +45,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     ventilator_mode = ChoiceField(choices=DailyRound.VentilatorModeChoice, required=False)
     ventilator_oxygen_modality = ChoiceField(choices=DailyRound.VentilatorOxygenModalityChoice, required=False)
     insulin_intake_frequency = ChoiceField(choices=DailyRound.InsulinIntakeFrequencyChoice, required=False)
+
+    clone_last = serializers.BooleanField(write_only=True, default=False, required=False)
 
     class Meta:
         model = DailyRound
@@ -85,6 +91,25 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+
+        if "clone_last" in validated_data:
+            should_clone = validated_data.pop("clone_last")
+            if should_clone:
+                consultation = get_object_or_404(
+                    get_consultation_queryset(self.context["request"].user).filter(
+                        id=validated_data["consultation"].id
+                    )
+                )
+                last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
+                if not last_objects.exists():
+                    raise ValidationError({"daily_round": "No Daily Round objects available to clone"})
+                cloned_daily_round_obj = last_objects[0]
+                cloned_daily_round_obj.pk = None
+                cloned_daily_round_obj.created_date = timezone.now()
+                cloned_daily_round_obj.modified_date = timezone.now()
+                cloned_daily_round_obj.external_id = uuid4()
+                cloned_daily_round_obj.save()
+                return self.update(cloned_daily_round_obj, validated_data)
 
         if "action" in validated_data or "review_time" in validated_data:
             patient = validated_data["consultation"].patient
