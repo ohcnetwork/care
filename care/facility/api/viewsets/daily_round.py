@@ -83,7 +83,6 @@ class DailyRoundsViewSet(
         final_data_rows = daily_round_objects.values("taken_at", *base_fields)
         final_analytics = {}
         for row in final_data_rows:
-            print(row["taken_at"])
             if not row["taken_at"]:
                 continue
             row_data = {}
