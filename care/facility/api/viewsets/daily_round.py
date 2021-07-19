@@ -29,9 +29,9 @@ class DailyRoundsViewSet(
     queryset = DailyRound.objects.all().order_by("-id")
     lookup_field = "external_id"
 
-    DEFAULT_LOOKUP_DAYS = 2
+    DEFAULT_LOOKUP_DAYS = 1
     FIELDS_KEY = "fields"
-    MAX_FIELDS = 10
+    MAX_FIELDS = 15
 
     def get_queryset(self):
         queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])
