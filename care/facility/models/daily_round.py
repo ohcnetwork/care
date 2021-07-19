@@ -18,6 +18,7 @@ from care.facility.models.json_schema.daily_round import (
     OUTPUT,
     PRESSURE_SORE,
     NURSING_PROCEDURE,
+    META,
 )
 
 
@@ -306,6 +307,8 @@ class DailyRound(PatientBaseModel):
     )
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])
+
+    meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
 
     def cztn(self, value):
         """

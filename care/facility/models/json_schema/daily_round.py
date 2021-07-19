@@ -85,3 +85,10 @@ NURSING_PROCEDURE = {
         }
     ],
 }
+
+META = {
+    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {"dialysis": {"type": "boolean"}},
+    "additionalProperties": False,
+}
