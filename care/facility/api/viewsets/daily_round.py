@@ -29,9 +29,9 @@ class DailyRoundsViewSet(
     queryset = DailyRound.objects.all().order_by("-id")
     lookup_field = "external_id"
 
-    DEFAULT_LOOKUP_DAYS = 1
     FIELDS_KEY = "fields"
     MAX_FIELDS = 15
+    PAGE_SIZE = 36  # One Round Per Hour
 
     def get_queryset(self):
         queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])
@@ -70,18 +70,20 @@ class DailyRoundsViewSet(
             raise ValidationError(errors)
 
         page = request.data.get("page", 1)
-        to_time = datetime.now() - timedelta(days=((page - 1) * self.DEFAULT_LOOKUP_DAYS))
-        from_time = to_time - timedelta(days=self.DEFAULT_LOOKUP_DAYS)
+
+        # to_time = datetime.now() - timedelta(days=((page - 1) * self.DEFAULT_LOOKUP_DAYS))
+        # from_time = to_time - timedelta(days=self.DEFAULT_LOOKUP_DAYS)
 
         consultation = get_object_or_404(
             get_consultation_queryset(request.user).filter(external_id=self.kwargs["consultation_external_id"])
         )
-        daily_round_objects = DailyRound.objects.filter(
-            consultation=consultation, taken_at__gt=from_time, taken_at__lt=to_time
-        ).order_by("-taken_at")
-
+        daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("-taken_at")
+        total_count = daily_round_objects.count()
+        total_pages = total_count // self.PAGE_SIZE
+        daily_round_objects = daily_round_objects[((page - 1) * self.PAGE_SIZE) : ((page * self.PAGE_SIZE) + 1)]
         final_data_rows = daily_round_objects.values("taken_at", *base_fields)
-        final_analytics = {}
+        final_analytics = {"total_count": total_count, "total_pages": total_pages, "page_size": self.PAGE_SIZE}
+
         for row in final_data_rows:
             if not row["taken_at"]:
                 continue
