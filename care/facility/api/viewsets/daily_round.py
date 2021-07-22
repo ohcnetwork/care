@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -79,7 +80,7 @@ class DailyRoundsViewSet(
         )
         daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("-taken_at")
         total_count = daily_round_objects.count()
-        total_pages = total_count // self.PAGE_SIZE
+        total_pages = math.ceil(total_count / (self.PAGE_SIZE * 1.0))
         daily_round_objects = daily_round_objects[((page - 1) * self.PAGE_SIZE) : ((page * self.PAGE_SIZE) + 1)]
         final_data_rows = daily_round_objects.values("taken_at", *base_fields)
         final_analytics = {"total_count": total_count, "total_pages": total_pages, "page_size": self.PAGE_SIZE}
