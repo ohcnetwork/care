@@ -80,10 +80,9 @@ class DailyRoundsViewSet(
         )
         daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("-taken_at")
         total_count = daily_round_objects.count()
-        total_pages = math.ceil(total_count / (self.PAGE_SIZE * 1.0))
         daily_round_objects = daily_round_objects[((page - 1) * self.PAGE_SIZE) : ((page * self.PAGE_SIZE) + 1)]
         final_data_rows = daily_round_objects.values("taken_at", *base_fields)
-        final_analytics = {"total_count": total_count, "total_pages": total_pages, "page_size": self.PAGE_SIZE}
+        final_analytics = {}
 
         for row in final_data_rows:
             if not row["taken_at"]:
@@ -92,6 +91,6 @@ class DailyRoundsViewSet(
             for field in base_fields:
                 row_data[field] = row[field]
             final_analytics[str(row["taken_at"])] = row_data
-
-        return Response(final_analytics)
+        final_data = {"results": final_analytics, "count": total_count, "page_size": self.PAGE_SIZE}
+        return Response(final_data)
 
