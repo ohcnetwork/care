@@ -93,6 +93,7 @@ class DailyRoundsViewSet(
             for field in base_fields:
                 row_data[field] = row[field]
             row_data["id"] = row["external_id"]
+            del row_data["external_id"]
             final_analytics[str(row["taken_at"])] = row_data
         final_data = {"results": final_analytics, "count": total_count, "page_size": self.PAGE_SIZE}
         return Response(final_data)
