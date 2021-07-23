@@ -67,6 +67,8 @@ class DailyRoundsViewSet(
             if field not in DailyRoundAttributes:
                 errors[field] = "Not a valid field"
 
+        base_fields.append("external_id")
+
         if errors:
             raise ValidationError(errors)
 
@@ -90,6 +92,7 @@ class DailyRoundsViewSet(
             row_data = {}
             for field in base_fields:
                 row_data[field] = row[field]
+            row_data["id"] = row["external_id"]
             final_analytics[str(row["taken_at"])] = row_data
         final_data = {"results": final_analytics, "count": total_count, "page_size": self.PAGE_SIZE}
         return Response(final_data)
