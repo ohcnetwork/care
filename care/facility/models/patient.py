@@ -397,6 +397,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "cluster_name": "Name/ Cluster of Contact",
         "is_declared_positive": "Is Patient Declared Positive",
         "date_declared_positive": "Date Patient is Declared Positive",
+        # Vaccination Data
+        "is_vaccinated": "Is Patient Vaccinated",
+        "number_of_doses": "Number of Vaccine Doses Recieved",
+        "vaccine_name": "Vaccine Name",
+        "last_vaccinated_date": "Last Vaccinated Date",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
