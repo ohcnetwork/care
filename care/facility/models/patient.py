@@ -422,6 +422,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "fit_for_blood_donation": pretty_boolean,
         "is_migrant_worker": pretty_boolean,
         "is_declared_positive": pretty_boolean,
+        "is_vaccinated": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
