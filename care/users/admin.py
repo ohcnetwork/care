@@ -31,19 +31,7 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
     fieldsets = (
         (
             "User",
-            {
-                "fields": (
-                    "user_type",
-                    "local_body",
-                    "district",
-                    "state",
-                    "phone_number",
-                    "gender",
-                    "age",
-                    "skill",
-                    "verified",
-                )
-            },
+            {"fields": ("user_type", "local_body", "district", "state", "phone_number", "gender", "age", "verified",)},
         ),
     ) + auth_admin.UserAdmin.fieldsets
     list_display = ["username", "is_superuser"]
