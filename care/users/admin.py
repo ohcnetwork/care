@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from djqscsv import render_to_csv_response
 
 from care.users.forms import UserChangeForm, UserCreationForm
-from care.users.models import District, LocalBody, Ward, Skill, State
+from care.users.models import District, LocalBody, Ward, Skill, State , UserSkill
 
 User = get_user_model()
 
@@ -31,7 +31,18 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
     fieldsets = (
         (
             "User",
-            {"fields": ("user_type", "local_body", "district", "state", "phone_number", "gender", "age", "verified",)},
+            {
+                "fields": (
+                    "user_type",
+                    "local_body",
+                    "district",
+                    "state",
+                    "phone_number",
+                    "gender",
+                    "age",
+                    "verified",
+                )
+            },
         ),
     ) + auth_admin.UserAdmin.fieldsets
     list_display = ["username", "is_superuser"]
@@ -62,3 +73,5 @@ class WardAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Skill)
+
+admin.site.register(UserSkill)
