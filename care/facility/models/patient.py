@@ -56,6 +56,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     class vaccineEnum(enum.Enum):
         COVISHIELD = "CoviShield"
         COVAXIN = "Covaxin"
+        SPUTNIK = "Sputnik"
+        ASTRAZENECA = "Astrazeneca"
+        MODERNA = "Moderna"
+        PFIZER = "Pfizer"
+        JANSSEN = "Janssen"
+        SINOVAC = "Sinovac"
 
     vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
 
