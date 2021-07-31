@@ -31,7 +31,7 @@ class DailyRoundsViewSet(
     lookup_field = "external_id"
 
     FIELDS_KEY = "fields"
-    MAX_FIELDS = 15
+    MAX_FIELDS = 20
     PAGE_SIZE = 36  # One Round Per Hour
 
     def get_queryset(self):
