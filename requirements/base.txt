@@ -68,3 +68,5 @@ pywebpush==1.11.0
 ## Override Requirements
 PyJWT==v1.7.1
 
+# Json Schema
+jsonschema==3.2.0

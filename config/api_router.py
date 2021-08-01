@@ -22,7 +22,8 @@ from care.facility.api.viewsets.patient import (
     PatientSearchViewSet,
     PatientViewSet,
 )
-from care.facility.api.viewsets.patient_consultation import DailyRoundsViewSet, PatientConsultationViewSet
+from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,

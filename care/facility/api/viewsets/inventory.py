@@ -79,7 +79,6 @@ class FacilityInventoryLogViewSet(
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
-        print(self.kwargs)
         return get_object_or_404(self.get_queryset(), external_id=self.kwargs.get("external_id"))
 
     def get_facility(self):

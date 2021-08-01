@@ -50,6 +50,3 @@ Contributing
 Please see the `contributing guidelines`_.
 
 .. _contributing guidelines: ./CONTRIBUTING.rst
-
-
-

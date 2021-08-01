@@ -5,8 +5,8 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.patient_consultation import DailyRoundSerializer, PatientConsultationSerializer
-from care.facility.models.patient_consultation import DailyRound, PatientConsultation
+from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
@@ -42,24 +42,3 @@ class PatientConsultationViewSet(
         applied_filters |= Q(patient__assigned_to=self.request.user)
         return self.queryset.filter(applied_filters)
 
-
-class DailyRoundsViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
-):
-    serializer_class = DailyRoundSerializer
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
-    queryset = DailyRound.objects.all().order_by("-id")
-
-    def get_queryset(self):
-        queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])
-        return queryset
-
-    def get_serializer(self, *args, **kwargs):
-        if "data" in kwargs:
-            kwargs["data"]["consultation"] = PatientConsultation.objects.get(
-                external_id=self.kwargs["consultation_external_id"]
-            ).id
-        return super().get_serializer(*args, **kwargs)

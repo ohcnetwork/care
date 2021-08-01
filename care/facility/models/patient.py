@@ -19,7 +19,6 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
-from care.utils.models.base import BaseModel, BaseManager
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import (
@@ -32,6 +31,7 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
+from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.jsonfield import JSONField
 
 
@@ -397,6 +397,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "cluster_name": "Name/ Cluster of Contact",
         "is_declared_positive": "Is Patient Declared Positive",
         "date_declared_positive": "Date Patient is Declared Positive",
+        # Vaccination Data
+        "is_vaccinated": "Is Patient Vaccinated",
+        "number_of_doses": "Number of Vaccine Doses Recieved",
+        "vaccine_name": "Vaccine Name",
+        "last_vaccinated_date": "Last Vaccinated Date",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
@@ -417,6 +422,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "fit_for_blood_donation": pretty_boolean,
         "is_migrant_worker": pretty_boolean,
         "is_declared_positive": pretty_boolean,
+        "is_vaccinated": pretty_boolean,
         # Consultation Data
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),

@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
@@ -6,13 +7,14 @@ from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     ADMIT_CHOICES,
-    CURRENT_HEALTH_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
 )
 from care.users.models import User
+from care.facility.models.json_schema.consultation import LINES_CATHETERS
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
@@ -66,6 +68,46 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
 
+    # Physical Information
+
+    height = models.FloatField(
+        default=None, null=True, verbose_name="Patient's Height in CM", validators=[MinValueValidator(0)],
+    )
+    weight = models.FloatField(
+        default=None, null=True, verbose_name="Patient's Weight in KG", validators=[MinValueValidator(0)],
+    )
+
+    # ICU Information
+
+    cpk_mb = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="Patient's CPK/MB",
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
+
+    operation = models.TextField(default=None, null=True)
+
+    # Intubation details
+
+    intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
+    intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
+    cuff_pressure = models.IntegerField(
+        null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
+    )
+    ett_tt = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="ETT/TT in mmid",
+        validators=[MinValueValidator(3), MaxValueValidator(10)],
+    )
+
+    intubation_history = JSONField(default=list)
+
+    # Lines and Catheters
+
+    lines = JSONField(default=list, validators=[JSONFieldSchemaValidator(LINES_CATHETERS)])
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
@@ -114,79 +156,3 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
-
-
-class DailyRound(PatientBaseModel):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds")
-    temperature = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0)
-    spo2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True, default=None)
-    temperature_measured_at = models.DateTimeField(null=True, blank=True)
-    physical_examination_info = models.TextField(null=True, blank=True)
-    additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
-    other_symptoms = models.TextField(default="", blank=True)
-    patient_category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
-    current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
-    recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
-    other_details = models.TextField(null=True, blank=True)
-    medication_given = JSONField(default=dict)  # To be Used Later on
-    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
-    last_updated_by_telemedicine = models.BooleanField(default=False)
-    created_by_telemedicine = models.BooleanField(default=False)
-
-    @staticmethod
-    def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
-        return DailyRound.has_read_permission(request)
-
-    @staticmethod
-    def has_read_permission(request):
-        consultation = PatientConsultation.objects.get(
-            external_id=request.parser_context["kwargs"]["consultation_external_id"]
-        )
-        return request.user.is_superuser or (
-            (request.user in consultation.patient.facility.users.all())
-            or (request.user == consultation.assigned_to or request.user == consultation.patient.assigned_to)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (request.user.district == consultation.patient.facility.district)
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (request.user.state == consultation.patient.facility.state)
-            )
-        )
-
-    def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or (self.consultation.patient.facility and request.user in self.consultation.patient.facility.users.all())
-            or (self.consultation.assigned_to == request.user or request.user == self.consultation.patient.assigned_to)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.consultation.patient.facility
-                    and request.user.district == self.consultation.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.consultation.patient.facility
-                    and request.user.state == self.consultation.patient.facility.district
-                )
-            )
-        )
-
-    def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
-        return self.has_object_read_permission(request)
