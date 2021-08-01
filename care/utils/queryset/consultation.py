@@ -7,7 +7,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 def get_consultation_queryset(user):
     queryset = PatientConsultation.objects.all()
-    if not user.is_superuser:
+    if user.is_superuser:
         return queryset
     if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
         q_filters = Q(facility__state=user.state)
