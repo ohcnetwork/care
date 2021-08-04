@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='historicalpatientregistration',
             name='vaccine_name',
-            field=models.CharField(choices=[('CoviShield', 'COVISHIELD'), ('Covaxin', 'COVAXIN'), ('Sputnik', 'SPUTNIK'), ('Astrazeneca', 'ASTRAZENECA'), ('Moderna', 'MODERNA'), ('Pfizer', 'PFIZER'), ('Janssen', 'JANSSEN'), ('Sinovac', 'SINOVAC')], default=None, max_length=15, null=True),
+            field=models.CharField(choices=[('CoviShield', 'COVISHIELD'), ('Covaxin', 'COVAXIN'), ('Sputnik', 'SPUTNIK'), ('Moderna', 'MODERNA'), ('Pfizer', 'PFIZER'), ('Janssen', 'JANSSEN'), ('Sinovac', 'SINOVAC')], default=None, max_length=15, null=True),
         ),
         migrations.AlterField(
             model_name='patientregistration',
             name='vaccine_name',
-            field=models.CharField(choices=[('CoviShield', 'COVISHIELD'), ('Covaxin', 'COVAXIN'), ('Sputnik', 'SPUTNIK'), ('Astrazeneca', 'ASTRAZENECA'), ('Moderna', 'MODERNA'), ('Pfizer', 'PFIZER'), ('Janssen', 'JANSSEN'), ('Sinovac', 'SINOVAC')], default=None, max_length=15, null=True),
+            field=models.CharField(choices=[('CoviShield', 'COVISHIELD'), ('Covaxin', 'COVAXIN'), ('Sputnik', 'SPUTNIK'), ('Moderna', 'MODERNA'), ('Pfizer', 'PFIZER'), ('Janssen', 'JANSSEN'), ('Sinovac', 'SINOVAC')], default=None, max_length=15, null=True),
         ),
     ]

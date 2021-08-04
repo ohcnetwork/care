@@ -57,7 +57,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         COVISHIELD = "CoviShield"
         COVAXIN = "Covaxin"
         SPUTNIK = "Sputnik"
-        ASTRAZENECA = "Astrazeneca"
         MODERNA = "Moderna"
         PFIZER = "Pfizer"
         JANSSEN = "Janssen"
