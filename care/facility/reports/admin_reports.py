@@ -36,14 +36,14 @@ class AdminReports:
 
     def fetch_unique_districts(self) -> None:
         self.unique_object_ids = list(
-            User.objects.filter(user_type=User.TYPE_VALUE_MAP["DistrictAdmin"])
+            User.objects.filter(user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], district__isnull=False)
             .values_list("district_id", flat=True)
             .distinct()
         )
 
     def fetch_unique_states(self) -> None:
         self.unique_object_ids = list(
-            User.objects.filter(user_type=User.TYPE_VALUE_MAP["StateAdmin"])
+            User.objects.filter(user_type=User.TYPE_VALUE_MAP["StateAdmin"], state__isnull=False)
             .values_list("state_id", flat=True)
             .distinct()
         )
