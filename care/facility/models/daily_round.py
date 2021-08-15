@@ -128,6 +128,12 @@ class DailyRound(PatientBaseModel):
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
 
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="update_created_user")
+
+    last_edited_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="update_last_edited_user"
+    )
+
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(choices=RoundsTypeChoice, default=RoundsType.NORMAL.value)
