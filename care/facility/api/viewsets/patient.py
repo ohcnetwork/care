@@ -36,6 +36,7 @@ from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
+    FACILITY_TYPES,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -44,6 +45,7 @@ from care.facility.models import (
     PatientSearch,
     ShiftingRequest,
 )
+from care.facility.models.base import covert_choice_dict
 from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
@@ -51,11 +53,14 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter, MultiSelectFilter
 from care.utils.queryset.patient import get_patient_queryset
 
+REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+
 
 class PatientFilterSet(filters.FilterSet):
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    facility_type = CareChoiceFilter(field_name="facility__facility_type", choice_dict=REVERSE_FACILITY_TYPES)
     phone_number = filters.CharFilter(field_name="phone_number")
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
