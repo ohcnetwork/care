@@ -4,7 +4,7 @@ from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
 
 from care.facility.models.facility import Facility
-from care.users.models import User
+from care.users.models import User, phone_number_regex
 from care.utils.models.base import BaseModel
 
 
@@ -36,6 +36,11 @@ class Asset(BaseModel):
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")
     meta = JSONField(default=dict)
+    # Vendor Details
+    vendor_name = models.CharField(max_length=1024, blank=True, null=True)
+    support_name = models.CharField(max_length=1024, blank=True, null=True)
+    support_phone = models.CharField(max_length=14, validators=[phone_number_regex], default="")
+    support_email = models.EmailField(blank=True, null=True)
 
 
 class UserDefaultAssetLocation(BaseModel):
