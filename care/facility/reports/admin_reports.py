@@ -164,6 +164,8 @@ class AdminReports:
             default_storage.delete(file_name)
 
     def send_report(self, object_name, file_name, user):
+        if not user.email:
+            return
         file = default_storage.open(file_name, "rb")
         msg = EmailMessage(
             f"Care Summary : {self.mode.value} {object_name} : {self.start_date.date()}",

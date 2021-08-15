@@ -5,11 +5,11 @@ from care.facility.reports.admin_reports import AdminReports, AdminReportsMode
 
 class Command(BaseCommand):
     """
-    Management command to Force start Admin Reports.
+    Management command to Force start District Level Admin Reports.
     """
 
-    help = "Generate Admin Summary"
+    help = "Generate District Level Admin Summary"
 
     def handle(self, *args, **options):
-        print("Generating Admin Reports")
+        print("Generating District Level Admin Reports")
         AdminReports(AdminReportsMode.DISTRICT).generate_reports()
