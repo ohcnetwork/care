@@ -63,7 +63,7 @@ class PatientExternalTestViewSet(
     RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
-    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all().order_by("-id")
+    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district", "block").all().order_by("-id")
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
@@ -78,6 +78,8 @@ class PatientExternalTestViewSet(
                 queryset = queryset.filter(district=self.request.user.district)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
                 queryset = queryset.filter(local_body=self.request.user.local_body)
+            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["BlockAdmin"]:
+                queryset = queryset.filter(block=self.request.user.block)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["WardAdmin"]:
                 queryset = queryset.filter(ward=self.request.user.ward, ward__isnull=False)
             else:

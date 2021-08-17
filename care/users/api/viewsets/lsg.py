@@ -7,8 +7,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
-from care.users.models import District, LocalBody, State, Ward
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer, BlockSerializer
+from care.users.models import District, LocalBody, State, Ward, Block
 
 from care.utils.cache.mixin import ListCacheResponseMixin, RetrieveCacheResponseMixin
 
@@ -119,3 +119,28 @@ class WardViewSet(
     filterset_class = WardFilterSet
     pagination_class = PaginataionOverrideClass
 
+
+class BlockFilterSet(filters.FilterSet):
+    state = filters.NumberFilter(field_name="district__state_id")
+    state_name = filters.CharFilter(field_name="district__state__name", lookup_expr="icontains")
+    block = filters.NumberFilter(field_name="number")
+    block_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
+    @method_decorator(cache_page(3600))
+    @action(detail=True, methods=["get"])
+    def blocks(self, *args, **kwargs):
+        serializer = BlockSerializer(Block.objects.all(), many=True)
+        return Response(data=serializer.data)
+
+class BlockViewSet(
+    ListCacheResponseMixin,
+    RetrieveCacheResponseMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet,
+):
+    serializer_class = BlockSerializer
+    queryset = Block.objects.all().order_by("name")
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = BlockFilterSet
+    pagination_class = PaginataionOverrideClass
