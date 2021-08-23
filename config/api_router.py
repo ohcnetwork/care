@@ -56,7 +56,6 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-
 router.register("users", UserViewSet)
 user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
 user_nested_rotuer.register("skill", UserSkillViewSet)
@@ -162,3 +161,8 @@ urlpatterns = [
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
 ]
+
+
+## Importing Celery Tasks
+
+import care.facility.reports.admin_reports

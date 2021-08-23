@@ -4,6 +4,8 @@ from datetime import timedelta
 from uuid import uuid4
 
 import boto3
+from celery.decorators import periodic_task
+from celery.schedules import crontab
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
@@ -16,6 +18,11 @@ from care.facility.models.patient_base import CATEGORY_CHOICES
 from care.facility.models.shifting import SHIFTING_STATUS_CHOICES, ShiftingRequest
 from care.users.models import District, State, User
 from care.utils.whatsapp.send_media_message import generate_whatsapp_message
+
+
+@periodic_task(run_every=crontab(minute="0", hour="8"))
+def run_scheduled_district_reports():
+    AdminReports(AdminReportsMode.DISTRICT).generate_reports()
 
 
 class InvalidModeException(Exception):
