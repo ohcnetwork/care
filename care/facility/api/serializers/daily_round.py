@@ -11,6 +11,7 @@ from care.facility.models import CATEGORY_CHOICES, PatientRegistration
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
 from config.serializers import ChoiceField
@@ -48,6 +49,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     clone_last = serializers.BooleanField(write_only=True, default=False, required=False)
 
+    last_edited_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+
     class Meta:
         model = DailyRound
         read_only_fields = (
@@ -60,6 +64,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
+
+        instance.last_edited_by = self.context["request"].user
+
         if instance.consultation.discharge_date:
             raise ValidationError({"consultation": [f"Discharged Consultation data cannot be updated"]})
 
@@ -105,6 +112,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     raise ValidationError({"daily_round": "No Daily Round objects available to clone"})
                 cloned_daily_round_obj = last_objects[0]
                 cloned_daily_round_obj.pk = None
+                cloned_daily_round_obj.created_by = self.context["request"].user
+                cloned_daily_round_obj.last_edited_by = self.context["request"].user
                 cloned_daily_round_obj.created_date = timezone.now()
                 cloned_daily_round_obj.modified_date = timezone.now()
                 cloned_daily_round_obj.external_id = uuid4()
@@ -132,9 +141,12 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             validated_data["last_updated_by_telemedicine"] = True
 
         daily_round_obj = super().create(validated_data)
-
+        daily_round_obj.created_by = self.context["request"].user
+        daily_round_obj.last_edited_by = self.context["request"].user
         daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
-        daily_round_obj.consultation.save(update_fields=["last_updated_by_telemedicine"])
+        daily_round_obj.consultation.save(
+            update_fields=["last_updated_by_telemedicine", "created_by", "last_edited_by"]
+        )
 
         NotificationGenerator(
             event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,

@@ -34,6 +34,13 @@ def reverse_choices(choices):
     return output
 
 
+def covert_choice_dict(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
 class FacilityBaseModel(BaseModel):
     class Meta:
         abstract = True

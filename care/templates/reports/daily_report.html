@@ -1,0 +1,436 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css"
+    />
+    <style>
+      @media print {
+        pre,
+        div,
+        dt,
+        dd,
+        blockquote {
+          page-break-inside: avoid;
+        }
+        @page {
+          margin: 0;
+        }
+        body {
+          margin: 1.6cm;
+        }
+      }
+    </style>
+  </head>
+  <body class="max-w-5xl mx-10 mt-6 text-sm">
+    <div class="bg-white overflow-hidden sm:rounded-lg m-6">
+      <div class="mx-auto flex justify-center">
+        <img class="h-28" src="https://cdn.coronasafe.network/kgovtlogo.png" />
+      </div>
+    </div>
+    <div class="mt-2 text-center w-full font-bold text-3xl">
+      {{object_type}} : {{object_name}}
+    </div>
+    <div
+      class="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between"
+    >
+      <div class="mt-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Daily Summary
+        </h3>
+        <p class="mt-1 text-sm leading-5 text-gray-500">
+          Generated for {{current_date}}
+        </p>
+      </div>
+      <img
+        class="h-12"
+        src="https://cdn.coronasafe.network/coronaSafeLogo.png"
+      />
+    </div>
+    <div class="px-4 py-5 sm:px-6">
+      <dl class="mt-10 text-center flex justify-between">
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Active Patients
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-700">
+            {{patients_summary.current_active}}
+          </dd>
+        </div>
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Patient Registered Today
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-600">
+            {{patients_summary.created_today}}
+          </dd>
+        </div>
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Patient Discharged Today
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-700">
+            {{patients_summary.discharged_today}}
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Patients Registered By Age Group
+        </h3>
+      </div>
+      <div class="mt-6">
+        <div class="flex flex-col">
+          <div
+            class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
+            <div
+              class="
+                align-middle
+                inline-block
+                min-w-full
+                shadow
+                overflow-hidden
+                sm:rounded-lg
+                border-b border-gray-200
+              "
+            >
+              <table class="min-w-full">
+                <thead>
+                  <tr>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Age Group
+                    </th>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Count
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for patients_age_group in patients_age %}
+                  <tr class="bg-white">
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{patients_age_group.title}}
+                    </td>
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{patients_age_group.total_count}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Patients Registered By Category
+        </h3>
+      </div>
+      <div class="mt-6">
+        <div class="flex flex-col">
+          <div
+            class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
+            <div
+              class="
+                align-middle
+                inline-block
+                min-w-full
+                shadow
+                overflow-hidden
+                sm:rounded-lg
+                border-b border-gray-200
+              "
+            >
+              <table class="min-w-full">
+                <thead>
+                  <tr>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Category
+                    </th>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Count
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for patients_category in patients_categories %}
+                  <tr class="bg-white">
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{patients_category.title}}
+                    </td>
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{patients_category.total_count}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-3xl leading-6 font-medium text-gray-900">Shifting</h3>
+      <dl class="mt-10 text-center flex justify-between">
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Total
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-700">
+            {{shifting_summary.total_count}}
+          </dd>
+        </div>
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Up Shift
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-700">
+            {{shifting_summary.total_up}}
+          </dd>
+        </div>
+        <div class="flex flex-col">
+          <dt class="order-2 mt-2 text-lg leading-6 font-medium text-gray-700">
+            Down Shift
+          </dt>
+          <dd class="order-1 text-5xl font-extrabold text-gray-600">
+            {{shifting_summary.total_down}}
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Shifting Summary
+        </h3>
+      </div>
+      <div class="mt-6">
+        <div class="flex flex-col">
+          <div
+            class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
+            <div
+              class="
+                align-middle
+                inline-block
+                min-w-full
+                shadow
+                overflow-hidden
+                sm:rounded-lg
+                border-b border-gray-200
+              "
+            >
+              <table class="min-w-full">
+                <thead>
+                  <tr>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Total Count
+                    </th>
+                    <th
+                      class="
+                        px-1
+                        py-1
+                        border-b border-gray-200
+                        bg-gray-50
+                        text-left text-xs
+                        leading-4
+                        font-medium
+                        text-gray-500
+                        uppercase
+                        tracking-wider
+                      "
+                    >
+                      Emergency Count
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for shifting in shifting_status %}
+                  <tr class="bg-white">
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{shifting.status}}
+                    </td>
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{shifting.total_count}}
+                    </td>
+                    <td
+                      class="
+                        px-1
+                        py-1
+                        border-t
+                        whitespace-no-wrap
+                        text-sm
+                        leading-5
+                        font-medium
+                        text-gray-900
+                      "
+                    >
+                      {{shifting.emergency_count}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
