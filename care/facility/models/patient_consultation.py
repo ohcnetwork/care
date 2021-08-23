@@ -87,6 +87,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     operation = models.TextField(default=None, null=True)
+    special_instruction = models.TextField(default=None, null=True)
 
     # Intubation details
 
