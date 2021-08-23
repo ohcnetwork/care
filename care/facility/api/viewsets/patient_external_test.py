@@ -57,13 +57,14 @@ class PatientExternalTestFilter(filters.FilterSet):
     sample_collection_date = DateFromToRangeFilter(field_name="sample_collection_date")
     result_date = DateFromToRangeFilter(field_name="result_date")
     created_date = DateFromToRangeFilter(field_name="created_date")
+    block = MFilter(field_name="local_body__block")
 
 
 class PatientExternalTestViewSet(
     RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     serializer_class = PatientExternalTestSerializer
-    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district", "block").all().order_by("-id")
+    queryset = PatientExternalTest.objects.select_related("ward", "local_body", "district").all().order_by("-id")
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
