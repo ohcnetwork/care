@@ -8,9 +8,9 @@ from django.conf import settings
 def _get_default_whatsapp_config():
     return {
         "admin_report": {
-            "message": "Coronasafe",
-            "header": "Daily Summary of auto-generated from care.",
-            "footer": "Coronasafe",
+            "message": "Coronasafe Network",
+            "header": "Daily summary auto-generated from care.",
+            "footer": "Coronasafe Network",
         }
     }
 
