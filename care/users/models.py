@@ -190,6 +190,7 @@ class User(AbstractUser):
         "Reserved": 20,
         "WardAdmin": 21,
         "LocalBodyAdmin": 23,
+        "BlockAdmin": 24,
         "DistrictLabAdmin": 25,
         "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
@@ -206,6 +207,7 @@ class User(AbstractUser):
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
+    block = models.ForeignKey(Block,on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
