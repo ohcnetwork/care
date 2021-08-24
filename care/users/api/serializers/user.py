@@ -203,6 +203,7 @@ class UserSerializer(SignUpSerializer):
             "is_superuser",
             "verified",
             "local_body_object",
+            "block_object",
             "district_object",
             "state_object",
             "pf_endpoint",

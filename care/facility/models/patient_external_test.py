@@ -1,7 +1,7 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, pretty_boolean
-from care.users.models import User, Ward, LocalBody, District
+from care.users.models import User, Ward, LocalBody, District, Block
 
 
 class PatientExternalTest(FacilityBaseModel):
@@ -17,6 +17,9 @@ class PatientExternalTest(FacilityBaseModel):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(
         LocalBody, on_delete=models.PROTECT, null=False, blank=False
+    )
+    block = models.ForeignKey(
+        Block, on_delete=models.PROTECT, null=True, blank=True
     )
     district = models.ForeignKey(
         District, on_delete=models.PROTECT, null=False, blank=False

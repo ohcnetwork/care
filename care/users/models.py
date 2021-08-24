@@ -300,6 +300,8 @@ class User(AbstractUser):
         """
         if self.local_body is not None:
             self.district = self.local_body.district
+            if self.local_body.block is not None:
+                self.block = self.local_body.block
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
