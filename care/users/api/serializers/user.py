@@ -138,6 +138,10 @@ class UserCreateSerializer(SignUpSerializer):
             and not validated.get("state")
         ):
             raise exceptions.ValidationError({"__all__": ["One of ward, local body, district or state is required"]})
+        if  validated.get("user_type") == User.TYPE_VALUE_MAP["BlockAdmin"]:
+            local_body_object = validated.get("local_body")
+            if local_body_object.block is None:
+                raise exceptions.ValidationError({"__all__": ["The local_body doesn't have a Block associated with it"]})
 
         return validated
 
