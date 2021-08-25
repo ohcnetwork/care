@@ -12,7 +12,7 @@ SAMPLE_TYPE_CHOICES = [
     (5, "Covalescent sera"),
     (6, "Biopsy"),
     (7, "AMR"),
-    (8, "Communicable"),
+    (8, "Communicable Diseases"),
     (9, "OTHER TYPE"),
 ]
 
