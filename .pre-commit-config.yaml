@@ -1,4 +1,4 @@
-exclude: 'docs|node_modules|migrations|.git|.tox'
+exclude: "docs|node_modules|migrations|.git|.tox"
 default_stages: [commit]
 fail_fast: true
 
@@ -15,7 +15,6 @@ repos:
         name: fix end of files.
         description: Ensures that a file is either empty, or ends with one newline.
 
-
   - repo: https://github.com/asottile/seed-isort-config
     rev: v2.1.0
     hooks:
@@ -31,7 +30,7 @@ repos:
     hooks:
       - id: black
         args: [--line-length=120, --safe]
-        language_version: python3.7
+        language_version: python3
 
   - repo: https://github.com/myint/autoflake
     rev: v1.4
@@ -41,12 +40,12 @@ repos:
 
   - repo: local
     hooks:
-#      - id: flake8
-#        name: flake8
-#        entry: flake8
-#        language: python
-#        types: [python]
-#        args: ['--config=setup.cfg']
+      #      - id: flake8
+      #        name: flake8
+      #        entry: flake8
+      #        language: python
+      #        types: [python]
+      #        args: ['--config=setup.cfg']
 
       - id: pre-commit-django-migrations
         name: Check django migrations
@@ -55,7 +54,6 @@ repos:
         types: [python]
         pass_filenames: false
         require_serial: true
-
 #      - id: pre-commit-django-tests
 #        name: Run Django unit tests
 #        entry: python manage.py test --settings=config.settings.test -n
