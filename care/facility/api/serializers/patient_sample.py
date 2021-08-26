@@ -4,7 +4,8 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import PatientConsultation, PatientRegistration, Facility
+from care.facility.api.serializers.patient import PatientDetailSerializer
+from care.facility.models import Facility, PatientConsultation, PatientRegistration
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
@@ -19,6 +20,7 @@ class PatientSampleFlowSerializer(serializers.ModelSerializer):
 
 
 class PatientSampleSerializer(serializers.ModelSerializer):
+    patient_object = PatientDetailSerializer(source="patient", read_only=True)
     id = serializers.UUIDField(source="external_id", read_only=True)
     patient_name = serializers.CharField(read_only=True, source="patient.name")
     patient_has_sari = serializers.BooleanField(read_only=True, source="patient.has_SARI")
