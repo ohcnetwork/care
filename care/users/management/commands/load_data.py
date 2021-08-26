@@ -11,8 +11,8 @@ from care.users.models import District, State
 
 class Command(BaseCommand):
     """
-    Management command to load state and district data from JSON
-    Usage: python manage.py load_state_data ./data/india/states-and-districts.json
+    Management command to load block, lsg and ward data from JSON
+    Usage: python manage.py load_data assam
     """
 
     help = "Loads Local Body data from a folder of JSONs"
@@ -73,6 +73,7 @@ class Command(BaseCommand):
         for state in states:
             current_state_data = self.BASE_URL + state + "/lsg/"
             print("Processing Files From", current_state_data)
+            management.call_command("load_block_data", current_state_data)
             management.call_command("load_lsg_data", current_state_data)
             management.call_command("load_ward_data", current_state_data)
 

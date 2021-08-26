@@ -4,7 +4,7 @@ from typing import Optional
 from collections import defaultdict
 from django.core.management.base import BaseCommand, CommandParser
 
-from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody, State
+from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody, State, Block
 
 
 class Command(BaseCommand):
@@ -76,6 +76,7 @@ class Command(BaseCommand):
                         body_type=LOCAL_BODY_CHOICE_MAP.get(
                             (lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]
                         ),
+                        block=Block.objects.filter(number=lb.get("block_no"), district=dist_obj).first()
                     )
                 )
 
