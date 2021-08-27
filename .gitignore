@@ -351,3 +351,5 @@ test_db
 celerybeat-schedule
 
 config/settings/local.py
+
+secrets.sh
