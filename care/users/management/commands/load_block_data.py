@@ -33,7 +33,7 @@ class Command(BaseCommand):
         districts = District.objects.all()
         district_map = {d.name: d for d in districts}
 
-        for f in glob.glob(f"{folder}/blocks.json"):
+        for f in glob.glob(f"{folder}/blocks/blocks*.json"):
             with open(f"{f}", "r") as data_f:
                 data = json.load(data_f)
                 blocks = data.pop("blocks", None)
