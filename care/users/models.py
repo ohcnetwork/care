@@ -82,6 +82,21 @@ def reverse_lower_choices(choices):
 
 REVERSE_LOCAL_BODY_CHOICES = reverse_lower_choices(LOCAL_BODY_CHOICES)
 
+class Block(models.Model):
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            "district",
+            "name",
+            "number",
+        )
+
+    def __str__(self):
+        return f"{self.name}"
+
 
 class LocalBody(models.Model):
     district = models.ForeignKey(District, on_delete=models.PROTECT)
@@ -89,6 +104,7 @@ class LocalBody(models.Model):
     name = models.CharField(max_length=255)
     body_type = models.IntegerField(choices=LOCAL_BODY_CHOICES)
     localbody_code = models.CharField(max_length=20, blank=True, null=True)
+    block = models.ForeignKey(Block, on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         unique_together = (
@@ -174,6 +190,7 @@ class User(AbstractUser):
         "Reserved": 20,
         "WardAdmin": 21,
         "LocalBodyAdmin": 23,
+        "BlockAdmin": 24,
         "DistrictLabAdmin": 25,
         "DistrictReadOnlyAdmin": 29,
         "DistrictAdmin": 30,
@@ -190,6 +207,7 @@ class User(AbstractUser):
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
+    block = models.ForeignKey(Block,on_delete=models.PROTECT, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -282,6 +300,8 @@ class User(AbstractUser):
         """
         if self.local_body is not None:
             self.district = self.local_body.district
+            if self.local_body.block is not None:
+                self.block = self.local_body.block
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
