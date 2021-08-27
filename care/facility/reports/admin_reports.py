@@ -1,23 +1,35 @@
 import enum
 import time
 from datetime import timedelta
+from uuid import uuid4
 
+import boto3
+from celery.decorators import periodic_task
+from celery.schedules import crontab
+from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-from django.utils.timezone import localtime, make_aware, now
+from django.utils.timezone import localtime, now
 from hardcopy import bytestring_to_pdf
 
-from care.facility.models import base
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_base import CATEGORY_CHOICES
 from care.facility.models.shifting import SHIFTING_STATUS_CHOICES, ShiftingRequest
 from care.users.models import District, State, User
+from care.utils.whatsapp.send_media_message import generate_whatsapp_message
 
-from django.conf import settings
+
+@periodic_task(run_every=crontab(minute="0", hour="8"))
+def run_scheduled_district_reports():
+    AdminReports(AdminReportsMode.DISTRICT).generate_reports()
 
 
 class InvalidModeException(Exception):
+    pass
+
+
+class UploadNotSupported(Exception):
     pass
 
 
@@ -66,6 +78,28 @@ class AdminReports:
             return State.objects.get(id=object_id).name
         elif self.mode == AdminReportsMode.DISTRICT:
             return District.objects.get(id=object_id).name
+
+    def upload_file(self, file_name):
+        if not settings.USE_S3:
+            raise UploadNotSupported()
+        file_path = default_storage.path(file_name)
+        with open(file_path, "rb") as f:
+            file_content = f.read()
+            s3Client = boto3.client(
+                "s3",
+                region_name="ap-south-1",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+            key = "reports/" + str(uuid4()) + str(int(time.time())) + ".pdf"
+            s3Client.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=key,
+                Body=file_content,
+                ContentType="application/pdf",
+                ACL="public-read",
+            )
+        return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{key}"
 
     # Summary Functions
 
@@ -163,7 +197,7 @@ class AdminReports:
             self.send_reports(object_name, {self.filter_field: object_id}, file_name)
             default_storage.delete(file_name)
 
-    def send_report(self, object_name, file_name, user):
+    def send_email_report(self, object_name, file_name, user):
         if not user.email:
             return
         file = default_storage.open(file_name, "rb")
@@ -177,11 +211,22 @@ class AdminReports:
         msg.attach(f"{self.mode.value}Report.pdf", file.read(), "application/pdf")
         msg.send()
 
+    def send_whatsapp_report(self, object_name, public_url, user):
+        if not user.alt_phone_number:
+            return
+        generate_whatsapp_message(object_name, public_url, user.alt_phone_number)
+
     def send_reports(self, object_name, base_filters, file_name):
         users = User.objects.all()
         if self.mode == AdminReportsMode.STATE:
             users = users.filter(user_type=User.TYPE_VALUE_MAP["StateAdmin"], **base_filters)
         elif self.mode == AdminReportsMode.DISTRICT:
             users = users.filter(user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], **base_filters)
+        try:
+            public_url = self.upload_file(file_name)
+        except UploadNotSupported:
+            public_url = None
         for user in users:
-            self.send_report(object_name, file_name, user)
+            self.send_email_report(object_name, file_name, user)
+            if public_url:
+                self.send_whatsapp_report(object_name, public_url, user)
