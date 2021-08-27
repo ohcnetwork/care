@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import exceptions, serializers
 
 from care.facility.models import Facility, FacilityUser, READ_ONLY_USER_TYPES
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, BlockSerializer
 from care.users.models import GENDER_CHOICES
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
@@ -138,6 +138,10 @@ class UserCreateSerializer(SignUpSerializer):
             and not validated.get("state")
         ):
             raise exceptions.ValidationError({"__all__": ["One of ward, local body, district or state is required"]})
+        if  validated.get("user_type") == User.TYPE_VALUE_MAP["BlockAdmin"]:
+            local_body_object = validated.get("local_body")
+            if local_body_object.block is None:
+                raise exceptions.ValidationError({"__all__": ["The local_body doesn't have a Block associated with it"]})
 
         return validated
 
@@ -149,6 +153,8 @@ class UserCreateSerializer(SignUpSerializer):
             queryset = queryset.filter(state=user.state)
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(district=user.district)
+        elif user.user_type >= User.TYPE_VALUE_MAP["BlockAdmin"]:
+            queryset = queryset.filter(block=user.block)
         elif user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
             queryset = queryset.filter(local_body=user.local_body)
         else:
@@ -176,6 +182,7 @@ class UserSerializer(SignUpSerializer):
     is_superuser = serializers.BooleanField(read_only=True)
 
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    block_object = BlockSerializer(source="local_body__block", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
@@ -190,6 +197,7 @@ class UserSerializer(SignUpSerializer):
             "email",
             "user_type",
             "local_body",
+            "block",
             "district",
             "state",
             "phone_number",
@@ -199,6 +207,7 @@ class UserSerializer(SignUpSerializer):
             "is_superuser",
             "verified",
             "local_body_object",
+            "block_object",
             "district_object",
             "state_object",
             "pf_endpoint",
@@ -211,6 +220,7 @@ class UserSerializer(SignUpSerializer):
             "user_type",
             "ward",
             "local_body",
+            "block",
             "district",
             "state",
             "pf_endpoint",
@@ -239,6 +249,7 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    block_object = BlockSerializer(source="local_body__block", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
@@ -251,6 +262,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "last_name",
             "username",
             "local_body_object",
+            "block_object",
             "district_object",
             "state_object",
             "user_type",

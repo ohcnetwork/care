@@ -46,7 +46,7 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
+from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet, BlockViewSet
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
@@ -91,6 +91,7 @@ router.register("state", StateViewSet)
 router.register("district", DistrictViewSet)
 router.register("local_body", LocalBodyViewSet)
 router.register("ward", WardViewSet)
+router.register("block", BlockViewSet)
 
 # Patient Sample
 router.register("test_sample", PatientSampleViewSet)

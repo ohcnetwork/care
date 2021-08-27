@@ -57,6 +57,7 @@ class PatientExternalTestFilter(filters.FilterSet):
     sample_collection_date = DateFromToRangeFilter(field_name="sample_collection_date")
     result_date = DateFromToRangeFilter(field_name="result_date")
     created_date = DateFromToRangeFilter(field_name="created_date")
+    block = MFilter(field_name="local_body__block")
 
 
 class PatientExternalTestViewSet(
@@ -76,6 +77,8 @@ class PatientExternalTestViewSet(
                 queryset = queryset.filter(district__state=self.request.user.state)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 queryset = queryset.filter(district=self.request.user.district)
+            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["BlockAdmin"]:
+                queryset = queryset.filter(block=self.request.user.block)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
                 queryset = queryset.filter(local_body=self.request.user.local_body)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["WardAdmin"]:

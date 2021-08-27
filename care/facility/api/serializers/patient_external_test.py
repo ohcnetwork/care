@@ -56,6 +56,8 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
             ).first()
             if local_body_obj:
                 data["local_body"] = local_body_obj.id
+                if local_body_obj.block:
+                    data["block"] = local_body_obj.block.id
             else:
                 raise ValidationError({"local_body": ["Local Body Does not Exist"]})
         else:
