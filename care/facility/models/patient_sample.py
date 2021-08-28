@@ -10,7 +10,10 @@ SAMPLE_TYPE_CHOICES = [
     (3, "Blood in EDTA"),
     (4, "Acute Sera"),
     (5, "Covalescent sera"),
-    (6, "OTHER TYPE"),
+    (6, "Biopsy"),
+    (7, "AMR"),
+    (8, "Communicable Diseases"),
+    (9, "OTHER TYPE"),
 ]
 
 
@@ -40,13 +43,16 @@ class PatientSample(FacilityBaseModel):
     SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
     SAMPLE_FLOW_RULES = {
         # previous rule      # next valid rules
-        "REQUEST_SUBMITTED": {"APPROVED", "DENIED",},
+        "REQUEST_SUBMITTED": {
+            "APPROVED",
+            "DENIED",
+        },
         "APPROVED": {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
         "DENIED": {"REQUEST_SUBMITTED"},
         "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
         "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB", "COMPLETED"},
         "RECEIVED_AT_LAB": {"COMPLETED"},
-        "COMPLETED" : {"COMPLETED"}
+        "COMPLETED": {"COMPLETED"},
     }
 
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
