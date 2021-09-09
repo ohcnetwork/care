@@ -69,6 +69,7 @@ class ShiftingFilterSet(filters.FilterSet):
     assigned_to = filters.NumberFilter(field_name="assigned_to__id")
     created_by = filters.NumberFilter(field_name="created_by__id")
     last_edited_by = filters.NumberFilter(field_name="last_edited_by__id")
+    is_antenatal = filters.BooleanFilter(field_name="patient__is_antenatal")
 
 
 class ShiftingViewSet(
