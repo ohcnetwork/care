@@ -1,22 +1,13 @@
-from care.facility.models.patient_sample import PatientSample
-from care.facility.api.serializers import facility
-from django.core.exceptions import ValidationError
-from django.db.models import F
 from rest_framework import serializers
 
-
+from care.facility.api.serializers.shifting import has_facility_permission
+from care.facility.models.facility import Facility
 from care.facility.models.file_upload import FileUpload
-
-from care.users.api.serializers.user import UserBaseMinimumSerializer
-from config.serializers import ChoiceField
-from care.facility.models.file_upload import FileUpload
-
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
-
+from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-
-from care.facility.api.serializers.shifting import has_facility_permission
+from config.serializers import ChoiceField
 
 
 def check_permissions(file_type, associating_id, user):
@@ -57,6 +48,9 @@ def check_permissions(file_type, associating_id, user):
                 if sample.consultation.assigned_to:
                     if user == sample.consultation.assigned_to:
                         return sample.id
+            if sample.testing_facility:
+                if has_facility_permission(user, Facility.objects.get(external_id=sample.testing_facility.external_id)):
+                    return sample.id
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return sample.id

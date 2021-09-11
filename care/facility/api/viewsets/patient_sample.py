@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
-from rest_framework import viewsets, mixins
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -39,6 +39,7 @@ class PatientSampleFilterSet(filters.FilterSet):
     status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    facility = filters.UUIDFilter(field_name="consultation__facility__external_id")
 
 
 class PatientSampleViewSet(
