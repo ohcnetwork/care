@@ -5,8 +5,6 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
-from django.db.models import DateTimeField, F, Value
-from django.db.models.expressions import ExpressionWrapper
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -16,7 +14,7 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import RetrieveAPIView, get_object_or_404
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -46,7 +44,7 @@ from care.facility.models import (
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
-from care.facility.models.patient_base import DISEASE_STATUS_DICT, DiseaseStatusEnum
+from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -78,6 +76,7 @@ class PatientFilterSet(filters.FilterSet):
     date_declared_positive = filters.DateFromToRangeFilter(field_name="date_declared_positive")
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
     last_vaccinated_date = filters.DateFromToRangeFilter(field_name="last_vaccinated_date")
+    is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
@@ -501,4 +500,3 @@ class PatientNotesViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, 
         if not patient.is_active:
             raise ValidationError({"patient": "Only active patients data can be updated"})
         return serializer.save(facility=patient.facility, patient=patient, created_by=self.request.user)
-
