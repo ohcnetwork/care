@@ -10,6 +10,7 @@ LINES_CATHETERS = {
                 "start_date": {"type": "string", "pattern": DATETIME_REGEX},
                 "type": {"type": "string"},
                 "site": {"type": "string"},
+                "other_type": {"type": "string"},
             },
             "additionalProperties": False,
             "required": ["start_date", "type", "site"],
