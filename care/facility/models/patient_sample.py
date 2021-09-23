@@ -1,6 +1,10 @@
 from django.db import models
 
-from care.facility.models import FacilityBaseModel, PatientRegistration
+from care.facility.models import (
+    FacilityBaseModel, 
+    PatientRegistration,
+    reverse_choices,
+)
 from care.users.models import User
 
 SAMPLE_TYPE_CHOICES = [
@@ -15,11 +19,12 @@ SAMPLE_TYPE_CHOICES = [
     (8, "Communicable Diseases"),
     (9, "OTHER TYPE"),
 ]
-
+REVERSE_SAMPLE_TYPE_CHOICES = reverse_choices(SAMPLE_TYPE_CHOICES)
 
 class PatientSample(FacilityBaseModel):
     SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
     SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
+    REVERSE_SAMPLE_TEST_RESULT_CHOICES = reverse_choices(SAMPLE_TEST_RESULT_CHOICES)
 
     PATIENT_ICMR_CATEGORY = [
         (0, "Cat 0"),
@@ -41,6 +46,7 @@ class PatientSample(FacilityBaseModel):
         "COMPLETED": 7,
     }
     SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
+    REVERSE_SAMPLE_TEST_FLOW_CHOICES = reverse_choices(SAMPLE_TEST_FLOW_CHOICES)
     SAMPLE_FLOW_RULES = {
         # previous rule      # next valid rules
         "REQUEST_SUBMITTED": {
@@ -85,6 +91,25 @@ class PatientSample(FacilityBaseModel):
     date_of_result = models.DateTimeField(null=True, blank=True)
 
     testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
+
+    CSV_MAPPING = {
+        "patient__name": "Patient Name",
+        "patient__phone_number": "Patient Phone Number",
+        "patient__age": "Patient Age",
+        "testing_facility__name": "Testing Facility",
+        "sample_type": "Type",
+        "sample_type_other": "Other Type",
+        "status": "Status",
+        "result": "Result",
+        "date_of_sample": "Tested On",
+        "date_of_result": "Result On",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "sample_type": (lambda x: REVERSE_SAMPLE_TYPE_CHOICES.get(x, "-")),
+        "status": (lambda x: REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")),
+        "result": (lambda x: REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")),
+    }
 
     def save(self, *args, **kwargs) -> None:
         if self.testing_facility is None:
