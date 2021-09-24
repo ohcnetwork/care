@@ -68,8 +68,18 @@ class ShiftingRequest(FacilityBaseModel):
     breathlessness_level = models.IntegerField(choices=BREATHLESSNESS_CHOICES, default=10, null=False, blank=False)
 
     is_assigned_to_user = models.BooleanField(default=False)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_assigned_to",)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="shifting_created_by",)
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="shifting_assigned_to",
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="shifting_created_by",
+    )
     last_edited_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="shifting_last_edited_by"
     )
@@ -80,6 +90,7 @@ class ShiftingRequest(FacilityBaseModel):
         "patient__name": "Patient Name",
         "patient__phone_number": "Patient Phone Number",
         "patient__age": "Patient Age",
+        "patient__is_antenatal": "Patient is Antenatal",
         "orgin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
@@ -94,6 +105,7 @@ class ShiftingRequest(FacilityBaseModel):
         "status": (lambda x: REVERSE_SHIFTING_STATUS_CHOICES.get(x, "-")),
         "is_up_shift": pretty_boolean,
         "emergency": pretty_boolean,
+        "patient__is_antenatal": pretty_boolean,
     }
 
     class Meta:
@@ -130,5 +142,9 @@ class ShiftingRequest(FacilityBaseModel):
 
 class ShiftingRequestComment(FacilityBaseModel):
     request = models.ForeignKey(ShiftingRequest, on_delete=models.PROTECT, null=False, blank=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     comment = models.TextField(default="", blank=True)
