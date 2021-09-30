@@ -101,8 +101,8 @@ class PatientSample(FacilityBaseModel):
         "sample_type_other": "Other Type",
         "status": "Status",
         "result": "Result",
-        "date_of_sample": "Tested On",
-        "date_of_result": "Result On",
+        "date_of_sample": "Date of Sample",
+        "date_of_result": "Date of Result",
     }
 
     CSV_MAKE_PRETTY = {
