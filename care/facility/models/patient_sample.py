@@ -86,6 +86,9 @@ class PatientSample(FacilityBaseModel):
 
     testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
 
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_by")
+    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by")
+
     def save(self, *args, **kwargs) -> None:
         if self.testing_facility is None:
             self.testing_facility = self.patient.facility

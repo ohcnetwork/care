@@ -9,6 +9,8 @@ from care.facility.models import Facility, PatientConsultation, PatientRegistrat
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES, PatientSample, PatientSampleFlow
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.facility.api.serializers import TIMESTAMP_FIELDS
 
 
 class PatientSampleFlowSerializer(serializers.ModelSerializer):
@@ -51,26 +53,37 @@ class PatientSampleSerializer(serializers.ModelSerializer):
 
     testing_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
     testing_facility_object = FacilityBasicInfoSerializer(source="testing_facility", read_only=True)
+    last_edited_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = PatientSample
-        read_only_fields = (
+        read_only_fields = TIMESTAMP_FIELDS + (
             "id",
             "facility",
+            "last_edited_by",
+            "created_by",
         )
-        exclude = TIMESTAMP_FIELDS + ("external_id",)
+        exclude = ("external_id", "deleted")
 
     def create(self, validated_data):
         validated_data.pop("status", None)
         validated_data.pop("result", None)
 
-        return super(PatientSampleSerializer, self).create(validated_data)
+        sample = super(PatientSampleSerializer, self).create(validated_data)
+        sample.created_by = self.context["request"].user
+        sample.last_edited_by = self.context["request"].user
+        sample.save()
+
+        return sample
+
 
 
 class PatientSamplePatchSerializer(PatientSampleSerializer):
     notes = serializers.CharField(required=False)
 
     def update(self, instance, validated_data):
+        instance.last_edited_by = self.context["request"].user
         try:
             is_completed = validated_data.get("result") in [1, 2]
             new_status = validated_data.get(
