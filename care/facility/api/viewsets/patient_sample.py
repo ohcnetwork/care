@@ -16,6 +16,7 @@ from care.facility.api.serializers.patient_sample import (
 )
 from care.facility.models import PatientConsultation, PatientRegistration, PatientSample, User
 from care.facility.models.patient_icmr import PatientSampleICMR
+from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -40,6 +41,7 @@ class PatientSampleFilterSet(filters.FilterSet):
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     facility = filters.UUIDFilter(field_name="consultation__facility__external_id")
+    sample_type = filters.ChoiceFilter(choices=SAMPLE_TYPE_CHOICES)
 
 
 class PatientSampleViewSet(
