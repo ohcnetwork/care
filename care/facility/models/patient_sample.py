@@ -91,6 +91,10 @@ class PatientSample(FacilityBaseModel):
     date_of_result = models.DateTimeField(null=True, blank=True)
 
     testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
+    
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_by")
+    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by")
+
 
     CSV_MAPPING = {
         "patient__name": "Patient Name",
@@ -110,6 +114,7 @@ class PatientSample(FacilityBaseModel):
         "status": (lambda x: REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")),
         "result": (lambda x: REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")),
     }
+
 
     def save(self, *args, **kwargs) -> None:
         if self.testing_facility is None:
