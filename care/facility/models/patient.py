@@ -81,6 +81,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         RTPCR = 30
         CBNAAT = 40
         TRUENAT = 50
+        RTLAMP = 60
+        POCPCR = 70
 
     TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
 

@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.db import transaction
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
+from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
@@ -14,8 +16,13 @@ from care.facility.api.serializers.patient_sample import (
     PatientSamplePatchSerializer,
     PatientSampleSerializer,
 )
-from care.facility.models import PatientConsultation, PatientRegistration, PatientSample, User
+from care.facility.models import (
+    PatientConsultation, 
+    PatientRegistration, PatientSample, 
+    User
+)
 from care.facility.models.patient_icmr import PatientSampleICMR
+from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -40,6 +47,7 @@ class PatientSampleFilterSet(filters.FilterSet):
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
     patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     facility = filters.UUIDFilter(field_name="consultation__facility__external_id")
+    sample_type = filters.ChoiceFilter(choices=SAMPLE_TYPE_CHOICES)
 
 
 class PatientSampleViewSet(
@@ -102,6 +110,13 @@ class PatientSampleViewSet(
         - district - District ID
         - district_name - District name - case insensitive match
         """
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            queryset = self.filter_queryset(self.get_queryset()).values(*PatientSample.CSV_MAPPING.keys())
+            return render_to_csv_response(
+                queryset,
+                field_header_map=PatientSample.CSV_MAPPING,
+                field_serializer_map=PatientSample.CSV_MAKE_PRETTY,
+            )
         return super(PatientSampleViewSet, self).list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
