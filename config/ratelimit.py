@@ -20,6 +20,9 @@ def validatecaptcha(request):
 
 
 def ratelimit(request, group="", keys=[None], increment=True):
+    if settings.DISABLE_RATELIMIT:
+        return False
+
     checkcaptcha = False
     for key in keys:
         if key == "ip":
