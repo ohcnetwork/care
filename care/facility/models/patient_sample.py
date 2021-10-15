@@ -111,8 +111,8 @@ class PatientSample(FacilityBaseModel):
 
     CSV_MAKE_PRETTY = {
         "sample_type": (lambda x: REVERSE_SAMPLE_TYPE_CHOICES.get(x, "-")),
-        "status": (lambda x: REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")),
-        "result": (lambda x: REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")),
+        "status": (lambda x: PatientSample.REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")),
+        "result": (lambda x: PatientSample.REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")),
     }
 
 
