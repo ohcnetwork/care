@@ -4,8 +4,10 @@ from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
 
 from care.facility.models.facility import Facility
+from care.facility.models.json_schema.asset import CAMERA_DETAILS
 from care.users.models import User, phone_number_regex
 from care.utils.models.base import BaseModel
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class AssetLocation(BaseModel):
@@ -18,6 +20,7 @@ class Asset(BaseModel):
     class AssetType(enum.Enum):
         INTERNAL = 50
         EXTERNAL = 100
+        CAMERA = 150
 
     AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
@@ -41,6 +44,8 @@ class Asset(BaseModel):
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(max_length=14, validators=[phone_number_regex], default="")
     support_email = models.EmailField(blank=True, null=True)
+    # Camera Details
+    camera = JSONField(default=dict, validators=[JSONFieldSchemaValidator(CAMERA_DETAILS)])
 
 
 class UserDefaultAssetLocation(BaseModel):
