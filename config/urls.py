@@ -53,8 +53,8 @@ urlpatterns = [
     # RESTful APIs
     path("api/v1/", include(api_router.urlpatterns)),
     url(r"^watchman/", include("watchman.urls")),
+    path("health/", include("healthy_django.urls", namespace="healthy_django")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

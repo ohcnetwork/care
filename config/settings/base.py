@@ -6,6 +6,9 @@ import json
 from datetime import timedelta
 
 import environ
+from healthy_django.healthcheck.celery_queue_length import DjangoCeleryQueueLengthHealthCheck
+from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
+from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
@@ -95,6 +98,7 @@ THIRD_PARTY_APPS = [
     "django.contrib.postgres",
     "django_celery_beat",
     "django_rest_passwordreset",
+    "healthy_django",
 ]
 
 LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.audit_log.apps.AuditLogConfig"]
@@ -458,3 +462,23 @@ WHATSAPP_API_USERNAME = env("WHATSAPP_API_USERNAME", default="")
 WHATSAPP_API_PASSWORD = env("WHATSAPP_API_PASSWORD", default="")
 WHATSAPP_ENCRYPTION_KEY = env("WHATSAPP_ENCRYPTION_KEY", default="")
 WHATSAPP_MESSAGE_CONFIG = env("WHATSAPP_MESSAGE_CONFIG", default=None)
+
+DISABLE_RATELIMIT = False
+
+
+# Health Check Config
+
+default_configuration = [
+    DjangoDatabaseHealthCheck("Database", slug="main_database", connection_name="default"),
+    DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+    DjangoCeleryQueueLengthHealthCheck(
+        "Celery Queue Length",
+        slug="celery_queue",
+        broker=CELERY_BROKER_URL,
+        queue_name="celery",
+        info_length=10,
+        warning_length=20,
+        alert_length=30,
+    ),
+]
+HEALTHY_DJANGO = default_configuration
