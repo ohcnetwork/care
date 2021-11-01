@@ -4,7 +4,7 @@ from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
 
 from care.facility.models.facility import Facility
-from care.facility.models.json_schema.asset import CAMERA_DETAILS
+from care.facility.models.json_schema.asset import META
 from care.users.models import User, phone_number_regex
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -39,14 +39,12 @@ class Asset(BaseModel):
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")
-    meta = JSONField(default=dict)
+    meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(max_length=14, validators=[phone_number_regex], default="")
     support_email = models.EmailField(blank=True, null=True)
-    # Camera Details
-    camera = JSONField(default=dict, validators=[JSONFieldSchemaValidator(CAMERA_DETAILS)])
 
 
 class UserDefaultAssetLocation(BaseModel):

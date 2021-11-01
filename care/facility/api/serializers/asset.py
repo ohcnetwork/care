@@ -1,4 +1,3 @@
-from re import L
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
@@ -40,7 +39,6 @@ class AssetSerializer(ModelSerializer):
         read_only_fields = TIMESTAMP_FIELDS
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(AssetLocation.objects.filter(external_id=attrs["location"]))
@@ -53,7 +51,19 @@ class AssetSerializer(ModelSerializer):
 
         return super().validate(attrs)
 
+    def create(self, validated_data):
+        camera_details = validated_data["meta"]["camera"]["url"] and validated_data["meta"]["camera"]["preset"]
+
+        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value and not camera_details:
+            raise ValidationError({"Camera Details": "Cannot be blank when asset type is Camera"})
+        return super().create(validated_data)
+
     def update(self, instance, validated_data):
+        camera_details = validated_data["meta"]["camera"]["url"] and validated_data["meta"]["camera"]["preset"]
+
+        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value and not camera_details:
+            raise ValidationError({"Camera Details": "Cannot be blank when asset type is Camera"})
+
         user = self.context["request"].user
         with transaction.atomic():
             if "current_location" in validated_data:
