@@ -38,6 +38,11 @@ class AssetSerializer(ModelSerializer):
         exclude = ("deleted", "external_id", "current_location")
         read_only_fields = TIMESTAMP_FIELDS
 
+    def validate_camera_details(self, validated_data):
+        camera_details = validated_data.get("meta", {}).get("camera", {})
+        if not (camera_details.get("url") and camera_details.get("preset")):
+            raise ValidationError({"Camera Details": "Cannot be blank when asset type is Camera"})
+
     def validate(self, attrs):
         user = self.context["request"].user
         if "location" in attrs:
@@ -52,17 +57,13 @@ class AssetSerializer(ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        camera_details = validated_data["meta"]["camera"]["url"] and validated_data["meta"]["camera"]["preset"]
-
-        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value and not camera_details:
-            raise ValidationError({"Camera Details": "Cannot be blank when asset type is Camera"})
+        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value:
+            self.validate_camera_details(validated_data)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        camera_details = validated_data["meta"]["camera"]["url"] and validated_data["meta"]["camera"]["preset"]
-
-        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value and not camera_details:
-            raise ValidationError({"Camera Details": "Cannot be blank when asset type is Camera"})
+        if validated_data["asset_type"] == Asset.AssetType.CAMERA.value:
+            self.validate_camera_details(validated_data)
 
         user = self.context["request"].user
         with transaction.atomic():
