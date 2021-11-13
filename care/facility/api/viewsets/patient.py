@@ -242,8 +242,8 @@ class PatientViewSet(
                 slice_obj = temp.form.cleaned_data.get(field)
                 if slice_obj:
                     days_difference = (
-                        temp.form.cleaned_data.get("created_date").stop
-                        - temp.form.cleaned_data.get("created_date").start
+                        temp.form.cleaned_data.get(field).stop
+                        - temp.form.cleaned_data.get(field).start
                     ).days
                     if days_difference <= self.CSV_EXPORT_LIMIT:
                         within_limits = True
