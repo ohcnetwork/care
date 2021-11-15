@@ -241,6 +241,10 @@ class PatientViewSet(
             for field in self.date_range_fields:
                 slice_obj = temp.form.cleaned_data.get(field)
                 if slice_obj:
+                    if not slice_obj.start or not slice_obj.stop:
+                        raise ValidationError(
+                            {field: f"both starting and ending date must be provided for export"}
+                        )
                     days_difference = (
                         temp.form.cleaned_data.get(field).stop
                         - temp.form.cleaned_data.get(field).start
