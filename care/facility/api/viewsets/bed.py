@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.bed import BedSerializer
+from care.facility.api.serializers.bed import BedSerializer, AssetBedSerializer
 
 from care.facility.models import facility
 from care.facility.models.asset import Asset, AssetLocation, AssetTransaction, UserDefaultAssetLocation
@@ -60,4 +60,23 @@ class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateMod
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(facility__id__in=allowed_facilities)
+        return queryset
+
+
+class AssetBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
+    serializer_class = AssetBedSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(bed__facility__state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(bed__facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
         return queryset
