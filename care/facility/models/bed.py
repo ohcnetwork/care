@@ -5,13 +5,13 @@ However this is an addon feature and is not required for the regular patient flo
 Leaving scope to build rooms and wards to being even more organization.
 """
 import enum
+
 from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
-from care.facility.models.asset import Asset
 
+from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
 from care.utils.models.base import BaseModel
-from care.facility.models.asset import AssetLocation
 
 
 class Bed(BaseModel):
