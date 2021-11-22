@@ -1,34 +1,20 @@
-from django.db.models import Q
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters as drf_filters
-from rest_framework.decorators import action, permission_classes
-from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
+    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
-    DestroyModelMixin,
 )
-from rest_framework.response import Response
-from rest_framework.serializers import Serializer, UUIDField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.bed import BedSerializer, AssetBedSerializer
-
-from care.facility.models import facility
-from care.facility.models.asset import Asset, AssetLocation, AssetTransaction, UserDefaultAssetLocation
+from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer
 from care.facility.models.bed import AssetBed, Bed
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.queryset.asset_location import get_asset_location_queryset
-from care.utils.queryset.facility import get_facility_queryset
-from care.utils.filters.choicefilter import inverse_choices, CareChoiceFilter
-
-from rest_framework.permissions import IsAuthenticated
+from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 
 inverse_bed_type = inverse_choices(Bed.BedTypeChoices)
 
