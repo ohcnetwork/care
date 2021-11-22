@@ -5,6 +5,7 @@ from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
 from care.facility.api.viewsets.asset import AssetLocationViewSet, AssetViewSet, AssetTransactionViewSet
+from care.facility.api.viewsets.bed import BedViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -82,6 +83,8 @@ router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
 
 router.register("external_result", PatientExternalTestViewSet)
+
+router.register("bed", BedViewSet)
 
 router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
 router.register("pharmacy/prescription", PrescriptionSupplierViewSet)
