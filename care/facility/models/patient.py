@@ -19,7 +19,6 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
-from care.facility.models.bed import Bed
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
 from care.facility.models.patient_base import (
@@ -254,10 +253,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     date_declared_positive = models.DateTimeField(
         null=True, blank=True, verbose_name="Date Patient is Declared Positive"
     )
-
-    # Organization Attributes
-
-    bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=True, blank=True)
 
     # Permission Scopes
 
