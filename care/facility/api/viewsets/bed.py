@@ -49,9 +49,16 @@ class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateMod
         return queryset
 
 
+class AssetBedFilter(filters.FilterSet):
+    asset = filters.UUIDFilter(field_name="asset__external_id")
+    bed = filters.UUIDFilter(field_name="bed__external_id")
+
+
 class AssetBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
     serializer_class = AssetBedSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetBedFilter
 
     def get_queryset(self):
         user = self.request.user
