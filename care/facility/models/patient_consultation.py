@@ -79,35 +79,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     # ICU Information
 
-    cpk_mb = models.IntegerField(
-        null=True,
-        default=None,
-        verbose_name="Patient's CPK/MB",
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-    )
-
-    operation = models.TextField(default=None, null=True)
-    special_instruction = models.TextField(default=None, null=True)
+    operation = models.TextField(default=None, null=True, blank=True)
+    special_instruction = models.TextField(default=None, null=True, blank=True)
 
     # Intubation details
 
-    intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
-    intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
-    cuff_pressure = models.IntegerField(
-        null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
-    )
-    ett_tt = models.IntegerField(
-        null=True,
-        default=None,
-        verbose_name="ETT/TT in mmid",
-        validators=[MinValueValidator(3), MaxValueValidator(10)],
-    )
-
     intubation_history = JSONField(default=list)
-
-    # Lines and Catheters
-
-    lines = JSONField(default=list, validators=[JSONFieldSchemaValidator(LINES_CATHETERS)])
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
