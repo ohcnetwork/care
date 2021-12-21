@@ -21,6 +21,9 @@ from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOI
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
+from care.facility.models.json_schema.consultation import (
+    LINES_CATHETERS,
+)
 
 
 class DailyRound(PatientBaseModel):
@@ -315,6 +318,19 @@ class DailyRound(PatientBaseModel):
     dialysis_net_balance = models.IntegerField(
         default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
+    ett_tt = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="ETT/TT in mmid",
+        validators=[MinValueValidator(3), MaxValueValidator(10)],
+    )
+    intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
+    intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
+    cuff_pressure = models.IntegerField(
+        null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
+    )
+    lines = JSONField(default=list, validators=[JSONFieldSchemaValidator(LINES_CATHETERS)])
+
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])
 
