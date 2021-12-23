@@ -330,7 +330,12 @@ class DailyRound(PatientBaseModel):
         null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
     )
     lines = JSONField(default=list, validators=[JSONFieldSchemaValidator(LINES_CATHETERS)])
-
+    cpk_mb = models.IntegerField(
+        null=True,
+        default=None,
+        verbose_name="Patient's CPK/MB",
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])
 
