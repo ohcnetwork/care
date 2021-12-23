@@ -324,8 +324,6 @@ class DailyRound(PatientBaseModel):
         verbose_name="ETT/TT in mmid",
         validators=[MinValueValidator(3), MaxValueValidator(10)],
     )
-    intubation_start_date = models.DateTimeField(null=True, blank=True, default=None)
-    intubation_end_date = models.DateTimeField(null=True, blank=True, default=None)
     cuff_pressure = models.IntegerField(
         null=True, default=None, verbose_name="Cuff Pressure in mmhg", validators=[MinValueValidator(0)],
     )
