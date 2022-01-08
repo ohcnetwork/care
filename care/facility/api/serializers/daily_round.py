@@ -154,6 +154,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             update_fields=["last_updated_by_telemedicine", "created_by", "last_edited_by"]
         )
 
+        consultation = daily_round_obj.consultation
+        consultation.last_daily_round = daily_round_obj
+        consultation.save()
+
         NotificationGenerator(
             event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
             caused_by=self.context["request"].user,
