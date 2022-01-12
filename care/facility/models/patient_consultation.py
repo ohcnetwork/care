@@ -68,6 +68,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
 
+    last_daily_round = models.ForeignKey("facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None)
+
     # Physical Information
 
     height = models.FloatField(
