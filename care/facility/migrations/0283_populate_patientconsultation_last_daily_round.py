@@ -4,11 +4,13 @@ from django.db import migrations
 def populate_last_daily_round(apps, *args):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     DailyRound = apps.get_model("facility", "DailyRound")
-    for consultation in PatientConsultation.objects.all():
+    consultations = PatientConsultation.objects.all()
+    for consultation in consultations:
         consultation.last_daily_round = DailyRound.objects.filter(
             patient_consultation_id=consultation.id
         ).order_by('-date').first()
-        consultation.save()
+    PatientConsultation.objects.bulk_update(
+        consultations, ['last_daily_round'])
 
 
 def reverse_populate_last_daily_round(apps, *args):
