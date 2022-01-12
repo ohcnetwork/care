@@ -7,8 +7,8 @@ def populate_last_daily_round(apps, *args):
     consultations = PatientConsultation.objects.all()
     for consultation in consultations:
         consultation.last_daily_round = DailyRound.objects.filter(
-            patient_consultation_id=consultation.id
-        ).order_by('-date').first()
+            consultation_id=consultation.id
+        ).order_by('-created_date').first()
     PatientConsultation.objects.bulk_update(
         consultations, ['last_daily_round'])
 
