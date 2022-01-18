@@ -244,6 +244,7 @@ class DailyRound(PatientBaseModel):
     )
     etco2 = models.IntegerField(default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(200)],)
     bilateral_air_entry = models.BooleanField(default=None, null=True, blank=True)
+    pain = models.IntegerField(default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(10)],)
     ph = models.DecimalField(
         decimal_places=2,
         max_digits=4,
