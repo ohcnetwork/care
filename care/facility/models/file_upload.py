@@ -8,6 +8,8 @@ from django.db import models
 from care.facility.models import FacilityBaseModel
 from care.users.models import User
 
+from care.utils.csp import config as cs_provider
+
 
 class FileUpload(FacilityBaseModel):
     """
@@ -55,12 +57,7 @@ class FileUpload(FacilityBaseModel):
             return super().save(*args, **kwargs)
 
     def signed_url(self):
-        s3Client = boto3.client(
-            "s3",
-            region_name="ap-south-1",
-            aws_access_key_id=settings.FILE_UPLOAD_KEY,
-            aws_secret_access_key=settings.FILE_UPLOAD_SECRET,
-        )
+        s3Client = boto3.client("s3", **cs_provider.get_client_config())
         signed_url = s3Client.generate_presigned_url(
             "put_object",
             Params={
@@ -72,12 +69,7 @@ class FileUpload(FacilityBaseModel):
         return signed_url
 
     def read_signed_url(self):
-        s3Client = boto3.client(
-            "s3",
-            region_name="ap-south-1",
-            aws_access_key_id=settings.FILE_UPLOAD_KEY,
-            aws_secret_access_key=settings.FILE_UPLOAD_SECRET,
-        )
+        s3Client = boto3.client("s3", **cs_provider.get_client_config())
         signed_url = s3Client.generate_presigned_url(
             "get_object",
             Params={
