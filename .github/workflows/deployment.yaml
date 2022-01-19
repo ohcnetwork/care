@@ -132,7 +132,7 @@ jobs:
           sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" celery-worker.yml
           kubectl apply -f deployment.yml
           kubectl apply -f celery-beat.yml
-          kubectl apply -f deployment.yml
+          kubectl apply -f celery-worker.yml
 
   build-dockerhub-production:
     needs: test
@@ -241,4 +241,4 @@ jobs:
           sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" celery-worker.yml
           kubectl apply -f deployment.yml
           kubectl apply -f celery-beat.yml
-          kubectl apply -f deployment.yml
+          kubectl apply -f celery-worker.yml
