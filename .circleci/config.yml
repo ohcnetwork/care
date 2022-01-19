@@ -43,43 +43,6 @@ jobs:
             . venv/bin/activate && python3 manage.py test
 
 workflows:
-  deploy-to-staging:
-    jobs:
-      - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          region: AWS_DEFAULT_REGION
-          repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          tag: "${CIRCLE_SHA1},latest"
-          # executor: main-executor
-          filters:
-            branches:
-              only: master
-      - aws-eks/update-container-image:
-          name: deploy-to-staging
-          cluster-name: "${EKS_CLUSTER_NAME}"
-          aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
-          resource-name: "deployment/care-django-staging"
-          requires:
-            - aws-ecr/build-and-push-image
-      - aws-eks/update-container-image:
-          name: update-scheduler-staging
-          cluster-name: "${EKS_CLUSTER_NAME}"
-          aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
-          resource-name: "deployment/care-staging-celery-beat"
-          requires:
-            - aws-ecr/build-and-push-image
-      - aws-eks/update-container-image:
-          name: update-worker-staging
-          cluster-name: "${EKS_CLUSTER_NAME}"
-          aws-region: "${AWS_DEFAULT_REGION}"
-          container-image-updates: "${EKS_CONTAINER_NAME}=${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
-          resource-name: "deployment/care-staging-celery-worker"
-          requires:
-            - aws-ecr/build-and-push-image
   deploy-to-production:
     jobs:
       - aws-ecr/build-and-push-image:
