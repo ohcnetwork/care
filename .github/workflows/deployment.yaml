@@ -164,7 +164,7 @@ jobs:
 
   build-github-production:
     needs: test
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/production'
     environment: Production
     name: Build and push to GitHub
     runs-on: ubuntu-latest
