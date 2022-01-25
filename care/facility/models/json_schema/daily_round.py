@@ -3,7 +3,7 @@ from care.facility.models.json_schema.common import DATETIME_REGEX
 BLOOD_PRESSURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "properties": {"systolic": {"type": "number"}, "diastolic": {"type": "number"}, "mean": {"type": "number"},},
+    "properties": {"systolic": {"type": "number"}, "diastolic": {"type": "number"}, "mean": {"type": "number"}, },
     "additionalProperties": False,
 }
 
@@ -13,9 +13,11 @@ INFUSIONS = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},
+                           "concentration": {"type": "number"}, "conc_unit": {"type": "string"},
+                           },
             "additionalProperties": False,
-            "required": ["name", "quantity"],
+            "required": ["name", "quantity", "concentration", "conc_unit"],
         }
     ],
 }
@@ -26,7 +28,7 @@ IV_FLUID = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -39,7 +41,7 @@ FEED = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -52,7 +54,7 @@ OUTPUT = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -65,7 +67,7 @@ PRESSURE_SORE = {
     "items": [
         {
             "type": "object",
-            "properties": {"region": {"type": "string"}, "scale": {"type": "number", "minimum": 1, "maximum": 5},},
+            "properties": {"region": {"type": "string"}, "scale": {"type": "number", "minimum": 1, "maximum": 5}, },
             "additionalProperties": False,
             "required": ["region", "scale"],
         }
@@ -79,7 +81,7 @@ NURSING_PROCEDURE = {
     "items": [
         {
             "type": "object",
-            "properties": {"procedure": {"type": "string"}, "description": {"type": "string"},},
+            "properties": {"procedure": {"type": "string"}, "description": {"type": "string"}, },
             "additionalProperties": False,
             "required": ["procedure", "description"],
         }
