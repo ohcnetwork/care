@@ -71,3 +71,6 @@ PyJWT==v1.7.1
 
 # Json Schema
 jsonschema==3.2.0
+
+# HTTP requests
+requests==2.27.1
