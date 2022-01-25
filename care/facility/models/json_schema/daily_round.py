@@ -41,9 +41,9 @@ FEED = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, "calories": {"type": "number"}},
             "additionalProperties": False,
-            "required": ["name", "quantity"],
+            "required": ["name", "quantity", "calories"],
         }
     ],
 }
