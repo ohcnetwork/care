@@ -467,6 +467,7 @@ WHATSAPP_MESSAGE_CONFIG = env("WHATSAPP_MESSAGE_CONFIG", default=None)
 
 DISABLE_RATELIMIT = False
 
+ENABLE_ADMIN_REPORTS = env.bool("ENABLE_ADMIN_REPORTS", default=False)
 
 # Health Check Config
 
