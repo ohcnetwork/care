@@ -2,9 +2,9 @@ name: Deploy Care
 on:
   push:
     branches:
-      - '*'
+      - "*"
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
   workflow_dispatch:
 env:
@@ -30,7 +30,6 @@ jobs:
           fi
 
   build-dockerhub-staging:
-    needs: test
     environment: Staging
     name: Build & Push to Dockerhub
     if: github.ref == 'refs/heads/master'
@@ -68,7 +67,6 @@ jobs:
           docker push $IMAGE_ID --all-tags
 
   build-github-staging:
-    needs: test
     environment: Staging
     if: github.ref == 'refs/heads/master'
     name: Build and push to GitHub
