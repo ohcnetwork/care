@@ -16,9 +16,9 @@ class Command(BaseCommand):
         print(f"{total_count} Consultations need to be updated")
         i = 0
         for consultation in consultations:
-            if i > 1000 and i % 1000 == 0:
+            if i > 10000 and i % 10000 == 0:
                 print(f"{i} operations performed")
-            i += 1
+            i = i + 1
             PatientConsultation.objects.filter(id=consultation.id).update(
                 last_daily_round=DailyRound.objects.filter(consultation_id=consultation.id)
                 .order_by("-created_date")
