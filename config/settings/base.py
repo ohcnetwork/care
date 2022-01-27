@@ -10,6 +10,8 @@ from healthy_django.healthcheck.celery_queue_length import DjangoCeleryQueueLeng
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
+from care.utils.csp import config as csp_config
+
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
 
@@ -465,6 +467,7 @@ WHATSAPP_MESSAGE_CONFIG = env("WHATSAPP_MESSAGE_CONFIG", default=None)
 
 DISABLE_RATELIMIT = False
 
+ENABLE_ADMIN_REPORTS = env.bool("ENABLE_ADMIN_REPORTS", default=False)
 
 # Health Check Config
 
@@ -482,3 +485,11 @@ default_configuration = [
     ),
 ]
 HEALTHY_DJANGO = default_configuration
+
+
+CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
+
+CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
+
+if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
+    print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")

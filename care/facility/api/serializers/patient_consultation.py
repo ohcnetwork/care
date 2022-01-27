@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.utils.timezone import localtime, now
+from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -44,6 +45,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
+    last_daily_round = DailyRoundSerializer(read_only=True)
 
     class Meta:
         model = PatientConsultation
@@ -202,4 +204,3 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 if validated["review_time"] <= 0:
                     raise ValidationError({"review_time": [f"This field value is must be greater than 0."]})
         return validated
-

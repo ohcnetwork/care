@@ -7,7 +7,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 
+from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import CATEGORY_CHOICES, PatientRegistration
+from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
@@ -51,6 +53,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
+
+    bed_object = BedSerializer(read_only=True)
+
+    bed = serializers.UUIDField(source="bed.external_id", allow_null=True, required=False)
 
     class Meta:
         model = DailyRound
@@ -148,6 +154,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             update_fields=["last_updated_by_telemedicine", "created_by", "last_edited_by"]
         )
 
+        consultation = daily_round_obj.consultation
+        consultation.last_daily_round = daily_round_obj
+        consultation.save()
+
         NotificationGenerator(
             event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
             caused_by=self.context["request"].user,
@@ -171,5 +181,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     )
                 if validated["review_time"] <= 0:
                     raise ValidationError({"review_time": [f"This field value is must be greater than 0."]})
+
+        if "bed" in validated:
+            external_id = validated.pop("bed")["external_id"]
+            if external_id:
+                # TODO add authorisation checks
+                bed_object = Bed.objects.filter(external_id=external_id).first()
+                if not bed_object:
+                    raise ValidationError({"bed": [f"Obeject not found."]})
+                validated["bed_id"] = bed_object.id
 
         return validated

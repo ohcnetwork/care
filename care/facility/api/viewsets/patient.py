@@ -183,6 +183,18 @@ class PatientViewSet(
     )
     filterset_class = PatientFilterSet
 
+    date_range_fields = [
+        "created_date",
+        "modified_date",
+        "date_declared_positive",
+        "date_of_result",
+        "last_vaccinated_date",
+        "last_consultation_admission_date",
+        "last_consultation_discharge_date",
+        "last_consultation_symptoms_onset_date",
+    ]
+    CSV_EXPORT_LIMIT = 7
+
     def get_queryset(self):
         # filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
@@ -222,6 +234,32 @@ class PatientViewSet(
 
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
+            # Start Date Validation
+            temp = filters.DjangoFilterBackend().get_filterset(self.request, self.queryset, self)
+            temp.is_valid()
+            within_limits = False
+            for field in self.date_range_fields:
+                slice_obj = temp.form.cleaned_data.get(field)
+                if slice_obj:
+                    if not slice_obj.start or not slice_obj.stop:
+                        raise ValidationError(
+                            {field: f"both starting and ending date must be provided for export"}
+                        )
+                    days_difference = (
+                        temp.form.cleaned_data.get(field).stop
+                        - temp.form.cleaned_data.get(field).start
+                    ).days
+                    if days_difference <= self.CSV_EXPORT_LIMIT:
+                        within_limits = True
+                    else:
+                        raise ValidationError(
+                            {field: f"Cannot export more than {self.CSV_EXPORT_LIMIT} days at a time"}
+                        )
+            if not within_limits:
+                raise ValidationError(
+                    {"date": f"Atleast one date field must be filtered to be within {self.CSV_EXPORT_LIMIT} days"}
+                )
+            # End Date Limiting Validation
             queryset = self.filter_queryset(self.get_queryset()).values(*PatientRegistration.CSV_MAPPING.keys())
             return render_to_csv_response(
                 queryset,

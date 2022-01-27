@@ -22,7 +22,10 @@ from care.utils.whatsapp.send_media_message import generate_whatsapp_message
 
 @periodic_task(run_every=crontab(minute="0", hour="8"))
 def run_scheduled_district_reports():
-    AdminReports(AdminReportsMode.DISTRICT).generate_reports()
+    if settings.ENABLE_ADMIN_REPORTS:
+        AdminReports(AdminReportsMode.DISTRICT).generate_reports()
+    else:
+        print("Skipping admin reports as they are disabled")
 
 
 class InvalidModeException(Exception):

@@ -9,8 +9,20 @@ from care.utils.models.base import BaseModel
 
 
 class AssetLocation(BaseModel):
+    """
+    This model is also used to store rooms that the assets are in, Since these rooms are mapped to
+    actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts
+    """
+
+    class RoomType(enum.Enum):
+        OTHER = 1
+        ICU = 10
+
+    RoomTypeChoices = [(e.value, e.name) for e in RoomType]
+
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
+    location_type = models.IntegerField(choices=RoomTypeChoices, default=RoomType.OTHER.value)
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)
 
 
