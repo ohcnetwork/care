@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         consultations = list(PatientConsultation.objects.filter(last_daily_round__isnull=True).values_list("id"))
-        total_count = consultations.count()
+        total_count = len(consultations)
         print(f"{total_count} Consultations need to be updated")
         i = 0
         for consultation_id in consultations:
