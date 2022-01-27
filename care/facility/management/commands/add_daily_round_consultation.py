@@ -19,8 +19,8 @@ class Command(BaseCommand):
             if i > 10000 and i % 10000 == 0:
                 print(f"{i} operations performed")
             i = i + 1
-            PatientConsultation.objects.filter(id=consultation_id).update(
-                last_daily_round=DailyRound.objects.filter(consultation_id=consultation_id)
+            PatientConsultation.objects.filter(id=consultation_id[0]).update(
+                last_daily_round=DailyRound.objects.filter(consultation_id=consultation_id[0])
                 .order_by("-created_date")
                 .first()
             )
