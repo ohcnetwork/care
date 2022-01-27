@@ -11,16 +11,18 @@ class Command(BaseCommand):
     help = "Populate daily round for consultations"
 
     def handle(self, *args, **options):
-        consultations = list(PatientConsultation.objects.filter(last_daily_round__isnull=True).values_list("id"))
+        consultations = list(
+            PatientConsultation.objects.filter(last_daily_round__isnull=True).values_list("external_id")
+        )
         total_count = len(consultations)
         print(f"{total_count} Consultations need to be updated")
         i = 0
-        for consultation_id in consultations:
+        for consultation_eid in consultations:
             if i > 10000 and i % 10000 == 0:
                 print(f"{i} operations performed")
             i = i + 1
-            PatientConsultation.objects.filter(id=consultation_id[0]).update(
-                last_daily_round=DailyRound.objects.filter(consultation_id=consultation_id[0])
+            PatientConsultation.objects.filter(external_id=consultation_eid[0]).update(
+                last_daily_round=DailyRound.objects.filter(consultation__external_id=consultation_eid[0])
                 .order_by("-created_date")
                 .first()
             )
