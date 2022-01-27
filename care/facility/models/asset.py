@@ -5,6 +5,7 @@ from django.db import models
 
 from care.facility.models.facility import Facility
 from care.users.models import User, phone_number_regex
+from care.utils.assetintegration.base import AssetClasses
 from care.utils.models.base import BaseModel
 
 
@@ -33,6 +34,8 @@ class Asset(BaseModel):
 
     AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
+    AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
+
     class Status(enum.Enum):
         ACTIVE = 50
         TRANSFER_IN_PROGRESS = 100
@@ -42,6 +45,7 @@ class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(choices=AssetTypeChoices, default=AssetType.INTERNAL.value)
+    asset_class = models.IntegerField(choices=AssetClassChoices, default=None, null=True, blank=True)
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
     is_working = models.BooleanField(default=None, null=True, blank=True)

@@ -11,7 +11,5 @@ class BaseAssetIntegration:
         pass
 
 
-class AssetTypes(enum.Enum):
+class AssetClasses(enum.Enum):
     ONVIF = OnvifAsset
-
-AssetTypes.ONVIF.value()

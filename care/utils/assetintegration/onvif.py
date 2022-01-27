@@ -1,36 +1,40 @@
+import enum
 import json
 from urllib import request
+
 from assetintegration import BaseAssetIntegration
 
-class OnvifAsset(BaseAssetIntegration):
-    asset_type='onvif'
-    def __init__(self, meta):
-        self.meta = meta
-        self.name = meta['camera_type']
-        self.host = meta['camera_address']
-        self.port = meta['camera_port'] or 80
-        self.username = meta['camera_access_key'].split(':')[0]
-        self.password = meta['access_credentials'].split(':')[1]
-        self.middleware_hostname = meta['middleware_hostname']
 
-    def validate_camera(self):
-        # self.host not null
-        if not self.host:
-            return False
-        # self.username not null
-        if not self.username:
-            return False
-        # self.password not null
-        if not self.password:
-            return False
-        # self.middleware_hostname not null
-        if not self.middleware_hostname:
-            return False
-        return True
+class OnvifAsset(BaseAssetIntegration):
+    _name='onvif'
+    class OnvifActions(enum.Enum):
+        MOVE_ABSOLUTE = 'move_absolute'
+        GOTO_PRESET = 'goto_preset'
+
+    def __init__(self, meta):
+        try:
+            self.meta = json.loads(meta)
+            self.meta = meta
+            self.name = meta['camera_type']
+            self.host = meta['camera_address']
+            self.port = meta['camera_port'] or 80
+            self.username = meta['camera_access_key'].split(':')[0]
+            self.password = meta['access_credentials'].split(':')[1]
+            self.middleware_hostname = meta['middleware_hostname']
+        except KeyError:
+            print('Error: Invalid Onvif Asset')
+    def get_url(self, endpoint):
+        return 'http://{}{}'.format(self.middleware_hostname, endpoint)
+
+    def api_post(self, url, data=None):
+        req = request.post(url, json=data)
+
+    def api_get(self, url, data=None):
+        req = request.get(url, data=data)
 
     def handle_action(self, action):
         self.validate_camera(self)
-        if action.type == 'move_absolute':
+        if action.type == self.OnvifActions.MOVE_ABSOLUTE.value:
             # Make API Call for action
             request_data = {
                 'x': action.data['x'],
@@ -39,24 +43,9 @@ class OnvifAsset(BaseAssetIntegration):
                 'speed': action.data['speed'],
                 'meta': self.meta
             }
-            self.move_absolute(request_data)
-            self.api_call('POST', 'onvif/PTZ/{}/absoluteMove'.format(self.name), data=request_data)
+            self.api_post(self.get_url('absoluteMove'), data=request_data)
 
-        elif action == 'goto_preset':
+        elif action.type == self.OnvifActions.GOTO_PRESET.value:
             action.data['preset']
         else:
             raise Exception('Invalid action')
-    def api_call(self, method, endpoint, data=None):
-        headers = {'content-type': 'application/xml'}
-        url = 'https://{}/{}'.format(self.middleware_hostname,endpoint)
-        if data:
-            if method == 'GET':
-                querystring = '&'.join(['{}={}'.format(k,v) for k,v in data.items()])
-                url += '?' + querystring
-            else:
-                data = json.dumps(data)
-                headers['content-type'] = 'application/json'
-
-        # Make the HTTP request
-        req = request.Request(url, data=data, headers=headers)
-    
