@@ -23,7 +23,7 @@ INFUSIONS = {
                 "concentration": {"type": "number"},
                 "conc_unit": {"type": "string"},
             },
-            "additionalProperties": ["concentration", "conc_unit"],
+            "additionalProperties": False,
             "required": ["name", "quantity"],
         }
     ],
@@ -56,7 +56,7 @@ FEED = {
                 "quantity": {"type": "number"},
                 "calories": {"type": "number"},
             },
-            "additionalProperties": ["calories"],
+            "additionalProperties": False,
             "required": ["name", "quantity"],
         }
     ],
