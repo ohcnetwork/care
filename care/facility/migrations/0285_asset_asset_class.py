@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0284_merge_20220118_2007'),
+        ("facility", "0284_patientconsultation_hba1c"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='asset',
-            name='asset_class',
-            field=models.IntegerField(blank=True, choices=[('ONVIF', 'onvif')], default=None, null=True),
+            model_name="asset",
+            name="asset_class",
+            field=models.IntegerField(blank=True, choices=[("ONVIF", "onvif")], default=None, null=True),
         ),
     ]
