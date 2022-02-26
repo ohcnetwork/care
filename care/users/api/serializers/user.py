@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
 
-from care.facility.models import Facility, FacilityUser, READ_ONLY_USER_TYPES
+from care.facility.models import READ_ONLY_USER_TYPES, Facility, FacilityUser
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
 from care.users.models import GENDER_CHOICES
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
@@ -127,9 +127,7 @@ class UserCreateSerializer(SignUpSerializer):
             validated["user_type"] > self.context["created_by"].user_type
             and not self.context["created_by"].is_superuser
         ):
-            raise exceptions.ValidationError(
-                {"user_type": ["User cannot create another user with higher permissions"]}
-            )
+            raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
 
         if (
             not validated.get("ward")
@@ -164,7 +162,11 @@ class UserCreateSerializer(SignUpSerializer):
             if facilities:
                 facility_objs = facility_query.filter(external_id__in=facilities)
                 facility_user_objs = [
-                    FacilityUser(facility=facility, user=user, created_by=self.context["created_by"])
+                    FacilityUser(
+                        facility=facility,
+                        user=user,
+                        created_by=self.context["created_by"],
+                    )
                     for facility in facility_objs
                 ]
                 FacilityUser.objects.bulk_create(facility_user_objs)
@@ -237,6 +239,23 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
         )
 
 
+class UserAssignedSerializer(serializers.ModelSerializer):
+    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "first_name",
+            "username",
+            "email",
+            "last_name",
+            "alt_phone_number",
+            "user_type",
+            "last_login",
+        )
+
+
 class UserListSerializer(serializers.ModelSerializer):
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
     district_object = DistrictSerializer(source="district", read_only=True)
@@ -256,4 +275,3 @@ class UserListSerializer(serializers.ModelSerializer):
             "user_type",
             "last_login",
         )
-
