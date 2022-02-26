@@ -1,21 +1,17 @@
 from datetime import timedelta
 
 from django.utils.timezone import localtime, now
-from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    ADMIT_CHOICES,
-    SYMPTOM_CHOICES,
-    SuggestionChoices,
-)
+from care.facility.models.patient_base import ADMIT_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
-from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.api.serializers.user import UserAssignedSerializer, UserBaseMinimumSerializer
 from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -25,7 +21,11 @@ from config.serializers import ChoiceField
 class PatientConsultationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
-    suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion",)
+    suggestion_text = ChoiceField(
+        choices=PatientConsultation.SUGGESTION_CHOICES,
+        read_only=True,
+        source="suggestion",
+    )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
@@ -36,7 +36,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
-    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+    assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
 
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
@@ -107,7 +107,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     caused_by=self.context["request"].user,
                     caused_object=instance,
                     facility=instance.patient.facility,
-                    notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP],
+                    notification_mediums=[
+                        Notification.Medium.SYSTEM,
+                        Notification.Medium.WHATSAPP,
+                    ],
                 ).generate()
 
         NotificationGenerator(
@@ -174,7 +177,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 caused_by=self.context["request"].user,
                 caused_object=consultation,
                 facility=consultation.patient.facility,
-                notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP],
+                notification_mediums=[
+                    Notification.Medium.SYSTEM,
+                    Notification.Medium.WHATSAPP,
+                ],
             ).generate()
 
         return consultation
@@ -191,9 +197,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 and validated.get("admitted")
                 and not validated.get("admission_date")
             ):
-                raise ValidationError(
-                    {"admission_date": [f"This field is required as the patient has been admitted."]}
-                )
+                raise ValidationError({"admission_date": [f"This field is required as the patient has been admitted."]})
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
