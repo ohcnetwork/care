@@ -55,7 +55,7 @@ class NotificationViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, 
         if "facility" not in request.data or request.data["facility"] == "":
             raise ValidationError({"facility": "is required"})
         if "message" not in request.data or request.data["message"] == "":
-            raise ValidationError({"mesasge": "is required"})
+            raise ValidationError({"message": "is required"})
         facilities = get_facility_queryset(user)
         facility = get_object_or_404(facilities.filter(external_id=request.data["facility"]))
         NotificationGenerator(
