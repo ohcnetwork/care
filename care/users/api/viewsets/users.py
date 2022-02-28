@@ -6,6 +6,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -114,6 +115,20 @@ class UserViewSet(
         return Response(
             status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
         )
+
+    @action(detail=False, methods=["GET"])
+    def get_token(self, request):
+        if not request.user.is_authenticated:
+            raise PermissionError
+        token, _ = Token.objects.get_or_create(user=request.user)
+        return Response(status=status.HTTP_200_OK, data={"token": token.key})
+
+    @action(detail=False, methods=["GET"])
+    def delete_token(self, request):
+        if not request.user.is_authenticated:
+            raise PermissionError
+        Token.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, *args, **kwargs):
         queryset = self.queryset
