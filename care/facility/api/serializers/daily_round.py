@@ -103,15 +103,25 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
         return super().update(instance, validated_data)
 
+    def update_last_daily_round(self, daily_round_obj):
+        consultation = daily_round_obj.consultation
+        consultation.last_daily_round = daily_round_obj
+        consultation.save()
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
+            caused_by=self.context["request"].user,
+            caused_object=daily_round_obj,
+            facility=daily_round_obj.consultation.patient.facility,
+        ).generate()
+
     def create(self, validated_data):
 
         if "clone_last" in validated_data:
             should_clone = validated_data.pop("clone_last")
             if should_clone:
                 consultation = get_object_or_404(
-                    get_consultation_queryset(self.context["request"].user).filter(
-                        id=validated_data["consultation"].id
-                    )
+                    get_consultation_queryset(self.context["request"].user).filter(id=validated_data["consultation"].id)
                 )
                 last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
                 if not last_objects.exists():
@@ -124,6 +134,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 cloned_daily_round_obj.modified_date = timezone.now()
                 cloned_daily_round_obj.external_id = uuid4()
                 cloned_daily_round_obj.save()
+                self.update_last_daily_round(cloned_daily_round_obj)
                 return self.update(cloned_daily_round_obj, validated_data)
 
         if "action" in validated_data or "review_time" in validated_data:
@@ -151,20 +162,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         daily_round_obj.last_edited_by = self.context["request"].user
         daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
         daily_round_obj.consultation.save(
-            update_fields=["last_updated_by_telemedicine", "created_by", "last_edited_by"]
+            update_fields=[
+                "last_updated_by_telemedicine",
+                "created_by",
+                "last_edited_by",
+            ]
         )
 
-        consultation = daily_round_obj.consultation
-        consultation.last_daily_round = daily_round_obj
-        consultation.save()
-
-        NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
-            caused_by=self.context["request"].user,
-            caused_object=daily_round_obj,
-            facility=daily_round_obj.consultation.patient.facility,
-        ).generate()
-
+        self.update_last_daily_round(daily_round_obj)
         return daily_round_obj
 
     def validate(self, obj):
