@@ -54,7 +54,9 @@ class AssetBedFilter(filters.FilterSet):
     bed = filters.UUIDFilter(field_name="bed__external_id")
 
 
-class AssetBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+class AssetBedViewSet(
+    ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet
+):
     queryset = AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
     serializer_class = AssetBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
