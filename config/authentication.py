@@ -90,6 +90,7 @@ class MiddlewareAuthentication(JWTAuthentication):
         if "asset_id" not in validated_token:
             raise TokenError()
         asset_external_id = validated_token["asset_id"]
+        # TODO Check Asset Facility Relation here!
         try:
             UUID(asset_external_id)
         except ValueError:
