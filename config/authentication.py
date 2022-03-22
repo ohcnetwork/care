@@ -8,6 +8,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from care.facility.models import Facility
+from care.facility.models.asset import Asset
+from care.users.models import User
 
 
 class CustomJWTAuthentication(JWTAuthentication):
@@ -44,18 +46,15 @@ class MiddlewareAuthentication(JWTAuthentication):
             return None
 
         if self.FACILITY_HEADER not in request.headers:
-            print("Yeah")
             return None
-
         external_id = request.headers[self.FACILITY_HEADER]
 
         try:
             UUID(external_id)
-        except ValueError:
-            raise InvalidToken({"detail": "Invalid Facility", "messages": []})
+        except ValueError as e:
+            raise InvalidToken({"detail": "Invalid Facility", "messages": []}) from e
 
         facility = Facility.objects.filter(external_id=external_id).first()
-
         if not facility:
             raise InvalidToken({"detail": "Invalid Facility", "messages": []})
 
@@ -64,7 +63,32 @@ class MiddlewareAuthentication(JWTAuthentication):
 
         validated_token = self.get_validated_token(open_id_url, raw_token)
 
-        return self.get_user(validated_token), validated_token
+        return self.get_user(validated_token, facility), validated_token
+
+    def get_raw_token(self, header):
+        """
+        Extracts an unvalidated JSON web token from the given "Authorization"
+        header value.
+        """
+        parts = header.split()
+
+        if len(parts) == 0:
+            # Empty AUTHORIZATION header sent
+            return None
+        if parts[0] not in (b"Middleware_Bearer",):
+
+            # Assume the header does not contain a JSON web token
+            return None
+
+        if len(parts) != 2:
+            raise InvalidToken(
+                {
+                    "detail": "Given token not valid for any token type",
+                    "messages": [],
+                }
+            )
+
+        return parts[1]
 
     def get_validated_token(self, url, raw_token):
         """
@@ -83,17 +107,39 @@ class MiddlewareAuthentication(JWTAuthentication):
             }
         )
 
-    def get_user(self, validated_token):
+    def get_user(self, validated_token, facility):
         """
         Attempts to find and return a user using the given validated token.
         """
         if "asset_id" not in validated_token:
             raise TokenError()
         asset_external_id = validated_token["asset_id"]
-        # TODO Check Asset Facility Relation here!
         try:
             UUID(asset_external_id)
-        except ValueError:
-            raise InvalidToken({"detail": "Invalid Facility", "messages": []})
+        except ValueError as e:
+            raise InvalidToken({"detail": "Invalid Facility", "messages": []}) from e
         # Create/Retrieve User and return them
-        return None
+        asset_obj = Asset.objects.filter(external_id=asset_external_id).first()
+
+        if not asset_obj:
+            raise InvalidToken({"detail": "Asset object not valid"})
+
+        if asset_obj.current_location.facility != facility:
+            raise InvalidToken({"detail": "Facility not connected to Asset"})
+
+        asset_user = User.objects.filter(asset=asset_obj).first()
+        if not asset_user:
+            password = User.objects.make_random_password()
+            asset_user = User(
+                username="asset" + str(asset_obj.external_id),
+                email="support@coronasafe.network",
+                password=password + "123",
+                gender=3,
+                phone_number="919999999999",
+                user_type=User.TYPE_VALUE_MAP["Staff"],
+                verified=True,
+                asset=asset_obj,
+                age=10,
+            )  # The 123 makes it inaccesible without hashing
+            asset_user.save()
+        return asset_user
