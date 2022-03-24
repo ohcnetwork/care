@@ -8,6 +8,7 @@ BLOOD_PRESSURE = {
     },
     "additionalProperties": False,
 }
+
 INFUSIONS = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
     "type": "array",
