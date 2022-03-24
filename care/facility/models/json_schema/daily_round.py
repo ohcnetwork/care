@@ -1,5 +1,3 @@
-from care.facility.models.json_schema.common import DATETIME_REGEX
-
 BLOOD_PRESSURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -10,7 +8,6 @@ BLOOD_PRESSURE = {
     },
     "additionalProperties": False,
 }
-
 INFUSIONS = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
     "type": "array",
