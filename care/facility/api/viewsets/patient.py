@@ -44,12 +44,14 @@ from care.facility.models import (
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
+from care.facility.models.bed import AssetBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter, MultiSelectFilter
 from care.utils.queryset.patient import get_patient_queryset
+from config.authentication import CustomBasicAuthentication, CustomJWTAuthentication, MiddlewareAuthentication
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 
@@ -111,7 +113,13 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if view.action == "list":
             queryset = self.filter_list_queryset(request, queryset, view)
-
+        if request.user.asset:
+            return queryset.filter(
+                last_consultation__last_daily_round__bed_id__in=AssetBed.objects.filter(
+                    asset=request.user.asset
+                ).values("id"),
+                last_consultation__last_daily_round__bed__isnull=False,
+            )
         if not request.user.is_superuser:
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 queryset = queryset.filter(facility__state=request.user.state)
@@ -145,6 +153,8 @@ class PatientViewSet(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
+
+    authentication_classes = [CustomBasicAuthentication, CustomJWTAuthentication, MiddlewareAuthentication]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     queryset = PatientRegistration.objects.all().select_related(
@@ -242,12 +252,9 @@ class PatientViewSet(
                 slice_obj = temp.form.cleaned_data.get(field)
                 if slice_obj:
                     if not slice_obj.start or not slice_obj.stop:
-                        raise ValidationError(
-                            {field: f"both starting and ending date must be provided for export"}
-                        )
+                        raise ValidationError({field: f"both starting and ending date must be provided for export"})
                     days_difference = (
-                        temp.form.cleaned_data.get(field).stop
-                        - temp.form.cleaned_data.get(field).start
+                        temp.form.cleaned_data.get(field).stop - temp.form.cleaned_data.get(field).start
                     ).days
                     if days_difference <= self.CSV_EXPORT_LIMIT:
                         within_limits = True

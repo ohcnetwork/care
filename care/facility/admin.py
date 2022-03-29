@@ -4,6 +4,7 @@ from djangoql.admin import DjangoQLSearchMixin
 from djqscsv import render_to_csv_response
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
+from care.facility.models.bed import AssetBed
 from care.facility.models.patient_sample import PatientSample
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
@@ -22,12 +23,12 @@ from .models import (
     Inventory,
     InventoryItem,
     InventoryLog,
+    PatientExternalTest,
+    PatientInvestigation,
+    PatientInvestigationGroup,
     PatientRegistration,
     Room,
     StaffRoomAllocation,
-    PatientExternalTest,
-    PatientInvestigationGroup,
-    PatientInvestigation,
 )
 
 
@@ -37,7 +38,7 @@ class BuildingAdmin(admin.ModelAdmin):
 
 
 class DistrictFilter(SimpleListFilter):
-    """DistrictFilter """
+    """DistrictFilter"""
 
     title = "District"
     parameter_name = "district"
@@ -170,7 +171,9 @@ class ExportCsvMixin:
 
         queryset = FacilityUser.objects.all().values(*FacilityUser.CSV_MAPPING.keys())
         return render_to_csv_response(
-            queryset, field_header_map=FacilityUser.CSV_MAPPING, field_serializer_map=FacilityUser.CSV_MAKE_PRETTY,
+            queryset,
+            field_header_map=FacilityUser.CSV_MAPPING,
+            field_serializer_map=FacilityUser.CSV_MAKE_PRETTY,
         )
 
     export_as_csv.short_description = "Export Selected"
@@ -205,3 +208,4 @@ admin.site.register(FacilityInventoryItemTag)
 admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
 admin.site.register(PatientInvestigation, PatientTestAdmin)
 admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
+admin.site.register(AssetBed)

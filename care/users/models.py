@@ -209,6 +209,12 @@ class User(AbstractUser):
     pf_p256dh = models.TextField(default=None, null=True)
     pf_auth = models.TextField(default=None, null=True)
 
+    # Asset Fields
+
+    asset = models.ForeignKey(
+        "facility.Asset", default=None, null=True, blank=True, on_delete=models.PROTECT, unique=True
+    )
+
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
