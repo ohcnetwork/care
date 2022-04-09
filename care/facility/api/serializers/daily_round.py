@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 
-from care.facility.api.serializers.bed import BedSerializer
+# from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import CATEGORY_CHOICES, PatientRegistration
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
@@ -25,7 +25,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     additional_symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES, required=False)
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
-    admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
@@ -54,9 +53,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
 
-    bed_object = BedSerializer(read_only=True)
-
-    bed = serializers.UUIDField(source="bed.external_id", allow_null=True, required=False)
+    # bed_object = BedSerializer(read_only=True)
 
     class Meta:
         model = DailyRound

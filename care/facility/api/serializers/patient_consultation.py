@@ -29,7 +29,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
 
     referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
     referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
