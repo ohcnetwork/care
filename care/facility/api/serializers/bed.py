@@ -94,7 +94,7 @@ class ConsultationBedSerializer(ModelSerializer):
 
     def validate(self, attrs):
         user = self.context["request"].user
-        if "consultation" in attrs and "bed" in attrs:
+        if "consultation" in attrs and "bed" in attrs and "start_date" in attrs:
             consultation = get_object_or_404(PatientConsultation.objects.filter(external_id=attrs["consultation"]))
             bed = get_object_or_404(Bed.objects.filter(external_id=attrs["bed"]))
             facilities = get_facility_queryset(user)
@@ -107,5 +107,15 @@ class ConsultationBedSerializer(ModelSerializer):
             if consultation.facility.id != bed.facility.id:
                 raise ValidationError({"consultation": "Should be in the same facility as the bed"})
         else:
-            raise ValidationError({"consultation": "Field is Required", "bed": "Field is Required"})
+            raise ValidationError({"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required"})
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        consultation = validated_data["consultation"]
+        bed = validated_data["bed"]
+        existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
+        if existing_qs.exists():
+            existing_qs.end_date = validated_data["start_date"]
+            existing_qs.save()
+
+        return super().create(validated_data)
