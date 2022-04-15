@@ -1,10 +1,9 @@
 from django.contrib.postgres.fields import JSONField
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
-from care.facility.models.json_schema.consultation import LINES_CATHETERS
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     ADMIT_CHOICES,
@@ -14,7 +13,6 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
-from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
@@ -46,11 +44,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # To be Used Later on
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        "Facility",
-        null=True,
-        blank=True,
-        on_delete=models.PROTECT,
-        related_name="referred_patients",
+        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
     )
     admitted = models.BooleanField(default=False)
     admission_date = models.DateTimeField(null=True, blank=True)
@@ -73,19 +67,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     last_daily_round = models.ForeignKey("facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None)
 
+    current_bed = models.ForeignKey(
+        "facility.ConsultationBed", on_delete=models.PROTECT, null=True, blank=True, default=None
+    )
+
     # Physical Information
 
     height = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="Patient's Height in CM",
-        validators=[MinValueValidator(0)],
+        default=None, null=True, verbose_name="Patient's Height in CM", validators=[MinValueValidator(0)],
     )
     weight = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="Patient's Weight in KG",
-        validators=[MinValueValidator(0)],
+        default=None, null=True, verbose_name="Patient's Weight in KG", validators=[MinValueValidator(0)],
     )
     HBA1C = models.FloatField(
         default=None,
@@ -148,7 +140,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=~models.Q(suggestion=SuggestionChoices.R) | models.Q(referred_to__isnull=False),
             ),
             models.CheckConstraint(
-                name="if_admitted",
-                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+                name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]

@@ -30,7 +30,7 @@ class Bed(BaseModel):
     name = models.CharField(max_length=1024)
     description = models.TextField(default="")
     bed_type = models.IntegerField(choices=BedTypeChoices, default=BedType.REGULAR.value)
-    facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)
+    facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)  # Deprecated
     meta = JSONField(default=dict)
     assets = models.ManyToManyField(Asset, through="AssetBed")
     location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)

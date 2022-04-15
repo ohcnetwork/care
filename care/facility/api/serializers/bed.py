@@ -8,7 +8,7 @@ from care.facility.api.serializers.patient_consultation import PatientConsultati
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import Facility
-from care.facility.models.patient_consultation import PatientConsultation
+from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 
@@ -95,19 +95,29 @@ class ConsultationBedSerializer(ModelSerializer):
     def validate(self, attrs):
         user = self.context["request"].user
         if "consultation" in attrs and "bed" in attrs and "start_date" in attrs:
-            consultation = get_object_or_404(PatientConsultation.objects.filter(external_id=attrs["consultation"]))
             bed = get_object_or_404(Bed.objects.filter(external_id=attrs["bed"]))
             facilities = get_facility_queryset(user)
-            if (not facilities.filter(id=consultation.facility.id).exists()) or (
-                not facilities.filter(id=bed.facility.id).exists()
-            ):
+            permitted_consultations = get_consultation_queryset(user)
+            consultation = get_object_or_404(permitted_consultations.filter(external_id=attrs["consultation"]))
+            if not facilities.filter(id=bed.facility.id).exists():
                 raise PermissionError()
             attrs["consultation"] = consultation
             attrs["bed"] = bed
             if consultation.facility.id != bed.facility.id:
                 raise ValidationError({"consultation": "Should be in the same facility as the bed"})
-        else:
-            raise ValidationError({"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required"})
+            start_date = attrs["start_date"]
+            end_date = attrs.get("end_date", None)
+            existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
+            # Conflict checking logic
+            if existing_qs.objects.filter(start_date__gt=start_date, end_date__lt=start_date).exists():
+                raise ValidationError({"start_date": "Cannot create conflicting entry"})
+            if end_date:
+                if existing_qs.objects.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
+                    raise ValidationError({"end_date": "Cannot create conflicting entry"})
+
+            raise ValidationError(
+                {"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required"}
+            )
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -117,5 +127,7 @@ class ConsultationBedSerializer(ModelSerializer):
         if existing_qs.exists():
             existing_qs.end_date = validated_data["start_date"]
             existing_qs.save()
-
-        return super().create(validated_data)
+        obj = super().create(validated_data)
+        consultation.current_bed = obj  # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
+        consultation.save(update_fields=["current_bed"])
+        return obj
