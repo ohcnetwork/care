@@ -41,21 +41,21 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
     discharge_advice = JSONField(default=dict)
-    prescriptions = JSONField(default=dict)  # To be Used Later on
+    prescriptions = JSONField(default=dict)  # Deprecated
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
-    )
-    admitted = models.BooleanField(default=False)
-    admission_date = models.DateTimeField(null=True, blank=True)
+    )  # Deprecated
+    admitted = models.BooleanField(default=False)  # Deprecated
+    admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     discharge_date = models.DateTimeField(null=True, blank=True)
-    bed_number = models.CharField(max_length=100, null=True, blank=True)
+    bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
 
     is_kasp = models.BooleanField(default=False)
     kasp_enabled_date = models.DateTimeField(null=True, blank=True, default=None)
 
-    is_telemedicine = models.BooleanField(default=False)
-    last_updated_by_telemedicine = models.BooleanField(default=False)
+    is_telemedicine = models.BooleanField(default=False)  # Deprecated
+    last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
 
