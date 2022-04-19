@@ -198,9 +198,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if "bed" in validated:
-            bed = get_object_or_404(Bed.objects.filter(external_id=validated["bed"]))  # TODO Add Authorization
-            validated["bed"] = bed
+        # TODO Add Bed Authorisation Validation
 
         if "suggestion" in validated:
             if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):
