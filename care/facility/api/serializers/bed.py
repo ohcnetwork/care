@@ -8,8 +8,10 @@ from care.facility.api.serializers.patient_consultation import PatientConsultati
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import Facility
+from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
@@ -84,8 +86,10 @@ class ConsultationBedSerializer(ModelSerializer):
     consultation_object = PatientConsultationSerializer(source="consultation", read_only=True)
     bed_object = BedSerializer(source="bed", read_only=True)
 
-    consultation = UUIDField(write_only=True, required=True)
-    bed = UUIDField(write_only=True, required=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+    )
+    bed = ExternalIdSerializerField(queryset=Bed.objects.all(), write_only=True, required=True)
 
     class Meta:
         model = ConsultationBed
@@ -95,14 +99,12 @@ class ConsultationBedSerializer(ModelSerializer):
     def validate(self, attrs):
         user = self.context["request"].user
         if "consultation" in attrs and "bed" in attrs and "start_date" in attrs:
-            bed = get_object_or_404(Bed.objects.filter(external_id=attrs["bed"]))
+            bed = attrs["bed"]
             facilities = get_facility_queryset(user)
             permitted_consultations = get_consultation_queryset(user)
-            consultation = get_object_or_404(permitted_consultations.filter(external_id=attrs["consultation"]))
+            consultation = get_object_or_404(permitted_consultations.filter(id=attrs["consultation"].id))
             if not facilities.filter(id=bed.facility.id).exists():
                 raise PermissionError()
-            attrs["consultation"] = consultation
-            attrs["bed"] = bed
             if consultation.facility.id != bed.facility.id:
                 raise ValidationError({"consultation": "Should be in the same facility as the bed"})
             start_date = attrs["start_date"]
