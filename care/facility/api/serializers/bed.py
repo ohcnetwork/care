@@ -84,9 +84,7 @@ class ConsultationBedSerializer(ModelSerializer):
 
     bed_object = BedSerializer(source="bed", read_only=True)
 
-    consultation = ExternalIdSerializerField(
-        queryset=PatientConsultation.objects.all(), write_only=True, required=True
-    )
+    consultation = ExternalIdSerializerField(queryset=PatientConsultation.objects.all(), write_only=True, required=True)
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), write_only=True, required=True)
 
     class Meta:
@@ -116,7 +114,11 @@ class ConsultationBedSerializer(ModelSerializer):
                     raise ValidationError({"end_date": "Cannot create conflicting entry"})
 
             raise ValidationError(
-                {"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required"}
+                {
+                    "consultation": "Field is Required",
+                    "bed": "Field is Required",
+                    "start_date": "Field is Required",
+                }
             )
         return super().validate(attrs)
 
