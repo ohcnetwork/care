@@ -83,7 +83,6 @@ class AssetBedSerializer(ModelSerializer):
 class ConsultationBedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
-    consultation_object = PatientConsultationSerializer(source="consultation", read_only=True)
     bed_object = BedSerializer(source="bed", read_only=True)
 
     consultation = ExternalIdSerializerField(
