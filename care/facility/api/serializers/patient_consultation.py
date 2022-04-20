@@ -149,7 +149,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if validated_data["is_kasp"]:
                 validated_data["kasp_enabled_date"] = localtime(now())
 
-        bed = validated_data.get("bed", None)
+        bed = validated_data.pop("bed", None)
 
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
