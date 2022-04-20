@@ -1,11 +1,11 @@
 from datetime import timedelta
 
-from django.shortcuts import get_object_or_404
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
@@ -45,14 +45,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     created_by = UserBaseMinimumSerializer(read_only=True)
     last_daily_round = DailyRoundSerializer(read_only=True)
 
-    current_bed = serializers.SerializerMethodField(read_only=True)
+    current_bed = ConsultationBedSerializer(read_only=True)
 
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
-
-    def get_current_bed(self, obj):
-        from care.facility.api.serializers.bed import ConsultationBedSerializer
-
-        return ConsultationBedSerializer(obj.current_bed).data
 
     class Meta:
         model = PatientConsultation

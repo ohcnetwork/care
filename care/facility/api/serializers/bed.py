@@ -4,7 +4,6 @@ from rest_framework.serializers import ModelSerializer, UUIDField
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSerializer
-from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import Facility
