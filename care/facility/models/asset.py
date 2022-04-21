@@ -1,4 +1,5 @@
 import enum
+import uuid
 
 from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
@@ -8,6 +9,8 @@ from care.users.models import User, phone_number_regex
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
 
+def get_random_asset_id():
+    return str(uuid.uuid4())
 
 class AssetLocation(BaseModel):
     """
@@ -70,6 +73,7 @@ class Asset(BaseModel):
         max_length=14, validators=[phone_number_regex], default=""
     )
     support_email = models.EmailField(blank=True, null=True)
+    qr_code_id = models.CharField(max_length=1024, unique=True, blank=True, default=get_random_asset_id)
 
 
 class UserDefaultAssetLocation(BaseModel):
