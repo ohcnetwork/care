@@ -8,7 +8,7 @@ on:
     branches:
       - master
 env:
-  IMAGE_NAME: egov-care
+  IMAGE_NAME: care
   AWS_DEFAULT_REGION: ap-south-1
   AWS_DEFAULT_OUTPUT: json
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
@@ -32,7 +32,6 @@ jobs:
           fi
   build-dockerhub-staging:
     needs: test
-    environment: Staging-egov
     name: Build & Push to Dockerhub
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -69,7 +68,6 @@ jobs:
           docker push $IMAGE_ID --all-tags
   build-github-staging:
     needs: test
-    environment: Staging-egov
     if: github.ref == 'refs/heads/master'
     name: Build and push to GitHub
     runs-on: ubuntu-latest
@@ -100,7 +98,7 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
           docker tag $IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID --all-tags
-  deploy-staging:
+  deploy-staging-egov:
     needs: build-github-staging
     name: Deploy to EKS
     runs-on: ubuntu-latest
@@ -121,7 +119,40 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
-      - name: Deploy Care Staging
+      - name: Deploy Care Staging Egov
+        run: |
+          mkdir -p $HOME/.kube/
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml
+
+  deploy-staging-gdc:
+    needs: build-github-staging
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging-gdc
+      url: https://gdcapi.coronasafe.network
+    steps:
+      - name: Checkout Kube Config
+        uses: actions/checkout@v2
+        with:
+          repository: coronasafe/gdc_infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+      - name: Deploy Care Staging GDC
         run: |
           mkdir -p $HOME/.kube/
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
