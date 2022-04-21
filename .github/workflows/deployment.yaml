@@ -100,7 +100,7 @@ jobs:
           docker push $IMAGE_ID --all-tags
   deploy-staging-egov:
     needs: build-github-staging
-    name: Deploy to EKS
+    name: Deploy to EKS Egov
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
@@ -133,7 +133,7 @@ jobs:
 
   deploy-staging-gdc:
     needs: build-github-staging
-    name: Deploy to EKS
+    name: Deploy to EKS GDC
     runs-on: ubuntu-latest
     environment:
       name: Staging-gdc
