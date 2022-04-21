@@ -4,6 +4,7 @@ from djangoql.admin import DjangoQLSearchMixin
 from djqscsv import render_to_csv_response
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
+from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed
 from care.facility.models.patient_sample import PatientSample
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
@@ -209,3 +210,4 @@ admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
 admin.site.register(PatientInvestigation, PatientTestAdmin)
 admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
+admin.site.register(Asset)
