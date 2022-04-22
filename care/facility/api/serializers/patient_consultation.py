@@ -5,11 +5,13 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
+from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import ADMIT_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserAssignedSerializer, UserBaseMinimumSerializer
 from care.users.models import User
@@ -19,17 +21,13 @@ from config.serializers import ChoiceField
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
+
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
-    suggestion_text = ChoiceField(
-        choices=PatientConsultation.SUGGESTION_CHOICES,
-        read_only=True,
-        source="suggestion",
-    )
+    suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion",)
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    admitted_to = ChoiceField(choices=ADMIT_CHOICES, required=False)
 
     referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
     referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
@@ -46,6 +44,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     last_daily_round = DailyRoundSerializer(read_only=True)
+
+    current_bed = ConsultationBedSerializer(read_only=True)
+
+    bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
 
     class Meta:
         model = PatientConsultation
@@ -107,10 +109,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     caused_by=self.context["request"].user,
                     caused_object=instance,
                     facility=instance.patient.facility,
-                    notification_mediums=[
-                        Notification.Medium.SYSTEM,
-                        Notification.Medium.WHATSAPP,
-                    ],
+                    notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP,],
                 ).generate()
 
         NotificationGenerator(
@@ -145,10 +144,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if validated_data["is_kasp"]:
                 validated_data["kasp_enabled_date"] = localtime(now())
 
+        bed = validated_data.pop("bed", None)
+
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
+
+        if bed:
+            consultation_bed = ConsultationBed(
+                bed=bed, consultation=consultation, start_date=consultation.created_date
+            )
+            consultation_bed.save()
+            consultation.current_bed = consultation_bed
+            consultation.save(update_fields=["current_bed"])
 
         patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
@@ -177,16 +186,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 caused_by=self.context["request"].user,
                 caused_object=consultation,
                 facility=consultation.patient.facility,
-                notification_mediums=[
-                    Notification.Medium.SYSTEM,
-                    Notification.Medium.WHATSAPP,
-                ],
+                notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP,],
             ).generate()
 
         return consultation
 
-    def validate(self, obj):
-        validated = super().validate(obj)
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        # TODO Add Bed Authorisation Validation
+
         if "suggestion" in validated:
             if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):
                 raise ValidationError(
@@ -197,14 +205,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 and validated.get("admitted")
                 and not validated.get("admission_date")
             ):
-                raise ValidationError({"admission_date": [f"This field is required as the patient has been admitted."]})
+                raise ValidationError({"admission_date": ["This field is required as the patient has been admitted."]})
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
                 if "review_time" not in validated:
                     raise ValidationError(
-                        {"review_time": [f"This field is required as the patient has been requested Review."]}
+                        {"review_time": ["This field is required as the patient has been requested Review."]}
                     )
                 if validated["review_time"] <= 0:
-                    raise ValidationError({"review_time": [f"This field value is must be greater than 0."]})
+                    raise ValidationError({"review_time": ["This field value is must be greater than 0."]})
         return validated

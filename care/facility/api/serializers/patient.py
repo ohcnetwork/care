@@ -108,7 +108,8 @@ class PatientDetailSerializer(PatientListSerializer):
             fields = "__all__"
 
     phone_number = PhoneNumberIsPossibleField()
-    facility = serializers.UUIDField(source="facility.external_id", allow_null=True, required=False)
+
+    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
     medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
 
     tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
@@ -156,10 +157,10 @@ class PatientDetailSerializer(PatientListSerializer):
     #         return None
     #     return PatientConsultationSerializer(last_consultation).data
 
-    def validate_facility(self, value):
-        if value is not None and Facility.objects.filter(id=value).first() is None:
-            raise serializers.ValidationError("facility not found")
-        return value
+    # def validate_facility(self, value):
+    #     if value is not None and Facility.objects.filter(external_id=value).first() is None:
+    #         raise serializers.ValidationError("facility not found")
+    #     return value
 
     def validate_countries_travelled(self, value):
         if not value:
@@ -192,9 +193,8 @@ class PatientDetailSerializer(PatientListSerializer):
             contacted_patients = validated_data.pop("contacted_patients", [])
 
             if "facility" in validated_data:
-                external_id = validated_data.pop("facility")["external_id"]
-                if external_id:
-                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
+                pass
+                # TODO Facility Authorization
 
             if "srf_id" in validated_data:
                 if validated_data["srf_id"]:

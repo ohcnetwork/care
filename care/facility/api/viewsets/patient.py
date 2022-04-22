@@ -44,7 +44,7 @@ from care.facility.models import (
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
-from care.facility.models.bed import AssetBed
+from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
@@ -335,10 +335,14 @@ class PatientViewSet(
         patient.allow_transfer = not discharged
         patient.save(update_fields=["allow_transfer", "is_active"])
         last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+        current_time = localtime(now())
         if last_consultation:
             if last_consultation.discharge_date is None:
-                last_consultation.discharge_date = localtime(now())
+                last_consultation.discharge_date = current_time
                 last_consultation.save()
+            ConsultationBed.objects.filter(consultation=last_consultation, end_date__isnull=True).update(
+                end_date=current_time
+            )
 
         return Response(status=status.HTTP_200_OK)
 

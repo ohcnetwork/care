@@ -8,11 +8,11 @@ class BaseManager(models.Manager):
         qs = super().get_queryset()
         return qs.filter(deleted=False)
 
-    def filter(self, *args, **kwargs):
-        _id = kwargs.pop("id", "----")
-        if _id != "----" and not isinstance(_id, int):
-            kwargs["external_id"] = _id
-        return super().filter(*args, **kwargs)
+    # def filter(self, *args, **kwargs):
+    #     _id = kwargs.pop("id", "----")
+    #     if _id != "----" and not isinstance(_id, int):
+    #         kwargs["external_id"] = _id
+    #     return super().filter(*args, **kwargs)
 
 
 class BaseModel(models.Model):
