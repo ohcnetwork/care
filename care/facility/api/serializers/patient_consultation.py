@@ -165,6 +165,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.save()
             patient.is_active = False
             patient.allow_transfer = True
+        else:
+            patient.is_active = True
         patient.last_consultation = consultation
 
         if action != -1:
