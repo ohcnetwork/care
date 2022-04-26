@@ -114,7 +114,7 @@ class ConsultationBedSerializer(ModelSerializer):
             if end_date:
                 if existing_qs.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
                     raise ValidationError({"end_date": "Cannot create conflicting entry"})
-
+        else:
             raise ValidationError(
                 {"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required",}
             )
