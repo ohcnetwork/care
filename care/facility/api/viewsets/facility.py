@@ -1,7 +1,4 @@
 from django.conf import settings
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db import transaction
-from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -10,24 +7,17 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from simple_history.utils import bulk_create_with_history
 
-from care.facility.api.serializers.facility import (
-    FacilityBasicInfoSerializer,
-    FacilitySerializer,
-)
-from care.facility.api.serializers.patient import PatientListSerializer
+from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
     PatientRegistration,
-    facility,
 )
-from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.api.serializers.user import UserAssignedSerializer
 from care.users.models import User
-from config.utils import get_psql_search_tokens
 
 
 class FacilityFilter(filters.FilterSet):
@@ -71,7 +61,11 @@ class FacilityViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (FacilityQSPermissions, filters.DjangoFilterBackend, drf_filters.SearchFilter)
+    filter_backends = (
+        FacilityQSPermissions,
+        filters.DjangoFilterBackend,
+        drf_filters.SearchFilter,
+    )
     filterset_class = FacilityFilter
     lookup_field = "external_id"
 
@@ -93,7 +87,8 @@ class FacilityViewSet(
                 return super().destroy(request, *args, **kwargs)
             else:
                 return Response(
-                    {"facility": "cannot delete facility with active patients"}, status=status.HTTP_403_FORBIDDEN
+                    {"facility": "cannot delete facility with active patients"},
+                    status=status.HTTP_403_FORBIDDEN,
                 )
         return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -128,12 +123,14 @@ class FacilityViewSet(
         if user_type_filter:
             users = users.filter(user_type=user_type_filter)
         users = users.order_by("-last_login")
-        data = UserBaseMinimumSerializer(users, many=True)
+        data = UserAssignedSerializer(users, many=True)
         return Response(data.data)
 
 
 class AllFacilityViewSet(
-    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
 ):
     queryset = Facility.objects.all().select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
@@ -141,4 +138,3 @@ class AllFacilityViewSet(
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
-

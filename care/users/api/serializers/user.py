@@ -124,6 +124,11 @@ class UserCreateSerializer(SignUpSerializer):
                     {"user_type": ["Read only users can create other read only users only"]}
                 )
         if (
+            self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
+            and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
+        ):
+            pass
+        elif (
             validated["user_type"] > self.context["created_by"].user_type
             and not self.context["created_by"].is_superuser
         ):

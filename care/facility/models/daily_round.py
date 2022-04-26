@@ -126,16 +126,16 @@ class DailyRound(PatientBaseModel):
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
 
-    bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=True, blank=True)
-    # admitted_to is set to be deprecated over the next major release
-    admitted_to = models.IntegerField(choices=ADMIT_CHOICES, default=None, null=True, blank=True)
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="update_created_user")
 
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="update_last_edited_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="update_last_edited_user",
     )
 
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
@@ -172,16 +172,24 @@ class DailyRound(PatientBaseModel):
     )
     right_pupil_light_reaction_detail = models.TextField(default=None, null=True, blank=True)
     glasgow_eye_open = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(1), MaxValueValidator(4)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
     )
     glasgow_verbal_response = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
     )
     glasgow_motor_response = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(1), MaxValueValidator(6)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(6)],
     )
     glasgow_total_calculated = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(3), MaxValueValidator(15)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(3), MaxValueValidator(15)],
     )
     limb_response_upper_extremity_right = models.IntegerField(
         choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
@@ -196,8 +204,16 @@ class DailyRound(PatientBaseModel):
         choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
     )
     bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
-    pulse = models.IntegerField(default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(200)],)
-    resp = models.IntegerField(default=None, null=True, validators=[MinValueValidator(10), MaxValueValidator(70)],)
+    pulse = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(200)],
+    )
+    resp = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(10), MaxValueValidator(70)],
+    )
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
@@ -213,38 +229,65 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(30)],
     )
     ventilator_pip = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     ventilator_mean_airway_pressure = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(40)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(40)],
     )
     ventilator_resp_rate = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     ventilator_pressure_support = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(40)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(40)],
     )
     ventilator_tidal_volume = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(1000)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
     ventilator_oxygen_modality = models.IntegerField(
-        choices=VentilatorOxygenModalityChoice, default=VentilatorOxygenModalityType.UNKNOWN.value
+        choices=VentilatorOxygenModalityChoice,
+        default=VentilatorOxygenModalityType.UNKNOWN.value,
     )
     ventilator_oxygen_modality_oxygen_rate = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(50)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(50)],
     )
     ventilator_oxygen_modality_flow_rate = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(70)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(70)],
     )
     ventilator_fi02 = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(21), MaxValueValidator(100)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(21), MaxValueValidator(100)],
     )
     ventilator_spo2 = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
-    etco2 = models.IntegerField(default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(200)],)
+    etco2 = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(200)],
+    )
     bilateral_air_entry = models.BooleanField(default=None, null=True, blank=True)
-    pain = models.IntegerField(default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(10)],)
+    pain = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+    )
     ph = models.DecimalField(
         decimal_places=2,
         max_digits=4,
@@ -253,8 +296,16 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
-    pco2 = models.IntegerField(default=None, null=True, validators=[MinValueValidator(10), MaxValueValidator(200)],)
-    po2 = models.IntegerField(default=None, null=True, validators=[MinValueValidator(10), MaxValueValidator(400)],)
+    pco2 = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(10), MaxValueValidator(200)],
+    )
+    po2 = models.IntegerField(
+        default=None,
+        null=True,
+        validators=[MinValueValidator(10), MaxValueValidator(400)],
+    )
     hco3 = models.DecimalField(
         decimal_places=2,
         max_digits=4,
@@ -264,7 +315,9 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(5), MaxValueValidator(80)],
     )
     base_excess = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(-20), MaxValueValidator(20)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(-20), MaxValueValidator(20)],
     )
     lactate = models.DecimalField(
         decimal_places=2,
@@ -291,7 +344,9 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(1), MaxValueValidator(10)],
     )
     blood_sugar_level = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(700)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(700)],
     )
     insulin_intake_dose = models.DecimalField(
         decimal_places=2,
@@ -302,7 +357,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     insulin_intake_frequency = models.IntegerField(
-        choices=InsulinIntakeFrequencyChoice, default=InsulinIntakeFrequencyType.UNKNOWN.value
+        choices=InsulinIntakeFrequencyChoice,
+        default=InsulinIntakeFrequencyType.UNKNOWN.value,
     )
     infusions = JSONField(default=list, validators=[JSONFieldSchemaValidator(INFUSIONS)])
     iv_fluids = JSONField(default=list, validators=[JSONFieldSchemaValidator(IV_FLUID)])
@@ -311,10 +367,14 @@ class DailyRound(PatientBaseModel):
     output = JSONField(default=list, validators=[JSONFieldSchemaValidator(OUTPUT)])
     total_output_calculated = models.DecimalField(decimal_places=2, max_digits=6, blank=True, default=None, null=True)
     dialysis_fluid_balance = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(5000)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
     dialysis_net_balance = models.IntegerField(
-        default=None, null=True, validators=[MinValueValidator(0), MaxValueValidator(5000)],
+        default=None,
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
     pressure_sore = JSONField(default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)])
     nursing = JSONField(default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)])

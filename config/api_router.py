@@ -4,8 +4,9 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
-from care.facility.api.viewsets.asset import AssetLocationViewSet, AssetViewSet, AssetTransactionViewSet
-from care.facility.api.viewsets.bed import AssetBedViewSet, BedViewSet
+from care.facility.api.viewsets.asset import AssetLocationViewSet, AssetTransactionViewSet, AssetViewSet
+from care.facility.api.viewsets.bed import AssetBedViewSet, BedViewSet, ConsultationBedViewSet
+from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -24,7 +25,6 @@ from care.facility.api.viewsets.patient import (
     PatientViewSet,
 )
 from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
-from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,
@@ -41,7 +41,7 @@ from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierViewSet,
 )
 from care.facility.api.viewsets.resources import ResourceRequestCommentViewSet, ResourceRequestViewSet
-from care.facility.api.viewsets.shifting import ShiftingViewSet, ShifitngRequestCommentViewSet
+from care.facility.api.viewsets.shifting import ShifitngRequestCommentViewSet, ShiftingViewSet
 from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
@@ -86,6 +86,7 @@ router.register("external_result", PatientExternalTestViewSet)
 
 router.register("bed", BedViewSet)
 router.register("assetbed", AssetBedViewSet)
+router.register("consultationbed", ConsultationBedViewSet)
 
 
 router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
@@ -112,7 +113,9 @@ router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage
 # District Summary
 
 router.register(
-    "district_patient_summary", DistrictPatientSummaryViewSet, basename="district-summary-patient",
+    "district_patient_summary",
+    DistrictPatientSummaryViewSet,
+    basename="district-summary-patient",
 )
 
 

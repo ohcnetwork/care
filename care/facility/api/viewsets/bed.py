@@ -10,8 +10,8 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer
-from care.facility.models.bed import AssetBed, Bed
+from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer, ConsultationBedSerializer
+from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
@@ -54,11 +54,39 @@ class AssetBedFilter(filters.FilterSet):
     bed = filters.UUIDFilter(field_name="bed__external_id")
 
 
-class AssetBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+class AssetBedViewSet(
+    ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet
+):
     queryset = AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
     serializer_class = AssetBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(bed__facility__state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(bed__facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
+        return queryset
+
+
+class ConsultationBedFilter(filters.FilterSet):
+    consultation = filters.UUIDFilter(field_name="consultation__external_id")
+    bed = filters.UUIDFilter(field_name="bed__external_id")
+
+
+class ConsultationBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = ConsultationBed.objects.all().select_related("consultation", "bed").order_by("-created_date")
+    serializer_class = ConsultationBedSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ConsultationBedFilter
 
     def get_queryset(self):
         user = self.request.user
