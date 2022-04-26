@@ -123,10 +123,8 @@ class ConsultationBedSerializer(ModelSerializer):
     def create(self, validated_data):
         consultation = validated_data["consultation"]
         bed = validated_data["bed"]
-        existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
-        if existing_qs.exists():
-            existing_qs.end_date = validated_data["start_date"]
-            existing_qs.save()
+        existing_beds = ConsultationBed.objects.filter(consultation=consultation, bed=bed, end_date__isnull=True)
+        existing_beds.update(end_date=validated_data["start_date"])
         obj = super().create(validated_data)
         consultation.current_bed = obj  # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
         consultation.save(update_fields=["current_bed"])
