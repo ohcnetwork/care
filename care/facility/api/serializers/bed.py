@@ -84,7 +84,9 @@ class ConsultationBedSerializer(ModelSerializer):
 
     bed_object = BedSerializer(source="bed", read_only=True)
 
-    consultation = ExternalIdSerializerField(queryset=PatientConsultation.objects.all(), write_only=True, required=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+    )
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), write_only=True, required=True)
 
     class Meta:
@@ -107,18 +109,14 @@ class ConsultationBedSerializer(ModelSerializer):
             end_date = attrs.get("end_date", None)
             existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
             # Conflict checking logic
-            if existing_qs.objects.filter(start_date__gt=start_date, end_date__lt=start_date).exists():
+            if existing_qs.filter(start_date__gt=start_date, end_date__lt=start_date).exists():
                 raise ValidationError({"start_date": "Cannot create conflicting entry"})
             if end_date:
-                if existing_qs.objects.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
+                if existing_qs.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
                     raise ValidationError({"end_date": "Cannot create conflicting entry"})
 
             raise ValidationError(
-                {
-                    "consultation": "Field is Required",
-                    "bed": "Field is Required",
-                    "start_date": "Field is Required",
-                }
+                {"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required",}
             )
         return super().validate(attrs)
 
