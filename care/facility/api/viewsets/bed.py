@@ -61,6 +61,7 @@ class AssetBedViewSet(
     serializer_class = AssetBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
+    lookup_field = "external_id"
 
     def get_queryset(self):
         user = self.request.user
@@ -87,6 +88,7 @@ class ConsultationBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixi
     serializer_class = ConsultationBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
+    lookup_field = "external_id"
 
     def get_queryset(self):
         user = self.request.user
