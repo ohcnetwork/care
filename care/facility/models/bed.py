@@ -28,7 +28,7 @@ class Bed(BaseModel):
     BedTypeChoices = [(e.value, e.name) for e in BedType]
 
     name = models.CharField(max_length=1024)
-    description = models.TextField(default="")
+    description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(choices=BedTypeChoices, default=BedType.REGULAR.value)
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)  # Deprecated
     meta = JSONField(default=dict)
