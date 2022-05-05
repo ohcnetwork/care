@@ -68,10 +68,11 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
           docker tag $IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID --all-tags
+          
   build-github-staging:
     needs: test
     if: github.ref == 'refs/heads/master'
-    name: Build and push to GitHub
+    name: Build and push to GitHub Staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -189,6 +190,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
       - name: Deploy Care Staging Egov
         run: |
           mkdir -p $HOME/.kube/
@@ -222,6 +228,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
       - name: Deploy Care Staging GDC
         run: |
           mkdir -p $HOME/.kube/
@@ -254,6 +265,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
       - name: Deploy Care Production Futureace
         run: |
           mkdir -p $HOME/.kube/
