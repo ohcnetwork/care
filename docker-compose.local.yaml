@@ -19,7 +19,7 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
-    command: python manage.py runserver 0.0.0.0:9000
+    command: python manage.py runserver_plus 0.0.0.0:9000
     ports:
       - "9000:9000"
     depends_on:
@@ -27,5 +27,26 @@ services:
     volumes:
       - .:/app
 
+  redis:
+    container_name: care_redis
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  celery:
+    container_name: care_celery
+    build: 
+      context: .
+      dockerfile: docker/DevDockerfile
+    env_file:
+      - ./docker/.local.env
+    command: /bin/bash -c "./devCelery.sh"
+
+    depends_on:
+      - db
+      - backend
+      - redis
+      
 volumes:
   postgres-data:
