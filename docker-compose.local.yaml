@@ -19,7 +19,7 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
-    command: python manage.py runserver_plus 0.0.0.0:9000
+    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
     ports:
       - "9000:9000"
     depends_on:
@@ -41,7 +41,7 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
-    command: /bin/bash -c "./devCelery.sh"
+    entrypoint: ["bash", "devCelery.sh"]
 
     depends_on:
       - db
