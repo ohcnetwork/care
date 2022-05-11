@@ -7,6 +7,7 @@ Leaving scope to build rooms and wards to being even more organization.
 import enum
 
 from django.contrib.postgres.fields.jsonb import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from care.facility.models.asset import Asset, AssetLocation
@@ -37,6 +38,14 @@ class Bed(BaseModel):
 
     def __str__(self):
         return self.name
+
+    def validate(self) -> None:
+        if Bed.objects.filter(location=self.location, name=self.name).exists():
+            raise ValidationError({"name": "Bed with same name already exists in location."})
+
+    def save(self, *args, **kwargs) -> None:
+        self.validate()
+        return super().save(*args, **kwargs)
 
 
 class AssetBed(BaseModel):
