@@ -20,7 +20,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Care API",
         default_version="v1",
-        description="Api Documentation for Care",
+        description="Api Documentation for Care. ** Please use HTTPS for all API calls ( other than local dev) ",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="-"),
         license=openapi.License(name="MIT License"),
@@ -34,16 +34,8 @@ urlpatterns = [
     path("", home_view, name="home"),
     # path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
     # API Docs
-    url(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    url(
-        r"^swagger/$",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
+    url(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json",),
+    url(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui",),
     url(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -68,21 +60,9 @@ if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
     # these url in browser to see how these error pages look like.
     urlpatterns += [
-        path(
-            "400/",
-            default_views.bad_request,
-            kwargs={"exception": Exception("Bad Request!")},
-        ),
-        path(
-            "403/",
-            default_views.permission_denied,
-            kwargs={"exception": Exception("Permission Denied")},
-        ),
-        path(
-            "404/",
-            default_views.page_not_found,
-            kwargs={"exception": Exception("Page not Found")},
-        ),
+        path("400/", default_views.bad_request, kwargs={"exception": Exception("Bad Request!")},),
+        path("403/", default_views.permission_denied, kwargs={"exception": Exception("Permission Denied")},),
+        path("404/", default_views.page_not_found, kwargs={"exception": Exception("Page not Found")},),
         path("500/", default_views.server_error),
     ]
     if "debug_toolbar" in settings.INSTALLED_APPS:
