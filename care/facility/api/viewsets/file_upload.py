@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django_filters import rest_framework as filters
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
@@ -18,7 +18,7 @@ class FileUploadFilter(filters.FilterSet):
 
 
 class FileUploadViewSet(
-    CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet,
+    CreateModelMixin, RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet,
 ):
     queryset = FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
     permission_classes = [IsAuthenticated]
