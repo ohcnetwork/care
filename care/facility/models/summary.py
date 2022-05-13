@@ -9,6 +9,7 @@ from care.users.models import District, LocalBody
 SUMMARY_CHOICES = (
     ("FacilityCapacity", "FacilityCapacity"),
     ("PatientSummary", "PatientSummary"),
+    ("FacilityBedsSummary", "FacilityBedsSummary"),
     ("TestSummary", "TestSummary"),
     ("TriageSummary", "TriageSummary"),
 )

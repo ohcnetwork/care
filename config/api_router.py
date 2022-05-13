@@ -42,6 +42,7 @@ from care.facility.api.viewsets.prescription_supplier import (
 )
 from care.facility.api.viewsets.resources import ResourceRequestCommentViewSet, ResourceRequestViewSet
 from care.facility.api.viewsets.shifting import ShifitngRequestCommentViewSet, ShiftingViewSet
+from care.facility.summarisation.bed_summarization import FaclityBedSummaryViewSet
 from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
@@ -109,6 +110,7 @@ router.register("facility_summary", FacilityCapacitySummaryViewSet, basename="su
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
+router.register("facility_bed_summary", FaclityBedSummaryViewSet, basename="summary-beds")
 
 # District Summary
 

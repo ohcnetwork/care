@@ -45,7 +45,6 @@ class FacilityCapacitySummaryViewSet(
     queryset = (
         FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity")
         .order_by("-created_date")
-        .select_related("facility", "facility__state", "facility__district", "facility__local_body")
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
