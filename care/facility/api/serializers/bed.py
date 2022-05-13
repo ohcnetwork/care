@@ -84,7 +84,9 @@ class ConsultationBedSerializer(ModelSerializer):
 
     bed_object = BedSerializer(source="bed", read_only=True)
 
-    consultation = ExternalIdSerializerField(queryset=PatientConsultation.objects.all(), write_only=True, required=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+    )
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), write_only=True, required=True)
 
     class Meta:
@@ -107,28 +109,22 @@ class ConsultationBedSerializer(ModelSerializer):
             end_date = attrs.get("end_date", None)
             existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
             # Conflict checking logic
-            if existing_qs.objects.filter(start_date__gt=start_date, end_date__lt=start_date).exists():
+            if existing_qs.filter(start_date__gt=start_date, end_date__lt=start_date).exists():
                 raise ValidationError({"start_date": "Cannot create conflicting entry"})
             if end_date:
-                if existing_qs.objects.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
+                if existing_qs.filter(start_date__gt=end_date, end_date__lt=end_date).exists():
                     raise ValidationError({"end_date": "Cannot create conflicting entry"})
-
+        else:
             raise ValidationError(
-                {
-                    "consultation": "Field is Required",
-                    "bed": "Field is Required",
-                    "start_date": "Field is Required",
-                }
+                {"consultation": "Field is Required", "bed": "Field is Required", "start_date": "Field is Required",}
             )
         return super().validate(attrs)
 
     def create(self, validated_data):
         consultation = validated_data["consultation"]
         bed = validated_data["bed"]
-        existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
-        if existing_qs.exists():
-            existing_qs.end_date = validated_data["start_date"]
-            existing_qs.save()
+        existing_beds = ConsultationBed.objects.filter(consultation=consultation, bed=bed, end_date__isnull=True)
+        existing_beds.update(end_date=validated_data["start_date"])
         obj = super().create(validated_data)
         consultation.current_bed = obj  # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
         consultation.save(update_fields=["current_bed"])
