@@ -122,7 +122,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 )
                 last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
                 if not last_objects.exists():
-                    raise ValidationError({"daily_round": "No Daily Round objects available to clone"})
+                    raise ValidationError({"daily_round": "No Daily Round record available to copy"})
                 cloned_daily_round_obj = last_objects[0]
                 cloned_daily_round_obj.pk = None
                 cloned_daily_round_obj.created_by = self.context["request"].user
