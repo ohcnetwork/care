@@ -8,17 +8,29 @@ class CSProvider(enum.Enum):
     AZURE = "AZURE"
 
 
+class BucketType(enum.Enum):
+    PATIENT = "PATIENT"
+    FACILITY = "FACILITY"
+
+
 DEFAULT = CSProvider.AWS.value
 
 
-def get_client_config():
+def get_client_config(bucket_type=BucketType.PATIENT.value):
     config = {
-        "region_name": settings.CLOUD_REGION,
-        "aws_access_key_id": settings.FILE_UPLOAD_KEY,
-        "aws_secret_access_key": settings.FILE_UPLOAD_SECRET,
+        BucketType.PATIENT.value: {
+            "region_name": settings.CLOUD_REGION,
+            "aws_access_key_id": settings.FILE_UPLOAD_KEY,
+            "aws_secret_access_key": settings.FILE_UPLOAD_SECRET,
+        },
+        BucketType.FACILITY.value: {
+            "region_name": settings.CLOUD_REGION,
+            "aws_access_key_id": settings.FACILITY_S3_KEY,
+            "aws_secret_access_key": settings.FACILITY_S3_SECRET,
+        },
     }
 
     if settings.CLOUD_PROVIDER == CSProvider.GCP.value:
         config["endpoint_url"] = "https://storage.googleapis.com"
 
-    return config
+    return config[bucket_type]

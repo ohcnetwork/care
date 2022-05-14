@@ -428,6 +428,10 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
 
+FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+
 
 # Audit logs
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)

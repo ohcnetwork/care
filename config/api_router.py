@@ -7,7 +7,7 @@ from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, Ambulan
 from care.facility.api.viewsets.asset import AssetLocationViewSet, AssetTransactionViewSet, AssetViewSet
 from care.facility.api.viewsets.bed import AssetBedViewSet, BedViewSet, ConsultationBedViewSet
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
+from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet, FacilityCoverImageViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
@@ -137,6 +137,7 @@ router.register("investigation", PatientInvestigationViewSet)
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
+facility_nested_router.register(r"cover_image", FacilityCoverImageViewSet)
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
 facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)

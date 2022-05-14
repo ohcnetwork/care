@@ -8,6 +8,7 @@ from care.facility.api.serializers.file_upload import (
     FileUploadCreateSerializer,
     FileUploadListSerializer,
     FileUploadRetrieveSerializer,
+    FileUploadDestroySerializer,
     check_permissions,
 )
 from care.facility.models.file_upload import FileUpload
@@ -33,8 +34,10 @@ class FileUploadViewSet(
             return FileUploadListSerializer
         elif self.action == "retrieve":
             return FileUploadRetrieveSerializer
+        elif self.action == "destroy":
+            return FileUploadDestroySerializer
         else:
-            raise Exception()
+            raise ValidationError("Bad Request")
 
     def get_queryset(self):
         if "file_type" not in self.request.GET or "associating_id" not in self.request.GET:

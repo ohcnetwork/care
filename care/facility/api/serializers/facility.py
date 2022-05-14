@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
 
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
-from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody, FacilityCoverImage
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
 
@@ -104,3 +105,38 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
+
+
+class FacilityCoverImageCreateSerializer(serializers.ModelSerializer):
+    signed_url = serializers.CharField(read_only=True)
+    internal_name = serializers.CharField(read_only=True)
+    original_name = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = FacilityCoverImage
+        fields = ("signed_url", "internal_name", "original_name")
+
+    def create(self, validated_data):
+        validated_data["uploaded_by"] = self.context["request"].user
+
+        validated_data["name"] = validated_data["original_name"]
+        del validated_data["original_name"]
+        return super().create(validated_data)
+
+
+class FacilityCoverImageRetrieveSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    uploaded_by = UserBaseMinimumSerializer(read_only=True)
+    read_signed_url = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = FacilityCoverImage
+        fields = ("id", "uploaded_by", "read_signed_url", "name")
+
+
+class FacilityCoverImageDestroySerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = FacilityCoverImage
+        fields = ("id",)
