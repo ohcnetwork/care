@@ -8,6 +8,7 @@ from care.facility.api.serializers.file_upload import (
     FileUploadCreateSerializer,
     FileUploadListSerializer,
     FileUploadRetrieveSerializer,
+    FileUploadDestroySerializer,
     check_permissions,
 )
 from care.facility.models.file_upload import FileUpload
@@ -33,6 +34,8 @@ class FileUploadViewSet(
             return FileUploadListSerializer
         elif self.action == "retrieve":
             return FileUploadRetrieveSerializer
+        elif self.action == "destroy":
+            return FileUploadDestroySerializer
         else:
             raise Exception()
 

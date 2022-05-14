@@ -117,3 +117,9 @@ class FileUploadRetrieveSerializer(serializers.ModelSerializer):
         model = FileUpload
         fields = ("id", "name", "uploaded_by", "created_date", "read_signed_url", "file_category")
         read_only_fields = ("associating_id", "name", "created_date")
+
+
+class FileUploadDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileUpload
+        fields = ()
