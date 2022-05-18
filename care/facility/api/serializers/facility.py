@@ -1,4 +1,8 @@
+import boto3
+import time
+
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
 
@@ -6,6 +10,7 @@ from care.facility.api.serializers.facility_capacity import FacilityCapacitySeri
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
+from care.utils.csp import config as cs_provider
 
 User = get_user_model()
 
@@ -104,3 +109,29 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
+
+
+class FacilityImageUploadSerializer(serializers.ModelSerializer):
+    cover_image = serializers.ImageField(required=True, write_only=True)
+
+    class Meta:
+        model = Facility
+        fields = ("cover_image",)
+
+    def save(self, **kwargs):
+        facility = self.instance
+        image = self.validated_data["cover_image"]
+        image_name = f"{facility.external_id}_{time.time()}.jpg"
+        s3 = boto3.client(
+            "s3",
+            **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
+        )
+        upload_response = s3.put_object(
+            Bucket=settings.FACILITY_S3_BUCKET,
+            Key=f"cover_images/{image_name}",
+            Body=image.file,
+            ContentType="image/jpeg",
+        )
+        facility.cover_image_url = f"{upload_response['ResponseMetadata']['HTTPHeaders']['location']}cover_images/{image_name}"
+        facility.save()
+        return facility
