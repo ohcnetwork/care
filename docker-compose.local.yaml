@@ -47,6 +47,19 @@ services:
       - db
       - backend
       - redis
+
+  localstack:
+    image: localstack/localstack:latest
+    environment: 
+      - AWS_DEFAULT_REGION=ap-south-1
+      - EDGE_PORT=4566
+      - SERVICES=s3
+    ports: 
+      - '4566-4583:4566-4583'
+    volumes: 
+      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./docker/awslocal:/docker-entrypoint-initaws.d"
       
 volumes:
   postgres-data:
