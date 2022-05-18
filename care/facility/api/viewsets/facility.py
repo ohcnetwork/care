@@ -10,14 +10,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer, \
-    FacilityCoverImageCreateSerializer, FacilityCoverImageRetrieveSerializer, FacilityCoverImageDestroySerializer
+    FacilityImageUploadSerializer
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration,
-    FacilityCoverImage
+    PatientRegistration
 )
 from care.users.api.serializers.user import UserAssignedSerializer
 from care.users.models import User
@@ -129,58 +128,24 @@ class FacilityViewSet(
         data = UserAssignedSerializer(users, many=True)
         return Response(data.data)
 
-
-class FacilityCoverImageViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    """Viewset for facility cover image CRUD operations."""
-    queryset = FacilityCoverImage.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return FacilityCoverImageCreateSerializer
-        elif self.action == "list":
-            return FacilityCoverImageRetrieveSerializer
-        elif self.action == "destroy":
-            return FacilityCoverImageDestroySerializer
-        else:
-            raise Exception()
-
-    def get_queryset(self):
-        return Facility.objects.get(external_id=self.kwargs["facility_external_id"]) \
-            .cover_image
-
-    def list(self, request, *args, **kwargs):
-        facility = Facility.objects.filter(external_id=self.kwargs["facility_external_id"])
-        if not facility.exists():
+    @action(methods=["POST", "DELETE"], detail=True)
+    def cover_image(self, request, external_id):
+        facility = Facility.objects.filter(external_id=external_id).first()
+        if not facility:
             return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            data = self.get_serializer(self.get_queryset()).data
-            return Response(data.data)
-        except ObjectDoesNotExist:
-            return Response({"facility": "has no cover image"}, status=status.HTTP_404_NOT_FOUND)
 
-    def destroy(self, request, *args, **kwargs):
-        facility = Facility.objects.filter(external_id=self.kwargs["facility_external_id"])
-        if not facility.exists():
-            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        facility = facility.first()
-        try:
-            facility.cover_image.delete()
-        except ObjectDoesNotExist:
-            pass
-        return Response({"success": "true"})
+        if request.method == "POST" or request.method == "PUT":
+            serialized_data = FacilityImageUploadSerializer(facility, data=request.data)
+            if serialized_data.is_valid():
+                serialized_data.save()
+                return Response(serialized_data.data)
+            print(serialized_data.errors, "Error: Cover Image")
+            return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def perform_create(self, serializer):
-        facility = Facility.objects.filter(external_id=self.kwargs["facility_external_id"])
-        if not facility.exists():
-            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        facility = facility.first()
-        serializer.save(facility=facility)
+        if request.method == "DELETE":
+            facility.cover_image_url = None
+            facility.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AllFacilityViewSet(

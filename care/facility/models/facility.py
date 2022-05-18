@@ -178,46 +178,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
-class FacilityCoverImage(models.Model):
-    facility = models.OneToOneField(Facility, on_delete=models.CASCADE, related_name="cover_image")
-    name = models.CharField(max_length=2000)
-    internal_name = models.CharField(max_length=2000)
-    upload_completed = models.BooleanField(default=False)
-    uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if "force_insert" in kwargs or (not self.internal_name):
-            internal_name = str(uuid4()) + str(int(time.time()))
-            if self.internal_name:
-                parts = self.internal_name.split(".")
-                if len(parts) > 1:
-                    internal_name = internal_name + "." + parts[-1]
-            self.internal_name = internal_name
-            return super().save(*args, **kwargs)
-
-    def signed_url(self):
-        s3Client = boto3.client("s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value))
-        return s3Client.generate_presigned_url(
-            ClientMethod="put_object",
-            Params={
-                "Bucket": settings.FACILITY_S3_BUCKET, 
-                "Key": f"cover_images/{self.internal_name}",
-            },
-            ExpiresIn=60 * 60,
-        )
-
-    def read_signed_url(self):
-        s3Client = boto3.client("s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value))
-        return s3Client.generate_presigned_url(
-            ClientMethod="get_object",
-            Params={
-                "Bucket": settings.FACILITY_S3_BUCKET, 
-                "Key": f"cover_images/{self.internal_name}",
-            },
-            ExpiresIn=60 * 60,
-        )
-
-
 class FacilityLocalGovtBody(models.Model):
     """
     DEPRECATED_FROM: 2020-03-29

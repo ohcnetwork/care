@@ -427,10 +427,12 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 # FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_BUCKET_ENDPOINT = env("FILE_UPLOAD_BUCKET_ENDPOINT", default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com")
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
 FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_BUCKET_ENDPOINT = env("FACILITY_S3_BUCKET_ENDPOINT", default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com")
 
 
 # Audit logs
