@@ -54,6 +54,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "facility_type",
+            "cover_image_url",
         )
 
 
@@ -96,6 +97,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "expected_type_b_cylinders",
             "expected_type_c_cylinders",
             "expected_type_d_cylinders",
+            "cover_image_url",
         ]
         read_only_fields = ("modified_date", "created_date")
 

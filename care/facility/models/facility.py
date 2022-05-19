@@ -129,6 +129,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         User, through="FacilityUser", related_name="facilities", through_fields=("facility", "user"),
     )
 
+    cover_image_url = models.URLField(blank=True, null=True, default=None)
+
     class Meta:
         verbose_name_plural = "Facilities"
 
