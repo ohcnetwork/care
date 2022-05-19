@@ -125,9 +125,10 @@ class ConsultationBedSerializer(ModelSerializer):
     def create(self, validated_data):
         consultation = validated_data["consultation"]
         bed = validated_data["bed"]
+        current_bed = consultation.current_bed.bed if consultation.current_bed else None
         existing_beds = ConsultationBed.objects.filter(
             consultation=consultation,
-            bed=consultation.current_bed.bed,
+            bed=current_bed,
             end_date__isnull=True,
         )
         existing_beds.update(end_date=validated_data["start_date"])
