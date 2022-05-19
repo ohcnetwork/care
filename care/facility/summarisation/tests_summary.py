@@ -4,23 +4,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import Facility, FacilityRelatedSummary, PatientSample
-from care.facility.summarisation.facility_capacity import FacilitySummaryFilter, FacilitySummarySerializer
+from care.facility.summarisation.summary import SummaryViewSet
 
 
-class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
-    lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.filter(s_type="TestSummary").order_by("-created_date")
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = FacilitySummarySerializer
-
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilitySummaryFilter
+class TestsSummaryViewSet(SummaryViewSet):
+    def get_queryset(self):
+        return super().get_queryset().filter(s_type="TestSummary")
 
     # def get_queryset(self):
     #     user = self.request.user
@@ -33,7 +24,7 @@ class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
     #         return queryset.filter(facility__state=user.state)
     #     return queryset.filter(facility__users__id__exact=user.id)
 
-    @method_decorator(cache_page(60 *60* 10))
+    @method_decorator(cache_page(60 * 60 * 10))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

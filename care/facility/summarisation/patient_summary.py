@@ -1,42 +1,15 @@
-from care.facility.models import patient
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.db.models import Q, Subquery
-from django.utils.decorators import method_decorator
+from django.db.models import Q
 from django.utils.timezone import now
-from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import (
-    PatientRegistration,
-    Facility,
-    FacilityRelatedSummary,
-    PatientConsultation,
-    ADMIT_CHOICES,
-)
-from care.facility.summarisation.facility_capacity import (
-    FacilitySummaryFilter,
-    FacilitySummarySerializer,
-)
+from care.facility.models import ADMIT_CHOICES, Facility, FacilityRelatedSummary, PatientRegistration
+from care.facility.summarisation.summary import SummaryViewSet
 
 
-class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
-    lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.filter(s_type="PatientSummary").order_by(
-        "-created_date"
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = FacilitySummarySerializer
-
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilitySummaryFilter
-
-    @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+class PatientSummaryViewSet(SummaryViewSet):
+    def get_queryset(self):
+        return super().get_queryset().filter(s_type="PatientSummary")
 
     # def get_queryset(self):
     #     user = self.request.user

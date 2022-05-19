@@ -1,32 +1,15 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.db.models import Sum
-from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
-from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import Facility, FacilityRelatedSummary
 from care.facility.models.bed import Bed, ConsultationBed
-from care.facility.summarisation.facility_capacity import FacilitySummaryFilter, FacilitySummarySerializer
+from care.facility.summarisation.summary import SummaryViewSet
 
 
-class FaclityBedSummaryViewSet(ListModelMixin, GenericViewSet):
-    lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.filter(s_type="FacilityBedsSummary").order_by(
-        "-created_date"
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = FacilitySummarySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilitySummaryFilter
-
-    @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+class FaclityBedSummaryViewSet(SummaryViewSet):
+    def get_queryset(self):
+        return super().get_queryset().filter(s_type="FacilityBedsSummary")
 
 
 def FacilityBedSummary():

@@ -1,60 +1,19 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
 from django.db.models import Sum
-from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
-from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework import serializers
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilitySerializer
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import Facility, FacilityCapacity, FacilityRelatedSummary, PatientRegistration
 from care.facility.models.inventory import FacilityInventoryBurnRate, FacilityInventoryLog, FacilityInventorySummary
 from care.facility.models.patient import PatientRegistration
+from care.facility.summarisation.summary import SummaryViewSet
 
 
-class FacilitySummarySerializer(serializers.ModelSerializer):
-
-    facility = FacilitySerializer()
-
-    class Meta:
-        model = FacilityRelatedSummary
-        exclude = (
-            "id",
-            "s_type",
-        )
-
-
-class FacilitySummaryFilter(filters.FilterSet):
-    start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
-    end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
-    facility = filters.UUIDFilter(field_name="facility__external_id")
-    district = filters.NumberFilter(field_name="facility__district__id")
-    local_body = filters.NumberFilter(field_name="facility__local_body__id")
-    state = filters.NumberFilter(field_name="facility__state__id")
-
-
-class FacilityCapacitySummaryViewSet(
-    ListModelMixin, GenericViewSet,
-):
-    lookup_field = "external_id"
-    queryset = (
-        FacilityRelatedSummary.objects.filter(s_type="FacilityCapacity")
-        .order_by("-created_date")
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = FacilitySummarySerializer
-
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilitySummaryFilter
-
-    @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+class FacilityCapacitySummaryViewSet(SummaryViewSet):
+    def get_queryset(self):
+        return super().get_queryset().filter(s_type="FacilityCapacity")
 
     # def get_queryset(self):
     #     user = self.request.user
