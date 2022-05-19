@@ -23,7 +23,7 @@ build:
 up:
 	docker network inspect care >/dev/null 2>&1 || \
 		docker network create care 
-	docker-compose -f $(docker_config_file) up -d
+	docker-compose -f $(docker_config_file) up
 
 down:
 	docker-compose -f $(docker_config_file) down
