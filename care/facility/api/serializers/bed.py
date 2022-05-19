@@ -108,12 +108,13 @@ class ConsultationBedSerializer(ModelSerializer):
             existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
             latest_qs = ConsultationBed.objects.filter(consultation=consultation).latest("id")
             # Validations based of the latest entry
-            if latest_qs.bed == bed:
-                    raise ValidationError({"bed": "Bed is already in use"})
-            if start_date < latest_qs.start_date:
-                raise ValidationError({"start_date": "Start date cannot be before the latest start date"})
-            if end_date and end_date < latest_qs.start_date:
-                raise ValidationError({"end_date": "End date cannot be before the latest start date"})
+            if latest_qs.exists():
+                if latest_qs.bed == bed:
+                        raise ValidationError({"bed": "Bed is already in use"})
+                if start_date < latest_qs.start_date:
+                    raise ValidationError({"start_date": "Start date cannot be before the latest start date"})
+                if end_date and end_date < latest_qs.start_date:
+                    raise ValidationError({"end_date": "End date cannot be before the latest start date"})
             existing_qs = ConsultationBed.objects.filter(consultation=consultation)
             # Conflict checking logic
             if existing_qs.filter(start_date__gt=start_date).exists():
