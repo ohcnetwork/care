@@ -617,6 +617,12 @@ class Disease(models.Model):
     class Meta:
         indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
+    def __str__(self):
+        return self.patient.name + " - " + self.get_disease_display()
+
+    def get_disease_display(self):
+        return DISEASE_CHOICES[self.disease - 1][1]
+
 
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
