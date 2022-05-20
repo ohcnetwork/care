@@ -89,7 +89,7 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
             multiplier *= -1
 
         summary_obj = None
-        current_min_quantity = item.min_quantity
+        current_min_quantity = 0
         current_quantity = multiplier * validated_data["quantity"]
         validated_data["quantity_in_default_unit"] = abs(current_quantity)
         try:
