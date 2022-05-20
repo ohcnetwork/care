@@ -54,7 +54,6 @@ class FacilityInventoryUnitConverter(models.Model):
 class FacilityInventoryItem(models.Model):
     """
     This Model stores all the different items that can be added in a facility.
-    the min_quantity describes the items that are at the verse of finishing up
     """
 
     name = models.CharField(max_length=1000, blank=False, null=False)
@@ -64,7 +63,6 @@ class FacilityInventoryItem(models.Model):
     allowed_units = models.ManyToManyField(FacilityInventoryUnit, related_name="allowed_units")
     tags = models.ManyToManyField(FacilityInventoryItemTag)
     description = models.TextField(blank=True)
-    min_quantity = models.FloatField()
 
     def __str__(self):
         return self.name

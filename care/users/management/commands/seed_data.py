@@ -18,21 +18,21 @@ class Command(BaseCommand):
         cubic_meter, _ = FacilityInventoryUnit.objects.get_or_create(name="Cubic Meter")
 
         liquid_oxygen, _ = FacilityInventoryItem.objects.get_or_create(
-            name="Liquid Oxygen", default_unit=cubic_meter, min_quantity=100
+            name="Liquid Oxygen", default_unit=cubic_meter
         )
         liquid_oxygen.allowed_units.add(cubic_meter)
 
         jumbo_d, _ = FacilityInventoryItem.objects.get_or_create(
-            name="Jumbo D Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+            name="Jumbo D Type Oxygen Cylinder", default_unit=cylinders
         )
         jumbo_d.allowed_units.add(cylinders)
 
         type_b, _ = FacilityInventoryItem.objects.get_or_create(
-            name="B Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+            name="B Type Oxygen Cylinder", default_unit=cylinders
         )
         type_b.allowed_units.add(cylinders)
 
         type_c, _ = FacilityInventoryItem.objects.get_or_create(
-            name="C Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+            name="C Type Oxygen Cylinder", default_unit=cylinders
         )
         type_c.allowed_units.add(cylinders)
