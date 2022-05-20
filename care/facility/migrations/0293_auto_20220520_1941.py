@@ -23,6 +23,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_json_field_names)
+        migrations.RunPython(update_json_field_names, migrations.RunPython.noop)
     ]
 
