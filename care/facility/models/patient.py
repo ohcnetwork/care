@@ -285,7 +285,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # Vaccination Fields
     is_vaccinated = models.BooleanField(default=False, verbose_name="Is the Patient Vaccinated Against COVID-19")
     number_of_doses = models.PositiveIntegerField(
-        default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(2)]
+        default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(3)]
     )
     vaccine_name = models.CharField(choices=vaccineChoices, default=None, null=True, blank=False, max_length=15)
 
