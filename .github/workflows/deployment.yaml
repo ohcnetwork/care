@@ -1,4 +1,5 @@
 name: Deploy Care
+
 on:
   workflow_dispatch:
   pull_request:
@@ -9,6 +10,7 @@ on:
     branches:
       - master
       - production
+
 env:
   IMAGE_NAME: care
   AWS_DEFAULT_REGION: ap-south-1
@@ -22,173 +24,196 @@ jobs:
     runs-on: ubuntu-latest
     name: Test
     steps:
-      - uses: actions/checkout@v2
+
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Test build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: Run tests
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
-  build-dockerhub-staging:
+          echo "running tests..."
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  build-staging:
     needs: test
-    name: Build & Push to Dockerhub
+    name: Build & Push Staging to container registries
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
-      - name: Set current date as ENV variable
-        run: echo "NOW=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
 
-      - name: Github Short SHA
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          tags: |
+            type=raw,value=latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
-
-      - name: Push image
-        run: |
-          IMAGE_ID=${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
-          docker tag $IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID --all-tags
-  build-github-staging:
-    needs: test
-    if: github.ref == 'refs/heads/master'
-    name: Build and push to GitHub
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set current date as ENV variable
-        run: echo "NOW=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-      - name: Github Short SHA
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
+      - name: Move cache
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
-          docker tag $IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID --all-tags
-  build-dockerhub-production:
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  build-production:
     needs: test
-    name: Build & Push to Dockerhub Production
+    name: Build & Push Production to container registries
     if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
-      - name: Set current date as ENV variable
-        run: echo "NOW=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
 
-      - name: Github Short SHA
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          tags: |
+            type=raw,value=production-latest,enable=${{ github.ref == 'refs/heads/production' }}
+            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
-
-      - name: Push image
-        run: |
-          IMAGE_ID=${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "production" ] && VERSION=production-latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
-          docker tag $IMAGE_NAME $IMAGE_ID:production-latest
-          docker push $IMAGE_ID --all-tags
-  build-github-production:
-    needs: test
-    if: github.ref == 'refs/heads/production'
-    name: Build and push to GitHub
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set current date as ENV variable
-        run: echo "NOW=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-      - name: Github Short SHA
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
+      - name: Move cache
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "production" ] && VERSION=production-latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION-$GITHUB_RUN_NUMBER-$NOW-$SHORT_SHA
-          docker tag $IMAGE_NAME $IMAGE_ID:production-latest
-          docker push $IMAGE_ID --all-tags
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
   deploy-staging-egov:
-    needs: build-github-staging
+    needs: build-staging
     name: Deploy to EKS Egov
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
       url: https://careapi.coronasafe.in
     steps:
+
       - name: Checkout Kube Config
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: coronasafe/infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
+          
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+
       - name: Deploy Care Staging Egov
         run: |
           mkdir -p $HOME/.kube/
@@ -201,27 +226,37 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+
   deploy-staging-gdc:
-    needs: build-github-staging
+    needs: build-staging
     name: Deploy to EKS GDC
     runs-on: ubuntu-latest
     environment:
       name: Staging-gdc
       url: https://gdcapi.coronasafe.network
     steps:
+
       - name: Checkout Kube Config
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: coronasafe/gdc_infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
+          
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+
       - name: Deploy Care Staging GDC
         run: |
           mkdir -p $HOME/.kube/
@@ -233,27 +268,38 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
+
+
   deploy-production-futureace:
-    needs: build-github-production
+    needs: build-production
     name: Deploy to EKS Futureace
     runs-on: ubuntu-latest
     environment:
       name: Production-futureace
       url: https://careapi.plexusindia.in
     steps:
+
       - name: Checkout Kube Config
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: coronasafe/future-hospitals-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
+          
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+
       - name: Deploy Care Production Futureace
         run: |
           mkdir -p $HOME/.kube/
