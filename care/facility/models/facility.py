@@ -130,6 +130,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
 
     cover_image_url = models.URLField(blank=True, null=True, default=None)
+    middleware_address = models.CharField(unique=True, null=True, default=None, max_length=200)
 
     class Meta:
         verbose_name_plural = "Facilities"
