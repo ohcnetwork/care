@@ -163,10 +163,7 @@ class UserViewSet(
         if User.objects.filter(username=username).exists():
             raise ValidationError({"username": "User with Given Username Already Exists"})
         user = serializer.create(serializer.validated_data)
-
-        response_data = UserCreateSerializer(user).data
-        # response_data["password"] = password
-        return Response(data=response_data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
 
     def has_facility_permission(self, user, facility):
         return (
