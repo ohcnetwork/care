@@ -183,6 +183,7 @@ if USE_S3:
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = str(ROOT_DIR("staticfiles"))
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_MANIFEST_STRICT = False
 
 STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
 
