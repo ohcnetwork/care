@@ -65,16 +65,15 @@ class AssetSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context["request"].user
         with transaction.atomic():
-            if "current_location" in validated_data:
-                if instance.current_location != validated_data["current_location"]:
-                    if instance.current_location.facility.id != validated_data["current_location"].facility.id:
-                        raise ValidationError({"location": "Interfacility transfer is not allowed here"})
-                    AssetTransaction(
-                        from_location=instance.current_location,
-                        to_location=validated_data["current_location"],
-                        asset=instance,
-                        performed_by=user,
-                    ).save()
+            if "current_location" in validated_data and instance.current_location != validated_data["current_location"]:
+                if instance.current_location.facility.id != validated_data["current_location"].facility.id:
+                    raise ValidationError({"location": "Interfacility transfer is not allowed here"})
+                AssetTransaction(
+                    from_location=instance.current_location,
+                    to_location=validated_data["current_location"],
+                    asset=instance,
+                    performed_by=user,
+                ).save()
             updated_instance = super().update(instance, validated_data)
         return updated_instance
 
