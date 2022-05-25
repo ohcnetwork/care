@@ -73,7 +73,6 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.gis",
-    "collectfast",  # Overrides collectstatic command in django
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
@@ -185,12 +184,10 @@ if USE_S3:
     AWS_LOCATION = "static"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
     STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 else:
     STATIC_URL = "/staticfiles/"
     STATIC_ROOT = str(ROOT_DIR("staticfiles"))
     STATICFILES_STORAGE = "django.core.files.storage.FileSystemStorage"
-    COLLECTFAST_STRATEGY = "collectfast.strategies.filesystem.FileSystemStrategy"
 
 STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
 
