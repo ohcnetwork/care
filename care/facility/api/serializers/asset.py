@@ -3,6 +3,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, UUIDField
+from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
@@ -38,6 +39,14 @@ class AssetSerializer(ModelSerializer):
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
         read_only_fields = TIMESTAMP_FIELDS
+
+    def validate_qr_code_id(self, value):
+        value = value or None # treat empty string as null
+        UniqueValidator(
+            queryset=Asset.objects.filter(qr_code_id__isnull=False),
+            message="QR code already assigned"
+        )(value, self.fields.get("qr_code_id"))
+        return value
 
     def validate(self, attrs):
 
