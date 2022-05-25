@@ -1,7 +1,7 @@
 from django.db import models
 
 from care.facility.models import (
-    FacilityBaseModel, 
+    FacilityBaseModel,
     PatientRegistration,
     reverse_choices,
 )
@@ -91,8 +91,8 @@ class PatientSample(FacilityBaseModel):
     date_of_result = models.DateTimeField(null=True, blank=True)
 
     testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
-    
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_by")
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="samples_created")
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by")
 
 
