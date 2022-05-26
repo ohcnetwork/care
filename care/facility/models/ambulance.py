@@ -89,6 +89,9 @@ class Ambulance(FacilityBaseModel):
             )
         )
 
+    def __str__(self):
+        return f"Ambulance - {self.owner_name} ({self.owner_phone_number})"
+
     # class Meta:
     #     constraints = [
     #         models.CheckConstraint(
@@ -107,4 +110,4 @@ class AmbulanceDriver(FacilityBaseModel):
     is_smart_phone = models.BooleanField()
 
     def __str__(self):
-        return f"Driver: {self.name}({self.phone_number})"
+        return f"Driver: {self.name} ({self.phone_number})"
