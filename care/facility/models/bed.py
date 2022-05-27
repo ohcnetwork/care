@@ -31,7 +31,7 @@ class Bed(BaseModel):
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(choices=BedTypeChoices, default=BedType.REGULAR.value)
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)  # Deprecated
-    meta = JSONField(null=True, blank=True)
+    meta = JSONField(default=dict, blank=True)
     assets = models.ManyToManyField(Asset, through="AssetBed")
     location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
 
@@ -39,7 +39,7 @@ class Bed(BaseModel):
 class AssetBed(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
-    meta = JSONField(null=True, blank=True)
+    meta = JSONField(default=dict, blank=True)
 
 
 class ConsultationBed(BaseModel):
@@ -47,4 +47,4 @@ class ConsultationBed(BaseModel):
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
-    meta = JSONField(null=True, blank=True)
+    meta = JSONField(default=dict, blank=True)
