@@ -73,6 +73,9 @@ class Asset(BaseModel):
             ),
         ]
 
+    def __str__(self):
+        return self.name
+
 
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)

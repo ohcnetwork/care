@@ -130,6 +130,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
 
     cover_image_url = models.URLField(blank=True, null=True, default=None)
+    middleware_address = models.CharField(unique=True, null=True, default=None, max_length=200)
 
     class Meta:
         verbose_name_plural = "Facilities"
@@ -240,6 +241,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+        verbose_name_plural = "Facility Capacities"
 
     CSV_RELATED_MAPPING = {
         "facilitycapacity__room_type": "Room Type",
@@ -249,6 +251,9 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
+
+    def __str__(self):
+        return str(self.facility) + " " + REVERSE_ROOM_TYPES[self.room_type] + " " + str(self.total_capacity)
 
 
 class FacilityStaff(FacilityBaseModel):
@@ -369,6 +374,9 @@ class FacilityUser(models.Model):
             "facility",
             "user",
         )
+
+    def __str__(self):
+        return str(self.user) + " under " + str(self.facility)
 
     CSV_MAPPING = {
         "facility__name": "Facility Name",
