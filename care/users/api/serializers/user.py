@@ -63,6 +63,7 @@ class UserCreateSerializer(SignUpSerializer):
             "deleted",
             "groups",
             "user_permissions",
+            "created_by"
         )
 
     def validate_facilities(self, facility_ids):
@@ -161,8 +162,11 @@ class UserCreateSerializer(SignUpSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
-            user = User.objects.create_user(**{**validated_data, "verified": True})
-            user.set_password(validated_data["password"])
+            user = User.objects.create_user(
+                created_by=self.context["created_by"],
+                verified=True,
+                **validated_data
+            )
             facility_query = self.facility_query(self.context["created_by"])
             if facilities:
                 facility_objs = facility_query.filter(external_id__in=facilities)
@@ -180,6 +184,7 @@ class UserCreateSerializer(SignUpSerializer):
 
 class UserSerializer(SignUpSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    created_by = serializers.CharField(source="created_by_user", read_only=True)
     is_superuser = serializers.BooleanField(read_only=True)
 
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
@@ -196,6 +201,7 @@ class UserSerializer(SignUpSerializer):
             "last_name",
             "email",
             "user_type",
+            "created_by",
             "local_body",
             "district",
             "state",
@@ -266,6 +272,7 @@ class UserListSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    created_by = serializers.CharField(source="created_by_user", read_only=True)
 
     class Meta:
         model = User
@@ -278,5 +285,6 @@ class UserListSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "user_type",
+            "created_by",
             "last_login",
         )
