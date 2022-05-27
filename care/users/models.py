@@ -187,6 +187,7 @@ class User(AbstractUser):
     REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
+    created_by = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="users_created")
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
