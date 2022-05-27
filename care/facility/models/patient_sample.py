@@ -121,6 +121,9 @@ class PatientSample(FacilityBaseModel):
             self.testing_facility = self.patient.facility
         super().save(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"{self.patient.name} - {self.sample_type}"
+
     @property
     def flow(self):
         try:

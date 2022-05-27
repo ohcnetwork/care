@@ -35,11 +35,17 @@ class Bed(BaseModel):
     assets = models.ManyToManyField(Asset, through="AssetBed")
     location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
 
+    def __str__(self):
+        return self.name
+
 
 class AssetBed(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     meta = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.asset.name} - {self.bed.name}"
 
 
 class ConsultationBed(BaseModel):

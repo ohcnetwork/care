@@ -49,3 +49,6 @@ INSTALLED_APPS += [  # noqa F405
 DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care-test")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+
+#https://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
+WHITENOISE_AUTOREFRESH = True
