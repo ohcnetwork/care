@@ -8,10 +8,15 @@ class CSProvider(enum.Enum):
     AZURE = "AZURE"
 
 
+class BucketType(enum.Enum):
+    PATIENT = "PATIENT"
+    FACILITY = "FACILITY"
+
+
 DEFAULT = CSProvider.AWS.value
 
 
-def get_client_config():
+def get_client_config(bucket_type=BucketType.PATIENT.value):
     config = {
         BucketType.PATIENT.value: {
             "region_name": settings.CLOUD_REGION,
@@ -28,6 +33,7 @@ def get_client_config():
     }
 
     if settings.CLOUD_PROVIDER == CSProvider.GCP.value:
-        config["endpoint_url"] = "https://storage.googleapis.com"
+        for key in config.keys():
+            config[key]["endpoint_url"] = "https://storage.googleapis.com"
 
-    return config
+    return config[bucket_type]

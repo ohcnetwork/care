@@ -121,17 +121,15 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
-        image_name = f"{facility.external_id}_{time.time()}.jpg"
         s3 = boto3.client(
             "s3",
             **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
         )
         upload_response = s3.put_object(
             Bucket=settings.FACILITY_S3_BUCKET,
-            Key=f"cover_images/{image_name}",
+            Key=f"cover_images/{image.name}",
             Body=image.file,
-            ContentType="image/jpeg",
         )
-        facility.cover_image_url = f"{upload_response['ResponseMetadata']['HTTPHeaders']['location']}cover_images/{image_name}"
+        facility.cover_image_url = f"{upload_response['ResponseMetadata']['HTTPHeaders']['location']}cover_images/{image.name}"
         facility.save()
         return facility

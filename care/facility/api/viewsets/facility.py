@@ -127,13 +127,13 @@ class FacilityViewSet(
         data = UserAssignedSerializer(users, many=True)
         return Response(data.data)
 
-    @action(methods=["POST", "DELETE"], detail=True)
+    @action(methods=["POST", "DELETE"], detail=True, permission_classes=[IsAuthenticated, DRYPermissions])
     def cover_image(self, request, external_id):
-        facility = Facility.objects.filter(external_id=external_id).first()
+        facility = self.get_object()
         if not facility:
             return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        if request.method == "POST" or request.method == "PUT":
+        if request.method == "POST":
             serialized_data = FacilityImageUploadSerializer(facility, data=request.data)
             if serialized_data.is_valid():
                 serialized_data.save()
