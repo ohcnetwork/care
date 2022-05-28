@@ -104,7 +104,7 @@ RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
 AUDIT_LOG_ENABLED = True
 
 DISABLE_RATELIMIT = True
-
-# Uncomment when setting up on mac
-# GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
-# GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
+GDAL_MANUAL_PATH = env.bool("GDAL_MANUAL_PATH", default=False)
+if GDAL_MANUAL_PATH:
+    GDAL_LIBRARY_PATH = env("GDAL_LIBRARY_PATH", default=None)
+    GEOS_LIBRARY_PATH = env("GEOS_LIBRARY_PATH", default=None)
