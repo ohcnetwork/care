@@ -72,7 +72,9 @@ class UserViewSet(
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
         .select_related("local_body", "district", "state")
-        .order_by(F("last_login").desc(nulls_last=True))
+        .order_by(F("last_login").desc(nulls_last=True)).annotate(
+            created_by_user=F("created_by__username"),
+        )
     )
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
