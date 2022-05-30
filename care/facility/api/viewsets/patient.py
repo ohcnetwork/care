@@ -79,6 +79,7 @@ class PatientFilterSet(filters.FilterSet):
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
     last_vaccinated_date = filters.DateFromToRangeFilter(field_name="last_vaccinated_date")
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    is_active = filters.BooleanFilter(field_name="is_active")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
@@ -107,6 +108,11 @@ class PatientFilterSet(filters.FilterSet):
     number_of_doses = filters.NumberFilter(field_name="number_of_doses")
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
+    # Other Filters
+    has_bed = filters.BooleanFilter(field_name="has_bed", method='filter_bed_not_null')
+
+    def filter_bed_not_null(self, queryset, name, value):
+        return queryset.filter(last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -212,8 +218,8 @@ class PatientViewSet(
         #     disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
         #     return queryset.filter(disease_status=disease_status)
 
-        if self.action == "list":
-            queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
+        # if self.action == "list":
+        #     queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
         return queryset
 
     def get_serializer_class(self):
