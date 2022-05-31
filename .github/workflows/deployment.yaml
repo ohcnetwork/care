@@ -227,8 +227,8 @@ jobs:
           kubectl apply -f care-celery-worker.yaml
 
 
-  deploy-staging-gdc:
-    needs: build-staging
+  deploy-production-gdc:
+    needs: build-production
     name: Deploy to EKS GDC
     runs-on: ubuntu-latest
     environment:
