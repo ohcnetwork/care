@@ -49,18 +49,16 @@ class DailyRoundsViewSet(
     def analyse(self, request, **kwargs):
 
         # Request Body Validations
-
-        if not request.query_params.__contains__(self.FIELDS_KEY):
+        requested_fields = request.query_params.getlist(self.FIELDS_KEY)
+        if not requested_fields:
             raise ValidationError({"fields": "Field not present"})
-        # if not isinstance(request.data[self.FIELDS_KEY], list):
-        #     raise ValidationError({"fields": "Must be an List"})
-        if len(request.query_params.getlist(self.FIELDS_KEY)) >= self.MAX_FIELDS:
+        if len(requested_fields) >= self.MAX_FIELDS:
             raise ValidationError({"fields": "Must be smaller than {}".format(self.MAX_FIELDS)})
 
         # Request Data Validations
 
         # Calculate Base Fields ( From . seperated ones )
-        base_fields = [str(x).split(".")[0] for x in request.query_params.getlist(self.FIELDS_KEY)]
+        base_fields = [x.split(".")[0] for x in requested_fields]
 
         errors = {}
         for field in base_fields:
