@@ -45,22 +45,22 @@ class DailyRoundsViewSet(
             ).id
         return super().get_serializer(*args, **kwargs)
 
-    @action(methods=["POST"], detail=False)
+    @action(methods=["GET"], detail=False)
     def analyse(self, request, **kwargs):
 
         # Request Body Validations
 
-        if self.FIELDS_KEY not in request.data:
+        if not request.query_params.__contains__(self.FIELDS_KEY):
             raise ValidationError({"fields": "Field not present"})
-        if not isinstance(request.data[self.FIELDS_KEY], list):
-            raise ValidationError({"fields": "Must be an List"})
-        if len(request.data[self.FIELDS_KEY]) >= self.MAX_FIELDS:
+        # if not isinstance(request.data[self.FIELDS_KEY], list):
+        #     raise ValidationError({"fields": "Must be an List"})
+        if len(request.query_params.getlist(self.FIELDS_KEY)) >= self.MAX_FIELDS:
             raise ValidationError({"fields": "Must be smaller than {}".format(self.MAX_FIELDS)})
 
         # Request Data Validations
 
         # Calculate Base Fields ( From . seperated ones )
-        base_fields = [str(x).split(".")[0] for x in request.data[self.FIELDS_KEY]]
+        base_fields = [str(x).split(".")[0] for x in request.query_params.getlist(self.FIELDS_KEY)]
 
         errors = {}
         for field in base_fields:
@@ -72,7 +72,8 @@ class DailyRoundsViewSet(
         if errors:
             raise ValidationError(errors)
 
-        page = request.data.get("page", 1)
+        # page = request.data.get("page", 1)
+        page = int(request.query_params.get("page", 1))
 
         # to_time = datetime.now() - timedelta(days=((page - 1) * self.DEFAULT_LOOKUP_DAYS))
         # from_time = to_time - timedelta(days=self.DEFAULT_LOOKUP_DAYS)
