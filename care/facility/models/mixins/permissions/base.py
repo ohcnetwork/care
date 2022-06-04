@@ -1,4 +1,5 @@
-# from care.facility.models import User
+from dry_rest_permissions.generics import DRYPermissions
+
 from care.users.models import User
 
 
@@ -65,3 +66,14 @@ class BasePermissionMixin:
         ):
             return False
         return request.user.is_superuser or (hasattr(self, "created_by") and request.user == self.created_by)
+
+
+class DRYAssetPermissions(DRYPermissions):
+    """
+    Adds additional prefix for asset users to the permission names.
+    """
+
+    global_permissions = False
+
+    def _get_action(self, action):
+        return f"asset_{super()._get_action(action)}"
