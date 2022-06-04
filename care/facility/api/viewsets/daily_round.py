@@ -70,7 +70,6 @@ class DailyRoundsViewSet(
         if errors:
             raise ValidationError(errors)
 
-        # page = request.data.get("page", 1)
         page = int(request.query_params.get("page", 1))
 
         # to_time = datetime.now() - timedelta(days=((page - 1) * self.DEFAULT_LOOKUP_DAYS))
