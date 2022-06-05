@@ -46,6 +46,8 @@ class Asset(BaseModel):
         ACTIVE = 50
         TRANSFER_IN_PROGRESS = 100
 
+    AssetWorkingChoices = [(True, "Working"), (False, "Not Working")]
+
     StatusChoices = [(e.value, e.name) for e in Status]
 
     name = models.CharField(max_length=1024, blank=False, null=False)
