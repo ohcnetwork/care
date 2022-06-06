@@ -51,7 +51,7 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_super_user(cls, district: District, username: str = "superuser"):
-        user = cls.create_user(district=district, username=username, user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],)
+        user = cls.create_user(district=district, username=username, user_type=User.TYPE_VALUE_MAP["StateAdmin"],)
         user.is_superuser = True
         user.save()
         return user
@@ -305,11 +305,6 @@ class TestBase(APITestCase):
         if state is None:
             return {"state": None, "state_object": None}
         return {"state": state.id, "state_object": {"id": state.id, "name": state.name}}
-
-    def assertDictEqual(self, first: Dict[Any, Any], second: Dict[Any, Any], msg: Any = ...) -> None:
-        first_dict = self._convert_to_matchable_types(first.copy())
-        second_dict = self._convert_to_matchable_types(second.copy())
-        return super(TestBase, self).assertDictEqual(first_dict, second_dict, msg)
 
     def _convert_to_matchable_types(self, d):
         def dict_to_matching_type(d: dict):
