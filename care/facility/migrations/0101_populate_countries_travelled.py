@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def populate_countries_travelled(*args):
-    print("This is no longer needed")
+    pass
     # from care.facility.management.commands.copy_countries_travelled_old_to_countries_travelled import Command
     # Command.copy_countries_travelled_old()
 

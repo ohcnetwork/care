@@ -42,9 +42,7 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-INSTALLED_APPS += [  # noqa F405
-    "test_without_migrations",
-]
+MIDDLEWARE.remove("care.audit_log.middleware.AuditLogMiddleware")
 
 DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care-test")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
