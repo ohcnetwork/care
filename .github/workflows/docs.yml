@@ -2,9 +2,13 @@ name: Build Docs
 
 on:
   push:
+    branches:
+      - master
     paths:
       - "docs/**"
   pull_request:
+    branches:
+      - master
     paths:
       - "docs/**"
   workflow_dispatch:
