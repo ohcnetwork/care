@@ -1,0 +1,4 @@
+# Documentation
+# ------------------------------------------------------------------------------
+sphinx==4.5.0 # https://github.com/sphinx-doc/sphinx
+sphinx-book-theme==0.3.2  # https://github.com/executablebooks/sphinx-book-theme
