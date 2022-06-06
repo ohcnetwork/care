@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
@@ -103,7 +102,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
 
-    location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True, blank=True)
     pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
