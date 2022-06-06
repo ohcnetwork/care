@@ -46,7 +46,7 @@ class Asset(BaseModel):
         ACTIVE = 50
         TRANSFER_IN_PROGRESS = 100
 
-    AssetWorkingChoices = [(True, "Working"), (False, "Not Working")]
+    AssetWorkingChoices = [("WORKING", "WORKING"), ("NOTWORKING", "NOTWORKING")]
 
     StatusChoices = [(e.value, e.name) for e in Status]
 
