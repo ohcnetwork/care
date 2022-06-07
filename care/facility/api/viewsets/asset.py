@@ -6,8 +6,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework.serializers import CharField, JSONField, Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
@@ -79,6 +79,7 @@ class AssetViewSet(
     RetrieveModelMixin,
     CreateModelMixin,
     UpdateModelMixin,
+    DestroyModelMixin,
     GenericViewSet,
 ):
     queryset = (
@@ -103,6 +104,11 @@ class AssetViewSet(
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(current_location__facility__id__in=allowed_facilities)
         return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.user_type < User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
+            raise PermissionDenied()
+        return super().destroy(request, *args, **kwargs)
 
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
