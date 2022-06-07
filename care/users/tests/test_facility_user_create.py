@@ -89,7 +89,6 @@ class TestFacilityUserApi(TestBase):
         user_id = response.json()["id"]
         user = User.objects.filter(id=user_id).first()
         self.assertIsNotNone(user)
-        # self.assertDictEqual(response.json(), self.get_detail_representation(user))
 
         # Test for login
         password = response.json()["password"]
