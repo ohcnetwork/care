@@ -45,8 +45,6 @@ class TestSuperUser(TestBase):
 
         data = self.user_data.copy()
         data.pop("password")
-        # print("Response:", res_data_json)
-        # print("Data:", self.get_detail_representation(self.user))
         self.assertDictEqual(
             res_data_json, self.get_detail_representation(self.user),
         )
