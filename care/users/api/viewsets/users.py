@@ -148,7 +148,7 @@ class UserViewSet(
                 is_superuser=False,
             )
         else:
-            raise ValidationError({"permission": "Denied"})
+            return Response(status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"})
         user = get_object_or_404(queryset.filter(username=username))
         user.is_active = False
         user.save(update_fields=["is_active"])
