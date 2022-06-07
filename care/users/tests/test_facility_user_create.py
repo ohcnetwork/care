@@ -94,10 +94,6 @@ class TestFacilityUserApi(TestBase):
         # Test for login
         password = response.json()["password"]
         self.client.login(username=data["username"], password=password)
-        # response = self.client.post(
-        #     f"/api/v1/auth/login/", data={"username": data["username"], "password": password}, format="json"
-        # )
-        # self.assertEquals(response.status_code, status.HTTP_200_OK)
 
         # Test if user is added to the facility
         self.assertIn(user, self.facility.users.all())
