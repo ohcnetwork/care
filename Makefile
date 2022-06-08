@@ -41,3 +41,8 @@ makemigrations:
 test:
 	make up
 	docker exec care bash -c "python manage.py test --keepdb"
+
+test_coverage:
+	make up
+	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test"
+	docker exec care bash -c "coverage report"
