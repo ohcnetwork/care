@@ -18,4 +18,4 @@ jobs:
           make test_coverage
 
       - name: Upload coverage report
-        uses: actions/codecov@v2
+        uses: codecov/codecov-action@v2
