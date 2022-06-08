@@ -6,7 +6,6 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
-from care.facility.models.bed import Bed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
     FEED,
@@ -17,7 +16,7 @@ from care.facility.models.json_schema.daily_round import (
     OUTPUT,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator

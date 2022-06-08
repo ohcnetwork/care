@@ -49,7 +49,7 @@ from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.filters import CareChoiceFilter
 from care.utils.queryset.patient import get_patient_queryset
 from config.authentication import CustomBasicAuthentication, CustomJWTAuthentication, MiddlewareAuthentication
 
@@ -97,8 +97,6 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__symptoms_onset_date"
     )
-    last_consultation_admitted_to_list = MultiSelectFilter(field_name="last_consultation__admitted_to")
-    last_consultation_admitted_to = filters.NumberFilter(field_name="last_consultation__admitted_to")
     last_consultation_assigned_to = filters.NumberFilter(field_name="last_consultation__assigned_to")
     last_consultation_is_telemedicine = filters.BooleanFilter(field_name="last_consultation__is_telemedicine")
 
@@ -109,10 +107,12 @@ class PatientFilterSet(filters.FilterSet):
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
-    has_bed = filters.BooleanFilter(field_name="has_bed", method='filter_bed_not_null')
+    has_bed = filters.BooleanFilter(field_name="has_bed", method="filter_bed_not_null")
 
     def filter_bed_not_null(self, queryset, name, value):
-        return queryset.filter(last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True)
+        return queryset.filter(
+            last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True
+        )
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

@@ -24,7 +24,6 @@ from care.facility.models.mixins.permissions.patient import PatientPermissionMix
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
-    REVERSE_ADMIT_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
@@ -495,7 +494,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
         "last_consultation__admitted": pretty_boolean,
-        "last_consultation__admitted_to": (lambda x: REVERSE_ADMIT_CHOICES.get(x, "-")),
     }
 
 
