@@ -6,10 +6,14 @@ on:
     branches:
       - master
       - production
+    paths-ignore:
+      - 'docs/**'
   push:
     branches:
       - master
       - production
+    paths-ignore:
+      - 'docs/**'
 
 env:
   IMAGE_NAME: care
@@ -203,13 +207,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -246,13 +250,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -289,13 +293,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -332,7 +336,7 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-      
+
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
         with:
@@ -345,7 +349,7 @@ jobs:
           cluster_name: ${{ secrets.GKE_CLUSTER }}
           location: ${{ secrets.GKE_ZONE }}
           credentials: ${{ secrets.GKE_SA_KEY }}
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
