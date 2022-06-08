@@ -34,10 +34,12 @@ list:
 logs:
 	docker-compose -f $(docker_config_file) logs
 
-makemigrations:
-	make up
+makemigrations: up
 	docker exec care bash -c "python manage.py makemigrations"
 
-test:
-	make up
+test: up
 	docker exec care bash -c "python manage.py test --keepdb"
+
+test_coverage: up
+	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test"
+	docker exec care bash -c "coverage report"

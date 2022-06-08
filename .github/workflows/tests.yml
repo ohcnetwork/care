@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Tests with coverage
+        run: |
+          make test_coverage
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
