@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sphinx-docs
-          path: ./docs/_build
+          path: ./docs/_build/html
           retention-days: 30
 
   deploy-docs:
