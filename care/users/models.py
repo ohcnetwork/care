@@ -120,7 +120,7 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False).select_related("local_body", "district", "state")
+        return qs.filter(deleted=False, is_active=True).select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
         district = District.objects.all()[0]
