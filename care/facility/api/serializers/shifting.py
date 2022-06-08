@@ -1,5 +1,3 @@
-import re
-
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -243,7 +241,7 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
     def validate_empty_values(self, data):
-        if not data.get("comment") or re.match(r"^\s*$", data["comment"]):
+        if not data.get("comment", "").strip():
             raise serializers.ValidationError({"comment": ["Comment cannot be empty"]})
         return super().validate_empty_values(data)
 

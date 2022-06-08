@@ -1,5 +1,4 @@
 import datetime
-import re
 
 from django.db import transaction
 from django.utils.timezone import localtime, make_aware, now
@@ -353,7 +352,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
     def validate_empty_values(self, data):
-        if not data.get("note") or re.match(r"^\s*$", data["note"]):
+        if not data.get("note", "").strip():
             raise serializers.ValidationError({"note": ["Note cannot be empty"]})
         return super().validate_empty_values(data)
 
