@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347246423,
+  "date": "2019-08-21",
+  "name": "Edakkattuvayal  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Mullamthuruthy",
+  "area": "26.28km",
+  "localbody_code": "G070904",
+  "no_of_wards": 14,
+  "population": 16267,
+  "male": 8147,
+  "female": 8120,
+  "population_density": 619,
+  "sex_ratio": 996,
+  "literacy_rate": 93.29,
+  "literacy_rate_male": 96.95,
+  "literacy_rate_female": 89.62,
+  "president": "JESSYPETER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHETHICODE",
+      "person": {
+        "id": "2015067300101",
+        "name": "JULIA JAMES"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "OOZHAKODE",
+      "person": {
+        "id": "2015067300201",
+        "name": "K. R. JAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EDAKKATTUVAYAL",
+      "person": {
+        "id": "2015067300301",
+        "name": "JESSY PETER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHOORAKKUZHI",
+      "person": {
+        "id": "2015067300401",
+        "name": "BALU. C. A."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PEPPATHY",
+      "person": {
+        "id": "2015067300501",
+        "name": "SHEEBA SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELIYANAD",
+      "person": {
+        "id": "2015067300601",
+        "name": "M. C. SAJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THIRUMARAYOOR",
+      "person": {
+        "id": "2015067300701",
+        "name": "JAIN K PUNNOOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOTTOOR",
+      "person": {
+        "id": "2015067300801",
+        "name": "AMBIKA K P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANAICODE",
+      "person": {
+        "id": "2015067300901",
+        "name": "SALY PETER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTAPPARA",
+      "person": {
+        "id": "2015067301001",
+        "name": "LISSY SUNNY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAIPPATTOOR",
+      "person": {
+        "id": "2015067301101",
+        "name": "ANISH MOHANAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AYYAKUNNAM",
+      "person": {
+        "id": "2015067301201",
+        "name": "O. R. HARIKKUTTAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTIMUTTOM",
+      "person": {
+        "id": "2015067301301",
+        "name": "KAUSALYA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VIDANGARA",
+      "person": {
+        "id": "2015067301401",
+        "name": "SHEENA SHAJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

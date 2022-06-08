@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349163956,
+  "date": "2019-08-21",
+  "name": "Mullankolly  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Sulthanbathery",
+  "area": "71.58km",
+  "localbody_code": "G120203",
+  "no_of_wards": 18,
+  "population": 28871,
+  "male": 15534,
+  "female": 13337,
+  "population_density": 403,
+  "sex_ratio": 859,
+  "literacy_rate": 89.21,
+  "literacy_rate_male": 91.19,
+  "literacy_rate_female": 86.85,
+  "president": "GIRIJAKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERIKALOOR KADAVU",
+      "person": {
+        "id": "2015108400101",
+        "name": "JANCY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BHOOTHANAMKUNNU",
+      "person": {
+        "id": "2015108400201",
+        "name": "GIRIJA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHELOOR",
+      "person": {
+        "id": "2015108400301",
+        "name": "SIVARAMAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MARAKKADAVU",
+      "person": {
+        "id": "2015108400401",
+        "name": "P V SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KABANIGIRI",
+      "person": {
+        "id": "2015108400501",
+        "name": "ADV. P A  PRAKASHAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADICHIRA",
+      "person": {
+        "id": "2015108400601",
+        "name": "THOMAS P V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAKKAVALA",
+      "person": {
+        "id": "2015108400701",
+        "name": "JEENA SHAJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SEETHAMOUNT",
+      "person": {
+        "id": "2015108400801",
+        "name": "BINDU BIJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANNOTHUKOLLY",
+      "person": {
+        "id": "2015108400901",
+        "name": "BIJU P T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAKADAVU",
+      "person": {
+        "id": "2015108401001",
+        "name": "SINI RAJAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHETTAPALAM",
+      "person": {
+        "id": "2015108401101",
+        "name": "VINCENT C. P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALATHUR",
+      "person": {
+        "id": "2015108401201",
+        "name": "RASHITHA PRATHEESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SASIMALA",
+      "person": {
+        "id": "2015108401301",
+        "name": "NISHA SASI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "IRIPPODE",
+      "person": {
+        "id": "2015108401401",
+        "name": "MOLLY JOSE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MULLANKOLLY",
+      "person": {
+        "id": "2015108401501",
+        "name": "CICILY CHERIYAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALAKOLLY",
+      "person": {
+        "id": "2015108401601",
+        "name": "SHELGEN  C K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PATHIRI",
+      "person": {
+        "id": "2015108401701",
+        "name": "SURESH P K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PATTANIKOOP",
+      "person": {
+        "id": "2015108401801",
+        "name": "MUNEER ACHIKKULATHIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

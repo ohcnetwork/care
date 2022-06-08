@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346642176,
+  "date": "2019-08-21",
+  "name": "Bharanickavu  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Bharinikavu",
+  "area": "23.47km",
+  "localbody_code": "G041103",
+  "no_of_wards": 21,
+  "population": 34572,
+  "male": 16592,
+  "female": 17980,
+  "population_density": 1473,
+  "sex_ratio": 1084,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "VVASUDEVAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLICKAL NADUVILAEMURI",
+      "person": {
+        "id": "2015048800101",
+        "name": "RAMESH KUMAR G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALLICKAL NORTH",
+      "person": {
+        "id": "2015048800201",
+        "name": "V VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLICKAL SOUTH",
+      "person": {
+        "id": "2015048800301",
+        "name": "AMBILY L"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BHARANICKAVU WEST",
+      "person": {
+        "id": "2015048800401",
+        "name": "GOPAN BHARANICKAVU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BHARANICKAVU  NORTH",
+      "person": {
+        "id": "2015048800501",
+        "name": "RADHA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "BHARANICKAVU EAST",
+      "person": {
+        "id": "2015048800601",
+        "name": "M PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "BHARANICKAVU SOUTH",
+      "person": {
+        "id": "2015048800701",
+        "name": "ANNAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VETTICODE",
+      "person": {
+        "id": "2015048800801",
+        "name": "CHANDRIKA THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KATTANAM EAST",
+      "person": {
+        "id": "2015048800901",
+        "name": "KUNJUMOL REJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KATTANAM",
+      "person": {
+        "id": "2015048801001",
+        "name": "VARGHESE BENNY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KATTANAM SOUTH",
+      "person": {
+        "id": "2015048801101",
+        "name": "NIKESH THAMPI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ELIPPAKKULAM NORTH",
+      "person": {
+        "id": "2015048801201",
+        "name": "NOORJAHAN K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELIPPAKKULAM SOUTH",
+      "person": {
+        "id": "2015048801301",
+        "name": "SUBHADRA T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELIPPAKKULAM WEST",
+      "person": {
+        "id": "2015048801401",
+        "name": "AHAMAD FAZIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KATTACHIRA SOUTH",
+      "person": {
+        "id": "2015048801501",
+        "name": "R SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANKUZHY SOUTH",
+      "person": {
+        "id": "2015048801601",
+        "name": "NIRMALA DEVI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MANKUZHY CENTRAL",
+      "person": {
+        "id": "2015048801701",
+        "name": "C ARAVINDAKSHAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANKUZHY NORTH",
+      "person": {
+        "id": "2015048801801",
+        "name": "USHA THAMPI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KATTACHIRA",
+      "person": {
+        "id": "2015048801901",
+        "name": "S JYOTHI KUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOYICKAL",
+      "person": {
+        "id": "2015048802001",
+        "name": "NISHA K SAM"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MANJADITHARA",
+      "person": {
+        "id": "2015048802101",
+        "name": "SREEJA KUMARI S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

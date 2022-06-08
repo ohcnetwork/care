@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347145835,
+  "date": "2019-08-21",
+  "name": "Kanjoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Angamally",
+  "area": "14.32km",
+  "localbody_code": "G070306",
+  "no_of_wards": 15,
+  "population": 19712,
+  "male": 9710,
+  "female": 10002,
+  "population_density": 1377,
+  "sex_ratio": 1030,
+  "literacy_rate": 92.06,
+  "literacy_rate_male": 95.25,
+  "literacy_rate_female": 89.01,
+  "president": "LONAPPAN.M.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THURAVUMKARA",
+      "person": {
+        "id": "2015064000101",
+        "name": "HONEY DAVIS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENGAL WEST",
+      "person": {
+        "id": "2015064000201",
+        "name": "ALBIN ANTONY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENGAL EAST",
+      "person": {
+        "id": "2015064000301",
+        "name": "SANDHYA JOHN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANJOOR",
+      "person": {
+        "id": "2015064000401",
+        "name": "K.R SHYAMALA TEACHER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EAST ANGADI",
+      "person": {
+        "id": "2015064000501",
+        "name": "VIJI BIJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHIYEDAM NORTH",
+      "person": {
+        "id": "2015064000601",
+        "name": "AMBILI SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AARAMKAVU",
+      "person": {
+        "id": "2015064000701",
+        "name": "SEBASTIAN PAUL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALLAM KADAVU",
+      "person": {
+        "id": "2015064000801",
+        "name": "ASWATHY SHINE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAPPURAM",
+      "person": {
+        "id": "2015064000901",
+        "name": "GRACY DAYANANDHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THIRUNARAYANAPURM",
+      "person": {
+        "id": "2015064001001",
+        "name": "AYISHA JAMAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHIYEDAM SOUTH",
+      "person": {
+        "id": "2015064001101",
+        "name": "ASHOKAN PARATHAPPILLY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "BAZAR",
+      "person": {
+        "id": "2015064001201",
+        "name": "JOSE M.L"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PADINJARUMBHAGAM",
+      "person": {
+        "id": "2015064001301",
+        "name": "SARITHA BABU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANJOOR NORTH",
+      "person": {
+        "id": "2015064001401",
+        "name": "ANEESH RAJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOOLIKKARA",
+      "person": {
+        "id": "2015064001501",
+        "name": "LONAPPAN.M.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

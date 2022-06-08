@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348455939,
+  "date": "2019-08-21",
+  "name": "Marutharode  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Malampuzha",
+  "area": "19.68km",
+  "localbody_code": "G091303",
+  "no_of_wards": 19,
+  "population": 24267,
+  "male": 11881,
+  "female": 12386,
+  "population_density": 1233,
+  "sex_ratio": 1043,
+  "literacy_rate": 79.39,
+  "literacy_rate_male": 86.45,
+  "literacy_rate_female": 72.68,
+  "president": "SINDIRA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALIPPARA",
+      "person": {
+        "id": "2015088800101",
+        "name": "S SIDHARTHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNAMKKAD",
+      "person": {
+        "id": "2015088800201",
+        "name": "P KITTU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015088800301",
+        "name": "RAJAGOPALAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADALIKKAD",
+      "person": {
+        "id": "2015088800401",
+        "name": "K ASOKAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEMMANKKAD",
+      "person": {
+        "id": "2015088800501",
+        "name": "SAJITH M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUPPIYODE",
+      "person": {
+        "id": "2015088800601",
+        "name": "R ARAVINDHAKSHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANDATHUPARA",
+      "person": {
+        "id": "2015088800701",
+        "name": "KRISHNAKUMARI V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKETHARA",
+      "person": {
+        "id": "2015088800801",
+        "name": "DEVI V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ERATTAYAL",
+      "person": {
+        "id": "2015088800901",
+        "name": "PRIYA C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHANDRANAGAR EXTENSION",
+      "person": {
+        "id": "2015088801001",
+        "name": "S INDIRA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ALLAMPALLAM",
+      "person": {
+        "id": "2015088801101",
+        "name": "KAVITHA P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHANDRANAGAR",
+      "person": {
+        "id": "2015088801201",
+        "name": "K RAJALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNNANNUR",
+      "person": {
+        "id": "2015088801301",
+        "name": "P RAJANI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEMBALODE",
+      "person": {
+        "id": "2015088801401",
+        "name": "L SUJATHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THEKKUMURI",
+      "person": {
+        "id": "2015088801501",
+        "name": "K B MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANALI",
+      "person": {
+        "id": "2015088801601",
+        "name": "C ZULFIKKER ALI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLEPULLY",
+      "person": {
+        "id": "2015088801701",
+        "name": "VIMALA P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUZHIYAKKAD",
+      "person": {
+        "id": "2015088801801",
+        "name": "SOUMYA VINESH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THEKKONI",
+      "person": {
+        "id": "2015088801901",
+        "name": "C CHANDRAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

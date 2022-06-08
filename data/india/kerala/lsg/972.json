@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348789599,
+  "date": "2019-08-21",
+  "name": "Kalpakanchery  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Thanur",
+  "area": "16.25km",
+  "localbody_code": "G100907",
+  "no_of_wards": 19,
+  "population": 26983,
+  "male": 12881,
+  "female": 14102,
+  "population_density": 1660,
+  "sex_ratio": 1095,
+  "literacy_rate": 89.84,
+  "literacy_rate_male": 94.35,
+  "literacy_rate_female": 85.34,
+  "president": "N.MOIDEENKUTTY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARAPPURAM",
+      "person": {
+        "id": "2015097200101",
+        "name": "ILYAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VARIYATH",
+      "person": {
+        "id": "2015097200201",
+        "name": "FAINUSHA THACHAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RANDATHANI",
+      "person": {
+        "id": "2015097200301",
+        "name": "RASHEEDA KALADI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KIZHAKKEPPURAM",
+      "person": {
+        "id": "2015097200401",
+        "name": "SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THARALAD",
+      "person": {
+        "id": "2015097200501",
+        "name": "T. P. NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANJACHOLA",
+      "person": {
+        "id": "2015097200601",
+        "name": "KADEEJA PACHIYATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015097200701",
+        "name": "SAIDALIKUTTY T P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARAVANNURCHOLA",
+      "person": {
+        "id": "2015097200801",
+        "name": "ZAINUL ABIDEEN .C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PADATHEPEEDIKA",
+      "person": {
+        "id": "2015097200901",
+        "name": "FATHIMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAVANNUR",
+      "person": {
+        "id": "2015097201001",
+        "name": "REHNA .K.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AYIRANI",
+      "person": {
+        "id": "2015097201101",
+        "name": "MOHAMED SHAREEF"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADUGATHUKUNDU",
+      "person": {
+        "id": "2015097201201",
+        "name": "K.C. SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALPAKANCHERY",
+      "person": {
+        "id": "2015097201301",
+        "name": "K. MOIDEENKUTTY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THOTTAYI",
+      "person": {
+        "id": "2015097201401",
+        "name": "JUBAIRIYA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANANCHERY",
+      "person": {
+        "id": "2015097201501",
+        "name": "SHAHARBANU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALETH",
+      "person": {
+        "id": "2015097201601",
+        "name": "ANWAR SADATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VARAMBINGAL",
+      "person": {
+        "id": "2015097201701",
+        "name": "MARIYAMU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALLINGALPARAMBU",
+      "person": {
+        "id": "2015097201801",
+        "name": "N. MOIDEENKUTTY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNDAMCHINA",
+      "person": {
+        "id": "2015097201901",
+        "name": "NASEEMA. P.T"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

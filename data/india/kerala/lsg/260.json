@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345823518,
+  "date": "2019-08-21",
+  "name": "Kuttichal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "19.74km",
+  "localbody_code": "G010506",
+  "no_of_wards": 14,
+  "population": 17048,
+  "male": 8345,
+  "female": 8703,
+  "population_density": 864,
+  "sex_ratio": 1043,
+  "literacy_rate": 85.96,
+  "literacy_rate_male": 89.62,
+  "literacy_rate_female": 82.5,
+  "president": "G.MANIKANDAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUTTICHAL",
+      "person": {
+        "id": "2015026000101",
+        "name": "KRISHNAKUMARI V.L."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PACHAKKAD",
+      "person": {
+        "id": "2015026000201",
+        "name": "G.MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARUKIL",
+      "person": {
+        "id": "2015026000301",
+        "name": "VALSALA RAJAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "UTHARAMCODE",
+      "person": {
+        "id": "2015026000401",
+        "name": "JAYASREE P.S."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODUKKARA",
+      "person": {
+        "id": "2015026000501",
+        "name": "JISHA KRISHNAN G."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ELIMALA",
+      "person": {
+        "id": "2015026000601",
+        "name": "ADV.F.SATHEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHONAMPARA",
+      "person": {
+        "id": "2015026000701",
+        "name": "V.RAMESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTTOOR",
+      "person": {
+        "id": "2015026000801",
+        "name": "NABEESATH BEEVI A."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLIYAL",
+      "person": {
+        "id": "2015026000901",
+        "name": "SURESH B."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANTHIKKALAM",
+      "person": {
+        "id": "2015026001001",
+        "name": "RADHA T."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THACHANCODE",
+      "person": {
+        "id": "2015026001101",
+        "name": "K.KOCHUNANU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARUTHIPPALLY",
+      "person": {
+        "id": "2015026001201",
+        "name": "G SHAJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAITHACKAL",
+      "person": {
+        "id": "2015026001301",
+        "name": "RAMANI.V."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PEZHUMMOODU",
+      "person": {
+        "id": "2015026001401",
+        "name": "A.SUDHEER KUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

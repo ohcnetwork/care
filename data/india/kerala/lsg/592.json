@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566346980503,
+  "date": "2019-08-21",
+  "name": "Vannappuram  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "23.29km",
+  "localbody_code": "G060401",
+  "no_of_wards": 17,
+  "population": 24217,
+  "male": 12246,
+  "female": 11971,
+  "population_density": 1040,
+  "sex_ratio": 978,
+  "literacy_rate": 92,
+  "literacy_rate_male": 94,
+  "literacy_rate_female": 90,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALIYAKANDAM",
+      "person": {
+        "id": "2015059200101",
+        "name": "BINCY SAJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAJAGIRI",
+      "person": {
+        "id": "2015059200201",
+        "name": "SHEEJA U. R."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PATTAYAKUDY",
+      "person": {
+        "id": "2015059200301",
+        "name": "SUNNY KALAPPURACKAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VELLAKAYAM",
+      "person": {
+        "id": "2015059200401",
+        "name": "LISSY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLIPPARA",
+      "person": {
+        "id": "2015059200501",
+        "name": "SASI K. C."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUNDANMUDY",
+      "person": {
+        "id": "2015059200601",
+        "name": "JAINAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EZHUPATHEKKAR",
+      "person": {
+        "id": "2015059200701",
+        "name": "BINISHLAL K."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOOVAPPURAM",
+      "person": {
+        "id": "2015059200801",
+        "name": "LISAMMA SASI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VENMATTAM",
+      "person": {
+        "id": "2015059200901",
+        "name": "LAILA RAMESHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALIYAR",
+      "person": {
+        "id": "2015059201001",
+        "name": "AZIZ K. H."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MULLANKUTHY",
+      "person": {
+        "id": "2015059201101",
+        "name": "SATHYADAS JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ORAKANNEY",
+      "person": {
+        "id": "2015059201201",
+        "name": "SHINY REGI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VANNAPPURAM TOWN NORTH",
+      "person": {
+        "id": "2015059201301",
+        "name": "LEELA THANKAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANNAPPURAM TOWN SOUTH",
+      "person": {
+        "id": "2015059201401",
+        "name": "RASHEED THOTTUMKAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALAYANTHANI",
+      "person": {
+        "id": "2015059201501",
+        "name": "NISSAMOL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ODIYAPARA",
+      "person": {
+        "id": "2015059201601",
+        "name": "JAGADAMMA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MULLARINGADU",
+      "person": {
+        "id": "2015059201701",
+        "name": "JOSE T. U."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

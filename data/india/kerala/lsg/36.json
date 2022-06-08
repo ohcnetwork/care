@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566344973327,
+  "date": "2019-08-21",
+  "name": "Pattanakkad  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Pattanakkad",
+  "area": "107.75km",
+  "localbody_code": "B040200",
+  "no_of_wards": 14,
+  "population": 190045,
+  "male": 93617,
+  "female": 96428,
+  "population_density": 1764,
+  "sex_ratio": 1030,
+  "literacy_rate": 93,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 89,
+  "president": "VALSALATHAMPI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AROOR WEST",
+      "person": {
+        "id": "2015003600101",
+        "name": "V.K.GOWREESAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AROOR EAST",
+      "person": {
+        "id": "2015003600201",
+        "name": "P.M.AJITHKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERAMALLOOR",
+      "person": {
+        "id": "2015003600301",
+        "name": "HEMA DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAMMANADU",
+      "person": {
+        "id": "2015003600401",
+        "name": "JAYA ASOKAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTHIATHODE",
+      "person": {
+        "id": "2015003600501",
+        "name": "VINOD. C. T."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NALUKULANGARA",
+      "person": {
+        "id": "2015003600601",
+        "name": "N.SAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THURAVOOR",
+      "person": {
+        "id": "2015003600701",
+        "name": "MANI PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PATTANAKKAD",
+      "person": {
+        "id": "2015003600801",
+        "name": "VALSALA THAMPI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VAYALAR",
+      "person": {
+        "id": "2015003600901",
+        "name": "SINDHU VAVAKKADU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALAVAMKODAM",
+      "person": {
+        "id": "2015003601001",
+        "name": "SREEJA.A.T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VETTACKAL",
+      "person": {
+        "id": "2015003601101",
+        "name": "ADV.T.H.SALAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANAKKODAM",
+      "person": {
+        "id": "2015003601201",
+        "name": "SEBASTIAN (JAISON)"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANGAROM",
+      "person": {
+        "id": "2015003601301",
+        "name": "ANITHA DILEEP"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EZHUPUNNA",
+      "person": {
+        "id": "2015003601401",
+        "name": "THANKAMMA (KUNJUMOL)"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347087927,
+  "date": "2019-08-21",
+  "name": "Kokkayar  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Azhutta",
+  "area": "55.91km",
+  "localbody_code": "G060803",
+  "no_of_wards": 13,
+  "population": 12641,
+  "male": 6354,
+  "female": 6287,
+  "population_density": 226,
+  "sex_ratio": 989,
+  "literacy_rate": 95,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 92,
+  "president": "NECHOORTHANKAPPAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUKKULAM",
+      "person": {
+        "id": "2015062000101",
+        "name": "SUNNY GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKEMALA",
+      "person": {
+        "id": "2015062000201",
+        "name": "RAJESH JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MELORAM",
+      "person": {
+        "id": "2015062000301",
+        "name": "SWARNALATHA APPUKUTTAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KODIKUTHI",
+      "person": {
+        "id": "2015062000401",
+        "name": "SUNITHA REJI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MULAMKUNNU",
+      "person": {
+        "id": "2015062000502",
+        "name": "THOMAS LUKOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "BOYCE",
+      "person": {
+        "id": "2015062000601",
+        "name": "RAJANI SUGUNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOVANCHI",
+      "person": {
+        "id": "2015062000701",
+        "name": "SUNNY ANTONY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NARAKAMPUZHA",
+      "person": {
+        "id": "2015062000801",
+        "name": "NECHOOR THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOKKAYAR",
+      "person": {
+        "id": "2015062000901",
+        "name": "PRIYA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTTIPLANGADU",
+      "person": {
+        "id": "2015062001001",
+        "name": "ICYMOL T.G"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "WEMBLY",
+      "person": {
+        "id": "2015062001101",
+        "name": "SANTHAMMA E.M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANAKAPURAM",
+      "person": {
+        "id": "2015062001201",
+        "name": "LISAMMA TOMY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "YENDAYAR EAST",
+      "person": {
+        "id": "2015062001301",
+        "name": "RENI SHAJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

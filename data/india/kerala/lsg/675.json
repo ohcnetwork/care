@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347253034,
+  "date": "2019-08-21",
+  "name": "Poothrikka  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vadavucode",
+  "area": "25.53km",
+  "localbody_code": "G071001",
+  "no_of_wards": 14,
+  "population": 18330,
+  "male": 9285,
+  "female": 9045,
+  "population_density": 718,
+  "sex_ratio": 974,
+  "literacy_rate": 90.43,
+  "literacy_rate_male": 94.52,
+  "literacy_rate_female": 86.23,
+  "president": "SHIJIMOLEAJAYAKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALECRUZ",
+      "person": {
+        "id": "2015067500101",
+        "name": "N.M.KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAYAMPADY",
+      "person": {
+        "id": "2015067500201",
+        "name": "JOHN JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PATHAMMILE",
+      "person": {
+        "id": "2015067500301",
+        "name": "M.P.VARGHESE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUPPANAM",
+      "person": {
+        "id": "2015067500401",
+        "name": "PAUL VETTIKKADAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOLENCHERY",
+      "person": {
+        "id": "2015067500501",
+        "name": "KURIAKOSE.T.J"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARUKAPPILLY",
+      "person": {
+        "id": "2015067500601",
+        "name": "SALY BABY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THAMMANIMATTOM",
+      "person": {
+        "id": "2015067500701",
+        "name": "VIJU NATHUMMOLATHU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KINGINIMATTOM",
+      "person": {
+        "id": "2015067500801",
+        "name": "SHIJIMOLE AJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALACKAMATTOM",
+      "person": {
+        "id": "2015067500901",
+        "name": "SHYBI BENNY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOTHRIKKA WEST",
+      "person": {
+        "id": "2015067501001",
+        "name": "RAJAMMA RAJAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOTHRIKKA EAST",
+      "person": {
+        "id": "2015067501101",
+        "name": "DOY SAJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOONDY",
+      "person": {
+        "id": "2015067501201",
+        "name": "A.SUBHASH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MEEMPARA",
+      "person": {
+        "id": "2015067501301",
+        "name": "GEETHA SASI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KURINJI",
+      "person": {
+        "id": "2015067501401",
+        "name": "NEEMA.K SAJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

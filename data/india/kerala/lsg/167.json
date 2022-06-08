@@ -1,0 +1,820 @@
+{
+  "timeStamp": 1566345409651,
+  "date": "2019-08-21",
+  "name": "Thiruvananthapuram  Corporation, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "area": "74.93km",
+  "localbody_code": "C010100",
+  "no_of_wards": 100,
+  "population": 744739,
+  "male": 365899,
+  "female": 378840,
+  "population_density": 6993,
+  "sex_ratio": 1018,
+  "literacy_rate": 88.26,
+  "literacy_rate_male": 94.82,
+  "literacy_rate_female": 85.17,
+  "mayor": "PRASANTHVK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAZHAKUTTOM",
+      "person": {
+        "id": "2015016700101",
+        "name": "PRASANTH V K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHANDAVILA",
+      "person": {
+        "id": "2015016700201",
+        "name": "BINDHU S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KATTAYIKONAM",
+      "person": {
+        "id": "2015016700301",
+        "name": "SINDHU SASI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SREEKARIYAM",
+      "person": {
+        "id": "2015016700401",
+        "name": "LATHA KUMARI N S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERUVAIKAL",
+      "person": {
+        "id": "2015016700501",
+        "name": "ALATHARA ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ULLOOR",
+      "person": {
+        "id": "2015016700601",
+        "name": "JOHNSON JOSEPH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDAVACODE",
+      "person": {
+        "id": "2015016700701",
+        "name": "V SALINI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHELLAMANGALAM",
+      "person": {
+        "id": "2015016700801",
+        "name": "SUDHARSANAN C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMPAZHANTHY",
+      "person": {
+        "id": "2015016700901",
+        "name": "SHEELA K S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POWDIKONAM",
+      "person": {
+        "id": "2015016701001",
+        "name": "NARAYANA MANGALAM RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NJANDOORKONAM",
+      "person": {
+        "id": "2015016701101",
+        "name": "PRADEEP KUMAR A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KINAVOOR",
+      "person": {
+        "name": "*****"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANNANTHALA",
+      "person": {
+        "id": "2015016701301",
+        "name": "ANIL KUMAR N"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NALANCHIRA",
+      "person": {
+        "id": "2015016701401",
+        "name": "THRESIAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KESAVADASAPURAM",
+      "person": {
+        "id": "2015016701501",
+        "name": "STEPHY J GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MEDICAL COLLEGE",
+      "person": {
+        "id": "2015016701601",
+        "name": "SINDHU S S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PATTOM",
+      "person": {
+        "id": "2015016701701",
+        "name": "REMYA REMESH S R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUTTADA",
+      "person": {
+        "id": "2015016701801",
+        "name": "R GEETHA GOPAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUDAPPANAKUNNU",
+      "person": {
+        "id": "2015016701901",
+        "name": "ANITHA S"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PATHIRAPALLY",
+      "person": {
+        "id": "2015016702001",
+        "name": "KRISHNANKUTTY NAIR V"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHETTIVILAKAM",
+      "person": {
+        "id": "2015016702101",
+        "name": "R DINESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "SASTHAMANGALAM",
+      "person": {
+        "id": "2015016702201",
+        "name": "BINDU SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KOWDIAR",
+      "person": {
+        "id": "2015016702301",
+        "name": "MURALEEDHARAN K"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KURAVANKONAM",
+      "person": {
+        "id": "2015016702401",
+        "name": "MAYA R S"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "NANTHENCODE",
+      "person": {
+        "id": "2015016702501",
+        "name": "PALAYAM RAJAN"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KUNNUKUZHY",
+      "person": {
+        "id": "2015016702601",
+        "name": "BINU I P"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PALAYAM",
+      "person": {
+        "id": "2015016702701",
+        "name": "AISHABAKER"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THYCAUD",
+      "person": {
+        "id": "2015016702801",
+        "name": "VIDYA MOHAN M A"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "VAZHUTHACAUD",
+      "person": {
+        "id": "2015016702901",
+        "name": "ADV. RAKHI RAVIKUMAR"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "KANJIRAMPARA",
+      "person": {
+        "id": "2015016703001",
+        "name": "KANJIRAMPARA RAVI"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "PEROORKADA",
+      "person": {
+        "id": "2015016703101",
+        "name": "ANIL KUMAR P S"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "THURUTHUMMMOOLA",
+      "person": {
+        "id": "2015016703201",
+        "name": "VIJAYAKUMAR V"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "NETTAYAM",
+      "person": {
+        "id": "2015016703301",
+        "name": "RAJI MOL P"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "KACHANI",
+      "person": {
+        "id": "2015016703401",
+        "name": "BALAN T"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "VAZHOTTUKONAM",
+      "person": {
+        "id": "2015016703502",
+        "name": "HELEN  G (RANI VIKRAMAN)"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "VATTIYOORKAVU",
+      "person": {
+        "id": "2015016703601",
+        "name": "S HARISANKAR"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "KODUGANOOR",
+      "person": {
+        "id": "2015016703701",
+        "name": "KODUNGANOOR HARI"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "PTP NAGAR",
+      "person": {
+        "id": "2015016703801",
+        "name": "KOMALA KUMARY"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "PANGODE",
+      "person": {
+        "id": "2015016703901",
+        "name": "S MADHUSOODANAN NAIR"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "THIRUMALA",
+      "person": {
+        "id": "2015016704001",
+        "name": "MANJU P V"
+      }
+    },
+    {
+      "ward_number": "41",
+      "name": "VALIYAVILA",
+      "person": {
+        "id": "2015016704101",
+        "name": "GIRIKUMAR"
+      }
+    },
+    {
+      "ward_number": "42",
+      "name": "POOJAPPURA",
+      "person": {
+        "id": "2015016704201",
+        "name": "DR. B VIJAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "43",
+      "name": "VALIYASALA",
+      "person": {
+        "id": "2015016704301",
+        "name": "LAKSHMI M"
+      }
+    },
+    {
+      "ward_number": "44",
+      "name": "JAGATHY",
+      "person": {
+        "id": "2015016704401",
+        "name": "SHEEJA MADHU"
+      }
+    },
+    {
+      "ward_number": "45",
+      "name": "KARAMANA",
+      "person": {
+        "id": "2015016704501",
+        "name": "KARAMANA AJITH"
+      }
+    },
+    {
+      "ward_number": "46",
+      "name": "ARANOOR",
+      "person": {
+        "id": "2015016704601",
+        "name": "S UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "47",
+      "name": "MUDAVANMUGHAL",
+      "person": {
+        "id": "2015016704701",
+        "name": "GOPAKUMAR V"
+      }
+    },
+    {
+      "ward_number": "48",
+      "name": "THRIKANNAPURAM",
+      "person": {
+        "id": "2015016704801",
+        "name": "ANIL KUMAR K"
+      }
+    },
+    {
+      "ward_number": "49",
+      "name": "NEMOM",
+      "person": {
+        "id": "2015016704901",
+        "name": "M R GOPAN"
+      }
+    },
+    {
+      "ward_number": "50",
+      "name": "PONNUMANGALAM",
+      "person": {
+        "id": "2015016705001",
+        "name": "SHAFEERA BEEGUM S"
+      }
+    },
+    {
+      "ward_number": "51",
+      "name": "PUNNAKKAMUGHAL",
+      "person": {
+        "id": "2015016705101",
+        "name": "R P SIVAJI"
+      }
+    },
+    {
+      "ward_number": "52",
+      "name": "PAPPANAMCODE",
+      "person": {
+        "id": "2015016705202",
+        "name": "ASHA NATH G S"
+      }
+    },
+    {
+      "ward_number": "53",
+      "name": "ESTATE",
+      "person": {
+        "id": "2015016705301",
+        "name": "VIJAYAN A"
+      }
+    },
+    {
+      "ward_number": "54",
+      "name": "NEDUMCAUD",
+      "person": {
+        "id": "2015016705401",
+        "name": "S PUSHPALATHA"
+      }
+    },
+    {
+      "ward_number": "55",
+      "name": "KALADY",
+      "person": {
+        "id": "2015016705501",
+        "name": "MANJU G S"
+      }
+    },
+    {
+      "ward_number": "56",
+      "name": "MELAMCODE",
+      "person": {
+        "id": "2015016705601",
+        "name": "R SANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "57",
+      "name": "PUNCHAKARI",
+      "person": {
+        "id": "2015016705701",
+        "name": "A G KRISHNAVENI"
+      }
+    },
+    {
+      "ward_number": "58",
+      "name": "POONKULAM",
+      "person": {
+        "id": "2015016705801",
+        "name": "C SATHYAN"
+      }
+    },
+    {
+      "ward_number": "59",
+      "name": "VENGANOOR",
+      "person": {
+        "id": "2015016705901",
+        "name": "SANTHOSH KUMAR P"
+      }
+    },
+    {
+      "ward_number": "60",
+      "name": "MULLOOR",
+      "person": {
+        "id": "2015016706001",
+        "name": "C OMANA"
+      }
+    },
+    {
+      "ward_number": "61",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015016706101",
+        "name": "SHINI W"
+      }
+    },
+    {
+      "ward_number": "62",
+      "name": "VIZHINJAM",
+      "person": {
+        "id": "2015016706201",
+        "name": "N A RASHEED"
+      }
+    },
+    {
+      "ward_number": "63",
+      "name": "HARBAR",
+      "person": {
+        "id": "2015016706301",
+        "name": "NISSA BEEVI"
+      }
+    },
+    {
+      "ward_number": "64",
+      "name": "VELLAR",
+      "person": {
+        "id": "2015016706401",
+        "name": "JYOTHI SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "65",
+      "name": "THIRUVALLAM",
+      "person": {
+        "id": "2015016706501",
+        "name": "NEDUMOM V MOHANAN"
+      }
+    },
+    {
+      "ward_number": "66",
+      "name": "POONTHURA",
+      "person": {
+        "id": "2015016706601",
+        "name": "PETER SOLOMAN"
+      }
+    },
+    {
+      "ward_number": "67",
+      "name": "AMBALATHARA",
+      "person": {
+        "id": "2015016706701",
+        "name": "GEETHA KUMARY S"
+      }
+    },
+    {
+      "ward_number": "68",
+      "name": "KAMALESWARAM",
+      "person": {
+        "id": "2015016706801",
+        "name": "V GIRI"
+      }
+    },
+    {
+      "ward_number": "69",
+      "name": "KALIPPANKULAM",
+      "person": {
+        "id": "2015016706901",
+        "name": "RASIA BEEGUM"
+      }
+    },
+    {
+      "ward_number": "70",
+      "name": "ATTUKAL",
+      "person": {
+        "id": "2015016707001",
+        "name": "BEENA R C"
+      }
+    },
+    {
+      "ward_number": "71",
+      "name": "CHALA",
+      "person": {
+        "id": "2015016707101",
+        "name": "S K P RAMESH"
+      }
+    },
+    {
+      "ward_number": "72",
+      "name": "MANACAUD",
+      "person": {
+        "id": "2015016707201",
+        "name": "SIMI JYOTHISH"
+      }
+    },
+    {
+      "ward_number": "73",
+      "name": "KURIYATHY",
+      "person": {
+        "id": "2015016707301",
+        "name": "BEENA MURUGAN"
+      }
+    },
+    {
+      "ward_number": "74",
+      "name": "PUTHENPALLY",
+      "person": {
+        "id": "2015016707401",
+        "name": "NOORJAHAN S"
+      }
+    },
+    {
+      "ward_number": "75",
+      "name": "MANIKAVILAKAM",
+      "person": {
+        "id": "2015016707501",
+        "name": "PRIYA BIJU"
+      }
+    },
+    {
+      "ward_number": "76",
+      "name": "BEEMAPALLY EAST",
+      "person": {
+        "id": "2015016707601",
+        "name": "SAJEENA TEACHER"
+      }
+    },
+    {
+      "ward_number": "77",
+      "name": "BEEMAPALLY",
+      "person": {
+        "id": "2015016707701",
+        "name": "BEEMAPALLY RASHEED"
+      }
+    },
+    {
+      "ward_number": "78",
+      "name": "MUTTATHARA",
+      "person": {
+        "id": "2015016707801",
+        "name": "ANJU S R"
+      }
+    },
+    {
+      "ward_number": "79",
+      "name": "SREEVARAHAM",
+      "person": {
+        "id": "2015016707901",
+        "name": "MINI R"
+      }
+    },
+    {
+      "ward_number": "80",
+      "name": "FORT",
+      "person": {
+        "id": "2015016708001",
+        "name": "R SURESH"
+      }
+    },
+    {
+      "ward_number": "81",
+      "name": "THAMPANOOR",
+      "person": {
+        "id": "2015016708101",
+        "name": "M V JAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "82",
+      "name": "VANCHIYOOR",
+      "person": {
+        "id": "2015016708201",
+        "name": "VANCHIYOOR P BABU"
+      }
+    },
+    {
+      "ward_number": "83",
+      "name": "SREEKANTESWARAM",
+      "person": {
+        "id": "2015016708301",
+        "name": "KOMALAVALLY"
+      }
+    },
+    {
+      "ward_number": "84",
+      "name": "PERUNTHANNI",
+      "person": {
+        "id": "2015016708401",
+        "name": "CHINCHU"
+      }
+    },
+    {
+      "ward_number": "85",
+      "name": "PALKULANGARA",
+      "person": {
+        "id": "2015016708501",
+        "name": "S VIJAYAKUMARI"
+      }
+    },
+    {
+      "ward_number": "86",
+      "name": "CHAKKAI",
+      "person": {
+        "id": "2015016708601",
+        "name": "K SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "87",
+      "name": "VALIYATHURA",
+      "person": {
+        "id": "2015016708701",
+        "name": "SHEEBA PATRICK"
+      }
+    },
+    {
+      "ward_number": "88",
+      "name": "VALLAKKADAVU",
+      "person": {
+        "id": "2015016708801",
+        "name": "SHAJITHA NAZAR"
+      }
+    },
+    {
+      "ward_number": "89",
+      "name": "SANGHUMUGHAM",
+      "person": {
+        "id": "2015016708901",
+        "name": "SOLOMON VETTUKAD"
+      }
+    },
+    {
+      "ward_number": "90",
+      "name": "VETTUCAUD",
+      "person": {
+        "id": "2015016709001",
+        "name": "MARY LILLY RAJAD"
+      }
+    },
+    {
+      "ward_number": "91",
+      "name": "KARIKKAKAM",
+      "person": {
+        "id": "2015016709101",
+        "name": "HIMA SIJI"
+      }
+    },
+    {
+      "ward_number": "92",
+      "name": "KADAKAMPALLY",
+      "person": {
+        "id": "2015016709201",
+        "name": "K SOBHA RANI"
+      }
+    },
+    {
+      "ward_number": "93",
+      "name": "PETTAH",
+      "person": {
+        "id": "2015016709301",
+        "name": "ANIL KUMAR D"
+      }
+    },
+    {
+      "ward_number": "94",
+      "name": "KANNANMOOLA",
+      "person": {
+        "id": "2015016709401",
+        "name": "SATHEESH  KUMAR R"
+      }
+    },
+    {
+      "ward_number": "95",
+      "name": "ANAMUGHAM",
+      "person": {
+        "id": "2015016709501",
+        "name": "KARISHMA M A"
+      }
+    },
+    {
+      "ward_number": "96",
+      "name": "AKKULAM",
+      "person": {
+        "id": "2015016709601",
+        "name": "V R SINI"
+      }
+    },
+    {
+      "ward_number": "97",
+      "name": "KULATHOOR",
+      "person": {
+        "id": "2015016709701",
+        "name": "SIVADATH S"
+      }
+    },
+    {
+      "ward_number": "98",
+      "name": "ATTIPRA",
+      "person": {
+        "id": "2015016709801",
+        "name": "SUNI CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "99",
+      "name": "POWNDUKADAVU",
+      "person": {
+        "id": "2015016709901",
+        "name": "MEDAYIL VIKRAMAN"
+      }
+    },
+    {
+      "ward_number": "100",
+      "name": "PALLITHURA",
+      "person": {
+        "id": "2015016710001",
+        "name": "PRATHIBHA JAYAKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

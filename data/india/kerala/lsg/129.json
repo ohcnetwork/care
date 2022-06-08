@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345289512,
+  "date": "2019-08-21",
+  "name": "Melady  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Melady",
+  "area": "84.07km",
+  "localbody_code": "B110500",
+  "no_of_wards": 13,
+  "population": 116216,
+  "male": 56574,
+  "female": 59642,
+  "population_density": 1382,
+  "sex_ratio": 1054,
+  "literacy_rate": 90.23,
+  "literacy_rate_male": 95.64,
+  "literacy_rate_female": 85.17,
+  "president": "KKUNHIRAMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLIKKARA",
+      "person": {
+        "id": "2015012900101",
+        "name": "PREMA BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAYYOLI ANGADI",
+      "person": {
+        "id": "2015012900201",
+        "name": "GIRIJA C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VILAYATTUR",
+      "person": {
+        "id": "2015012900301",
+        "name": "SUNIL ODAYIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANJHAKKULAM",
+      "person": {
+        "id": "2015012900401",
+        "name": "A K VASANTHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANGARAMVALLY",
+      "person": {
+        "id": "2015012900501",
+        "name": "CHANDRABABU T K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MEPPAYUR",
+      "person": {
+        "id": "2015012900601",
+        "name": "K KUNHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOZHUKKALLUR",
+      "person": {
+        "id": "2015012900701",
+        "name": "E KUNHIKKANNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUVATHUR",
+      "person": {
+        "id": "2015012900801",
+        "name": "RAJESH KEEZHARIYUR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KEEZHARIYUR",
+      "person": {
+        "id": "2015012900901",
+        "name": "SOBHA KARAYIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "IRINGATH",
+      "person": {
+        "id": "2015012901001",
+        "name": "BALAGOPALAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PURAKKAD",
+      "person": {
+        "id": "2015012901101",
+        "name": "SILPA LINEESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIKKODI",
+      "person": {
+        "id": "2015012901201",
+        "name": "KAIRALI P V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THRIKKOTTUR",
+      "person": {
+        "id": "2015012901301",
+        "name": "RAMLA PUTHIYAVALAPPIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

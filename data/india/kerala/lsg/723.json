@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347447466,
+  "date": "2019-08-21",
+  "name": "Kattakampal  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chowwannur",
+  "area": "16.86km",
+  "localbody_code": "G080205",
+  "no_of_wards": 16,
+  "population": 24292,
+  "male": 11770,
+  "female": 12522,
+  "population_density": 1441,
+  "sex_ratio": 1064,
+  "literacy_rate": 93.53,
+  "literacy_rate_male": 96.41,
+  "literacy_rate_female": 90.87,
+  "president": "C.KSADANANDHANMASTER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SRAYIL",
+      "person": {
+        "id": "2015072300101",
+        "name": "T.S MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAMAPURAM",
+      "person": {
+        "id": "2015072300201",
+        "name": "SHEEJA SUTHEEB"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARIYAMBRA",
+      "person": {
+        "id": "2015072300301",
+        "name": "M.S MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PERUNTHURUTHY",
+      "person": {
+        "id": "2015072300401",
+        "name": "HAMEED.A.Y"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERUTHURUTHY",
+      "person": {
+        "id": "2015072300501",
+        "name": "GANGADHARAN KODATHUR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AYINOOR WEST",
+      "person": {
+        "id": "2015072300601",
+        "name": "SUREKHA.M.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AYINOOR EAST",
+      "person": {
+        "id": "2015072300701",
+        "name": "PADMINI SASEENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTTOL",
+      "person": {
+        "id": "2015072300801",
+        "name": "ALI.P.M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAZHANJI",
+      "person": {
+        "id": "2015072300901",
+        "name": "ARJUNAN P.G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "JERUSALEM",
+      "person": {
+        "id": "2015072301001",
+        "name": "SUJANI BABUJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATTITHADAM",
+      "person": {
+        "id": "2015072301101",
+        "name": "MOLLY THAMBI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOOLEPPATT",
+      "person": {
+        "id": "2015072301201",
+        "name": "VIJAYA GOPI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PENGAMUCK",
+      "person": {
+        "id": "2015072301301",
+        "name": "C.K SADANANDHAN MASTER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANJIRATHINGAL",
+      "person": {
+        "id": "2015072301401",
+        "name": "ANITHA MURALI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHIRAKKAL",
+      "person": {
+        "id": "2015072301501",
+        "name": "SANTHOSH KOLATHERY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALATTUMURY",
+      "person": {
+        "id": "2015072301601",
+        "name": "PRABITHA VISHWAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

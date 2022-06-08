@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566345902501,
+  "date": "2019-08-21",
+  "name": "Vilavoorkal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nemom",
+  "area": "12.02km",
+  "localbody_code": "G010806",
+  "no_of_wards": 17,
+  "population": 22748,
+  "male": 11346,
+  "female": 11402,
+  "population_density": 1898,
+  "sex_ratio": 1005,
+  "literacy_rate": 89.88,
+  "literacy_rate_male": 93.37,
+  "literacy_rate_female": 86.41,
+  "president": "VANILKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNDAMANBHAGAM",
+      "person": {
+        "id": "2015028100101",
+        "name": "ROSEMARY S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURISUMUTTAM",
+      "person": {
+        "id": "2015028100201",
+        "name": "GEETHANJALI R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHUVEETUMELE",
+      "person": {
+        "id": "2015028100301",
+        "name": "RENJU KUMARI R I"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANANGODE",
+      "person": {
+        "id": "2015028100401",
+        "name": "VIJAYAN NAIR V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PEYAD",
+      "person": {
+        "id": "2015028100501",
+        "name": "SALINI S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAVACHAKUZHI",
+      "person": {
+        "id": "2015028100601",
+        "name": "V ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EZHAKODE",
+      "person": {
+        "id": "2015028100701",
+        "name": "S VINAYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OFFICE WARD",
+      "person": {
+        "id": "2015028100801",
+        "name": "THANKAMONY I K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POTTAYIL",
+      "person": {
+        "id": "2015028100901",
+        "name": "SASIPRABHA K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VILAVOORKAL",
+      "person": {
+        "id": "2015028101001",
+        "name": "K RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MALAYAM",
+      "person": {
+        "id": "2015028101101",
+        "name": "JAYAKUMARI L"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOOLAMAN",
+      "person": {
+        "id": "2015028101201",
+        "name": "ELSA J"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHOOZHATTUKOTTA",
+      "person": {
+        "id": "2015028101301",
+        "name": "GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VENKUR",
+      "person": {
+        "id": "2015028101401",
+        "name": "G SAJINA KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VIZHAVOOR",
+      "person": {
+        "id": "2015028101501",
+        "name": "SHEEJA R"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THUDUPPOTTUKONAM",
+      "person": {
+        "id": "2015028101601",
+        "name": "K PRABHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERUKAVU",
+      "person": {
+        "id": "2015028101701",
+        "name": "PRASAD V S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

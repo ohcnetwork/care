@@ -1,0 +1,229 @@
+{
+  "timeStamp": 1566345369293,
+  "date": "2019-08-21",
+  "name": "Kollam  District Panchayat, Kollam District",
+  "district": "Kollam",
+  "area": "2491km",
+  "localbody_code": "D020000",
+  "no_of_wards": 26,
+  "population": 2584118,
+  "male": 1248616,
+  "female": 1335502,
+  "population_density": 1038,
+  "sex_ratio": 1070,
+  "literacy_rate": 91.49,
+  "literacy_rate_male": 94.63,
+  "literacy_rate_female": 88.6,
+  "president": "C.RADHAMONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KULASEKHRAPURAM",
+      "person": {
+        "id": "2015015400101",
+        "name": "C. RADHAMONY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "OACHIRA",
+      "person": {
+        "id": "2015015400201",
+        "name": "ADV. ANIL. S. KALLELIBHAGOM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THODIYOOR",
+      "person": {
+        "id": "2015015400301",
+        "name": "SREELEKHA VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SOORANADU",
+      "person": {
+        "id": "2015015400401",
+        "name": "M. SIVASANKARA PILLAI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUNNATHOOR",
+      "person": {
+        "id": "2015015400501",
+        "name": "K. SOBHANA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NEDUVATHOOR",
+      "person": {
+        "id": "2015015400601",
+        "name": "ADV. S. PUSHPANANDAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALAYAPURAM",
+      "person": {
+        "id": "2015015400701",
+        "name": "R RESMI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THALAVOOR",
+      "person": {
+        "id": "2015015400801",
+        "name": "ASHA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHANAPURAM",
+      "person": {
+        "id": "2015015400901",
+        "name": "ADV. S. VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VETTIKKAVALA",
+      "person": {
+        "id": "2015015401001",
+        "name": "SAROJINI BABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARAVALOOR",
+      "person": {
+        "id": "2015015401101",
+        "name": "SAROJA DEVI B."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ANCHAL",
+      "person": {
+        "id": "2015015401201",
+        "name": "ADV. BINU  K. C."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULATHOOPPUZHA",
+      "person": {
+        "id": "2015015401301",
+        "name": "SHEEJA K. R."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHITHRA",
+      "person": {
+        "id": "2015015401401",
+        "name": "P.R. PUSHKARAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHADAYAMANGALAM",
+      "person": {
+        "id": "2015015401501",
+        "name": "E. S. REMADEVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELINALLOR",
+      "person": {
+        "id": "2015015401601",
+        "name": "T. GIRIJA KUMARY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VELIYAM",
+      "person": {
+        "id": "2015015401701",
+        "name": "K. JAGADAMMA TEACHER"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NEDUMPANA",
+      "person": {
+        "id": "2015015401801",
+        "name": "C. P. PRADEEP"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ITHIKKARA",
+      "person": {
+        "id": "2015015401901",
+        "name": "N. RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KALLUVATHUKKAL",
+      "person": {
+        "id": "2015015402001",
+        "name": "V. JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MUKHATHALA",
+      "person": {
+        "id": "2015015402101",
+        "name": "FATHAHUDEEN  S."
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KOTTAMKARA",
+      "person": {
+        "id": "2015015402201",
+        "name": "SHERLY SATHYADEVAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUNDARA",
+      "person": {
+        "id": "2015015402301",
+        "name": "ADV. JULIET NELSON"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "PERINADU",
+      "person": {
+        "id": "2015015402401",
+        "name": "DR. K. RAJASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "CHAVARA",
+      "person": {
+        "id": "2015015402501",
+        "name": "S. SOBHA"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "THEVALAKKARA",
+      "person": {
+        "id": "2015015402601",
+        "name": "B. SETHULEKSHMI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

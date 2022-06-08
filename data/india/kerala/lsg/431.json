@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346424744,
+  "date": "2019-08-21",
+  "name": "Kadakkarappally  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Pattanakkad",
+  "area": "8.94km",
+  "localbody_code": "G040305",
+  "no_of_wards": 14,
+  "population": 17834,
+  "male": 8917,
+  "female": 8917,
+  "population_density": 1995,
+  "sex_ratio": 1000,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "PADMINI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "OTTAMASSERI NORTH",
+      "person": {
+        "id": "2015043100102",
+        "name": "A KUNJAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ILLIKKAL",
+      "person": {
+        "id": "2015043100202",
+        "name": "PREEJA FRANCIS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANDARATHAI",
+      "person": {
+        "id": "2015043100302",
+        "name": "MINI V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THANKI",
+      "person": {
+        "id": "2015043100402",
+        "name": "SANJITH S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADAKKARAPPALLY",
+      "person": {
+        "id": "2015043100502",
+        "name": "J JAGADEESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015043100602",
+        "name": "SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTARAM",
+      "person": {
+        "id": "2015043100702",
+        "name": "MINI L"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANDAMANGALAM",
+      "person": {
+        "id": "2015043100802",
+        "name": "GEETHAMMA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POWER HOUSE",
+      "person": {
+        "id": "2015043100902",
+        "name": "E.B. SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANJADIKKAL",
+      "person": {
+        "id": "2015043101002",
+        "name": "CHANDRIKA.B"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNJITHAI",
+      "person": {
+        "id": "2015043101102",
+        "name": "MERLIN SURESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THAIKKAL BEACH",
+      "person": {
+        "id": "2015043101202",
+        "name": "P.J PIOUS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VATTAKKARA",
+      "person": {
+        "id": "2015043101302",
+        "name": "PADMINI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OTTAMASSERI SOUTH",
+      "person": {
+        "id": "2015043101402",
+        "name": "JEMMA MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

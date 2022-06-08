@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345731563,
+  "date": "2019-08-21",
+  "name": "Karavaram  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "22.07km",
+  "localbody_code": "G010203",
+  "no_of_wards": 18,
+  "population": 25655,
+  "male": 12395,
+  "female": 13260,
+  "population_density": 1162,
+  "sex_ratio": 1070,
+  "literacy_rate": 88.21,
+  "literacy_rate_male": 92.96,
+  "literacy_rate_female": 83.83,
+  "president": "DEEPA.I.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALLAMBALAM",
+      "person": {
+        "id": "2015023400101",
+        "name": "K.R.BABY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PUTHUSSERIMUKKU",
+      "person": {
+        "id": "2015023400201",
+        "name": "DEEPA.I.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ETHUKKADU",
+      "person": {
+        "id": "2015023400301",
+        "name": "SHEEBA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KONNOORI",
+      "person": {
+        "id": "2015023400401",
+        "name": "V.S.PRASANNA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOTTAKKADU",
+      "person": {
+        "id": "2015023400501",
+        "name": "G.VILASINI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUDIYOTTUKONAM",
+      "person": {
+        "id": "2015023400601",
+        "name": "S.SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANNATTUKONAM",
+      "person": {
+        "id": "2015023400701",
+        "name": "BABY KUMAR.D"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PATTAKONAM",
+      "person": {
+        "id": "2015023400801",
+        "name": "K.SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NJARAKKATTUVILA",
+      "person": {
+        "id": "2015023400901",
+        "name": "SHINOD.G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VANCHIYOOR",
+      "person": {
+        "id": "2015023401001",
+        "name": "LISSY T.M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERAMAM",
+      "person": {
+        "id": "2015023401101",
+        "name": "JUBILEE VINOD"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATLA",
+      "person": {
+        "id": "2015023401201",
+        "name": "M.SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLIMUKKU",
+      "person": {
+        "id": "2015023401301",
+        "name": "LAILABEEVI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MEVARKKAL",
+      "person": {
+        "id": "2015023401401",
+        "name": "OFOOR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ALAMCODU.H.S",
+      "person": {
+        "id": "2015023401501",
+        "name": "JUNAINA NAZEER"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHATHAMPARA",
+      "person": {
+        "id": "2015023401601",
+        "name": "M.M.ILLYAS"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARAKKULAM",
+      "person": {
+        "id": "2015023401701",
+        "name": "SUNI.P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARAVARAM",
+      "person": {
+        "id": "2015023401801",
+        "name": "KOCHANIYAN.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

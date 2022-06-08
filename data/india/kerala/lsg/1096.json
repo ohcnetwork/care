@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349193656,
+  "date": "2019-08-21",
+  "name": "Cheruthazham  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "32.18km",
+  "localbody_code": "G130201",
+  "no_of_wards": 17,
+  "population": 23099,
+  "male": 11092,
+  "female": 12007,
+  "population_density": 718,
+  "sex_ratio": 1082,
+  "literacy_rate": 89.73,
+  "literacy_rate_male": 95.24,
+  "literacy_rate_female": 84.73,
+  "president": "PPRABHAVATHI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PURACHERY",
+      "person": {
+        "id": "2015109600101",
+        "name": "P PRABHAVATHI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARATHIPPARAMBU",
+      "person": {
+        "id": "2015109600201",
+        "name": "SOBHA. C.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NAREEKAMVALLY",
+      "person": {
+        "id": "2015109600301",
+        "name": "V P BEENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARATHIL",
+      "person": {
+        "id": "2015109600401",
+        "name": "KRISHNAN. K.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PILATHARA",
+      "person": {
+        "id": "2015109600501",
+        "name": "SHAJI JOSE. K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERIYATT",
+      "person": {
+        "id": "2015109600601",
+        "name": "K. VANAJA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULAPPURAM",
+      "person": {
+        "id": "2015109600701",
+        "name": "T.V. KAMALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SREESTHA",
+      "person": {
+        "id": "2015109600801",
+        "name": "VIJU. K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MELATHIYADAM",
+      "person": {
+        "id": "2015109600901",
+        "name": "P V VALSALA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ATHIYADAM",
+      "person": {
+        "id": "2015109601001",
+        "name": "P. KUNHIKKANNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PADANNAPPURAM",
+      "person": {
+        "id": "2015109601101",
+        "name": "K.M. SHOBHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAYALAPRA",
+      "person": {
+        "id": "2015109601201",
+        "name": "E. VASANTHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUTHAZHAM",
+      "person": {
+        "id": "2015109601301",
+        "name": "P P AMBUJAKSHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOVVAL",
+      "person": {
+        "id": "2015109601401",
+        "name": "C MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANDOOR",
+      "person": {
+        "id": "2015109601501",
+        "name": "K. JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAKKONI",
+      "person": {
+        "id": "2015109601601",
+        "name": "N. P. SALINA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EZHILODE",
+      "person": {
+        "id": "2015109601701",
+        "name": "SATHI. N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346291901,
+  "date": "2019-08-21",
+  "name": "Naranganam  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Elanthur",
+  "area": "20.42km",
+  "localbody_code": "G030407",
+  "no_of_wards": 14,
+  "population": 17402,
+  "male": 8339,
+  "female": 9063,
+  "population_density": 852,
+  "sex_ratio": 1087,
+  "literacy_rate": 95.13,
+  "literacy_rate_male": 96.66,
+  "literacy_rate_female": 93.76,
+  "president": "KADAMMANITTAKARUNAKARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALIYAKULAM",
+      "person": {
+        "id": "2015039600101",
+        "name": "SREEKANTH KALARICKAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANAMUKKU",
+      "person": {
+        "id": "2015039600201",
+        "name": "JIJIN THUNDATHIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MADATHUMPADI",
+      "person": {
+        "id": "2015039600301",
+        "name": "K.G SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALUMKAL",
+      "person": {
+        "id": "2015039600401",
+        "name": "ABHILASH K. NAIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANTHYALANKAVU",
+      "person": {
+        "id": "2015039600501",
+        "name": "KADAMMANITTA KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLELI",
+      "person": {
+        "id": "2015039600601",
+        "name": "PONNAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ILAPPUMKAL",
+      "person": {
+        "id": "2015039600701",
+        "name": "INDU RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KALLOOR",
+      "person": {
+        "id": "2015039600801",
+        "name": "SHEEBA KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KADAMMANITTA",
+      "person": {
+        "id": "2015039600901",
+        "name": "AMPILI HARIDAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MADUMECHIL",
+      "person": {
+        "id": "2015039601001",
+        "name": "JESSY MATHEW"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THONNYAMALA",
+      "person": {
+        "id": "2015039601101",
+        "name": "JAIMON KAKKANATTU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANNIDUMKUZHI",
+      "person": {
+        "id": "2015039601201",
+        "name": "JINI JOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAHANIMALA",
+      "person": {
+        "id": "2015039601301",
+        "name": "M.S SHARUKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKEBHAGAM",
+      "person": {
+        "id": "2015039601401",
+        "name": "ROSAMMA RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

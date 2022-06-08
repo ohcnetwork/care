@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348426031,
+  "date": "2019-08-21",
+  "name": "Vandazhy  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Alathur",
+  "area": "56.78km",
+  "localbody_code": "G091107",
+  "no_of_wards": 19,
+  "population": 28573,
+  "male": 13992,
+  "female": 14581,
+  "population_density": 503,
+  "sex_ratio": 1042,
+  "literacy_rate": 78.47,
+  "literacy_rate_male": 86.42,
+  "literacy_rate_female": 70.98,
+  "president": "SUMAVALIMOHANDAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALLIYODE",
+      "person": {
+        "id": "2015088300101",
+        "name": "SAJITHA UNNI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNUPARAMBU",
+      "person": {
+        "id": "2015088300201",
+        "name": "RADHAKRISHNAN K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHAKKANTHARA",
+      "person": {
+        "id": "2015088300301",
+        "name": "R SURESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANTHAPARAMBU",
+      "person": {
+        "id": "2015088300401",
+        "name": "ANITHA R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANALIPPADAM",
+      "person": {
+        "id": "2015088300501",
+        "name": "SHILPA A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MATHUR",
+      "person": {
+        "id": "2015088300601",
+        "name": "MURUKESAN P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEMBODE",
+      "person": {
+        "id": "2015088300701",
+        "name": "RAMYA PRAMOD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKEKKAD",
+      "person": {
+        "id": "2015088300801",
+        "name": "SANTHOSH S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VANDAZHY TOWN",
+      "person": {
+        "id": "2015088300901",
+        "name": "SUSEELA RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKETHARA",
+      "person": {
+        "id": "2015088301001",
+        "name": "K K MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHITTADY",
+      "person": {
+        "id": "2015088301101",
+        "name": "BINDU VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANGALAM DAM",
+      "person": {
+        "id": "2015088301201",
+        "name": "BINDHU SUBRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OLIMKADAVU",
+      "person": {
+        "id": "2015088301301",
+        "name": "SANTHOSH DOMINIC"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PONKANDAM",
+      "person": {
+        "id": "2015088301401",
+        "name": "BENNY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANIYAMANGALAM",
+      "person": {
+        "id": "2015088301501",
+        "name": "SUMAVALI MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULIKKALPARAMBU",
+      "person": {
+        "id": "2015088301601",
+        "name": "KAVITHA PREMDASAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VADAKKUMURI",
+      "person": {
+        "id": "2015088301701",
+        "name": "RAGESH R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PADINJARETHARA",
+      "person": {
+        "id": "2015088301801",
+        "name": "P SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MUDAPPALLUR",
+      "person": {
+        "id": "2015088301901",
+        "name": "MANJU SASI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346669929,
+  "date": "2019-08-21",
+  "name": "Krishnapuram  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Muthukulam",
+  "area": "10.64km",
+  "localbody_code": "G041206",
+  "no_of_wards": 17,
+  "population": 24242,
+  "male": 11778,
+  "female": 12464,
+  "population_density": 2278,
+  "sex_ratio": 1058,
+  "literacy_rate": 93,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 90,
+  "president": "VIJAYAMMAB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "DESATHINAKAM",
+      "person": {
+        "id": "2015049700101",
+        "name": "SREEDEVI OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULLIKKANAKKU NORTH",
+      "person": {
+        "id": "2015049700201",
+        "name": "I RAFEEK"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLIKKANAKKU",
+      "person": {
+        "id": "2015049700301",
+        "name": "BEENA PRASAD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULLIKKANAKKU SOUTH",
+      "person": {
+        "id": "2015049700401",
+        "name": "SWAPNA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANAYANNARKAVU",
+      "person": {
+        "id": "2015049700501",
+        "name": "JESSY KOSHY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAPPIL KUTTIPPURAM NORTH",
+      "person": {
+        "id": "2015049700601",
+        "name": "RADHAMANI RAJAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAPPIL EAST",
+      "person": {
+        "id": "2015049700701",
+        "name": "VAYALIL SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NJAKKANAL EAST",
+      "person": {
+        "id": "2015049700801",
+        "name": "SHAMILA BASHEER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAPPIL KUTTIPPURAM SOUTH",
+      "person": {
+        "id": "2015049700901",
+        "name": "LATHI ERAMATHOOR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NJAKKANAL WEST",
+      "person": {
+        "id": "2015049701001",
+        "name": "MAYA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHIYAKAVU",
+      "person": {
+        "id": "2015049701101",
+        "name": "C.A.ANSHAD"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KRISHNAPURAM SOUTH",
+      "person": {
+        "id": "2015049701201",
+        "name": "AYSHA SAJEER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SOUTH KOCHUMURI",
+      "person": {
+        "id": "2015049701301",
+        "name": "VIJAYAMMA B"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOCHUMURI",
+      "person": {
+        "id": "2015049701401",
+        "name": "SIKHA.G.KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KRISHNAPURAM",
+      "person": {
+        "id": "2015049701501",
+        "name": "BIJI S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANCHAYATH OFFICE  WARD",
+      "person": {
+        "id": "2015049701601",
+        "name": "M.V.SHYAM"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAPPIL MEKKU",
+      "person": {
+        "id": "2015049701701",
+        "name": "PARAYIL RADHAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

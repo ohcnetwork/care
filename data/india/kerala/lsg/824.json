@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348231059,
+  "date": "2019-08-21",
+  "name": "Lakkidi - Perur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Ottappalam",
+  "area": "30.79km",
+  "localbody_code": "G090304",
+  "no_of_wards": 19,
+  "population": 26571,
+  "male": 12580,
+  "female": 13991,
+  "population_density": 863,
+  "sex_ratio": 1114,
+  "literacy_rate": 87.77,
+  "literacy_rate_male": 92.12,
+  "literacy_rate_female": 83.93,
+  "president": "DEEPANARAYANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NELLIKKURUSSI NORTH",
+      "person": {
+        "id": "2015082400101",
+        "name": "SOJAN JOHN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MULAJUR WEST",
+      "person": {
+        "id": "2015082400201",
+        "name": "PUSHPA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULAJUR EAST",
+      "person": {
+        "id": "2015082400301",
+        "name": "SURESH BABU.M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEKKUMCHERODE",
+      "person": {
+        "id": "2015082400401",
+        "name": "DEEPA NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAZHAYAKLAKKIDI",
+      "person": {
+        "id": "2015082400501",
+        "name": "P.A.SHOUKATHALI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHIRIPPALA",
+      "person": {
+        "id": "2015082400601",
+        "name": "P.S.SHAJAHAN(SHAJI)"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ATHIKKAD",
+      "person": {
+        "id": "2015082400701",
+        "name": "SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOKATTUKUNNU",
+      "person": {
+        "id": "2015082400801",
+        "name": "SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERUMPARAMBU",
+      "person": {
+        "id": "2015082400901",
+        "name": "ISMAYIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AKALUR EAST",
+      "person": {
+        "id": "2015082401001",
+        "name": "SREELATHA.B.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AKALUR",
+      "person": {
+        "id": "2015082401101",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHUR SOUTH",
+      "person": {
+        "id": "2015082401201",
+        "name": "SHEEJA.K.V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHUR NORTH",
+      "person": {
+        "id": "2015082401301",
+        "name": "VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VADAKKUMANGALAM",
+      "person": {
+        "id": "2015082401401",
+        "name": "V.BALAGOPALAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KILLIKKURUSSI MANGALAM",
+      "person": {
+        "id": "2015082401501",
+        "name": "RADHA.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "LAKKIDI SOUTH",
+      "person": {
+        "id": "2015082401601",
+        "name": "SUNITHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "LAKKDID NORTH",
+      "person": {
+        "id": "2015082401701",
+        "name": "RADHA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THEKKUMANGALAM",
+      "person": {
+        "id": "2015082401801",
+        "name": "AJITHA.A"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NELLIKKURUSSI SOUTH",
+      "person": {
+        "id": "2015082401901",
+        "name": "K.NUSAIBA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

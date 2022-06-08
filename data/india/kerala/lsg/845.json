@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348299845,
+  "date": "2019-08-21",
+  "name": "Kodumbu  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Palakkad",
+  "area": "25.42km",
+  "localbody_code": "G091306",
+  "no_of_wards": 15,
+  "population": 18034,
+  "male": 8897,
+  "female": 9137,
+  "population_density": 709,
+  "sex_ratio": 1027,
+  "literacy_rate": 76.16,
+  "literacy_rate_male": 84.42,
+  "literacy_rate_female": 68.15,
+  "president": "S.SHYLAJA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAMKODE",
+      "person": {
+        "id": "2015084500101",
+        "name": "PRAKASHINI K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARAKKAD",
+      "person": {
+        "id": "2015084500201",
+        "name": "UNNIKRISHNAN.M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARINGARAPULLY",
+      "person": {
+        "id": "2015084500301",
+        "name": "DHANARAJ.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "OORAPPADAM",
+      "person": {
+        "id": "2015084500401",
+        "name": "V.CHATHU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ERATTAYAL",
+      "person": {
+        "id": "2015084500501",
+        "name": "S.SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MIDHUNAMPALLAM",
+      "person": {
+        "id": "2015084500601",
+        "name": "C.KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KODUMBU",
+      "person": {
+        "id": "2015084500701",
+        "name": "REVATHI.G"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AALTHARA",
+      "person": {
+        "id": "2015084500801",
+        "name": "K.JANAKI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHIRAPPADAM",
+      "person": {
+        "id": "2015084500901",
+        "name": "KALPAKAVALLY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OLASSERY",
+      "person": {
+        "id": "2015084501001",
+        "name": "SANTHA.M.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THASRACK",
+      "person": {
+        "id": "2015084501101",
+        "name": "K .KOMALAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PEZHUMPALLAM",
+      "person": {
+        "id": "2015084501201",
+        "name": "S.SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THIRUVALATHUR",
+      "person": {
+        "id": "2015084501301",
+        "name": "GURUVAYURAPPAN.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015084501401",
+        "name": "V.VISALU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CANAL",
+      "person": {
+        "id": "2015084501501",
+        "name": "M.SUMATHI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

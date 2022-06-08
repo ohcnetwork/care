@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348878608,
+  "date": "2019-08-21",
+  "name": "Onchiyam  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Vadakara",
+  "area": "8.72km",
+  "localbody_code": "G110104",
+  "no_of_wards": 17,
+  "population": 24856,
+  "male": 11861,
+  "female": 12995,
+  "population_density": 2850,
+  "sex_ratio": 1096,
+  "literacy_rate": 92.73,
+  "literacy_rate_male": 96.09,
+  "literacy_rate_female": 89.72,
+  "president": "KAVITHAP.V",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MADAKKARA",
+      "person": {
+        "id": "2015099700101",
+        "name": "GOPALA KRISHNAN V.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "K.P.R NAGAR",
+      "person": {
+        "id": "2015099700201",
+        "name": "KAVITHA P.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MALOLKUNNU",
+      "person": {
+        "id": "2015099700301",
+        "name": "JAYARAJAN P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAMAKKUNNU",
+      "person": {
+        "id": "2015099700401",
+        "name": "RAHEESA NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUTHIYOTTUMKANDY",
+      "person": {
+        "id": "2015099700502",
+        "name": "SREEJITH P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ONCHIYAM",
+      "person": {
+        "id": "2015099700601",
+        "name": "BABY GIRIJA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THAYYIL",
+      "person": {
+        "id": "2015099700701",
+        "name": "RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VELLIKULANGARA",
+      "person": {
+        "id": "2015099700801",
+        "name": "SHAJINA K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALLATHUKUNNU",
+      "person": {
+        "id": "2015099700901",
+        "name": "VIJAYAN N.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADAPURAMROAD",
+      "person": {
+        "id": "2015099701001",
+        "name": "PRASEETHA P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARAKKAL",
+      "person": {
+        "id": "2015099701101",
+        "name": "PRASHANTH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ARAKKAL EAST",
+      "person": {
+        "id": "2015099701201",
+        "name": "SUGUNAN P.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "DISPENSARY",
+      "person": {
+        "id": "2015099701301",
+        "name": "VIJAYALAKSHMI K.T.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MADAPPALLY COLLEGE",
+      "person": {
+        "id": "2015099701401",
+        "name": "SASIKALA DINESAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANNUVAYAL",
+      "person": {
+        "id": "2015099701501",
+        "name": "RETHIDEVI P.M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KELUBAZAR BEACH",
+      "person": {
+        "id": "2015099701601",
+        "name": "SAREENA RAJAN N"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VALIYA MADAKKARA",
+      "person": {
+        "id": "2015099701701",
+        "name": "YOOSAF KOLLANTAVIDA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

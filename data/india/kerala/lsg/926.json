@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348635947,
+  "date": "2019-08-21",
+  "name": "Cheacode  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Areekkode",
+  "area": "46.72km",
+  "localbody_code": "G100505",
+  "no_of_wards": 18,
+  "population": 42125,
+  "male": 20836,
+  "female": 21289,
+  "population_density": 902,
+  "sex_ratio": 1022,
+  "literacy_rate": 83.25,
+  "literacy_rate_male": 92.15,
+  "literacy_rate_female": 84.35,
+  "president": "K.PSAYEED",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLIPPADI",
+      "person": {
+        "id": "2015092600101",
+        "name": "THAHIRA.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VETTUPARA",
+      "person": {
+        "id": "2015092600201",
+        "name": "K.P SAYEED"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAVOOR",
+      "person": {
+        "id": "2015092600301",
+        "name": "SAJITHA IQUBAL MALAYIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNITHALAKKADAVU",
+      "person": {
+        "id": "2015092600401",
+        "name": "PATTAKKAL VADAKKEYIL SAINABA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELANGAVU",
+      "person": {
+        "id": "2015092600501",
+        "name": "NARAYANAN KANCHIRANGOTTU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAPUR",
+      "person": {
+        "id": "2015092600601",
+        "name": "DHANYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUNDAKKAL- EAST",
+      "person": {
+        "id": "2015092600701",
+        "name": "SHAHUL HAMEED PONNADAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERIYAPARAMB",
+      "person": {
+        "id": "2015092600801",
+        "name": "UMMER (KUNCHUMANI)"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEACODE-EAST",
+      "person": {
+        "id": "2015092600901",
+        "name": "NASEERA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEACODE-WEST",
+      "person": {
+        "id": "2015092601001",
+        "name": "RASEEYA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUNDAKKAL- WEST",
+      "person": {
+        "id": "2015092601101",
+        "name": "P.A . ASLAM MASTER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "OMANOOR-EAST",
+      "person": {
+        "id": "2015092601201",
+        "name": "PANDIYATHUMMAL BUSHRA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLIPURAYA",
+      "person": {
+        "id": "2015092601301",
+        "name": "ELANKAYIL MUMTHAS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OMANOOR-WEST",
+      "person": {
+        "id": "2015092601401",
+        "name": "MUHAMMED BASHEER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KACHERITHADAM",
+      "person": {
+        "id": "2015092601501",
+        "name": "SULOCHANA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PONNAD",
+      "person": {
+        "id": "2015092601601",
+        "name": "ABDU SAMAD"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ADOORAPARAMB",
+      "person": {
+        "id": "2015092601701",
+        "name": "MANGALASSERI MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOLAMBALAM",
+      "person": {
+        "id": "2015092601801",
+        "name": "SREEJA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

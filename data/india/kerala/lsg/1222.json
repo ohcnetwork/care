@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349653802,
+  "date": "2019-08-21",
+  "name": "Kaladi  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Ponnani",
+  "area": "16.48km",
+  "localbody_code": "G101404",
+  "no_of_wards": 16,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "K.P.KAVITHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NARIPPARAMBA",
+      "person": {
+        "id": "2015122200101",
+        "name": "SALEEM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VAYALIPATTA",
+      "person": {
+        "id": "2015122200201",
+        "name": "PREMA M.V."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THANDILAM",
+      "person": {
+        "id": "2015122200301",
+        "name": "NOUFAL C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADANCHERI",
+      "person": {
+        "id": "2015122200401",
+        "name": "PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAPPURAM",
+      "person": {
+        "id": "2015122200501",
+        "name": "BINDU P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHALAPPURAM",
+      "person": {
+        "id": "2015122200601",
+        "name": "ABOOBACKER V.V."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALADI",
+      "person": {
+        "id": "2015122200701",
+        "name": "ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOCHAMKUNNU",
+      "person": {
+        "id": "2015122200801",
+        "name": "K. P. KAVITHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANDANAKAM",
+      "person": {
+        "id": "2015122200901",
+        "name": "PRASANNA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAVILPADI",
+      "person": {
+        "id": "2015122201001",
+        "name": "VIJAYAKUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VEROOR",
+      "person": {
+        "id": "2015122201101",
+        "name": "BABURAJ"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUTHI",
+      "person": {
+        "id": "2015122201201",
+        "name": "K. FATHIMA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOORCHIRA",
+      "person": {
+        "id": "2015122201301",
+        "name": "JAYASREE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANGATOOR",
+      "person": {
+        "id": "2015122201401",
+        "name": "ALUNGAL MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POTHANOOR THEKKUMMURI",
+      "person": {
+        "id": "2015122201501",
+        "name": "HARIDASAN .N"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POTHANOOR",
+      "person": {
+        "id": "2015122201601",
+        "name": "SUJITHA MANIKANDAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

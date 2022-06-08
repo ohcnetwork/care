@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346149863,
+  "date": "2019-08-21",
+  "name": "Kottamkara  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Mukathala",
+  "area": "10.63km",
+  "localbody_code": "G020903",
+  "no_of_wards": 21,
+  "population": 29612,
+  "male": 12949,
+  "female": 16663,
+  "population_density": 2786,
+  "sex_ratio": 1004,
+  "literacy_rate": 90.52,
+  "literacy_rate_male": 94.65,
+  "literacy_rate_female": 86.43,
+  "president": "VINITHAKUMARY.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUNUKKANNOOR",
+      "person": {
+        "id": "2015035800101",
+        "name": "REGHU PANDAVAPURAM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOVILMUKKU",
+      "person": {
+        "id": "2015035800201",
+        "name": "ANISHA SYAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHENKULANGARA",
+      "person": {
+        "id": "2015035800301",
+        "name": "N. PRABHAKARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOLASSERI",
+      "person": {
+        "id": "2015035800401",
+        "name": "ABUBAKER SINDHIK"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANDALAM",
+      "person": {
+        "id": "2015035800501",
+        "name": "DEEPA. J"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAMPUZHA",
+      "person": {
+        "id": "2015035800602",
+        "name": "VIJAYAN PILLAI PK"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTAMKARA",
+      "person": {
+        "id": "2015035800701",
+        "name": "SUJITHA. V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAYANASALA",
+      "person": {
+        "id": "2015035800801",
+        "name": "ANITHAKUMARY. C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ELIPPIKKONAM",
+      "person": {
+        "id": "2015035800901",
+        "name": "VINITHAKUMARY. P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PEROOR",
+      "person": {
+        "id": "2015035801001",
+        "name": "BIJU. C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AMBEDKAR GRAMAM",
+      "person": {
+        "id": "2015035801101",
+        "name": "ABDULKALAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "M.V.G.H.S",
+      "person": {
+        "id": "2015035801201",
+        "name": "LALITHA. G"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THETTICHIRA",
+      "person": {
+        "id": "2015035801301",
+        "name": "SHAMLABEEVI. S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUTTICHIRA",
+      "person": {
+        "id": "2015035801401",
+        "name": "SHIJI. M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015035801501",
+        "name": "H. HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARICODE",
+      "person": {
+        "id": "2015035801601",
+        "name": "B. KUMARI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MEKKONE",
+      "person": {
+        "id": "2015035801701",
+        "name": "NIYAS. A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHANDANATHOPPE",
+      "person": {
+        "id": "2015035801801",
+        "name": "ABIDABEEVI. S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MAMOODU",
+      "person": {
+        "id": "2015035801901",
+        "name": "UDAYAKUMAR. P"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "VILLAGE",
+      "person": {
+        "id": "2015035802001",
+        "name": "J. SIVANANDAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KERALAPURAM",
+      "person": {
+        "id": "2015035802101",
+        "name": "BEENA PRASAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

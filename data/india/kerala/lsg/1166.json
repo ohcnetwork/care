@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349465676,
+  "date": "2019-08-21",
+  "name": "Thillankery  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "25.06km",
+  "localbody_code": "G131004",
+  "no_of_wards": 13,
+  "population": 12347,
+  "male": 6050,
+  "female": 6297,
+  "population_density": 493,
+  "sex_ratio": 1041,
+  "literacy_rate": 86.96,
+  "literacy_rate_male": 92.88,
+  "literacy_rate_female": 81.32,
+  "president": "SUBHASHPP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADIKKACHAL",
+      "person": {
+        "id": "2015116600101",
+        "name": "ANISHA N"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THEKKAMPOYIL",
+      "person": {
+        "id": "2015116600201",
+        "name": "KANCHANA P V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VATTAPARAMB",
+      "person": {
+        "id": "2015116600301",
+        "name": "SANKARAN A K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAZHAKKAL",
+      "person": {
+        "id": "2015116600401",
+        "name": "NARAYANAN U C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THILLENKERY",
+      "person": {
+        "id": "2015116600501",
+        "name": "MINI V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VANHERY",
+      "person": {
+        "id": "2015116600601",
+        "name": "SHYMA C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARUVALLY",
+      "person": {
+        "id": "2015116600701",
+        "name": "SREEDHARAN P.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAVUMPADY",
+      "person": {
+        "id": "2015116600801",
+        "name": "MUNEER T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINGANAM",
+      "person": {
+        "id": "2015116600901",
+        "name": "SUBHASH P P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ALAYAD",
+      "person": {
+        "id": "2015116601001",
+        "name": "ASHA K V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANHIRAD",
+      "person": {
+        "id": "2015116601101",
+        "name": "SATHI T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MACHOORMALA",
+      "person": {
+        "id": "2015116601201",
+        "name": "PREETHA K K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLYAM",
+      "person": {
+        "id": "2015116601301",
+        "name": "RAJAN P K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

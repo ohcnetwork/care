@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348225021,
+  "date": "2019-08-21",
+  "name": "Ananganadi  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Ottappalam",
+  "area": "20.78km",
+  "localbody_code": "G090302",
+  "no_of_wards": 15,
+  "population": 20284,
+  "male": 9589,
+  "female": 10695,
+  "population_density": 976,
+  "sex_ratio": 1115,
+  "literacy_rate": 87.83,
+  "literacy_rate_male": 91.05,
+  "literacy_rate_female": 85.02,
+  "president": "N.R.RANJITH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THARUVAKKONAM",
+      "person": {
+        "id": "2015082200101",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANANGANADI",
+      "person": {
+        "id": "2015082200201",
+        "name": "IBRAHIM MENAKKAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALAKKODE",
+      "person": {
+        "id": "2015082200301",
+        "name": "HASEENA TEACHER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTHAKURSSI",
+      "person": {
+        "id": "2015082200401",
+        "name": "PRAMEELA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANAMANNA",
+      "person": {
+        "id": "2015082200501",
+        "name": "SALEENA.T.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAPPARAMBU",
+      "person": {
+        "id": "2015082200601",
+        "name": "SAFIYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AMBALAVATTOM",
+      "person": {
+        "id": "2015082200701",
+        "name": "MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "V K PADI VELLINAMKUNNU",
+      "person": {
+        "id": "2015082200801",
+        "name": "ASHARAF"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHAMKULAM",
+      "person": {
+        "id": "2015082200901",
+        "name": "VANAJA.C.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATHAMKULAM SEED FARM",
+      "person": {
+        "id": "2015082201001",
+        "name": "N.R.RANJITH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAVUKKONAM",
+      "person": {
+        "id": "2015082201101",
+        "name": "JAMEELA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTAKKULAM",
+      "person": {
+        "id": "2015082201201",
+        "name": "O.MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANTHURPARAMBU",
+      "person": {
+        "id": "2015082201301",
+        "name": "NISHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "GANAPATHIPPARA",
+      "person": {
+        "id": "2015082201401",
+        "name": "C.P.SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PALAKKOTTANGADI",
+      "person": {
+        "id": "2015082201501",
+        "name": "K.SAJEEV"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

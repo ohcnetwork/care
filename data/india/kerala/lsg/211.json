@@ -1,0 +1,421 @@
+{
+  "timeStamp": 1566345640482,
+  "date": "2019-08-21",
+  "name": "Manjeri  Municipality, Malappuram District",
+  "district": "Malappuram",
+  "area": "53.06km",
+  "localbody_code": "M100300",
+  "no_of_wards": 50,
+  "population": 53650,
+  "male": 25903,
+  "female": 27747,
+  "population_density": 1307,
+  "sex_ratio": 1011,
+  "literacy_rate": 92.42,
+  "literacy_rate_male": 95.11,
+  "literacy_rate_female": 89.72,
+  "chairperson": "SUBAIDA.V.M",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KIDANGAZHI",
+      "person": {
+        "id": "2015021100101",
+        "name": "SABIRA KURIKKAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERAMBRA",
+      "person": {
+        "id": "2015021100201",
+        "name": "VALLANCHIRA MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLUR",
+      "person": {
+        "id": "2015021100301",
+        "name": "SHEEBA RAJAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHETTIYANGADI",
+      "person": {
+        "id": "2015021100401",
+        "name": "K.P.UMMER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERANI",
+      "person": {
+        "id": "2015021100501",
+        "name": "NOORJAHAN.C.T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLIPARAMBA",
+      "person": {
+        "id": "2015021100601",
+        "name": "AYISHA KARAT"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MELAKKAM",
+      "person": {
+        "id": "2015021100701",
+        "name": "P.G.UPENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CULLAKKAD",
+      "person": {
+        "id": "2015021100801",
+        "name": "K.K.B.MOHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THADATHIKUZHI",
+      "person": {
+        "id": "2015021100901",
+        "name": "ADV.BEENA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOZHIKKATTUKUNNU",
+      "person": {
+        "id": "2015021101001",
+        "name": "MOHAMMED MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUNNAKUZHI",
+      "person": {
+        "id": "2015021101101",
+        "name": "SAJLA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANGALASHERI",
+      "person": {
+        "id": "2015021101201",
+        "name": "KUTTAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALAKKULAM",
+      "person": {
+        "id": "2015021101301",
+        "name": "RAMACHANDRAN A/S MANUTTY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THANIPPARA",
+      "person": {
+        "id": "2015021101401",
+        "name": "ADV.K.FEROZ BABU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "COLLEGE KUNNU",
+      "person": {
+        "id": "2015021101501",
+        "name": "AJMAL SUHEED"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KIZHAKKETHALA",
+      "person": {
+        "id": "2015021101601",
+        "name": "THALAPPIL SOUJATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VADAKKANGARA",
+      "person": {
+        "id": "2015021101701",
+        "name": "SAMIYYA.V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PAYYANAD",
+      "person": {
+        "id": "2015021101801",
+        "name": "MARUNNAN MOHAMMED"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ELAMBRA",
+      "person": {
+        "id": "2015021101901",
+        "name": "ASMABI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ATHANIKKAL",
+      "person": {
+        "id": "2015021102001",
+        "name": "INDIRA.P"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THAMARASHERI",
+      "person": {
+        "id": "2015021102101",
+        "name": "RAJITHA.K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "NELLIKUTH L.P SCHOOL",
+      "person": {
+        "id": "2015021102201",
+        "name": "AMEENA"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "NELLIKUTH HIGH  SCHOOL",
+      "person": {
+        "id": "2015021102301",
+        "name": "ABOOBACKER.M.V"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "CHALUKULAM",
+      "person": {
+        "id": "2015021102401",
+        "name": "ABDUL KABEER"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KIZHAKKEKUNNU",
+      "person": {
+        "id": "2015021102501",
+        "name": "MANCHERI FASLA"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "PILAKKAL",
+      "person": {
+        "id": "2015021102601",
+        "name": "UMMU HABEEBA.K.P"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "AMAYAMKODE",
+      "person": {
+        "id": "2015021102701",
+        "name": "RISVANA RAHIM.P"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "PULLANCHERI",
+      "person": {
+        "id": "2015021102801",
+        "name": "ABOOBACKER.M.P"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "VETTEKKODE",
+      "person": {
+        "id": "2015021102901",
+        "name": "SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "VELLARANGAL",
+      "person": {
+        "id": "2015021103001",
+        "name": "SAKEENA.C"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "VAYPARAPADI",
+      "person": {
+        "id": "2015021103101",
+        "name": "SAJITH KOLOT"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KOVILAKAM KUNDU",
+      "person": {
+        "id": "2015021103201",
+        "name": "K.C.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015021103301",
+        "name": "KRISHNADAS RAJA.K.C"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "SHANTHI GRAMAM",
+      "person": {
+        "id": "2015021103401",
+        "name": "SIKKENDER HAYATH"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "ARUKIZHAYA",
+      "person": {
+        "id": "2015021103501",
+        "name": "MOHANA DASAN"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "ULLADAMKUNNU",
+      "person": {
+        "id": "2015021103601",
+        "name": "SUNEERA SAINUDHEEN.K"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "MULLAMBARA",
+      "person": {
+        "id": "2015021103701",
+        "name": "SAMEERA MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "VAKKETHODI",
+      "person": {
+        "id": "2015021103801",
+        "name": "FATHIMA SHAHANA"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "THADATHIPARAMBA",
+      "person": {
+        "id": "2015021103901",
+        "name": "SOUJA ATHIMANNIL"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "VATTAPPARA",
+      "person": {
+        "id": "2015021104001",
+        "name": "SUBAIDA.V.M"
+      }
+    },
+    {
+      "ward_number": "41",
+      "name": "PULIYANTHODI",
+      "person": {
+        "id": "2015021104101",
+        "name": "SABANA SALEEM"
+      }
+    },
+    {
+      "ward_number": "42",
+      "name": "THURAKKAL",
+      "person": {
+        "id": "2015021104201",
+        "name": "THURAKKAL YASHIK"
+      }
+    },
+    {
+      "ward_number": "43",
+      "name": "POTTAMMAL",
+      "person": {
+        "id": "2015021104301",
+        "name": "SHAINI.A"
+      }
+    },
+    {
+      "ward_number": "44",
+      "name": "PATTARKULAM",
+      "person": {
+        "id": "2015021104401",
+        "name": "SANOOJA MUNEER"
+      }
+    },
+    {
+      "ward_number": "45",
+      "name": "MARIYAD",
+      "person": {
+        "id": "2015021104501",
+        "name": "ALAVI.M"
+      }
+    },
+    {
+      "ward_number": "46",
+      "name": "VEEMBOOR",
+      "person": {
+        "id": "2015021104601",
+        "name": "KUTTIKADAN KUNHIMUHAMMED HAJI"
+      }
+    },
+    {
+      "ward_number": "47",
+      "name": "NARUKARA",
+      "person": {
+        "id": "2015021104701",
+        "name": "KODAKKADAN HASSAIN"
+      }
+    },
+    {
+      "ward_number": "48",
+      "name": "AMBALAPPADI",
+      "person": {
+        "id": "2015021104801",
+        "name": "V.P.FIROZ"
+      }
+    },
+    {
+      "ward_number": "49",
+      "name": "KARUVAMBRAM",
+      "person": {
+        "id": "2015021104901",
+        "name": "C.VILASINI"
+      }
+    },
+    {
+      "ward_number": "50",
+      "name": "RAMAMKULAM",
+      "person": {
+        "id": "2015021105001",
+        "name": "SAJNA.T"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

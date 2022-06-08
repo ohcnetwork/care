@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347251648,
+  "date": "2019-08-21",
+  "name": "Amballoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Mullamthuruthy",
+  "area": "22.6km",
+  "localbody_code": "G070905",
+  "no_of_wards": 16,
+  "population": 20970,
+  "male": 10477,
+  "female": 10493,
+  "population_density": 928,
+  "sex_ratio": 1001,
+  "literacy_rate": 92.52,
+  "literacy_rate_male": 96.73,
+  "literacy_rate_female": 88.34,
+  "president": "JALAJAMOHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMBALLOOR WEST",
+      "person": {
+        "id": "2015067400101",
+        "name": "BEENA MUKUNDAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AAKKAPPANAM",
+      "person": {
+        "id": "2015067400201",
+        "name": "JALAJA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AMBALLOOR EAST",
+      "person": {
+        "id": "2015067400301",
+        "name": "LEKHA SHAJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AMBALLOOR",
+      "person": {
+        "id": "2015067400401",
+        "name": "SHEELA SATHYAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANJIRAMATTOM CENTRE",
+      "person": {
+        "id": "2015067400501",
+        "name": "SHAIJA ASHARAF"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KULAYATTIKKARA NORTH",
+      "person": {
+        "id": "2015067400601",
+        "name": "SATHEESHAN TP"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULAYATTIKKARA",
+      "person": {
+        "id": "2015067400701",
+        "name": "M B SANTHAKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOTTARA",
+      "person": {
+        "id": "2015067400801",
+        "name": "K J JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THOTTARA EAST",
+      "person": {
+        "id": "2015067400901",
+        "name": "MANOJ KUMAR P K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ARAYANKAVU",
+      "person": {
+        "id": "2015067401001",
+        "name": "M K RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KEECHERY",
+      "person": {
+        "id": "2015067401101",
+        "name": "BIJOY KUMAR P.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PLAPPILLY",
+      "person": {
+        "id": "2015067401201",
+        "name": "JISHA RAMESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAMBUZHA",
+      "person": {
+        "id": "2015067401301",
+        "name": "JALAJA MANIYAPPAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHUVASSERY",
+      "person": {
+        "id": "2015067401401",
+        "name": "SAIBA THAJUDEEN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANJIRAMATTOM",
+      "person": {
+        "id": "2015067401501",
+        "name": "M A SALIM"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KANJIRAMATTOM WEST",
+      "person": {
+        "id": "2015067401601",
+        "name": "K S RADHAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

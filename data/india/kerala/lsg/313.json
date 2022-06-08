@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346002973,
+  "date": "2019-08-21",
+  "name": "Sooranad South  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Sasthamcotta",
+  "area": "17.17km",
+  "localbody_code": "G020203",
+  "no_of_wards": 16,
+  "population": 21282,
+  "male": 10543,
+  "female": 10739,
+  "population_density": 1239,
+  "sex_ratio": 1019,
+  "literacy_rate": 90.78,
+  "literacy_rate_male": 94.24,
+  "literacy_rate_female": 87.39,
+  "president": "M.DARSANANPILLAI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ERAVICHIRA WEST",
+      "person": {
+        "id": "2015031300101",
+        "name": "KALESH.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERAVICHIRA",
+      "person": {
+        "id": "2015031300201",
+        "name": "THANKAMANI.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERAVICHIRA NADUVIL",
+      "person": {
+        "id": "2015031300301",
+        "name": "GEETHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THRIKKUNNAPUZHA NORTH",
+      "person": {
+        "id": "2015031300403",
+        "name": "V SASEENDRAN  PILLAI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ERAVICHIRA EAST",
+      "person": {
+        "id": "2015031300501",
+        "name": "REENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "INCHAKKADU NORTH",
+      "person": {
+        "id": "2015031300601",
+        "name": "SUNITHA PRASAD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THRIKKUNNAPUZHA",
+      "person": {
+        "id": "2015031300701",
+        "name": "PUSHPAKUMARY.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "INCHAKKADU",
+      "person": {
+        "id": "2015031300801",
+        "name": "ANEESHA SAJEEV"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AYIKKUNNAM",
+      "person": {
+        "id": "2015031300901",
+        "name": "M.DARSANAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIKKUNNAPUZHA SOUTH",
+      "person": {
+        "id": "2015031301001",
+        "name": "SALEENA.A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERAVICHIRA SOUTH",
+      "person": {
+        "id": "2015031301101",
+        "name": "A.V SASIDHARA KURUP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATHARAM",
+      "person": {
+        "id": "2015031301201",
+        "name": "CHANDRABABAU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUMARANCHIRA",
+      "person": {
+        "id": "2015031301301",
+        "name": "DEEPA.D"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KIDANGAYAM KANNIMEL",
+      "person": {
+        "id": "2015031301401",
+        "name": "MAYA VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIDANGAYAM NADUVIL",
+      "person": {
+        "id": "2015031301501",
+        "name": "PRASAD.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KIDANGAYAM NORTH",
+      "person": {
+        "id": "2015031301601",
+        "name": "RAJI.V.C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

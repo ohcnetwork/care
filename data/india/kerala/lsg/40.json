@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344983088,
+  "date": "2019-08-21",
+  "name": "Champakulam  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Champakkulam",
+  "area": "151.65km",
+  "localbody_code": "B040600",
+  "no_of_wards": 13,
+  "population": 123317,
+  "male": 60440,
+  "female": 62877,
+  "population_density": 813,
+  "sex_ratio": 1040,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "POLYTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUTTANANGALAM",
+      "person": {
+        "id": "2015004000101",
+        "name": "MADHU C KOLANGARA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANCOMPU THEKKEKARA",
+      "person": {
+        "id": "2015004000201",
+        "name": "MURALI K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EDATHUA",
+      "person": {
+        "id": "2015004000301",
+        "name": "POLY THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NADUVILEMURI",
+      "person": {
+        "id": "2015004000401",
+        "name": "REMANI.S BHANU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THALAVADY",
+      "person": {
+        "id": "2015004000501",
+        "name": "SINDHU MAHESHAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANAPRAMBAL",
+      "person": {
+        "id": "2015004000601",
+        "name": "BIJU PALATHINKAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PACHA",
+      "person": {
+        "id": "2015004000701",
+        "name": "MONCY SONY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THAKAZHY",
+      "person": {
+        "id": "2015004000801",
+        "name": "SAJITHAKUMARY (MAYA)"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NADUBHAGOM",
+      "person": {
+        "id": "2015004000901",
+        "name": "K PRAKASHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMPUMPURAM",
+      "person": {
+        "id": "2015004001001",
+        "name": "MINI MANMADHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHAMPAKULAM",
+      "person": {
+        "id": "2015004001101",
+        "name": "PRASANNA KUMARI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEDUMUDY",
+      "person": {
+        "id": "2015004001201",
+        "name": "ULLAS.B. KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAINKARY",
+      "person": {
+        "id": "2015004001301",
+        "name": "KAMALAMMA UDAYANANDAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

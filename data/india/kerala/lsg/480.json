@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346588387,
+  "date": "2019-08-21",
+  "name": "Cheruthana  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Harippad",
+  "area": "14.25km",
+  "localbody_code": "G040907",
+  "no_of_wards": 13,
+  "population": 12811,
+  "male": 6200,
+  "female": 6611,
+  "population_density": 899,
+  "sex_ratio": 1066,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "RETNAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAANDI",
+      "person": {
+        "id": "2015048000101",
+        "name": "PONNAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "POCHA",
+      "person": {
+        "id": "2015048000201",
+        "name": "PRASAD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANARY VADAKKEKARA",
+      "person": {
+        "id": "2015048000301",
+        "name": "SREEJA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANARY THEKKEKARA",
+      "person": {
+        "id": "2015048000401",
+        "name": "RETNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEKKEKARA THEKKEYATTAM",
+      "person": {
+        "id": "2015048000501",
+        "name": "REVAMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHAKKOORETHU",
+      "person": {
+        "id": "2015048000601",
+        "name": "RAJESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VETTOLIL",
+      "person": {
+        "id": "2015048000701",
+        "name": "HARIKUMAR.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "HIGH SCHOOL WARD",
+      "person": {
+        "id": "2015048000801",
+        "name": "RAJASEKHAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AYAPARAMBU THEKKEKARA",
+      "person": {
+        "id": "2015048000901",
+        "name": "SARITHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERUTHANA THEKKEKARA",
+      "person": {
+        "id": "2015048001001",
+        "name": "SUJINI.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VADAKKEKARA THEKKEYATTAM",
+      "person": {
+        "id": "2015048001101",
+        "name": "PADMAJA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AYAPARAMBU VADAKKEKARA",
+      "person": {
+        "id": "2015048001201",
+        "name": "SREEKALA.L"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUTHANA VADAKKEKARA",
+      "person": {
+        "id": "2015048001301",
+        "name": "KRISHNA KUMARI.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345100507,
+  "date": "2019-08-21",
+  "name": "Pampakuda  Block Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Pampakuda",
+  "area": "213.6km",
+  "localbody_code": "B071200",
+  "no_of_wards": 13,
+  "population": 134508,
+  "male": 67538,
+  "female": 66970,
+  "population_density": 630,
+  "sex_ratio": 992,
+  "literacy_rate": 93.36,
+  "literacy_rate_male": 95.35,
+  "literacy_rate_female": 89.35,
+  "president": "SUMITHSURENDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "OORAMANA",
+      "person": {
+        "id": "2015007800101",
+        "name": "SUMITH SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAMPAKUDA",
+      "person": {
+        "id": "2015007800201",
+        "name": "O.K.KUTTAPPAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANNATHOOR",
+      "person": {
+        "id": "2015007800301",
+        "name": "V.C.KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOONGAMKUNNU",
+      "person": {
+        "id": "2015007800401",
+        "name": "JAYA BIJUMON"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALAKKUZHA",
+      "person": {
+        "id": "2015007800501",
+        "name": "REMA K.N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UPPUKANDAM",
+      "person": {
+        "id": "2015007800601",
+        "name": "USHA SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THIRUMARADY",
+      "person": {
+        "id": "2015007800701",
+        "name": "JESSY JOHNY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTHOLAPURAM",
+      "person": {
+        "id": "2015007800801",
+        "name": "BINDHU SIBY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ELANJI",
+      "person": {
+        "id": "2015007800901",
+        "name": "SANTHOSH KORAPILLA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERIYAPPURAM",
+      "person": {
+        "id": "2015007801001",
+        "name": "K.G.SHIBU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANCHELPETTY",
+      "person": {
+        "id": "2015007801101",
+        "name": "LILLY JOY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MAMALASSERY",
+      "person": {
+        "id": "2015007801201",
+        "name": "SHYAMALA GOPALAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "RAMAMANGALAM",
+      "person": {
+        "id": "2015007801301",
+        "name": "JINSON V PAUL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

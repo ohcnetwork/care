@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566347440358,
+  "date": "2019-08-21",
+  "name": "Kadavallur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chowwannur",
+  "area": "24.84km",
+  "localbody_code": "G080203",
+  "no_of_wards": 20,
+  "population": 30019,
+  "male": 14581,
+  "female": 15438,
+  "population_density": 1208,
+  "sex_ratio": 1059,
+  "literacy_rate": 87.82,
+  "literacy_rate_male": 91.7,
+  "literacy_rate_female": 84.25,
+  "president": "SOBHANAU.P.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAVALLUR EAST",
+      "person": {
+        "id": "2015072100101",
+        "name": "SHEELAKUMARI M.N."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKUMURY",
+      "person": {
+        "id": "2015072100201",
+        "name": "RAJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLUMPURAM",
+      "person": {
+        "id": "2015072100301",
+        "name": "MARY JIJI SHIJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VATTAMAVU",
+      "person": {
+        "id": "2015072100401",
+        "name": "GIRIJA E.C."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODATHUMKUND",
+      "person": {
+        "id": "2015072100502",
+        "name": "RAJAN K.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHAKKARA",
+      "person": {
+        "id": "2015072100601",
+        "name": "NIJIMOL T.K."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KORATTIKKARA",
+      "person": {
+        "id": "2015072100701",
+        "name": "PRABHATH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OTTAPPILAVU",
+      "person": {
+        "id": "2015072100801",
+        "name": "SAJITHA T.S."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANIYARKKODE",
+      "person": {
+        "id": "2015072100901",
+        "name": "ASHARAF T.K."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THIPPILASSERI",
+      "person": {
+        "id": "2015072101001",
+        "name": "VALSALA K.I."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLIKKULAM",
+      "person": {
+        "id": "2015072101101",
+        "name": "BINI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALTHARA",
+      "person": {
+        "id": "2015072101201",
+        "name": "NISHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHANKULAM",
+      "person": {
+        "id": "2015072101301",
+        "name": "SIVARAMAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUMPILAVU",
+      "person": {
+        "id": "2015072101401",
+        "name": "RAJIN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PORAVOOR",
+      "person": {
+        "id": "2015072101501",
+        "name": "SUDHEER"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARUVAKKUNNU",
+      "person": {
+        "id": "2015072101601",
+        "name": "SUHARA K.K."
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KARIKKAD",
+      "person": {
+        "id": "2015072101701",
+        "name": "SHEBEER A.V."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VILLANNUR",
+      "person": {
+        "id": "2015072101801",
+        "name": "BALAN P.M."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOTTOL",
+      "person": {
+        "id": "2015072101901",
+        "name": "JAMALUDEEN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KADAVALLUR CENTRE",
+      "person": {
+        "id": "2015072102001",
+        "name": "SOBHANA U.P."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

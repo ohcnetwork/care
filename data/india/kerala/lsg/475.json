@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346573299,
+  "date": "2019-08-21",
+  "name": "Thrikkunnappuzha  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Harippad",
+  "area": "12.53km",
+  "localbody_code": "G040902",
+  "no_of_wards": 17,
+  "population": 25849,
+  "male": 12790,
+  "female": 13059,
+  "population_density": 2063,
+  "sex_ratio": 1021,
+  "literacy_rate": 89,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 83,
+  "president": "AMMINITEACHER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLANA NORTH",
+      "person": {
+        "id": "2015047500101",
+        "name": "OMANA C R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "LEKSHMITHOPPU",
+      "person": {
+        "id": "2015047500201",
+        "name": "G KARTHIKEYAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EDAPALLITHOPPU",
+      "person": {
+        "id": "2015047500301",
+        "name": "GEETHA R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAKKAMADACKAL",
+      "person": {
+        "id": "2015047500401",
+        "name": "K JANADASAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALIYAPARAMBU",
+      "person": {
+        "id": "2015047500501",
+        "name": "AMMINI TEACHER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "S N NAGAR",
+      "person": {
+        "id": "2015047500601",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PATHIYANKARA SOUTH",
+      "person": {
+        "id": "2015047500701",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PATHIYANKARA NORTH",
+      "person": {
+        "id": "2015047500801",
+        "name": "SUJAMOL R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTEMURI",
+      "person": {
+        "id": "2015047500901",
+        "name": "SUDHILAL THRIKKUNNAPPUZHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MATHUKKAL",
+      "person": {
+        "id": "2015047501001",
+        "name": "S SUDHEESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLIPPATTUMURI",
+      "person": {
+        "id": "2015047501101",
+        "name": "JAYANTHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHELAKKADU",
+      "person": {
+        "id": "2015047501201",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANOOR SOUTH",
+      "person": {
+        "id": "2015047501301",
+        "name": "ABIDA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANOOR CENTRAL",
+      "person": {
+        "id": "2015047501401",
+        "name": "HARIS ANDOLY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANOOR NORTH",
+      "person": {
+        "id": "2015047501501",
+        "name": "A SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTIKKADU",
+      "person": {
+        "id": "2015047501601",
+        "name": "MYMOONATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLANA SOUTH",
+      "person": {
+        "id": "2015047501701",
+        "name": "RAJESH V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

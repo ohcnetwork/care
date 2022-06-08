@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346508344,
+  "date": "2019-08-21",
+  "name": "Kainakary  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Champakkulam",
+  "area": "36.64km",
+  "localbody_code": "G040606",
+  "no_of_wards": 15,
+  "population": 26862,
+  "male": 13342,
+  "female": 13520,
+  "population_density": 733,
+  "sex_ratio": 1046,
+  "literacy_rate": 98,
+  "literacy_rate_male": 99,
+  "literacy_rate_female": 97,
+  "president": "SHEELA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUPPAPPURAM",
+      "person": {
+        "id": "2015045700101",
+        "name": "SUSEELA BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERUKALIKAYAL",
+      "person": {
+        "id": "2015045700202",
+        "name": "ANITHA PRASAD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUTTAMANGALAM",
+      "person": {
+        "id": "2015045700301",
+        "name": "VINOD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAVAKADU",
+      "person": {
+        "id": "2015045700401",
+        "name": "MAYADEVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BHAJANAMADOM",
+      "person": {
+        "id": "2015045700501",
+        "name": "SUSHAMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KIZHAKKE CHENNAMKARY",
+      "person": {
+        "id": "2015045700601",
+        "name": "GIRIJA BINOD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ISLAND WARD",
+      "person": {
+        "id": "2015045700701",
+        "name": "JOBY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAVAKADU SOUTH",
+      "person": {
+        "id": "2015045700801",
+        "name": "K.P.RAJEEV"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANCHAYAT WARD",
+      "person": {
+        "id": "2015045700901",
+        "name": "AISHAMMA JEEVANANDAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "IDAPPALLY WARD",
+      "person": {
+        "id": "2015045701001",
+        "name": "JIJO"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHENTHURAM",
+      "person": {
+        "id": "2015045701101",
+        "name": "SUBI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THOTTUVATHALA",
+      "person": {
+        "id": "2015045701201",
+        "name": "SAJIMOL SAJEEV"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARUNNOOTUMPADAM",
+      "person": {
+        "id": "2015045701301",
+        "name": "AGNES GRIGORY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "WEST KUTTAMANGALAM",
+      "person": {
+        "id": "2015045701401",
+        "name": "SUNIL.P.PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THOTTUKADAVU",
+      "person": {
+        "id": "2015045701501",
+        "name": "SHEELA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

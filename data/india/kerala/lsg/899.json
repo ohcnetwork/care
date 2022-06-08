@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348497672,
+  "date": "2019-08-21",
+  "name": "Moothedam  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "52.24km",
+  "localbody_code": "G100103",
+  "no_of_wards": 15,
+  "population": 19519,
+  "male": 9558,
+  "female": 9961,
+  "population_density": 374,
+  "sex_ratio": 1042,
+  "literacy_rate": 89.42,
+  "literacy_rate_male": 92.22,
+  "literacy_rate_female": 86.56,
+  "president": "RADHAMANIC.T.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MARATHINKADAV",
+      "person": {
+        "id": "2015089900101",
+        "name": "NAHAS BABU K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NELLIKKUTH",
+      "person": {
+        "id": "2015089900201",
+        "name": "SHYLA RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALKULAM",
+      "person": {
+        "id": "2015089900301",
+        "name": "ANEESH T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BALAMKULAM",
+      "person": {
+        "id": "2015089900401",
+        "name": "N.K. KUNHUNNI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARAPPURAM",
+      "person": {
+        "id": "2015089900501",
+        "name": "USHA SACHIDANANDAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLIPOIL",
+      "person": {
+        "id": "2015089900601",
+        "name": "A.P. SHIHAB"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHOLAMUNDA",
+      "person": {
+        "id": "2015089900701",
+        "name": "JASMIN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VELLARAMUNDA",
+      "person": {
+        "id": "2015089900801",
+        "name": "BEENA JOHNSON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALANKARA",
+      "person": {
+        "id": "2015089900901",
+        "name": "MUJEEB"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTAPPADAM",
+      "person": {
+        "id": "2015089901001",
+        "name": "A.T. REJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTIKKAD",
+      "person": {
+        "id": "2015089901101",
+        "name": "SUBAIDA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MARUTHANGAD",
+      "person": {
+        "id": "2015089901201",
+        "name": "SAIRABANU E"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARAMVETTICHAL",
+      "person": {
+        "id": "2015089901301",
+        "name": "ABDUL MAJEED"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KATTADI",
+      "person": {
+        "id": "2015089901401",
+        "name": "DAISY MATHAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHEMMANTHITTA",
+      "person": {
+        "id": "2015089901501",
+        "name": "RADHAMANI C.T."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

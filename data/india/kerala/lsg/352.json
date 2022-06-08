@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346120730,
+  "date": "2019-08-21",
+  "name": "Panmana  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chavara",
+  "area": "16.85km",
+  "localbody_code": "G020804",
+  "no_of_wards": 23,
+  "population": 45722,
+  "male": 22918,
+  "female": 22804,
+  "population_density": 2713,
+  "sex_ratio": 995,
+  "literacy_rate": 89.91,
+  "literacy_rate_male": 94.18,
+  "literacy_rate_female": 85.64,
+  "president": "SALINI.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLLAKA",
+      "person": {
+        "id": "2015035200101",
+        "name": "DR.HASHIMA. S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKUMTHALA",
+      "person": {
+        "id": "2015035200201",
+        "name": "KOCHOTTAYIL RASHEENA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANAYANNARKAVU",
+      "person": {
+        "id": "2015035200301",
+        "name": "NISHA VAHID. N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAMPAKADAVU",
+      "person": {
+        "id": "2015035200401",
+        "name": "KULSAM SHAMSUDHEEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAMPIMUKKU",
+      "person": {
+        "id": "2015035200501",
+        "name": "REJILATH BEEVI. A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VETTAMUKKU",
+      "person": {
+        "id": "2015035200601",
+        "name": "J. ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MULLAKKARY",
+      "person": {
+        "id": "2015035200701",
+        "name": "NASIMUDEEN K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANAYIL",
+      "person": {
+        "id": "2015035200801",
+        "name": "AHAMMAD MANSOOR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MAVELI",
+      "person": {
+        "id": "2015035200901",
+        "name": "RAHUMATHUNNISSA IQBAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MIDAPPALLY",
+      "person": {
+        "id": "2015035201001",
+        "name": "HASEENA E"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNANKULANGARA",
+      "person": {
+        "id": "2015035201101",
+        "name": "SHAHUBANATH H"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NADUVATHUCHERY",
+      "person": {
+        "id": "2015035201201",
+        "name": "NIZAR S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHOLA",
+      "person": {
+        "id": "2015035201301",
+        "name": "UMA DEVI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VADUTHALA",
+      "person": {
+        "id": "2015035201401",
+        "name": "MINI. O"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOLAM",
+      "person": {
+        "id": "2015035201501",
+        "name": "RAVI. R"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALARY",
+      "person": {
+        "id": "2015035201601",
+        "name": "AYYAPPAN PILLAI. V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MEKKADU",
+      "person": {
+        "id": "2015035201701",
+        "name": "ANIL PUTHEZHAM"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHITTOOR",
+      "person": {
+        "id": "2015035201801",
+        "name": "RAGESH NIRMAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PONMANA",
+      "person": {
+        "id": "2015035201901",
+        "name": "SAJITH RENJ. G"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PANMANA",
+      "person": {
+        "id": "2015035202001",
+        "name": "SALINI. S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "POROOKKARA",
+      "person": {
+        "id": "2015035202101",
+        "name": "KARUKATHALA ISMAIL"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VADAKKUMTHALA MEKKU",
+      "person": {
+        "id": "2015035202201",
+        "name": "SHEEJUMOL. A.S"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUTTIVATTOM",
+      "person": {
+        "id": "2015035202301",
+        "name": "ANIL BHARATHAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

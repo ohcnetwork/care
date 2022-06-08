@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349259291,
+  "date": "2019-08-21",
+  "name": "Chengalayi  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "67.33km",
+  "localbody_code": "G130302",
+  "no_of_wards": 18,
+  "population": 26660,
+  "male": 13269,
+  "female": 13391,
+  "population_density": 396,
+  "sex_ratio": 1009,
+  "literacy_rate": 89.04,
+  "literacy_rate_male": 95.02,
+  "literacy_rate_female": 83.18,
+  "president": "ADVK.KRATHNAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KULATHUR",
+      "person": {
+        "id": "2015111300101",
+        "name": "PRAKASAN P.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANNADIPPARA",
+      "person": {
+        "id": "2015111300201",
+        "name": "V DHANISHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PAYATTYAL",
+      "person": {
+        "id": "2015111300301",
+        "name": "RINCY JOHNSON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHALVAYAL",
+      "person": {
+        "id": "2015111300401",
+        "name": "K P RAMLATH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MAMMALATHKARI",
+      "person": {
+        "id": "2015111300501",
+        "name": "BHASKARAN VALIYAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHUZHALI",
+      "person": {
+        "id": "2015111300601",
+        "name": "A.V BHAVANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NIDUVALOOR",
+      "person": {
+        "id": "2015111300701",
+        "name": "K K RADHIKA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNDAMKAI",
+      "person": {
+        "id": "2015111300801",
+        "name": "RAJAN P V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHENGALAYI",
+      "person": {
+        "id": "2015111300901",
+        "name": "NAFEESA P K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARIPPAYI",
+      "person": {
+        "id": "2015111301001",
+        "name": "V K VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENGALAYI SOUTH",
+      "person": {
+        "id": "2015111301101",
+        "name": "MOOSANKUTTY THERALAYI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERINKONNU",
+      "person": {
+        "id": "2015111301201",
+        "name": "C C JAYASREE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOYYAM",
+      "person": {
+        "id": "2015111301301",
+        "name": "DINESAN P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERINTHILERI",
+      "person": {
+        "id": "2015111301401",
+        "name": "ADV:K.K RATHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THERLAYI",
+      "person": {
+        "id": "2015111301501",
+        "name": "MISIRIYA K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANAKKAD",
+      "person": {
+        "id": "2015111301601",
+        "name": "MINESH KALLEN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THATTERI",
+      "person": {
+        "id": "2015111301701",
+        "name": "E P GEETHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUNDATHADAM",
+      "person": {
+        "id": "2015111301801",
+        "name": "A RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

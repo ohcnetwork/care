@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346036108,
+  "date": "2019-08-21",
+  "name": "Pavithreswaram  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Vettikkavala",
+  "area": "23.62km",
+  "localbody_code": "G020306",
+  "no_of_wards": 19,
+  "population": 29124,
+  "male": 14073,
+  "female": 15051,
+  "population_density": 1233,
+  "sex_ratio": 1069,
+  "literacy_rate": 92.64,
+  "literacy_rate_male": 95.7,
+  "literacy_rate_female": 89.82,
+  "president": "DHANYAKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARIMBINPUZHA",
+      "person": {
+        "id": "2015032200101",
+        "name": "ANEESH D"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THEKKUMCHERI",
+      "person": {
+        "id": "2015032200201",
+        "name": "GEETHA KUMARI ANTHARJANAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUMANGADU",
+      "person": {
+        "id": "2015032200301",
+        "name": "J K VINODINI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALANADA",
+      "person": {
+        "id": "2015032200401",
+        "name": "ELIZABETH JOY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAVITHRESWARAM",
+      "person": {
+        "id": "2015032200501",
+        "name": "T SHYLENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EAST MARANADU",
+      "person": {
+        "id": "2015032200601",
+        "name": "THULASI LEKHSMANAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MARANADU SOUTH",
+      "person": {
+        "id": "2015032200701",
+        "name": "S R  GOPAKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MARANADU WEST",
+      "person": {
+        "id": "2015032200801",
+        "name": "RADHAMANI AMMA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDAVETTAM",
+      "person": {
+        "id": "2015032200901",
+        "name": "DHANYA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAARUVELIL",
+      "person": {
+        "id": "2015032201001",
+        "name": "DHANYA MANOJ"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAITHAKKODU",
+      "person": {
+        "id": "2015032201101",
+        "name": "SHEEJA VISHULAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAITHAKKODU WEST",
+      "person": {
+        "id": "2015032201201",
+        "name": "RAJI KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAITHAKKODU SOUTH",
+      "person": {
+        "id": "2015032201301",
+        "name": "K SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHERUPOIKA SOUTH",
+      "person": {
+        "id": "2015032201401",
+        "name": "K RAMESAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BHAJANAMADAM",
+      "person": {
+        "id": "2015032201501",
+        "name": "JEEVAN KUMAR M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHERUPOIKA",
+      "person": {
+        "id": "2015032201601",
+        "name": "USHA KUMARI AMMA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "SREENARAYANA PURAM",
+      "person": {
+        "id": "2015032201701",
+        "name": "BABULAL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KAARIKKAL",
+      "person": {
+        "id": "2015032201801",
+        "name": "V RADHA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KAARIKAL CHERUPOIKA",
+      "person": {
+        "id": "2015032201901",
+        "name": "PADMAKUMARI S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

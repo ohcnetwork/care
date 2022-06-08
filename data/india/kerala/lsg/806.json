@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348164875,
+  "date": "2019-08-21",
+  "name": "Kappur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Thrithala",
+  "area": "23.52km",
+  "localbody_code": "G090103",
+  "no_of_wards": 18,
+  "population": 25369,
+  "male": 12306,
+  "female": 13063,
+  "population_density": 1079,
+  "sex_ratio": 1062,
+  "literacy_rate": 89.69,
+  "literacy_rate_male": 93.48,
+  "literacy_rate_female": 86.27,
+  "president": "SINDHU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEKKODE",
+      "person": {
+        "id": "2015080600101",
+        "name": "NOORUL AMEEN T V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARAKKULAM",
+      "person": {
+        "id": "2015080600201",
+        "name": "SMITHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLADATHOOR",
+      "person": {
+        "id": "2015080600301",
+        "name": "GEETHA JAYANTHI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAVARA",
+      "person": {
+        "id": "2015080600401",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAPPUR",
+      "person": {
+        "id": "2015080600501",
+        "name": "RAHMATH MOL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLANGATTUCHIRA",
+      "person": {
+        "id": "2015080600601",
+        "name": "SUJITHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANNARAPARAMBU",
+      "person": {
+        "id": "2015080600701",
+        "name": "SAKKEER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MULLAMKUNNU",
+      "person": {
+        "id": "2015080600801",
+        "name": "RAJANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHIKKARA",
+      "person": {
+        "id": "2015080600901",
+        "name": "SIVAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLLANNUR",
+      "person": {
+        "id": "2015080601001",
+        "name": "MOOSA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANJIRATHANI",
+      "person": {
+        "id": "2015080601101",
+        "name": "SALMA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ERAVAKKAD",
+      "person": {
+        "id": "2015080601201",
+        "name": "SHIHAB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AMETTIKKARA",
+      "person": {
+        "id": "2015080601301",
+        "name": "USHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MARAYAMKUNNU",
+      "person": {
+        "id": "2015080601401",
+        "name": "ALI M V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUMARANELLUR",
+      "person": {
+        "id": "2015080601501",
+        "name": "NOORUL AMEEN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALLIKKUNNU",
+      "person": {
+        "id": "2015080601601",
+        "name": "VIMAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANNAMTHALI",
+      "person": {
+        "id": "2015080601701",
+        "name": "ABDUL SAMAD"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VELLALOOR",
+      "person": {
+        "id": "2015080601801",
+        "name": "USHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346982644,
+  "date": "2019-08-21",
+  "name": "Udumbanoor  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "30.94km",
+  "localbody_code": "G060402",
+  "no_of_wards": 16,
+  "population": 22314,
+  "male": 11316,
+  "female": 10998,
+  "population_density": 721,
+  "sex_ratio": 972,
+  "literacy_rate": 91,
+  "literacy_rate_male": 94,
+  "literacy_rate_female": 89,
+  "president": "BINDHUSAJEEV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMAYAPRA",
+      "person": {
+        "id": "2015059300101",
+        "name": "K S RAJAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANKUZHY",
+      "person": {
+        "id": "2015059300201",
+        "name": "SINDHU PRAKASH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PARIYARAM",
+      "person": {
+        "id": "2015059300301",
+        "name": "NAISY DENIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAREKKAVALA",
+      "person": {
+        "id": "2015059300401",
+        "name": "JOHNSON KURIAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEENIKUZHY",
+      "person": {
+        "id": "2015059300501",
+        "name": "BEENA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MALAYINCHI",
+      "person": {
+        "id": "2015059300601",
+        "name": "T C RAJAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTIKKAYAM",
+      "person": {
+        "id": "2015059300701",
+        "name": "NEETHU BABURAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "UPPUKUNNU",
+      "person": {
+        "id": "2015059300801",
+        "name": "AJIMOL SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINGASSERY",
+      "person": {
+        "id": "2015059300901",
+        "name": "RIJOMON P.J"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANCHIKALLU",
+      "person": {
+        "id": "2015059301001",
+        "name": "SHEELA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHEPPUKULAM",
+      "person": {
+        "id": "2015059301101",
+        "name": "JOY MATHEW"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLANTHANAM",
+      "person": {
+        "id": "2015059301201",
+        "name": "JOHNY MATHEW"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULAPPARA",
+      "person": {
+        "id": "2015059301301",
+        "name": "BINDHU RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDAMARUK",
+      "person": {
+        "id": "2015059301401",
+        "name": "SHANITHA ALIYAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THATTAKUZHA",
+      "person": {
+        "id": "2015059301501",
+        "name": "BINDHU SAJEEV"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "UDUMBANNOOR",
+      "person": {
+        "id": "2015059301601",
+        "name": "SEETHI NAINAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

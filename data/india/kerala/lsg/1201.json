@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349577153,
+  "date": "2019-08-21",
+  "name": "Madikai  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "51.83km",
+  "localbody_code": "G140403",
+  "no_of_wards": 15,
+  "population": 19352,
+  "male": 9331,
+  "female": 10021,
+  "population_density": 373,
+  "sex_ratio": 1074,
+  "literacy_rate": 84.18,
+  "literacy_rate_male": 90.55,
+  "literacy_rate_female": 78.36,
+  "president": "CPRABHAKARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAZHAKODE",
+      "person": {
+        "id": "2015120100101",
+        "name": "BIJI BABU K A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ACHIKANAM",
+      "person": {
+        "id": "2015120100201",
+        "name": "SARITHA T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLACHERY",
+      "person": {
+        "id": "2015120100301",
+        "name": "VALSALA M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALAMBADI",
+      "person": {
+        "id": "2015120100401",
+        "name": "SUSHEELA P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANHIRAPOYIL",
+      "person": {
+        "id": "2015120100501",
+        "name": "ABDUL RAHMAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MALAPPACHERY",
+      "person": {
+        "id": "2015120100601",
+        "name": "PRAMEELA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERANATHALA",
+      "person": {
+        "id": "2015120100701",
+        "name": "C PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOLIKKUNNU",
+      "person": {
+        "id": "2015120100801",
+        "name": "E K KUNHIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ERIKULAM",
+      "person": {
+        "id": "2015120100901",
+        "name": "A DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BENGALAM",
+      "person": {
+        "id": "2015120101001",
+        "name": "P V RUGMINI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAKKAT",
+      "person": {
+        "id": "2015120101101",
+        "name": "GEETHA P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ADUKATHPARAMBU",
+      "person": {
+        "id": "2015120101201",
+        "name": "SASEENDRAN MADIKAI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHALAKADAVU",
+      "person": {
+        "id": "2015120101301",
+        "name": "V SASI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KEEKKAMKOTTU",
+      "person": {
+        "id": "2015120101401",
+        "name": "JAGADEESAN V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AMBALATHUKARA",
+      "person": {
+        "id": "2015120101501",
+        "name": "INDIRA C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

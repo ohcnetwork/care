@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348125988,
+  "date": "2019-08-21",
+  "name": "Poyya  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mala",
+  "area": "19.78km",
+  "localbody_code": "G081505",
+  "no_of_wards": 15,
+  "population": 20474,
+  "male": 9880,
+  "female": 10594,
+  "population_density": 1035,
+  "sex_ratio": 1072,
+  "literacy_rate": 91.51,
+  "literacy_rate_male": 95.53,
+  "literacy_rate_female": 87.82,
+  "president": "SIJIVINOD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHENTHURUTHY",
+      "person": {
+        "id": "2015079700101",
+        "name": "VIJEESH A.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALAPALLIPPURAM NORTH",
+      "person": {
+        "id": "2015079700201",
+        "name": "HENCY SHAJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VATTAKKOTTA",
+      "person": {
+        "id": "2015079700301",
+        "name": "RAMLA NAUSHAD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALAPALLIPPURAM SOUTH",
+      "person": {
+        "id": "2015079700401",
+        "name": "SIBI FRANCIS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POOPPATHY NORTH",
+      "person": {
+        "id": "2015079700502",
+        "name": "SAJITHA TITTUS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOPPATHY EAST",
+      "person": {
+        "id": "2015079700601",
+        "name": "SIJI VINOD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOPPATHY SOUTH",
+      "person": {
+        "id": "2015079700701",
+        "name": "T.A THOMAS THEKKUMTHALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MADATHUMPADY",
+      "person": {
+        "id": "2015079700801",
+        "name": "P.M AYYAPPANKUTTY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANALIKKAD",
+      "person": {
+        "id": "2015079700901",
+        "name": "K.A VACKACHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ERATTAPPADY",
+      "person": {
+        "id": "2015079701001",
+        "name": "SAROJA VENU SANKAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULIPPARAMBU",
+      "person": {
+        "id": "2015079701101",
+        "name": "MINI ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POYYA",
+      "person": {
+        "id": "2015079701201",
+        "name": "SUBHA SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POYYA NALUVAZHY",
+      "person": {
+        "id": "2015079701301",
+        "name": "T.M RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KRISHNANKOTTA",
+      "person": {
+        "id": "2015079701401",
+        "name": "T.K KUTTAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ATHIKKADAVU",
+      "person": {
+        "id": "2015079701501",
+        "name": "RADHIKA SOMAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

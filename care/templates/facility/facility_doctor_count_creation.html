@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}Add the number of doctors in different specialization{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl font-bold text-center">{% trans "Add The Number Of Doctors In Different Specializations" %}</h1>
+<form class="form-horizontal" method="post" action="">
+  {% csrf_token %}
+  {% if duplicate %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">The area for which you are trying to add the count is already added, please edit it instead. </p>
+  {% endif %}
+  {{ form|crispy }}
+  <div class="control-group">
+    <div class="controls md:flex md:justify-between">
+      <button type="submit" name="addmore" class="mt-4 btn btn-primary">Save and Add More Doctors</button>
+      <button type="submit" class="mt-4 btn btn-primary">Save and Complete</button>
+      <a class="mt-4 btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

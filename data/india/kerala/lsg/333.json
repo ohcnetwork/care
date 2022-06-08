@@ -1,0 +1,197 @@
+{
+  "timeStamp": 1566346069105,
+  "date": "2019-08-21",
+  "name": "Edamulackal  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "38.73km",
+  "localbody_code": "G020505",
+  "no_of_wards": 22,
+  "population": 35978,
+  "male": 17618,
+  "female": 18360,
+  "population_density": 929,
+  "sex_ratio": 1042,
+  "literacy_rate": 91.68,
+  "literacy_rate_male": 95.37,
+  "literacy_rate_female": 88.18,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PODIYATTUVILA",
+      "person": {
+        "id": "2015033300101",
+        "name": "K C JOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAITHAKETTU",
+      "person": {
+        "id": "2015033300201",
+        "name": "INSHAMOL S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THADICADU",
+      "person": {
+        "id": "2015033300301",
+        "name": "SHOUKATH T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEVARTHOTTAM",
+      "person": {
+        "id": "2015033300401",
+        "name": "REVATHY K S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MATHURAPPA",
+      "person": {
+        "id": "2015033300501",
+        "name": "ASHOKAN PANAVELI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ASURAMANGALAM",
+      "person": {
+        "id": "2015033300601",
+        "name": "SHAJU R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANACHAVILA",
+      "person": {
+        "id": "2015033300701",
+        "name": "RADHAMANI B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PADINJATTINKARA",
+      "person": {
+        "id": "2015033300801",
+        "name": "ROOPESH UNNITHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMPAKARAMANALLOOR",
+      "person": {
+        "id": "2015033300901",
+        "name": "ANILA SHAJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAIPPALLI",
+      "person": {
+        "id": "2015033301001",
+        "name": "ADV. V RAVEENDRANATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EDAMULACKAL",
+      "person": {
+        "id": "2015033301101",
+        "name": "KAIPPALLIL MADHAVANKUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUNGALLOOR",
+      "person": {
+        "id": "2015033301201",
+        "name": "LEELAMMA JOHN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AYUR",
+      "person": {
+        "id": "2015033301301",
+        "name": "JYOTHI VISWANATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NADUKKUNNU",
+      "person": {
+        "id": "2015033301401",
+        "name": "THANKAMANI S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NEERAYIKODU",
+      "person": {
+        "id": "2015033301501",
+        "name": "SUJA THOMAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAMBAMKODU",
+      "person": {
+        "id": "2015033301601",
+        "name": "VIDYA BIJU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "OZHUKUPARACKAL",
+      "person": {
+        "id": "2015033301701",
+        "name": "SAHEER N"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VELLOOR",
+      "person": {
+        "id": "2015033301801",
+        "name": "BINCY R"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ARACKAL",
+      "person": {
+        "id": "2015033301901",
+        "name": "ASHOK KUMAR G"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "EDAYAM",
+      "person": {
+        "id": "2015033302001",
+        "name": "REJIMOLE R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PERUMANNOOR",
+      "person": {
+        "id": "2015033302101",
+        "name": "SURENDRAN B"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VALAKOM",
+      "person": {
+        "id": "2015033302201",
+        "name": "BABY MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

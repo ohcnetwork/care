@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346465866,
+  "date": "2019-08-21",
+  "name": "Mannancherry  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Aryad",
+  "area": "34.52km",
+  "localbody_code": "G040402",
+  "no_of_wards": 23,
+  "population": 41383,
+  "male": 20256,
+  "female": 21127,
+  "population_density": 1199,
+  "sex_ratio": 1043,
+  "literacy_rate": 93,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 88,
+  "president": "M.S.SANTHOSH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAPPALY",
+      "person": {
+        "id": "2015044500101",
+        "name": "MANJU RETHIKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAVUNKAL",
+      "person": {
+        "id": "2015044500201",
+        "name": "MINIMOL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERUNTHURUTH",
+      "person": {
+        "id": "2015044500301",
+        "name": "RAJANI (AMBILY)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PONNAD",
+      "person": {
+        "id": "2015044500401",
+        "name": "P.A.SABEENA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBALAKKADAVU",
+      "person": {
+        "id": "2015044500501",
+        "name": "HASEENA BASHEER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MARKET",
+      "person": {
+        "id": "2015044500601",
+        "name": "BINDHU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NETHAJI",
+      "person": {
+        "id": "2015044500701",
+        "name": "NAVAS.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SHANMUKHAM",
+      "person": {
+        "id": "2015044500801",
+        "name": "B.ARAVIND"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VIRISSERY",
+      "person": {
+        "id": "2015044500901",
+        "name": "K.V.SUDHEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POONTHOPPU",
+      "person": {
+        "id": "2015044501001",
+        "name": "SUDHARMMA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "TAGORE",
+      "person": {
+        "id": "2015044501101",
+        "name": "THANKAMANI GOPINATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUNNEPADAM",
+      "person": {
+        "id": "2015044501201",
+        "name": "SANDHYA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALIYA KALAVOOR",
+      "person": {
+        "id": "2015044501301",
+        "name": "K.V.SUDAKARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "APPOORU",
+      "person": {
+        "id": "2015044501401",
+        "name": "SINIMOL SURESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALAVOOR",
+      "person": {
+        "id": "2015044501501",
+        "name": "SINDHUKUTTY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARUKATHARA",
+      "person": {
+        "id": "2015044501601",
+        "name": "DANAYAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AMBANAKULANGARA",
+      "person": {
+        "id": "2015044501701",
+        "name": "K.V.KISHORKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NJANDIRICKAL",
+      "person": {
+        "id": "2015044501801",
+        "name": "M.S.SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015044501901",
+        "name": "MUHAMMED SHAREEF (M.SHAFEEK)"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THARAMOOD",
+      "person": {
+        "id": "2015044502001",
+        "name": "K.V.MEGHANADHAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MADRASSA",
+      "person": {
+        "id": "2015044502101",
+        "name": "LEKHA T.V.(MAYA SAJAN)"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KHADI",
+      "person": {
+        "id": "2015044502201",
+        "name": "AJITHAN (AJI ICE)"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "BLOCK OFFICE",
+      "person": {
+        "id": "2015044502301",
+        "name": "SUBHAGAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

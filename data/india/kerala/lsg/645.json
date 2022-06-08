@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347159051,
+  "date": "2019-08-21",
+  "name": "Vengoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Koovappady",
+  "area": "48.01km",
+  "localbody_code": "G070403",
+  "no_of_wards": 15,
+  "population": 20621,
+  "male": 10378,
+  "female": 10243,
+  "population_density": 83,
+  "sex_ratio": 987,
+  "literacy_rate": 89.56,
+  "literacy_rate_male": 93.48,
+  "literacy_rate_female": 85.6,
+  "president": "MASHAJI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANAMKUZHY",
+      "person": {
+        "id": "2015064500101",
+        "name": "ANTO PAUL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KRARIYELY",
+      "person": {
+        "id": "2015064500201",
+        "name": "THANKAMANI RAVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANIELY",
+      "person": {
+        "id": "2015064500301",
+        "name": "BIJI AJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUNIPPARA",
+      "person": {
+        "id": "2015064500401",
+        "name": "PREETHY BIJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MECKAPPALA",
+      "person": {
+        "id": "2015064500501",
+        "name": "M U MOHANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNAMPARAMBU",
+      "person": {
+        "id": "2015064500601",
+        "name": "M A SHAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEDUNGAPRA",
+      "person": {
+        "id": "2015064500701",
+        "name": "BIJU M JACOB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDATHURUTH",
+      "person": {
+        "id": "2015064500801",
+        "name": "SHEEBA CHACKAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VENGOOR",
+      "person": {
+        "id": "2015064500901",
+        "name": "BEENA POULOSE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAKKUVALLY",
+      "person": {
+        "id": "2015064501001",
+        "name": "AMBILY JOHN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHOORATHODU",
+      "person": {
+        "id": "2015064501101",
+        "name": "LEENA JOY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAIPPILLY",
+      "person": {
+        "id": "2015064501201",
+        "name": "T G POULOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODEMPILLY",
+      "person": {
+        "id": "2015064501301",
+        "name": "SUDHEESH BALAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOMBANAD",
+      "person": {
+        "id": "2015064501401",
+        "name": "SABU K VARGHESE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHUMANA",
+      "person": {
+        "id": "2015064501501",
+        "name": "PRIYA TOMSON"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

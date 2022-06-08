@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349508747,
+  "date": "2019-08-21",
+  "name": "Belloor  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Manjewswaram",
+  "area": "64.59km",
+  "localbody_code": "G140201",
+  "no_of_wards": 13,
+  "population": 9101,
+  "male": 4572,
+  "female": 4529,
+  "population_density": 141,
+  "sex_ratio": 990,
+  "literacy_rate": 69.37,
+  "literacy_rate_male": 77.85,
+  "literacy_rate_female": 60.86,
+  "president": "LATHAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "INDUMOOLA",
+      "person": {
+        "id": "2015117700101",
+        "name": "VISHALAKSHI B R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BAJA",
+      "person": {
+        "id": "2015117700201",
+        "name": "LATHA M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLADAPARA",
+      "person": {
+        "id": "2015117700301",
+        "name": "MANOHARA N A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MARADAMOOLA",
+      "person": {
+        "id": "2015117700401",
+        "name": "JAYAKUMARA K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NETTANIGE",
+      "person": {
+        "id": "2015117700501",
+        "name": "MALATHI J RAI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAKKEBETTU",
+      "person": {
+        "id": "2015117700601",
+        "name": "PURUSHOTHAMAN C V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AITHANADKA",
+      "person": {
+        "id": "2015117700701",
+        "name": "SAKEENA BANU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "BASTHI",
+      "person": {
+        "id": "2015117700801",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "BELLUR",
+      "person": {
+        "id": "2015117700901",
+        "name": "RADHA V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NATAKKAL",
+      "person": {
+        "id": "2015117701001",
+        "name": "GEETHA K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAIMALA",
+      "person": {
+        "id": "2015117701101",
+        "name": "BABU ANAKKALAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANAYALA",
+      "person": {
+        "id": "2015117701201",
+        "name": "SUJATHA M RAI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KINNINGAR",
+      "person": {
+        "id": "2015117701301",
+        "name": "RADHAKRISHNA B"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

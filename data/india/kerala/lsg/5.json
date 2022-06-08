@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566344854347,
+  "date": "2019-08-21",
+  "name": "Vellanad  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "372.12km",
+  "localbody_code": "B010500",
+  "no_of_wards": 16,
+  "population": 207468,
+  "male": 102028,
+  "female": 105440,
+  "population_density": 558,
+  "sex_ratio": 1033,
+  "literacy_rate": 88.66,
+  "literacy_rate_male": 92.57,
+  "literacy_rate_female": 84.92,
+  "president": "AJITHAKUMARI.S.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VITHURA",
+      "person": {
+        "id": "2015000500101",
+        "name": "VELAPPAN PILLAI.J"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015000500201",
+        "name": "VIPIN .L.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PARANDOD",
+      "person": {
+        "id": "2015000500301",
+        "name": "VIJAYAKUMARY.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARYANADU",
+      "person": {
+        "id": "2015000500401",
+        "name": "PRASANNAKUMARY.R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTICHAL",
+      "person": {
+        "id": "2015000500501",
+        "name": "MINI.A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PEZHUMMOODU",
+      "person": {
+        "id": "2015000500601",
+        "name": "NOORA VAHIDA NAZARUDHEEN.V.H"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VEERANAKAVU",
+      "person": {
+        "id": "2015000500701",
+        "name": "MARYKUNJU.K.A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMACHAL",
+      "person": {
+        "id": "2015000500801",
+        "name": "ANILKUMAR.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KATTAKKADA",
+      "person": {
+        "id": "2015000500901",
+        "name": "STEEPHEN.G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KILLI",
+      "person": {
+        "id": "2015000501001",
+        "name": "BAIJU.M.R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVACHAL",
+      "person": {
+        "id": "2015000501101",
+        "name": "AJITHAKUMARI.S.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "URIYAKODE",
+      "person": {
+        "id": "2015000501201",
+        "name": "REENA.L"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLANAD",
+      "person": {
+        "id": "2015000501301",
+        "name": "JYOTHISH KUMAR.C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KULAPPADA",
+      "person": {
+        "id": "2015000501401",
+        "name": "SAJEENA KASIM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHAKARAPANIPURAM",
+      "person": {
+        "id": "2015000501501",
+        "name": "SAMEEMA RANI.S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THOLICODU",
+      "person": {
+        "id": "2015000501601",
+        "name": "ANSAR.A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

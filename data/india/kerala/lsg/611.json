@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347049780,
+  "date": "2019-08-21",
+  "name": "Chakkupallam  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Kattappana",
+  "area": "41.71km",
+  "localbody_code": "G060607",
+  "no_of_wards": 15,
+  "population": 17714,
+  "male": 8905,
+  "female": 8809,
+  "population_density": 435,
+  "sex_ratio": 989,
+  "literacy_rate": 85,
+  "literacy_rate_male": 90,
+  "literacy_rate_female": 81,
+  "president": "VIJAYAMMAKRISHNANKUTTY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANAVILASAM",
+      "person": {
+        "id": "2015061100101",
+        "name": "BINDHUMOL JAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NADUPPARA",
+      "person": {
+        "id": "2015061100201",
+        "name": "MARIYAMMAL MADASWAMI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AMBALAMEDU",
+      "person": {
+        "id": "2015061100301",
+        "name": "ASHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAKKUPALLAM NORTH",
+      "person": {
+        "id": "2015061100401",
+        "name": "KUSUMAM SATHISH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SULTHANKADA",
+      "person": {
+        "id": "2015061100501",
+        "name": "LEELAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANAKKARA",
+      "person": {
+        "id": "2015061100601",
+        "name": "ANCY BIJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015061100701",
+        "name": "DEVASIYA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHELLARCOVIL",
+      "person": {
+        "id": "2015061100801",
+        "name": "TINCY SHIJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "UDHAYAGIRIMEDU",
+      "person": {
+        "id": "2015061100901",
+        "name": "THULASY PRADEEP"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MATHAIKANDAM",
+      "person": {
+        "id": "2015061101001",
+        "name": "VALSAMMA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALIYAPARA",
+      "person": {
+        "id": "2015061101101",
+        "name": "RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MENONMEDU",
+      "person": {
+        "id": "2015061101201",
+        "name": "ANTONY SCARIA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHAKKUPALLAM SOUTH",
+      "person": {
+        "id": "2015061101301",
+        "name": "LOVELY EASOW P.E."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MELCHAKKUPALLAM",
+      "person": {
+        "id": "2015061101401",
+        "name": "VIJAYAMMA KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NEDUMTHOTTY",
+      "person": {
+        "id": "2015061101501",
+        "name": "SURENDRAN MADHAVAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

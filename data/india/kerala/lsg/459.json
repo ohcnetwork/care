@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346518625,
+  "date": "2019-08-21",
+  "name": "Veliyanad  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Veliyanad",
+  "area": "19.41km",
+  "localbody_code": "G040702",
+  "no_of_wards": 13,
+  "population": 13526,
+  "male": 6710,
+  "female": 6816,
+  "population_density": 697,
+  "sex_ratio": 1016,
+  "literacy_rate": 98,
+  "literacy_rate_male": 99,
+  "literacy_rate_female": 97,
+  "president": "SABUCHACKO",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLISRACKAL",
+      "person": {
+        "id": "2015045900101",
+        "name": "OMANA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELIYANAD NORTH",
+      "person": {
+        "id": "2015045900201",
+        "name": "VALSAMMA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUKKODI",
+      "person": {
+        "id": "2015045900301",
+        "name": "VANAJA PUSHPAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUMARANKARY",
+      "person": {
+        "id": "2015045900401",
+        "name": "K. MOHANLAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THACHEDAM",
+      "person": {
+        "id": "2015045900501",
+        "name": "OUSEPHACHAN OUSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNNAMKARI",
+      "person": {
+        "id": "2015045900601",
+        "name": "T.V BIJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIDANGARA",
+      "person": {
+        "id": "2015045900701",
+        "name": "KANAKAMMA UDAYAPPAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIDANGARA BAZAR SOUTH",
+      "person": {
+        "id": "2015045900801",
+        "name": "S. KAMALAMMA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIDANGARA BAZAR",
+      "person": {
+        "id": "2015045900901",
+        "name": "M.P SAJEEV"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KURISUMMOODU",
+      "person": {
+        "id": "2015045901001",
+        "name": "SABU CHACKO"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELIYANAD SOUTH",
+      "person": {
+        "id": "2015045901101",
+        "name": "SOBHANAKUMARI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VILLAGE OFFICE",
+      "person": {
+        "id": "2015045901201",
+        "name": "KANAKAMMA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOCHAL",
+      "person": {
+        "id": "2015045901301",
+        "name": "K. PRAMOD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

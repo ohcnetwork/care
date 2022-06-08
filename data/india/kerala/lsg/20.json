@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344909846,
+  "date": "2019-08-21",
+  "name": "Chittumala  Block Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chittumala",
+  "area": "77.01km",
+  "localbody_code": "B020700",
+  "no_of_wards": 13,
+  "population": 118711,
+  "male": 58452,
+  "female": 60259,
+  "population_density": 1542,
+  "sex_ratio": 1031,
+  "literacy_rate": 92.57,
+  "literacy_rate_male": 95.73,
+  "literacy_rate_female": 89.52,
+  "president": "CSANTHOSH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUNDROTHURUTH",
+      "person": {
+        "id": "2015002000101",
+        "name": "THANKAMANI SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KIZHAKKE KALLADA",
+      "person": {
+        "id": "2015002000201",
+        "name": "P. BABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHITTUMALA",
+      "person": {
+        "id": "2015002000301",
+        "name": "K THANKAPPAN UNNITHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MULAVANA",
+      "person": {
+        "id": "2015002000401",
+        "name": "PLAVARA JOHN PHILIP"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERAYAM",
+      "person": {
+        "id": "2015002000501",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNDARA",
+      "person": {
+        "id": "2015002000601",
+        "name": "SIMMI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NANTHIRIKKAL",
+      "person": {
+        "id": "2015002000701",
+        "name": "C SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KERALAPURAM",
+      "person": {
+        "id": "2015002000801",
+        "name": "SINDHU MOHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINAD",
+      "person": {
+        "id": "2015002000901",
+        "name": "SOBHA V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMON",
+      "person": {
+        "id": "2015002001002",
+        "name": "GEETHA BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANAYAM",
+      "person": {
+        "id": "2015002001101",
+        "name": "E.V. SAJEEV KUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJAVELI",
+      "person": {
+        "id": "2015002001201",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANJIRAMKUZHI",
+      "person": {
+        "id": "2015002001301",
+        "name": "K.SATHYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566346766004,
+  "date": "2019-08-21",
+  "name": "Veliyannoor  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Uzhavoor",
+  "area": "19.49km",
+  "localbody_code": "G050404",
+  "no_of_wards": 13,
+  "population": 11333,
+  "male": 5761,
+  "female": 5572,
+  "population_density": 581,
+  "sex_ratio": 967,
+  "literacy_rate": 93,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 91,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANJIRAMALA",
+      "person": {
+        "id": "2015052100101",
+        "name": "REENA BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANNAPURAM",
+      "person": {
+        "id": "2015052100201",
+        "name": "THANKAMANI SASI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELIYANNOOR",
+      "person": {
+        "id": "2015052100301",
+        "name": "SAJIMON N P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHOOZHIKUNNUMALA",
+      "person": {
+        "id": "2015052100401",
+        "name": "BINDU RAGHAVAN NAIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THAMARAKAD",
+      "person": {
+        "id": "2015052100501",
+        "name": "KOMALAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARATHOTAL",
+      "person": {
+        "id": "2015052100601",
+        "name": "RAJU JOHN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOVAKULAM",
+      "person": {
+        "id": "2015052100701",
+        "name": "SHIBI MATHAI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUMKUTTY",
+      "person": {
+        "id": "2015052100801",
+        "name": "SOBHA NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VANDEMATHARAM",
+      "person": {
+        "id": "2015052100901",
+        "name": "SILVY PANKAJAKSHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AREEKARA",
+      "person": {
+        "id": "2015052101001",
+        "name": "SUNNY PUTHIYIDAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONGATUKUNNU",
+      "person": {
+        "id": "2015052101101",
+        "name": "SAJESH SASI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MULAYANIKUNNU",
+      "person": {
+        "id": "2015052101201",
+        "name": "JINSON JACOB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHUVELI",
+      "person": {
+        "id": "2015052101301",
+        "name": "K G RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

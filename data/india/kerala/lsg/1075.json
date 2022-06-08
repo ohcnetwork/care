@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349135011,
+  "date": "2019-08-21",
+  "name": "Edavaka  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Mananthavady",
+  "area": "47.26km",
+  "localbody_code": "G120105",
+  "no_of_wards": 19,
+  "population": 24746,
+  "male": 12494,
+  "female": 12252,
+  "population_density": 524,
+  "sex_ratio": 980,
+  "literacy_rate": 86.45,
+  "literacy_rate_male": 91.11,
+  "literacy_rate_female": 81.7,
+  "president": "USHAVIJAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ORAPPU",
+      "person": {
+        "id": "2015107500101",
+        "name": "USHA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELLUMANNAM",
+      "person": {
+        "id": "2015107500201",
+        "name": "ASHA MEJO"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OZHAKKODY",
+      "person": {
+        "id": "2015107500301",
+        "name": "SUNITHA   O"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANDIKKADAVU",
+      "person": {
+        "id": "2015107500405",
+        "name": "K R JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHAMADIPPOYIL",
+      "person": {
+        "id": "2015107500501",
+        "name": "SHINY GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAINGATTIRI",
+      "person": {
+        "id": "2015107500601",
+        "name": "NAJUMUDHEEN  MOODEMBHATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAYODE",
+      "person": {
+        "id": "2015107500701",
+        "name": "C C JOHN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "DWARAKA",
+      "person": {
+        "id": "2015107500801",
+        "name": "AMBUJAKSHI K K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERUVAYAL",
+      "person": {
+        "id": "2015107500901",
+        "name": "JILSON THOOPPUMKARA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAMMANA",
+      "person": {
+        "id": "2015107501001",
+        "name": "INDIRA PREMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULIKKAD",
+      "person": {
+        "id": "2015107501101",
+        "name": "PHILOMINA JAMES"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PEECHAMGODE",
+      "person": {
+        "id": "2015107501201",
+        "name": "SUBAIDA PULIYODIYIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THONICHAL",
+      "person": {
+        "id": "2015107501301",
+        "name": "SHEELA KAMALASANAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALAMUKKU",
+      "person": {
+        "id": "2015107501401",
+        "name": "VELLAN P R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUNNAMANGALAM",
+      "person": {
+        "id": "2015107501501",
+        "name": "MANU KUZHIVELIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALLIKKAL",
+      "person": {
+        "id": "2015107501601",
+        "name": "AMINA AVARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLODY",
+      "person": {
+        "id": "2015107501701",
+        "name": "NAJEEB MANNAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AYILAMOOLA",
+      "person": {
+        "id": "2015107501801",
+        "name": "BINU KUNNATH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VALERY",
+      "person": {
+        "id": "2015107501901",
+        "name": "M K JAYAPRAKASH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

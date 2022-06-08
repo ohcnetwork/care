@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346194942,
+  "date": "2019-08-21",
+  "name": "Ittiva  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "43.89km",
+  "localbody_code": "G021104",
+  "no_of_wards": 21,
+  "population": 33571,
+  "male": 16183,
+  "female": 17328,
+  "population_density": 764,
+  "sex_ratio": 1071,
+  "literacy_rate": 89.55,
+  "literacy_rate_male": 93.78,
+  "literacy_rate_female": 85.66,
+  "president": "GDINESHKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALAPPEROOR",
+      "person": {
+        "id": "2015036800101",
+        "name": "SUSAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRANGOD",
+      "person": {
+        "id": "2015036800201",
+        "name": "ADV. V T SIBI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTUKKAL",
+      "person": {
+        "id": "2015036800301",
+        "name": "S BABY SHEELA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VADAKKE KOTTUKKAL",
+      "person": {
+        "id": "2015036800401",
+        "name": "DEEPU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEDUPURAM",
+      "person": {
+        "id": "2015036800502",
+        "name": "BAIJU B"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADINJARE VAYALA",
+      "person": {
+        "id": "2015036800601",
+        "name": "ASHOK KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THOTTAMMUKKU",
+      "person": {
+        "id": "2015036800701",
+        "name": "KALA JAYARAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHAKKE VAYALA",
+      "person": {
+        "id": "2015036800801",
+        "name": "ADV. VAYALA SASI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELUNTHARA",
+      "person": {
+        "id": "2015036800901",
+        "name": "B MURALEEDHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANNOOR",
+      "person": {
+        "id": "2015036801001",
+        "name": "SAMUEL KOCHUKUNJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THUDAYANNOOR",
+      "person": {
+        "id": "2015036801101",
+        "name": "G DINESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANALUVATTOM",
+      "person": {
+        "id": "2015036801201",
+        "name": "DEEPA JOY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANAPPARA",
+      "person": {
+        "id": "2015036801301",
+        "name": "BABU G"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANAPPAD",
+      "person": {
+        "id": "2015036801401",
+        "name": "C BINDHU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHARIPPARAMBU",
+      "person": {
+        "id": "2015036801501",
+        "name": "V SHEEBA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHUNDA",
+      "person": {
+        "id": "2015036801601",
+        "name": "MUNDAPPALLY SHAHINA IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VAYYANAM",
+      "person": {
+        "id": "2015036801701",
+        "name": "S R BINDHU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KEEZHTHONI",
+      "person": {
+        "id": "2015036801801",
+        "name": "SHANIMOL A"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ITTIVA",
+      "person": {
+        "id": "2015036801901",
+        "name": "A SHEMI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PHILGIRI",
+      "person": {
+        "id": "2015036802001",
+        "name": "A NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015036802101",
+        "name": "A JAMEELA BEEVI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

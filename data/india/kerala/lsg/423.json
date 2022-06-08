@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346392527,
+  "date": "2019-08-21",
+  "name": "Aranmula  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Kulanada",
+  "area": "24.04km",
+  "localbody_code": "G030704",
+  "no_of_wards": 18,
+  "population": 28679,
+  "male": 13605,
+  "female": 15074,
+  "population_density": 1193,
+  "sex_ratio": 1108,
+  "literacy_rate": 95.1,
+  "literacy_rate_male": 96.99,
+  "literacy_rate_female": 93.43,
+  "president": "ISHAPURUSHOTHAMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARATTUPUZHA",
+      "person": {
+        "id": "2015042300101",
+        "name": "MANOJ GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALAKKARA",
+      "person": {
+        "id": "2015042300201",
+        "name": "DEVI RAMESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAKAKAM",
+      "person": {
+        "id": "2015042300301",
+        "name": "REMA DEVI N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAYARANMULA NORTH",
+      "person": {
+        "id": "2015042300401",
+        "name": "PRASAD VERUNKAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALARIKKODU",
+      "person": {
+        "id": "2015042300501",
+        "name": "K.K.SIVANANDAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ARANMULA WEST",
+      "person": {
+        "id": "2015042300601",
+        "name": "SUJA SURESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARANMULA EAST",
+      "person": {
+        "id": "2015042300701",
+        "name": "V.R.KAVERI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NALKALIKKAL",
+      "person": {
+        "id": "2015042300801",
+        "name": "M.P.OONNIKRISHNAN NAIR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIDANGANNUR",
+      "person": {
+        "id": "2015042300901",
+        "name": "SHIJA.T.TOJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANAPPALLI",
+      "person": {
+        "id": "2015042301001",
+        "name": "PRASANNAN.T.B"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "GURUKKANKUNNU",
+      "person": {
+        "id": "2015042301101",
+        "name": "SHAJAN THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ERUMAKKADU",
+      "person": {
+        "id": "2015042301201",
+        "name": "SUJAMONEY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALLANA",
+      "person": {
+        "id": "2015042301301",
+        "name": "ISHA PURUSHOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOTTA EAST",
+      "person": {
+        "id": "2015042301401",
+        "name": "SREEKUMAR.S.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTA WEST",
+      "person": {
+        "id": "2015042301501",
+        "name": "KRISHNANKUTTY .M.T"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KURICHIMUTTAM SOUTH",
+      "person": {
+        "id": "2015042301601",
+        "name": "SUSAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KURICHIMUTTAM NORTH",
+      "person": {
+        "id": "2015042301701",
+        "name": "SOMAVALLY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NEERVILAKAM",
+      "person": {
+        "id": "2015042301801",
+        "name": "VASANTH KUMAR.R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

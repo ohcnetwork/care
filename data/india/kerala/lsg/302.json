@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345964000,
+  "date": "2019-08-21",
+  "name": "Poovar  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Parassala",
+  "area": "7.34km",
+  "localbody_code": "G011106",
+  "no_of_wards": 15,
+  "population": 18755,
+  "male": 9380,
+  "female": 9375,
+  "population_density": 2855,
+  "sex_ratio": 990,
+  "literacy_rate": 86,
+  "literacy_rate_male": 88.95,
+  "literacy_rate_female": 83.08,
+  "president": "AJITHAKUMARI.M.S.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARANIYAM",
+      "person": {
+        "id": "2015030200101",
+        "name": "REGANA. S."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALAYITHOTTAM",
+      "person": {
+        "id": "2015030200201",
+        "name": "T.SULOCHANA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARASUMMOODU",
+      "person": {
+        "id": "2015030200301",
+        "name": "REMA K O"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANCHAMPAZHINJI",
+      "person": {
+        "id": "2015030200401",
+        "name": "AJITHA KUMARI .M.S."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARUMANOOR",
+      "person": {
+        "id": "2015030200501",
+        "name": "SUMESH.G"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SOOLAMKUDY",
+      "person": {
+        "id": "2015030200601",
+        "name": "RAJEEDEV. V.R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOVAR BUND",
+      "person": {
+        "id": "2015030200701",
+        "name": "ALI. A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVAR TOWN",
+      "person": {
+        "id": "2015030200801",
+        "name": "JISTHI MAIDEEN PILLA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOVAR",
+      "person": {
+        "id": "2015030200901",
+        "name": "FLORANCY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VARAVILATHOPPU",
+      "person": {
+        "id": "2015030201001",
+        "name": "A. VERRON"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BEACH",
+      "person": {
+        "id": "2015030201101",
+        "name": "LIYONS YAGAPPAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ERIKKALUVILA",
+      "person": {
+        "id": "2015030201201",
+        "name": "JAYASREE. S.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "T.B",
+      "person": {
+        "id": "2015030201301",
+        "name": "V.S.VINEETH KUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLINGAVILAKOM",
+      "person": {
+        "id": "2015030201401",
+        "name": "SALEELA SHAJU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHEKKADY",
+      "person": {
+        "id": "2015030201501",
+        "name": "BOBAN KUMAR. B.T."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

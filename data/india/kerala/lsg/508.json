@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346712537,
+  "date": "2019-08-21",
+  "name": "Mulakulam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kaduthuruthy",
+  "area": "26.15km",
+  "localbody_code": "G050203",
+  "no_of_wards": 17,
+  "population": 23663,
+  "male": 11900,
+  "female": 11763,
+  "population_density": 905,
+  "sex_ratio": 988,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 91,
+  "president": "SUJATHASUMON",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MULAKULAM",
+      "person": {
+        "id": "2015050800101",
+        "name": "SUJATHA SUMON"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADUKUNNAPPUZHA",
+      "person": {
+        "id": "2015050800201",
+        "name": "SARALA SASI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANNUKKUNNU",
+      "person": {
+        "id": "2015050800301",
+        "name": "VINAYA (SOYA BENNY)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AVARMMA",
+      "person": {
+        "id": "2015050800401",
+        "name": "MANJU SHYJIN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUVA TOWN",
+      "person": {
+        "id": "2015050800501",
+        "name": "MATHEW ULAHANNAN (P. U MATHEW)"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUVA EAST",
+      "person": {
+        "id": "2015050800601",
+        "name": "K R SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNNAPPILLI",
+      "person": {
+        "id": "2015050800701",
+        "name": "M C SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALUMCHUVADU",
+      "person": {
+        "id": "2015050800801",
+        "name": "SWAPNA AJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARUNNOOTTIMANGALAM",
+      "person": {
+        "id": "2015050800901",
+        "name": "CYRIAC JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KEEZHOOR SOUTH",
+      "person": {
+        "id": "2015050801001",
+        "name": "JAIMOL GEORGE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "APPANCHIRA",
+      "person": {
+        "id": "2015050801101",
+        "name": "BIJU KURIAN (ITTOOPPU)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOZHIKOL SOUTH",
+      "person": {
+        "id": "2015050801201",
+        "name": "JESSY KURIAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOZHIKOL NORTH",
+      "person": {
+        "id": "2015050801301",
+        "name": "JOHN OUSEPH (SABU KUNNEL)"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KEEZHOOR NORTH",
+      "person": {
+        "id": "2015050801401",
+        "name": "GEORGEKUTTY AANAKKUZHI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MOORKATTUPADI",
+      "person": {
+        "id": "2015050801501",
+        "name": "JIJI SURESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARIKODE SOUTH",
+      "person": {
+        "id": "2015050801601",
+        "name": "SINI JAIN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KARIKODE",
+      "person": {
+        "id": "2015050801701",
+        "name": "K V JAMES"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348066919,
+  "date": "2019-08-21",
+  "name": "Muriyad  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Irinjalkkuda",
+  "area": "21.65km",
+  "localbody_code": "G081203",
+  "no_of_wards": 17,
+  "population": 23039,
+  "male": 10936,
+  "female": 12103,
+  "population_density": 1064,
+  "sex_ratio": 1106,
+  "literacy_rate": 91.31,
+  "literacy_rate_male": 94.61,
+  "literacy_rate_female": 88.35,
+  "president": "SARALAVIKRAMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VILLERIKKARA",
+      "person": {
+        "id": "2015077700101",
+        "name": "MOLY JACOB"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAKKUZHY",
+      "person": {
+        "id": "2015077700201",
+        "name": "VALSAN T V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THARAYILAKKAD",
+      "person": {
+        "id": "2015077700301",
+        "name": "VRINDAKUMARY K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAREKKATTUKARA",
+      "person": {
+        "id": "2015077700401",
+        "name": "SARALA VIKRAMAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUNNATHARA",
+      "person": {
+        "id": "2015077700501",
+        "name": "JUSTIN GEORGE T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAPARAMBU",
+      "person": {
+        "id": "2015077700601",
+        "name": "SANTHA MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MURIYAD CENTRE",
+      "person": {
+        "id": "2015077700701",
+        "name": "SARITHA SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ANURULI",
+      "person": {
+        "id": "2015077700801",
+        "name": "K P PRASANTH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULLUR ANDIKAMBANI",
+      "person": {
+        "id": "2015077700901",
+        "name": "GANGADEVI SUNIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "URAKAM EAST",
+      "person": {
+        "id": "2015077701001",
+        "name": "TESSY JOSHY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "URAKAM WEST",
+      "person": {
+        "id": "2015077701101",
+        "name": "KORUKUTTY M K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MULLAKKAD",
+      "person": {
+        "id": "2015077701201",
+        "name": "AJITHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THURAVANKADU",
+      "person": {
+        "id": "2015077701301",
+        "name": "SHAJU VELIYATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MISSION HOSPITAL",
+      "person": {
+        "id": "2015077701401",
+        "name": "THOMAS THOKALATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHERPPUMKUNNU",
+      "person": {
+        "id": "2015077701501",
+        "name": "KAVITHA BIJU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAPPARA",
+      "person": {
+        "id": "2015077701601",
+        "name": "SINDHU NARAYANANKUTTY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ANANDAPURAM CENTRE",
+      "person": {
+        "id": "2015077701701",
+        "name": "JOHNSON A M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

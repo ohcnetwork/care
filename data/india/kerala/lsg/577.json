@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346946313,
+  "date": "2019-08-21",
+  "name": "Pallivasal  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Adimaly",
+  "area": "67.47km",
+  "localbody_code": "G060105",
+  "no_of_wards": 14,
+  "population": 16585,
+  "male": 8502,
+  "female": 8083,
+  "population_density": 246,
+  "sex_ratio": 951,
+  "literacy_rate": 86,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 75,
+  "president": "THULASEEBHAIKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PEECHAD",
+      "person": {
+        "id": "2015057700101",
+        "name": "PREMA JAYAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURISUPARA",
+      "person": {
+        "id": "2015057700201",
+        "name": "ROMU K B"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "2ND MILE",
+      "person": {
+        "id": "2015057700301",
+        "name": "JENCY BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLIVASAL",
+      "person": {
+        "id": "2015057700401",
+        "name": "RAMAR K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POTHAMEDU",
+      "person": {
+        "id": "2015057700501",
+        "name": "MANJULA MANI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATTUKADU",
+      "person": {
+        "id": "2015057700601",
+        "name": "PAVANTHAI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNCHITHANNY",
+      "person": {
+        "id": "2015057700701",
+        "name": "TITUS THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POWERHOUSE",
+      "person": {
+        "id": "2015057700801",
+        "name": "AJITHA PRAMOD"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHITHIRAPURAM",
+      "person": {
+        "id": "2015057700901",
+        "name": "SARASU SASI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANACHAL",
+      "person": {
+        "id": "2015057701001",
+        "name": "THULASEE BHAI KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THOKKUPARA",
+      "person": {
+        "id": "2015057701101",
+        "name": "RAHIM M M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLAR",
+      "person": {
+        "id": "2015057701201",
+        "name": "VASANTHAKUMARY SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "IRUTTUKANAM",
+      "person": {
+        "id": "2015057701301",
+        "name": "ROY C K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANAVIRATTY",
+      "person": {
+        "id": "2015057701401",
+        "name": "SIBI K J"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

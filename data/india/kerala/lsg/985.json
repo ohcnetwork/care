@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348826282,
+  "date": "2019-08-21",
+  "name": "Mangalam  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirur",
+  "area": null,
+  "localbody_code": "G101306",
+  "no_of_wards": 20,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "HAJARAMAJEED",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ASHANPADI",
+      "person": {
+        "id": "2015098500101",
+        "name": "FAJISHA ALI ASKAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULLUNI NORTH",
+      "person": {
+        "id": "2015098500201",
+        "name": "KOUSALYA GOPINATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLUNI SOUTH",
+      "person": {
+        "id": "2015098500301",
+        "name": "ASMABI.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOTTIYILANGADI",
+      "person": {
+        "id": "2015098500401",
+        "name": "NEETHA.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANGALAM SOUTH",
+      "person": {
+        "id": "2015098500501",
+        "name": "SUDHEESH.T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUNNAMANA",
+      "person": {
+        "id": "2015098500601",
+        "name": "MOHAMMED BASHEER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHENNARA WEST",
+      "person": {
+        "id": "2015098500701",
+        "name": "PATHUMMAKUTTY.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHENNARA EAST",
+      "person": {
+        "id": "2015098500801",
+        "name": "KRISHNAN.K.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALAMARUTHUR WEST",
+      "person": {
+        "id": "2015098500901",
+        "name": "ILLIKKAL SAVITHRI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALAMARUTHUR EAST",
+      "person": {
+        "id": "2015098501001",
+        "name": "A.K.SALEEM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAVANCHERY",
+      "person": {
+        "id": "2015098501101",
+        "name": "ABID THANGAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KURUMBADI",
+      "person": {
+        "id": "2015098501201",
+        "name": "ABDU SALAM"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUNTHIRUTHI EAST",
+      "person": {
+        "id": "2015098501301",
+        "name": "HAJARA MAJEED"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUNTHIRUTHI WEST",
+      "person": {
+        "id": "2015098501401",
+        "name": "PUSHPA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTTAYI SOUTH",
+      "person": {
+        "id": "2015098501501",
+        "name": "MAJEED.M.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTAYI TOWN",
+      "person": {
+        "id": "2015098501602",
+        "name": "C M T SEETHI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUTTAYI WEST",
+      "person": {
+        "id": "2015098501701",
+        "name": "SHIJU.M"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ARAYAN KADAPPURAM",
+      "person": {
+        "id": "2015098501801",
+        "name": "SUHARA.O"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUTTAYI PARIS",
+      "person": {
+        "id": "2015098501901",
+        "name": "FOUSIYA KADAVATH"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KUTTAYI NORTH",
+      "person": {
+        "id": "2015098502001",
+        "name": "MAIMOONA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

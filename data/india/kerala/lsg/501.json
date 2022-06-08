@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346679522,
+  "date": "2019-08-21",
+  "name": "Maravanthuruthu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vaikom",
+  "area": "15.69km",
+  "localbody_code": "G050103",
+  "no_of_wards": 15,
+  "population": 20532,
+  "male": 10083,
+  "female": 10449,
+  "population_density": 1309,
+  "sex_ratio": 1036,
+  "literacy_rate": 93,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 89,
+  "president": "P.V.HARIKUTTAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THARAVATTOM",
+      "person": {
+        "id": "2015050100101",
+        "name": "SMITHAMOL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHATHANAD",
+      "person": {
+        "id": "2015050100201",
+        "name": "REMADEVI MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THURUTHUMMA",
+      "person": {
+        "id": "2015050100301",
+        "name": "P.V. PRASAD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANJIPPALAM",
+      "person": {
+        "id": "2015050100401",
+        "name": "SUSHAMA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MARAVANTHURUTH",
+      "person": {
+        "id": "2015050100501",
+        "name": "KANAKAMMA V.B"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHUNGAM",
+      "person": {
+        "id": "2015050100601",
+        "name": "BINDU SUNIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALAMKADAVU",
+      "person": {
+        "id": "2015050100701",
+        "name": "ADV.P.V.KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHIREKKADAVU",
+      "person": {
+        "id": "2015050100801",
+        "name": "P.K.MALLIKA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDAVATTOM",
+      "person": {
+        "id": "2015050100901",
+        "name": "P.V.HARIKUTTAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KADOOKKARA",
+      "person": {
+        "id": "2015050101001",
+        "name": "KARUTHAKUNJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOOTTUMMEL",
+      "person": {
+        "id": "2015050101101",
+        "name": "BINDU PRADEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KULASEKHARAMANGALAM",
+      "person": {
+        "id": "2015050101201",
+        "name": "K.B.REMA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "TOLL",
+      "person": {
+        "id": "2015050101301",
+        "name": "K.S.VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KODOOPPADAM",
+      "person": {
+        "id": "2015050101401",
+        "name": "P.R.SARATHKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHEMMANAKARI",
+      "person": {
+        "id": "2015050101501",
+        "name": "LEENA D NAIR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

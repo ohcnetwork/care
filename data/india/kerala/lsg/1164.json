@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349454651,
+  "date": "2019-08-21",
+  "name": "Ayyankunnu  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "122.8km",
+  "localbody_code": "G131002",
+  "no_of_wards": 16,
+  "population": 21594,
+  "male": 11049,
+  "female": 10545,
+  "population_density": 176,
+  "sex_ratio": 954,
+  "literacy_rate": 93.88,
+  "literacy_rate_male": 95.09,
+  "literacy_rate_female": 92.59,
+  "president": "ADV.SHEEJASEBASTIAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KACHERIKADAVU",
+      "person": {
+        "id": "2015116400101",
+        "name": "ADV. SHEEJA SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALATHUMKADAVU",
+      "person": {
+        "id": "2015116400201",
+        "name": "MARY REJI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RANDAMKADAVU",
+      "person": {
+        "id": "2015116400301",
+        "name": "THOMAS KOODAPPATTU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VANIYAPPARA",
+      "person": {
+        "id": "2015116400401",
+        "name": "M K VINOD"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MURIKKUMKARY",
+      "person": {
+        "id": "2015116400501",
+        "name": "JOSEPH THADATHIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANGADIKADAVU",
+      "person": {
+        "id": "2015116400601",
+        "name": "REJI MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ENTHUMKARY",
+      "person": {
+        "id": "2015116400701",
+        "name": "PRIYA K JOHN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDAPUZHA",
+      "person": {
+        "id": "2015116400801",
+        "name": "JOSEPH NADUTHOTTATHIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOOMANTHODE",
+      "person": {
+        "id": "2015116400901",
+        "name": "MARY VAZHAMPLAKAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARIKKOTTAKARY",
+      "person": {
+        "id": "2015116401001",
+        "name": "BEENA IYPE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALIYAPARAMBINKARY",
+      "person": {
+        "id": "2015116401101",
+        "name": "SHEEJAMOL K C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMPANINIRATH",
+      "person": {
+        "id": "2015116401201",
+        "name": "LOVELY THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUNDAYAMPARAMBA",
+      "person": {
+        "id": "2015116401301",
+        "name": "T M VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANAPPANTHY",
+      "person": {
+        "id": "2015116401401",
+        "name": "THOMAS VALIYATHOTTIYIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUDAYIRANJI",
+      "person": {
+        "id": "2015116401501",
+        "name": "SUNNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHARAL",
+      "person": {
+        "id": "2015116401601",
+        "name": "ISSAC JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

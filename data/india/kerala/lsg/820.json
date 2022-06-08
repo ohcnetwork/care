@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348218261,
+  "date": "2019-08-21",
+  "name": "Vilayur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "17.73km",
+  "localbody_code": "G090208",
+  "no_of_wards": 15,
+  "population": 17873,
+  "male": 8543,
+  "female": 9330,
+  "population_density": 1008,
+  "sex_ratio": 1092,
+  "literacy_rate": 89.99,
+  "literacy_rate_male": 93.27,
+  "literacy_rate_female": 86.97,
+  "president": "K.MURALEEDHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUPPOOTH",
+      "person": {
+        "id": "2015082000101",
+        "name": "V. AHAMMEDKUNHI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALOLIKULAMBU",
+      "person": {
+        "id": "2015082000201",
+        "name": "ABDUL RAHIMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOVANIKKUNNU",
+      "person": {
+        "id": "2015082000301",
+        "name": "SAKKEENA HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANDENKAVU",
+      "person": {
+        "id": "2015082000401",
+        "name": "HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VILAYUR CENTER",
+      "person": {
+        "id": "2015082000501",
+        "name": "C.P HARIDASAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "OLANCHERY",
+      "person": {
+        "id": "2015082000601",
+        "name": "HAMDA NOUFAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARINGANAD",
+      "person": {
+        "id": "2015082000701",
+        "name": "NEELADI SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOZHINJIPARAMBU",
+      "person": {
+        "id": "2015082000801",
+        "name": "RAJI.K.T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALAPPARA",
+      "person": {
+        "id": "2015082000901",
+        "name": "CHAITHANYA SUDHEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERADIYOOR",
+      "person": {
+        "id": "2015082001001",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOORACHIPPADI",
+      "person": {
+        "id": "2015082001101",
+        "name": "K.MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDAPPALAM",
+      "person": {
+        "id": "2015082001201",
+        "name": "SOUMYA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOKKOTTUKULAMBU",
+      "person": {
+        "id": "2015082001301",
+        "name": "K.KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AMBADIKKUNNU",
+      "person": {
+        "id": "2015082001401",
+        "name": "UNNIKRISHNAN.A.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AALIKKAPPALLIYAL",
+      "person": {
+        "id": "2015082001501",
+        "name": "USHAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

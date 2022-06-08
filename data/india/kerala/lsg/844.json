@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348293704,
+  "date": "2019-08-21",
+  "name": "Sholayoor  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Attappady",
+  "area": "150.76km",
+  "localbody_code": "G090603",
+  "no_of_wards": 14,
+  "population": 16941,
+  "male": 8533,
+  "female": 8408,
+  "population_density": 113,
+  "sex_ratio": 1009,
+  "literacy_rate": 48.5,
+  "literacy_rate_male": 54.22,
+  "literacy_rate_female": 42.68,
+  "president": "RATHINARAMAMOORTHI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTATHARA",
+      "person": {
+        "id": "2015084400101",
+        "name": "MUMTHAS KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MATTATHUKADU",
+      "person": {
+        "id": "2015084400201",
+        "name": "RATHINA RAMAMOORTHI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VATTALAKKI",
+      "person": {
+        "id": "2015084400301",
+        "name": "D.RAVI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANAKKATTI",
+      "person": {
+        "id": "2015084400401",
+        "name": "SELVAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADAMBARA",
+      "person": {
+        "id": "2015084400501",
+        "name": "NANCHAN.S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VECHAPATHI",
+      "person": {
+        "id": "2015084400601",
+        "name": "SELVI MURUKAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VARAGAMPADI",
+      "person": {
+        "id": "2015084400701",
+        "name": "SANOJ.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PETTIKKAL",
+      "person": {
+        "id": "2015084400801",
+        "name": "SANTHOSH S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHIKOODAM",
+      "person": {
+        "id": "2015084400901",
+        "name": "PONNAMMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KURAVANPADI",
+      "person": {
+        "id": "2015084401001",
+        "name": "MARTIN JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHUNDAKULAM",
+      "person": {
+        "id": "2015084401101",
+        "name": "VALLY.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SHOLAYUR",
+      "person": {
+        "id": "2015084401201",
+        "name": "ANEESH K.V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLAKKARA",
+      "person": {
+        "id": "2015084401301",
+        "name": "SANTHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANNATHARA",
+      "person": {
+        "id": "2015084401401",
+        "name": "SELVI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

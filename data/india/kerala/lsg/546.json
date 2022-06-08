@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346841022,
+  "date": "2019-08-21",
+  "name": "Meenadom  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pampady",
+  "area": "11.44km",
+  "localbody_code": "G050706",
+  "no_of_wards": 13,
+  "population": 11353,
+  "male": 5705,
+  "female": 5648,
+  "population_density": 992,
+  "sex_ratio": 990,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "VALSALAKUMARIT.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEERAMKULAM",
+      "person": {
+        "id": "2015054600101",
+        "name": "P M SKARIA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THAKIDI",
+      "person": {
+        "id": "2015054600201",
+        "name": "SINDHU VISWAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUNDIYACKAL",
+      "person": {
+        "id": "2015054600301",
+        "name": "SINI BIJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THATTANKADAVU",
+      "person": {
+        "id": "2015054600401",
+        "name": "VALSALAKUMARI T.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VATTAKKAVU",
+      "person": {
+        "id": "2015054600501",
+        "name": "ABY GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUMALA",
+      "person": {
+        "id": "2015054600601",
+        "name": "SANTHOSH VARKEY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANJADI",
+      "person": {
+        "id": "2015054600701",
+        "name": "SARASAMMA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POTHENPURAM",
+      "person": {
+        "id": "2015054600801",
+        "name": "THAMBIKUNJU PHILIP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHUVAYAL",
+      "person": {
+        "id": "2015054600901",
+        "name": "PRASAD NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOONNAM MILE",
+      "person": {
+        "id": "2015054601001",
+        "name": "LALY JACOB"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURICKAKUNNU",
+      "person": {
+        "id": "2015054601101",
+        "name": "VARGHESE MATHEW (MONICHEN KIZHAKKEDOM)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POST OFFICE",
+      "person": {
+        "id": "2015054601201",
+        "name": "SINDHU KRISHNA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NJANDUKULAM",
+      "person": {
+        "id": "2015054601301",
+        "name": "REJANI KURIAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

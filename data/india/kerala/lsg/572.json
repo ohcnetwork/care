@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346927145,
+  "date": "2019-08-21",
+  "name": "Parathodu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kanjirappally",
+  "area": "53.49km",
+  "localbody_code": "G051106",
+  "no_of_wards": 19,
+  "population": 27836,
+  "male": 14013,
+  "female": 13823,
+  "population_density": 520,
+  "sex_ratio": 986,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 94,
+  "president": "JAYAJACOB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENGATHANAM",
+      "person": {
+        "id": "2015057200101",
+        "name": "MONCEY JACOB"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAPRA",
+      "person": {
+        "id": "2015057200201",
+        "name": "BINU SAJEEV"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELICHIYANI",
+      "person": {
+        "id": "2015057200301",
+        "name": "SUJEELAN K.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHOTTY",
+      "person": {
+        "id": "2015057200401",
+        "name": "DIAS MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANGAPPARA",
+      "person": {
+        "id": "2015057200501",
+        "name": "JAYA JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VADAKKEMALA",
+      "person": {
+        "id": "2015057200601",
+        "name": "VARGHESE K.V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARATHODU",
+      "person": {
+        "id": "2015057200701",
+        "name": "RASEENA MOHAMMADKUNJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUKANI",
+      "person": {
+        "id": "2015057200801",
+        "name": "ALIYAR K.U"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDAKKUNNAM",
+      "person": {
+        "id": "2015057200901",
+        "name": "MARTIN THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOORAMTHOOKKU",
+      "person": {
+        "id": "2015057201001",
+        "name": "PHILOMINA REJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOOVAPPALLY",
+      "person": {
+        "id": "2015057201101",
+        "name": "TESSY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KULAPPURAM",
+      "person": {
+        "id": "2015057201201",
+        "name": "JOLLY DOMINIC"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALAMPRA",
+      "person": {
+        "id": "2015057201301",
+        "name": "ADV.N.J KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUKKALY",
+      "person": {
+        "id": "2015057201401",
+        "name": "PRINCY SATHEESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PODIMATTAM",
+      "person": {
+        "id": "2015057201501",
+        "name": "V.M SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ANAKKALLU",
+      "person": {
+        "id": "2015057201601",
+        "name": "T.M HANEEFA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PULKUNNU",
+      "person": {
+        "id": "2015057201701",
+        "name": "JOSEPH DOMINIC"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PAZHUMALA",
+      "person": {
+        "id": "2015057201801",
+        "name": "DAISY GEORGEKUTTY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHIRABHAGAM",
+      "person": {
+        "id": "2015057201901",
+        "name": "SHERLY THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

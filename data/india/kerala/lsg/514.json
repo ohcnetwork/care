@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566346730444,
+  "date": "2019-08-21",
+  "name": "Athirampuzha  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Ettumanoor",
+  "area": "20.01km",
+  "localbody_code": "G050303",
+  "no_of_wards": 22,
+  "population": 36140,
+  "male": 18031,
+  "female": 18109,
+  "population_density": 1806,
+  "sex_ratio": 1004,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "LISSYTOMY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VEDAGIRI",
+      "person": {
+        "id": "2015051400101",
+        "name": "ANNIE LUKOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTAKKUPURAM",
+      "person": {
+        "id": "2015051400201",
+        "name": "JAISON JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ITI",
+      "person": {
+        "id": "2015051400301",
+        "name": "JIJI JOY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KATTATHI",
+      "person": {
+        "id": "2015051400401",
+        "name": "RETHEESH RETHNAKARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015051400501",
+        "name": "SHINY JIMMY JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANAKKAPADAM",
+      "person": {
+        "id": "2015051400601",
+        "name": "JOSHY ELANJIYEL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THRUKKEL",
+      "person": {
+        "id": "2015051400701",
+        "name": "BABYNAS AJAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CENTRAL",
+      "person": {
+        "id": "2015051400801",
+        "name": "SHABEER SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "TOWN",
+      "person": {
+        "id": "2015051400901",
+        "name": "ANNS VARGHEASE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "UNIVERSITY",
+      "person": {
+        "id": "2015051401002",
+        "name": "SHIMY SAJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NALPATHIMALA",
+      "person": {
+        "id": "2015051401101",
+        "name": "JOSE AMBALAKULAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNDAKAPADAM",
+      "person": {
+        "id": "2015051401201",
+        "name": "THOMAS PUTHUSSERIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNUKULAM",
+      "person": {
+        "id": "2015051401301",
+        "name": "ELSAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AMALAGIRI",
+      "person": {
+        "id": "2015051401401",
+        "name": "P. J. MATHEW"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTARAM",
+      "person": {
+        "id": "2015051401501",
+        "name": "ACHAMMA ANTY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ICH",
+      "person": {
+        "id": "2015051401601",
+        "name": "MARYKUTTY SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MANNANAM",
+      "person": {
+        "id": "2015051401701",
+        "name": "SOUMYA VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANNANAM EAST",
+      "person": {
+        "id": "2015051401801",
+        "name": "P. A. KUTTAPPAN MASTER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VELAMKULAM",
+      "person": {
+        "id": "2015051401901",
+        "name": "P. K. JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "LISSUE",
+      "person": {
+        "id": "2015051402001",
+        "name": "PAUL JOSEPH"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MANNARKUNNU",
+      "person": {
+        "id": "2015051402101",
+        "name": "LISSY TOMY"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "SREEKANDAMANGALAM",
+      "person": {
+        "id": "2015051402201",
+        "name": "BETTY THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

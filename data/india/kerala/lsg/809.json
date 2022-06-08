@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348173546,
+  "date": "2019-08-21",
+  "name": "Thirumittacode  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Thrithala",
+  "area": "32.31km",
+  "localbody_code": "G090106",
+  "no_of_wards": 18,
+  "population": 25855,
+  "male": 12214,
+  "female": 13641,
+  "population_density": 800,
+  "sex_ratio": 1117,
+  "literacy_rate": 85.83,
+  "literacy_rate_male": 89.75,
+  "literacy_rate_female": 82.42,
+  "president": "UNNIKRISHNAN.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NELLIKKATTIRI",
+      "person": {
+        "id": "2015080900101",
+        "name": "GOPAKUMARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAYAMANGALAM",
+      "person": {
+        "id": "2015080900201",
+        "name": "RADHIKA RATHEESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THIRUMITTACODE",
+      "person": {
+        "id": "2015080900301",
+        "name": "PRADEEP.M.M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "IRUMBAKASSERY",
+      "person": {
+        "id": "2015080900401",
+        "name": "E.P.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EZHUMANGAD",
+      "person": {
+        "id": "2015080900501",
+        "name": "T.RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "IRUNGUTTOOR",
+      "person": {
+        "id": "2015080900601",
+        "name": "RAVIPRAKASH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERIPPUR",
+      "person": {
+        "id": "2015080900701",
+        "name": "P.A.KASEEM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERINGANNUR",
+      "person": {
+        "id": "2015080900801",
+        "name": "SHERMILA.K.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "OZHUVATHRA",
+      "person": {
+        "id": "2015080900901",
+        "name": "KUMARI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ITTONAM",
+      "person": {
+        "id": "2015080901001",
+        "name": "CHANDRIKA.A.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLIPADAM",
+      "person": {
+        "id": "2015080901101",
+        "name": "JAMEELA.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AKILANAM",
+      "person": {
+        "id": "2015080901201",
+        "name": "SHARMILA.M.A"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHAZHIYATTIRI",
+      "person": {
+        "id": "2015080901301",
+        "name": "RAJENDRAN.A.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MATHUPPULLI",
+      "person": {
+        "id": "2015080901401",
+        "name": "KARTHYAYANI.K.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHATHANUR",
+      "person": {
+        "id": "2015080901501",
+        "name": "UNNIKRISHNAN.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARUKAPUTHUR",
+      "person": {
+        "id": "2015080901602",
+        "name": "SALAMU T P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VELLADIKUNNU",
+      "person": {
+        "id": "2015080901701",
+        "name": "SREELATHA.M"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VADAKKE VELLADIKUNNU",
+      "person": {
+        "id": "2015080901801",
+        "name": "ZUHARA.T"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

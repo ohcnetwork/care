@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566349155477,
+  "date": "2019-08-21",
+  "name": "Poothadi  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Sulthanbathery",
+  "area": "82.88km",
+  "localbody_code": "G120202",
+  "no_of_wards": 22,
+  "population": 36544,
+  "male": 18805,
+  "female": 17739,
+  "population_density": 441,
+  "sex_ratio": 943,
+  "literacy_rate": 84.83,
+  "literacy_rate_male": 88.09,
+  "literacy_rate_female": 81.38,
+  "president": "RUGMINISUBRAHMANYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NADAVAYAL",
+      "person": {
+        "id": "2015108100101",
+        "name": "UNNIKRISHNAN A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KELAMANGALAM",
+      "person": {
+        "id": "2015108100201",
+        "name": "MERCY SABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANALVAYAL",
+      "person": {
+        "id": "2015108100301",
+        "name": "SREEJA SABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "IRULAM",
+      "person": {
+        "id": "2015108100401",
+        "name": "RIYAS K I"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEEYAMBAM",
+      "person": {
+        "id": "2015108100501",
+        "name": "PRIYA MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHUNDAKOLLY",
+      "person": {
+        "id": "2015108100601",
+        "name": "SHIJI SHIBU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANGADISSERI",
+      "person": {
+        "id": "2015108100701",
+        "name": "RAVI T.R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOOTHALERI",
+      "person": {
+        "id": "2015108100801",
+        "name": "SMITHA SAJI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAPLASSERI",
+      "person": {
+        "id": "2015108100901",
+        "name": "BINDU DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GANDHINAGAR",
+      "person": {
+        "id": "2015108101001",
+        "name": "VASANTHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOODAKOLLY",
+      "person": {
+        "id": "2015108101101",
+        "name": "RUGMINI SUBRAHMANYAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAKERI",
+      "person": {
+        "id": "2015108101201",
+        "name": "SABU M.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLOREKUNNU",
+      "person": {
+        "id": "2015108101301",
+        "name": "BALAN M.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOLERI",
+      "person": {
+        "id": "2015108101401",
+        "name": "BALAKRISHNAN VELLAPPATTA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ATHIRATTUKUNNU",
+      "person": {
+        "id": "2015108101501",
+        "name": "SUDHAKARAN P.M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KENICHIRA",
+      "person": {
+        "id": "2015108101601",
+        "name": "PARTHAN A.D"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THAZHAMUNDA",
+      "person": {
+        "id": "2015108101701",
+        "name": "GEORGE PULPARA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NELLIKKARA",
+      "person": {
+        "id": "2015108101801",
+        "name": "USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PULIYAMBATTA",
+      "person": {
+        "id": "2015108101901",
+        "name": "LATHA MUKUNDAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "POOTHADI",
+      "person": {
+        "id": "2015108102001",
+        "name": "PUSHPAN V.R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KOTTAVAYAL",
+      "person": {
+        "id": "2015108102101",
+        "name": "MINI SASI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHERUKUNNU",
+      "person": {
+        "id": "2015108102201",
+        "name": "BINDHU SAJEEV"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

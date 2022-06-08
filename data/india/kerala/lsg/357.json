@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346143692,
+  "date": "2019-08-21",
+  "name": "Thrikkovilvattom  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Mukathala",
+  "area": "18.66km",
+  "localbody_code": "G020902",
+  "no_of_wards": 23,
+  "population": 45983,
+  "male": 22850,
+  "female": 23133,
+  "population_density": 2464,
+  "sex_ratio": 925,
+  "literacy_rate": 89.53,
+  "literacy_rate_male": 94.04,
+  "literacy_rate_female": 85.136,
+  "president": "SULOCHANA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THATTARKONAM",
+      "person": {
+        "id": "2015035700101",
+        "name": "AJITHKUMAR.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERIYELA",
+      "person": {
+        "id": "2015035700201",
+        "name": "JALAJAKUMARY.L"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AALUMMOODU",
+      "person": {
+        "id": "2015035700301",
+        "name": "BINI THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUREEPPALLY",
+      "person": {
+        "id": "2015035700401",
+        "name": "ASHA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NADUVILAKKARA",
+      "person": {
+        "id": "2015035700501",
+        "name": "BEENA RANI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERIKKONAM",
+      "person": {
+        "id": "2015035700601",
+        "name": "S.SUNITHDAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANNANALLOOR NORTH",
+      "person": {
+        "id": "2015035700701",
+        "name": "LALA ARATTUVILA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANNANALLOOR",
+      "person": {
+        "id": "2015035700801",
+        "name": "SHILAJA.M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANKONAM",
+      "person": {
+        "id": "2015035700901",
+        "name": "SHEELA.S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIKKOVILVATTOM",
+      "person": {
+        "id": "2015035701001",
+        "name": "D.BEENA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURUMANNA",
+      "person": {
+        "id": "2015035701101",
+        "name": "SATHEESH KUMAR.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUKHATHALA",
+      "person": {
+        "id": "2015035701201",
+        "name": "BINDHU.G.D"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KIZHAVOOR",
+      "person": {
+        "id": "2015035701301",
+        "name": "THULASEEBHAI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THAZHUTHALA",
+      "person": {
+        "id": "2015035701401",
+        "name": "PUTHOOR RAJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANNANALLOOR SOUTH",
+      "person": {
+        "id": "2015035701501",
+        "name": "VIJAYA RAJU.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAMBIVILA",
+      "person": {
+        "id": "2015035701601",
+        "name": "SEENATH HAMEED"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERAYAM",
+      "person": {
+        "id": "2015035701701",
+        "name": "VASANTHA BALACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PERAYAM NORTH",
+      "person": {
+        "id": "2015035701801",
+        "name": "PUTHEZHAM HAZEENA KABEERKUTTY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MYLAPOORU",
+      "person": {
+        "id": "2015035701901",
+        "name": "SULOCHANA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PUTHUCHIRA",
+      "person": {
+        "id": "2015035702001",
+        "name": "MAJITHA SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "DECENT JUNCTION",
+      "person": {
+        "id": "2015035702101",
+        "name": "A.SUKU"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VETTILATHAZHAM",
+      "person": {
+        "id": "2015035702201",
+        "name": "G.JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHENTHAPPOORU",
+      "person": {
+        "id": "2015035702301",
+        "name": "V.SURESH BABU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

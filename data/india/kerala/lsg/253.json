@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566345796710,
+  "date": "2019-08-21",
+  "name": "Peringammala  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vamanpuram",
+  "area": "217.94km",
+  "localbody_code": "G010407",
+  "no_of_wards": 19,
+  "population": 36173,
+  "male": 18388,
+  "female": 17785,
+  "population_density": 166,
+  "sex_ratio": 976,
+  "literacy_rate": 86.45,
+  "literacy_rate_male": 91.05,
+  "literacy_rate_female": 82.05,
+  "president": "CHITHRAKUMARIP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENKOLLA",
+      "person": {
+        "id": "2015025300101",
+        "name": "SASIKALA S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PONMUDI",
+      "person": {
+        "id": "2015025300201",
+        "name": "JISHA. A.R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "IDINJAR",
+      "person": {
+        "id": "2015025300301",
+        "name": "KUNJUMON K.J."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOCHUVILA",
+      "person": {
+        "id": "2015025300401",
+        "name": "SAJEENA YAHIYA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAVAM",
+      "person": {
+        "id": "2015025300501",
+        "name": "EDAVAM SHANAVAS ."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NJARANEELI",
+      "person": {
+        "id": "2015025300601",
+        "name": "MUHAMMED SIYAD M.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THENNOOR",
+      "person": {
+        "id": "2015025300701",
+        "name": "CHITHRAKUMARI P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOCHUKARIKKAKAM",
+      "person": {
+        "id": "2015025300801",
+        "name": "MANJU RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "IQBALCOLLEGE",
+      "person": {
+        "id": "2015025300901",
+        "name": "PRABHAVATHY C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "DAIVAPPURA",
+      "person": {
+        "id": "2015025301001",
+        "name": "SALIM PALLIVILA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHITTOOR",
+      "person": {
+        "id": "2015025301101",
+        "name": "MYLAKUNNU RAVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERINGAMMALA",
+      "person": {
+        "id": "2015025301201",
+        "name": "REEJA SHENIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOLLARUKONAM",
+      "person": {
+        "id": "2015025301301",
+        "name": "ARUNKUMAR P N"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALODE",
+      "person": {
+        "id": "2015025301401",
+        "name": "CHINNAMMA JOSE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARIMANCODE",
+      "person": {
+        "id": "2015025301501",
+        "name": "SINDHU KUMARI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHIPPANCHIRA",
+      "person": {
+        "id": "2015025301601",
+        "name": "JAYAKUMAR G"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ELAVUPALAM",
+      "person": {
+        "id": "2015025301701",
+        "name": "RIYAS A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOLLAYIL",
+      "person": {
+        "id": "2015025301801",
+        "name": "SUNAISA ANSARI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MADATHARA",
+      "person": {
+        "id": "2015025301901",
+        "name": "LEENA AJAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

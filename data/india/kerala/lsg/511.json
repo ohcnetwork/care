@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346721987,
+  "date": "2019-08-21",
+  "name": "Velloor  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kaduthuruthy",
+  "area": "19.29km",
+  "localbody_code": "G050206",
+  "no_of_wards": 16,
+  "population": 21584,
+  "male": 10845,
+  "female": 10739,
+  "population_density": 1119,
+  "sex_ratio": 990,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 90,
+  "president": "LAILAJAMAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THONNALLOOR",
+      "person": {
+        "id": "2015051100101",
+        "name": "RAJESH K R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MEVELLOOR",
+      "person": {
+        "id": "2015051100201",
+        "name": "CHANDRAN P.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAIPPELPPADI",
+      "person": {
+        "id": "2015051100301",
+        "name": "SALINI MOHANAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHANDRAMALA",
+      "person": {
+        "id": "2015051100401",
+        "name": "OMANA JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELLOOR",
+      "person": {
+        "id": "2015051100501",
+        "name": "SAJITHAKUMARI P.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NEWSPRINT NAGAR",
+      "person": {
+        "id": "2015051100601",
+        "name": "JAYA ANIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "IRUMPAYAM",
+      "person": {
+        "id": "2015051100701",
+        "name": "REJIMON"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUMTHATTU",
+      "person": {
+        "id": "2015051100801",
+        "name": "JOSHI V.C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THANNIPPALLI",
+      "person": {
+        "id": "2015051100901",
+        "name": "JOMOL K JOHN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUTHENCHANTHA",
+      "person": {
+        "id": "2015051101001",
+        "name": "MOHANAN K.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VETTIKKATTUMUKKU",
+      "person": {
+        "id": "2015051101101",
+        "name": "LAILA JAMAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARACKAL",
+      "person": {
+        "id": "2015051101201",
+        "name": "BINOY O.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THATTAVELI",
+      "person": {
+        "id": "2015051101301",
+        "name": "SUGUNAN P.R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARIPPALLY",
+      "person": {
+        "id": "2015051101401",
+        "name": "RENJUSHA SHAIJI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NEERPPARA",
+      "person": {
+        "id": "2015051101501",
+        "name": "ANSAMMA P.J"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VARIKKAMKUNNU",
+      "person": {
+        "id": "2015051101601",
+        "name": "LUKE MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

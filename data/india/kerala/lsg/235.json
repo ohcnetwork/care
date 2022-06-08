@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345732932,
+  "date": "2019-08-21",
+  "name": "Madavoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "18.53km",
+  "localbody_code": "G010204",
+  "no_of_wards": 15,
+  "population": 18541,
+  "male": 8875,
+  "female": 9666,
+  "population_density": 1001,
+  "sex_ratio": 1089,
+  "literacy_rate": 87.89,
+  "literacy_rate_male": 92.7,
+  "literacy_rate_female": 83.56,
+  "president": "GIRIJABALACHANDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANCHAYAT OFFICE WARD",
+      "person": {
+        "id": "2015023500101",
+        "name": "K. SASI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VEMOODU",
+      "person": {
+        "id": "2015023500201",
+        "name": "K. DHARMASEELAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARUKANJIRAM",
+      "person": {
+        "id": "2015023500301",
+        "name": "M.G.MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULIYOORKONAM",
+      "person": {
+        "id": "2015023500401",
+        "name": "A. NAVAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANGAYILKONAM",
+      "person": {
+        "id": "2015023500501",
+        "name": "GIRIJA BALACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KIZHAKKANELA",
+      "person": {
+        "id": "2015023500601",
+        "name": "S.R. JALAJA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MULAVANA",
+      "person": {
+        "id": "2015023500701",
+        "name": "PREETHA.T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MADAVOOR",
+      "person": {
+        "id": "2015023500801",
+        "name": "REJITHA.R.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THUMBODU",
+      "person": {
+        "id": "2015023500901",
+        "name": "DEEPA. T.S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SEEMANTHAPURAM",
+      "person": {
+        "id": "2015023501002",
+        "name": "REJANI MOL R.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PADINJATTELA",
+      "person": {
+        "id": "2015023501102",
+        "name": "M.SIDDIK"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NJARAYILKONAM",
+      "person": {
+        "id": "2015023501201",
+        "name": "SAJEENA.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAKKODE",
+      "person": {
+        "id": "2015023501301",
+        "name": "R.RAMYA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANAKUNNAM",
+      "person": {
+        "id": "2015023501401",
+        "name": "SUNITHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015023501501",
+        "name": "LEENA.L"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

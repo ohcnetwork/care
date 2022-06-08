@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345151793,
+  "date": "2019-08-21",
+  "name": "Irinjalakuda  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Irinjalkkuda",
+  "area": "95.49km",
+  "localbody_code": "B081200",
+  "no_of_wards": 13,
+  "population": 113962,
+  "male": 53923,
+  "female": 60039,
+  "population_density": 1193,
+  "sex_ratio": 1113,
+  "literacy_rate": 91.38,
+  "literacy_rate_male": 94.94,
+  "literacy_rate_female": 88.26,
+  "president": "V.A.MANOJKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARANCHIRA",
+      "person": {
+        "id": "2015009200101",
+        "name": "AMBUJA RAJAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARALAM",
+      "person": {
+        "id": "2015009200201",
+        "name": "SHAMLA AZEEZ"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THOTTIPPAL",
+      "person": {
+        "id": "2015009200301",
+        "name": "VANAJA JAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARAPPOOKARA",
+      "person": {
+        "id": "2015009200401",
+        "name": "K.V.RAJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLAYI",
+      "person": {
+        "id": "2015009200501",
+        "name": "KUMARAN.P.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALATHOOR",
+      "person": {
+        "id": "2015009200601",
+        "name": "JAYASREE.K.A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANANDAPURAM",
+      "person": {
+        "id": "2015009200701",
+        "name": "ADV.MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MURIYAD",
+      "person": {
+        "id": "2015009200801",
+        "name": "NALINI BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAPPARA",
+      "person": {
+        "id": "2015009200901",
+        "name": "MINI SATHIAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULLUR",
+      "person": {
+        "id": "2015009201001",
+        "name": "THOMAS THATHAMBILLY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KIZHUTHANI",
+      "person": {
+        "id": "2015009201101",
+        "name": "MALLIKA CHATHUKUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLANI",
+      "person": {
+        "id": "2015009201201",
+        "name": "V.A.MANOJKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTOOR",
+      "person": {
+        "id": "2015009201301",
+        "name": "KAMARUDHEEN VALIYAKATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

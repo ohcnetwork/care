@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346821502,
+  "date": "2019-08-21",
+  "name": "Thalanad  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Erattupetta",
+  "area": "32.24km",
+  "localbody_code": "G050608",
+  "no_of_wards": 13,
+  "population": 7442,
+  "male": 3752,
+  "female": 3690,
+  "population_density": 231,
+  "sex_ratio": 983,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 94,
+  "president": "BABUP.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOVOOR",
+      "person": {
+        "id": "2015053900101",
+        "name": "MANOJ V.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THALANAD CENTRE",
+      "person": {
+        "id": "2015053900201",
+        "name": "VINOJ A.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHONAMALA",
+      "person": {
+        "id": "2015053900301",
+        "name": "SATHI VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MELADUKKOM",
+      "person": {
+        "id": "2015053900401",
+        "name": "DALIYA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ADUKKOM",
+      "person": {
+        "id": "2015053900501",
+        "name": "INDHIRA SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERYAMALA",
+      "person": {
+        "id": "2015053900601",
+        "name": "RAMAKRISHNAN A.N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLANI",
+      "person": {
+        "id": "2015053900701",
+        "name": "ASHA RIJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ATTIKALAM",
+      "person": {
+        "id": "2015053900801",
+        "name": "JOHNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "TEEKOY ESTATE",
+      "person": {
+        "id": "2015053900901",
+        "name": "MOHANAKUMAR R"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MARAVIKALLU",
+      "person": {
+        "id": "2015053901001",
+        "name": "MARYKUTTY ANDREWES"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015053901101",
+        "name": "SHEEJA SUBAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AYYAMPARA",
+      "person": {
+        "id": "2015053901201",
+        "name": "LINCY LALACHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VADAKKUMBHAGAM",
+      "person": {
+        "id": "2015053901301",
+        "name": "BABU P.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

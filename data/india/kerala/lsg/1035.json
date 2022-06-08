@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349008357,
+  "date": "2019-08-21",
+  "name": "Koorachundu  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Balussery",
+  "area": "72.74km",
+  "localbody_code": "G110707",
+  "no_of_wards": 13,
+  "population": 16111,
+  "male": 8229,
+  "female": 7882,
+  "population_density": 221,
+  "sex_ratio": 958,
+  "literacy_rate": 93.51,
+  "literacy_rate_male": 96.08,
+  "literacy_rate_female": 90.86,
+  "president": "VINCY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SANKARAVAYAL",
+      "person": {
+        "id": "2015103500101",
+        "name": "VINCY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALANGALI",
+      "person": {
+        "id": "2015103500201",
+        "name": "SAREESH HARIDASAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OTTAPALAM",
+      "person": {
+        "id": "2015103500301",
+        "name": "JOSEPH CHERIYAMPURATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAKKAYAM",
+      "person": {
+        "id": "2015103500401",
+        "name": "ANDREWS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIYATHUMPARA",
+      "person": {
+        "id": "2015103500501",
+        "name": "JOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THONIKKADAV",
+      "person": {
+        "id": "2015103500601",
+        "name": "KARTHIKA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLANODE",
+      "person": {
+        "id": "2015103500701",
+        "name": "BIJU MANI VALAKULATH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHALIDAM",
+      "person": {
+        "id": "2015103500801",
+        "name": "O.K.AMMED"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOVATHUMCHOLA",
+      "person": {
+        "id": "2015103500901",
+        "name": "SHAKEENA KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTACHIRA",
+      "person": {
+        "id": "2015103501001",
+        "name": "RAMLA MAJEED PARAYIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KATTULLAMALA",
+      "person": {
+        "id": "2015103501101",
+        "name": "OMANA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOORACHUNDU",
+      "person": {
+        "id": "2015103501201",
+        "name": "GEETHA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ONJIL",
+      "person": {
+        "id": "2015103501301",
+        "name": "SINI JINO"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

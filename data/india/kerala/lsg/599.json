@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347002508,
+  "date": "2019-08-21",
+  "name": "IdukkiKanjikuzhy  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Idukki",
+  "area": "227.51km",
+  "localbody_code": "G060501",
+  "no_of_wards": 18,
+  "population": 27955,
+  "male": 14304,
+  "female": 13651,
+  "population_density": 123,
+  "sex_ratio": 954,
+  "literacy_rate": 93,
+  "literacy_rate_male": 94,
+  "literacy_rate_female": 91,
+  "president": "SHEEBAJAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THATTEKKANNI",
+      "person": {
+        "id": "2015059900101",
+        "name": "RAJI CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KEERITHODE",
+      "person": {
+        "id": "2015059900201",
+        "name": "SAJI JOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANCHUKUDY",
+      "person": {
+        "id": "2015059900301",
+        "name": "TINSY THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHELACHUVADU",
+      "person": {
+        "id": "2015059900401",
+        "name": "RANI SHAJI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KATHIPPARA",
+      "person": {
+        "id": "2015059900501",
+        "name": "THOMAS JOHNY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATTIKKALAM",
+      "person": {
+        "id": "2015059900601",
+        "name": "THANKACHAN MATHAI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHURULI",
+      "person": {
+        "id": "2015059900701",
+        "name": "ROBIN JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALPPARA",
+      "person": {
+        "id": "2015059900801",
+        "name": "SIMINA BINOY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MAZHUVADY",
+      "person": {
+        "id": "2015059900901",
+        "name": "SHEEBA JAYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THALLAKKANAM",
+      "person": {
+        "id": "2015059901001",
+        "name": "PUSHPA GOPI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUNNAYAR",
+      "person": {
+        "id": "2015059901101",
+        "name": "SITHARA JAYAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJIKUZHY",
+      "person": {
+        "id": "2015059901201",
+        "name": "BINDHU ABHAYAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAZHAYARIKKANDOM",
+      "person": {
+        "id": "2015059901301",
+        "name": "JOSE PAULOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VAKACHUVADU",
+      "person": {
+        "id": "2015059901401",
+        "name": "PRADEEP M.M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MAKKUVALLY",
+      "person": {
+        "id": "2015059901501",
+        "name": "SAJEEVAN NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VENMONY",
+      "person": {
+        "id": "2015059901601",
+        "name": "JOSHWA DEVASIA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VARIKKAMUTHAN",
+      "person": {
+        "id": "2015059901701",
+        "name": "SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PONNEDUTHAN",
+      "person": {
+        "id": "2015059901801",
+        "name": "RAJESWARY RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,277 @@
+{
+  "timeStamp": 1566349737635,
+  "date": "2019-08-21",
+  "name": "Nileshwar\n  Municipality, Kasargode District",
+  "district": "Kasargode",
+  "area": null,
+  "localbody_code": "M140300",
+  "no_of_wards": 32,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "chairman": "PROFKPJAYARAJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADINHATAM KOZHUVAL WEST",
+      "person": {
+        "id": "2015125000101",
+        "name": "KUNHIKRISHNAN P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADINHATAM KOZHUVAL EAST",
+      "person": {
+        "id": "2015125000201",
+        "name": "P V RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KIZHAKKAN  KOZHUVAL",
+      "person": {
+        "id": "2015125000301",
+        "name": "ERUVAT MOHANAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALAKKAT",
+      "person": {
+        "id": "2015125000401",
+        "name": "K V SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHIRAPPURAM",
+      "person": {
+        "id": "2015125000501",
+        "name": "SANDHYA P M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATTENA",
+      "person": {
+        "id": "2015125000601",
+        "name": "A V SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SUVARNAVALLY",
+      "person": {
+        "id": "2015125000701",
+        "name": "P V RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALATHADAM",
+      "person": {
+        "id": "2015125000801",
+        "name": "P MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALAYI",
+      "person": {
+        "id": "2015125000901",
+        "name": "THOTTATHIL KUNHIKANNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALLIKKUNNU",
+      "person": {
+        "id": "2015125001001",
+        "name": "KUNHIKANNAN C C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHATHAMATHU",
+      "person": {
+        "id": "2015125001101",
+        "name": "K V SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOVALAMKAI",
+      "person": {
+        "id": "2015125001201",
+        "name": "VANAJA M V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNHIPPULIKKAL",
+      "person": {
+        "id": "2015125001301",
+        "name": "PROF : K P JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARYAMKODE",
+      "person": {
+        "id": "2015125001401",
+        "name": "P RADHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PEROLE",
+      "person": {
+        "id": "2015125001501",
+        "name": "P BHARGAVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THATTACHERY",
+      "person": {
+        "id": "2015125001601",
+        "name": "K P KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLIKKARA I",
+      "person": {
+        "id": "2015125001701",
+        "name": "RADHA K V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALLIKKARA II",
+      "person": {
+        "id": "2015125001801",
+        "name": "USHA K V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KARUVACHERY",
+      "person": {
+        "id": "2015125001901",
+        "name": "P K RATHEESH"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOYAMBURAM",
+      "person": {
+        "id": "2015125002001",
+        "name": "GEETHA K V"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ANACHAL",
+      "person": {
+        "id": "2015125002101",
+        "name": "V GOURI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015125002201",
+        "name": "M SAJIDA"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KADINHIMOOLA",
+      "person": {
+        "id": "2015125002301",
+        "name": "SEEMA V V"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "PURATHEKAI",
+      "person": {
+        "id": "2015125002401",
+        "name": "K THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "THAIKADAPPURAM SOUTH",
+      "person": {
+        "id": "2015125002501",
+        "name": "PRAKASAN K"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "THAIKADAPPURAM CENTRE",
+      "person": {
+        "id": "2015125002601",
+        "name": "AISHABI.N.P"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "THAIKADAPPURAM NORTH",
+      "person": {
+        "id": "2015125002701",
+        "name": "BEENA.T.P"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THAIKADAPPURAM SEA ROAD",
+      "person": {
+        "id": "2015125002801",
+        "name": "RASHEEDA.V.K"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "THAIKADAPPURAM  STORE",
+      "person": {
+        "id": "2015125002901",
+        "name": "LATHA.M"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "KOTRACHAL",
+      "person": {
+        "id": "2015125003001",
+        "name": "P.P.MUHAMMED RAFI"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KANICHIRA",
+      "person": {
+        "id": "2015125003101",
+        "name": "A.K.KUNHIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "NILESHWARAM TOWN",
+      "person": {
+        "id": "2015125003201",
+        "name": "MADHAVI.C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

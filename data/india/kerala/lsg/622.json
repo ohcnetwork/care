@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566347090669,
+  "date": "2019-08-21",
+  "name": "Elappara  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Azhutta",
+  "area": "83.74km",
+  "localbody_code": "G060805",
+  "no_of_wards": 17,
+  "population": 27482,
+  "male": 13798,
+  "female": 13684,
+  "population_density": 328,
+  "sex_ratio": 992,
+  "literacy_rate": 82,
+  "literacy_rate_male": 88,
+  "literacy_rate_female": 75,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULLIKKANAM",
+      "person": {
+        "id": "2015062200101",
+        "name": "KARUPPAWAMY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ULUPPONNI",
+      "person": {
+        "id": "2015062200201",
+        "name": "CHITHRA M RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAMALA",
+      "person": {
+        "id": "2015062200301",
+        "name": "PRIYAMOL ANEESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VATTAPATHAL",
+      "person": {
+        "id": "2015062200401",
+        "name": "SHAJI JACOB"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOCHUKRIMTHARUVI",
+      "person": {
+        "id": "2015062200501",
+        "name": "SHAJI KARACKATTU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHEMMANNU",
+      "person": {
+        "id": "2015062200601",
+        "name": "RAJENDRAN R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHINNAR",
+      "person": {
+        "id": "2015062200701",
+        "name": "KANNAMMA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALLAKKADAVU",
+      "person": {
+        "id": "2015062200801",
+        "name": "GEORGE KUTTY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "HAILEYBURIA",
+      "person": {
+        "id": "2015062200901",
+        "name": "JAYARAMAN T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKEPUTHUVAL",
+      "person": {
+        "id": "2015062201001",
+        "name": "RAJAN P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOZHIKKANAM",
+      "person": {
+        "id": "2015062201101",
+        "name": "VASANTHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANNIKKANAM",
+      "person": {
+        "id": "2015062201201",
+        "name": "JYOTHI BOBY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELAPPARA",
+      "person": {
+        "id": "2015062201301",
+        "name": "SAJANA HAKKIM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "TYFORD",
+      "person": {
+        "id": "2015062201401",
+        "name": "MARIYAPUSHPAM P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BONAMI",
+      "person": {
+        "id": "2015062201501",
+        "name": "MARY MOHANRAJ"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOLAHALAMEDU",
+      "person": {
+        "id": "2015062201601",
+        "name": "MINI SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VGAMON",
+      "person": {
+        "id": "2015062201701",
+        "name": "MINI SUDHAKARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

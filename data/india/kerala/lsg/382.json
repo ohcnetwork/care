@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346250752,
+  "date": "2019-08-21",
+  "name": "Nedumpuram  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Pulikezhu",
+  "area": "8.49km",
+  "localbody_code": "G030204",
+  "no_of_wards": 13,
+  "population": 12864,
+  "male": 6231,
+  "female": 6633,
+  "population_density": 1515,
+  "sex_ratio": 1065,
+  "literacy_rate": 96.28,
+  "literacy_rate_male": 98.09,
+  "literacy_rate_female": 94.59,
+  "president": "KGSUNILKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMICHAKARI",
+      "person": {
+        "id": "2015038200101",
+        "name": "RACHEL BABY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NEDUMPURAM",
+      "person": {
+        "id": "2015038200201",
+        "name": "RINSON THOMAS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHIYAKAVU",
+      "person": {
+        "id": "2015038200301",
+        "name": "AJITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAYIKKATHILLAM",
+      "person": {
+        "id": "2015038200401",
+        "name": "RAJAPPAN K K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHOONTHARA",
+      "person": {
+        "id": "2015038200501",
+        "name": "CHANDRALEKHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PODIYADI",
+      "person": {
+        "id": "2015038200601",
+        "name": "RAJASREE R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANIPPUZHA",
+      "person": {
+        "id": "2015038200701",
+        "name": "SREEDEVI SATHEESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MALAYITHRA",
+      "person": {
+        "id": "2015038200801",
+        "name": "C. G. KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLUMKAL",
+      "person": {
+        "id": "2015038200901",
+        "name": "SUSAN GEORGE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MURINJACHIRA",
+      "person": {
+        "id": "2015038201001",
+        "name": "CHACKO CHERIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULIKKEEZHU",
+      "person": {
+        "id": "2015038201101",
+        "name": "K G SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "OTTATHENGU",
+      "person": {
+        "id": "2015038201201",
+        "name": "SANDHYAMOL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "JALAMELA",
+      "person": {
+        "id": "2015038201301",
+        "name": "P G NANDAKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346532629,
+  "date": "2019-08-21",
+  "name": "Mulakuzha  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Chengannur",
+  "area": "22.74km",
+  "localbody_code": "G040801",
+  "no_of_wards": 18,
+  "population": 27079,
+  "male": 12864,
+  "female": 14215,
+  "population_density": 119,
+  "sex_ratio": 1105,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 91,
+  "president": "RESHMIRAVEENDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NIKARUMPURAM",
+      "person": {
+        "id": "2015046400101",
+        "name": "MATHEW VARGHESE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALLIKAL",
+      "person": {
+        "id": "2015046400201",
+        "name": "LEELAMMA JOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULAKUZHA",
+      "person": {
+        "id": "2015046400301",
+        "name": "MANOJ KUMAR ."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLIPADI",
+      "person": {
+        "id": "2015046400401",
+        "name": "SADANANDAN K.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PATTANGAD",
+      "person": {
+        "id": "2015046400501",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUDAKKAMARAM",
+      "person": {
+        "id": "2015046400601",
+        "name": "A.G.ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANNARAKKODE",
+      "person": {
+        "id": "2015046400701",
+        "name": "VIJAYAKUMAR P.R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARAKKAD",
+      "person": {
+        "id": "2015046400801",
+        "name": "N.A.RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARIMPINAPOIKA",
+      "person": {
+        "id": "2015046400901",
+        "name": "MINI SUBASH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KADINAVILA",
+      "person": {
+        "id": "2015046401001",
+        "name": "LATHA V.R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARANTHAKKAD",
+      "person": {
+        "id": "2015046401101",
+        "name": "RESHMI RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THAZHAMBHAGAM",
+      "person": {
+        "id": "2015046401201",
+        "name": "CHANDRIKA MOHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALARITHARA",
+      "person": {
+        "id": "2015046401301",
+        "name": "SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AREEKKARA",
+      "person": {
+        "id": "2015046401401",
+        "name": "RADHABAI.K.R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALIYAPARAMBU",
+      "person": {
+        "id": "2015046401501",
+        "name": "OMANA RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERINGALA",
+      "person": {
+        "id": "2015046401601",
+        "name": "GIRIJA VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "POOPPANKARA",
+      "person": {
+        "id": "2015046401701",
+        "name": "KUNJUMOL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PIRALASSERI",
+      "person": {
+        "id": "2015046401801",
+        "name": "AISWARYA.P.V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

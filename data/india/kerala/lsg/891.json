@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348470250,
+  "date": "2019-08-21",
+  "name": "Pudusseri  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Malampuzha",
+  "area": "122.84km",
+  "localbody_code": "G091305",
+  "no_of_wards": 23,
+  "population": 41710,
+  "male": 21079,
+  "female": 20631,
+  "population_density": 340,
+  "sex_ratio": 979,
+  "literacy_rate": 72.46,
+  "literacy_rate_male": 80.83,
+  "literacy_rate_female": 63.94,
+  "president": "K.UNNIKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENOLI",
+      "person": {
+        "id": "2015089100101",
+        "name": "USHA.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UMMINIKULAM",
+      "person": {
+        "id": "2015089100201",
+        "name": "SRUTHI.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMMANAMKAD",
+      "person": {
+        "id": "2015089100301",
+        "name": "PRIYA.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANNODE",
+      "person": {
+        "id": "2015089100401",
+        "name": "PRIYA.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUDUR",
+      "person": {
+        "id": "2015089100501",
+        "name": "THANGAM.C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PETTAKKAD",
+      "person": {
+        "id": "2015089100601",
+        "name": "M.AMBIKA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "WALAYAR",
+      "person": {
+        "id": "2015089100701",
+        "name": "AMARAVATHY.A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHANDRAPURAM",
+      "person": {
+        "id": "2015089100801",
+        "name": "RAFI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAMBUPPARA",
+      "person": {
+        "id": "2015089100901",
+        "name": "SIVAKAMI.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KONGAMPARA",
+      "person": {
+        "id": "2015089101001",
+        "name": "L.GOPALAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAMPAMPALLAM",
+      "person": {
+        "id": "2015089101101",
+        "name": "S.SUDARSANAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ATTAPPALLAM",
+      "person": {
+        "id": "2015089101201",
+        "name": "ANANDAKRISHNAN.S.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHULLIMADA",
+      "person": {
+        "id": "2015089101301",
+        "name": "RAMESH.S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KIZHAKKEMURI",
+      "person": {
+        "id": "2015089101401",
+        "name": "VINUPRIYA.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANJIKODE",
+      "person": {
+        "id": "2015089101501",
+        "name": "M.BALAMURALI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SATHRAPPADI",
+      "person": {
+        "id": "2015089101601",
+        "name": "GINA.M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANJIKODE SOUTH",
+      "person": {
+        "id": "2015089101701",
+        "name": "KUMARI.K.C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHEDAYANKALAI",
+      "person": {
+        "id": "2015089101801",
+        "name": "M.V.MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PUTHURPADAM",
+      "person": {
+        "id": "2015089101901",
+        "name": "RAJANI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOLAYAKKODE",
+      "person": {
+        "id": "2015089102001",
+        "name": "INDIRA.K"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "SOORYACHIRA",
+      "person": {
+        "id": "2015089102101",
+        "name": "C.CHAMY"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PUDUSSERY",
+      "person": {
+        "id": "2015089102201",
+        "name": "K.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PUDUSSERYPPADAM",
+      "person": {
+        "id": "2015089102301",
+        "name": "UDAYAKUMAR.U"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

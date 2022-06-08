@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347074109,
+  "date": "2019-08-21",
+  "name": "Peruvanthanam  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Azhutta",
+  "area": "57.36km",
+  "localbody_code": "G060801",
+  "no_of_wards": 14,
+  "population": 17576,
+  "male": 8843,
+  "female": 8753,
+  "population_density": 307,
+  "sex_ratio": 990,
+  "literacy_rate": 91.77,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 90,
+  "president": "K.TBINU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODIKUTHY",
+      "person": {
+        "id": "2015061800101",
+        "name": "SALIHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUVANTHANAM",
+      "person": {
+        "id": "2015061800201",
+        "name": "MUHAMMED NIZAR P.Y"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHUZHUPPU",
+      "person": {
+        "id": "2015061800301",
+        "name": "P.E VARKEY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AMALAGIRI",
+      "person": {
+        "id": "2015061800401",
+        "name": "MOLLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERUVALLIKULAM",
+      "person": {
+        "id": "2015061800501",
+        "name": "K.R VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANAYANKAVAYAL",
+      "person": {
+        "id": "2015061800601",
+        "name": "JOSE MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLANI",
+      "person": {
+        "id": "2015061800701",
+        "name": "SALIKUTTY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MOOZHICKAL",
+      "person": {
+        "id": "2015061800801",
+        "name": "SHYAMALA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUPPAKKAYAM",
+      "person": {
+        "id": "2015061800901",
+        "name": "PRABHAVATHY BABU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAPPALUVENGA",
+      "person": {
+        "id": "2015061801001",
+        "name": "MINI SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALOORKAVU",
+      "person": {
+        "id": "2015061801101",
+        "name": "MADHU V.G"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THECKKEMALA",
+      "person": {
+        "id": "2015061801201",
+        "name": "ALYAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KADAMANKULAM",
+      "person": {
+        "id": "2015061801301",
+        "name": "K.T BINU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUNDAKKAYAM EAST",
+      "person": {
+        "id": "2015061801401",
+        "name": "BIJUMON P.R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

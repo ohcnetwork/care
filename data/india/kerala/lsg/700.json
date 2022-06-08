@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347355065,
+  "date": "2019-08-21",
+  "name": "Chengamanad  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Parakkadavu",
+  "area": "15.58km",
+  "localbody_code": "G071302",
+  "no_of_wards": 18,
+  "population": 25249,
+  "male": 12504,
+  "female": 12745,
+  "population_density": 1621,
+  "sex_ratio": 1019,
+  "literacy_rate": 88.97,
+  "literacy_rate_male": 92.68,
+  "literacy_rate_female": 85.34,
+  "president": "DILEEPKAPRASSERY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAPRASSERY NOTRH",
+      "person": {
+        "id": "2015070000101",
+        "name": "K M ABDUL KHADAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KULAVANKUNNU",
+      "person": {
+        "id": "2015070000201",
+        "name": "SAJEEV KUMAR V N"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENGAMANAD NORTH",
+      "person": {
+        "id": "2015070000301",
+        "name": "M B RAVI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHENGAMANAD SOUTH",
+      "person": {
+        "id": "2015070000401",
+        "name": "SUDHEER T K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUTHUVASSERY",
+      "person": {
+        "id": "2015070000501",
+        "name": "RAMANI MOHANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAMBAYAM",
+      "person": {
+        "id": "2015070000601",
+        "name": "T M ABDUL KHADER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAPRASSERY WEST",
+      "person": {
+        "id": "2015070000701",
+        "name": "JERLY KAPRASSERY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAPRASSERY EAST",
+      "person": {
+        "id": "2015070000801",
+        "name": "DILEEP KAPRASSERY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NEDUVANNUR NORTH",
+      "person": {
+        "id": "2015070000901",
+        "name": "ASHA ALIAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEDUVANNUR SOUTH",
+      "person": {
+        "id": "2015070001001",
+        "name": "SUCHITHRA SABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THURUTH",
+      "person": {
+        "id": "2015070001101",
+        "name": "MANOJ P MAILAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "GANDHIPURAM",
+      "person": {
+        "id": "2015070001201",
+        "name": "GAYATHRI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PURAYAR  EAST",
+      "person": {
+        "id": "2015070001301",
+        "name": "JAYANTHI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PURAYAR  WEST",
+      "person": {
+        "id": "2015070001401",
+        "name": "SUMA SHAJI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SWARGAM",
+      "person": {
+        "id": "2015070001501",
+        "name": "SINDHU P N"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "DESOM",
+      "person": {
+        "id": "2015070001601",
+        "name": "P R RAJESH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "DESOM WEST",
+      "person": {
+        "id": "2015070001701",
+        "name": "LATHA GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALAPRASSERY SOUTH",
+      "person": {
+        "id": "2015070001801",
+        "name": "LIMA M S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

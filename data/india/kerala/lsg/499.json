@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346672671,
+  "date": "2019-08-21",
+  "name": "Thalayazham  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vaikom",
+  "area": "22.4km",
+  "localbody_code": "G050101",
+  "no_of_wards": 15,
+  "population": 19488,
+  "male": 9734,
+  "female": 9754,
+  "population_density": 870,
+  "sex_ratio": 1002,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 90,
+  "president": "USHAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THOTTAKOM WEST",
+      "person": {
+        "id": "2015049900101",
+        "name": "REJIMON G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOTTAKOM",
+      "person": {
+        "id": "2015049900201",
+        "name": "MURALEEDHARAN P.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THOTTAKOM EAST",
+      "person": {
+        "id": "2015049900301",
+        "name": "SHEEJA BAIJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOOVAM",
+      "person": {
+        "id": "2015049900401",
+        "name": "LIJI SALANCHRAJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ULLALA",
+      "person": {
+        "id": "2015049900501",
+        "name": "AJAYAKUMAR E.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ULLALA SOUTH",
+      "person": {
+        "id": "2015049900601",
+        "name": "JYOTHY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIYADU",
+      "person": {
+        "id": "2015049900701",
+        "name": "CHINCHU SUNEESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUNNAPPUZHY",
+      "person": {
+        "id": "2015049900801",
+        "name": "TANIYA OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALAYAZHAM NORTH",
+      "person": {
+        "id": "2015049900901",
+        "name": "REGHU B"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIPPAKKUDAM",
+      "person": {
+        "id": "2015049901001",
+        "name": "P. SUSEELAKUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHENPALAM",
+      "person": {
+        "id": "2015049901101",
+        "name": "T. C. PUSHPARAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MADAPALLY WEST",
+      "person": {
+        "id": "2015049901201",
+        "name": "SANDHYA  ANEESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTHAVARA",
+      "person": {
+        "id": "2015049901301",
+        "name": "JELGI VARGHESE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOTHAVARA NORTH",
+      "person": {
+        "id": "2015049901401",
+        "name": "USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EDA ULLALA",
+      "person": {
+        "id": "2015049901501",
+        "name": "P.S. PUSHKARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

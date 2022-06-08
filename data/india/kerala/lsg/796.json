@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348124589,
+  "date": "2019-08-21",
+  "name": "Mala  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mala",
+  "area": "28.35km",
+  "localbody_code": "G081504",
+  "no_of_wards": 20,
+  "population": 30787,
+  "male": 14696,
+  "female": 16091,
+  "population_density": 1086,
+  "sex_ratio": 1095,
+  "literacy_rate": 91.69,
+  "literacy_rate_male": 95.14,
+  "literacy_rate_female": 88.6,
+  "president": "SOBHASUBASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLKUNNU",
+      "person": {
+        "id": "2015079600101",
+        "name": "ADV. P K MOHANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015079600201",
+        "name": "AMBILY THILAKAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANNALLUR",
+      "person": {
+        "id": "2015079600301",
+        "name": "P K SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARAKKOOTTAM",
+      "person": {
+        "id": "2015079600401",
+        "name": "SUNITHA MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAZHOOKKARA",
+      "person": {
+        "id": "2015079600501",
+        "name": "SMITHA FRANCIS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ASHTAMICHIRA",
+      "person": {
+        "id": "2015079600601",
+        "name": "RADHA BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AMBAZHAKKAD",
+      "person": {
+        "id": "2015079600701",
+        "name": "GOURY DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOONAMPARAMB",
+      "person": {
+        "id": "2015079600801",
+        "name": "VINITHA SADANANDAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAKKAMPARAMB",
+      "person": {
+        "id": "2015079600901",
+        "name": "ASHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOTTAMURI",
+      "person": {
+        "id": "2015079601001",
+        "name": "VARGHESE VADAKKAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SNEHAGIRI",
+      "person": {
+        "id": "2015079601101",
+        "name": "BIJU URUMEES"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALIYAPARAMB",
+      "person": {
+        "id": "2015079601201",
+        "name": "P K RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KURUVILASSERY",
+      "person": {
+        "id": "2015079601301",
+        "name": "BINDU BABU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAVANAD",
+      "person": {
+        "id": "2015079601401",
+        "name": "NITHA JOSHY KANJOOTHARA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MALA",
+      "person": {
+        "id": "2015079601501",
+        "name": "JULIE BENNY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NAITHAKUDY",
+      "person": {
+        "id": "2015079601601",
+        "name": "SOBHA SUBASH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUNNATHUKAD",
+      "person": {
+        "id": "2015079601701",
+        "name": "JINESH T K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VADAMA",
+      "person": {
+        "id": "2015079601801",
+        "name": "SUKHIL T R"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PATHIYARI",
+      "person": {
+        "id": "2015079601902",
+        "name": "RAGHUNATHAN K C"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MAREKKAD",
+      "person": {
+        "id": "2015079602001",
+        "name": "SREEJITH P S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

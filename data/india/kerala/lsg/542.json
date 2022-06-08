@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346834517,
+  "date": "2019-08-21",
+  "name": "Elikulam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pampady",
+  "area": "40.14km",
+  "localbody_code": "G050702",
+  "no_of_wards": 16,
+  "population": 22178,
+  "male": 11151,
+  "female": 11027,
+  "population_density": 552,
+  "sex_ratio": 989,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "SUMANGALADEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "URULIKUNNAM",
+      "person": {
+        "id": "2015054200101",
+        "name": "TOMY KAPPALUMAKKAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VATTANTHANAM",
+      "person": {
+        "id": "2015054200201",
+        "name": "LOVELY TOMY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MALLIKASSERY",
+      "person": {
+        "id": "2015054200301",
+        "name": "MATHEW ANITHOTTAM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARAKKULAM",
+      "person": {
+        "id": "2015054200401",
+        "name": "MATHEWS MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANCHAKUZHI",
+      "person": {
+        "id": "2015054200501",
+        "name": "AKHILKUMAR THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POTHUKAM",
+      "person": {
+        "id": "2015054200601",
+        "name": "SHERLY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VANCHIMALA",
+      "person": {
+        "id": "2015054200701",
+        "name": "SURYAMOL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANAMATTOM",
+      "person": {
+        "id": "2015054200801",
+        "name": "BINDU POOVELIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELIYANNOOR",
+      "person": {
+        "id": "2015054200901",
+        "name": "SREEJA SAREESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THACHAPUZHA",
+      "person": {
+        "id": "2015054201001",
+        "name": "JOSE MOOKILIKATTU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "RANDAMMILE",
+      "person": {
+        "id": "2015054201101",
+        "name": "SUMANGALADEVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ELAMGULAM TEMPLE",
+      "person": {
+        "id": "2015054201201",
+        "name": "SUJATHADEVI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOORALI",
+      "person": {
+        "id": "2015054201301",
+        "name": "JOSHY K ANTONY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELAMGULAM",
+      "person": {
+        "id": "2015054201401",
+        "name": "SUSEELA ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MADUKKAKUNNU",
+      "person": {
+        "id": "2015054201501",
+        "name": "LILLY JOHNY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NJANDUPARA",
+      "person": {
+        "id": "2015054201601",
+        "name": "JAMES CHACKO"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

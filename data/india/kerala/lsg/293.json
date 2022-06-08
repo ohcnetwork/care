@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345936494,
+  "date": "2019-08-21",
+  "name": "Karumkulam  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Athiyannoor",
+  "area": "2.43km",
+  "localbody_code": "G011003",
+  "no_of_wards": 18,
+  "population": 25731,
+  "male": 13001,
+  "female": 12730,
+  "population_density": 1067,
+  "sex_ratio": 979,
+  "literacy_rate": 79.02,
+  "literacy_rate_male": 80.38,
+  "literacy_rate_female": 77.65,
+  "president": "GANILKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PHC PULLUVILA",
+      "person": {
+        "id": "2015029300101",
+        "name": "G HESTIN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KILITHATTU",
+      "person": {
+        "id": "2015029300201",
+        "name": "GEETHAKUMARI M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANCHAYATH OFFICE",
+      "person": {
+        "id": "2015029300301",
+        "name": "FREEDA SIMON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NAMBYATHI",
+      "person": {
+        "id": "2015029300401",
+        "name": "ANIL.V SALAM"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARUTHUPPARA",
+      "person": {
+        "id": "2015029300501",
+        "name": "ARUN S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAMBUKALA",
+      "person": {
+        "id": "2015029300601",
+        "name": "G ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLUMUKKU",
+      "person": {
+        "id": "2015029300701",
+        "name": "K.R. KALARANI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARUMKULAM",
+      "person": {
+        "id": "2015029300801",
+        "name": "SELVAN A"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOCHUTHURA",
+      "person": {
+        "id": "2015029300901",
+        "name": "BIJU POULIN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AZHAMKAL",
+      "person": {
+        "id": "2015029301001",
+        "name": "E CHRISTUDASI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHIYATHURA",
+      "person": {
+        "id": "2015029301101",
+        "name": "PUSHPAM VINCENT"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEKKITTAVILAKAM",
+      "person": {
+        "id": "2015029301201",
+        "name": "REJISMARY JESSY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "URIYARIKKUNNU",
+      "person": {
+        "id": "2015029301301",
+        "name": "SHYAMA SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALLAM",
+      "person": {
+        "id": "2015029301401",
+        "name": "SHYNI M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ERAYIMMANTHURA",
+      "person": {
+        "id": "2015029301501",
+        "name": "SMITHA ANDREWS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULLUVILA",
+      "person": {
+        "id": "2015029301601",
+        "name": "VINCENT SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHEMBAKARAMANTHURA",
+      "person": {
+        "id": "2015029301701",
+        "name": "PRINCYMOL G"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOCHUPALLY",
+      "person": {
+        "id": "2015029301801",
+        "name": "ALBEENA ROBINSON"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

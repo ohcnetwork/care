@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348381877,
+  "date": "2019-08-21",
+  "name": "Ayiloor  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Nenmara",
+  "area": "40.94km",
+  "localbody_code": "G091101",
+  "no_of_wards": 17,
+  "population": 25170,
+  "male": 12259,
+  "female": 12911,
+  "population_density": 615,
+  "sex_ratio": 1053,
+  "literacy_rate": 77.12,
+  "literacy_rate_male": 84.61,
+  "literacy_rate_female": 70.15,
+  "president": "ADV.K.SUKUMARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAMOKKU",
+      "person": {
+        "id": "2015087100101",
+        "name": "ANITHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARAKKATTUPARAMB",
+      "person": {
+        "id": "2015087100201",
+        "name": "SAFIYA W/O SETTU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THEKKETHARA",
+      "person": {
+        "id": "2015087100301",
+        "name": "S.M. SHAJAHAN ."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AYILOOR",
+      "person": {
+        "id": "2015087100401",
+        "name": "ANNAM LAKSHMANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALIYAMANGALAM",
+      "person": {
+        "id": "2015087100501",
+        "name": "RAJEENA A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAIPPENCHERY",
+      "person": {
+        "id": "2015087100601",
+        "name": "VIPIN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOZHIKKAD",
+      "person": {
+        "id": "2015087100701",
+        "name": "PADMAGIRISAN M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THIRUVAZHIYAD",
+      "person": {
+        "id": "2015087100801",
+        "name": "RAJITHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAKRAI",
+      "person": {
+        "id": "2015087100901",
+        "name": "VINOD S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARIMBARA",
+      "person": {
+        "id": "2015087101001",
+        "name": "LIJITHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MARUTHANCHERY",
+      "person": {
+        "id": "2015087101101",
+        "name": "MOLY SUNNY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THENGUMPADAM",
+      "person": {
+        "id": "2015087101201",
+        "name": "DEVADAS P.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OLIPPARA",
+      "person": {
+        "id": "2015087101301",
+        "name": "SUGANDHI A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ADIPPERANDA",
+      "person": {
+        "id": "2015087101401",
+        "name": "ABDUL JALEEL H"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAYYAMKOD",
+      "person": {
+        "id": "2015087101501",
+        "name": "ADV. K. SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAIRADY",
+      "person": {
+        "id": "2015087101601",
+        "name": "PANKAJAM BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANTHALAM",
+      "person": {
+        "id": "2015087101701",
+        "name": "V.G. SAJITH KUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

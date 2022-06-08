@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348808445,
+  "date": "2019-08-21",
+  "name": "Purathur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirur",
+  "area": "24.8km",
+  "localbody_code": "G101301",
+  "no_of_wards": 19,
+  "population": 36180,
+  "male": 17393,
+  "female": 18787,
+  "population_density": 1459,
+  "sex_ratio": 1080,
+  "literacy_rate": 87.43,
+  "literacy_rate_male": 91.72,
+  "literacy_rate_female": 83.15,
+  "president": "RAHMATHSOUDANALAKATHPILAKATTIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANDAZHI",
+      "person": {
+        "id": "2015098000101",
+        "name": "HAMSAKOYA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUTTANNUR",
+      "person": {
+        "id": "2015098000201",
+        "name": "SARASWATHY AMMA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUTTANNUR EAST",
+      "person": {
+        "id": "2015098000301",
+        "name": "ASMABI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHIRAKKAL",
+      "person": {
+        "id": "2015098000401",
+        "name": "VISWANADHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MARAVANTHA",
+      "person": {
+        "id": "2015098000501",
+        "name": "RASIYA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATHANIPPADI",
+      "person": {
+        "id": "2015098000601",
+        "name": "SALEENA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUDUPPALLI",
+      "person": {
+        "id": "2015098000701",
+        "name": "SHAREEF"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUTTIKKAD",
+      "person": {
+        "id": "2015098000801",
+        "name": "PRASAD.T.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THRITHALLOOR SOUTH",
+      "person": {
+        "id": "2015098000901",
+        "name": "SUDHAKARAN KURUPPAMVEETTIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EZHIPPADAM",
+      "person": {
+        "id": "2015098001001",
+        "name": "SHANMUGHADAS ELLATHUVALAPPIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALOOR",
+      "person": {
+        "id": "2015098001101",
+        "name": "PURUSHOTHAMAN MASTER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNAMBAM",
+      "person": {
+        "id": "2015098001201",
+        "name": "SINDHU.K.T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PURATHUR",
+      "person": {
+        "id": "2015098001301",
+        "name": "PREETHA PULIKKAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAVILAKKAD SOUTH",
+      "person": {
+        "id": "2015098001401",
+        "name": "SHARAFUDHEEN MULAKKAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAVILAKKAD",
+      "person": {
+        "id": "2015098001501",
+        "name": "SANTHA ACHAMKALATHIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THRITHALLOOR",
+      "person": {
+        "id": "2015098001601",
+        "name": "ANITHA KANNATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EDAKKANAD",
+      "person": {
+        "id": "2015098001701",
+        "name": "RAHMATH SOUDA NALAKATH PILAKATTIL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AZHIMUGHAM",
+      "person": {
+        "id": "2015098001801",
+        "name": "MUJEEB RAHMAN MALIYEKKAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PADINHAREKKARA",
+      "person": {
+        "id": "2015098001901",
+        "name": "NISHA KARUKAYIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346412024,
+  "date": "2019-08-21",
+  "name": "Chennam Pallippuram  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Thycattussery",
+  "area": "25.53km",
+  "localbody_code": "G040102",
+  "no_of_wards": 17,
+  "population": 25391,
+  "male": 12540,
+  "female": 12851,
+  "population_density": 995,
+  "sex_ratio": 1025,
+  "literacy_rate": 90,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 86,
+  "president": "SHILJASALIM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANACKAL KSHETHARAM",
+      "person": {
+        "id": "2015042700101",
+        "name": "TOMY ULAHANNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADAMBANAKULANGARA",
+      "person": {
+        "id": "2015042700201",
+        "name": "SUMA VIMALROY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALATHIL KSHETHRAM",
+      "person": {
+        "id": "2015042700301",
+        "name": "MANIKUTTAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KRISHIBHAVAN",
+      "person": {
+        "id": "2015042700401",
+        "name": "JYOTHISREE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADAVIL BHAGAVATHY KSHETHRAM",
+      "person": {
+        "id": "2015042700501",
+        "name": "USHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VILLAGE OFFICE",
+      "person": {
+        "id": "2015042700601",
+        "name": "NICY BENNY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015042700701",
+        "name": "MINIMOL SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VADAKUMKARA KSHETHRAM",
+      "person": {
+        "id": "2015042700801",
+        "name": "PRASEETHA VINOD"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ST.JOSEPH CHURCH",
+      "person": {
+        "id": "2015042700901",
+        "name": "P G MOHANAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GOVINDAPURAM",
+      "person": {
+        "id": "2015042701001",
+        "name": "T K SASIKALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLARATHARA",
+      "person": {
+        "id": "2015042701101",
+        "name": "P R HARIKKUTTAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VILAKUMARAM",
+      "person": {
+        "id": "2015042701201",
+        "name": "P C SINIMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THIRUNALLOOR",
+      "person": {
+        "id": "2015042701301",
+        "name": "BABU K S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALLATHARA",
+      "person": {
+        "id": "2015042701401",
+        "name": "SAJIMOL MAHESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADMAPURAM",
+      "person": {
+        "id": "2015042701501",
+        "name": "MANJU SUDHEER"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELLIMUTTAM",
+      "person": {
+        "id": "2015042701601",
+        "name": "K K RAMESAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLUVELIL BHAGAM",
+      "person": {
+        "id": "2015042701701",
+        "name": "SHILJASALIM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

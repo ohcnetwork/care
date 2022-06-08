@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349622419,
+  "date": "2019-08-21",
+  "name": "Padne  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "13.39km",
+  "localbody_code": "G140606",
+  "no_of_wards": 15,
+  "population": 17608,
+  "male": 8415,
+  "female": 9193,
+  "population_density": 1315,
+  "sex_ratio": 1093,
+  "literacy_rate": 88.06,
+  "literacy_rate_male": 93.24,
+  "literacy_rate_female": 83.36,
+  "president": "FOUSIYA.P.C",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ORI",
+      "person": {
+        "id": "2015121400101",
+        "name": "RAMESHAN.K.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADANNA KALIKADAVU",
+      "person": {
+        "id": "2015121400201",
+        "name": "NAINA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAVUNTHALA",
+      "person": {
+        "id": "2015121400301",
+        "name": "ABDUL MUTHALIB.T.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADANNA CENTRE",
+      "person": {
+        "id": "2015121400401",
+        "name": "FOUSIYA.P.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PADANNA KANTHILOTTU",
+      "person": {
+        "id": "2015121400501",
+        "name": "MOHAMMED ASLAM.P.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POROTTU PAYYALAM",
+      "person": {
+        "id": "2015121400601",
+        "name": "T.K.SAMEERA MUNEER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KINATHIL VADAKKUMPURAM",
+      "person": {
+        "id": "2015121400701",
+        "name": "K.V GOPALAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THADIYAN KOVVAL",
+      "person": {
+        "id": "2015121400801",
+        "name": "P.P.KUNHIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THADIYANKOVVAL NADAKAVU",
+      "person": {
+        "id": "2015121400901",
+        "name": "CHITHRA.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "UDINOOR CENTRE MULLOTUKADAVU",
+      "person": {
+        "id": "2015121401001",
+        "name": "RASHEEDA.K.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "UDINOOR MACHIKADU",
+      "person": {
+        "id": "2015121401101",
+        "name": "BEENA.O"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MACHIKADU MUTHIRAKOVVAL",
+      "person": {
+        "id": "2015121401201",
+        "name": "SUBAIDA.T.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THEKKEKADU",
+      "person": {
+        "id": "2015121401301",
+        "name": "MUHAMMED KUNHI.T.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PADANNA THEKKEPURAM",
+      "person": {
+        "id": "2015121401401",
+        "name": "ASSINAR KUNHI.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADANNA BAZAAR",
+      "person": {
+        "id": "2015121401501",
+        "name": "T.K.P SHAHIDA ASHRAF"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

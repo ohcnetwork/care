@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346665418,
+  "date": "2019-08-21",
+  "name": "Muthukulam  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Muthukulam",
+  "area": "11.58km",
+  "localbody_code": "G041204",
+  "no_of_wards": 15,
+  "population": 21178,
+  "male": 9754,
+  "female": 11424,
+  "population_density": 1829,
+  "sex_ratio": 1171,
+  "literacy_rate": 84.5,
+  "literacy_rate_male": 86.24,
+  "literacy_rate_female": 83,
+  "president": "B.S.SUJITHLAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOOLATHERUVU",
+      "person": {
+        "id": "2015049500101",
+        "name": "SHEEJAMOL T."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VETTIKULANGARA",
+      "person": {
+        "id": "2015049500201",
+        "name": "REMADEVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MURINGACHIRA",
+      "person": {
+        "id": "2015049500301",
+        "name": "K.S. SHANI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015049500401",
+        "name": "SHERLEY MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARUNAMUTTAM",
+      "person": {
+        "id": "2015049500501",
+        "name": "BAIJU G.S."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAMOOD",
+      "person": {
+        "id": "2015049500601",
+        "name": "M. SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELANGAM",
+      "person": {
+        "id": "2015049500701",
+        "name": "B.S. SUJITHLAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MAYIKKAL",
+      "person": {
+        "id": "2015049500801",
+        "name": "K. MEERABHAI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VARANAPALLY",
+      "person": {
+        "id": "2015049500901",
+        "name": "SUSMITHA A."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANDAVARKAVU",
+      "person": {
+        "id": "2015049501001",
+        "name": "SHEEJA S."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERAYIL",
+      "person": {
+        "id": "2015049501101",
+        "name": "SHALI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KURUMPAKARA",
+      "person": {
+        "id": "2015049501201",
+        "name": "MANJU ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "GOPANKULANGARA",
+      "person": {
+        "id": "2015049501301",
+        "name": "D. SUJATHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "HOMEO",
+      "person": {
+        "id": "2015049501401",
+        "name": "J. DASAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOLLAKAL",
+      "person": {
+        "id": "2015049501501",
+        "name": "RAMACHANDRAKURUP"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

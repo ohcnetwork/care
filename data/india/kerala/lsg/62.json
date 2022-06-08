@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345043609,
+  "date": "2019-08-21",
+  "name": "Idukki  Block Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Idukki",
+  "area": "765.45km",
+  "localbody_code": "B060500",
+  "no_of_wards": 13,
+  "population": 127979,
+  "male": 64938,
+  "female": 63041,
+  "population_density": 167,
+  "sex_ratio": 970,
+  "literacy_rate": 93,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 91,
+  "president": "AUGUSTYAZHAKATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAZHAYARIKANDOM",
+      "person": {
+        "id": "2015006200101",
+        "name": "AUGUSTY AZHAKATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANJIKKUZHY",
+      "person": {
+        "id": "2015006200201",
+        "name": "TOMY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHURULY",
+      "person": {
+        "id": "2015006200301",
+        "name": "MOLLY GHEEVARGHESE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MURICKASSERY",
+      "person": {
+        "id": "2015006200401",
+        "name": "SUNITHA K. S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PADAMUGHAM",
+      "person": {
+        "id": "2015006200501",
+        "name": "CELINE MATHEW"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THOPRAMKUDY",
+      "person": {
+        "id": "2015006200601",
+        "name": "K P SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAMAKSHY",
+      "person": {
+        "id": "2015006200701",
+        "name": "JOSEPH (REJI MUKKATTU)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THANKAMANY",
+      "person": {
+        "id": "2015006200801",
+        "name": "BIJU KANATHIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MARIYAPURAM",
+      "person": {
+        "id": "2015006200901",
+        "name": "JALAJA SHAJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAINAVU",
+      "person": {
+        "id": "2015006201001",
+        "name": "TINTU SUBHASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOOLAMATTOM",
+      "person": {
+        "id": "2015006201101",
+        "name": "CHELLAMMA DAMODARN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KULAMAVU",
+      "person": {
+        "id": "2015006201201",
+        "name": "LEENA AGUSTINE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VAZHATHOPE",
+      "person": {
+        "id": "2015006201301",
+        "name": "GEORGE V A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

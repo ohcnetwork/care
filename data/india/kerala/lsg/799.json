@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348131697,
+  "date": "2019-08-21",
+  "name": "Kodassery  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chalakudy",
+  "area": "93.9km",
+  "localbody_code": "G081602",
+  "no_of_wards": 20,
+  "population": 29874,
+  "male": 14815,
+  "female": 15059,
+  "population_density": 318,
+  "sex_ratio": 1016,
+  "literacy_rate": 88.27,
+  "literacy_rate_male": 91.97,
+  "literacy_rate_female": 84.68,
+  "president": "USHASASIDHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODASSERY",
+      "person": {
+        "id": "2015079900101",
+        "name": "SAKUNTHALA VALSAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NAYARANGADY",
+      "person": {
+        "id": "2015079900201",
+        "name": "MAYA DINESAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "METTIPPADAM",
+      "person": {
+        "id": "2015079900301",
+        "name": "JINI RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHATTIKKULAM",
+      "person": {
+        "id": "2015079900401",
+        "name": "REENA JOHNY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MARAMKODE",
+      "person": {
+        "id": "2015079900501",
+        "name": "JULIE VARGHESE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KORMALA",
+      "person": {
+        "id": "2015079900601",
+        "name": "LIJO JOHN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "RANDUKAI",
+      "person": {
+        "id": "2015079900701",
+        "name": "GEETHA KESAVAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAIPPANKKUZHY",
+      "person": {
+        "id": "2015079900801",
+        "name": "SAVITHRY VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PEELARMUZHY",
+      "person": {
+        "id": "2015079900901",
+        "name": "JAMES K.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMBANKKUNNU",
+      "person": {
+        "id": "2015079901001",
+        "name": "LISSY ANTO"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULINKRA",
+      "person": {
+        "id": "2015079901101",
+        "name": "ESTHAPPAN E.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUTTICHIRA",
+      "person": {
+        "id": "2015079901201",
+        "name": "SHAILAJA GIRIJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNDUKUZHIPPADAM",
+      "person": {
+        "id": "2015079901301",
+        "name": "KUNJU P.A."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOORKKAMATTOM",
+      "person": {
+        "id": "2015079901401",
+        "name": "SARITHA MADHU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAMMALAM",
+      "person": {
+        "id": "2015079901501",
+        "name": "RADHA SUBRAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOTHESWARAM",
+      "person": {
+        "id": "2015079901601",
+        "name": "SUBRAMANIAN M.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ELINJIPRA EAST",
+      "person": {
+        "id": "2015079901701",
+        "name": "USHA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ELINJIPRA WEST",
+      "person": {
+        "id": "2015079901801",
+        "name": "SUNANDHA NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHOWKA",
+      "person": {
+        "id": "2015079901901",
+        "name": "JOSE MANAVALAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KALIKKAL",
+      "person": {
+        "id": "2015079902001",
+        "name": "DANISH K.G"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

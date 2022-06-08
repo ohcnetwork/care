@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346907821,
+  "date": "2019-08-21",
+  "name": "Kanjirappally  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kanjirappally",
+  "area": "52.47km",
+  "localbody_code": "G051102",
+  "no_of_wards": 23,
+  "population": 37017,
+  "male": 18756,
+  "female": 18261,
+  "population_density": 324,
+  "sex_ratio": 974,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "SHAKEELANAZEER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANJUKULAM",
+      "person": {
+        "id": "2015056800101",
+        "name": "MATHEW JACOB (NINACHAN)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAPPADU",
+      "person": {
+        "id": "2015056800201",
+        "name": "JACOB JOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VANDANPURAM",
+      "person": {
+        "id": "2015056800301",
+        "name": "MONEY RAJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANJAPPALLY",
+      "person": {
+        "id": "2015056800401",
+        "name": "VIDHYA RAJESH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAKKALLU",
+      "person": {
+        "id": "2015056800501",
+        "name": "SHEELA THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANJIRAPPALLY TOWN",
+      "person": {
+        "id": "2015056800601",
+        "name": "BEENA JOBY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THOTTUMUGHAM",
+      "person": {
+        "id": "2015056800701",
+        "name": "SUBIN SALIM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANJIRAPPALLY PETTA",
+      "person": {
+        "id": "2015056800801",
+        "name": "M A RIBINSHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VATTAKAPPARA",
+      "person": {
+        "id": "2015056800901",
+        "name": "NAZEEMA A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOTHAKUZHY",
+      "person": {
+        "id": "2015056801001",
+        "name": "SHAKEELA NAZEER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANJIRAPPALLY SOUTH",
+      "person": {
+        "id": "2015056801101",
+        "name": "NUBIN ANFAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATTIMATTAM",
+      "person": {
+        "id": "2015056801201",
+        "name": "MUBEENA NOOR  MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANACHEPPALLY",
+      "person": {
+        "id": "2015056801301",
+        "name": "SURENDRAN K S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOOVAPPALLY",
+      "person": {
+        "id": "2015056801401",
+        "name": "K.R.THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KORATTY",
+      "person": {
+        "id": "2015056801501",
+        "name": "SAJIN V VATTAPPALLIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANANGALLOOR",
+      "person": {
+        "id": "2015056801601",
+        "name": "TOMS ANTONY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VIZHICKITHODU",
+      "person": {
+        "id": "2015056801701",
+        "name": "REJI O.V."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NJALLAMATTAM",
+      "person": {
+        "id": "2015056801801",
+        "name": "THOMAS JOSEPH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ANCHILIPPA",
+      "person": {
+        "id": "2015056801901",
+        "name": "ROSAMMA VETTITHANAM"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MANNARAKKAYAM",
+      "person": {
+        "id": "2015056802001",
+        "name": "MERCY MATHEW"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PANCHAYAT OFFICE WARD",
+      "person": {
+        "id": "2015056802101",
+        "name": "JOSHY THOMAS"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MANIDUMKUZHY",
+      "person": {
+        "id": "2015056802202",
+        "name": "KUNJUMOL JOSE"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "THAMPALACKADU",
+      "person": {
+        "id": "2015056802301",
+        "name": "JANCY GEORGE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

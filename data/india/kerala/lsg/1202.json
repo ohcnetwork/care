@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566349579208,
+  "date": "2019-08-21",
+  "name": "Pallikere  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "39.09km",
+  "localbody_code": "G140404",
+  "no_of_wards": 22,
+  "population": 34696,
+  "male": 16631,
+  "female": 18065,
+  "population_density": 888,
+  "sex_ratio": 1086,
+  "literacy_rate": 77.61,
+  "literacy_rate_male": 84.87,
+  "literacy_rate_female": 71.12,
+  "president": "INDIRA.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BEKAL",
+      "person": {
+        "id": "2015120200101",
+        "name": "AYSHA RAZAK"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "HADDAD NAGAR",
+      "person": {
+        "id": "2015120200201",
+        "name": "SUHARABI. M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MAVVAL",
+      "person": {
+        "id": "2015120200301",
+        "name": "SHAKEELA BASHEER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AMBANGAD",
+      "person": {
+        "id": "2015120200401",
+        "name": "M.P.M.SHAFI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THACHANGAD",
+      "person": {
+        "id": "2015120200501",
+        "name": "LAKSHMI.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANAYAL",
+      "person": {
+        "id": "2015120200601",
+        "name": "A.VINODKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PERUMTHATTA",
+      "person": {
+        "id": "2015120200701",
+        "name": "SARASWATHI.P.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARICHERY",
+      "person": {
+        "id": "2015120200801",
+        "name": "M.PRASANNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "BANGAD",
+      "person": {
+        "id": "2015120200901",
+        "name": "T.MUHAMMED KUNHI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNNUCHI",
+      "person": {
+        "id": "2015120201001",
+        "name": "MADHAVAN.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELUTHOLY",
+      "person": {
+        "id": "2015120201101",
+        "name": "P.V.AMBUNHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALAKODE",
+      "person": {
+        "id": "2015120201201",
+        "name": "INDIRA.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAKKAM",
+      "person": {
+        "id": "2015120201301",
+        "name": "K.RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOOTTAKANI",
+      "person": {
+        "id": "2015120201401",
+        "name": "BINDU.K.A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KEEKAN",
+      "person": {
+        "id": "2015120201501",
+        "name": "ABDUL LATHEEF.T.M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHETTUKUNDU",
+      "person": {
+        "id": "2015120201601",
+        "name": "AYSHA.K.T"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "POOCHAKKAD",
+      "person": {
+        "id": "2015120201701",
+        "name": "M.SUNDARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015120201801",
+        "name": "FATHIMA MOOSA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PALLIPUZHA",
+      "person": {
+        "id": "2015120201901",
+        "name": "P.K ABDULLA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KARUVAKODE",
+      "person": {
+        "id": "2015120202001",
+        "name": "V.KUNHAMBU"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PALLIKKARE",
+      "person": {
+        "id": "2015120202101",
+        "name": "MADHAVA BEKAL"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KOTTAKUNNU",
+      "person": {
+        "id": "2015120202201",
+        "name": "AYSHA. M.G"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

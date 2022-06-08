@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345002408,
+  "date": "2019-08-21",
+  "name": "Vaikom  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vaikom",
+  "area": "123km",
+  "localbody_code": "B050100",
+  "no_of_wards": 13,
+  "population": 117754,
+  "male": 58428,
+  "female": 59326,
+  "population_density": 959,
+  "sex_ratio": 1015,
+  "literacy_rate": 92,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 88,
+  "president": "JAYAKUMARIMY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEMPU",
+      "person": {
+        "id": "2015004700101",
+        "name": "V K RAJU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BRAHMAMANGALAM",
+      "person": {
+        "id": "2015004700201",
+        "name": "SANDHYAMOL SUNIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARAVANTHURUTHU",
+      "person": {
+        "id": "2015004700301",
+        "name": "V BHASKARAN MUDAKKALIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAIKAPRAYAR",
+      "person": {
+        "id": "2015004700401",
+        "name": "K V UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOTTAKOM",
+      "person": {
+        "id": "2015004700501",
+        "name": "MAYA SHAJI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAYAZHAM",
+      "person": {
+        "id": "2015004700601",
+        "name": "SREEDEVI JAYAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VECHOOR",
+      "person": {
+        "id": "2015004700701",
+        "name": "K S SHIBU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTHAVARA",
+      "person": {
+        "id": "2015004700801",
+        "name": "JAYAKUMARI M Y"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "T V PURAM",
+      "person": {
+        "id": "2015004700901",
+        "name": "LEENAMMA UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMMANATHUKARA",
+      "person": {
+        "id": "2015004701001",
+        "name": "NATESAN K N"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "UDAYANAPURAM",
+      "person": {
+        "id": "2015004701101",
+        "name": "SHEELA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEREKADAVU",
+      "person": {
+        "id": "2015004701201",
+        "name": "ANIJI PRASAD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULASEKHARAMANGALAM",
+      "person": {
+        "id": "2015004701301",
+        "name": "T K RAJENDRAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

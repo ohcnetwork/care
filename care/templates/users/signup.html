@@ -1,0 +1,26 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{type}}{% endblock %}
+
+{% block inner %}
+<h1 class="text-3xl font-bold">{% trans "Register As " %}{{type}}</h1>
+
+<p class="mt-2">
+If you are visiting this site for the first time, sign up as a {{type}}.
+<br><br>
+Already have an account? Then please <a href="{% url 'users:signin' %}" class="care-secondary-color">Sign in</a>.</p>
+
+<div class="max-w-md mt-4">
+    <form class="signup" id="signup_form" method="post" action="">
+        {% csrf_token %}
+        {% crispy form %}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <button class="mt-8 btn btn-primary w-full" type="submit">{% trans "Sign Up" %} &raquo;</button>
+    </form>
+</div>
+{% endblock %}

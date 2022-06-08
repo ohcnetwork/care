@@ -1,0 +1,277 @@
+{
+  "timeStamp": 1566345486188,
+  "date": "2019-08-21",
+  "name": "Pathanamthitta  Municipality, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "area": "23.5km",
+  "localbody_code": "M030300",
+  "no_of_wards": 32,
+  "population": 37802,
+  "male": 18510,
+  "female": 19292,
+  "population_density": 1527,
+  "sex_ratio": 1019,
+  "literacy_rate": 94.44,
+  "literacy_rate_male": 96.48,
+  "literacy_rate_female": 92.43,
+  "chairperson": "ADV.GEETHASURESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERINGAMALA",
+      "person": {
+        "id": "2015018000101",
+        "name": "P K ANEESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANCHAKKALA",
+      "person": {
+        "id": "2015018000201",
+        "name": "SOBHA K MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VANCHIPOIKA",
+      "person": {
+        "id": "2015018000301",
+        "name": "R HAREESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VETTIPPURAM",
+      "person": {
+        "id": "2015018000401",
+        "name": "SHINY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SARADAMADOM",
+      "person": {
+        "id": "2015018000501",
+        "name": "ROSELIN SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUNDUKOTTACKAL",
+      "person": {
+        "id": "2015018000601",
+        "name": "SAJI K SIMON"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOVANPARA",
+      "person": {
+        "id": "2015018000701",
+        "name": "SAJINI MOHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THYCAVU",
+      "person": {
+        "id": "2015018000801",
+        "name": "SINDHU ANIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATTAMKULAM",
+      "person": {
+        "id": "2015018000901",
+        "name": "BEENA SHEREEF"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PETTA SOUTH",
+      "person": {
+        "id": "2015018001001",
+        "name": "VALSALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PETTA NORTH",
+      "person": {
+        "id": "2015018001101",
+        "name": "ADV. VALSAN T KOSHY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAIRALIPURAM",
+      "person": {
+        "id": "2015018001201",
+        "name": "JOHNSON V R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULASEKHARAPATHI",
+      "person": {
+        "id": "2015018001302",
+        "name": "ANZER MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ARABIC COLLEGE",
+      "person": {
+        "id": "2015018001401",
+        "name": "RAJEENA BEEVI A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUMBAZHA NORTH",
+      "person": {
+        "id": "2015018001501",
+        "name": "K R ARAVINDAKSHAN NAIR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MYLADUMPARA THAZHAM",
+      "person": {
+        "id": "2015018001601",
+        "name": "BIJIMOL MATHEW"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015018001701",
+        "name": "V MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PLAVELI",
+      "person": {
+        "id": "2015018001801",
+        "name": "DIPU OOMMEN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUMBAZHA EAST",
+      "person": {
+        "id": "2015018001901",
+        "name": "AMBIKA VENU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KUMBAZHA SOUTH",
+      "person": {
+        "id": "2015018002001",
+        "name": "P V ASHOK KUMAR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KUMBAZHA WEST",
+      "person": {
+        "id": "2015018002102",
+        "name": "AMEENA M (AMEENA HIDERALI)"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHUTTIPPARA EAST",
+      "person": {
+        "id": "2015018002201",
+        "name": "SAGEER A"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHUTTIPPARA",
+      "person": {
+        "id": "2015018002301",
+        "name": "RAJEENA SHERIF(RAJEENA BEEGUM)"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "VALAMCHUZHY",
+      "person": {
+        "id": "2015018002401",
+        "name": "ADV.GEETHA SURESH"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KALLARAKADAV",
+      "person": {
+        "id": "2015018002501",
+        "name": "ADV.ROSHAN NAIR"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "AZHOOR WEST",
+      "person": {
+        "id": "2015018002601",
+        "name": "SASYA SAJEEV"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "AZHOOR",
+      "person": {
+        "id": "2015018002701",
+        "name": "SUBHA T R"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "KODUMTHARA",
+      "person": {
+        "id": "2015018002801",
+        "name": "REJANI PRADEEP"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015018002901",
+        "name": "SUSEELA PUSHPAN"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015018003001",
+        "name": "P K JACOB"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KARIMPANAKUZHY",
+      "person": {
+        "id": "2015018003101",
+        "name": "ABEL MATHEW"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "CHURULICODE",
+      "person": {
+        "id": "2015018003201",
+        "name": "JASINKUTTY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

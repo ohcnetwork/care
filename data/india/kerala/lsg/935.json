@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348660894,
+  "date": "2019-08-21",
+  "name": "Aliparamba  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Perinthalmanna",
+  "area": "35.67km",
+  "localbody_code": "G100701",
+  "no_of_wards": 21,
+  "population": 31812,
+  "male": 15429,
+  "female": 16383,
+  "population_density": 892,
+  "sex_ratio": 1062,
+  "literacy_rate": 90.34,
+  "literacy_rate_male": 93.59,
+  "literacy_rate_female": 87.09,
+  "president": "SINI.C.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHETHANAMKURSSI",
+      "person": {
+        "id": "2015093500101",
+        "name": "PADMINI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAMANGAD",
+      "person": {
+        "id": "2015093500201",
+        "name": "SWARNALATHA.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALAMKULAM",
+      "person": {
+        "id": "2015093500301",
+        "name": "A.K.ASHARAF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ODAMALA",
+      "person": {
+        "id": "2015093500401",
+        "name": "RUKSANA.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARIYAPURAM",
+      "person": {
+        "id": "2015093500501",
+        "name": "HABEEBA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAIKKAL",
+      "person": {
+        "id": "2015093500601",
+        "name": "MUHAMMED FAISAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAZHENKADA",
+      "person": {
+        "id": "2015093500701",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VATTAPARAMBA",
+      "person": {
+        "id": "2015093500802",
+        "name": "HYDERALI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAKANNI",
+      "person": {
+        "id": "2015093500901",
+        "name": "ABDUL KHADER.T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KODAKAPARAMBA",
+      "person": {
+        "id": "2015093501001",
+        "name": "VASUDEVAN.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAMBURAM",
+      "person": {
+        "id": "2015093501101",
+        "name": "AYISHA.M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALIPARAMBA",
+      "person": {
+        "id": "2015093501201",
+        "name": "N.MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNNANATH",
+      "person": {
+        "id": "2015093501301",
+        "name": "ELIKOTTIL SUHARA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKEPURAM",
+      "person": {
+        "id": "2015093501401",
+        "name": "MUJEEB RAHIMAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTHUPARAMB",
+      "person": {
+        "id": "2015093501501",
+        "name": "SINI.C.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THOOTHA",
+      "person": {
+        "id": "2015093501601",
+        "name": "HASEENA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARAL",
+      "person": {
+        "id": "2015093501701",
+        "name": "V.K.NASAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "EDATHARA",
+      "person": {
+        "id": "2015093501801",
+        "name": "LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PUNNAKODE",
+      "person": {
+        "id": "2015093501901",
+        "name": "ABDUL MAJEED.M.P"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MUZHANNAMANNA",
+      "person": {
+        "id": "2015093502001",
+        "name": "T.P.MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PALOLIPARAMBA",
+      "person": {
+        "id": "2015093502101",
+        "name": "SHEEJA MOL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

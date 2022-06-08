@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346290529,
+  "date": "2019-08-21",
+  "name": "Mallappuzhassery  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Elanthur",
+  "area": "12.45km",
+  "localbody_code": "G030406",
+  "no_of_wards": 13,
+  "population": 11630,
+  "male": 5548,
+  "female": 6082,
+  "population_density": 934,
+  "sex_ratio": 1092,
+  "literacy_rate": 95.46,
+  "literacy_rate_male": 97.03,
+  "literacy_rate_female": 94.06,
+  "president": "LATHAVIKARAMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALLAPPUZHASSERY NORTH",
+      "person": {
+        "id": "2015039500101",
+        "name": "PRABHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERAPPURE",
+      "person": {
+        "id": "2015039500201",
+        "name": "ROSAMMA MATHAI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ONTHEKKADU NORTH",
+      "person": {
+        "id": "2015039500302",
+        "name": "ABRAHAM T.A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ONTHEKKADU",
+      "person": {
+        "id": "2015039500402",
+        "name": "USHAKUMARI S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARTHAVYAM",
+      "person": {
+        "id": "2015039500501",
+        "name": "MINI JIJU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARAMVELY",
+      "person": {
+        "id": "2015039500601",
+        "name": "SUCHITHRA M S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NELLIKKALA",
+      "person": {
+        "id": "2015039500701",
+        "name": "LATHA VIKARAMAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUNNAKKADU",
+      "person": {
+        "id": "2015039500801",
+        "name": "KUNJAMMA THANKAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUZHIKKALA EAST",
+      "person": {
+        "id": "2015039500902",
+        "name": "SALINI ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUZHIKALA WEST",
+      "person": {
+        "id": "2015039501001",
+        "name": "THOMAS( BENNY KUZHIKKALA)"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURUNTHAR",
+      "person": {
+        "id": "2015039501101",
+        "name": "RAGINI VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJIRAVELI",
+      "person": {
+        "id": "2015039501201",
+        "name": "SADASIVAN NAIR M G"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MALLAPPUZHASSERY SOUTH",
+      "person": {
+        "id": "2015039501301",
+        "name": "GEETHA KRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

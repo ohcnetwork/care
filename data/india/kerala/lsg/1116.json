@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349269341,
+  "date": "2019-08-21",
+  "name": "Narath  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "17.24km",
+  "localbody_code": "G130208",
+  "no_of_wards": 17,
+  "population": 23584,
+  "male": 11593,
+  "female": 11991,
+  "population_density": 1368,
+  "sex_ratio": 1034,
+  "literacy_rate": 90.16,
+  "literacy_rate_male": 95.45,
+  "literacy_rate_female": 85.11,
+  "president": "SHYAMALA.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAMBILTHERU",
+      "person": {
+        "id": "2015111600101",
+        "name": "PURUSHOTHAMAN ARAKKAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHOYICHERI",
+      "person": {
+        "id": "2015111600201",
+        "name": "SHYAMALA . K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ONAPPARAMBU",
+      "person": {
+        "id": "2015111600301",
+        "name": "C.H.SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTANCHERY",
+      "person": {
+        "id": "2015111600401",
+        "name": "SUCHINA .A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MALOT  NORTH",
+      "person": {
+        "id": "2015111600501",
+        "name": "P V ABDULLA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLERI",
+      "person": {
+        "id": "2015111600601",
+        "name": "LEENA. P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALOT  SOUTH",
+      "person": {
+        "id": "2015111600701",
+        "name": "P. SHYMA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANNADIPARAMBA EAST",
+      "person": {
+        "id": "2015111600801",
+        "name": "KRISHNAN KANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATHODAM",
+      "person": {
+        "id": "2015111600901",
+        "name": "K.SREEJITH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAYAPRAM",
+      "person": {
+        "id": "2015111601001",
+        "name": "SAVITHA. M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNADIPARAMBA WEST",
+      "person": {
+        "id": "2015111601101",
+        "name": "AJITHA. N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULLOOPI",
+      "person": {
+        "id": "2015111601201",
+        "name": "ASEEB KANIYARAKKAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PULLOOPI WEST",
+      "person": {
+        "id": "2015111601301",
+        "name": "ASHKAR CHATHOTH MOTTAMMAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NIDUVATT",
+      "person": {
+        "id": "2015111601401",
+        "name": "RASHEEDA THOLANTAVIDA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAKKATHURUTHI",
+      "person": {
+        "id": "2015111601501",
+        "name": "KANCHANAVALLI. N.T.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NARATH",
+      "person": {
+        "id": "2015111601601",
+        "name": "SHAMSUDHEEN.K.V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAMBIL",
+      "person": {
+        "id": "2015111601701",
+        "name": "KURIKKALAKATH RAHMATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

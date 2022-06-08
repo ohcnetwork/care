@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348809814,
+  "date": "2019-08-21",
+  "name": "Thalakkad  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirur",
+  "area": "16.04km",
+  "localbody_code": "G101302",
+  "no_of_wards": 19,
+  "population": 26486,
+  "male": 12590,
+  "female": 13896,
+  "population_density": 1651,
+  "sex_ratio": 1103,
+  "literacy_rate": 80.2,
+  "literacy_rate_male": 75.24,
+  "literacy_rate_female": 85.16,
+  "president": "KUNHIBAVAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANGATTIRI",
+      "person": {
+        "id": "2015098100101",
+        "name": "RAKESH K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KATTACHIRA",
+      "person": {
+        "id": "2015098100201",
+        "name": "K UMAIBANU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARAYIL",
+      "person": {
+        "id": "2015098100302",
+        "name": "NOORJAHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULLUR",
+      "person": {
+        "id": "2015098100401",
+        "name": "SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULLURAL",
+      "person": {
+        "id": "2015098100501",
+        "name": "K SHYNI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANHIRIKKOL",
+      "person": {
+        "id": "2015098100601",
+        "name": "NUSAIBA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VADAKKAN KUTTOOR",
+      "person": {
+        "id": "2015098100701",
+        "name": "T ISMAIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKAN KUTTOOR",
+      "person": {
+        "id": "2015098100801",
+        "name": "FATHIMA M V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUKKILAPEEDIKA",
+      "person": {
+        "id": "2015098100901",
+        "name": "V RAJESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VENGALOOR",
+      "person": {
+        "id": "2015098101001",
+        "name": "PUSHPA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLOOPALAM",
+      "person": {
+        "id": "2015098101101",
+        "name": "BANU MOL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTATHARA",
+      "person": {
+        "id": "2015098101201",
+        "name": "HAMZA K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "B P ANGADI TOWN",
+      "person": {
+        "id": "2015098101301",
+        "name": "SHERBEENA T V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARASHERI EAST",
+      "person": {
+        "id": "2015098101401",
+        "name": "NARAYANAN V P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARASHERI WEST",
+      "person": {
+        "id": "2015098101501",
+        "name": "KUNHI BAVA M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POOKAITHA",
+      "person": {
+        "id": "2015098101601",
+        "name": "RAMANALI MYMOONA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "B P ANGADI",
+      "person": {
+        "id": "2015098101701",
+        "name": "BAPPUTTY CHUNDANVEETTIL PAZHAYAOTTAYIL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VADAKKE ANGAADI",
+      "person": {
+        "id": "2015098101801",
+        "name": "P T SHAFEEQ"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KALLOOKADAVU",
+      "person": {
+        "id": "2015098101901",
+        "name": "SHYLA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

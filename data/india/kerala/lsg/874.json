@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348393769,
+  "date": "2019-08-21",
+  "name": "Pallassana  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Nenmara",
+  "area": "29.33km",
+  "localbody_code": "G091104",
+  "no_of_wards": 16,
+  "population": 22333,
+  "male": 10848,
+  "female": 11485,
+  "population_density": 761,
+  "sex_ratio": 1059,
+  "literacy_rate": 76.23,
+  "literacy_rate_male": 83.2,
+  "literacy_rate_female": 69.75,
+  "president": "K.RAMADHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAKKATTUKUNU",
+      "person": {
+        "id": "2015087400101",
+        "name": "K.RAMADHARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KULATHINKAL",
+      "person": {
+        "id": "2015087400201",
+        "name": "SHAILAJA.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOLAPARAMBU",
+      "person": {
+        "id": "2015087400301",
+        "name": "MALLIKA.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHETTIYARPADAM",
+      "person": {
+        "id": "2015087400401",
+        "name": "SIVARAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAKKALAM",
+      "person": {
+        "id": "2015087400501",
+        "name": "K.NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MADATHILKALAM",
+      "person": {
+        "id": "2015087400601",
+        "name": "VANAJA. N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHAMAPARAMBU",
+      "person": {
+        "id": "2015087400701",
+        "name": "SUKUMARAN .C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THALLUMANNAM",
+      "person": {
+        "id": "2015087400801",
+        "name": "SYMALA.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THUNDAPARAMBU",
+      "person": {
+        "id": "2015087400901",
+        "name": "K.SANTHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OZHUVUPARA",
+      "person": {
+        "id": "2015087401002",
+        "name": "NISHA . P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOODALLUR",
+      "person": {
+        "id": "2015087401101",
+        "name": "LALITHAVENU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NADUTHARA",
+      "person": {
+        "id": "2015087401201",
+        "name": "P.GEETHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THALOOR",
+      "person": {
+        "id": "2015087401301",
+        "name": "LATHA.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUMARAMPUTHUR",
+      "person": {
+        "id": "2015087401401",
+        "name": "A.RAJAMANI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PALLAVUR",
+      "person": {
+        "id": "2015087401501",
+        "name": "K.VIJAYALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THEKKETHARA",
+      "person": {
+        "id": "2015087401601",
+        "name": "V M.KRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

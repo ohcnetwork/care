@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346025220,
+  "date": "2019-08-21",
+  "name": "Melila  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Vettikkavala",
+  "area": "18.52km",
+  "localbody_code": "G020303",
+  "no_of_wards": 15,
+  "population": 21124,
+  "male": 10253,
+  "female": 10871,
+  "population_density": 1141,
+  "sex_ratio": 1060,
+  "literacy_rate": 92.2,
+  "literacy_rate_male": 95.34,
+  "literacy_rate_female": 89.29,
+  "president": "PPRASAD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "IRUNGOOR",
+      "person": {
+        "id": "2015031900101",
+        "name": "SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENGAMANADU NORTH",
+      "person": {
+        "id": "2015031900201",
+        "name": "RAJESH JOHN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHETHADY",
+      "person": {
+        "id": "2015031900301",
+        "name": "V.J VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015031900401",
+        "name": "P PRASAD"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MELILA WEST",
+      "person": {
+        "id": "2015031900501",
+        "name": "B ANANDAVALLY AMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MELILA NORTH",
+      "person": {
+        "id": "2015031900601",
+        "name": "S SOBHANA KUMARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MELILA EAST",
+      "person": {
+        "id": "2015031900701",
+        "name": "S ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MELILA SOUTH",
+      "person": {
+        "id": "2015031900801",
+        "name": "PRASAD K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VILLOOR",
+      "person": {
+        "id": "2015031900901",
+        "name": "MAYA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADUKKUNNU EAST",
+      "person": {
+        "id": "2015031901001",
+        "name": "THARA A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENGAMANADU SOUTH",
+      "person": {
+        "id": "2015031901101",
+        "name": "RAJU NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NADUKKUNNU WEST",
+      "person": {
+        "id": "2015031901201",
+        "name": "SUJATHA T.O"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATTAMALA",
+      "person": {
+        "id": "2015031901301",
+        "name": "RADHAMANI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "IYPPALLOOR",
+      "person": {
+        "id": "2015031901401",
+        "name": "BEENA CHERIYAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIZHAKKETHERUVU",
+      "person": {
+        "id": "2015031901501",
+        "name": "JESSY REJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

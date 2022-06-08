@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347274778,
+  "date": "2019-08-21",
+  "name": "Pindimana  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Kothamangalam",
+  "area": "25.77km",
+  "localbody_code": "G071103",
+  "no_of_wards": 13,
+  "population": 14951,
+  "male": 7513,
+  "female": 7438,
+  "population_density": 580,
+  "sex_ratio": 990,
+  "literacy_rate": 89.79,
+  "literacy_rate_male": 93.59,
+  "literacy_rate_female": 85.99,
+  "president": "JAISONDANIEL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VETTAMPARA",
+      "person": {
+        "id": "2015068300101",
+        "name": "SIBI PAUL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BHOOTHATHANKETTU",
+      "person": {
+        "id": "2015068300201",
+        "name": "BIJUMON P KARUNAKARAN NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADODI",
+      "person": {
+        "id": "2015068300301",
+        "name": "JALAJA PAULOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHELAD",
+      "person": {
+        "id": "2015068300401",
+        "name": "ARUN V KUNNATH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAZHANGARA",
+      "person": {
+        "id": "2015068300501",
+        "name": "MOLLY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADAMMALI",
+      "person": {
+        "id": "2015068300601",
+        "name": "NOBLE JOSEPH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PINDIMANA",
+      "person": {
+        "id": "2015068300701",
+        "name": "SATHY SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AYAKKAD",
+      "person": {
+        "id": "2015068300801",
+        "name": "JAISON DANIEL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULIMALA",
+      "person": {
+        "id": "2015068300901",
+        "name": "SHERLY MARKOSE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AYROORPADAM",
+      "person": {
+        "id": "2015068301001",
+        "name": "HASEENA ALIYAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTHAMKUZHY",
+      "person": {
+        "id": "2015068301101",
+        "name": "SEETHI MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VETTILAPPARA",
+      "person": {
+        "id": "2015068301201",
+        "name": "P K RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MALIPPARA",
+      "person": {
+        "id": "2015068301301",
+        "name": "MANJU MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,27 @@
+  {
+      "environments": {
+          "test": {
+              "scripts": {
+                  "test": "python manage.py test"
+              },
+              "buildpacks": [{
+                      "url": "https://github.com/cyberdelia/heroku-geo-buildpack.git"
+                  },
+                  {
+                      "url": "heroku/python"
+                  }
+              ],
+              "env": {
+                  "DJANGO_SETTINGS_MODULE": {
+                      "value": "config.settings.test"
+                  },
+                  "LD_LIBRARY_PATH": {
+                      "value": "/app/lib"
+                  },
+                  "BUILD_WITH_GEO_LIBRARIES": {
+                      "value": "1"
+                  }
+              }
+          }
+      }
+  }

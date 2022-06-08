@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346393928,
+  "date": "2019-08-21",
+  "name": "Mezhuveli  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Kulanada",
+  "area": "14.44km",
+  "localbody_code": "G030705",
+  "no_of_wards": 13,
+  "population": 14121,
+  "male": 6722,
+  "female": 7399,
+  "population_density": 978,
+  "sex_ratio": 1101,
+  "literacy_rate": 96.02,
+  "literacy_rate_male": 97.39,
+  "literacy_rate_female": 94.79,
+  "president": "NGOPALAKRISHNAKURUP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARITHOTTA",
+      "person": {
+        "id": "2015042400101",
+        "name": "RAJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOODUVETTICKAL",
+      "person": {
+        "id": "2015042400201",
+        "name": "GIRIJA SUBHANANDHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KURIYANIPPALLY",
+      "person": {
+        "id": "2015042400301",
+        "name": "SHYNEY LAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATHISSERY",
+      "person": {
+        "id": "2015042400401",
+        "name": "SEEMA BINU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ALAKKODU",
+      "person": {
+        "id": "2015042400501",
+        "name": "SUMESH JACOB SAKARIAH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MULOOR",
+      "person": {
+        "id": "2015042400601",
+        "name": "A R BALAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MARAMAN",
+      "person": {
+        "id": "2015042400701",
+        "name": "RADHACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELAVUMTHITTA",
+      "person": {
+        "id": "2015042400801",
+        "name": "N. SULOCHANA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAYYAMTHADAM",
+      "person": {
+        "id": "2015042400901",
+        "name": "SATHYAVRITHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEDIYAKALA",
+      "person": {
+        "id": "2015042401001",
+        "name": "N GOPALAKRISHNAKURUP"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANARKODU",
+      "person": {
+        "id": "2015042401101",
+        "name": "ANITHA BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MEZHUVELI",
+      "person": {
+        "id": "2015042401201",
+        "name": "B S ANEESHMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ULLANNOOR",
+      "person": {
+        "id": "2015042401301",
+        "name": "LEELA RADHAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

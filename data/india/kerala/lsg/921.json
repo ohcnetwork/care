@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348621163,
+  "date": "2019-08-21",
+  "name": "Pulikkal  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kondotty",
+  "area": "27.95km",
+  "localbody_code": "G100408",
+  "no_of_wards": 21,
+  "population": 28565,
+  "male": 14234,
+  "female": 14331,
+  "population_density": 1022,
+  "sex_ratio": 1007,
+  "literacy_rate": 90.21,
+  "literacy_rate_male": 93.75,
+  "literacy_rate_female": 86.78,
+  "president": "SHAREENAAZEEZM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AROOR",
+      "person": {
+        "id": "2015092100101",
+        "name": "MUHAMMED ANWAR SADATH N C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "OLIKKUMPURAM",
+      "person": {
+        "id": "2015092100201",
+        "name": "KOMALAVALLY M C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHIYEDATHPARAMB",
+      "person": {
+        "id": "2015092100301",
+        "name": "RUBEENA V C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANACHIKAPALLIYALI",
+      "person": {
+        "id": "2015092100401",
+        "name": "MANGATTUCHALI FAKRUDHEEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANGATTUMURI",
+      "person": {
+        "id": "2015092100501",
+        "name": "SUHRA K P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUMUTTAM",
+      "person": {
+        "id": "2015092100601",
+        "name": "K V HUSSANKUTTY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALIYAPARAMBA",
+      "person": {
+        "id": "2015092100701",
+        "name": "MOHAMMED MASTER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NOONJALLUR",
+      "person": {
+        "id": "2015092100801",
+        "name": "E MAMMAD"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALANGOD",
+      "person": {
+        "id": "2015092100901",
+        "name": "BUSHRA SIDDEEQ"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAPPARA",
+      "person": {
+        "id": "2015092101001",
+        "name": "SUBAIDA M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALEKKARA",
+      "person": {
+        "id": "2015092101101",
+        "name": "NAJMUDHEEN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALPARAMB",
+      "person": {
+        "id": "2015092101201",
+        "name": "K M ALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODIKUTHIPARAMB",
+      "person": {
+        "id": "2015092101301",
+        "name": "ABDULLA MASTER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANDIYATTUPURAM",
+      "person": {
+        "id": "2015092101401",
+        "name": "SHAREENA AZEEZ M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015092101501",
+        "name": "NAJI BANU P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "UNNIYATHIPARAMB",
+      "person": {
+        "id": "2015092101601",
+        "name": "SUNEERA ABDUL VAHAB"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUTTAYOOR",
+      "person": {
+        "id": "2015092101701",
+        "name": "SOUDA BEEVI C K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PULIKKAL",
+      "person": {
+        "id": "2015092101801",
+        "name": "UMMER  P P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "POURABAZAR",
+      "person": {
+        "id": "2015092101901",
+        "name": "KUNHATHAN VALTHODI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ANDIYOORKUNNU",
+      "person": {
+        "id": "2015092102001",
+        "name": "SUBAIDA M"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MAYAKKARA",
+      "person": {
+        "id": "2015092102101",
+        "name": "AMINA ABDUL MAJEED"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348659174,
+  "date": "2019-08-21",
+  "name": "Pookkottur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Malappuram",
+  "area": "20.63km",
+  "localbody_code": "G100604",
+  "no_of_wards": 19,
+  "population": 31754,
+  "male": 16328,
+  "female": 15516,
+  "population_density": 1224,
+  "sex_ratio": 1004,
+  "literacy_rate": 89.94,
+  "literacy_rate_male": 93.73,
+  "literacy_rate_female": 86.15,
+  "president": "SUMAYYAT",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALLUVAMBRAM",
+      "person": {
+        "id": "2015093400101",
+        "name": "HAMZA KOLLODIKA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "HALF VALLUVAMBRAM",
+      "person": {
+        "id": "2015093400201",
+        "name": "SAKKEENA EDATHODI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLANOOR",
+      "person": {
+        "id": "2015093400301",
+        "name": "AJITHA NEEDARATHINGAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOOCHIKKAL",
+      "person": {
+        "id": "2015093400401",
+        "name": "MUHAMMED MANSOOR KAITHAKKODAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULLARA",
+      "person": {
+        "id": "2015093400501",
+        "name": "FASEELA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTHIRIPARAMBU",
+      "person": {
+        "id": "2015093400601",
+        "name": "SAFIYA MANNETHODI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIMUKKU",
+      "person": {
+        "id": "2015093400701",
+        "name": "MUHAMMED RABEER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUNDITHODIKA",
+      "person": {
+        "id": "2015093400801",
+        "name": "MUHAMMED MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANIKKAMPARA",
+      "person": {
+        "id": "2015093400901",
+        "name": "YOUSUF VETTASHERI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOKKOTTUR",
+      "person": {
+        "id": "2015093401001",
+        "name": "NAFEESA PALLIYALI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLIPPADI",
+      "person": {
+        "id": "2015093401101",
+        "name": "GOPALAN PANAKKAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ARAVANKARA",
+      "person": {
+        "id": "2015093401201",
+        "name": "MUHAMMED VADAKE KANDI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NEW BAZAR",
+      "person": {
+        "id": "2015093401301",
+        "name": "SUMAYYA T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEENIKKAL",
+      "person": {
+        "id": "2015093401401",
+        "name": "SHAHINA THORAPPA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ATHANIKKAL",
+      "person": {
+        "id": "2015093401501",
+        "name": "AYISHA PILAKKATT"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELLUR",
+      "person": {
+        "id": "2015093401601",
+        "name": "HAMZA KUNNATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VELLUR NORTH",
+      "person": {
+        "id": "2015093401701",
+        "name": "FATHIMA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUSLIYAR PEEDIKA",
+      "person": {
+        "id": "2015093401801",
+        "name": "SUHRA MOOCHITHODAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ALUNGAPATTA",
+      "person": {
+        "id": "2015093401901",
+        "name": "SADIQUEALI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

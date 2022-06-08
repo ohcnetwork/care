@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346043972,
+  "date": "2019-08-21",
+  "name": "Piravanthoor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "129.85km",
+  "localbody_code": "G020403",
+  "no_of_wards": 21,
+  "population": 35613,
+  "male": 17579,
+  "female": 18034,
+  "population_density": 274,
+  "sex_ratio": 1026,
+  "literacy_rate": 90.06,
+  "literacy_rate_male": 92.49,
+  "literacy_rate_female": 87.71,
+  "president": "LATHASOMARAJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADASSERY",
+      "person": {
+        "id": "2015032500101",
+        "name": "E. K. NALINAKSHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PUNNALA",
+      "person": {
+        "id": "2015032500201",
+        "name": "AMBILI RAJEEV"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMPANARUVI",
+      "person": {
+        "id": "2015032500301",
+        "name": "RASHEED"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAICKAMONE",
+      "person": {
+        "id": "2015032500401",
+        "name": "BABURAJ. S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUNTHOYIL",
+      "person": {
+        "id": "2015032500501",
+        "name": "RENJITH. R"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAZHANGODU",
+      "person": {
+        "id": "2015032500601",
+        "name": "SASIKALA. P. S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARAVOOR",
+      "person": {
+        "id": "2015032500701",
+        "name": "RATHEESAN. D"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VANMALA",
+      "person": {
+        "id": "2015032500801",
+        "name": "SUJATHA. S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALIMUKKU",
+      "person": {
+        "id": "2015032500901",
+        "name": "C. R, REJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUKKADAVU",
+      "person": {
+        "id": "2015032501001",
+        "name": "JESSY THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHEVODU",
+      "person": {
+        "id": "2015032501101",
+        "name": "SHERLY GOPINATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PIRAVANTHOOR",
+      "person": {
+        "id": "2015032501201",
+        "name": "CHITHRAJA. S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAVUMBA",
+      "person": {
+        "id": "2015032501301",
+        "name": "SUDHAVASANTHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELIKKATTOOR",
+      "person": {
+        "id": "2015032501401",
+        "name": "ANILKUMAR. C"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAMUKUMCHERY",
+      "person": {
+        "id": "2015032501501",
+        "name": "KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHEKOM",
+      "person": {
+        "id": "2015032501601",
+        "name": "NIKHIL. S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KIZHAKEMURY",
+      "person": {
+        "id": "2015032501701",
+        "name": "MANJU. D. NAIR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KADACKAMON",
+      "person": {
+        "id": "2015032501801",
+        "name": "VANAJAKSHI. P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KARIMPALOOR",
+      "person": {
+        "id": "2015032501901",
+        "name": "CHITHRA. P"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KANIYAMPADICKAL",
+      "person": {
+        "id": "2015032502001",
+        "name": "RASHIJAMMAL"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHACHIPUNNA",
+      "person": {
+        "id": "2015032502101",
+        "name": "LATHA SOMARAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

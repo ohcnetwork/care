@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566349379355,
+  "date": "2019-08-21",
+  "name": "Munderi  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Edakkad",
+  "area": "20.42km",
+  "localbody_code": "G130606",
+  "no_of_wards": 20,
+  "population": 29901,
+  "male": 14399,
+  "female": 15502,
+  "population_density": 1464,
+  "sex_ratio": 1077,
+  "literacy_rate": 89.46,
+  "literacy_rate_male": 96.35,
+  "literacy_rate_female": 84.11,
+  "president": "PANKAJAKSHANA.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUNDERI",
+      "person": {
+        "id": "2015114300101",
+        "name": "K. REMA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IRUVANKAI",
+      "person": {
+        "id": "2015114300201",
+        "name": "JEEJA  E."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KACHERIPARAMB",
+      "person": {
+        "id": "2015114300301",
+        "name": "M. P. RAGHOOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADANNOT",
+      "person": {
+        "id": "2015114300401",
+        "name": "NASEEMA K. P."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EACHUR KOTTAM",
+      "person": {
+        "id": "2015114300501",
+        "name": "AJITHA V. V."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUDUKKIMOTTA",
+      "person": {
+        "id": "2015114300601",
+        "name": "SANESH  V. K."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANHIRODE",
+      "person": {
+        "id": "2015114300701",
+        "name": "MUNEERA  P. P."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PAROTHUMCHAL",
+      "person": {
+        "id": "2015114300801",
+        "name": "ANISHA  A."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALAMUNDA",
+      "person": {
+        "id": "2015114300901",
+        "name": "RAJITH  C. P."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THATTYODU",
+      "person": {
+        "id": "2015114301001",
+        "name": "VINEETH  M."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOWANCHERY",
+      "person": {
+        "id": "2015114301101",
+        "name": "AMBAN RAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KULATHUVAYAL",
+      "person": {
+        "id": "2015114301201",
+        "name": "PRAMEELA  P. K."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANHIRODE THERU",
+      "person": {
+        "id": "2015114301301",
+        "name": "ANITHA  E."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AYYAPPANMALA",
+      "person": {
+        "id": "2015114301401",
+        "name": "R.  K.  PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NALLANCHI",
+      "person": {
+        "id": "2015114301501",
+        "name": "SHAMMI  K."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EACHUR",
+      "person": {
+        "id": "2015114301601",
+        "name": "REESHA  A."
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANNYOTTU",
+      "person": {
+        "id": "2015114301701",
+        "name": "PADMANABHAN  M."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MAVILACHAL",
+      "person": {
+        "id": "2015114301801",
+        "name": "PANKAJAKSHAN  A."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KANACHERY",
+      "person": {
+        "id": "2015114301901",
+        "name": "SEENATH  P."
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "EDAYIL PEEDIKA",
+      "person": {
+        "id": "2015114302001",
+        "name": "KHADEEJA  P. P."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

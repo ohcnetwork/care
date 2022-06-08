@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566345708762,
+  "date": "2019-08-21",
+  "name": "Manamboor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "15.08km",
+  "localbody_code": "G010104",
+  "no_of_wards": 16,
+  "population": 20575,
+  "male": 9712,
+  "female": 10863,
+  "population_density": 1364,
+  "sex_ratio": 1119,
+  "literacy_rate": 83.65,
+  "literacy_rate_male": 91.07,
+  "literacy_rate_female": 77.13,
+  "president": "AMBILYS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARTHUKONAM",
+      "person": {
+        "id": "2015022800101",
+        "name": "G VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUZHIVILA",
+      "person": {
+        "id": "2015022800201",
+        "name": "AMBILY S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GURU NAGAR",
+      "person": {
+        "id": "2015022800301",
+        "name": "V. RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANAMBOOR",
+      "person": {
+        "id": "2015022800401",
+        "name": "SURESHKUMAR S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUTHANCODU",
+      "person": {
+        "id": "2015022800501",
+        "name": "RENJINI R S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHATHANPARA",
+      "person": {
+        "id": "2015022800601",
+        "name": "PRASOBHANA G"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THENCHERIKKONAM",
+      "person": {
+        "id": "2015022800701",
+        "name": "LISY V THAMPI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALAMKONAM",
+      "person": {
+        "id": "2015022800801",
+        "name": "JAYA R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANNANKARA",
+      "person": {
+        "id": "2015022800901",
+        "name": "NAJEEMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KODITHOOKKIKUNNU",
+      "person": {
+        "id": "2015022801001",
+        "name": "OMANA C P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015022801101",
+        "name": "A NAHAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOVATHUMOOLA",
+      "person": {
+        "id": "2015022801201",
+        "name": "NAZAR T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULAMUTTAM",
+      "person": {
+        "id": "2015022801301",
+        "name": "SOFIYA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANKADAVU",
+      "person": {
+        "id": "2015022801401",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANJIRATHIL",
+      "person": {
+        "id": "2015022801501",
+        "name": "K RATHI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAVALAYOOR",
+      "person": {
+        "id": "2015022801601",
+        "name": "AMBIKA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

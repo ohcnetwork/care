@@ -1,0 +1,172 @@
+{
+  "timeStamp": 1566349173504,
+  "date": "2019-08-21",
+  "name": "Muttil  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "47.38km",
+  "localbody_code": "G120404",
+  "no_of_wards": 19,
+  "population": 26767,
+  "male": 13586,
+  "female": 13181,
+  "population_density": 565,
+  "sex_ratio": 970,
+  "literacy_rate": 83.95,
+  "literacy_rate_male": 88.98,
+  "literacy_rate_female": 78.79,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MADAKKIMALA",
+      "person": {
+        "id": "2015108900101",
+        "name": "BABITHA RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUMBALAD",
+      "person": {
+        "id": "2015108900201",
+        "name": "P BHARATHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PARIYARAM",
+      "person": {
+        "id": "2015108900301",
+        "name": "AYISHABI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOLAVAYAL",
+      "person": {
+        "id": "2015108900401",
+        "name": "CHANDRIKA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANAMKANDY",
+      "person": {
+        "id": "2015108900501",
+        "name": "K HASEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARIYAMBADI",
+      "person": {
+        "id": "2015108900601",
+        "name": "SHYLAJA A N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VARIYAD",
+      "person": {
+        "id": "2015108900701",
+        "name": "AHAMMED A P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THENERI",
+      "person": {
+        "id": "2015108900801",
+        "name": "BALAKRISHNAN M C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VAZHAVATTA",
+      "person": {
+        "id": "2015108900901",
+        "name": "BALAKRISHNAN C K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAKKAM",
+      "person": {
+        "id": "2015108901001",
+        "name": "SHEEJA SEBASTINE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLUPADI",
+      "person": {
+        "id": "2015108901101",
+        "name": "BEENA MATHEW"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARINKANIKUNNU",
+      "person": {
+        "id": "2015108901201",
+        "name": "SEEMA JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANDAD",
+      "person": {
+        "name": "*****"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALAMANGALAM",
+      "person": {
+        "id": "2015108901401",
+        "name": "MOHANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUTTIL",
+      "person": {
+        "id": "2015108901501",
+        "name": "FAISAL N B"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTAMANGALAM",
+      "person": {
+        "id": "2015108901601",
+        "name": "NADEERA MUJEEB"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AMBUKUTHY",
+      "person": {
+        "id": "2015108901701",
+        "name": "KRISHNAKUMAR AMMATHVALAPPIL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "EDAPETTY",
+      "person": {
+        "id": "2015108901801",
+        "name": "SUNDAR RAJAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHELANHICHAL",
+      "person": {
+        "id": "2015108901901",
+        "name": "K SUBHADRA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

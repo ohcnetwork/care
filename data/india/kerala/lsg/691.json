@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347317677,
+  "date": "2019-08-21",
+  "name": "Elanji  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Pampakuda",
+  "area": "29.48km",
+  "localbody_code": "G071201",
+  "no_of_wards": 13,
+  "population": 16576,
+  "male": 8226,
+  "female": 8350,
+  "population_density": 562,
+  "sex_ratio": 1015,
+  "literacy_rate": 93.7,
+  "literacy_rate_male": 95.7,
+  "literacy_rate_female": 91.74,
+  "president": "JOYSMAMPALLY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANTHYAL",
+      "person": {
+        "id": "2015069100101",
+        "name": "SIJUMON P JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOORU",
+      "person": {
+        "id": "2015069100201",
+        "name": "SHAJI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NELLOORUPARA",
+      "person": {
+        "id": "2015069100301",
+        "name": "LEELA SUGHAVAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "JOSEGIRI",
+      "person": {
+        "id": "2015069100401",
+        "name": "REJI GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTHOLAPURAM",
+      "person": {
+        "id": "2015069100501",
+        "name": "GEORGEKUTTY C A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALAPURAM",
+      "person": {
+        "id": "2015069100601",
+        "name": "JOYS MAMPALLY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MADUKKA",
+      "person": {
+        "id": "2015069100701",
+        "name": "ADV. ANNAMMA ANDREWS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELANJI SOUTH",
+      "person": {
+        "id": "2015069100801",
+        "name": "GILU SIBY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHELACKAL",
+      "person": {
+        "id": "2015069100901",
+        "name": "SIJI SUNNY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ELANJI",
+      "person": {
+        "id": "2015069101001",
+        "name": "P A DEVASIA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTHAMKUNNU",
+      "person": {
+        "id": "2015069101101",
+        "name": "REYA MANOJ"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUMPADAVOM",
+      "person": {
+        "id": "2015069101201",
+        "name": "A R RATHISH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PULICKAKKUNNU",
+      "person": {
+        "id": "2015069101301",
+        "name": "SHERLY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

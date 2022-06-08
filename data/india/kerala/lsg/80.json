@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345103257,
+  "date": "2019-08-21",
+  "name": "Muvattupuzha  Block Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Muvattupuzha",
+  "area": "206.07km",
+  "localbody_code": "B071400",
+  "no_of_wards": 13,
+  "population": 137441,
+  "male": 69313,
+  "female": 68128,
+  "population_density": 682,
+  "sex_ratio": 983,
+  "literacy_rate": 91.59,
+  "literacy_rate_male": 94.45,
+  "literacy_rate_female": 88.66,
+  "president": "MARYBABY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "TRIKALATHOOR",
+      "person": {
+        "id": "2015008000101",
+        "name": "PAIPRA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAIPRA",
+      "person": {
+        "id": "2015008000201",
+        "name": "SMITHA SIJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULAVOOR",
+      "person": {
+        "id": "2015008000301",
+        "name": "ADV. BABITHA T H"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANCHALPETTY",
+      "person": {
+        "id": "2015008000401",
+        "name": "SUBHASH KADAKOTTU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AYAVANA",
+      "person": {
+        "id": "2015008000501",
+        "name": "JHANCY GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLOORKADU",
+      "person": {
+        "id": "2015008000601",
+        "name": "LISSY JOLLY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANJALLOOR",
+      "person": {
+        "id": "2015008000701",
+        "name": "JOSSY JOLLY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AVOLY",
+      "person": {
+        "id": "2015008000801",
+        "name": "MARY BABY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ADOOPARAMBU",
+      "person": {
+        "id": "2015008000901",
+        "name": "T M HARIS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ARAKUZHA",
+      "person": {
+        "id": "2015008001001",
+        "name": "ADV. CHINNAMMA SHINE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MARADY",
+      "person": {
+        "id": "2015008001101",
+        "name": "O P BABY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MEKKADAMBU",
+      "person": {
+        "id": "2015008001201",
+        "name": "O C ALIYAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALAKOM",
+      "person": {
+        "id": "2015008001301",
+        "name": "BABU ISSAC"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

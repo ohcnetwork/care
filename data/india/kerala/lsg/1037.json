@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349013756,
+  "date": "2019-08-21",
+  "name": "Arikkulam  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Panthalayani",
+  "area": "23.12km",
+  "localbody_code": "G110802",
+  "no_of_wards": 13,
+  "population": 24587,
+  "male": 12062,
+  "female": 12525,
+  "population_density": 1063,
+  "sex_ratio": 1038,
+  "literacy_rate": 88.99,
+  "literacy_rate_male": 94.79,
+  "literacy_rate_female": 83.47,
+  "president": "C.RADHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THIRUVANGAYUR",
+      "person": {
+        "id": "2015103700101",
+        "name": "V.M.UNNI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARAYAD",
+      "person": {
+        "id": "2015103700201",
+        "name": "KUNHIKELAPPAN ALIAS O.K.BABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EKKATTOOR",
+      "person": {
+        "id": "2015103700301",
+        "name": "M.P.SHAJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THARAMMAL",
+      "person": {
+        "id": "2015103700401",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VAKAMOLI",
+      "person": {
+        "id": "2015103700501",
+        "name": "C.RADHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UTTERY",
+      "person": {
+        "id": "2015103700601",
+        "name": "SANTHA.A.M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "URALLUR",
+      "person": {
+        "id": "2015103700701",
+        "name": "REETHA.M.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARIKKULAM EAST",
+      "person": {
+        "id": "2015103700801",
+        "name": "LATHA.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARIKKULAM WEST",
+      "person": {
+        "id": "2015103700901",
+        "name": "SUHAIL.K.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MAVATTU",
+      "person": {
+        "id": "2015103701001",
+        "name": "SASEENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARIKKULAM NORTH",
+      "person": {
+        "id": "2015103701101",
+        "name": "BIJU.A.M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANNAMBATH",
+      "person": {
+        "id": "2015103701201",
+        "name": "SREEJI.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KURUDIVEEDU",
+      "person": {
+        "id": "2015103701301",
+        "name": "SUDHA.M.M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347132686,
+  "date": "2019-08-21",
+  "name": "Manjapra  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Angamally",
+  "area": "21km",
+  "localbody_code": "G070303",
+  "no_of_wards": 13,
+  "population": 14463,
+  "male": 7237,
+  "female": 7226,
+  "population_density": 689,
+  "sex_ratio": 998,
+  "literacy_rate": 92.06,
+  "literacy_rate_male": 94.88,
+  "literacy_rate_female": 89.24,
+  "president": "CHERIANTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELAVANTHI",
+      "person": {
+        "id": "2015063600101",
+        "name": "SANTHOSH THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MARYGIRY",
+      "person": {
+        "id": "2015063600201",
+        "name": "LEENA BENNY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADAKKUMBHAGAM",
+      "person": {
+        "id": "2015063600301",
+        "name": "BIJI SAJU KOLATTUKUDY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUMANA",
+      "person": {
+        "id": "2015063600401",
+        "name": "SHIMMY BAIJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NADUVATTAM EAST",
+      "person": {
+        "id": "2015063600501",
+        "name": "TIJI BINOY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NADUVATTAM WEST",
+      "person": {
+        "id": "2015063600601",
+        "name": "DAVIS MANAVALAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MULARIPADAM",
+      "person": {
+        "id": "2015063600701",
+        "name": "ALPHONSA SHAJAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARINGALIKADU",
+      "person": {
+        "id": "2015063600801",
+        "name": "VINOD MARADEN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANDRAPURA",
+      "person": {
+        "id": "2015063600901",
+        "name": "SARITHA SUNIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "R C CHURCH",
+      "person": {
+        "id": "2015063601001",
+        "name": "SARITHA SUNIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NADAMURI",
+      "person": {
+        "id": "2015063601101",
+        "name": "RAJU DAVIS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THAVALAPPARA EAST",
+      "person": {
+        "id": "2015063601201",
+        "name": "CHERIAN THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THAVALAPPARA WEST",
+      "person": {
+        "id": "2015063601301",
+        "name": "VARGHESE THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

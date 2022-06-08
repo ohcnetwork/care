@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346554378,
+  "date": "2019-08-21",
+  "name": "Mannar  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Chengannur",
+  "area": "17.55km",
+  "localbody_code": "G041005",
+  "no_of_wards": 18,
+  "population": 28239,
+  "male": 13725,
+  "female": 14514,
+  "population_density": 1609,
+  "sex_ratio": 1057,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 92,
+  "president": "PRAMODKANNADISSERIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAVUKARA A",
+      "person": {
+        "id": "2015047000101",
+        "name": "TOMS  RAJAN (AJEESH KODAKERIL)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAVUKARA B",
+      "person": {
+        "id": "2015047000201",
+        "name": "PRAKASH M P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PAVUKARA C",
+      "person": {
+        "id": "2015047000301",
+        "name": "KAIYATHRA STEPHAN CHACKO"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SOCIETY WARD",
+      "person": {
+        "id": "2015047000401",
+        "name": "KALADHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNAR TOWN",
+      "person": {
+        "id": "2015047000501",
+        "name": "SHYNA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KURATTIKAD A",
+      "person": {
+        "id": "2015047000601",
+        "name": "USHA GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANCHAYAT OFFICE WARD",
+      "person": {
+        "id": "2015047000701",
+        "name": "VIJAYALAKSHMI V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURATTIKAD B",
+      "person": {
+        "id": "2015047000801",
+        "name": "P N SELVARAJAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SWITCH GEAR DIVISION",
+      "person": {
+        "id": "2015047000901",
+        "name": "ANNAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUTTEL WARD",
+      "person": {
+        "id": "2015047001001",
+        "name": "LAVAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTEMPEROOR A",
+      "person": {
+        "id": "2015047001101",
+        "name": "INDIRA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUTTEMPEROOR B",
+      "person": {
+        "id": "2015047001201",
+        "name": "RETHI R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTEMPEROOR C",
+      "person": {
+        "id": "2015047001301",
+        "name": "JYOTHY VELOORMADAM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KULANJIKARAZMA",
+      "person": {
+        "id": "2015047001401",
+        "name": "B K PRASAD"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTTEMPEROOR D",
+      "person": {
+        "id": "2015047001501",
+        "name": "CHITRA M NAIR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "HOMEO HOSPITAL WARD",
+      "person": {
+        "id": "2015047001601",
+        "name": "RESMI G NAIR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "TOWN SOUTH",
+      "person": {
+        "id": "2015047001701",
+        "name": "MUHAMMAD AJITH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "TOWN WEST",
+      "person": {
+        "id": "2015047001801",
+        "name": "PRAMOD KANNADISSERIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

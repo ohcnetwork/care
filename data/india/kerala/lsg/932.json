@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348654669,
+  "date": "2019-08-21",
+  "name": "Oorakam  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Malappuram",
+  "area": "21.65km",
+  "localbody_code": "G101007",
+  "no_of_wards": 17,
+  "population": 21818,
+  "male": 10683,
+  "female": 11135,
+  "population_density": 1012,
+  "sex_ratio": 1042,
+  "literacy_rate": 88.54,
+  "literacy_rate_male": 92.4,
+  "literacy_rate_female": 84.69,
+  "president": "SAFAREENA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEDUMPARAMB",
+      "person": {
+        "id": "2015093200101",
+        "name": "MARIYUMMA CHOLAKKAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUTTALOOR",
+      "person": {
+        "id": "2015093200201",
+        "name": "SHAKEELA ATHOLI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "O.K.M. NAGAR",
+      "person": {
+        "id": "2015093200302",
+        "name": "REENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARIMBILI",
+      "person": {
+        "id": "2015093200401",
+        "name": "ABDUSAMAD KUNNATHODI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODALIKKUND",
+      "person": {
+        "id": "2015093200501",
+        "name": "ALAVI MANITHODI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "YARAMPADI",
+      "person": {
+        "id": "2015093200601",
+        "name": "PANGAT KUNHALIKKUTTY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULLANCHAL",
+      "person": {
+        "id": "2015093200701",
+        "name": "SAFAREENA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OORAKAM MALA",
+      "person": {
+        "id": "2015093200801",
+        "name": "NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHAN PEEDIKA",
+      "person": {
+        "id": "2015093200901",
+        "name": "VIRIYAMU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARATHOD",
+      "person": {
+        "id": "2015093201001",
+        "name": "SOUDA PANDIKADAVATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VENKULAM",
+      "person": {
+        "id": "2015093201101",
+        "name": "SHYNI MALAYIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTUMALA",
+      "person": {
+        "id": "2015093201201",
+        "name": "KODINHAN SUNDARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANCHAYATH PADI",
+      "person": {
+        "id": "2015093201301",
+        "name": "ASHARAF"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VADAKKE KUND",
+      "person": {
+        "id": "2015093201401",
+        "name": "MAIMOONATH VALAYANKADAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NELLIPARAMB",
+      "person": {
+        "id": "2015093201501",
+        "name": "ABOOBACKER KANNANTHODI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THAZHE CHALILKUND",
+      "person": {
+        "id": "2015093201601",
+        "name": "ABDUL AZEEZ VAZHAYIL UMMINIKKADAVATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MELE CHALILKUND",
+      "person": {
+        "id": "2015093201701",
+        "name": "SAMEERA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,62 @@
+pytz==2019.3  # https://github.com/stub42/pytz
+python-slugify==4.0.0  # https://github.com/un33k/python-slugify
+Pillow==8.0.0  # https://github.com/python-pillow/Pillow
+argon2-cffi==19.2.0  # https://github.com/hynek/argon2_cffi
+whitenoise==6.0.0  # https://github.com/evansd/whitenoise
+redis==3.4.1 # https://github.com/andymccurdy/redis-py
+boto3==1.12.23 # For AWS interactions
+# Django
+# ------------------------------------------------------------------------------
+django==2.2.11  # pyup: < 3.0  # https://www.djangoproject.com/
+django-environ==0.4.5  # https://github.com/joke2k/django-environ
+django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
+django-allauth==0.41.0  # https://github.com/pennersr/django-allauth
+django-crispy-forms==1.9.0  # https://github.com/django-crispy-forms/django-crispy-forms
+django-redis==4.11.0  # https://github.com/niwinz/django-redis
+django-storages==1.9.1 # For Storing Static Files in AWS
+djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
+djangorestframework-simplejwt==4.5.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
+drf-yasg==1.17.1 # For Api Docs
+django-filter==2.4.0
+django-extra-fields==2.0.3 # https://github.com/Hipo/drf-extra-fields
+django-location-field==2.1.0 # https://django-location-field.readthedocs.io/en/latest/
+drf-nested-routers==0.91
+django-multiselectfield==0.1.12 # https://github.com/goinnn/django-multiselectfield
+django-partial-index==0.6.0 # https://github.com/mattiaslinnap/django-partial-index/blob/master/README.md
+django-simple-history==2.8.0  # https://django-simple-history.readthedocs.io/en/latest/quick_start.html
+django-ratelimit==2.0.0 # Limiting Requests
+django-fernet-fields==0.6 # https://django-fernet-fields.readthedocs.io/en/latest/
+dry-rest-permissions==0.1.10  # For permissions handling
+django-cors-headers==3.2.1
+django-watchman==1.1.0 # For Status Endpoints
+dateparser==0.7.4 # date parsing utils
+django-maintenance-mode==0.14.0 # Maintenance mode
+django-phonenumber-field==4.0.0
+phonenumberslite==8.12.1
+django-queryset-csv==1.1.0
+django-rest-passwordreset==1.1.0
+healthy-django>=0.1.0
+# Testing
+# ------------------------------------------------------------------------------
+mypy==0.910  # https://github.com/python/mypy
+django-stubs==1.9.0  # https://github.com/typeddjango/django-stubs
+# Experimental
+# ------------------------------------------------------------------------------
+djangoql==0.13.1
+# NewRelic for APM
+newrelic
+# Asyncronous Part
+# ------------------------------------------------------------------------------
+celery==4.4.2
+django-celery-beat==2.0.0
+# PDF Printing Tools
+# ------------------------------------------------------------------------------
+django-hardcopy==0.1.4
+# WebPushes
+# ------------------------------------------------------------------------------
+pywebpush==1.11.0
+## Override Requirements
+PyJWT==v1.7.1
+# Json Schema
+jsonschema==3.2.0
+typed-ast==1.5.0

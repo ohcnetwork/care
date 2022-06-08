@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566349449035,
+  "date": "2019-08-21",
+  "name": "Vengad  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "280.09km",
+  "localbody_code": "G130707",
+  "no_of_wards": 21,
+  "population": 32254,
+  "male": 15773,
+  "female": 16481,
+  "population_density": 1148,
+  "sex_ratio": 1045,
+  "literacy_rate": 89.39,
+  "literacy_rate_male": 93.98,
+  "literacy_rate_female": 85.07,
+  "president": "ANITHACP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PATTATHARI",
+      "person": {
+        "id": "2015116200101",
+        "name": "K V PADMINI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLAYI",
+      "person": {
+        "id": "2015116200201",
+        "name": "P P ABOOTTY MASTER"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VENGAD ANGADI",
+      "person": {
+        "id": "2015116200301",
+        "name": "HUSAIN N C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VENGAD METTA",
+      "person": {
+        "id": "2015116200401",
+        "name": "R P SUHASINI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VENGAD THERU",
+      "person": {
+        "id": "2015116200501",
+        "name": "K SANKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "OORPALLI",
+      "person": {
+        "id": "2015116200601",
+        "name": "ANITHA C P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAITHERIPOYIL",
+      "person": {
+        "id": "2015116200701",
+        "name": "AJITHA P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALANKICHAL",
+      "person": {
+        "id": "2015116200801",
+        "name": "RAJANI C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHIRIYAD",
+      "person": {
+        "id": "2015116200901",
+        "name": "MADHUSOODHANAN K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PACHAPOIKA",
+      "person": {
+        "id": "2015116201001",
+        "name": "SARADA C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARAMBAYI",
+      "person": {
+        "id": "2015116201101",
+        "name": "KARUNAN V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KELALUR",
+      "person": {
+        "id": "2015116201201",
+        "name": "VASANTHA C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAMBARAM",
+      "person": {
+        "id": "2015116201301",
+        "name": "MANOJ ANIYARATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POYANAD",
+      "person": {
+        "id": "2015116201401",
+        "name": "C LATHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KEEZHATHUR BALAVADI",
+      "person": {
+        "id": "2015116201501",
+        "name": "PRADEESAN P P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KEEZHATHUR VAYANASHALA",
+      "person": {
+        "id": "2015116201601",
+        "name": "N P KOMALAVALLY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUZHIYIL PEEDIKA",
+      "person": {
+        "id": "2015116201701",
+        "name": "N SHEENA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MAILULLY",
+      "person": {
+        "id": "2015116201801",
+        "name": "REJI C"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNNIRIKKA",
+      "person": {
+        "id": "2015116201901",
+        "name": "RAVEENDRAN A"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PADUVILAYI",
+      "person": {
+        "id": "2015116202001",
+        "name": "K AJITHA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THATTARI",
+      "person": {
+        "id": "2015116202101",
+        "name": "BABYSUDHA C P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

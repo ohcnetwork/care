@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348638733,
+  "date": "2019-08-21",
+  "name": "Areacode  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Areekkode",
+  "area": "12.21km",
+  "localbody_code": "G100507",
+  "no_of_wards": 18,
+  "population": 24138,
+  "male": 12081,
+  "female": 12057,
+  "population_density": 1977,
+  "sex_ratio": 998,
+  "literacy_rate": 91.26,
+  "literacy_rate_male": 94.85,
+  "literacy_rate_female": 87.61,
+  "president": "MUNEERATHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ALUKKAL",
+      "person": {
+        "id": "2015092800101",
+        "name": "SANAULLA PARAPPURATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UGRAPPURAM",
+      "person": {
+        "id": "2015092800201",
+        "name": "BHASKARAN M P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERUMPARAMBU",
+      "person": {
+        "id": "2015092800301",
+        "name": "ZUHAIR VP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NORTH KOZHAKKOTTOR",
+      "person": {
+        "id": "2015092800401",
+        "name": "BEENA A P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THAZHATHANGADI",
+      "person": {
+        "id": "2015092800502",
+        "name": "RATHEESH.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AREACODE WEST",
+      "person": {
+        "id": "2015092800601",
+        "name": "MUNEERATH A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AREACODE EAST",
+      "person": {
+        "id": "2015092800701",
+        "name": "NISHA KAVUNGAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHALAM",
+      "person": {
+        "id": "2015092800801",
+        "name": "REMA M P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SOUTH PUTHALAM",
+      "person": {
+        "id": "2015092800901",
+        "name": "SHIHABUDHEEEN PARAKKAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOZHAKKOTTOR",
+      "person": {
+        "id": "2015092801001",
+        "name": "A W ABDURAHIMAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MATHAKKODE",
+      "person": {
+        "id": "2015092801101",
+        "name": "SREEJA CP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEMRAKKATTOR",
+      "person": {
+        "id": "2015092801201",
+        "name": "GEETHA P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLERI EAST",
+      "person": {
+        "id": "2015092801301",
+        "name": "SHEENA A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VELLERI WEST",
+      "person": {
+        "id": "2015092801401",
+        "name": "UMMER P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THAZHATHUMURI",
+      "person": {
+        "id": "2015092801501",
+        "name": "SAREENA JAFAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUNDAMBRA",
+      "person": {
+        "id": "2015092801601",
+        "name": "MUHAMMED SHAFI A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VALIYAKALLUNGAL",
+      "person": {
+        "id": "2015092801701",
+        "name": "FATHIMAKUTTY KP"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARIPARAMBU",
+      "person": {
+        "id": "2015092801801",
+        "name": "M P ABOOBACKER SIDHEEQUE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

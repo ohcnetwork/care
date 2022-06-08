@@ -1,0 +1,245 @@
+{
+  "timeStamp": 1566345479815,
+  "date": "2019-08-21",
+  "name": "Adoor  Municipality, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "area": "20.42km",
+  "localbody_code": "M030100",
+  "no_of_wards": 28,
+  "population": 28943,
+  "male": 13965,
+  "female": 14978,
+  "population_density": 1305,
+  "sex_ratio": 1048,
+  "literacy_rate": 94.14,
+  "literacy_rate_male": 96.38,
+  "literacy_rate_female": 92.05,
+  "chairperson": "SHYNIBOBBY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MITHRAPURAM",
+      "person": {
+        "id": "2015017800101",
+        "name": "OOMMEN THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "E.V. WARD",
+      "person": {
+        "id": "2015017800201",
+        "name": "JAYAKRISHNAN S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANNIVIZHA",
+      "person": {
+        "id": "2015017800301",
+        "name": "R SANAL KUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SALVATION ARMY",
+      "person": {
+        "id": "2015017800401",
+        "name": "PRASAD G"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CIVIL STATION",
+      "person": {
+        "id": "2015017800501",
+        "name": "SHYNI JOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "JAWAHAR",
+      "person": {
+        "id": "2015017800601",
+        "name": "SHYNI BOBBY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANANDAPALLY",
+      "person": {
+        "id": "2015017800701",
+        "name": "N D RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POTHRODU",
+      "person": {
+        "id": "2015017800801",
+        "name": "MADHU T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "M. G. WARD",
+      "person": {
+        "id": "2015017800901",
+        "name": "RAJI CHERIYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BHAGATH SINGH",
+      "person": {
+        "id": "2015017801001",
+        "name": "BINDU KUMARI G"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANNIVIZHA EAST",
+      "person": {
+        "id": "2015017801101",
+        "name": "MANIAMMA C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SANGAMAM",
+      "person": {
+        "id": "2015017801201",
+        "name": "SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NETHAJI",
+      "person": {
+        "id": "2015017801301",
+        "name": "REENA SAMUEL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARAKKODE",
+      "person": {
+        "id": "2015017801401",
+        "name": "SINDHU THULASEEDHARAKURUP"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAKKODE EAST",
+      "person": {
+        "id": "2015017801501",
+        "name": "ANITHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ANANDHARAMAPURAM",
+      "person": {
+        "id": "2015017801601",
+        "name": "S BINU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARAKKODE WEST",
+      "person": {
+        "id": "2015017801701",
+        "name": "M ALAVUDEEN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "T. B . WARD",
+      "person": {
+        "id": "2015017801801",
+        "name": "AJI P VARGHESE"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KANNAMKODU NORTH",
+      "person": {
+        "id": "2015017801901",
+        "name": "MARIYAMMA JACOB"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ADOOR CENTRAL",
+      "person": {
+        "id": "2015017802001",
+        "name": "MUMTHAS A"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KANNAMKODU",
+      "person": {
+        "id": "2015017802101",
+        "name": "AYOOB KUZHIVILA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "NELLIMOOTTILPADI",
+      "person": {
+        "id": "2015017802201",
+        "name": "ADV.BIJU VARGHESE"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "AYYAPPANPARA",
+      "person": {
+        "id": "2015017802301",
+        "name": "THAJUDEEN M"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015017802401",
+        "name": "ANNAMMA ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MUNNALAM",
+      "person": {
+        "id": "2015017802501",
+        "name": "PRASANTH CHANDRANPILLAI"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "PRIYADARSHINI",
+      "person": {
+        "id": "2015017802601",
+        "name": "SOBHA THOMAS"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "HOLYCROSS",
+      "person": {
+        "id": "2015017802701",
+        "name": "GEETHA THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "PUTHIYAKAVILCHIRA",
+      "person": {
+        "id": "2015017802801",
+        "name": "SUSY JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

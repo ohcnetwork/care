@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566345766281,
+  "date": "2019-08-21",
+  "name": "Chirayinkeezhu  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Chirayinkeezhu",
+  "area": "10.87km",
+  "localbody_code": "G010303",
+  "no_of_wards": 19,
+  "population": 29627,
+  "male": 14042,
+  "female": 15585,
+  "population_density": 2726,
+  "sex_ratio": 1110,
+  "literacy_rate": 85.87,
+  "literacy_rate_male": 90.68,
+  "literacy_rate_female": 81.68,
+  "president": "DEENA.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "GURUVIHAR",
+      "person": {
+        "id": "2015024300101",
+        "name": "JAYAN G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAZHANCHIRA",
+      "person": {
+        "id": "2015024300201",
+        "name": "SREELETHA S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MELKADAKKAVOOR",
+      "person": {
+        "id": "2015024300301",
+        "name": "SURESH R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALTHARAMOODU",
+      "person": {
+        "id": "2015024300401",
+        "name": "R.SARITHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SARKARA",
+      "person": {
+        "id": "2015024300501",
+        "name": "BABY.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHIRAYINKEEZHU",
+      "person": {
+        "id": "2015024300601",
+        "name": "R.K.RADHAMONEY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALIYAKADA",
+      "person": {
+        "id": "2015024300701",
+        "name": "DEENA.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTTAPURAM",
+      "person": {
+        "id": "2015024300801",
+        "name": "P.MANIKANTAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KADAKOM",
+      "person": {
+        "id": "2015024300901",
+        "name": "SAJINADEVI.V.T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OTTAPANA",
+      "person": {
+        "id": "2015024301001",
+        "name": "NASEEHA.N"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMATHURA",
+      "person": {
+        "id": "2015024301101",
+        "name": "SAFEETHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POZHIKARA",
+      "person": {
+        "id": "2015024301201",
+        "name": "M.SIYAD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PULUNTHURUTHI",
+      "person": {
+        "id": "2015024301301",
+        "name": "JOSHYBAI.J"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUTHALAPOZHI",
+      "person": {
+        "id": "2015024301401",
+        "name": "V.ANTONYFERNANDEZ"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARAYATHURUTHI",
+      "person": {
+        "id": "2015024301501",
+        "name": "JULITAGILBERT"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUTHUKKARI",
+      "person": {
+        "id": "2015024301601",
+        "name": "BEEJASURESH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANDAKASALA",
+      "person": {
+        "id": "2015024301701",
+        "name": "SURESHKUMAR.G"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ANATHALAVATTOM",
+      "person": {
+        "id": "2015024301801",
+        "name": "M.V.KANAKADAS"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KALAPOSHANI",
+      "person": {
+        "id": "2015024301901",
+        "name": "PRASANNA.D"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346960490,
+  "date": "2019-08-21",
+  "name": "Mankulam  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Devikulam",
+  "area": null,
+  "localbody_code": "G060207",
+  "no_of_wards": 13,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "SHAJIMATHEW",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANAKKULAM NORTH",
+      "person": {
+        "id": "2015058400102",
+        "name": "SUNISH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "SEVALKUDI",
+      "person": {
+        "id": "2015058400201",
+        "name": "CHELLAMMAL CHEMBAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "50TH MILE",
+      "person": {
+        "id": "2015058400301",
+        "name": "BINCY ROY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "6TH MILE",
+      "person": {
+        "id": "2015058400401",
+        "name": "ANIYAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANKULAM",
+      "person": {
+        "id": "2015058400501",
+        "name": "MALLAYYAN PANDYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUNIPARA",
+      "person": {
+        "id": "2015058400601",
+        "name": "RADHAMANI VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VIRIPARA",
+      "person": {
+        "id": "2015058400701",
+        "name": "SABU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PAMBUMKAYAM",
+      "person": {
+        "id": "2015058400801",
+        "name": "JANCY BIJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALUMKANDAM",
+      "person": {
+        "id": "2015058400901",
+        "name": "SHAJI MATHEW"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VELIYAMAPARA",
+      "person": {
+        "id": "2015058401001",
+        "name": "JULI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VIRINJAPARA",
+      "person": {
+        "id": "2015058401101",
+        "name": "THRESYAMMA OUSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUMBANKUTH",
+      "person": {
+        "id": "2015058401201",
+        "name": "ABRAHAM AVIRA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANAKKULAM SOUTH",
+      "person": {
+        "id": "2015058401301",
+        "name": "BIJU KURYAKKOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

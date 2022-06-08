@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347337349,
+  "date": "2019-08-21",
+  "name": "Maneed  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Pampakuda",
+  "area": "26.2km",
+  "localbody_code": "G070906",
+  "no_of_wards": 13,
+  "population": 15515,
+  "male": 7822,
+  "female": 7693,
+  "population_density": 592,
+  "sex_ratio": 984,
+  "literacy_rate": 90.21,
+  "literacy_rate_male": 94.1,
+  "literacy_rate_female": 86.27,
+  "president": "SOBHAALIAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EZHAKKARANADU NORTH",
+      "person": {
+        "id": "2015069600101",
+        "name": "ELSY GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EZHAKKARANADU EAST",
+      "person": {
+        "id": "2015069600201",
+        "name": "ALICE BABY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VETTITHARA",
+      "person": {
+        "id": "2015069600301",
+        "name": "JOSEPH V. J"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "OOTTUCOMPANYPADY",
+      "person": {
+        "id": "2015069600401",
+        "name": "K. S. RAJESH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEERKUZHI",
+      "person": {
+        "id": "2015069600501",
+        "name": "OMANA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NECHOOR",
+      "person": {
+        "id": "2015069600601",
+        "name": "P. I. ALIAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAROOR",
+      "person": {
+        "id": "2015069600701",
+        "name": "BEENA BABURAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MEMMUGHAM",
+      "person": {
+        "id": "2015069600801",
+        "name": "DHANYA SINESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAMPRA",
+      "person": {
+        "id": "2015069600901",
+        "name": "ELDHO THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANEED",
+      "person": {
+        "id": "2015069601001",
+        "name": "SOBHA ALIAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANEED NORTH",
+      "person": {
+        "id": "2015069601101",
+        "name": "SURESH SIVARAMAN NAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEERAKKATTUPARA",
+      "person": {
+        "id": "2015069601201",
+        "name": "SANTHOSH KODUMKILY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EZHAKKARANADU SOUTH",
+      "person": {
+        "id": "2015069601301",
+        "name": "SINDHU ANIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

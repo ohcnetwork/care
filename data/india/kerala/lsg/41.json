@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344984434,
+  "date": "2019-08-21",
+  "name": "Veliyanad  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Veliyanad",
+  "area": "117.24km",
+  "localbody_code": "B040700",
+  "no_of_wards": 13,
+  "population": 89967,
+  "male": 44789,
+  "female": 45178,
+  "population_density": 767,
+  "sex_ratio": 1009,
+  "literacy_rate": 98,
+  "literacy_rate_male": 99,
+  "literacy_rate_female": 97,
+  "president": "LAILARAJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEELAMPERROR",
+      "person": {
+        "id": "2015004100101",
+        "name": "THOMAS SCARIA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NARAKATHARA",
+      "person": {
+        "id": "2015004100201",
+        "name": "REMADEVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELIYANAD",
+      "person": {
+        "id": "2015004100301",
+        "name": "SHERLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KIDANGARA",
+      "person": {
+        "id": "2015004100401",
+        "name": "BINDUMOL SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTTAR",
+      "person": {
+        "id": "2015004100501",
+        "name": "SASI CHEMBILAKAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MITHRAKARY",
+      "person": {
+        "id": "2015004100601",
+        "name": "LAILA RAJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VEZHAPRA",
+      "person": {
+        "id": "2015004100701",
+        "name": "KUNJUMOL SIVADAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "RAMANKARY",
+      "person": {
+        "id": "2015004100801",
+        "name": "BABY CHERIYAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULINCUNNU",
+      "person": {
+        "id": "2015004100901",
+        "name": "ANSAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANCOMPU",
+      "person": {
+        "id": "2015004101001",
+        "name": "ASHAMOL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015004101101",
+        "name": "E.V KOMALAVALLY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUNNUMMA",
+      "person": {
+        "id": "2015004101201",
+        "name": "ADV. ROJO JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAVALAM",
+      "person": {
+        "id": "2015004101301",
+        "name": "BOBAKUMAR T.N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

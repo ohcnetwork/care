@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345015098,
+  "date": "2019-08-21",
+  "name": "Lalam  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Lalam",
+  "area": "173km",
+  "localbody_code": "B050500",
+  "no_of_wards": 13,
+  "population": 98886,
+  "male": 49347,
+  "female": 49539,
+  "population_density": 570,
+  "sex_ratio": 1004,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 95,
+  "president": "SIBYODACKAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALAVOOR",
+      "person": {
+        "id": "2015005100101",
+        "name": "SANTHOSH J"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "‍KAROOR",
+      "person": {
+        "id": "2015005100201",
+        "name": "SIBY ODACKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KADANAD",
+      "person": {
+        "id": "2015005100301",
+        "name": "JIJI THAMPY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NEELOOR",
+      "person": {
+        "id": "2015005100401",
+        "name": "PAULIT THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ULLANADU",
+      "person": {
+        "id": "2015005100501",
+        "name": "ADV. JOSE PLAKKOOTTAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PRAVITHANAM",
+      "person": {
+        "id": "2015005100601",
+        "name": "PREETHY SHAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "BHARANANGANAM",
+      "person": {
+        "id": "2015005100701",
+        "name": "BINDU SYAM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVARANI",
+      "person": {
+        "id": "2015005100801",
+        "name": "ANNAKUTTY JAMES"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHUVANAL",
+      "person": {
+        "id": "2015005100901",
+        "name": "BABU M K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERPUNKAL",
+      "person": {
+        "id": "2015005101001",
+        "name": "SHALET JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTHOLY",
+      "person": {
+        "id": "2015005101101",
+        "name": "HARIDAS S R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULIYANNOOR",
+      "person": {
+        "id": "2015005101201",
+        "name": "JESSY JOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALLICHIRA",
+      "person": {
+        "id": "2015005101301",
+        "name": "GEORGE AUGUSTINE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

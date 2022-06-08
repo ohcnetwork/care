@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349275500,
+  "date": "2019-08-21",
+  "name": "Naduvil  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "87.97km",
+  "localbody_code": "G130306",
+  "no_of_wards": 19,
+  "population": 29537,
+  "male": 15008,
+  "female": 14529,
+  "population_density": 336,
+  "sex_ratio": 968,
+  "literacy_rate": 90.9,
+  "literacy_rate_male": 93.53,
+  "literacy_rate_female": 88.19,
+  "president": "BINDUBALAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARUVANCHAL",
+      "person": {
+        "id": "2015111800101",
+        "name": "SHINY ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANIYANCHAL",
+      "person": {
+        "id": "2015111800201",
+        "name": "N.U ABDULLA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLAD",
+      "person": {
+        "id": "2015111800301",
+        "name": "THOMAS T.M."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ASHANKAVAL",
+      "person": {
+        "id": "2015111800401",
+        "name": "T.D BABU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PATTAKALAM",
+      "person": {
+        "id": "2015111800501",
+        "name": "K.G. OMANA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHANPARA",
+      "person": {
+        "id": "2015111800601",
+        "name": "AMMINI A.V."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POTTANPLAVU",
+      "person": {
+        "id": "2015111800701",
+        "name": "ELSY PARAMPPEL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANAKAKUNNU",
+      "person": {
+        "id": "2015111800801",
+        "name": "BINDU ANIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHALAM",
+      "person": {
+        "id": "2015111800901",
+        "name": "THRESSIAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULIKURUMBA",
+      "person": {
+        "id": "2015111801001",
+        "name": "BINDU BALAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VENKUNNU",
+      "person": {
+        "id": "2015111801101",
+        "name": "SHINY THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANDALAM",
+      "person": {
+        "id": "2015111801201",
+        "name": "SHYJA DOMINIC"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOKKAI",
+      "person": {
+        "id": "2015111801301",
+        "name": "BABY ODAMPALLIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NADUVIL TOWN",
+      "person": {
+        "id": "2015111801401",
+        "name": "K.P. ABDUL SHUKOOR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POTHUKUNDU",
+      "person": {
+        "id": "2015111801501",
+        "name": "MOIDEEN K.P."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARAKKALTHAZHE",
+      "person": {
+        "id": "2015111801602",
+        "name": "K MUHAMMED KUNHI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NADUVIL PADINJARU",
+      "person": {
+        "id": "2015111801701",
+        "name": "SHEEBA JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VILAKKANNUR",
+      "person": {
+        "id": "2015111801801",
+        "name": "SURESH E.K."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VAYATTUPARAMBA",
+      "person": {
+        "id": "2015111801901",
+        "name": "SHANISH M.M."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347210961,
+  "date": "2019-08-21",
+  "name": "Edavanakkad  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vypin",
+  "area": "11.25km",
+  "localbody_code": "G070703",
+  "no_of_wards": 15,
+  "population": 19631,
+  "male": 9571,
+  "female": 10060,
+  "population_density": 1747,
+  "sex_ratio": 1051,
+  "literacy_rate": 90.75,
+  "literacy_rate_male": 94.17,
+  "literacy_rate_female": 87.54,
+  "president": "K.UJEEVANMITHRA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAPPURAM",
+      "person": {
+        "id": "2015066100101",
+        "name": "SHIBANO BAIJU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAYABAZAR",
+      "person": {
+        "id": "2015066100201",
+        "name": "V.U. DASAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHATHANGAD",
+      "person": {
+        "id": "2015066100301",
+        "name": "NATESAN P.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANCHAYAT",
+      "person": {
+        "id": "2015066100401",
+        "name": "CHITHIRA BINU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAZHANGAD",
+      "person": {
+        "id": "2015066100501",
+        "name": "K.J ALBY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015066100601",
+        "name": "SUJATHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANIYAL",
+      "person": {
+        "id": "2015066100701",
+        "name": "V.K. IQBAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MARKET",
+      "person": {
+        "id": "2015066100801",
+        "name": "TREESA CLETTUS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MOORIPADOM",
+      "person": {
+        "id": "2015066100901",
+        "name": "SUMA GIREESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHURCH",
+      "person": {
+        "id": "2015066101001",
+        "name": "ANANDAVALLY CHELLAPPAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NETHAJI",
+      "person": {
+        "id": "2015066101101",
+        "name": "K.U JEEVAN MITHRA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VILLAGE",
+      "person": {
+        "id": "2015066101201",
+        "name": "ADV.SHERY WAHAB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNUPILLAKETTU",
+      "person": {
+        "id": "2015066101301",
+        "name": "RANI RAMESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VACHAKKAL WEST",
+      "person": {
+        "id": "2015066101401",
+        "name": "ASEENA ABDULSALAM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ILLATHUPADI WEST",
+      "person": {
+        "id": "2015066101501",
+        "name": "BINDHU BENNY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

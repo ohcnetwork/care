@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348064000,
+  "date": "2019-08-21",
+  "name": "Kattoor  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Irinjalkkuda",
+  "area": "11.7km",
+  "localbody_code": "G081202",
+  "no_of_wards": 14,
+  "population": 16905,
+  "male": 7810,
+  "female": 9095,
+  "population_density": 1445,
+  "sex_ratio": 1164,
+  "literacy_rate": 91.51,
+  "literacy_rate_male": 95.29,
+  "literacy_rate_female": 88.38,
+  "president": "TKREMESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUNAYAM",
+      "person": {
+        "id": "2015077600101",
+        "name": "T K REMESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARANCHIRA NORTH",
+      "person": {
+        "id": "2015077600201",
+        "name": "SUMA SEKHARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARANCHIRA SOUTH",
+      "person": {
+        "id": "2015077600301",
+        "name": "BETTY JOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "LABOUR CENTER",
+      "person": {
+        "id": "2015077600401",
+        "name": "SHEEJA PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUNNATHPEEDIKA",
+      "person": {
+        "id": "2015077600501",
+        "name": "DHEERAJ THERATTIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PONJANAM NORTH",
+      "person": {
+        "id": "2015077600601",
+        "name": "RAJALAKSHMI KURUMATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NARIKUZHI",
+      "person": {
+        "id": "2015077600701",
+        "name": "JAYASREE SUBRAMANNIAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PONJANAM EAST",
+      "person": {
+        "id": "2015077600801",
+        "name": "LATHA T V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ILLIKKAD",
+      "person": {
+        "id": "2015077600901",
+        "name": "MANOJ VALIYAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PONJANAM SOUTH",
+      "person": {
+        "id": "2015077601001",
+        "name": "A.S. HYDROSE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KATTOOR",
+      "person": {
+        "id": "2015077601101",
+        "name": "SWAPNA NAJIN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKUMOOLA",
+      "person": {
+        "id": "2015077601201",
+        "name": "M.J RAPHY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTOOR BAZAR",
+      "person": {
+        "id": "2015077601301",
+        "name": "BEENA REGHU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NEDUMPURA",
+      "person": {
+        "id": "2015077601401",
+        "name": "AMEER THOPPIYIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

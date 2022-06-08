@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347613705,
+  "date": "2019-08-21",
+  "name": "Paralam  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Cherpu",
+  "area": "17.04km",
+  "localbody_code": "G081003",
+  "no_of_wards": 15,
+  "population": 20191,
+  "male": 9991,
+  "female": 10200,
+  "population_density": 1185,
+  "sex_ratio": 1021,
+  "literacy_rate": 91.45,
+  "literacy_rate_male": 94.81,
+  "literacy_rate_female": 88.21,
+  "president": "SADEEPJOSEPHPARALAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AARYAMPADAM",
+      "person": {
+        "id": "2015076600101",
+        "name": "MINI CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHAKYARKADAVU",
+      "person": {
+        "id": "2015076600201",
+        "name": "SHEELA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SUBRAMANYAPURAM",
+      "person": {
+        "id": "2015076600301",
+        "name": "VALSALA DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VENGINISSERY",
+      "person": {
+        "id": "2015076600401",
+        "name": "SHARAN P.S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARATTUKADAVU",
+      "person": {
+        "id": "2015076600501",
+        "name": "BINITHA SUDHEESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUKKARA",
+      "person": {
+        "id": "2015076600601",
+        "name": "BIJUKUMAR K."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SIVAPURAM",
+      "person": {
+        "id": "2015076600701",
+        "name": "M.S MANOJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARIS-KOOTALAKUNNU",
+      "person": {
+        "id": "2015076600801",
+        "name": "ANITHA MANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARALAM",
+      "person": {
+        "id": "2015076600901",
+        "name": "LEEMA RAJAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARPPAKADAVU",
+      "person": {
+        "id": "2015076601001",
+        "name": "T.G VINAYAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENAM",
+      "person": {
+        "id": "2015076601101",
+        "name": "RAJANI HARIHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMMADAM",
+      "person": {
+        "id": "2015076601201",
+        "name": "SADEEP JOSEPH PARALAM"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODANNUR",
+      "person": {
+        "id": "2015076601301",
+        "name": "A.R JOHNSON"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALLIPPURAM",
+      "person": {
+        "id": "2015076601401",
+        "name": "NIKHIL K.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SASTHAMKADAVU",
+      "person": {
+        "id": "2015076601501",
+        "name": "GIRIJA GOPINATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

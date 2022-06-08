@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348797188,
+  "date": "2019-08-21",
+  "name": "Valavannur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Thanur",
+  "area": "15.28km",
+  "localbody_code": "G101204",
+  "no_of_wards": 19,
+  "population": 27295,
+  "male": 13032,
+  "female": 14263,
+  "population_density": 1786,
+  "sex_ratio": 1094,
+  "literacy_rate": 87.75,
+  "literacy_rate_male": 92.34,
+  "literacy_rate_female": 83.16,
+  "president": "SABIRA.T.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NERALA",
+      "person": {
+        "id": "2015097500101",
+        "name": "SUNI PADIYATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAYYERICHIRA",
+      "person": {
+        "id": "2015097500201",
+        "name": "NAJMATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KADUNGATHUKUND",
+      "person": {
+        "id": "2015097500301",
+        "name": "MOHAMMED ABDU RAHIMAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEKKATHIPARA",
+      "person": {
+        "id": "2015097500401",
+        "name": "ANEESHA KADALAYI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADUNGALLUR",
+      "person": {
+        "id": "2015097500501",
+        "name": "MOHAMMED IQBAL  MANNUTHODUVIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THUVAKKAD",
+      "person": {
+        "id": "2015097500601",
+        "name": "THASLEENA CHOMAYIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAKKALLU",
+      "person": {
+        "id": "2015097500701",
+        "name": "MUJEEB RAHIMAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURUNGKADU",
+      "person": {
+        "id": "2015097500801",
+        "name": "SULAIKHA VALIYAPEEDIEKKAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MEDIPPARA",
+      "person": {
+        "id": "2015097500901",
+        "name": "SABIRA.T.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ALLUR",
+      "person": {
+        "id": "2015097501001",
+        "name": "BEERAN HAJI THAYYIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POTHANUR",
+      "person": {
+        "id": "2015097501101",
+        "name": "ABOOBACKER MATHOOR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHUNKATHAPPALA",
+      "person": {
+        "id": "2015097501201",
+        "name": "IBRAHIM THIRITHI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VARANAKKARA",
+      "person": {
+        "id": "2015097501301",
+        "name": "ANWAR SAJID"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NELLAPPARAMP",
+      "person": {
+        "id": "2015097501401",
+        "name": "SULAIKHA THIRUNELLI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAMMALANGADI",
+      "person": {
+        "id": "2015097501501",
+        "name": "FOUSIYA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OTTUKARAPPURAM",
+      "person": {
+        "id": "2015097501601",
+        "name": "SAJNA."
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHERAVANNUR",
+      "person": {
+        "id": "2015097501701",
+        "name": "ZEENATH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VARAMBANALA",
+      "person": {
+        "id": "2015097501801",
+        "name": "SHARAFUDHEEN KUNNATH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PARAKKUDE",
+      "person": {
+        "id": "2015097501901",
+        "name": "NOUSHAJA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

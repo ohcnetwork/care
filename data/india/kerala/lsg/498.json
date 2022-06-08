@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346671290,
+  "date": "2019-08-21",
+  "name": "Devikulangara  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Muthukulam",
+  "area": "7.07km",
+  "localbody_code": "G041207",
+  "no_of_wards": 15,
+  "population": 20145,
+  "male": 9666,
+  "female": 10479,
+  "population_density": 2849,
+  "sex_ratio": 1084,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "E.SREEDEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "GOVINDAMUTTOM",
+      "person": {
+        "id": "2015049800101",
+        "name": "E.SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NORTH KOCHUMURI",
+      "person": {
+        "id": "2015049800201",
+        "name": "REJANI MURALI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANIYAMURI",
+      "person": {
+        "id": "2015049800301",
+        "name": "SARITHA RAJ"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VADAKKE ANJILIMOOD",
+      "person": {
+        "id": "2015049800401",
+        "name": "SREELEKHA.B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEKKE ANJILIMOOD",
+      "person": {
+        "id": "2015049800501",
+        "name": "SREELATHA.S THAMPI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HIGH SCHOOL WARD",
+      "person": {
+        "id": "2015049800601",
+        "name": "RADHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SAKTHIKULANGARA",
+      "person": {
+        "id": "2015049800701",
+        "name": "SUSEELA VISWAMBARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KALEECKASSERI",
+      "person": {
+        "id": "2015049800801",
+        "name": "S.SANAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KDASSERI",
+      "person": {
+        "id": "2015049800901",
+        "name": "ARUN.S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BANK WARD",
+      "person": {
+        "id": "2015049801001",
+        "name": "JOLLY GILBERT"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "DEVIKULANGARA",
+      "person": {
+        "id": "2015049801101",
+        "name": "GANGA SUDESAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUMBILISSERIL",
+      "person": {
+        "id": "2015049801201",
+        "name": "S.RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KRISHI BHAVAN",
+      "person": {
+        "id": "2015049801301",
+        "name": "THOMAS JACOB"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VARANAPPALLY",
+      "person": {
+        "id": "2015049801401",
+        "name": "CHANDRA SEKHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "TEMPLE WARD",
+      "person": {
+        "id": "2015049801501",
+        "name": "M.G.MOHANDAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

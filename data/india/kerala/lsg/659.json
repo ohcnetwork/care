@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347204922,
+  "date": "2019-08-21",
+  "name": "Narakal  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vypin",
+  "area": "8.6km",
+  "localbody_code": "G070701",
+  "no_of_wards": 16,
+  "population": 22978,
+  "male": 11188,
+  "female": 11790,
+  "population_density": 2672,
+  "sex_ratio": 1053,
+  "literacy_rate": 95.17,
+  "literacy_rate_male": 97.71,
+  "literacy_rate_female": 92.78,
+  "president": "SHILDAREBEIRO",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAPPURAM",
+      "person": {
+        "id": "2015065900101",
+        "name": "MINI DILEEP"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "JAIHIND",
+      "person": {
+        "id": "2015065900201",
+        "name": "K. B. GOPALAKRISHNAN (GOPOOTTAN)"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "HIGH SCHOOL",
+      "person": {
+        "id": "2015065900301",
+        "name": "GANDHI  P. P."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLI",
+      "person": {
+        "id": "2015065900401",
+        "name": "SAJU MENACHERY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CONVENT",
+      "person": {
+        "id": "2015065900501",
+        "name": "KOCHURANI JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "OODARAKKAL",
+      "person": {
+        "id": "2015065900601",
+        "name": "SHYLA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLUMADAM-VALIYAVATTOM",
+      "person": {
+        "id": "2015065900701",
+        "name": "MANI SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANJANAKKAD",
+      "person": {
+        "id": "2015065900801",
+        "name": "SHILDA REBEIRO"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "APPANGAD NORTH",
+      "person": {
+        "id": "2015065900901",
+        "name": "MARY KUNJAPPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "APPANGAD SOUTH",
+      "person": {
+        "id": "2015065901001",
+        "name": "LAIMY DAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMPILLY",
+      "person": {
+        "id": "2015065901101",
+        "name": "DAISY JAMES"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THARISHU",
+      "person": {
+        "id": "2015065901201",
+        "name": "K. P. SUNILDUTT"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POZHEEL",
+      "person": {
+        "id": "2015065901301",
+        "name": "A. P. LALU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "LIGHT HOUSE",
+      "person": {
+        "id": "2015065901401",
+        "name": "RENIL PALLATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANCHAYATH",
+      "person": {
+        "id": "2015065901501",
+        "name": "MINI RAJU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARATTUVAZHI",
+      "person": {
+        "id": "2015065901601",
+        "name": "K. T. BINEESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348327265,
+  "date": "2019-08-21",
+  "name": "Mathur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kuzhalmannam",
+  "area": "24.54km",
+  "localbody_code": "G090804",
+  "no_of_wards": 16,
+  "population": 22627,
+  "male": 10937,
+  "female": 11690,
+  "population_density": 922,
+  "sex_ratio": 1069,
+  "literacy_rate": 86.14,
+  "literacy_rate_male": 84.82,
+  "literacy_rate_female": 68.22,
+  "president": "T.M.PUSHPADAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAPOTTA",
+      "person": {
+        "id": "2015085600101",
+        "name": "SALINI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANIKODE",
+      "person": {
+        "id": "2015085600201",
+        "name": "SUJATHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THACHANKAD",
+      "person": {
+        "id": "2015085600301",
+        "name": "T .M .PUSHPADAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VEESWALAM",
+      "person": {
+        "id": "2015085600401",
+        "name": "JINCY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBAD",
+      "person": {
+        "id": "2015085600501",
+        "name": "C. SANKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POLLAPADAM",
+      "person": {
+        "id": "2015085600601",
+        "name": "A .ISMALE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLANCHATHANUR",
+      "person": {
+        "id": "2015085600701",
+        "name": "RADHA V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANNAM",
+      "person": {
+        "id": "2015085600801",
+        "name": "SANTHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIZHAKETHARA",
+      "person": {
+        "id": "2015085600901",
+        "name": "MADHAVADAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHUNGAMANNAM",
+      "person": {
+        "id": "2015085601001",
+        "name": "M .MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THANNIRANKAD",
+      "person": {
+        "id": "2015085601101",
+        "name": "KRISHNAN. M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHATHANKAV",
+      "person": {
+        "id": "2015085601201",
+        "name": "PREETHA .K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ERIYANKAD",
+      "person": {
+        "id": "2015085601301",
+        "name": "P . V. ABDULKADHER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHENGANIYURKAV",
+      "person": {
+        "id": "2015085601401",
+        "name": "MANJUSHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BANGLAW SCHOOL",
+      "person": {
+        "id": "2015085601501",
+        "name": "G SIVARAJAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANNAMPULLI",
+      "person": {
+        "id": "2015085601601",
+        "name": "BHAGYALAKSHMI .K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

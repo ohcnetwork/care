@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349140727,
+  "date": "2019-08-21",
+  "name": "Panamaram  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Mananthavady",
+  "area": "80.9km",
+  "localbody_code": "G120201",
+  "no_of_wards": 23,
+  "population": 38615,
+  "male": 18738,
+  "female": 18077,
+  "population_density": 455,
+  "sex_ratio": 964,
+  "literacy_rate": 78.05,
+  "literacy_rate_male": 84.29,
+  "literacy_rate_female": 71.57,
+  "president": "SHINEYKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNDALA",
+      "person": {
+        "id": "2015107700101",
+        "name": "CHAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOOLIVAYAL",
+      "person": {
+        "id": "2015107700201",
+        "name": "ANEESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOYILERY",
+      "person": {
+        "id": "2015107700301",
+        "name": "MARTIN. K. J."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERUKATTOOR",
+      "person": {
+        "id": "2015107700401",
+        "name": "LISSY PATHROSE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEERVARAM",
+      "person": {
+        "id": "2015107700501",
+        "name": "SEBASTIAN P.G."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AMMANI",
+      "person": {
+        "id": "2015107700601",
+        "name": "SARADHA ACHAPPAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADAVAYAL",
+      "person": {
+        "id": "2015107700701",
+        "name": "MAHESH. O.C."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARIYARAM",
+      "person": {
+        "id": "2015107700801",
+        "name": "DEVAKI VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHAKKAL",
+      "person": {
+        "id": "2015107700901",
+        "name": "CHAKKO. M. A."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANAMARAM EAST",
+      "person": {
+        "id": "2015107701001",
+        "name": "SULAIKHA SAIDHALAVI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIMAMKUNNU",
+      "person": {
+        "id": "2015107701101",
+        "name": "KAMALA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANAMARAM WEST",
+      "person": {
+        "id": "2015107701201",
+        "name": "JOOLNA USMAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHUNDAKKUNNU",
+      "person": {
+        "id": "2015107701301",
+        "name": "SHINEY KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ARINCHERMALA",
+      "person": {
+        "id": "2015107701401",
+        "name": "LISSY THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PALLIKKUNNU",
+      "person": {
+        "id": "2015107701501",
+        "name": "RAMACHANDRAN. M.K."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAIPPATTUKUNNU",
+      "person": {
+        "id": "2015107701601",
+        "name": "SEENA SAJAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VILAMBUKANDAM",
+      "person": {
+        "id": "2015107701701",
+        "name": "T. MOHANAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MALANKARA",
+      "person": {
+        "id": "2015107701801",
+        "name": "GIREESH. A.E."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PALUKUNNU",
+      "person": {
+        "id": "2015107701901",
+        "name": "HARIDAS. K.M."
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "EDATHUMKUNNU",
+      "person": {
+        "id": "2015107702001",
+        "name": "K V SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ANJUKUNNU",
+      "person": {
+        "id": "2015107702101",
+        "name": "BINDU RAJAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VELLARIVAYAL",
+      "person": {
+        "id": "2015107702201",
+        "name": "MEHRUNISA RAZAK"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KELLUR",
+      "person": {
+        "id": "2015107702301",
+        "name": "SOUJATH USMAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,133 @@
+{
+  "timeStamp": 1566349745400,
+  "date": "2019-08-21",
+  "name": "Panamaram\n  Block Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "area": null,
+  "localbody_code": "B120200",
+  "no_of_wards": 14,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "TSDILEEPKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANJUKUNNU",
+      "person": {
+        "id": "2015125300101",
+        "name": "JAYANTHI RAJAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAKKAM",
+      "person": {
+        "id": "2015125300202",
+        "name": "MANI E K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015125300301",
+        "name": "ADV P D SAJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADICHIRA",
+      "person": {
+        "id": "2015125300401",
+        "name": "SHINU KACHIRAYIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MULLANKOLLI",
+      "person": {
+        "id": "2015125300501",
+        "name": "MERCY BENNY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULPALLY",
+      "person": {
+        "id": "2015125300601",
+        "name": "T S DILEEP KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "IRULAM",
+      "person": {
+        "id": "2015125300701",
+        "name": "SUMI APPY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAKERY",
+      "person": {
+        "id": "2015125300801",
+        "name": "INDIRA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KENICHIRA",
+      "person": {
+        "id": "2015125300901",
+        "name": "P B SIVAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADAVAYAL",
+      "person": {
+        "id": "2015125301001",
+        "name": "V M THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOTHADI",
+      "person": {
+        "id": "2015125301101",
+        "name": "POULOSE KURUMBEMADAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PACHILAKKAD",
+      "person": {
+        "id": "2015125301201",
+        "name": "KUNHAYISHA K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANIYAMBATTA",
+      "person": {
+        "id": "2015125301301",
+        "name": "SAFIYA P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANAMARAM",
+      "person": {
+        "id": "2015125301401",
+        "name": "SATHIDEVI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

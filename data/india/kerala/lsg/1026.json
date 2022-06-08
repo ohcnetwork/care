@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348979142,
+  "date": "2019-08-21",
+  "name": "Perambra  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "26.12km",
+  "localbody_code": "G110606",
+  "no_of_wards": 19,
+  "population": 28345,
+  "male": 14188,
+  "female": 14157,
+  "population_density": 1085,
+  "sex_ratio": 998,
+  "literacy_rate": 89.62,
+  "literacy_rate_male": 94.95,
+  "literacy_rate_female": 84.31,
+  "president": "REENAKIZHAKKECHALIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDAVARAD",
+      "person": {
+        "id": "2015102600101",
+        "name": "EBRAYI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAIPRAM",
+      "person": {
+        "id": "2015102600201",
+        "name": "ABDURAHIMAN PUTHANPURAYIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLODE NORTH",
+      "person": {
+        "id": "2015102600301",
+        "name": "BIJU KRISHNAN P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALLODE SOUTH",
+      "person": {
+        "id": "2015102600401",
+        "name": "GANGADHARAN NAMBIAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015102600501",
+        "name": "RATHI RAJEEV"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MOYOTHCHAL",
+      "person": {
+        "id": "2015102600601",
+        "name": "GOPI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MENHANNIAM",
+      "person": {
+        "id": "2015102600701",
+        "name": "REENA KIZHAKKECHALIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANDIKODE",
+      "person": {
+        "id": "2015102600801",
+        "name": "ALICE CHANDY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODERICHAL",
+      "person": {
+        "id": "2015102600901",
+        "name": "JANU KANIYANKANDY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MARUTHERI",
+      "person": {
+        "id": "2015102601001",
+        "name": "JISHA KOTTAPURATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "UNNIKKUNNU",
+      "person": {
+        "id": "2015102601101",
+        "name": "JYOTHI M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERAMBRA TOWN",
+      "person": {
+        "id": "2015102601201",
+        "name": "SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAKKAD",
+      "person": {
+        "id": "2015102601301",
+        "name": "YOUSAF K P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AMBALITHAZHA",
+      "person": {
+        "id": "2015102601401",
+        "name": "RAJEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIZHINHANNIAM",
+      "person": {
+        "id": "2015102601501",
+        "name": "SOUMINI PONPAREMMAL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAPPURAM",
+      "person": {
+        "id": "2015102601601",
+        "name": "LATHIKA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AKKOOPARAMB",
+      "person": {
+        "id": "2015102601701",
+        "name": "LISI K K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ERAVATTOOR",
+      "person": {
+        "id": "2015102601801",
+        "name": "V K PRAMOD KUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ERATHUMUKKU",
+      "person": {
+        "id": "2015102601901",
+        "name": "MALLIKA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

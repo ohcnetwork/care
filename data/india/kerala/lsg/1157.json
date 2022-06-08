@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349432468,
+  "date": "2019-08-21",
+  "name": "Triprangottoor  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "32.39km",
+  "localbody_code": "G130901",
+  "no_of_wards": 18,
+  "population": 26281,
+  "male": 12401,
+  "female": 13880,
+  "population_density": 811,
+  "sex_ratio": 1119,
+  "literacy_rate": 88.72,
+  "literacy_rate_male": 94.66,
+  "literacy_rate_female": 83.55,
+  "president": "SURESHBABUK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VADAKKE POYILOOR",
+      "person": {
+        "id": "2015115700101",
+        "name": "USHA RAYAROTH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARAYULLA PARAMBA",
+      "person": {
+        "id": "2015115700201",
+        "name": "SURESH BABU K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLAYITHODE",
+      "person": {
+        "id": "2015115700301",
+        "name": "SHYRINA A C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAMATHAKKAD",
+      "person": {
+        "id": "2015115700401",
+        "name": "VASANTHA A P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VILAKKOTTOOR EAST",
+      "person": {
+        "id": "2015115700501",
+        "name": "SAVITHRI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CENTRAL POYILOOR",
+      "person": {
+        "id": "2015115700601",
+        "name": "VASANTHA K C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VATTAPOYILUMMAL",
+      "person": {
+        "id": "2015115700701",
+        "name": "SABITHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKUMURI",
+      "person": {
+        "id": "2015115700801",
+        "name": "NISHA E"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VILAKKOTTOR WEST",
+      "person": {
+        "id": "2015115700901",
+        "name": "CHANDRI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHETTAKKANDY",
+      "person": {
+        "id": "2015115701001",
+        "name": "SATHYAN C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLIKKANDY",
+      "person": {
+        "id": "2015115701101",
+        "name": "SAMEER PARAMBATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "UTHUKKUMMAL",
+      "person": {
+        "id": "2015115701201",
+        "name": "AMMAD HAJI PULLATTUMMAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUNDATHODE",
+      "person": {
+        "id": "2015115701301",
+        "name": "KATTOOR MAHAMOOD"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ERANJEENKEEZIL",
+      "person": {
+        "id": "2015115701401",
+        "name": "ISMAIL N"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KURUNGAD",
+      "person": {
+        "id": "2015115701501",
+        "name": "SAKKEENA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KADAVTHUR TOWN",
+      "person": {
+        "id": "2015115701601",
+        "name": "SIVAN PALLIKKANDY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "HIGH SCHOOL",
+      "person": {
+        "id": "2015115701701",
+        "name": "NASEEMA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KEERIYAV",
+      "person": {
+        "id": "2015115701801",
+        "name": "A P ISMAIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

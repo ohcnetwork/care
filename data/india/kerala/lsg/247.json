@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566345781537,
+  "date": "2019-08-21",
+  "name": "Kallara  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vamanpuram",
+  "area": "39.48km",
+  "localbody_code": "G010401",
+  "no_of_wards": 17,
+  "population": 24048,
+  "male": 11560,
+  "female": 12488,
+  "population_density": 609,
+  "sex_ratio": 1080,
+  "literacy_rate": 92.34,
+  "literacy_rate_male": 95.96,
+  "literacy_rate_female": 89.04,
+  "president": "SANTHAKUMARK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALLARA",
+      "person": {
+        "id": "2015024700101",
+        "name": "DEEPABHASKAR L"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLARATOWN",
+      "person": {
+        "id": "2015024700201",
+        "name": "SHEELA K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLAMKUDI",
+      "person": {
+        "id": "2015024700302",
+        "name": "G SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THAPASAGIRI",
+      "person": {
+        "id": "2015024700401",
+        "name": "KALLARA BIJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUMBAYAM",
+      "person": {
+        "id": "2015024700501",
+        "name": "PACHAYIL VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALKULAM",
+      "person": {
+        "id": "2015024700601",
+        "name": "BABYPILLAI B"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "K.T.KUNNU",
+      "person": {
+        "id": "2015024700701",
+        "name": "SHANIBA A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERUVALAM",
+      "person": {
+        "id": "2015024700801",
+        "name": "ANAMPACHA SURESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THENGUMCODE",
+      "person": {
+        "id": "2015024700901",
+        "name": "MOHANAN NAIR P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAPPIL",
+      "person": {
+        "id": "2015024701001",
+        "name": "SANTHAKUMAR K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLAUVARAMB",
+      "person": {
+        "id": "2015024701101",
+        "name": "SINDHI M.G"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTHUVILA",
+      "person": {
+        "id": "2015024701201",
+        "name": "LISSY G.J"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARUVIPPURAM",
+      "person": {
+        "id": "2015024701301",
+        "name": "MANIYAN M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KURINJILAKKADU",
+      "person": {
+        "id": "2015024701401",
+        "name": "FASEELA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MITHIRMALA",
+      "person": {
+        "id": "2015024701501",
+        "name": "BEENA G.S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MULAYILKONAM",
+      "person": {
+        "id": "2015024701601",
+        "name": "GIRIJA S.R"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THUMBODE",
+      "person": {
+        "id": "2015024701701",
+        "name": "VALSALAKUMARI R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

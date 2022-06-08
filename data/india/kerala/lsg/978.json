@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348805598,
+  "date": "2019-08-21",
+  "name": "Niramaruthur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Thanur",
+  "area": "9.2km",
+  "localbody_code": "G101207",
+  "no_of_wards": 17,
+  "population": 24567,
+  "male": 12219,
+  "female": 12348,
+  "population_density": 2586.55,
+  "sex_ratio": 990,
+  "literacy_rate": 85.5,
+  "literacy_rate_male": 91,
+  "literacy_rate_female": 80,
+  "president": "SUHARARAZAK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUDIYAKADAPPURAM",
+      "person": {
+        "id": "2015097800101",
+        "name": "SOUDHABI K K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALAD",
+      "person": {
+        "id": "2015097800201",
+        "name": "HAFSATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHAKKARAMOOLA",
+      "person": {
+        "id": "2015097800301",
+        "name": "K T KESAVANKUTTI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANJALAMPADI",
+      "person": {
+        "id": "2015097800401",
+        "name": "PRASANNAKUMARI P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KORANGATH",
+      "person": {
+        "id": "2015097800501",
+        "name": "MUNEERA MADAMPATT"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARIMARAM",
+      "person": {
+        "id": "2015097800601",
+        "name": "P. PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ALINCHUVADU",
+      "person": {
+        "id": "2015097800701",
+        "name": "PREMA K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PATHAMPAD",
+      "person": {
+        "id": "2015097800801",
+        "name": "SUHRABI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NOORMAIDANAM",
+      "person": {
+        "id": "2015097800901",
+        "name": "MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANGAD",
+      "person": {
+        "id": "2015097801001",
+        "name": "NARAYANANKUTTY K.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALLIKKANHIRAM",
+      "person": {
+        "id": "2015097801101",
+        "name": "SHAREEF K.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUMARANPADI",
+      "person": {
+        "id": "2015097801201",
+        "name": "K.V. SIDHIQUE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AYYAPPANKAVU",
+      "person": {
+        "id": "2015097801301",
+        "name": "SUHARA RAZAK"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "JANATHABASAR",
+      "person": {
+        "id": "2015097801401",
+        "name": "VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANCHARAMOOLA",
+      "person": {
+        "id": "2015097801501",
+        "name": "SUBAIDA SHALIMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THEVARKADAPPURAM",
+      "person": {
+        "id": "2015097801601",
+        "name": "P.P.SAIDALAVI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "UNNIYAL",
+      "person": {
+        "id": "2015097801701",
+        "name": "HASANATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

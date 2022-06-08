@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346872744,
+  "date": "2019-08-21",
+  "name": "Madappally  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Madappally",
+  "area": "24.02km",
+  "localbody_code": "G050901",
+  "no_of_wards": 20,
+  "population": 30182,
+  "male": 14845,
+  "female": 15337,
+  "population_density": 1257,
+  "sex_ratio": 1033,
+  "literacy_rate": 96,
+  "literacy_rate_male": 94,
+  "literacy_rate_female": 95,
+  "president": "LYSAMMADEVASIA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUNNAMCHIRA",
+      "person": {
+        "id": "2015055700101",
+        "name": "SOBY JACOB"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURUMBANADOM",
+      "person": {
+        "id": "2015055700201",
+        "name": "ALEYKUTTY THOMAS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALAMATTOM",
+      "person": {
+        "id": "2015055700301",
+        "name": "SHIBU PHILIP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VITHARIKKUNNU",
+      "person": {
+        "id": "2015055700401",
+        "name": "LEELAMMA SCARIA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHOORANOLI",
+      "person": {
+        "id": "2015055700501",
+        "name": "MOLLY JOHN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANICHUKULAM",
+      "person": {
+        "id": "2015055700602",
+        "name": "NIDEESH THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADACKAPPADAM",
+      "person": {
+        "id": "2015055700701",
+        "name": "ADV.SOJAN PAVIYANOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ILLIMOODU",
+      "person": {
+        "id": "2015055700801",
+        "name": "AJITHA KUMARY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MAMMOODU",
+      "person": {
+        "id": "2015055700901",
+        "name": "ANCY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EYYALI",
+      "person": {
+        "id": "2015055701001",
+        "name": "SUNNY JAMES"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EDAPPALLY",
+      "person": {
+        "id": "2015055701101",
+        "name": "AJESH DAS K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENKOTTA",
+      "person": {
+        "id": "2015055701201",
+        "name": "BINDU T.J"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANKIPPURAM",
+      "person": {
+        "id": "2015055701301",
+        "name": "LYSAMMA DEVASIA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MADAPPALLY",
+      "person": {
+        "id": "2015055701401",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANPUZHA",
+      "person": {
+        "id": "2015055701501",
+        "name": "VARGHESE.T. ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALLUVETTAM",
+      "person": {
+        "id": "2015055701601",
+        "name": "AJITHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHIRAKKUZHY",
+      "person": {
+        "id": "2015055701701",
+        "name": "SANDHYA.S. PILLAI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THALAKKULAM",
+      "person": {
+        "id": "2015055701801",
+        "name": "MINIMOL REJI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THENGANA",
+      "person": {
+        "id": "2015055701901",
+        "name": "NISHA BIJU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CHETHIPUZHA",
+      "person": {
+        "id": "2015055702001",
+        "name": "JOHN THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

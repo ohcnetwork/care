@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346001621,
+  "date": "2019-08-21",
+  "name": "West Kallada  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Sasthamcotta",
+  "area": "13.36km",
+  "localbody_code": "G020202",
+  "no_of_wards": 14,
+  "population": 17522,
+  "male": 8677,
+  "female": 8845,
+  "population_density": 1312,
+  "sex_ratio": 1019,
+  "literacy_rate": 92.22,
+  "literacy_rate_male": 95.29,
+  "literacy_rate_female": 89.2,
+  "president": "SUBHA.J",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARALI TOWN",
+      "person": {
+        "id": "2015031200101",
+        "name": "SIVANKUTTY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANATHARKUNNAM",
+      "person": {
+        "id": "2015031200201",
+        "name": "ABDUL SAMAD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALIYAPADAM WEST",
+      "person": {
+        "id": "2015031200301",
+        "name": "C. USHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VILANTHARA",
+      "person": {
+        "id": "2015031200403",
+        "name": "P JAYASREE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALIYAPADAM EAST",
+      "person": {
+        "id": "2015031200501",
+        "name": "SUBHA.J"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADAPUZHA",
+      "person": {
+        "id": "2015031200601",
+        "name": "MANIKANDAN .R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOICKAL BHAGOM",
+      "person": {
+        "id": "2015031200701",
+        "name": "JAYA.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUVILAKKARA",
+      "person": {
+        "id": "2015031200801",
+        "name": "K.SUDHEER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ULLURUPPU",
+      "person": {
+        "id": "2015031200901",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AITHOTTUVA NORTH",
+      "person": {
+        "id": "2015031201001",
+        "name": "MANJU.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AITHOTTUVA SOUTH",
+      "person": {
+        "id": "2015031201101",
+        "name": "SARASWATHY TEACHER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AITHOTTUVA WEST",
+      "person": {
+        "id": "2015031201201",
+        "name": "N.YASHPAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTHAPURAM",
+      "person": {
+        "id": "2015031201301",
+        "name": "CHANDRASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PATTAKADAV",
+      "person": {
+        "id": "2015031201401",
+        "name": "R.JOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

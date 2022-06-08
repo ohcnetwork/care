@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566349165345,
+  "date": "2019-08-21",
+  "name": "Pulpally  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Sulthanbathery",
+  "area": "77.7km",
+  "localbody_code": "G120204",
+  "no_of_wards": 20,
+  "population": 30035,
+  "male": 15912,
+  "female": 14123,
+  "population_density": 387,
+  "sex_ratio": 888,
+  "literacy_rate": 83.55,
+  "literacy_rate_male": 87.22,
+  "literacy_rate_female": 79.35,
+  "president": "BINDHUPRAKASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEKADY",
+      "person": {
+        "id": "2015108500101",
+        "name": "PREMAVALLY KAVIKKAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VEETIMOOLA",
+      "person": {
+        "id": "2015108500201",
+        "name": "M T KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015108500301",
+        "name": "P AJITHKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ATHIKUNI",
+      "person": {
+        "id": "2015108500401",
+        "name": "P A MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MEENAMKOLLY",
+      "person": {
+        "id": "2015108500501",
+        "name": "UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALAMOOLA",
+      "person": {
+        "id": "2015108500601",
+        "name": "SOBHANA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THANITHERUV",
+      "person": {
+        "id": "2015108500701",
+        "name": "K J PAUL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ADIKOLLY",
+      "person": {
+        "id": "2015108500801",
+        "name": "PUSHKALA RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ACHANAHALLY",
+      "person": {
+        "id": "2015108500901",
+        "name": "SUNNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAPPISET",
+      "person": {
+        "id": "2015108501001",
+        "name": "REEJA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ASRAMAKOLLY",
+      "person": {
+        "id": "2015108501101",
+        "name": "ANILMON TV"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KELEKAVALA",
+      "person": {
+        "id": "2015108501201",
+        "name": "RAJI JOHNSON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLUVAYAL",
+      "person": {
+        "id": "2015108501301",
+        "name": "RAMESH K R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ERIYAPALLY",
+      "person": {
+        "id": "2015108501401",
+        "name": "SINDHU BABU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOLARATTUKUNNU",
+      "person": {
+        "id": "2015108501501",
+        "name": "SUJITHRA K S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MOOZHIMALA",
+      "person": {
+        "id": "2015108501601",
+        "name": "SAJI REJI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MARAKAVU",
+      "person": {
+        "id": "2015108501701",
+        "name": "RAJANI CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ALOORKUNNU",
+      "person": {
+        "id": "2015108501801",
+        "name": "BINDHU PRAKASH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PAKKAM",
+      "person": {
+        "id": "2015108501901",
+        "name": "JOLLY NARITHOOKIL"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KURUVA",
+      "person": {
+        "id": "2015108502001",
+        "name": "SYAMALA REVI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

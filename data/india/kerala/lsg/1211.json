@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349609832,
+  "date": "2019-08-21",
+  "name": "WestEleri  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "77.45km",
+  "localbody_code": "G140506",
+  "no_of_wards": 18,
+  "population": 36330,
+  "male": 18334,
+  "female": 17996,
+  "population_density": 347,
+  "sex_ratio": 975,
+  "literacy_rate": 88.68,
+  "literacy_rate_male": 92.05,
+  "literacy_rate_female": 85.25,
+  "president": "PRASEETHARAJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARAPPACHAL",
+      "person": {
+        "id": "2015121100101",
+        "name": "BALAMANI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BHEEMANADY",
+      "person": {
+        "id": "2015121100201",
+        "name": "JAYASREE KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENNADUKKAM",
+      "person": {
+        "id": "2015121100301",
+        "name": "T.K.SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ELERI",
+      "person": {
+        "id": "2015121100401",
+        "name": "APPUKUTTAN.A."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUNNAKKUNNU",
+      "person": {
+        "id": "2015121100501",
+        "name": "SINDHU ANTONY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PLACHIKKARA",
+      "person": {
+        "id": "2015121100601",
+        "name": "P.SREENIVASAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NATTAKKAL",
+      "person": {
+        "id": "2015121100701",
+        "name": "BIJI JOHN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARUVANKAYAM",
+      "person": {
+        "id": "2015121100801",
+        "name": "LATHA BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAMBA",
+      "person": {
+        "id": "2015121100901",
+        "name": "ANNAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHATTAMALA",
+      "person": {
+        "id": "2015121101001",
+        "name": "PRAMOD N.V."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTAMALA",
+      "person": {
+        "id": "2015121101101",
+        "name": "BINDHU BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NARKILAKKAD",
+      "person": {
+        "id": "2015121101201",
+        "name": "T.M.CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EACHIPPOYIL",
+      "person": {
+        "id": "2015121101301",
+        "name": "MATHEW VARKEY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANDAPAM",
+      "person": {
+        "id": "2015121101401",
+        "name": "M.C. MATHEW"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAMMADAM",
+      "person": {
+        "id": "2015121101501",
+        "name": "PRASEETHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MOUKODE",
+      "person": {
+        "id": "2015121101601",
+        "name": "ANU.P.V,"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERUMBATTA",
+      "person": {
+        "id": "2015121101701",
+        "name": "AMMINI SHAJI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUNNUMKAI",
+      "person": {
+        "id": "2015121101801",
+        "name": "ABDUL SALAM HAJI M C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

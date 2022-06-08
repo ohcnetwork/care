@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566344901320,
+  "date": "2019-08-21",
+  "name": "Pathanapuram  Block Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "248.32km",
+  "localbody_code": "B020400",
+  "no_of_wards": 13,
+  "population": 157202,
+  "male": 76962,
+  "female": 80240,
+  "population_density": 633,
+  "sex_ratio": 1043,
+  "literacy_rate": 90.25,
+  "literacy_rate_male": 93.65,
+  "literacy_rate_female": 87.03,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PATTAZHY VADAKKEKARA",
+      "person": {
+        "id": "2015001700101",
+        "name": "K.B.SAJEEV"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNDAYAM",
+      "person": {
+        "id": "2015001700201",
+        "name": "MINI SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PATHANAPURAM",
+      "person": {
+        "id": "2015001700301",
+        "name": "H.RIYAZ MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANCODE",
+      "person": {
+        "id": "2015001700401",
+        "name": "A.B.ANZAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUNNALA",
+      "person": {
+        "id": "2015001700501",
+        "name": "S SAJEESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PIRAVANTHOOR",
+      "person": {
+        "id": "2015001700601",
+        "name": "AJITHA.A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAMUKUMCHERI",
+      "person": {
+        "id": "2015001700701",
+        "name": "SUNITHA RAJESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELAMPAL",
+      "person": {
+        "id": "2015001700801",
+        "name": "VALSALAKUMARI.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUNNICODE",
+      "person": {
+        "id": "2015001700901",
+        "name": "M S SUDHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THALAVOOR",
+      "person": {
+        "id": "2015001701001",
+        "name": "LENI BABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NADUTHERI",
+      "person": {
+        "id": "2015001701101",
+        "name": "N.BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PIDAVOOR",
+      "person": {
+        "id": "2015001701201",
+        "name": "SASIKALA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATTAZHY",
+      "person": {
+        "id": "2015001701301",
+        "name": "RENJITH BABU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

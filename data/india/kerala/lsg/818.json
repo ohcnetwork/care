@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348209171,
+  "date": "2019-08-21",
+  "name": "Thiruvegappura  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "20.46km",
+  "localbody_code": "G090207",
+  "no_of_wards": 18,
+  "population": 26562,
+  "male": 12783,
+  "female": 13779,
+  "population_density": 1298,
+  "sex_ratio": 1078,
+  "literacy_rate": 88.21,
+  "literacy_rate_male": 91.73,
+  "literacy_rate_female": 85.03,
+  "president": "SARADAT.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THIRUVEGAPPURA",
+      "person": {
+        "id": "2015081800101",
+        "name": "T.P KESAVAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "WEST KAIPPURAM",
+      "person": {
+        "id": "2015081800201",
+        "name": "KADEEJA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NEDUNGOTTUR CENTRE",
+      "person": {
+        "id": "2015081800301",
+        "name": "JASEELA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANAKKALPEEDIKA",
+      "person": {
+        "id": "2015081800401",
+        "name": "ANILKUMAR.M.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAIPPURAM CENTRE",
+      "person": {
+        "id": "2015081800501",
+        "name": "M.A SAMAD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAYIL KAIPPURAM",
+      "person": {
+        "id": "2015081800601",
+        "name": "JAMEELA RAZAK"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADUVATTAM",
+      "person": {
+        "id": "2015081800701",
+        "name": "M.P. SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKUMMALA",
+      "person": {
+        "id": "2015081800801",
+        "name": "SARITHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VILATHUR EDAVARKUNN",
+      "person": {
+        "id": "2015081800901",
+        "name": "DHANYA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANHAMBRA",
+      "person": {
+        "id": "2015081801001",
+        "name": "MOHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VILATHUR",
+      "person": {
+        "id": "2015081801101",
+        "name": "MUBASHIRA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NHAVALKAD",
+      "person": {
+        "id": "2015081801201",
+        "name": "SARADA T.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHEMBRA ALINCHUVAD",
+      "person": {
+        "id": "2015081801301",
+        "name": "LEENA.A.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ODUPARA",
+      "person": {
+        "id": "2015081801401",
+        "name": "SATHEESAN.P.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHEMBRA",
+      "person": {
+        "id": "2015081801501",
+        "name": "SARITHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NARIPPARAMB",
+      "person": {
+        "id": "2015081801601",
+        "name": "RAIHANATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PAZHANELLIPPURAM",
+      "person": {
+        "id": "2015081801701",
+        "name": "P.T ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AMAPPOTTA",
+      "person": {
+        "id": "2015081801802",
+        "name": "BADARUDHEEN VK"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

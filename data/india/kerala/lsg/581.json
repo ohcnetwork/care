@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346952331,
+  "date": "2019-08-21",
+  "name": "Vattavada  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Devikulam",
+  "area": "67.81km",
+  "localbody_code": "G060204",
+  "no_of_wards": 13,
+  "population": 4588,
+  "male": 2362,
+  "female": 2226,
+  "population_density": 68,
+  "sex_ratio": 942,
+  "literacy_rate": 32,
+  "literacy_rate_male": 44,
+  "literacy_rate_female": 20,
+  "president": "RAMARAJ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOODALLARKUDY",
+      "person": {
+        "id": "2015058100101",
+        "name": "KUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTAKOMBOOR EAST",
+      "person": {
+        "id": "2015058100201",
+        "name": "RAJAKUMARI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KADAVARI",
+      "person": {
+        "id": "2015058100301",
+        "name": "RAMARAJ"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTAKOMBOOR WEST",
+      "person": {
+        "id": "2015058100401",
+        "name": "JAYA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOVILOOR NORTH",
+      "person": {
+        "id": "2015058100501",
+        "name": "ALAKARAJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOVILOOR WEST",
+      "person": {
+        "id": "2015058100601",
+        "name": "NAVAMANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOVILOOR EAST",
+      "person": {
+        "id": "2015058100701",
+        "name": "MURUGAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOVILOOR SOUTH",
+      "person": {
+        "id": "2015058100801",
+        "name": "RAJAMMA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VATTAVADA SOUTH",
+      "person": {
+        "id": "2015058100901",
+        "name": "PANDIAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTAVADA NORTH",
+      "person": {
+        "id": "2015058101001",
+        "name": "RAJAMMAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAZHATHOTTAM",
+      "person": {
+        "id": "2015058101101",
+        "name": "SARASWATHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHILANTHIYAR",
+      "person": {
+        "id": "2015058101201",
+        "name": "MURUKESWARI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SWAMIYARALAKKUDI",
+      "person": {
+        "id": "2015058101301",
+        "name": "NAGARAJ"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

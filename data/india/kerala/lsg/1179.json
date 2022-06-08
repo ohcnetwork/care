@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349512438,
+  "date": "2019-08-21",
+  "name": "Mangalpady  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Manjewswaram",
+  "area": "36.3km",
+  "localbody_code": "G140101",
+  "no_of_wards": 23,
+  "population": 37565,
+  "male": 18122,
+  "female": 19443,
+  "population_density": 1034,
+  "sex_ratio": 1073,
+  "literacy_rate": 80.89,
+  "literacy_rate_male": 89.16,
+  "literacy_rate_female": 73.33,
+  "president": "SHAHULHAMEEDBANDIYOD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MOOSODI",
+      "person": {
+        "id": "2015117900101",
+        "name": "FATHIMA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UPPALA GATE",
+      "person": {
+        "id": "2015117900201",
+        "name": "MOHAMMED"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULINJA",
+      "person": {
+        "id": "2015117900301",
+        "name": "B M MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "UPPALA TOWN",
+      "person": {
+        "id": "2015117900401",
+        "name": "SUJATHA SHETTY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODIBAIL",
+      "person": {
+        "id": "2015117900501",
+        "name": "SHAMSHAD BEEGAM B"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SONKAL",
+      "person": {
+        "id": "2015117900601",
+        "name": "JAMEELA SIDDIQ"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PRATHAP NAGAR",
+      "person": {
+        "id": "2015117900701",
+        "name": "VALSARAJ  K. P."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "BEKUR",
+      "person": {
+        "id": "2015117900801",
+        "name": "UMESHA SHETTY B"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUBANOOR",
+      "person": {
+        "id": "2015117900901",
+        "name": "ABDUL RAHIMAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PACHAMBALA",
+      "person": {
+        "id": "2015117901001",
+        "name": "SUHRA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "HEROOR",
+      "person": {
+        "id": "2015117901101",
+        "name": "REVATHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ICHILANGOD",
+      "person": {
+        "id": "2015117901201",
+        "name": "MANJUNATHA PRASAD RAI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUTTAM",
+      "person": {
+        "id": "2015117901301",
+        "name": "SANJEEVA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OLAYAM",
+      "person": {
+        "id": "2015117901401",
+        "name": "BEEFATHIMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SHIRIYA",
+      "person": {
+        "id": "2015117901501",
+        "name": "ABDUL JALEEL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "BANDIYOD",
+      "person": {
+        "id": "2015117901601",
+        "name": "SHAHUL HAMEED BANDIYOD"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ADKA",
+      "person": {
+        "id": "2015117901701",
+        "name": "ANITHA B"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MALLANGAI",
+      "person": {
+        "id": "2015117901801",
+        "name": "JAYASHARMILA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MANGALPADY",
+      "person": {
+        "id": "2015117901901",
+        "name": "BALAKRISHNA AMBAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PERINGADI",
+      "person": {
+        "id": "2015117902001",
+        "name": "AYISHATH FARISA P M"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NAYABAZAR",
+      "person": {
+        "id": "2015117902101",
+        "name": "AYISHABI RAFEEQ"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "BAPPAITHOTTI",
+      "person": {
+        "id": "2015117902201",
+        "name": "ABDUL RAZAK"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "MANNIMUNDA",
+      "person": {
+        "id": "2015117902301",
+        "name": "SEENATH BEEGAM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

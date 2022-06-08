@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347141643,
+  "date": "2019-08-21",
+  "name": "Sreemoolanagaram  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Angamally",
+  "area": "14.41km",
+  "localbody_code": "G071306",
+  "no_of_wards": 16,
+  "population": 22395,
+  "male": 11097,
+  "female": 11298,
+  "population_density": 1554,
+  "sex_ratio": 968,
+  "literacy_rate": 88.96,
+  "literacy_rate_male": 92.24,
+  "literacy_rate_female": 85.57,
+  "president": "ALPHONSAANCYVARGHESE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THRIPRAYAR",
+      "person": {
+        "id": "2015063900101",
+        "name": "SULAIMAN PUTHUVANKUNNU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THETTALY",
+      "person": {
+        "id": "2015063900201",
+        "name": "MANJU NAVAS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PRASANNAPURAM",
+      "person": {
+        "id": "2015063900301",
+        "name": "BIJU KAITHOTTUNGAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDANAD",
+      "person": {
+        "id": "2015063900401",
+        "name": "SINDHU PARAPPURAM"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLAYAM",
+      "person": {
+        "id": "2015063900501",
+        "name": "ALPHONSA(ANCY) VARGHESE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SREEMOOLANAGARAM NORTH",
+      "person": {
+        "id": "2015063900601",
+        "name": "V.V. SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SREEMOOLANAGARAM EAST",
+      "person": {
+        "id": "2015063900701",
+        "name": "K.P. ANOOP"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARATHETTA",
+      "person": {
+        "id": "2015063900801",
+        "name": "N.C. USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELLARAPPILLY",
+      "person": {
+        "id": "2015063900902",
+        "name": "K.C. MARTIN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIKKANIKKAVU",
+      "person": {
+        "id": "2015063901001",
+        "name": "RESHMI MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SOUTH VELLARAPPILLY",
+      "person": {
+        "id": "2015063901101",
+        "name": "ANJU SHINE PUTHEPURACKAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUVAIRANIKULAM",
+      "person": {
+        "id": "2015063901201",
+        "name": "M.K. KALADHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SREEBHOOTHAPURAM EAST",
+      "person": {
+        "id": "2015063901301",
+        "name": "E.K. SHANMUKHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "SREEBHOOTHAPURAM WEST",
+      "person": {
+        "id": "2015063901401",
+        "name": "HAJIRA NASAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SREEMOOLANAGARAM SOUTH",
+      "person": {
+        "id": "2015063901501",
+        "name": "SHEEJA REJI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHOWARA",
+      "person": {
+        "id": "2015063901601",
+        "name": "SHERLY SONY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

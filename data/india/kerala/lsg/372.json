@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346208213,
+  "date": "2019-08-21",
+  "name": "Anicadu  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Mallapally",
+  "area": "19.04km",
+  "localbody_code": "G030101",
+  "no_of_wards": 13,
+  "population": 14140,
+  "male": 6939,
+  "female": 7201,
+  "population_density": 743,
+  "sex_ratio": 1038,
+  "literacy_rate": 96.28,
+  "literacy_rate_male": 97.29,
+  "literacy_rate_female": 95.31,
+  "president": "PTABRAHAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NALLORPPADAVU",
+      "person": {
+        "id": "2015037200101",
+        "name": "THOMAS MATHEW"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VALLIYAKULAM",
+      "person": {
+        "id": "2015037200201",
+        "name": "SREEDEVI.M.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANICADU",
+      "person": {
+        "id": "2015037200301",
+        "name": "PREMCY.C.C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NOOROMMAVU",
+      "person": {
+        "id": "2015037200401",
+        "name": "P T ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUNNAVELY",
+      "person": {
+        "id": "2015037200501",
+        "name": "LIAKHAT ALIKUNJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KURUNNAMVELY",
+      "person": {
+        "id": "2015037200601",
+        "name": "P.K.THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAIPUR",
+      "person": {
+        "id": "2015037200701",
+        "name": "JOSEPH JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VADAKKEMURY",
+      "person": {
+        "id": "2015037200801",
+        "name": "VIJAYALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULICKAMALA",
+      "person": {
+        "id": "2015037200901",
+        "name": "JOLLY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULLUKUTHI",
+      "person": {
+        "id": "2015037201001",
+        "name": "SUMITHA.S.NAIR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVANPARA",
+      "person": {
+        "id": "2015037201101",
+        "name": "DAISY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATHIKKADU",
+      "person": {
+        "id": "2015037201201",
+        "name": "JOSEPH VARGHESE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARRICKAL",
+      "person": {
+        "id": "2015037201301",
+        "name": "SHEEBA JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

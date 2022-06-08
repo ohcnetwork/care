@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347405127,
+  "date": "2019-08-21",
+  "name": "Marady  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Muvattupuzha",
+  "area": "21.37km",
+  "localbody_code": "G071408",
+  "no_of_wards": 13,
+  "population": 13570,
+  "male": 6871,
+  "female": 6699,
+  "population_density": 635,
+  "sex_ratio": 975,
+  "literacy_rate": 92.44,
+  "literacy_rate_male": 95.76,
+  "literacy_rate_female": 89.05,
+  "president": "LATHASIVAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAYANAD",
+      "person": {
+        "id": "2015071100101",
+        "name": "REMA RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MELAKKUNNU",
+      "person": {
+        "id": "2015071100201",
+        "name": "SHANTY ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARADY CENTRAL",
+      "person": {
+        "id": "2015071100301",
+        "name": "MURALI SASI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THAIKKAVU",
+      "person": {
+        "id": "2015071100401",
+        "name": "BABU THATTARKUNNEL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANJIRIPPADY",
+      "person": {
+        "id": "2015071100501",
+        "name": "SAJU KUNNAPPILLY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NORTH MARADY",
+      "person": {
+        "id": "2015071100601",
+        "name": "JANSY ROY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THEVARKAD",
+      "person": {
+        "id": "2015071100701",
+        "name": "VIPIN DAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANGAMBRA",
+      "person": {
+        "id": "2015071100801",
+        "name": "VALSALA BINDUKKUTTAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANGALIMATTOM",
+      "person": {
+        "id": "2015071100901",
+        "name": "LATHA SIVAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EAST MARADY",
+      "person": {
+        "id": "2015071101001",
+        "name": "BABY K.U"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANIYANKALLU",
+      "person": {
+        "id": "2015071101101",
+        "name": "BINU SKARIA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARATHATTAL",
+      "person": {
+        "id": "2015071101201",
+        "name": "DAISY JOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANDAMCHIRA",
+      "person": {
+        "id": "2015071101301",
+        "name": "BINDU BABY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346706117,
+  "date": "2019-08-21",
+  "name": "Kallara  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kaduthuruthy",
+  "area": "27.48km",
+  "localbody_code": "G050202",
+  "no_of_wards": 13,
+  "population": 13142,
+  "male": 6616,
+  "female": 6526,
+  "population_density": 478,
+  "sex_ratio": 986,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 90,
+  "president": "SOUMYAANOOP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUNDAR",
+      "person": {
+        "id": "2015050600101",
+        "name": "SUJATHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANIKKAVILASAM HIGHER SECONDARY SCHOOL",
+      "person": {
+        "id": "2015050600201",
+        "name": "REMA PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHENPALLY BHAGAM",
+      "person": {
+        "id": "2015050600301",
+        "name": "JOHNY THOTTUNGAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "GRAMAPANCHAYAT BHAGAM",
+      "person": {
+        "id": "2015050600401",
+        "name": "OMANA DEVARAJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SARADA KSHETHRAM BHAGAM",
+      "person": {
+        "id": "2015050600501",
+        "name": "SUDHAMANY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MULLAMANGALAM BHAGAM",
+      "person": {
+        "id": "2015050600601",
+        "name": "GOPINATHAN CHINGANAPURAM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAVIMATTAM",
+      "person": {
+        "id": "2015050600701",
+        "name": "JAMEELA PRADEEP"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURISHUPALLI BHAGAM",
+      "person": {
+        "id": "2015050600801",
+        "name": "SOUMYA ANOOP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLARA CHANTHA BHAGAM",
+      "person": {
+        "id": "2015050600901",
+        "name": "SALIMKUMAR V K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMTHURUTHU SREEKRISHNA SWAMI KSHETHRAM",
+      "person": {
+        "id": "2015050601001",
+        "name": "SOMAN P K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PRABHATH LIBRARY WARD",
+      "person": {
+        "id": "2015050601101",
+        "name": "VENUGOPAL K N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLARA PAZHAYAPALLI WARD",
+      "person": {
+        "id": "2015050601202",
+        "name": "ARCHANA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "WELFARE SCHOOL",
+      "person": {
+        "id": "2015050601301",
+        "name": "THOMAS V M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

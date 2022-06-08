@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348040864,
+  "date": "2019-08-21",
+  "name": "Kodakara  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Kodakara",
+  "area": "21.29km",
+  "localbody_code": "G081102",
+  "no_of_wards": 19,
+  "population": 27859,
+  "male": 13472,
+  "female": 14387,
+  "population_density": 1308,
+  "sex_ratio": 1068,
+  "literacy_rate": 90.48,
+  "literacy_rate_male": 93.69,
+  "literacy_rate_female": 87.52,
+  "president": "P.RPRASADAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODAKARA WEST",
+      "person": {
+        "id": "2015076900101",
+        "name": "MINI DASAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAVUMTHARA",
+      "person": {
+        "id": "2015076900201",
+        "name": "M.D NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KODAKARA EAST",
+      "person": {
+        "id": "2015076900301",
+        "name": "SUDHA K.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AZHAKAM",
+      "person": {
+        "id": "2015076900401",
+        "name": "ADV.ASHA RAMADAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALLAPADY",
+      "person": {
+        "id": "2015076900501",
+        "name": "SHEEBA HARI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERAMBRA NORTH",
+      "person": {
+        "id": "2015076900601",
+        "name": "ANCY T.THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANAKAMALA",
+      "person": {
+        "id": "2015076900701",
+        "name": "V.K SUBRAHMANYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THESSERY",
+      "person": {
+        "id": "2015076900801",
+        "name": "K.A THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAZHAMPILLY",
+      "person": {
+        "id": "2015076900901",
+        "name": "JOY NELLISSERY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERAMBRA SOUTH",
+      "person": {
+        "id": "2015076901001",
+        "name": "PRANILA GIREESAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NADUKUNNU",
+      "person": {
+        "id": "2015076901101",
+        "name": "T.V PRAJITH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERMABRA WEST",
+      "person": {
+        "id": "2015076901201",
+        "name": "ALPHONSA THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARATAHMPILLY",
+      "person": {
+        "id": "2015076901301",
+        "name": "VILASINI SASI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "SHAKTHINAGAR",
+      "person": {
+        "id": "2015076901401",
+        "name": "SUKUMARAN K.R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ANATHADAM",
+      "person": {
+        "id": "2015076901501",
+        "name": "P.R PRASADAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULIPPARA",
+      "person": {
+        "id": "2015076901601",
+        "name": "SHINI BABU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAROOR",
+      "person": {
+        "id": "2015076901701",
+        "name": "NARAYANI VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANAKULANGARA",
+      "person": {
+        "id": "2015076901801",
+        "name": "E.L PAPPACHAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VAZHIYAMBALAM",
+      "person": {
+        "id": "2015076901901",
+        "name": "USHA SATHYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

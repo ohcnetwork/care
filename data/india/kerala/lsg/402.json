@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346308094,
+  "date": "2019-08-21",
+  "name": "Chittar  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "25.9km",
+  "localbody_code": "G030506",
+  "no_of_wards": 13,
+  "population": 17392,
+  "male": 8643,
+  "female": 8749,
+  "population_density": 672,
+  "sex_ratio": 1012,
+  "literacy_rate": 92.24,
+  "literacy_rate_male": 94.28,
+  "literacy_rate_female": 90.22,
+  "president": "RAVIKALAABEY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAMPINI",
+      "person": {
+        "id": "2015040200101",
+        "name": "MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANNIYAR",
+      "person": {
+        "id": "2015040200201",
+        "name": "OMANA PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANAKKAYAM",
+      "person": {
+        "id": "2015040200301",
+        "name": "NITHIN KISHOR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHITTAR",
+      "person": {
+        "id": "2015040200401",
+        "name": "MARIYAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHITTAR THOTTAM",
+      "person": {
+        "id": "2015040200501",
+        "name": "SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MEENKUZHY",
+      "person": {
+        "id": "2015040200601",
+        "name": "ANNAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULANGARAVALLEY",
+      "person": {
+        "id": "2015040200701",
+        "name": "AJAYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAYYATTUPUZHA",
+      "person": {
+        "id": "2015040200801",
+        "name": "SUJA SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANPILAVU",
+      "person": {
+        "id": "2015040200901",
+        "name": "RAVIKALA ABEY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEELIPILAVU",
+      "person": {
+        "id": "2015040201001",
+        "name": "RAJU VATTAMALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KATTACHIRA",
+      "person": {
+        "id": "2015040201101",
+        "name": "D SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHITTAR THEKKEKKARA",
+      "person": {
+        "id": "2015040201201",
+        "name": "T.K SAJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODUMUDI",
+      "person": {
+        "id": "2015040201301",
+        "name": "ELIZABETH JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

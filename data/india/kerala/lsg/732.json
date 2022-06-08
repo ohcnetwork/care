@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347483670,
+  "date": "2019-08-21",
+  "name": "Velur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vadakkamchery",
+  "area": "28.32km",
+  "localbody_code": "G080208",
+  "no_of_wards": 17,
+  "population": 22155,
+  "male": 10456,
+  "female": 11699,
+  "population_density": 782,
+  "sex_ratio": 1118,
+  "literacy_rate": 90.15,
+  "literacy_rate_male": 92.99,
+  "literacy_rate_female": 87.65,
+  "president": "SHERLYDILEEPKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PATHRAMANGALAM",
+      "person": {
+        "id": "2015073200101",
+        "name": "SHYAMKUMAR.P.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLATTANJUR NORTH",
+      "person": {
+        "id": "2015073200201",
+        "name": "SIMI.N.D"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THAYYUR",
+      "person": {
+        "id": "2015073200301",
+        "name": "T.K.MURALI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAZHAVUR",
+      "person": {
+        "id": "2015073200401",
+        "name": "A.S.CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODASSERY",
+      "person": {
+        "id": "2015073200501",
+        "name": "DAISY DAVIS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VENGILASSERY EAST",
+      "person": {
+        "id": "2015073200601",
+        "name": "SWAPNA RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARNNOSE NAGAR",
+      "person": {
+        "id": "2015073200701",
+        "name": "SHOBI.T.R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUTTAMKULAM",
+      "person": {
+        "id": "2015073200801",
+        "name": "ARUNDHATHI.K.A"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIRALOOR",
+      "person": {
+        "id": "2015073200901",
+        "name": "PRASANTH KUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KURUMAL WEST",
+      "person": {
+        "id": "2015073201001",
+        "name": "K.K.SHAJAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURUMAL EAST",
+      "person": {
+        "id": "2015073201101",
+        "name": "SUBHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENGILASSERY WEST",
+      "person": {
+        "id": "2015073201201",
+        "name": "SHEEBA GOPINATHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLATTANJUR SOUTH",
+      "person": {
+        "id": "2015073201301",
+        "name": "ELSY OUSEPH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VELUR",
+      "person": {
+        "id": "2015073201401",
+        "name": "MANIKANDAN.V.A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THALAKOTTUKARA EAST",
+      "person": {
+        "id": "2015073201501",
+        "name": "ABDUL RASHEED"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THANDILAM",
+      "person": {
+        "id": "2015073201601",
+        "name": "SHERLY DILEEPKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PULIYANNOOR",
+      "person": {
+        "id": "2015073201701",
+        "name": "SREEJA NANDHAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

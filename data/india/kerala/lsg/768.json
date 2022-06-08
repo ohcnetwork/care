@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348037015,
+  "date": "2019-08-21",
+  "name": "Alagappanagar  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Kodakara",
+  "area": "18.38km",
+  "localbody_code": "G081101",
+  "no_of_wards": 17,
+  "population": 25353,
+  "male": 12441,
+  "female": 12912,
+  "population_density": 1379,
+  "sex_ratio": 1038,
+  "literacy_rate": 92.15,
+  "literacy_rate_male": 95.46,
+  "literacy_rate_female": 88.98,
+  "president": "K.RAJESWARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMBALLUR",
+      "person": {
+        "id": "2015076800101",
+        "name": "K.RAJESWARI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VENDORE WEST",
+      "person": {
+        "id": "2015076800201",
+        "name": "VANAJA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VENDORE NORTH",
+      "person": {
+        "id": "2015076800301",
+        "name": "JOSY JOHNY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VENDORE CENTRE",
+      "person": {
+        "id": "2015076800401",
+        "name": "SANAL KUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNANPETTA",
+      "person": {
+        "id": "2015076800501",
+        "name": "BHAGYAVATHY CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTANATHRA",
+      "person": {
+        "id": "2015076800601",
+        "name": "PRADEEP KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PACHALIPURAM",
+      "person": {
+        "id": "2015076800701",
+        "name": "JIJI A S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALAKUNNU",
+      "person": {
+        "id": "2015076800801",
+        "name": "P K FRANCIS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAYYAKKARA",
+      "person": {
+        "id": "2015076800901",
+        "name": "TESSY WILSON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VARAKKARA",
+      "person": {
+        "id": "2015076801001",
+        "name": "CELINA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALAKKALLU",
+      "person": {
+        "id": "2015076801101",
+        "name": "P R RAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOKODE",
+      "person": {
+        "id": "2015076801201",
+        "name": "P K VINODAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOKODE WEST",
+      "person": {
+        "id": "2015076801301",
+        "name": "RAJI RAJAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKEKKARA",
+      "person": {
+        "id": "2015076801402",
+        "name": "SUNITHA SHAJU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALANJOOPADAM",
+      "person": {
+        "id": "2015076801501",
+        "name": "PRINCY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHUNGAM",
+      "person": {
+        "id": "2015076801601",
+        "name": "M K BAIJU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ALAGAPPANAGAR",
+      "person": {
+        "id": "2015076801701",
+        "name": "NANDINI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

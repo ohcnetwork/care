@@ -1,0 +1,253 @@
+{
+  "timeStamp": 1566345582284,
+  "date": "2019-08-21",
+  "name": "North Paravur  Municipality, Ernakulam District",
+  "district": "Ernakulam",
+  "area": "9.02km",
+  "localbody_code": "M070600",
+  "no_of_wards": 29,
+  "population": 30056,
+  "male": 14482,
+  "female": 15574,
+  "population_density": 3094,
+  "sex_ratio": 1053,
+  "literacy_rate": 93.71,
+  "literacy_rate_male": 96.52,
+  "literacy_rate_female": 91.46,
+  "chairman": "RAMESHDKURUP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MATTUMMAL NEENDOOR",
+      "person": {
+        "id": "2015019600101",
+        "name": "JINCY JIBU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURUNTHOTTY PARAMBU",
+      "person": {
+        "id": "2015019600201",
+        "name": "SUNIL SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARKET",
+      "person": {
+        "id": "2015019600301",
+        "name": "MINI SHIBU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANNANKULANGARA",
+      "person": {
+        "id": "2015019600401",
+        "name": "LYJO JOHNSON"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "TOWNHALL",
+      "person": {
+        "id": "2015019600501",
+        "name": "JESSY RAJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLAMTHURUTH",
+      "person": {
+        "id": "2015019600601",
+        "name": "VALSALA PRASANNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTACKAKAM",
+      "person": {
+        "id": "2015019600701",
+        "name": "K J SHINE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARAVOOTHARA",
+      "person": {
+        "id": "2015019600801",
+        "name": "PRADEEP THOPPIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "FIRE STATION",
+      "person": {
+        "id": "2015019600901",
+        "name": "HARIDASAN K G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VEDIMARA",
+      "person": {
+        "id": "2015019601001",
+        "name": "NABEESA BAVA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLITHAZHAM",
+      "person": {
+        "id": "2015019601101",
+        "name": "K SUDHAKARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SANTHI NAGAR",
+      "person": {
+        "id": "2015019601201",
+        "name": "DENNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NANTHIKULANGARA",
+      "person": {
+        "id": "2015019601301",
+        "name": "SWAPNA SURESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANIYAKKADU",
+      "person": {
+        "id": "2015019601401",
+        "name": "K A VIDYANANDAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIZHAKKEPRAM",
+      "person": {
+        "id": "2015019601501",
+        "name": "S SREEKUMARI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VAZHIKULANGARA",
+      "person": {
+        "id": "2015019601601",
+        "name": "SAJI NAMBIYATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERUVARAM",
+      "person": {
+        "id": "2015019601701",
+        "name": "V A PRABHAVATHY  TEACHER"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KESARI",
+      "person": {
+        "id": "2015019601801",
+        "name": "RAJESH PUKKADAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NANTHYATTUKUNNAM",
+      "person": {
+        "id": "2015019601901",
+        "name": "RAMESH D KURUP"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THONYAKAVU",
+      "person": {
+        "id": "2015019602001",
+        "name": "SHEEBA PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "STADIUM",
+      "person": {
+        "id": "2015019602101",
+        "name": "JALAJA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "SAMOOHAM SCHOOL",
+      "person": {
+        "id": "2015019602201",
+        "name": "ASHA DEVADAS"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "S N V SCHOOL",
+      "person": {
+        "id": "2015019602301",
+        "name": "T V NIDHIN"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KANNANCHIRA",
+      "person": {
+        "id": "2015019602401",
+        "name": "C P JAYAN"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KEDAMANGALAM PAPPUKUTTY",
+      "person": {
+        "id": "2015019602501",
+        "name": "AJITHA GOPALAN"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KESAVADEV",
+      "person": {
+        "id": "2015019602601",
+        "name": "D RAJKUMAR"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KEDAMANGALAM",
+      "person": {
+        "id": "2015019602701",
+        "name": "JYOTHI DINESAN"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "PERUMBADANNA SOUTH",
+      "person": {
+        "id": "2015019602801",
+        "name": "K RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "PERUMBADANNA",
+      "person": {
+        "id": "2015019602901",
+        "name": "SHAIDA ROY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

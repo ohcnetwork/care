@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347072756,
+  "date": "2019-08-21",
+  "name": "Purapuzha  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Thodupuzha",
+  "area": "23.52km",
+  "localbody_code": "G060706",
+  "no_of_wards": 13,
+  "population": 11814,
+  "male": 5998,
+  "female": 5816,
+  "population_density": 502,
+  "sex_ratio": 970,
+  "literacy_rate": 93,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 91,
+  "president": "ALEYKUTTYMANI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAZHITHALA",
+      "person": {
+        "id": "2015061700101",
+        "name": "TOMICHAN P.MUNDUPALAM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PURAPUZHA WEST",
+      "person": {
+        "id": "2015061700201",
+        "name": "SHANTY TOMY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NEDIYASLA",
+      "person": {
+        "id": "2015061700301",
+        "name": "SINI JUSTINE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PURAPUZHA",
+      "person": {
+        "id": "2015061700401",
+        "name": "ALICE JOSE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PURAPUZHA EAST",
+      "person": {
+        "id": "2015061700501",
+        "name": "K.K BALAKRISHNAPILLAI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADARAKUZHY",
+      "person": {
+        "id": "2015061700601",
+        "name": "SUJA SALIMKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARIKOMBU",
+      "person": {
+        "id": "2015061700701",
+        "name": "ADV.RENISH MATHEW"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KODIKUTHY",
+      "person": {
+        "id": "2015061700801",
+        "name": "SINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANACHAL",
+      "person": {
+        "id": "2015061700901",
+        "name": "ROSILY SUNNY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNINJI",
+      "person": {
+        "id": "2015061701001",
+        "name": "ALEYKUTTY MANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUNDUNADA",
+      "person": {
+        "id": "2015061701101",
+        "name": "JOSE JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SANTHIGIRI",
+      "person": {
+        "id": "2015061701201",
+        "name": "BINDHU BENNY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNADIKANDAM",
+      "person": {
+        "id": "2015061701301",
+        "name": "BILGY M . THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

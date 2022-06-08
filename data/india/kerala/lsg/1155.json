@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349424984,
+  "date": "2019-08-21",
+  "name": "Panniyannur  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "10.02km",
+  "localbody_code": "G130806",
+  "no_of_wards": 15,
+  "population": 19312,
+  "male": 8794,
+  "female": 10518,
+  "population_density": 1927,
+  "sex_ratio": 1196,
+  "literacy_rate": 95.31,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 93.11,
+  "president": "SHYLAJAA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PONNIYAMPALAM",
+      "person": {
+        "id": "2015115500101",
+        "name": "ANCHANA P P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANAYATHVAYAL",
+      "person": {
+        "id": "2015115500201",
+        "name": "K.E.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THAZHE CHAMPAD",
+      "person": {
+        "id": "2015115500301",
+        "name": "N.INDIRA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARAYAKOOL",
+      "person": {
+        "id": "2015115500401",
+        "name": "BEENA M V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KIZHAKKE CHAMPAD",
+      "person": {
+        "id": "2015115500501",
+        "name": "PRESANNA P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAKKUNNU",
+      "person": {
+        "id": "2015115500602",
+        "name": "SULAFA SHAMSHUDEEN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VADAKKE PANNIYANNUR",
+      "person": {
+        "id": "2015115500701",
+        "name": "SHYLAJA A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHAKKE PANNIYANNUR",
+      "person": {
+        "id": "2015115500801",
+        "name": "RAJAN P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THEKKE PANNIYANNUR",
+      "person": {
+        "id": "2015115500901",
+        "name": "SURENDRAN P P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANNIYANNUR",
+      "person": {
+        "id": "2015115501001",
+        "name": "V P SARALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNDUKULANGARA",
+      "person": {
+        "id": "2015115501101",
+        "name": "N PURUSHOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CENTRAL MANEKKARA",
+      "person": {
+        "id": "2015115501201",
+        "name": "PRAKASHAN V M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANEKKARA",
+      "person": {
+        "id": "2015115501301",
+        "name": "ROOPA C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUNCHAKKARA",
+      "person": {
+        "id": "2015115501401",
+        "name": "USHA P P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MEETHALE CHAMPAD",
+      "person": {
+        "id": "2015115501501",
+        "name": "K P RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

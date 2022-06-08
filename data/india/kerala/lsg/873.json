@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348389933,
+  "date": "2019-08-21",
+  "name": "Elavancherry  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Nenmara",
+  "area": "32.18km",
+  "localbody_code": "G091103",
+  "no_of_wards": 14,
+  "population": 17000,
+  "male": 8186,
+  "female": 8814,
+  "population_density": 528,
+  "sex_ratio": 1077,
+  "literacy_rate": 73.14,
+  "literacy_rate_male": 82.44,
+  "literacy_rate_female": 64.57,
+  "president": "SUDHARAVEENDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARIMKULAM",
+      "person": {
+        "id": "2015087300101",
+        "name": "K.SIVARAMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOOTTIPPADAM",
+      "person": {
+        "id": "2015087300201",
+        "name": "PRASANNA.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADAKKEMURI",
+      "person": {
+        "id": "2015087300301",
+        "name": "ARUMUGHAN.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VATTEKKAD",
+      "person": {
+        "id": "2015087300401",
+        "name": "SUDHINA.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNATHUPARA",
+      "person": {
+        "id": "2015087300501",
+        "name": "SATHYABHAMA.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015087300601",
+        "name": "P.N.VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANANGATTIRI",
+      "person": {
+        "id": "2015087300701",
+        "name": "SIVAPRASAD.P.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MOOCHIKKAL",
+      "person": {
+        "id": "2015087300801",
+        "name": "PANKAJAKSHI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIZHAKKUMURI",
+      "person": {
+        "id": "2015087300901",
+        "name": "MURALEEDHARAN.G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUNGOTTUKAVU",
+      "person": {
+        "id": "2015087301001",
+        "name": "SUDHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARASSERI",
+      "person": {
+        "id": "2015087301101",
+        "name": "DAMAYANTHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTAYAMKADU",
+      "person": {
+        "id": "2015087301201",
+        "name": "GEETHA SYAMALAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOZHAPPARA",
+      "person": {
+        "id": "2015087301301",
+        "name": "PRAKASAN.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PADINJAMURI",
+      "person": {
+        "id": "2015087301401",
+        "name": "K.SUBRAMANIYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

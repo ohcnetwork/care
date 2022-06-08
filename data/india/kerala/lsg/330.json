@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346060258,
+  "date": "2019-08-21",
+  "name": "Yeroor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "44.79km",
+  "localbody_code": "G020502",
+  "no_of_wards": 19,
+  "population": 32723,
+  "male": 16147,
+  "female": 16576,
+  "population_density": 731,
+  "sex_ratio": 1027,
+  "literacy_rate": 90.11,
+  "literacy_rate_male": 93.94,
+  "literacy_rate_female": 86.42,
+  "president": "SUSHASHIBU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARCHAL",
+      "person": {
+        "id": "2015033000101",
+        "name": "OMANA MURALI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANALIL",
+      "person": {
+        "id": "2015033000201",
+        "name": "ALIN LINU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAVARAMKUZHI",
+      "person": {
+        "id": "2015033000301",
+        "name": "K . ANIMON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AYIRANALLOOR",
+      "person": {
+        "id": "2015033000401",
+        "name": "VIJAYAMMA M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KETTUPLACHI",
+      "person": {
+        "id": "2015033000501",
+        "name": "R. BIJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VILAKKUPARA",
+      "person": {
+        "id": "2015033000601",
+        "name": "YAMUNA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KINATTUMUKKU",
+      "person": {
+        "id": "2015033000701",
+        "name": "BASHEER M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AYLARA",
+      "person": {
+        "id": "2015033000801",
+        "name": "HARITHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANTHADIMUKAL",
+      "person": {
+        "id": "2015033000901",
+        "name": "SHALU ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BHARATHEEPURAM",
+      "person": {
+        "id": "2015033001001",
+        "name": "KOCHUMMACHAN P . T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATHADI",
+      "person": {
+        "id": "2015033001101",
+        "name": "ANITHA USMAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJUVAYAL",
+      "person": {
+        "id": "2015033001201",
+        "name": "SAKEER HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARIMBINKONAM",
+      "person": {
+        "id": "2015033001301",
+        "name": "S. SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "YEROOR",
+      "person": {
+        "id": "2015033001401",
+        "name": "SUSHA SHIBU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THRIKKOYIKKAL",
+      "person": {
+        "id": "2015033001501",
+        "name": "LEKHA AJITH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANAYAM",
+      "person": {
+        "id": "2015033001601",
+        "name": "HARI RAJ . S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ALENCHERY",
+      "person": {
+        "id": "2015033001701",
+        "name": "RAJEEV. R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHILLINGPLANT",
+      "person": {
+        "id": "2015033001801",
+        "name": "A. RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NETTAYAM",
+      "person": {
+        "id": "2015033001901",
+        "name": "ANITHA . P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

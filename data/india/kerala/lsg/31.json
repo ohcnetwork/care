@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344959227,
+  "date": "2019-08-21",
+  "name": "Konni  Block Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Konni",
+  "area": "841.27km",
+  "localbody_code": "B030600",
+  "no_of_wards": 13,
+  "population": 142256,
+  "male": 68785,
+  "female": 73471,
+  "population_density": 169,
+  "sex_ratio": 1068,
+  "literacy_rate": 94.04,
+  "literacy_rate_male": 95.85,
+  "literacy_rate_female": 92.35,
+  "president": "KUTTAPPANPKKONNIYOORPK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MYLAPRA",
+      "person": {
+        "id": "2015003100101",
+        "name": "MATHEW THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALAYALAPPUZHA",
+      "person": {
+        "id": "2015003100201",
+        "name": "S SHAJI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KONNI-THAZHAM",
+      "person": {
+        "id": "2015003100301",
+        "name": "ELIZABETH RAJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ATHUMBUMKULAM",
+      "person": {
+        "id": "2015003100401",
+        "name": "PRIYA S THAMPY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THANNITHODE",
+      "person": {
+        "id": "2015003100501",
+        "name": "P R RAMACHANDRAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAKAYAR",
+      "person": {
+        "id": "2015003100601",
+        "name": "MINI VINOD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARUVAPPULAM",
+      "person": {
+        "id": "2015003100701",
+        "name": "JAYA ANIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KONNI",
+      "person": {
+        "id": "2015003100801",
+        "name": "ROJI ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "V-KOTTAYAM",
+      "person": {
+        "id": "2015003100901",
+        "name": "JAYASREE SURESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KYPPATTOOR",
+      "person": {
+        "id": "2015003101001",
+        "name": "ROSAMMA BABUJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALLIKKODE",
+      "person": {
+        "id": "2015003101101",
+        "name": "K VISWAMBHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PRAMADOM",
+      "person": {
+        "id": "2015003101201",
+        "name": "KUTTAPPAN P K (KONNIYOOR P K)"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELAKOLLOOR",
+      "person": {
+        "id": "2015003101301",
+        "name": "LEELA RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

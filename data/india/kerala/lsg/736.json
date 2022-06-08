@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347499235,
+  "date": "2019-08-21",
+  "name": "Kondazhy  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Pazhayannur",
+  "area": "29.89km",
+  "localbody_code": "G080403",
+  "no_of_wards": 15,
+  "population": 18821,
+  "male": 8849,
+  "female": 9972,
+  "population_density": 630,
+  "sex_ratio": 1127,
+  "literacy_rate": 82.81,
+  "literacy_rate_male": 87.44,
+  "literacy_rate_female": 78.77,
+  "president": "SREEDEVIR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANKULAM",
+      "person": {
+        "id": "2015073600101",
+        "name": "PRASANTHI P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "GANDHI ASHRAMAM",
+      "person": {
+        "id": "2015073600201",
+        "name": "SREEJA N P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOOTHEDATHPADI",
+      "person": {
+        "id": "2015073600301",
+        "name": "GOVINDANKUTTY M P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAYANNURKAVU",
+      "person": {
+        "id": "2015073600401",
+        "name": "SATHYABHAMA P K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAMELPADY",
+      "person": {
+        "id": "2015073600501",
+        "name": "P R VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAMELPADY SOUTH",
+      "person": {
+        "id": "2015073600601",
+        "name": "RAMANI A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUZHIYAMPADAM",
+      "person": {
+        "id": "2015073600701",
+        "name": "PRIYAMVADA K K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKE KONDAZHY",
+      "person": {
+        "id": "2015073600801",
+        "name": "RAVINDRAN T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHELAKKODE",
+      "person": {
+        "id": "2015073600901",
+        "name": "MOHANAKUMAR M R"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOLIKKUNNU",
+      "person": {
+        "id": "2015073601001",
+        "name": "P. R. PRAKASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VADAKKUMKONAM",
+      "person": {
+        "id": "2015073601101",
+        "name": "SULEKHA PRADEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PLANTATION",
+      "person": {
+        "id": "2015073601201",
+        "name": "DHANYA SURESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MELEMURI",
+      "person": {
+        "id": "2015073601301",
+        "name": "BIBIN KUMAR K S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHIRANKARA",
+      "person": {
+        "id": "2015073601401",
+        "name": "SREEDEVI R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ULLATTUKULAM",
+      "person": {
+        "id": "2015073601501",
+        "name": "SANTHOSH K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

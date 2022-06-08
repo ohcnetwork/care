@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566349564541,
+  "date": "2019-08-21",
+  "name": "Udma  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "23.54km",
+  "localbody_code": "G140401",
+  "no_of_wards": 21,
+  "population": 32441,
+  "male": 15387,
+  "female": 17054,
+  "population_density": 1378,
+  "sex_ratio": 1108,
+  "literacy_rate": 81.62,
+  "literacy_rate_male": 88.78,
+  "literacy_rate_female": 75.29,
+  "president": "KAMOHAMMEDALI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BEVOORI",
+      "person": {
+        "id": "2015119700101",
+        "name": "SAINABA NASEEM U J"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UDMA",
+      "person": {
+        "id": "2015119700201",
+        "name": "RAJITHA ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANGAD",
+      "person": {
+        "id": "2015119700301",
+        "name": "BEEBI ASHRAF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARAMANGANAM",
+      "person": {
+        "id": "2015119700401",
+        "name": "VALSALA SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BARE",
+      "person": {
+        "id": "2015119700501",
+        "name": "KAMALAKSHI BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VEDIKUNNU",
+      "person": {
+        "id": "2015119700601",
+        "name": "M HAMEED"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NALAMVATHUKKAL",
+      "person": {
+        "id": "2015119700701",
+        "name": "K A MOHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EROLE",
+      "person": {
+        "id": "2015119700801",
+        "name": "K SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAKYARA",
+      "person": {
+        "id": "2015119700901",
+        "name": "NAFEESA PAKYARA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ARATTUKADAV",
+      "person": {
+        "id": "2015119701001",
+        "name": "K G MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTHIYAKKAL",
+      "person": {
+        "id": "2015119701101",
+        "name": "A KUNHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUVAKKOLI",
+      "person": {
+        "id": "2015119701201",
+        "name": "PUSHPAVALLI T V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANGAKKALARI",
+      "person": {
+        "id": "2015119701301",
+        "name": "FATHIMATH NAZEERA C H"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MALAMKUNNU",
+      "person": {
+        "id": "2015119701401",
+        "name": "SHYAMALA K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BEKAL",
+      "person": {
+        "id": "2015119701501",
+        "name": "K SHAMBU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOTTIKULAM",
+      "person": {
+        "id": "2015119701601",
+        "name": "LAKSHMI BALAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALAKKUNNU",
+      "person": {
+        "id": "2015119701701",
+        "name": "N CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARIPPODY",
+      "person": {
+        "id": "2015119701801",
+        "name": "KAPIL MUHAMMAD PASHA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PALLAM  THEKKEKKARA",
+      "person": {
+        "id": "2015119701901",
+        "name": "PRABHAKARAN K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOPPAL",
+      "person": {
+        "id": "2015119702001",
+        "name": "PREENA MADHU"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "AMBIKA NAGAR",
+      "person": {
+        "id": "2015119702101",
+        "name": "K V APPU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

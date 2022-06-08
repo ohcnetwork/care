@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346667112,
+  "date": "2019-08-21",
+  "name": "Arattupuzha  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Muthukulam",
+  "area": "22.7km",
+  "localbody_code": "G041205",
+  "no_of_wards": 18,
+  "population": 29463,
+  "male": 14611,
+  "female": 14852,
+  "population_density": 1298,
+  "sex_ratio": 1016,
+  "literacy_rate": 92,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 88,
+  "president": "AJITHAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANGALAM",
+      "person": {
+        "id": "2015049600101",
+        "name": "VIDHYADARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "N T P C",
+      "person": {
+        "id": "2015049600201",
+        "name": "NIDHEESH Y"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANAKAKUNNU",
+      "person": {
+        "id": "2015049600301",
+        "name": "SREEJA RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATTOLI MARKET",
+      "person": {
+        "id": "2015049600401",
+        "name": "LALI. S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOCHIYUDE JETTY",
+      "person": {
+        "id": "2015049600501",
+        "name": "AJITHA S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VALIYAZHEEKAL",
+      "person": {
+        "id": "2015049600601",
+        "name": "GOPALAKRISHNAN B"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THARAYIL KADAVU",
+      "person": {
+        "id": "2015049600701",
+        "name": "KUKKU UNMESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUMPALLY",
+      "person": {
+        "id": "2015049600801",
+        "name": "RANI JAYAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERUMPALLY NORTH",
+      "person": {
+        "id": "2015049600901",
+        "name": "NIDHEESH SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "RAMANCHERY",
+      "person": {
+        "id": "2015049601001",
+        "name": "SYAMKUMAR S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VATTACHAL",
+      "person": {
+        "id": "2015049601101",
+        "name": "SADASIVAN S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NALLANIKKAL",
+      "person": {
+        "id": "2015049601201",
+        "name": "RETNAMMA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLICKAD",
+      "person": {
+        "id": "2015049601301",
+        "name": "SUMESH U"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "A K G NAGAR",
+      "person": {
+        "id": "2015049601401",
+        "name": "SUNU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARATTUPUZHA PHC WARD",
+      "person": {
+        "id": "2015049601501",
+        "name": "SHAHEEN S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARATTUPUZHA MES WARD",
+      "person": {
+        "id": "2015049601601",
+        "name": "MAIMOONATH FAHAD"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ARATTUPUZHA",
+      "person": {
+        "id": "2015049601701",
+        "name": "ABDUL RASHEED K.Y"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "S N MANDIRAM",
+      "person": {
+        "id": "2015049601801",
+        "name": "SINDHUJA SUMESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566345744875,
+  "date": "2019-08-21",
+  "name": "Navaikulam  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "28.23km",
+  "localbody_code": "G010207",
+  "no_of_wards": 22,
+  "population": 33602,
+  "male": 16154,
+  "female": 17448,
+  "population_density": 1190,
+  "sex_ratio": 1080,
+  "literacy_rate": 88.41,
+  "literacy_rate_male": 93.35,
+  "literacy_rate_female": 83.94,
+  "president": "K.THAMPI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KIZHAKANELA",
+      "person": {
+        "id": "2015023800101",
+        "name": "BINU K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAVACODE",
+      "person": {
+        "id": "2015023800201",
+        "name": "K.THAMPI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EDAMONNILA",
+      "person": {
+        "id": "2015023800302",
+        "name": "NAJEEM M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MARUTHIKUNNU",
+      "person": {
+        "id": "2015023800401",
+        "name": "BINDHU I.B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUKKUKADA",
+      "person": {
+        "id": "2015023800501",
+        "name": "MUHAMMED ASIF.H.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "TRIKOVILVATTOM",
+      "person": {
+        "id": "2015023800601",
+        "name": "PRASAD B.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLOORKONAM",
+      "person": {
+        "id": "2015023800701",
+        "name": "JESSY A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAPPAMVILA",
+      "person": {
+        "id": "2015023800801",
+        "name": "SHEMEEM A"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUDAVOOR",
+      "person": {
+        "id": "2015023800901",
+        "name": "NISAMUDEEN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOTARAKONAM",
+      "person": {
+        "id": "2015023801001",
+        "name": "E.JALALUDEEN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "DECENTMUKKU",
+      "person": {
+        "id": "2015023801101",
+        "name": "SURIYATH BEEVI.E"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLAMBALAM",
+      "person": {
+        "id": "2015023801201",
+        "name": "DEVADASAN K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NAVAIKULAM",
+      "person": {
+        "id": "2015023801301",
+        "name": "DEEPA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MENAPPARA",
+      "person": {
+        "id": "2015023801401",
+        "name": "MOHAMMED SIYAD.N"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHITTAYICODE",
+      "person": {
+        "id": "2015023801501",
+        "name": "S.SANDHYA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAKUNNU",
+      "person": {
+        "id": "2015023801601",
+        "name": "S.MANILAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THAZHEVETTIYARA",
+      "person": {
+        "id": "2015023801701",
+        "name": "MANJU K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHAVARCODE",
+      "person": {
+        "id": "2015023801801",
+        "name": "SUNITHA P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "28-TH MILE",
+      "person": {
+        "id": "2015023801902",
+        "name": "YAMUNA J K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PAIVELIKONAM",
+      "person": {
+        "id": "2015023802001",
+        "name": "KALA A.R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "VETTIYARA",
+      "person": {
+        "id": "2015023802101",
+        "name": "MANJUSHA V"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KADAMBATTUKONAM",
+      "person": {
+        "id": "2015023802201",
+        "name": "SASIKALA S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

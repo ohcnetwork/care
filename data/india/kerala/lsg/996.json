@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348873828,
+  "date": "2019-08-21",
+  "name": "Eramala  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Vadakara",
+  "area": "19.06km",
+  "localbody_code": "G110103",
+  "no_of_wards": 19,
+  "population": 30050,
+  "male": 14321,
+  "female": 15729,
+  "population_density": 1577,
+  "sex_ratio": 1098,
+  "literacy_rate": 90.49,
+  "literacy_rate_male": 95.65,
+  "literacy_rate_female": 85.85,
+  "president": "M.KBHASKARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNNUMMAKKARA",
+      "person": {
+        "id": "2015099600101",
+        "name": "K.P BINDU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAYYATHOOR",
+      "person": {
+        "id": "2015099600201",
+        "name": "PRABHAVATHI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERAMALA",
+      "person": {
+        "id": "2015099600301",
+        "name": "M . K BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ADIYOOR WEST",
+      "person": {
+        "id": "2015099600401",
+        "name": "V.K SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ADIYOOR EAST",
+      "person": {
+        "id": "2015099600501",
+        "name": "CRESENT ABDULLA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ORKKATTERI NORTH",
+      "person": {
+        "id": "2015099600601",
+        "name": "KUNHIKANNAN P K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ORKKATTERI CENTRAL",
+      "person": {
+        "id": "2015099600701",
+        "name": "O MAHESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ORKKATTERI EAST",
+      "person": {
+        "id": "2015099600801",
+        "name": "V VIJEESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ELANGOLI",
+      "person": {
+        "id": "2015099600901",
+        "name": "PATTERKANDY ISMAYIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANDEEKKARA",
+      "person": {
+        "id": "2015099601001",
+        "name": "USHA P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARTHIKAPPALLY",
+      "person": {
+        "id": "2015099601101",
+        "name": "NISHA T C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KURINHALIYODE",
+      "person": {
+        "id": "2015099601201",
+        "name": "NISHA RAMATHKUNI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUYIPRA",
+      "person": {
+        "id": "2015099601301",
+        "name": "C T KUMARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ORKKATTERI SOUTH",
+      "person": {
+        "id": "2015099601401",
+        "name": "JASEELA V K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ORKKATTERI WEST",
+      "person": {
+        "id": "2015099601501",
+        "name": "LISINA PRAKASH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NELLACHERI EAST",
+      "person": {
+        "id": "2015099601601",
+        "name": "MANJUSHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NELLACHERI",
+      "person": {
+        "id": "2015099601701",
+        "name": "SHEEJA THATTOLI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUNNUMMAKKARA SOUTH",
+      "person": {
+        "id": "2015099601801",
+        "name": "NUSAIBA MOTTEMMAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THATTOLIKKARA",
+      "person": {
+        "id": "2015099601901",
+        "name": "RAMAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

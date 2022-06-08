@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348886533,
+  "date": "2019-08-21",
+  "name": "Purameri  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thuneri",
+  "area": "20.27km",
+  "localbody_code": "G110203",
+  "no_of_wards": 17,
+  "population": 23797,
+  "male": 11435,
+  "female": 12362,
+  "population_density": 1174,
+  "sex_ratio": 1081,
+  "literacy_rate": 87.48,
+  "literacy_rate_male": 93.98,
+  "literacy_rate_female": 81.52,
+  "president": "ACHUTHAN.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015100000101",
+        "name": "ACHUTHAN.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PURAMERI",
+      "person": {
+        "id": "2015100000201",
+        "name": "SHAMSUDEEN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PURAMERI THERU",
+      "person": {
+        "id": "2015100000301",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VILATHAPURAM",
+      "person": {
+        "id": "2015100000401",
+        "name": "SUDHEESH T"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAYIDAM",
+      "person": {
+        "id": "2015100000501",
+        "name": "SEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAPOYIL",
+      "person": {
+        "id": "2015100000601",
+        "name": "ABDUSSALAM R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADEMMAL",
+      "person": {
+        "id": "2015100000701",
+        "name": "P SREELATHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADAKKUMEETHAL",
+      "person": {
+        "id": "2015100000801",
+        "name": "GEETHA V P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AROOR",
+      "person": {
+        "id": "2015100000901",
+        "name": "O.REMESAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALLUMPURAM",
+      "person": {
+        "id": "2015100001001",
+        "name": "SARALA P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PIRAKIN KAD",
+      "person": {
+        "id": "2015100001101",
+        "name": "K.SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUMUNDASSERI",
+      "person": {
+        "id": "2015100001201",
+        "name": "PRASASNNA N T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNINGAD",
+      "person": {
+        "id": "2015100001301",
+        "name": "PRASEETHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUNHALLUR",
+      "person": {
+        "id": "2015100001401",
+        "name": "SHYNI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARAMVALLY",
+      "person": {
+        "id": "2015100001501",
+        "name": "HAJARA A.K.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUTHUVADATHUR",
+      "person": {
+        "id": "2015100001601",
+        "name": "BEENA E"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOVILAKAM",
+      "person": {
+        "id": "2015100001701",
+        "name": "BINDU PUTHIYOTTIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

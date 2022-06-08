@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349550912,
+  "date": "2019-08-21",
+  "name": "Chemnad  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kasaragod",
+  "area": "40.11km",
+  "localbody_code": "G140302",
+  "no_of_wards": 23,
+  "population": 49653,
+  "male": 24259,
+  "female": 25364,
+  "population_density": 1038,
+  "sex_ratio": 1031,
+  "literacy_rate": 84.4,
+  "literacy_rate_male": 90.35,
+  "literacy_rate_female": 78.71,
+  "president": "KALLATRAABDULKADER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEMNAD",
+      "person": {
+        "id": "2015119200101",
+        "name": "SHAZIYA C M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ALICHERY",
+      "person": {
+        "id": "2015119200201",
+        "name": "SAJITHA RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERUMBALA",
+      "person": {
+        "id": "2015119200301",
+        "name": "MAYA KUMARI M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THALAKLAYI",
+      "person": {
+        "id": "2015119200401",
+        "name": "RENUKA T"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOLIYADUKKAM",
+      "person": {
+        "id": "2015119200501",
+        "name": "V GEETHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "BANTHAD",
+      "person": {
+        "id": "2015119200601",
+        "name": "ASIYA MUHAMMED M A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THEKKIL",
+      "person": {
+        "id": "2015119200701",
+        "name": "SHAMSUDHEEN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHARIYADUKKAM",
+      "person": {
+        "id": "2015119200801",
+        "name": "AJANNA A PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAMBA",
+      "person": {
+        "id": "2015119200901",
+        "name": "SUKUMARAN ALINKAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POINACHI",
+      "person": {
+        "id": "2015119201001",
+        "name": "SHAKUNTHALA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BANDICHAL",
+      "person": {
+        "id": "2015119201101",
+        "name": "KALABHAVAN RAJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ANINHA",
+      "person": {
+        "id": "2015119201201",
+        "name": "N V BALAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "DELI",
+      "person": {
+        "id": "2015119201301",
+        "name": "KALLATRA ABDULKADER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ARAMANGANAM",
+      "person": {
+        "id": "2015119201401",
+        "name": "A ABDULLA KUNHI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALANAD",
+      "person": {
+        "id": "2015119201501",
+        "name": "ABDUL RAHIMAN K M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOKKAL",
+      "person": {
+        "id": "2015119201601",
+        "name": "K KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHATHANKAI",
+      "person": {
+        "id": "2015119201701",
+        "name": "MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MELPARAMBA",
+      "person": {
+        "id": "2015119201801",
+        "name": "AYISHA ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHEMBIRIKKA",
+      "person": {
+        "id": "2015119201901",
+        "name": "RAHMATH ASHRAF"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KIZHUR",
+      "person": {
+        "id": "2015119202001",
+        "name": "RAJAN S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHANDRAGIRI",
+      "person": {
+        "id": "2015119202101",
+        "name": "ZAITHOON AHAMMED KALLATRA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHALIYAMKODE",
+      "person": {
+        "id": "2015119202201",
+        "name": "K MADHAVAN NAIR"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PARAVANADUKKAM",
+      "person": {
+        "id": "2015119202301",
+        "name": "GEETHA BALAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

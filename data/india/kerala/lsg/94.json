@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345159515,
+  "date": "2019-08-21",
+  "name": "Mathilakam  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mathilakam",
+  "area": "71.81km",
+  "localbody_code": "B081400",
+  "no_of_wards": 15,
+  "population": 137386,
+  "male": 64295,
+  "female": 73091,
+  "population_density": 1913,
+  "sex_ratio": 1136,
+  "literacy_rate": 91.13,
+  "literacy_rate_male": 94.76,
+  "literacy_rate_female": 88.01,
+  "president": "KKABIDALI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHENTHRAPPINNI",
+      "person": {
+        "id": "2015009400101",
+        "name": "SHEENA VISWAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDATHIRUTHY",
+      "person": {
+        "id": "2015009400201",
+        "name": "BABY SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAIPAMANGALAM",
+      "person": {
+        "id": "2015009400301",
+        "name": "NOORULHUDHA N A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PERINJANAM",
+      "person": {
+        "id": "2015009400401",
+        "name": "HEMALATHA M K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MATHILAKAM",
+      "person": {
+        "id": "2015009400501",
+        "name": "M A VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SREENARAYANAPURAM",
+      "person": {
+        "id": "2015009400601",
+        "name": "K K ABIDALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANANGAD",
+      "person": {
+        "id": "2015009400701",
+        "name": "BIBIN P DAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDAVILANGUE",
+      "person": {
+        "id": "2015009400801",
+        "name": "M V INDIRA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ATHANI",
+      "person": {
+        "id": "2015009400901",
+        "name": "K P PUSHPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AZHIKODE",
+      "person": {
+        "id": "2015009401001",
+        "name": "SEENA ASHRAF"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERIYAD",
+      "person": {
+        "id": "2015009401101",
+        "name": "C S SAEEDA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "P VEMBALLUR",
+      "person": {
+        "id": "2015009401201",
+        "name": "M G BABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOOLIMUTTAM",
+      "person": {
+        "id": "2015009401301",
+        "name": "LAINA ANIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADAPPURAM",
+      "person": {
+        "id": "2015009401401",
+        "name": "C.K.GIRIJA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOORIKUZHI",
+      "person": {
+        "id": "2015009401501",
+        "name": "LAILA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349064507,
+  "date": "2019-08-21",
+  "name": "Kuruvattoor  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnamangalam",
+  "area": "17.94km",
+  "localbody_code": "G111102",
+  "no_of_wards": 18,
+  "population": 23780,
+  "male": 11671,
+  "female": 12109,
+  "population_density": 1326,
+  "sex_ratio": 1038,
+  "literacy_rate": 93.12,
+  "literacy_rate_male": 96.99,
+  "literacy_rate_female": 75.59,
+  "president": "PAPPUKKUTTAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KURUVATTOOR NORTH",
+      "person": {
+        "id": "2015105600101",
+        "name": "RAJEENDRA KUMAR V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULLALOOR",
+      "person": {
+        "id": "2015105600201",
+        "name": "SIHABUDHEEN A C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KURUVATTOOR",
+      "person": {
+        "id": "2015105600301",
+        "name": "JOOBIY P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KURUVATTOOR EAST",
+      "person": {
+        "id": "2015105600401",
+        "name": "NISHIJA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAYAMBRA NORTH",
+      "person": {
+        "id": "2015105600501",
+        "name": "T K MEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAYIMBRA",
+      "person": {
+        "id": "2015105600601",
+        "name": "SAJITHA.K.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAYIMBRA EAST",
+      "person": {
+        "id": "2015105600701",
+        "name": "K C BHASKARAN MASTER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KONOTT",
+      "person": {
+        "id": "2015105600801",
+        "name": "LINI M K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POLOOR EAST",
+      "person": {
+        "id": "2015105600901",
+        "name": "THERAMBATH MAYIN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POLOOR",
+      "person": {
+        "id": "2015105601001",
+        "name": "MOHANAN A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NADAMMAL",
+      "person": {
+        "id": "2015105601101",
+        "name": "PRABHITHA KUMARI T V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERUVATTA",
+      "person": {
+        "id": "2015105601201",
+        "name": "RAIHANA V M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUVATTA WEST",
+      "person": {
+        "id": "2015105601301",
+        "name": "K  SHAJI KUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARAMBIL SOUTH",
+      "person": {
+        "id": "2015105601401",
+        "name": "RADHA M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAMBIL",
+      "person": {
+        "id": "2015105601501",
+        "name": "SHEEBA K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAMBIL NORTH",
+      "person": {
+        "id": "2015105601601",
+        "name": "K K KRISHNADAS"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "POLOOR WEST",
+      "person": {
+        "id": "2015105601701",
+        "name": "SARITHA A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KURUVATTOOR WEST",
+      "person": {
+        "id": "2015105601801",
+        "name": "P APPUKKUTTAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

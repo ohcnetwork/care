@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346063553,
+  "date": "2019-08-21",
+  "name": "Alayamon  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "35.91km",
+  "localbody_code": "G020503",
+  "no_of_wards": 14,
+  "population": 18538,
+  "male": 9109,
+  "female": 9429,
+  "population_density": 516,
+  "sex_ratio": 1035,
+  "literacy_rate": 89.34,
+  "literacy_rate_male": 92.74,
+  "literacy_rate_female": 86.1,
+  "president": "MHAMSA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAITHADI",
+      "person": {
+        "id": "2015033100101",
+        "name": "BINDHU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANNAMKODU",
+      "person": {
+        "id": "2015033100201",
+        "name": "ANI JOY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THEKKEBHAGAM",
+      "person": {
+        "id": "2015033100301",
+        "name": "G PRAMOD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADAVARAM",
+      "person": {
+        "id": "2015033100401",
+        "name": "ASEENA MANAF"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTINADU",
+      "person": {
+        "id": "2015033100501",
+        "name": "H SUNILDETH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MOONGODU",
+      "person": {
+        "id": "2015033100601",
+        "name": "GEETHA ANIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANAKKULAM",
+      "person": {
+        "id": "2015033100701",
+        "name": "JACOB MATHEW (KUNJU)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHANNAPETTA",
+      "person": {
+        "id": "2015033100801",
+        "name": "SOPHIYA B VARGHESE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANAKKODU",
+      "person": {
+        "id": "2015033100901",
+        "name": "REMYA M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MEENKULAM",
+      "person": {
+        "id": "2015033101001",
+        "name": "P SOBHANA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARUKONE",
+      "person": {
+        "id": "2015033101101",
+        "name": "M HAMSA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULLANJIYODU",
+      "person": {
+        "id": "2015033101201",
+        "name": "M M SADIK"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHAYAM",
+      "person": {
+        "id": "2015033101301",
+        "name": "SHAIJU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ALAYAMON",
+      "person": {
+        "id": "2015033101401",
+        "name": "C AMBIKA KUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

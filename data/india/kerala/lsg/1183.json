@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566349524192,
+  "date": "2019-08-21",
+  "name": "Manjeshwar  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Manjewswaram",
+  "area": "24.4km",
+  "localbody_code": "G140105",
+  "no_of_wards": 21,
+  "population": 32097,
+  "male": 15898,
+  "female": 16199,
+  "population_density": 1315,
+  "sex_ratio": 1019,
+  "literacy_rate": 82.03,
+  "literacy_rate_male": 91.22,
+  "literacy_rate_female": 73.14,
+  "president": "ABDULAZEEZ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANWATHEERTHA",
+      "person": {
+        "id": "2015118300101",
+        "name": "BHAGAVANDAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THUMINADU",
+      "person": {
+        "id": "2015118300201",
+        "name": "MUSARAT JAHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDYAWAR BAIL",
+      "person": {
+        "id": "2015118300301",
+        "name": "ZAREENA BANU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNJATHUR BAIL",
+      "person": {
+        "id": "2015118300401",
+        "name": "SHOBHA V SHETTY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "GERUKATTE",
+      "person": {
+        "id": "2015118300501",
+        "name": "MOOSA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UDYAWAR GUTHU",
+      "person": {
+        "id": "2015118300601",
+        "name": "RAZEENA BANU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MACHAMPADY",
+      "person": {
+        "id": "2015118300701",
+        "name": "IBRAHIM FAIZAL M B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "UDYAWAR GUDDE",
+      "person": {
+        "id": "2015118300801",
+        "name": "FATHIMATH SUHARA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "BADAJE",
+      "person": {
+        "id": "2015118300901",
+        "name": "BABYLATHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ARIMALA",
+      "person": {
+        "id": "2015118301001",
+        "name": "ABDUL RAHIMAN ALIAS BASHEER KANILA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANILA",
+      "person": {
+        "id": "2015118301101",
+        "name": "SHAMSEENA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAMANJOOR GUDDE",
+      "person": {
+        "id": "2015118301201",
+        "name": "SHASHIKALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VAMANJOOR KAJA",
+      "person": {
+        "id": "2015118301301",
+        "name": "ZEEYANA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "BANGRA MANJESHWAR",
+      "person": {
+        "id": "2015118301401",
+        "name": "ABDUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "GUDDEKERI",
+      "person": {
+        "id": "2015118301501",
+        "name": "ABDULLA GUDDAKERI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KADAPPURAM",
+      "person": {
+        "id": "2015118301601",
+        "name": "ABDUL RAHIMAN HAJI K M K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "BAVUTAMOOLE",
+      "person": {
+        "id": "2015118301701",
+        "name": "SUPRIYA SHENOY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AYYARKATTE",
+      "person": {
+        "id": "2015118301801",
+        "name": "PRAMEELA P MANJU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNDUKOLAKE",
+      "person": {
+        "id": "2015118301901",
+        "name": "MUKTHAR A"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "UDYAWAR",
+      "person": {
+        "id": "2015118302001",
+        "name": "ALEEMA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "UDYAWAR MADA",
+      "person": {
+        "id": "2015118302101",
+        "name": "SHASHIKALA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347314240,
+  "date": "2019-08-21",
+  "name": "Kuttampuzha  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Kothamangalam",
+  "area": "543.07km",
+  "localbody_code": "G071110",
+  "no_of_wards": 17,
+  "population": 23043,
+  "male": 11775,
+  "female": 11268,
+  "population_density": 42,
+  "sex_ratio": 957,
+  "literacy_rate": 85,
+  "literacy_rate_male": 87,
+  "literacy_rate_female": 83,
+  "president": "SANDHYALALU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THUNDATHIL",
+      "person": {
+        "id": "2015069000101",
+        "name": "VIJAYAMMA GOPI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADATTUPARA",
+      "person": {
+        "id": "2015069000201",
+        "name": "USHA AYYANPILLA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POIKA",
+      "person": {
+        "id": "2015069000301",
+        "name": "SANDHYA LALU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARATTUCHIRA",
+      "person": {
+        "id": "2015069000401",
+        "name": "BINCY MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAMALAYAR",
+      "person": {
+        "id": "2015069000501",
+        "name": "LISSY ANTONY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLELIMED",
+      "person": {
+        "id": "2015069000601",
+        "name": "KANDHI VELLAKAYYAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANIKANDANCHAL",
+      "person": {
+        "id": "2015069000701",
+        "name": "K.K.BAIJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOYAMKUTTY",
+      "person": {
+        "id": "2015069000801",
+        "name": "FRANCIS ANTONY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUTTIAMCHAL",
+      "person": {
+        "id": "2015069000901",
+        "name": "ABDUL KAREEM PAREETH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THALIPPARA",
+      "person": {
+        "id": "2015069001001",
+        "name": "MARIYAPPAN NELLIPPILLA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MAMALAKANDAM",
+      "person": {
+        "id": "2015069001101",
+        "name": "ARUN CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PINAVOORKUDY",
+      "person": {
+        "id": "2015069001201",
+        "name": "SUSEELA LOUJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "INCHATHOTTY",
+      "person": {
+        "id": "2015069001301",
+        "name": "MATHEW GEORGE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "URULANTHANNY",
+      "person": {
+        "id": "2015069001401",
+        "name": "NIBI ISSAC"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ANAKKAYAM",
+      "person": {
+        "id": "2015069001501",
+        "name": "P.K.THANKAMMA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTAMPUZHA",
+      "person": {
+        "id": "2015069001601",
+        "name": "JOSE JOSEPH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THATTEKKAD",
+      "person": {
+        "id": "2015069001701",
+        "name": "P.P.JABBAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

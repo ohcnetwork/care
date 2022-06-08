@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349484893,
+  "date": "2019-08-21",
+  "name": "Kanichar  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Peravoor",
+  "area": "51.96km",
+  "localbody_code": "G131101",
+  "no_of_wards": 13,
+  "population": 14432,
+  "male": 7284,
+  "female": 7148,
+  "population_density": 278,
+  "sex_ratio": 981,
+  "literacy_rate": 90.58,
+  "literacy_rate_male": 92.63,
+  "literacy_rate_female": 88.48,
+  "president": "SELINMANICHEMBARATHINKAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ODANTHODE",
+      "person": {
+        "id": "2015117000101",
+        "name": "STANI EDATHAZHE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANUNGODE",
+      "person": {
+        "id": "2015117000201",
+        "name": "PRINCY JOBY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANICHAR",
+      "person": {
+        "id": "2015117000301",
+        "name": "KELAPPAN K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VELLOONNI",
+      "person": {
+        "id": "2015117000401",
+        "name": "BABY CHIRAKKAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLIKKUNNU",
+      "person": {
+        "id": "2015117000501",
+        "name": "GRACY THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHENGOM",
+      "person": {
+        "id": "2015117000601",
+        "name": "SIJI TOMY VALIYAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELAPPEEDIKA",
+      "person": {
+        "id": "2015117000701",
+        "name": "SHEEBA NARAKATHINKAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOLAKKUTTY",
+      "person": {
+        "id": "2015117000801",
+        "name": "SHANTY SEBASTAIN PULIKKAKUNNEL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NEDUMPURAMCHA",
+      "person": {
+        "id": "2015117000901",
+        "name": "BABU ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ODAPPUZHA",
+      "person": {
+        "id": "2015117001001",
+        "name": "SELIN MANI CHEMBARATHINKAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLAKKAD",
+      "person": {
+        "id": "2015117001101",
+        "name": "MARY KUTTY THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MAVADI",
+      "person": {
+        "id": "2015117001201",
+        "name": "VINOY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANAPPARA",
+      "person": {
+        "id": "2015117001301",
+        "name": "SURENDRAN M K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

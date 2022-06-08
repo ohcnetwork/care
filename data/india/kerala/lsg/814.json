@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348195954,
+  "date": "2019-08-21",
+  "name": "Nellaya  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "27.41km",
+  "localbody_code": "G090308",
+  "no_of_wards": 19,
+  "population": 27714,
+  "male": 13034,
+  "female": 14680,
+  "population_density": 1011,
+  "sex_ratio": 1126,
+  "literacy_rate": 89.1,
+  "literacy_rate_male": 91.5,
+  "literacy_rate_female": 86.96,
+  "president": "N.JANARDHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KULAPPIDA",
+      "person": {
+        "id": "2015081400101",
+        "name": "INDIRA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MARAYAMANGALAM",
+      "person": {
+        "id": "2015081400201",
+        "name": "SMITHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "IRUMBALASSERY",
+      "person": {
+        "id": "2015081400301",
+        "name": "VAPPUTTY MELADAYIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NELLAYA",
+      "person": {
+        "id": "2015081400401",
+        "name": "JYOTHI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAPPAMKOTTA",
+      "person": {
+        "id": "2015081400501",
+        "name": "A. MOIDEEN KUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULAKKAD",
+      "person": {
+        "id": "2015081400601",
+        "name": "K. JALEEL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POMBILAYA",
+      "person": {
+        "id": "2015081400701",
+        "name": "DEEPAK KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHAKKEKARA",
+      "person": {
+        "id": "2015081400801",
+        "name": "CHANDRAPRABHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MOLOOR",
+      "person": {
+        "id": "2015081400901",
+        "name": "ASMIYA ALI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POTTACHIRA",
+      "person": {
+        "id": "2015081401001",
+        "name": "MUHAMMED SHAFI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MAMBATTAPARAMBU",
+      "person": {
+        "id": "2015081401101",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEMMAMKUZHI",
+      "person": {
+        "id": "2015081401201",
+        "name": "MOIDU KUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KIZHAKKUMPARAMBU",
+      "person": {
+        "id": "2015081401301",
+        "name": "MOHAMMED KUTTY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EZHUVANTHALA",
+      "person": {
+        "id": "2015081401401",
+        "name": "RADHA VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AMBEDKAR COLONY",
+      "person": {
+        "id": "2015081401501",
+        "name": "SANTHOSH. P. T"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PATTISSERY",
+      "person": {
+        "id": "2015081401601",
+        "name": "N. JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MARAYAMANGALAM SOUTH",
+      "person": {
+        "id": "2015081401701",
+        "name": "JYOTHI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VARANAMANGALAM",
+      "person": {
+        "id": "2015081401801",
+        "name": "REMA. T.P."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MAVUNDIRI",
+      "person": {
+        "id": "2015081401901",
+        "name": "USHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

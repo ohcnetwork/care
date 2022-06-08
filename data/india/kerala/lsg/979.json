@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348807020,
+  "date": "2019-08-21",
+  "name": "Perumanna Klari  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Thanur",
+  "area": "11.84km",
+  "localbody_code": "G101208",
+  "no_of_wards": 16,
+  "population": 22039,
+  "male": 10770,
+  "female": 11269,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": 72,
+  "literacy_rate_male": 75,
+  "literacy_rate_female": 70,
+  "president": "FATHIMAPOTHUVATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERUMANNA NORTH",
+      "person": {
+        "id": "2015097900101",
+        "name": "ABDUL JABBAR C.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOZHICHENA",
+      "person": {
+        "id": "2015097900201",
+        "name": "ABDU RASHEED C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENAPPURAM",
+      "person": {
+        "id": "2015097900301",
+        "name": "SAMEERA P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALACHIRAMADU",
+      "person": {
+        "id": "2015097900401",
+        "name": "SHARAFUDHEEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANHIKUZHINGARA",
+      "person": {
+        "id": "2015097900501",
+        "name": "HASEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KLARI SOUTH",
+      "person": {
+        "id": "2015097900601",
+        "name": "MUHAMMED SHAREEF"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MOOCHIKKAL",
+      "person": {
+        "id": "2015097900701",
+        "name": "ANVAR ALAVI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURUKATHANI",
+      "person": {
+        "id": "2015097900801",
+        "name": "KUNHALAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAZHUNGILAPPADI",
+      "person": {
+        "id": "2015097900901",
+        "name": "ROOBI THAYYIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUTHUR",
+      "person": {
+        "id": "2015097901001",
+        "name": "NASREEN MANNINGAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNNATHIYIL",
+      "person": {
+        "id": "2015097901101",
+        "name": "SALMU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KLARI OTTUPARAPPURAM",
+      "person": {
+        "id": "2015097901201",
+        "name": "SAHIRA SAIDALAVI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHOLAMATTUPPURAM",
+      "person": {
+        "id": "2015097901301",
+        "name": "MUHAMMED SHAFI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHETTIYAMKINAR",
+      "person": {
+        "id": "2015097901401",
+        "name": "NUSAIBA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIZHAKKINITHARA",
+      "person": {
+        "id": "2015097901501",
+        "name": "GOPI KANDAYI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERUMANNA SOUTH",
+      "person": {
+        "id": "2015097901601",
+        "name": "FATHIMA POTHUVATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

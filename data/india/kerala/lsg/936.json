@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348662297,
+  "date": "2019-08-21",
+  "name": "Edappatta  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Perinthalmanna",
+  "area": "25.77km",
+  "localbody_code": "G100207",
+  "no_of_wards": 15,
+  "population": 16897,
+  "male": 8228,
+  "female": 8669,
+  "population_density": 656,
+  "sex_ratio": 1054,
+  "literacy_rate": 84,
+  "literacy_rate_male": 87.03,
+  "literacy_rate_female": 80.98,
+  "president": "MARYK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "RAMANTHIRUTHI",
+      "person": {
+        "id": "2015093600101",
+        "name": "HARIDAS P K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAPPATTA",
+      "person": {
+        "id": "2015093600201",
+        "name": "KRISHNA  PRABHA V P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULLANIKAD",
+      "person": {
+        "id": "2015093600301",
+        "name": "FATHIMAKUTTY C T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EPPIKKAD",
+      "person": {
+        "id": "2015093600401",
+        "name": "HANEEFA P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBAZHAPARAMBU",
+      "person": {
+        "id": "2015093600501",
+        "name": "FATHIMA C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUNNAKKALCHOLA",
+      "person": {
+        "id": "2015093600601",
+        "name": "GEORGE MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULIYAKKODE",
+      "person": {
+        "id": "2015093600701",
+        "name": "MARY K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MOONADI",
+      "person": {
+        "id": "2015093600801",
+        "name": "FEBINA P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ANJILANGADI",
+      "person": {
+        "id": "2015093600901",
+        "name": "RAFEEK K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERIPARAMBA",
+      "person": {
+        "id": "2015093601001",
+        "name": "ABDULLA M P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLIYANCHERY",
+      "person": {
+        "id": "2015093601101",
+        "name": "MUHAMMED RAFI K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULLUPARAMBA",
+      "person": {
+        "id": "2015093601201",
+        "name": "MARIYAKUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATHIRIKKODE",
+      "person": {
+        "id": "2015093601301",
+        "name": "SAJITHA C P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOMBANKALLU",
+      "person": {
+        "id": "2015093601401",
+        "name": "THANOOJA N P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PEZHUMTHARA",
+      "person": {
+        "id": "2015093601501",
+        "name": "FATHIMATHUL UNAISA O V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

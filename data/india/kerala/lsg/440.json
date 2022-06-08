@@ -1,0 +1,165 @@
+{
+  "timeStamp": 1566346448647,
+  "date": "2019-08-21",
+  "name": "Kanjikuzhy  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Kanjikuzhy",
+  "area": "16.62km",
+  "localbody_code": "G040302",
+  "no_of_wards": 18,
+  "population": 25296,
+  "male": 12534,
+  "female": 12762,
+  "population_density": 1522,
+  "sex_ratio": 1018,
+  "literacy_rate": 95,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 92,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MAYITHARA NORTH",
+      "person": {
+        "id": "2015044000101",
+        "name": "ROSHNI SUNIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "SUBHASH",
+      "person": {
+        "id": "2015044000201",
+        "name": "SUDHA SURESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUVARANAM",
+      "person": {
+        "id": "2015044000301",
+        "name": "THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AYYAPPANCHERY",
+      "person": {
+        "id": "2015044000401",
+        "name": "P LALITHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUTHANAMBALAM",
+      "person": {
+        "id": "2015044000501",
+        "name": "DIVYA JYOTHISH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MOOLAMVELY",
+      "person": {
+        "id": "2015044000601",
+        "name": "M.G SABU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOOTTUVELY",
+      "person": {
+        "id": "2015044000701",
+        "name": "AKBAR .P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ILLATHUKAVU",
+      "person": {
+        "id": "2015044000801",
+        "name": "GEETHA P .G"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VEMBALLY",
+      "person": {
+        "id": "2015044000901",
+        "name": "THILAKAN M G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHATHANAD",
+      "person": {
+        "id": "2015044001001",
+        "name": "LEKSHMIKUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANGALAPURAM",
+      "person": {
+        "id": "2015044001101",
+        "name": "V PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "LOOTHARAN",
+      "person": {
+        "id": "2015044001201",
+        "name": "JOLLY A .V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNARKKAD",
+      "person": {
+        "id": "2015044001301",
+        "name": "PAVITHRAN D"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANJIKUZHY",
+      "person": {
+        "id": "2015044001401",
+        "name": "RAJU M G"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUMARAPURAM",
+      "person": {
+        "id": "2015044001501",
+        "name": "MOHANAN K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALATHIVEEDU",
+      "person": {
+        "id": "2015044001601",
+        "name": "LEGITHA THILAKAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHALUNKAL",
+      "person": {
+        "id": "2015044001701",
+        "name": "SIJI SAJEEV"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MAYITHARA",
+      "person": {
+        "id": "2015044001801",
+        "name": "SASIDARAN K M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

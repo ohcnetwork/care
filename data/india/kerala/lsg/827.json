@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348237184,
+  "date": "2019-08-21",
+  "name": "Kadampazhipuram  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Sreekrishnapuram",
+  "area": "39.71km",
+  "localbody_code": "G090402",
+  "no_of_wards": 18,
+  "population": 24934,
+  "male": 11819,
+  "female": 13115,
+  "population_density": 628,
+  "sex_ratio": 1110,
+  "literacy_rate": 86.26,
+  "literacy_rate_male": 90.64,
+  "literacy_rate_female": 82.42,
+  "president": "AMBUJAKSHYK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAMPAZHIPURAM",
+      "person": {
+        "id": "2015082700101",
+        "name": "BINDHU P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADAMPAZHIPURAM NORTH",
+      "person": {
+        "id": "2015082700201",
+        "name": "BEENA M.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANDAZHI",
+      "person": {
+        "id": "2015082700301",
+        "name": "SANTHA K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULAPPATTA",
+      "person": {
+        "id": "2015082700401",
+        "name": "SREEKUMARI O"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NALISSERI",
+      "person": {
+        "id": "2015082700501",
+        "name": "P RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHOLAPPADAM",
+      "person": {
+        "id": "2015082700601",
+        "name": "BHAVYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NILALA",
+      "person": {
+        "id": "2015082700701",
+        "name": "SWAPNA N.C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KONIKKAZHI",
+      "person": {
+        "id": "2015082700802",
+        "name": "B.MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "UMMANAZHI",
+      "person": {
+        "id": "2015082700901",
+        "name": "AHAMMED KABEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNIPPARA",
+      "person": {
+        "id": "2015082701001",
+        "name": "SMITHA C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AZHIYANNUR",
+      "person": {
+        "id": "2015082701101",
+        "name": "SEETHALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAYILLYAMKUNNU",
+      "person": {
+        "id": "2015082701201",
+        "name": "M SUBRAMANNIAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PULLUNDASSERI",
+      "person": {
+        "id": "2015082701301",
+        "name": "A.P RAJAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VATTAMTHIRUTHI",
+      "person": {
+        "id": "2015082701401",
+        "name": "UDAYAN K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PALARI",
+      "person": {
+        "id": "2015082701501",
+        "name": "RAMAKRISHNAN V"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ALANGAD",
+      "person": {
+        "id": "2015082701601",
+        "name": "SURESHKUMAR V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PATTIMALA",
+      "person": {
+        "id": "2015082701701",
+        "name": "AMBUJAKSHY K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VETTEKKARA",
+      "person": {
+        "id": "2015082701801",
+        "name": "K PREMALATHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

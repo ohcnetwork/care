@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566345799352,
+  "date": "2019-08-21",
+  "name": "Manickal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vamanpuram",
+  "area": "33.34km",
+  "localbody_code": "G010408",
+  "no_of_wards": 21,
+  "population": 32065,
+  "male": 15747,
+  "female": 16318,
+  "population_density": 961,
+  "sex_ratio": 1036,
+  "literacy_rate": 88.07,
+  "literacy_rate_male": 93.24,
+  "literacy_rate_female": 83.14,
+  "president": "SUJATHAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANICKAL",
+      "person": {
+        "id": "2015025400101",
+        "name": "OMANA T"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ALIYADU",
+      "person": {
+        "id": "2015025400201",
+        "name": "G SADASIVAN NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOOLAYAM",
+      "person": {
+        "id": "2015025400301",
+        "name": "VIJAYAKUMAR R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THYCADU",
+      "person": {
+        "id": "2015025400401",
+        "name": "ANILA J S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PIRAPPANCODE",
+      "person": {
+        "id": "2015025400501",
+        "name": "LEKHAKUMARI S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUTHIRAKULAM",
+      "person": {
+        "id": "2015025400601",
+        "name": "SOBHANA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THALAYAL",
+      "person": {
+        "id": "2015025400701",
+        "name": "GOPAKUMAR R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDATHARA",
+      "person": {
+        "id": "2015025400801",
+        "name": "SUJATHA S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHIRATHALACKAL",
+      "person": {
+        "id": "2015025400901",
+        "name": "JASMIN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VEMBAYAM",
+      "person": {
+        "id": "2015025401001",
+        "name": "NASEER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KATTACKAL",
+      "person": {
+        "id": "2015025401101",
+        "name": "LATHIKA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOPPAM",
+      "person": {
+        "id": "2015025401201",
+        "name": "S RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANNAL",
+      "person": {
+        "id": "2015025401301",
+        "name": "K JAYAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PLAKEEZHU",
+      "person": {
+        "id": "2015025401401",
+        "name": "SANTHAKUMARI D"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VELAVOOR",
+      "person": {
+        "id": "2015025401501",
+        "name": "BIJU KUMAR K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOLIYAKKODU",
+      "person": {
+        "id": "2015025401601",
+        "name": "MAHEENDRA J R"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLIKKADU",
+      "person": {
+        "id": "2015025401701",
+        "name": "K DEVAKI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "POOLANTHARA",
+      "person": {
+        "id": "2015025401801",
+        "name": "SUDHARMINI S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "SANTHIGIRI",
+      "person": {
+        "id": "2015025401901",
+        "name": "SAHEERATH BEEVI R"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THEEPPUKAL",
+      "person": {
+        "id": "2015025402001",
+        "name": "SARANYA A S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KUNNIDA",
+      "person": {
+        "id": "2015025402101",
+        "name": "T JALAJA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

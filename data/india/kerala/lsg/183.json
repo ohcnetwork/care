@@ -1,0 +1,300 @@
+{
+  "timeStamp": 1566345520617,
+  "date": "2019-08-21",
+  "name": "Cherthala  Municipality, Alappuzha District",
+  "district": "Alappuzha",
+  "area": "16.18km",
+  "localbody_code": "M040300",
+  "no_of_wards": 35,
+  "population": 45102,
+  "male": 21917,
+  "female": 23185,
+  "population_density": 2678,
+  "sex_ratio": 1048,
+  "literacy_rate": 94,
+  "literacy_rate_male": 98.4,
+  "literacy_rate_female": 89.7,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SAKTHEESWARAM",
+      "person": {
+        "id": "2015018300101",
+        "name": "G K AJITH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MOOLAYIL",
+      "person": {
+        "id": "2015018300201",
+        "name": "V T JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POWER HOUSE",
+      "person": {
+        "id": "2015018300301",
+        "name": "R MURALI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANNUKUZHI",
+      "person": {
+        "id": "2015018300401",
+        "name": "USHADAYADAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEDUMBRAKAD",
+      "person": {
+        "id": "2015018300501",
+        "name": "SHEEBA JAGADAPPAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAPPEL",
+      "person": {
+        "id": "2015018300601",
+        "name": "A ARUNLAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SASTHA",
+      "person": {
+        "id": "2015018300701",
+        "name": "LEENA N"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KULATHRAKADU",
+      "person": {
+        "id": "2015018300801",
+        "name": "B FAISAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SAVESSERY",
+      "person": {
+        "id": "2015018300901",
+        "name": "SUNIMOL S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALIKULAM",
+      "person": {
+        "id": "2015018301001",
+        "name": "N R BABURAJ"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015018301101",
+        "name": "JYOTHI MOL P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "X RAY",
+      "person": {
+        "id": "2015018301201",
+        "name": "SREELEKHA NAIR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CIVIL STATION",
+      "person": {
+        "id": "2015018301302",
+        "name": "JYOTHISH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHAKKARKULAM",
+      "person": {
+        "id": "2015018301401",
+        "name": "RADHAMANI K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KURIKKACHIRA",
+      "person": {
+        "id": "2015018301501",
+        "name": "BIJI MOL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POLY TECHNIC",
+      "person": {
+        "id": "2015018301601",
+        "name": "P UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHERAKULAM",
+      "person": {
+        "id": "2015018301701",
+        "name": "GIRIJA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AMBEDKAR",
+      "person": {
+        "id": "2015018301801",
+        "name": "K RETNAVALLY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ARATTUVAZHY",
+      "person": {
+        "id": "2015018301901",
+        "name": "MANOJ M B"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "VATTAVELI",
+      "person": {
+        "id": "2015018302001",
+        "name": "M SAHADEVAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KARUVAYIL",
+      "person": {
+        "id": "2015018302101",
+        "name": "DEEPA VINOD"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MINI MARKET",
+      "person": {
+        "id": "2015018302201",
+        "name": "MADHURI SABU"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KATTANGANATTU",
+      "person": {
+        "id": "2015018302301",
+        "name": "PREETHA"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "ST MARTIN",
+      "person": {
+        "id": "2015018302401",
+        "name": "B BHASI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "PALLUVALLUVELY",
+      "person": {
+        "id": "2015018302501",
+        "name": "PRAMEELA K N"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "VALLAYIL",
+      "person": {
+        "id": "2015018302601",
+        "name": "LALY KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "EDATHIL",
+      "person": {
+        "id": "2015018302701",
+        "name": "JOSEPH(BABU MULLANCHIRA)"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MUNI. BUS STAND",
+      "person": {
+        "id": "2015018302801",
+        "name": "TOMY ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "T D AMBALAM",
+      "person": {
+        "id": "2015018302901",
+        "name": "J RADHAKRISHNA NAIK"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "MUTTAM BAZAR",
+      "person": {
+        "id": "2015018303001",
+        "name": "BEENAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "VELORVATTAM",
+      "person": {
+        "id": "2015018303101",
+        "name": "SINDHU BAIJU"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KUTTIKATTU",
+      "person": {
+        "id": "2015018303201",
+        "name": "ISSAC MADAVANA"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "KIZHAKKENALPATHU",
+      "person": {
+        "id": "2015018303301",
+        "name": "C K UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015018303401",
+        "name": "C D SANKAR"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "KURUPPANATTUKARA",
+      "person": {
+        "id": "2015018303501",
+        "name": "REJITHA ASHOKAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

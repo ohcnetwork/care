@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347361223,
+  "date": "2019-08-21",
+  "name": "Parakkadavu  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Parakkadavu",
+  "area": "24.66km",
+  "localbody_code": "G071304",
+  "no_of_wards": 18,
+  "population": 27702,
+  "male": 13764,
+  "female": 13938,
+  "population_density": 1123,
+  "sex_ratio": 1013,
+  "literacy_rate": 91.04,
+  "literacy_rate_male": 94.29,
+  "literacy_rate_female": 87.85,
+  "president": "GLADISPAPPACHAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MAMBRA WEST",
+      "person": {
+        "id": "2015070200101",
+        "name": "C P ANIRUDHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAMBRA EAST",
+      "person": {
+        "id": "2015070200201",
+        "name": "DIYA MARTIN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULIYANAM EAST",
+      "person": {
+        "id": "2015070200301",
+        "name": "E S NARAYANAN (NANAPPAN)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULIYANAM SOUTH",
+      "person": {
+        "id": "2015070200401",
+        "name": "SANDHYA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODUSSERY",
+      "person": {
+        "id": "2015070200501",
+        "name": "THARA SAJEEV"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAPARAMBU",
+      "person": {
+        "id": "2015070200601",
+        "name": "SEBASTIAN VAZHAKKALA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KURUMASSERY EAST",
+      "person": {
+        "id": "2015070200701",
+        "name": "GOKUL DEV G"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURUMASSERY WEST",
+      "person": {
+        "id": "2015070200801",
+        "name": "C N MOHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURUMASSERY NORTH",
+      "person": {
+        "id": "2015070200901",
+        "name": "JISHA SYAM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOOZHIKKULAM",
+      "person": {
+        "id": "2015070201001",
+        "name": "GLADIS PAPPACHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARAKKADAVU SOUTH",
+      "person": {
+        "id": "2015070201101",
+        "name": "NAVANEETH P N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARAKKADAVU NORTH",
+      "person": {
+        "id": "2015070201201",
+        "name": "REENA RAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOVATHUSSERY",
+      "person": {
+        "id": "2015070201301",
+        "name": "RAJANI UNNI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUNNAPPYLLISSERY",
+      "person": {
+        "id": "2015070201401",
+        "name": "C P DEVASSY (KUNJAPPAN)"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ELAVOOR",
+      "person": {
+        "id": "2015070201501",
+        "name": "SAJITHA VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULIYANAM",
+      "person": {
+        "id": "2015070201601",
+        "name": "RAJAMMA VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ELAVOOR NORTH",
+      "person": {
+        "id": "2015070201701",
+        "name": "BEENA RAVI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PULIYANAM WEST",
+      "person": {
+        "id": "2015070201801",
+        "name": "N V RAMAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

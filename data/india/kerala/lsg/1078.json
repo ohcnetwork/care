@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349142216,
+  "date": "2019-08-21",
+  "name": "Meenangadi  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Sulthanbathery",
+  "area": "53.52km",
+  "localbody_code": "G120301",
+  "no_of_wards": 19,
+  "population": 28573,
+  "male": 14829,
+  "female": 13744,
+  "population_density": 534,
+  "sex_ratio": 927,
+  "literacy_rate": 84.06,
+  "literacy_rate_male": 88.64,
+  "literacy_rate_female": 79.13,
+  "president": "BEENAVIJAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOOTHUPARA",
+      "person": {
+        "id": "2015107800101",
+        "name": "REJIMOL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "APPADU",
+      "person": {
+        "id": "2015107800201",
+        "name": "P.K.SAJEEV"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MYLAMBADI",
+      "person": {
+        "id": "2015107800301",
+        "name": "BEENA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "C.C",
+      "person": {
+        "id": "2015107800401",
+        "name": "PAITHAL A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AVAYAL",
+      "person": {
+        "id": "2015107800501",
+        "name": "T.K.CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOLAGAPPARA",
+      "person": {
+        "id": "2015107800601",
+        "name": "T.P.SHAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "RATTAKUNDU",
+      "person": {
+        "id": "2015107800701",
+        "name": "V.SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KRISHNAGIRI",
+      "person": {
+        "id": "2015107800801",
+        "name": "USHA RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEERAMKUNNU",
+      "person": {
+        "id": "2015107800901",
+        "name": "SOBHANA SUBRAMANIYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTATHUVAYAL",
+      "person": {
+        "id": "2015107801001",
+        "name": "C.ASSAINAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAKKAVAYAL",
+      "person": {
+        "id": "2015107801101",
+        "name": "BABYLATHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOLAMPATTA",
+      "person": {
+        "id": "2015107801201",
+        "name": "LISSY POULOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MEENANGADI",
+      "person": {
+        "id": "2015107801301",
+        "name": "RATHEESH R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PURAKKADI",
+      "person": {
+        "id": "2015107801401",
+        "name": "SOBHANA SURESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VENGOOR",
+      "person": {
+        "id": "2015107801501",
+        "name": "MINI SAJU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANNIMUNDA",
+      "person": {
+        "id": "2015107801601",
+        "name": "SINDHU RAJAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAPPIKUNNU",
+      "person": {
+        "id": "2015107801701",
+        "name": "SHEEBA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALAKKAMOOLA",
+      "person": {
+        "id": "2015107801801",
+        "name": "SHASIKA BINU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MANIVAYAL",
+      "person": {
+        "id": "2015107801901",
+        "name": "MURALI.M.N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

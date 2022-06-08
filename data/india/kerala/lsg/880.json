@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566348419061,
+  "date": "2019-08-21",
+  "name": "Kizhakkencherry  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Alathur",
+  "area": "112.56km",
+  "localbody_code": "G091204",
+  "no_of_wards": 22,
+  "population": 36215,
+  "male": 17921,
+  "female": 18294,
+  "population_density": 322,
+  "sex_ratio": 1021,
+  "literacy_rate": 79.94,
+  "literacy_rate_male": 87.37,
+  "literacy_rate_female": 72.78,
+  "president": "KAVITHAMADHAVAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KIZHAKKENCHERY",
+      "person": {
+        "id": "2015088000101",
+        "name": "SHEEBA GANGADARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKATHARA",
+      "person": {
+        "id": "2015088000201",
+        "name": "V. SURESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOZHUKKULLY",
+      "person": {
+        "id": "2015088000301",
+        "name": "P.M. KALADHARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THACHAKKODE",
+      "person": {
+        "id": "2015088000401",
+        "name": "SUJA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERUKUNNAM",
+      "person": {
+        "id": "2015088000501",
+        "name": "ANILKUMAR.S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARASSERY",
+      "person": {
+        "id": "2015088000601",
+        "name": "PRASANNA JANESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ODAMTHODE",
+      "person": {
+        "id": "2015088000701",
+        "name": "G.K. RAGENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAKKANCHERY",
+      "person": {
+        "id": "2015088000801",
+        "name": "PHILOMINA JOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AMBITTANTHARISSU",
+      "person": {
+        "id": "2015088000901",
+        "name": "K.SARAUMMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALAKKUZHY",
+      "person": {
+        "id": "2015088001001",
+        "name": "MANJU.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTEKULAM",
+      "person": {
+        "id": "2015088001101",
+        "name": "SHELBI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKINKALLA",
+      "person": {
+        "id": "2015088001201",
+        "name": "CHANDRIKA MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHANKULAMBU",
+      "person": {
+        "id": "2015088001301",
+        "name": "P.N. RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALAVAPPADAM",
+      "person": {
+        "id": "2015088001401",
+        "name": "N. VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MOOLAMKODE",
+      "person": {
+        "id": "2015088001501",
+        "name": "LALITHA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KORENCHIRA",
+      "person": {
+        "id": "2015088001601",
+        "name": "M. THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VALKULAMBU",
+      "person": {
+        "id": "2015088001701",
+        "name": "LEELAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANJALIKULAMBU",
+      "person": {
+        "id": "2015088001801",
+        "name": "V.P. PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOTTEKKAD",
+      "person": {
+        "id": "2015088001901",
+        "name": "KAVITHA MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KARAPPADAM",
+      "person": {
+        "id": "2015088002001",
+        "name": "RAMANI RAJAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ELAMKAVU",
+      "person": {
+        "id": "2015088002103",
+        "name": "N RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHEERAKUZHY",
+      "person": {
+        "id": "2015088002201",
+        "name": "RATNAKUMARI SURESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

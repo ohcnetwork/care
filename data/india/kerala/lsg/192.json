@@ -1,0 +1,269 @@
+{
+  "timeStamp": 1566345553335,
+  "date": "2019-08-21",
+  "name": "Kothamangalam  Municipality, Ernakulam District",
+  "district": "Ernakulam",
+  "area": "37.45km",
+  "localbody_code": "M070200",
+  "no_of_wards": 31,
+  "population": 37169,
+  "male": 18407,
+  "female": 18762,
+  "population_density": 949,
+  "sex_ratio": 1011,
+  "literacy_rate": 92.95,
+  "literacy_rate_male": 95.48,
+  "literacy_rate_female": 90.48,
+  "chairperson": "MANJUSIJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THANKALAM",
+      "person": {
+        "id": "2015019200101",
+        "name": "K A NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BLOCK OFFICE",
+      "person": {
+        "id": "2015019200201",
+        "name": "K K BINU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RAMALLOOR",
+      "person": {
+        "id": "2015019200301",
+        "name": "THANKAMMA KURIAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARINGAZHA",
+      "person": {
+        "id": "2015019200401",
+        "name": "SINDHU JIJO"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHELAD",
+      "person": {
+        "id": "2015019200501",
+        "name": "LISSY PAUL PUNNACKAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLAD",
+      "person": {
+        "id": "2015019200601",
+        "name": "HELEN TITUS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELAVUMPARAMBU",
+      "person": {
+        "id": "2015019200701",
+        "name": "REJI JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALADITHANDU",
+      "person": {
+        "id": "2015019200801",
+        "name": "MARY PAULOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOMENTHA",
+      "person": {
+        "id": "2015019200901",
+        "name": "THOMAS VARGHESE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MALIKAKANDAM",
+      "person": {
+        "id": "2015019201001",
+        "name": "JANCY MATHEW"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARAYITHOTTAM",
+      "person": {
+        "id": "2015019201101",
+        "name": "SOJAN MATHEW"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUTHUKUZHY",
+      "person": {
+        "id": "2015019201201",
+        "name": "SALINI MURALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARAMANGALAM",
+      "person": {
+        "id": "2015019201301",
+        "name": "BINU CHERIAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELAMKAVU",
+      "person": {
+        "id": "2015019201401",
+        "name": "HARI N"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALIYAKAVU",
+      "person": {
+        "id": "2015019201501",
+        "name": "P R UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "AMBALAPARAMBU",
+      "person": {
+        "id": "2015019201601",
+        "name": "GEORGE MATHEW"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHURCH",
+      "person": {
+        "id": "2015019201701",
+        "name": "TINA MATHEW"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOLLIKKADU",
+      "person": {
+        "id": "2015019201801",
+        "name": "BHANUMATHI RAJU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015019201901",
+        "name": "PRASANNA MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MATHIRAPPILLY",
+      "person": {
+        "id": "2015019202001",
+        "name": "SHEEBA ELDHOSE"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PUTHUPPADY",
+      "person": {
+        "id": "2015019202101",
+        "name": "SHAMEER ABDUL KAREEM"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KARAKUNNAM",
+      "person": {
+        "id": "2015019202201",
+        "name": "MANJU SIJU"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHIRAPPADY",
+      "person": {
+        "id": "2015019202301",
+        "name": "MANJU THOMAS"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "AMBALAPPADY",
+      "person": {
+        "id": "2015019202401",
+        "name": "ELDHO MATHAI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "VENDUVAZHY SOUTH",
+      "person": {
+        "id": "2015019202501",
+        "name": "AMBIKA SAJI"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KARUKADOM",
+      "person": {
+        "id": "2015019202601",
+        "name": "GEORGE VARGHESE"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "VILAYAL",
+      "person": {
+        "id": "2015019202701",
+        "name": "MYTHEEN MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "VENDUVAZHY NORTH",
+      "person": {
+        "id": "2015019202801",
+        "name": "SIJU THOMAS"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KORIYAMALA",
+      "person": {
+        "id": "2015019202901",
+        "name": "ANOOP T ITTAN"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "TOWN SOUTH",
+      "person": {
+        "id": "2015019203001",
+        "name": "SALIM CHERIAN"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "TOWN NORTH",
+      "person": {
+        "id": "2015019203101",
+        "name": "PRINCY ELDHOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

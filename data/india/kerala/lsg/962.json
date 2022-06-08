@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348756771,
+  "date": "2019-08-21",
+  "name": "Vengara  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Vengara",
+  "area": "18.66km",
+  "localbody_code": "G101005",
+  "no_of_wards": 23,
+  "population": 51174,
+  "male": 25485,
+  "female": 25689,
+  "population_density": 277.2,
+  "sex_ratio": 1008,
+  "literacy_rate": 86.25,
+  "literacy_rate_male": 91.67,
+  "literacy_rate_female": 80.84,
+  "president": "KUNHALANKUTTYV.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLAPPURAM EAST",
+      "person": {
+        "id": "2015096200101",
+        "name": "SAIDALAVI CHATHAMPADAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUTTOOR NORTH",
+      "person": {
+        "id": "2015096200201",
+        "name": "HASEENA FASAL KOOLIPPILAKKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POONKUDAYA",
+      "person": {
+        "id": "2015096200301",
+        "name": "FASAL KOOLIPPILAKKAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAKKADAPURAYA",
+      "person": {
+        "id": "2015096200401",
+        "name": "SAIDU PAVUTHODIKA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BALIKKADU",
+      "person": {
+        "id": "2015096200501",
+        "name": "KADEEJABI VALIYAKKATHODI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNATTIPPADI",
+      "person": {
+        "id": "2015096200601",
+        "name": "NAJUMUNNEESA ABDUL LATHEEF"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "GANDHIKKUNNU",
+      "person": {
+        "id": "2015096200701",
+        "name": "NASEEMA THACHARUPADIKKAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VENGARA TOWN",
+      "person": {
+        "id": "2015096200801",
+        "name": "MOIDEEN VALIYAKKATHODI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NELLIPARAMBU",
+      "person": {
+        "id": "2015096200901",
+        "name": "AYISHA PARAMBIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AREEKUALAM",
+      "person": {
+        "id": "2015096201001",
+        "name": "CHATHAN KUTTY AIKKADAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURUVILKUNDU",
+      "person": {
+        "id": "2015096201101",
+        "name": "NAFSIDA A.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHINAKKAL",
+      "person": {
+        "id": "2015096201201",
+        "name": "MANSOOR KANKADAKKADAVAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANHEMADU",
+      "person": {
+        "id": "2015096201301",
+        "name": "RASIYA ALAVIKUTTY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHANANGADI",
+      "person": {
+        "id": "2015096201401",
+        "name": "ABDUL AZEEZ PARANGODATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUTHALAMADU",
+      "person": {
+        "id": "2015096201501",
+        "name": "KUNHALAN KUTTY V.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ADAKKAPPURA",
+      "person": {
+        "id": "2015096201601",
+        "name": "SAYIRABANU CHELLI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANDIKASALA",
+      "person": {
+        "id": "2015096201701",
+        "name": "UMMU AYIMAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANNILPILAKKAL",
+      "person": {
+        "id": "2015096201801",
+        "name": "JAMEELA C"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KACHERIPPADI",
+      "person": {
+        "id": "2015096201901",
+        "name": "MOHAMMED ASHRAF PARANCHERI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PARAMBILPADI",
+      "person": {
+        "id": "2015096202001",
+        "name": "NISHA PULIKKAL"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PANGATTUKUNDU",
+      "person": {
+        "id": "2015096202101",
+        "name": "P. ACHUTHAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PATHUMOOCHI",
+      "person": {
+        "id": "2015096202201",
+        "name": "NAFEESA ATTAKKULAYAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KOORIYADU",
+      "person": {
+        "id": "2015096202301",
+        "name": "MOHAMMED ALI E"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

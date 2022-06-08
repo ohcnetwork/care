@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346345420,
+  "date": "2019-08-21",
+  "name": "Thumpamon  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Pandalam",
+  "area": "7.84km",
+  "localbody_code": "G030702",
+  "no_of_wards": 13,
+  "population": 7644,
+  "male": 3598,
+  "female": 4046,
+  "population_density": 975,
+  "sex_ratio": 1125,
+  "literacy_rate": 94.09,
+  "literacy_rate_male": 96.53,
+  "literacy_rate_female": 91.97,
+  "president": "ZACHARIAHVARGHESE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUTTOM VADAKKU",
+      "person": {
+        "id": "2015041400101",
+        "name": "SUBHA KUMARY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUTTOM KIZHAKKU",
+      "person": {
+        "id": "2015041400201",
+        "name": "ANITHA KUMARY T.N"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADUVILEMURI VADAKKU",
+      "person": {
+        "id": "2015041400301",
+        "name": "SOSAMMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAMPILALI VADAKKU",
+      "person": {
+        "id": "2015041400401",
+        "name": "M.T THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MAMPILALI THEKKU",
+      "person": {
+        "id": "2015041400501",
+        "name": "THOMAS VARGHESE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAYALINUM PADINJARU VADAKKU",
+      "person": {
+        "id": "2015041400601",
+        "name": "ROSAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VIJAYAPURAM KIZHAKKU",
+      "person": {
+        "id": "2015041400701",
+        "name": "ADV. RAJESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUVILEMURI KIZHAKKU",
+      "person": {
+        "id": "2015041400801",
+        "name": "ROYKUTTY GEORGE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THUMPAMON",
+      "person": {
+        "id": "2015041400901",
+        "name": "ZACHARIAH VARGHESE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VIJAYAPURAM",
+      "person": {
+        "id": "2015041401001",
+        "name": "C.K SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTTOM THEKKU",
+      "person": {
+        "id": "2015041401101",
+        "name": "ASHARANI K.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTTOM",
+      "person": {
+        "id": "2015041401201",
+        "name": "ROSY MATHEW THAVALATHIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUTTOM PADINJARU",
+      "person": {
+        "id": "2015041401301",
+        "name": "SANDHYA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

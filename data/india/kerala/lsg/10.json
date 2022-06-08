@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566344878929,
+  "date": "2019-08-21",
+  "name": "Perumkadavila  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Perumkadavila",
+  "area": "304.29km",
+  "localbody_code": "B010900",
+  "no_of_wards": 14,
+  "population": 214801,
+  "male": 106938,
+  "female": 107863,
+  "population_density": 706,
+  "sex_ratio": 1009,
+  "literacy_rate": 87.04,
+  "literacy_rate_male": 90.5,
+  "literacy_rate_female": 83.63,
+  "president": "PSUJATHAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALLIKKADU",
+      "person": {
+        "id": "2015001000101",
+        "name": "L K KUMARI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AMBOORI",
+      "person": {
+        "id": "2015001000201",
+        "name": "SHAJAHAN S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLARADA",
+      "person": {
+        "id": "2015001000301",
+        "name": "STANLY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KILIYOOR",
+      "person": {
+        "id": "2015001000401",
+        "name": "P SUJATHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANACHAMOODU",
+      "person": {
+        "id": "2015001000501",
+        "name": "S P SUDHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNNATHUKAL",
+      "person": {
+        "id": "2015001000601",
+        "name": "K S SHEEBA RANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOLLAYIL",
+      "person": {
+        "id": "2015001000701",
+        "name": "SURAJA DEVI I"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANCHAVILAKAM",
+      "person": {
+        "id": "2015001000801",
+        "name": "C BABY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERUMKADAVILA",
+      "person": {
+        "id": "2015001000901",
+        "name": "G AJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALIYODU",
+      "person": {
+        "id": "2015001001001",
+        "name": "V SREEKANTAN NAIR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARYANCODE",
+      "person": {
+        "id": "2015001001101",
+        "name": "K K SAJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEMBOORU",
+      "person": {
+        "id": "2015001001201",
+        "name": "ARUN C P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OTTASEKHARAMANGALAM",
+      "person": {
+        "id": "2015001001301",
+        "name": "JOIS K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VAZHICHAL",
+      "person": {
+        "id": "2015001001401",
+        "name": "SHIJU S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

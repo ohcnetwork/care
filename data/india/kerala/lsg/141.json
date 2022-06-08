@@ -1,0 +1,149 @@
+{
+  "timeStamp": 1566345322905,
+  "date": "2019-08-21",
+  "name": "Thalipparamba  Block Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "555.17km",
+  "localbody_code": "B130300",
+  "no_of_wards": 16,
+  "population": 310756,
+  "male": 152613,
+  "female": 158143,
+  "population_density": 560,
+  "sex_ratio": 1036,
+  "literacy_rate": 90.19,
+  "literacy_rate_male": 94.8,
+  "literacy_rate_female": 85.79,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THERTHALLY",
+      "person": {
+        "id": "2015014100101",
+        "name": "JESSY SHIJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ALAKODE",
+      "person": {
+        "id": "2015014100201",
+        "name": "GOVINDAN V P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDAYAGIRI",
+      "person": {
+        "id": "2015014100301",
+        "name": "JOSE JOSEPH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAPPIMALA",
+      "person": {
+        "id": "2015014100401",
+        "name": "KAVITHA GOVINDAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARUVANCHAL",
+      "person": {
+        "id": "2015014100501",
+        "name": "V A RAHIM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NADUVIL",
+      "person": {
+        "id": "2015014100601",
+        "name": "MOLY SAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHUZHALI",
+      "person": {
+        "id": "2015014100701",
+        "name": "PRIYA T C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHENGALAYI",
+      "person": {
+        "id": "2015014100801",
+        "name": "P.K. CHITHRALEKHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURUMATHUR",
+      "person": {
+        "id": "2015014100901",
+        "name": "IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANNIYOOR",
+      "person": {
+        "id": "2015014101001",
+        "name": "LALITHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATTUVAM",
+      "person": {
+        "id": "2015014101101",
+        "name": "T LATHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARIYARAM",
+      "person": {
+        "id": "2015014101201",
+        "name": "RANJITH P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTYERI",
+      "person": {
+        "id": "2015014101301",
+        "name": "JEEJA C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADANNAPALLI",
+      "person": {
+        "id": "2015014101401",
+        "name": "K MOHANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EDAKKOM",
+      "person": {
+        "id": "2015014101501",
+        "name": "LAKSHMANAN M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHAPPARAPADAVU",
+      "person": {
+        "id": "2015014101601",
+        "name": "M INDIRA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

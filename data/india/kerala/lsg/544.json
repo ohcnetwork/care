@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346838265,
+  "date": "2019-08-21",
+  "name": "Pampady  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pampady",
+  "area": "30km",
+  "localbody_code": "G050704",
+  "no_of_wards": 20,
+  "population": 28954,
+  "male": 14313,
+  "female": 14641,
+  "population_density": 965,
+  "sex_ratio": 1023,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "PHILIPOSETHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "GRAMATTOM",
+      "person": {
+        "id": "2015054400101",
+        "name": "SUJATHASASINDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PURAKULAM",
+      "person": {
+        "id": "2015054400201",
+        "name": "RAJINI BIJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PONNAPPAN CITY",
+      "person": {
+        "id": "2015054400301",
+        "name": "KRISHNAKUMAR P L"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KATTAMKUNNU",
+      "person": {
+        "id": "2015054400401",
+        "name": "SEBASTIAN JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THANNIMATTOM",
+      "person": {
+        "id": "2015054400501",
+        "name": "ALEYAMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PORALOOR",
+      "person": {
+        "id": "2015054400601",
+        "name": "SHERLY THARIAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEVIKKUNNU",
+      "person": {
+        "id": "2015054400701",
+        "name": "THOMAS K JOHN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ORVAYAL",
+      "person": {
+        "id": "2015054400801",
+        "name": "REMANI M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUMBANTHANOM",
+      "person": {
+        "id": "2015054400901",
+        "name": "JACOB KURIAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MULEKKUNNU",
+      "person": {
+        "id": "2015054401001",
+        "name": "K. G. BABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTICKAL",
+      "person": {
+        "id": "2015054401101",
+        "name": "P M VARUGHESE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ELAKODINJI",
+      "person": {
+        "id": "2015054401201",
+        "name": "USHAKUMARY P S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAYATHUNKAL",
+      "person": {
+        "id": "2015054401301",
+        "name": "DR. SOSAKUTTY JACOB"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "SUBSTATION",
+      "person": {
+        "id": "2015054401401",
+        "name": "PHILIPOSE THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAKKAVU",
+      "person": {
+        "id": "2015054401501",
+        "name": "SANDHYA RAJESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KURIYANNOORKUNNU",
+      "person": {
+        "id": "2015054401601",
+        "name": "GIGIMOL P S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLIKUNNU",
+      "person": {
+        "id": "2015054401701",
+        "name": "JOLLY P. ISAC"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARIKKAMATTOM",
+      "person": {
+        "id": "2015054401802",
+        "name": "MADHUKUMAR K S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NONGAL",
+      "person": {
+        "id": "2015054401902",
+        "name": "RUBY THOMAS"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PATHAZHAKKUZHY",
+      "person": {
+        "id": "2015054402001",
+        "name": "SHIBU T PHILIPOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

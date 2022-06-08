@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346880208,
+  "date": "2019-08-21",
+  "name": "Thrickodithanam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Madappally",
+  "area": "13.31km",
+  "localbody_code": "G050903",
+  "no_of_wards": 20,
+  "population": 28468,
+  "male": 14138,
+  "female": 14330,
+  "population_density": 2139,
+  "sex_ratio": 1014,
+  "literacy_rate": 97,
+  "literacy_rate_male": 88,
+  "literacy_rate_female": 87,
+  "president": "NRAJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAMANCHIRA",
+      "person": {
+        "id": "2015055900101",
+        "name": "THOMAS (MOTTY) XAVIER (MULLASSERIL)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERICKAL",
+      "person": {
+        "id": "2015055900201",
+        "name": "BEENA IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AYARKATTUVAYAL",
+      "person": {
+        "id": "2015055900301",
+        "name": "SONY PHILIP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANIKANDAVAYAL",
+      "person": {
+        "id": "2015055900401",
+        "name": "PUSHPAVALLY A.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODINATTUKUNNU",
+      "person": {
+        "id": "2015055900501",
+        "name": "SNEHALATHA GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANKALA",
+      "person": {
+        "id": "2015055900601",
+        "name": "SUNIL K.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOKKOTTUCHIRA",
+      "person": {
+        "id": "2015055900701",
+        "name": "M K RAJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAILATHUPADY",
+      "person": {
+        "id": "2015055900801",
+        "name": "K.A JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMPUMPURAM",
+      "person": {
+        "id": "2015055900901",
+        "name": "ADV.AJITHA K.RAJU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AMARA",
+      "person": {
+        "id": "2015055901001",
+        "name": "ANILKUMAR M.R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ASSARIMUKKU",
+      "person": {
+        "id": "2015055901101",
+        "name": "SALI SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTAMURY",
+      "person": {
+        "id": "2015055901201",
+        "name": "MERCY ROY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ASHUPATHRY WARD",
+      "person": {
+        "id": "2015055901301",
+        "name": "NIDHIN JOSEPH ALLUMMOTTIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANIMURI",
+      "person": {
+        "id": "2015055901401",
+        "name": "SIBY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KILIMALA",
+      "person": {
+        "id": "2015055901501",
+        "name": "ANITHA OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARAMALA",
+      "person": {
+        "id": "2015055901601",
+        "name": "DIVYA BAIJU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUNNUMPURAM",
+      "person": {
+        "id": "2015055901701",
+        "name": "JAMES JOSEPH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUKKATTUPADY",
+      "person": {
+        "id": "2015055901801",
+        "name": "N RAJU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NALKKAVALA",
+      "person": {
+        "id": "2015055901901",
+        "name": "SUVARNAKUMARI K.N"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "POTTASSERI",
+      "person": {
+        "id": "2015055902001",
+        "name": "KALAMOL P.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

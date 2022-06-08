@@ -1,0 +1,397 @@
+{
+  "timeStamp": 1566345654575,
+  "date": "2019-08-21",
+  "name": "Vadakara  Municipality, Kozhikode District",
+  "district": "Kozhikode",
+  "area": "23.33km",
+  "localbody_code": "M110100",
+  "no_of_wards": 47,
+  "population": 68970,
+  "male": 32923,
+  "female": 36047,
+  "population_density": 3396,
+  "sex_ratio": 1036,
+  "literacy_rate": 91.42,
+  "literacy_rate_male": 95.56,
+  "literacy_rate_female": 87.48,
+  "chairman": "SHREEDHARAN.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KURIYADI",
+      "person": {
+        "id": "2015021400101",
+        "name": "VYASAN.P.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VEERANCHERI",
+      "person": {
+        "id": "2015021400201",
+        "name": "T.I.NASSAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KULANGARATH",
+      "person": {
+        "id": "2015021400301",
+        "name": "ASHOKAN.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAZHANGAVU",
+      "person": {
+        "id": "2015021400401",
+        "name": "SHILNA.M.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARAKKILADU",
+      "person": {
+        "id": "2015021400501",
+        "name": "MINI.M.M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAVANTHALA",
+      "person": {
+        "id": "2015021400601",
+        "name": "E.K.RAMANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VADAKARA THERU",
+      "person": {
+        "id": "2015021400701",
+        "name": "M.SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHOLAMVAYAL",
+      "person": {
+        "id": "2015021400801",
+        "name": "PRASEETHA.T.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTAPPARAMBU",
+      "person": {
+        "id": "2015021400901",
+        "name": "A.PREMAKUMARI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAKKUZHIYIL",
+      "person": {
+        "id": "2015021401001",
+        "name": "MUMTAZ.T.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUZHICHAL",
+      "person": {
+        "id": "2015021401101",
+        "name": "T.KELU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERUSSERY",
+      "person": {
+        "id": "2015021401201",
+        "name": "REENA JAYARAJ.P.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAKKOOL",
+      "person": {
+        "id": "2015021401301",
+        "name": "VALSALAN.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AKLOTH NADA",
+      "person": {
+        "id": "2015021401401",
+        "name": "V.GOPALAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARIKKOTH",
+      "person": {
+        "id": "2015021401501",
+        "name": "K.K.RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALLUNIRA",
+      "person": {
+        "id": "2015021401601",
+        "name": "DINESAN VELLARULLI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KURUMBAYIL",
+      "person": {
+        "id": "2015021401701",
+        "name": "VANAJA.K.K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "SIDHASRAMAM",
+      "person": {
+        "id": "2015021401801",
+        "name": "SHAKHILA.K"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNJANKUZHI",
+      "person": {
+        "id": "2015021401901",
+        "name": "E.ARAVINDAKSHAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PUTHIYAPPU",
+      "person": {
+        "id": "2015021402001",
+        "name": "KUNHIRAMAN.A"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ACHAMMANDI",
+      "person": {
+        "id": "2015021402101",
+        "name": "K.P.SHIBI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MAMBALLI",
+      "person": {
+        "id": "2015021402201",
+        "name": "P.GEETHA"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHEERAMVEEDU",
+      "person": {
+        "id": "2015021402301",
+        "name": "AJITHA.P.M"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "NARAYANA NAGARAM",
+      "person": {
+        "id": "2015021402401",
+        "name": "GOPALAKRISHNAN.K"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "EDODI",
+      "person": {
+        "id": "2015021402501",
+        "name": "SHOBHANA.P"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KARIMBANA",
+      "person": {
+        "id": "2015021402601",
+        "name": "SHREEDHARAN.K"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "CHEENAM VEEDU",
+      "person": {
+        "id": "2015021402701",
+        "name": "DINACHANDRAN.M"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MEPPAYIL",
+      "person": {
+        "id": "2015021402801",
+        "name": "GANGADHARAN.M.P"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KOKKANJATHU",
+      "person": {
+        "id": "2015021402901",
+        "name": "V.P.SINDHU"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "CHANDHANAM PARAMBA",
+      "person": {
+        "id": "2015021403001",
+        "name": "BEENA KUNIYIL"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "PUTHUPPANAM",
+      "person": {
+        "id": "2015021403101",
+        "name": "K.VALSALA"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "NALLADATH",
+      "person": {
+        "id": "2015021403201",
+        "name": "CHANDRI.K.T.K"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "PANIKKOTTI",
+      "person": {
+        "id": "2015021403301",
+        "name": "T.SUNANDA"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "MOORADU",
+      "person": {
+        "id": "2015021403401",
+        "name": "RAJANI.P"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "VELUTHA MALA",
+      "person": {
+        "id": "2015021403501",
+        "name": "SINDHU.P.K"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "KARUKAYIL",
+      "person": {
+        "id": "2015021403601",
+        "name": "P.M.MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "KAKKATTIYIL",
+      "person": {
+        "id": "2015021403701",
+        "name": "M.P.AHAMMAD"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "THURUTHIYIL",
+      "person": {
+        "id": "2015021403801",
+        "name": "SAMEERA.K.P"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "KAYYIL",
+      "person": {
+        "id": "2015021403901",
+        "name": "P.GIREESAN"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "AZHITHALA",
+      "person": {
+        "id": "2015021404001",
+        "name": "P.SAFIYA"
+      }
+    },
+    {
+      "ward_number": "41",
+      "name": "PURANGARA",
+      "person": {
+        "id": "2015021404101",
+        "name": "P.VIJAYI"
+      }
+    },
+    {
+      "ward_number": "42",
+      "name": "PAKKAYIL",
+      "person": {
+        "id": "2015021404201",
+        "name": "BIJU.M"
+      }
+    },
+    {
+      "ward_number": "43",
+      "name": "NADOL",
+      "person": {
+        "id": "2015021404301",
+        "name": "K.P.BINDU"
+      }
+    },
+    {
+      "ward_number": "44",
+      "name": "KOYILANDI VALAPPU",
+      "person": {
+        "id": "2015021404401",
+        "name": "P.K.JALALUDHEEN"
+      }
+    },
+    {
+      "ward_number": "45",
+      "name": "PANDIKASALA",
+      "person": {
+        "id": "2015021404501",
+        "name": "BUSHARA.K.M"
+      }
+    },
+    {
+      "ward_number": "46",
+      "name": "MUKKOLA",
+      "person": {
+        "id": "2015021404601",
+        "name": "NAFSAL.N.P.M"
+      }
+    },
+    {
+      "ward_number": "47",
+      "name": "MUKACHERI",
+      "person": {
+        "id": "2015021404701",
+        "name": "V.P.MUHAMMED RAFI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

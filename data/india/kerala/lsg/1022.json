@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348970160,
+  "date": "2019-08-21",
+  "name": "Nochad  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "23.64km",
+  "localbody_code": "G110602",
+  "no_of_wards": 17,
+  "population": 23231,
+  "male": 11593,
+  "female": 11638,
+  "population_density": 983,
+  "sex_ratio": 1004,
+  "literacy_rate": 91.1,
+  "literacy_rate_male": 95.68,
+  "literacy_rate_female": 86.64,
+  "president": "PMKUNHIKANNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AAKKOOPARAMB",
+      "person": {
+        "id": "2015102200101",
+        "name": "RINI E P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VALYAKKODE",
+      "person": {
+        "id": "2015102200201",
+        "name": "K T BALAKRISHNAN NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALYAKKODE EAST",
+      "person": {
+        "id": "2015102200301",
+        "name": "SARADA PATTERIKANDY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALOLIPPOYIL",
+      "person": {
+        "id": "2015102200401",
+        "name": "K T BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHENOLI",
+      "person": {
+        "id": "2015102200501",
+        "name": "P M KUNHIKANNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTTAD",
+      "person": {
+        "id": "2015102200601",
+        "name": "AMMAD MAVILAKANDY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADUKKANDIPPARA",
+      "person": {
+        "id": "2015102200701",
+        "name": "K P RATHEESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAYALMUKKU",
+      "person": {
+        "id": "2015102200801",
+        "name": "V M MANOJ"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALOOR",
+      "person": {
+        "id": "2015102200901",
+        "name": "CHANDRAN CHAITHRAM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VELLIYUR",
+      "person": {
+        "id": "2015102201001",
+        "name": "SHIJI V KOTTARAKKAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHALIKKARA",
+      "person": {
+        "id": "2015102201101",
+        "name": "AJITHA V K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MULIYANGAL",
+      "person": {
+        "id": "2015102201201",
+        "name": "SOBHANA VAISAKH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NANHOORA",
+      "person": {
+        "id": "2015102201301",
+        "name": "SANILA K M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "HEALTH CENTRE",
+      "person": {
+        "id": "2015102201401",
+        "name": "SUNITHA MALAYIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NOCHAD",
+      "person": {
+        "id": "2015102201501",
+        "name": "SUBAIDA CHERUVATTA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "RAMALLUR",
+      "person": {
+        "id": "2015102201601",
+        "name": "JITHESH K U"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALPATHUR",
+      "person": {
+        "id": "2015102201701",
+        "name": "GEETHA KALLAYI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

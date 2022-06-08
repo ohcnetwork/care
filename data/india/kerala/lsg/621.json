@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347089273,
+  "date": "2019-08-21",
+  "name": "Peermade  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Azhutta",
+  "area": "114.75km",
+  "localbody_code": "G060804",
+  "no_of_wards": 17,
+  "population": 25768,
+  "male": 12837,
+  "female": 12931,
+  "population_density": 225,
+  "sex_ratio": 1007,
+  "literacy_rate": 85,
+  "literacy_rate_male": 91,
+  "literacy_rate_female": 78,
+  "president": "SULEKHATS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "WOODLANDS",
+      "person": {
+        "id": "2015062100101",
+        "name": "PRAVEENA S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "GLENMARY",
+      "person": {
+        "id": "2015062100201",
+        "name": "SHYLAJA S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KODUVAKKARANAM",
+      "person": {
+        "id": "2015062100301",
+        "name": "VADIVEL RAJ"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEPPAKULAM",
+      "person": {
+        "id": "2015062100401",
+        "name": "VASANTHY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "LANDRUM",
+      "person": {
+        "id": "2015062100501",
+        "name": "ANNARAJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAMBANAR EAST",
+      "person": {
+        "id": "2015062100601",
+        "name": "RAJU VADUTHALA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "RANIKOVIL",
+      "person": {
+        "id": "2015062100701",
+        "name": "PEERU SAHIB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARADIKUZHY",
+      "person": {
+        "id": "2015062100801",
+        "name": "S VIDHUBALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATTUMUDI",
+      "person": {
+        "id": "2015062100901",
+        "name": "PARAMASIVAN M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATTUMALA",
+      "person": {
+        "id": "2015062101001",
+        "name": "LAWRANCE D"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAMBANAR WEST",
+      "person": {
+        "id": "2015062101101",
+        "name": "NAJEEB K N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLAR",
+      "person": {
+        "id": "2015062101201",
+        "name": "SULEKHA T S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MELAZHUTHA",
+      "person": {
+        "id": "2015062101301",
+        "name": "SMITHA MOL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PEERMADE",
+      "person": {
+        "id": "2015062101401",
+        "name": "REJANI VINOD"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CIVIL STATION",
+      "person": {
+        "id": "2015062101501",
+        "name": "ASWATHY C A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTYKKANAM",
+      "person": {
+        "id": "2015062101601",
+        "name": "BEENAMMA JACOB"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "STAG BROOK",
+      "person": {
+        "id": "2015062101701",
+        "name": "ALEX"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

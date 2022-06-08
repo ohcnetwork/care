@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345079481,
+  "date": "2019-08-21",
+  "name": "Vazhakulam  Block Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vazhakkulam",
+  "area": "131.64km",
+  "localbody_code": "B070500",
+  "no_of_wards": 15,
+  "population": 176776,
+  "male": 89155,
+  "female": 87621,
+  "population_density": 1343,
+  "sex_ratio": 983,
+  "literacy_rate": 88.57,
+  "literacy_rate_male": 93,
+  "literacy_rate_female": 84.08,
+  "president": "MUMDHAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ERUMATHALA",
+      "person": {
+        "id": "2015007000101",
+        "name": "ABDUL AZEEZ M K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KEEZHMAD",
+      "person": {
+        "id": "2015007000201",
+        "name": "RAMESHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARAMPILLY",
+      "person": {
+        "id": "2015007000301",
+        "name": "NOORJAHAN ZAKKEER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VANCHINAD",
+      "person": {
+        "id": "2015007000401",
+        "name": "RENESHA AJAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEDUMTHODU",
+      "person": {
+        "id": "2015007000501",
+        "name": "NAGEENA HASHIM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VENGOLA",
+      "person": {
+        "id": "2015007000601",
+        "name": "JOJI JACOB"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHELAKKULAM",
+      "person": {
+        "id": "2015007000701",
+        "name": "RAJU MATHARA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHAKKAMBALAM",
+      "person": {
+        "id": "2015007000801",
+        "name": "MARIAMMA JOHN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUKKATTUPADY",
+      "person": {
+        "id": "2015007000901",
+        "name": "RESMY.P.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SOUTH VAZHAKULAM",
+      "person": {
+        "id": "2015007001001",
+        "name": "RAMLATH ABDULKHADAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "GANDHINAGAR.",
+      "person": {
+        "id": "2015007001101",
+        "name": "M.A.ABDUL KHADER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDATHALA",
+      "person": {
+        "id": "2015007001201",
+        "name": "MUMDHAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NOCHIMA",
+      "person": {
+        "id": "2015007001301",
+        "name": "SWAPNA UNNI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHOORNIKARA",
+      "person": {
+        "id": "2015007001401",
+        "name": "C.K.JALEEL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ASOKAPURAM",
+      "person": {
+        "id": "2015007001501",
+        "name": "C.P.NOUSHAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

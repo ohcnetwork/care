@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345871028,
+  "date": "2019-08-21",
+  "name": "Pothencode  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kzhakuttam",
+  "area": "20.85km",
+  "localbody_code": "G010704",
+  "no_of_wards": 18,
+  "population": 24995,
+  "male": 12266,
+  "female": 12729,
+  "population_density": 1199,
+  "sex_ratio": 1038,
+  "literacy_rate": 89.22,
+  "literacy_rate_male": 93.99,
+  "literacy_rate_female": 84.68,
+  "president": "K.VENUGOPALANNAIR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANALAKAM",
+      "person": {
+        "id": "2015027200101",
+        "name": "DILEEP KUMAR. P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NETHAJIPURAM",
+      "person": {
+        "id": "2015027200201",
+        "name": "NETHAJIPURAM AJITH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THACHAPPALLY",
+      "person": {
+        "id": "2015027200301",
+        "name": "USHA KUMARI. S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAVARA AMBALAM",
+      "person": {
+        "id": "2015027200401",
+        "name": "P. ASHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULIVEEDU",
+      "person": {
+        "id": "2015027200501",
+        "name": "M. BALAMURALI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POTHENCODE TOWN",
+      "person": {
+        "id": "2015027200601",
+        "name": "S.V. SAJITH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PLAMOODU",
+      "person": {
+        "id": "2015027200701",
+        "name": "ANITHAKUMARI. L"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AYIROOPARA",
+      "person": {
+        "id": "2015027200801",
+        "name": "T. RAJEEV KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MELEVILA",
+      "person": {
+        "id": "2015027200901",
+        "name": "SARITHA.N.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KATTAYIKKONAM",
+      "person": {
+        "id": "2015027201001",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EDATHARA",
+      "person": {
+        "id": "2015027201101",
+        "name": "SHEENA MADHU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAROOR",
+      "person": {
+        "id": "2015027201201",
+        "name": "GIRIJA KUMARI.V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANIMOOLA",
+      "person": {
+        "id": "2015027201301",
+        "name": "C. HARIKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANNARA",
+      "person": {
+        "id": "2015027201401",
+        "name": "P. PRAMOD"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANJAMALA",
+      "person": {
+        "id": "2015027201501",
+        "name": "S. RIYAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALLOOR",
+      "person": {
+        "id": "2015027201601",
+        "name": "SABEENA. A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLUVETTY",
+      "person": {
+        "id": "2015027201701",
+        "name": "K. VENUGOPALAN NAIR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VENGODE",
+      "person": {
+        "id": "2015027201801",
+        "name": "PADMINI. A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

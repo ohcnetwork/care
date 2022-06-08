@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347463575,
+  "date": "2019-08-21",
+  "name": "Mullurkara  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vadakkamchery",
+  "area": "44.28km",
+  "localbody_code": "G080304",
+  "no_of_wards": 14,
+  "population": 15987,
+  "male": 7628,
+  "female": 8359,
+  "population_density": 361,
+  "sex_ratio": 1095,
+  "literacy_rate": 85.24,
+  "literacy_rate_male": 89.86,
+  "literacy_rate_female": 81.1,
+  "president": "M.H.ABDULSLAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANJIRASSERY",
+      "person": {
+        "id": "2015072900101",
+        "name": "P.R RATHEESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IRUNNILAMCODE",
+      "person": {
+        "id": "2015072900201",
+        "name": "JAYASREE. V.M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "S N NAGAR",
+      "person": {
+        "id": "2015072900301",
+        "name": "MINI RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AMBALAMKUNNU",
+      "person": {
+        "id": "2015072900401",
+        "name": "PRABHAKARAN.N.G"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ATTUR",
+      "person": {
+        "id": "2015072900501",
+        "name": "BINDU MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANAPPADI",
+      "person": {
+        "id": "2015072900601",
+        "name": "JASEEL. K.A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AMBALANADA PARAPPURAM",
+      "person": {
+        "id": "2015072900701",
+        "name": "N.S. VARGHEESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "COMPANIPPADY",
+      "person": {
+        "id": "2015072900801",
+        "name": "SOBHA MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALAVU KARAKKAD",
+      "person": {
+        "id": "2015072900901",
+        "name": "MUHAMMED MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALAVU KOLLAMMAKKU",
+      "person": {
+        "id": "2015072901001",
+        "name": "M.H. ABDUL SLAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VANDIPPARAMBU",
+      "person": {
+        "id": "2015072901101",
+        "name": "SMITHA. M.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MULLURKKARA",
+      "person": {
+        "id": "2015072901201",
+        "name": "AYSHA UMMER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VAZHAKODE",
+      "person": {
+        "id": "2015072901301",
+        "name": "P.A. ABDUL SALAM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANNAMPARA",
+      "person": {
+        "id": "2015072901401",
+        "name": "RAMANY VISHWANATHAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

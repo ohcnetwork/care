@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348864752,
+  "date": "2019-08-21",
+  "name": "Chorode  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Vadakara",
+  "area": "13.41km",
+  "localbody_code": "G110102",
+  "no_of_wards": 21,
+  "population": 32947,
+  "male": 15958,
+  "female": 16989,
+  "population_density": 2457,
+  "sex_ratio": 1065,
+  "literacy_rate": 90.79,
+  "literacy_rate_male": 95.1,
+  "literacy_rate_female": 86.81,
+  "president": "VIJILAAMBALATHIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "RAYARANGOTH",
+      "person": {
+        "id": "2015099500101",
+        "name": "VALSAN P.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "K.T BAZAR",
+      "person": {
+        "id": "2015099500201",
+        "name": "SAJITH KUMAR K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLANGATTU THAZHA",
+      "person": {
+        "id": "2015099500301",
+        "name": "K.K BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALLIKKAD",
+      "person": {
+        "id": "2015099500401",
+        "name": "BEENA N"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VAIKKILASSERY VADAKKU",
+      "person": {
+        "id": "2015099500501",
+        "name": "REVATHI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAIKKILASSERY THEKKU",
+      "person": {
+        "id": "2015099500601",
+        "name": "BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAIKKILASSERY",
+      "person": {
+        "id": "2015099500701",
+        "name": "LISSY P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHEN THERU",
+      "person": {
+        "id": "2015099500801",
+        "name": "INDIRA P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURIKKILAD",
+      "person": {
+        "id": "2015099500901",
+        "name": "SHYAMALA P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHORODE EAST",
+      "person": {
+        "id": "2015099501001",
+        "name": "RAJESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VAIKKILASSERY THERU",
+      "person": {
+        "id": "2015099501101",
+        "name": "K.K THULASI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCHERIKKAD",
+      "person": {
+        "id": "2015099501201",
+        "name": "AZEEZ MASTER O.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALLIKKAD BALAVADI",
+      "person": {
+        "id": "2015099501301",
+        "name": "REEJA P.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHENDHAMANGALAM",
+      "person": {
+        "id": "2015099501401",
+        "name": "JISHA K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NELLIYANKARA",
+      "person": {
+        "id": "2015099501501",
+        "name": "VIJILA AMBALATHIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ERAPURAM",
+      "person": {
+        "id": "2015099501601",
+        "name": "SIBINLA P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KURIYADI",
+      "person": {
+        "id": "2015099501701",
+        "name": "P SHAIMRAJ"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MEETHALANGADI",
+      "person": {
+        "id": "2015099501801",
+        "name": "MUHAMMED IQBAL V.C"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHORODE",
+      "person": {
+        "id": "2015099501901",
+        "name": "K.K NALINI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MUTTUNGAL",
+      "person": {
+        "id": "2015099502001",
+        "name": "SHYJA V"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MUTTUNGAL BEACH",
+      "person": {
+        "id": "2015099502101",
+        "name": "JAMEELA V.C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

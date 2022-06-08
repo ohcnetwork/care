@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344991383,
+  "date": "2019-08-21",
+  "name": "Haripad  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Harippad",
+  "area": "112.04km",
+  "localbody_code": "B040900",
+  "no_of_wards": 13,
+  "population": 163350,
+  "male": 78892,
+  "female": 84458,
+  "population_density": 1458,
+  "sex_ratio": 1071,
+  "literacy_rate": 93,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 90,
+  "president": "BIJUKOLLASSERY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARUVATTA NORTH",
+      "person": {
+        "id": "2015004300101",
+        "name": "SREELATHA MOHANAKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERUTHANA",
+      "person": {
+        "id": "2015004300201",
+        "name": "GIRIJA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VEEYAPURAM",
+      "person": {
+        "id": "2015004300301",
+        "name": "JOBLE PERUMAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NEENDOOR",
+      "person": {
+        "id": "2015004300401",
+        "name": "RAICHAL VARGHESE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALLIPPAD",
+      "person": {
+        "id": "2015004300501",
+        "name": "MINI KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUTHANA ANARI",
+      "person": {
+        "id": "2015004300601",
+        "name": "ANILA.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THAMALLACKAL",
+      "person": {
+        "id": "2015004300701",
+        "name": "U.DILEEP"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUMARAPURAM",
+      "person": {
+        "id": "2015004300801",
+        "name": "GLEMI VALADIYIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARTHIKAPPALLY",
+      "person": {
+        "id": "2015004300901",
+        "name": "BIJU KOLLASSERY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARTHIKAPPALLY WEST",
+      "person": {
+        "id": "2015004301001",
+        "name": "B. DEEPAK"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THRIKKUNNAPPUZHA",
+      "person": {
+        "id": "2015004301102",
+        "name": "SREEKALA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PALLANA",
+      "person": {
+        "id": "2015004301201",
+        "name": "O.M.SHAREEF"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARUVATTA SOUTH",
+      "person": {
+        "id": "2015004301301",
+        "name": "SURESH.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

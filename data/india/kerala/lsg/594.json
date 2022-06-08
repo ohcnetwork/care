@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346984892,
+  "date": "2019-08-21",
+  "name": "Kodikulam  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "18.92km",
+  "localbody_code": "G060403",
+  "no_of_wards": 13,
+  "population": 12886,
+  "male": 6472,
+  "female": 6414,
+  "population_density": 681,
+  "sex_ratio": 991,
+  "literacy_rate": 94,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 93,
+  "president": "SHERLYANTONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARAPUZHA",
+      "person": {
+        "id": "2015059400101",
+        "name": "LUCY JAMES"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THENNATHOOR",
+      "person": {
+        "id": "2015059400201",
+        "name": "GEORGE JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALIYAR ESTATE",
+      "person": {
+        "id": "2015059400301",
+        "name": "SUNNY K. J."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KODUVELY",
+      "person": {
+        "id": "2015059400401",
+        "name": "THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODIKULAM",
+      "person": {
+        "id": "2015059400501",
+        "name": "SHAJI THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERIYANPARA",
+      "person": {
+        "id": "2015059400601",
+        "name": "EMILY BABY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLAMCHIRA",
+      "person": {
+        "id": "2015059400701",
+        "name": "ANSHAD K. A."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NEDUMATTOM",
+      "person": {
+        "id": "2015059400801",
+        "name": "SHERLY ANTONY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VANDAMATTOM",
+      "person": {
+        "id": "2015059400901",
+        "name": "JAISAMMA PAULSON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "IRAMPILLY",
+      "person": {
+        "id": "2015059401001",
+        "name": "SUJATHA SALIKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERUTHOTTINKARA",
+      "person": {
+        "id": "2015059401101",
+        "name": "SINDHU SUNIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "IRAMPILLY WEST",
+      "person": {
+        "id": "2015059401201",
+        "name": "JOSE MANCHERIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "WEST KODIKULAM",
+      "person": {
+        "id": "2015059401301",
+        "name": "USHA THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

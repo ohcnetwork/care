@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348851618,
+  "date": "2019-08-21",
+  "name": "Maranchery  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Perumpadappu",
+  "area": "20.47km",
+  "localbody_code": "G101502",
+  "no_of_wards": 19,
+  "population": 28991,
+  "male": 13797,
+  "female": 15194,
+  "population_density": 1416,
+  "sex_ratio": 1101,
+  "literacy_rate": 88.26,
+  "literacy_rate_male": 92.7,
+  "literacy_rate_female": 83.83,
+  "president": "E.SINDHU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANJIRAMUKKU WEST",
+      "person": {
+        "id": "2015099000101",
+        "name": "HAMSA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANJIRAMUKKU EAST",
+      "person": {
+        "id": "2015099000201",
+        "name": "ANEEFA PALAKKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARINGALLATHANI",
+      "person": {
+        "id": "2015099000301",
+        "name": "SABIRA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARAKKAD",
+      "person": {
+        "id": "2015099000401",
+        "name": "RATHEESH KAKKOLLI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANAMPAD",
+      "person": {
+        "id": "2015099000501",
+        "name": "KADEEJA KOYA P.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VADAMUKKU",
+      "person": {
+        "id": "2015099000601",
+        "name": "SANGEETHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ADHIKARIPPADI",
+      "person": {
+        "id": "2015099000701",
+        "name": "LEENA MOHAMMADALI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THURUVANAM",
+      "person": {
+        "id": "2015099000801",
+        "name": "E. BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THAMALASSERY",
+      "person": {
+        "id": "2015099000901",
+        "name": "NOUSHAD. M.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MARANCHERY CENTER",
+      "person": {
+        "id": "2015099001001",
+        "name": "SREEJITH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARICHAKAM SOUTH",
+      "person": {
+        "id": "2015099001101",
+        "name": "T.K. ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARICHAKAM NORTH",
+      "person": {
+        "id": "2015099001201",
+        "name": "SMITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUKKALA",
+      "person": {
+        "id": "2015099001301",
+        "name": "E. SINDHU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANAMPAD WEST",
+      "person": {
+        "id": "2015099001401",
+        "name": "ARAMUGHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AVUNDITHARA",
+      "person": {
+        "id": "2015099001501",
+        "name": "MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PURANGU",
+      "person": {
+        "id": "2015099001601",
+        "name": "SHYNA. K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PADINJATTUMURI",
+      "person": {
+        "id": "2015099001701",
+        "name": "SABIRA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AVENKOTTA",
+      "person": {
+        "id": "2015099001801",
+        "name": "VINITHA. K"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNDUKADAVU",
+      "person": {
+        "id": "2015099001901",
+        "name": "RAHILA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

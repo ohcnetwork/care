@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349127660,
+  "date": "2019-08-21",
+  "name": "Thirunelly  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Mananthavady",
+  "area": "201.16km",
+  "localbody_code": "G120103",
+  "no_of_wards": 17,
+  "population": 23529,
+  "male": 11910,
+  "female": 11619,
+  "population_density": 117,
+  "sex_ratio": 975,
+  "literacy_rate": 68.65,
+  "literacy_rate_male": 74.89,
+  "literacy_rate_female": 62.3,
+  "president": "MAYADEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THIRUNELLY",
+      "person": {
+        "id": "2015107300101",
+        "name": "PRIYA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "APPAPPARA",
+      "person": {
+        "id": "2015107300202",
+        "name": "BINDHU SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARAMANGALAM",
+      "person": {
+        "id": "2015107300301",
+        "name": "P.V BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARANAPPARA",
+      "person": {
+        "id": "2015107300401",
+        "name": "K.ANANTHAN NAMBIAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOLPETTY",
+      "person": {
+        "id": "2015107300501",
+        "name": "MAYADEVI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUTHIRAKODE",
+      "person": {
+        "id": "2015107300601",
+        "name": "HAREENDRAN.P.N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANAVALLY",
+      "person": {
+        "id": "2015107300701",
+        "name": "SREEJA.M.B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALATHOOR",
+      "person": {
+        "id": "2015107300801",
+        "name": "THANKA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "BEGUR",
+      "person": {
+        "id": "2015107300901",
+        "name": "K.SIJITH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BAVALI",
+      "person": {
+        "id": "2015107301001",
+        "name": "VALSALA KUMARI.C.T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHELOOR",
+      "person": {
+        "id": "2015107301101",
+        "name": "GOPI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KATTIKULAM",
+      "person": {
+        "id": "2015107301201",
+        "name": "VIJILA PRADEEP"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OLIYODE",
+      "person": {
+        "id": "2015107301301",
+        "name": "DHANYA BIJU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDAYOORKUNNU",
+      "person": {
+        "id": "2015107301401",
+        "name": "SALY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THRISSILERY",
+      "person": {
+        "id": "2015107301501",
+        "name": "VISHNU.A.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAITHAVALLY",
+      "person": {
+        "id": "2015107301601",
+        "name": "RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUTHUMARY",
+      "person": {
+        "id": "2015107301701",
+        "name": "SREEJA REJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

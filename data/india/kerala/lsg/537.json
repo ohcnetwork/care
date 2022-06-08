@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346814787,
+  "date": "2019-08-21",
+  "name": "Thalappalam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Erattupetta",
+  "area": "22.73km",
+  "localbody_code": "G050606",
+  "no_of_wards": 13,
+  "population": 12150,
+  "male": 6228,
+  "female": 5922,
+  "population_density": 535,
+  "sex_ratio": 951,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "INDIRARADHAKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NARIANGANAM",
+      "person": {
+        "id": "2015053700101",
+        "name": "JOY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANJOOTTIMANGALAM",
+      "person": {
+        "id": "2015053700201",
+        "name": "SHYNI MICHAEL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOVATHANI",
+      "person": {
+        "id": "2015053700301",
+        "name": "ANUPAMA VISWANATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALATHUKKADAVU",
+      "person": {
+        "id": "2015053700401",
+        "name": "SUBASH GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ILAPPUNKAL",
+      "person": {
+        "id": "2015053700501",
+        "name": "INDIRA RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THALAPPALAM",
+      "person": {
+        "id": "2015053700601",
+        "name": "LAKSHMIKUTTYAMMA K.A."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "INCHOLIKKAVU",
+      "person": {
+        "id": "2015053700701",
+        "name": "MARYMOL MICHAEL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANACKAPPALAM",
+      "person": {
+        "id": "2015053700801",
+        "name": "DEVAYANI C.A."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PLASSANAL",
+      "person": {
+        "id": "2015053700901",
+        "name": "C.G. KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MELAMPARA",
+      "person": {
+        "id": "2015053701001",
+        "name": "SEBIN SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KEEZHAMPARA",
+      "person": {
+        "id": "2015053701101",
+        "name": "SAJEEV P.C."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJIRAPPARA",
+      "person": {
+        "id": "2015053701201",
+        "name": "C.B. SAILAJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EETTAKKADU",
+      "person": {
+        "id": "2015053701301",
+        "name": "JAISON JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

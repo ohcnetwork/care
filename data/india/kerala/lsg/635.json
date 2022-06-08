@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347130610,
+  "date": "2019-08-21",
+  "name": "Thuravoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Angamally",
+  "area": "12.13km",
+  "localbody_code": "G070302",
+  "no_of_wards": 14,
+  "population": 17498,
+  "male": 8847,
+  "female": 8651,
+  "population_density": 1419,
+  "sex_ratio": 978,
+  "literacy_rate": 90.35,
+  "literacy_rate_male": 93.41,
+  "literacy_rate_female": 87.25,
+  "president": "K.YVARGHESE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VATHAKKAD",
+      "person": {
+        "id": "2015063500101",
+        "name": "M. M. JAYSON"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015063500201",
+        "name": "T. T. POULOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THALAKKOTTUPARAMBU",
+      "person": {
+        "id": "2015063500301",
+        "name": "LATHA SIVAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "YORDHANAPURAM",
+      "person": {
+        "id": "2015063500401",
+        "name": "K.Y VARGHESE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SIVAJIPURAM",
+      "person": {
+        "id": "2015063500501",
+        "name": "BINDU VALSAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERINGAMPARAMBU",
+      "person": {
+        "id": "2015063500601",
+        "name": "DHANYA BINU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIDANGOOR",
+      "person": {
+        "id": "2015063500701",
+        "name": "JOSEPH PARECATTIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIDANGOOR SOUTH",
+      "person": {
+        "id": "2015063500801",
+        "name": "VINCY JOY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIDANGOOR WEST",
+      "person": {
+        "id": "2015063500901",
+        "name": "JINTO VARGHESE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIDANGOOR NORTH",
+      "person": {
+        "id": "2015063501001",
+        "name": "RAJI BINEESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAZHOPONGUE",
+      "person": {
+        "id": "2015063501101",
+        "name": "K .V SANTHOSH PANICKER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KIDANGOOR EAST",
+      "person": {
+        "id": "2015063501201",
+        "name": "LISSY MATHEW"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THURAVOOR WEST",
+      "person": {
+        "id": "2015063501301",
+        "name": "TESSY POLY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THURAVOOR TOWN",
+      "person": {
+        "id": "2015063501401",
+        "name": "SILVI BAIJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

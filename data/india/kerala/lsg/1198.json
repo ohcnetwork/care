@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349569695,
+  "date": "2019-08-21",
+  "name": "Ajanur  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "27.83km",
+  "localbody_code": "G140402",
+  "no_of_wards": 23,
+  "population": 42467,
+  "male": 20565,
+  "female": 21902,
+  "population_density": 1526,
+  "sex_ratio": 1065,
+  "literacy_rate": 82.71,
+  "literacy_rate_male": 89.6,
+  "literacy_rate_female": 76.37,
+  "president": "PODIPALLATHDAMODARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "RAVANESHWARAM",
+      "person": {
+        "id": "2015119800101",
+        "name": "PODIPALLATH DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAMAGIRI",
+      "person": {
+        "id": "2015119800201",
+        "name": "SHANTHAKUMARI T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELASHWARAM",
+      "person": {
+        "id": "2015119800301",
+        "name": "OMANA V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MADIYAN",
+      "person": {
+        "id": "2015119800401",
+        "name": "SHEEBA UMMER ."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANIKOTH",
+      "person": {
+        "id": "2015119800501",
+        "name": "P ABDUL KAREEM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ADOT",
+      "person": {
+        "id": "2015119800601",
+        "name": "BINDU P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLIKOTH",
+      "person": {
+        "id": "2015119800701",
+        "name": "SATHI K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KATTUKULANGARA",
+      "person": {
+        "id": "2015119800801",
+        "name": "T MADHAVAN MASTER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MAVUNGAL",
+      "person": {
+        "id": "2015119800901",
+        "name": "GEETHA BABURAJ"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "RAMNAGAR",
+      "person": {
+        "id": "2015119801001",
+        "name": "PADMANABHAN P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLOT",
+      "person": {
+        "id": "2015119801101",
+        "name": "GOPALAN K M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KIZHAKUMKARA",
+      "person": {
+        "id": "2015119801201",
+        "name": "K MOHANAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THULICHERY",
+      "person": {
+        "id": "2015119801301",
+        "name": "M V RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ATHINHAL",
+      "person": {
+        "id": "2015119801401",
+        "name": "HAMEED CHERAKKADATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ITTAMMAL",
+      "person": {
+        "id": "2015119801501",
+        "name": "PARVATHI ."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOLAVAYAL",
+      "person": {
+        "id": "2015119801601",
+        "name": "KUNHAMINA C"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AJANUR KADAPPURAM",
+      "person": {
+        "id": "2015119801701",
+        "name": "SHEEBA A K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUTTUMTHALA",
+      "person": {
+        "id": "2015119801801",
+        "name": "HAJARA ."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MATTUMMAL",
+      "person": {
+        "id": "2015119801901",
+        "name": "ANITHA GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MALLIKAMAD",
+      "person": {
+        "id": "2015119802001",
+        "name": "K SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHITHARI",
+      "person": {
+        "id": "2015119802101",
+        "name": "P P NASEEMA TEACHER"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "BARIKKAD",
+      "person": {
+        "id": "2015119802201",
+        "name": "BASHEER VELLIKOTH"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "MUKKOOD",
+      "person": {
+        "id": "2015119802301",
+        "name": "SAKUNTHALA P A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

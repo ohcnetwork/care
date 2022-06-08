@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348503473,
+  "date": "2019-08-21",
+  "name": "Vazhikkadavu  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "114.38km",
+  "localbody_code": "G100104",
+  "no_of_wards": 23,
+  "population": 38108,
+  "male": 18621,
+  "female": 19487,
+  "population_density": 334,
+  "sex_ratio": 1047,
+  "literacy_rate": 87.19,
+  "literacy_rate_male": 90.55,
+  "literacy_rate_female": 83.52,
+  "president": "SUKUEA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THANNIKKADAVU",
+      "person": {
+        "id": "2015090000101",
+        "name": "SAKEER POKKAVIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MADHALAPPARA",
+      "person": {
+        "id": "2015090000201",
+        "name": "JASEENA P K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARUTHA VENGAPADAM",
+      "person": {
+        "id": "2015090000301",
+        "name": "SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VENDEKKUMPOTTY",
+      "person": {
+        "id": "2015090000401",
+        "name": "SUKU E A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MAMANKARA",
+      "person": {
+        "id": "2015090000501",
+        "name": "BINDHU M S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAMBLAKALLU",
+      "person": {
+        "id": "2015090000601",
+        "name": "ANIL RAHMAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANALPADAM",
+      "person": {
+        "id": "2015090000701",
+        "name": "HAFSATH P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARAKODE",
+      "person": {
+        "id": "2015090000801",
+        "name": "JAYAPRAKASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELLAKKATTA",
+      "person": {
+        "id": "2015090000901",
+        "name": "PADMAVATHY P V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAZHIKKADAVU",
+      "person": {
+        "id": "2015090001001",
+        "name": "HAKEEM P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVATHIPOYIL",
+      "person": {
+        "id": "2015090001101",
+        "name": "MUHAMMED ASHRAF"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCHAYATANGHADI",
+      "person": {
+        "id": "2015090001201",
+        "name": "MINI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALLIKKADU",
+      "person": {
+        "id": "2015090001301",
+        "name": "SAVITHRI P T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ALAPOYIL",
+      "person": {
+        "id": "2015090001401",
+        "name": "SUBAIDA M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANIMOOLY",
+      "person": {
+        "id": "2015090001501",
+        "name": "SANDHYA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VARAKULAM",
+      "person": {
+        "id": "2015090001601",
+        "name": "ASOKKUMAR K K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALAD",
+      "person": {
+        "id": "2015090001701",
+        "name": "ABDUL RAHIM ( MANU)"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUNDA",
+      "person": {
+        "id": "2015090001801",
+        "name": "ABDUL KAREEM T"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MODAPOYIKA",
+      "person": {
+        "id": "2015090001901",
+        "name": "BINEESH JOSE   K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "NARIVALAMUNDA",
+      "person": {
+        "id": "2015090002001",
+        "name": "BABU P"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NAROKKAVU",
+      "person": {
+        "id": "2015090002101",
+        "name": "RASIYA V P"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MEKKORAVA",
+      "person": {
+        "id": "2015090002201",
+        "name": "SIFNA"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUNNUMMALPOTTI",
+      "person": {
+        "id": "2015090002301",
+        "name": "ANITHA BIJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349382133,
+  "date": "2019-08-21",
+  "name": "Dharmadam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thalassery",
+  "area": "10.66km",
+  "localbody_code": "G130701",
+  "no_of_wards": 18,
+  "population": 26705,
+  "male": 12802,
+  "female": 13903,
+  "population_density": 2505,
+  "sex_ratio": 1086,
+  "literacy_rate": 94.73,
+  "literacy_rate_male": 97.59,
+  "literacy_rate_female": 92.11,
+  "president": "BABYSAROJA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MELUR PADINJARU",
+      "person": {
+        "id": "2015114500101",
+        "name": "SMITHA. M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MELUR KIZHAKKU",
+      "person": {
+        "id": "2015114500201",
+        "name": "MOORKOTH SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GUMTTIMUKKU",
+      "person": {
+        "id": "2015114500301",
+        "name": "MINI. K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "INDUSTRIAL ESTATE",
+      "person": {
+        "id": "2015114500401",
+        "name": "T. K. PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARADIYIL",
+      "person": {
+        "id": "2015114500501",
+        "name": "PRAMODAN. K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANDALOOR",
+      "person": {
+        "id": "2015114500601",
+        "name": "RAMESHAN. P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHIRAKKUNI KIZHAKKU",
+      "person": {
+        "id": "2015114500701",
+        "name": "BABY SAROJA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAIRALI",
+      "person": {
+        "id": "2015114500801",
+        "name": "MOHANAN. M.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "COLONY KIZHAKKE PALAYAD",
+      "person": {
+        "id": "2015114500902",
+        "name": "DIVYA CHELLATH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OZHAYIL BHAGAM",
+      "person": {
+        "id": "2015114501001",
+        "name": "FAISANA. C. K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAREEKADAVU",
+      "person": {
+        "id": "2015114501101",
+        "name": "C. RAHMATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SWAMIKKUNNU",
+      "person": {
+        "id": "2015114501201",
+        "name": "PREEJA. V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHATHODAM",
+      "person": {
+        "id": "2015114501301",
+        "name": "SHEEJA. K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEEROTH",
+      "person": {
+        "id": "2015114501401",
+        "name": "JASEELA. C. H"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EATHAMANI",
+      "person": {
+        "id": "2015114501501",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELLOZHUKKU",
+      "person": {
+        "id": "2015114501601",
+        "name": "MAJEED"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NARIVAYAL",
+      "person": {
+        "id": "2015114501701",
+        "name": "AJITHA."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ADIVAYAL",
+      "person": {
+        "id": "2015114501801",
+        "name": "JANARDHANAN. V. M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

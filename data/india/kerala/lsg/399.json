@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566346301204,
+  "date": "2019-08-21",
+  "name": "Ranni Angadi  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "30.72km",
+  "localbody_code": "G030503",
+  "no_of_wards": 13,
+  "population": 15481,
+  "male": 7661,
+  "female": 7820,
+  "population_density": 504,
+  "sex_ratio": 1021,
+  "literacy_rate": 96.61,
+  "literacy_rate_male": 97.26,
+  "literacy_rate_female": 95.97,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NELLICKAMON",
+      "person": {
+        "id": "2015039900102",
+        "name": "MATHEWS ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHAVARAMPLAVU",
+      "person": {
+        "id": "2015039900201",
+        "name": "SINI ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANNARATHARA",
+      "person": {
+        "id": "2015039900301",
+        "name": "SHIBU SAMUEL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALIYAKAVU",
+      "person": {
+        "id": "2015039900401",
+        "name": "DEENAMMA SABASTIAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ETTICHUVADU",
+      "person": {
+        "id": "2015039900501",
+        "name": "ANNAMMA (KOCHUMOL POOVATHOOR)"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULLOLI",
+      "person": {
+        "id": "2015039900601",
+        "name": "P M SHAMSUDEIN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANGADI TOWN",
+      "person": {
+        "id": "2015039900701",
+        "name": "SURESH B (SURESH HOTEL)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARIMKUTTY",
+      "person": {
+        "id": "2015039900802",
+        "name": "DEEPA SAJI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MENAMTHOTTAM",
+      "person": {
+        "id": "2015039900901",
+        "name": "PREETHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULLOOPRAM",
+      "person": {
+        "id": "2015039901001",
+        "name": "SARIKA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VARAVOOR",
+      "person": {
+        "id": "2015039901101",
+        "name": "ANITHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOVANMALA",
+      "person": {
+        "id": "2015039901201",
+        "name": "ASHA T THAMPI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PULLAMPALLY",
+      "person": {
+        "id": "2015039901301",
+        "name": "SONY MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

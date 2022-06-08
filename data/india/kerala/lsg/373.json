@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346211488,
+  "date": "2019-08-21",
+  "name": "Kaviyoor  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Mallapally",
+  "area": "12.67km",
+  "localbody_code": "G030102",
+  "no_of_wards": 14,
+  "population": 16311,
+  "male": 8025,
+  "female": 8286,
+  "population_density": 1287,
+  "sex_ratio": 1033,
+  "literacy_rate": 96.35,
+  "literacy_rate_male": 97.67,
+  "literacy_rate_female": 95.09,
+  "president": "ELIZABETHMATHEW",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AIKKUZHI",
+      "person": {
+        "id": "2015037300101",
+        "name": "SAKUNTHALA K. G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUNDIYAPPALLY",
+      "person": {
+        "id": "2015037300201",
+        "name": "VARUGHESE HANOCK"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUNNILAM",
+      "person": {
+        "id": "2015037300301",
+        "name": "JESSY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NAZHIPPARA",
+      "person": {
+        "id": "2015037300401",
+        "name": "RETNAMANIAMMA P. S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOTTOOR",
+      "person": {
+        "id": "2015037300501",
+        "name": "JOSEPH JOHN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MATHIMALA",
+      "person": {
+        "id": "2015037300601",
+        "name": "UMADEVI S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAVIYOOR",
+      "person": {
+        "id": "2015037300701",
+        "name": "BAIJU KUTTAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NJALBHAGOM",
+      "person": {
+        "id": "2015037300801",
+        "name": "T. K. THULASIDAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THOTTABHAGOM",
+      "person": {
+        "id": "2015037300901",
+        "name": "ELIZABETH MATHEW"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANACKACHIRA",
+      "person": {
+        "id": "2015037301001",
+        "name": "DEEPTHI KURIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PADINJATTUMSSERY",
+      "person": {
+        "id": "2015037301101",
+        "name": "AJITHA THAMPY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POLACHIRA",
+      "person": {
+        "id": "2015037301201",
+        "name": "RAJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAKATTIKKAVALA",
+      "person": {
+        "id": "2015037301301",
+        "name": "AKHIL MOHANAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELAVINAL",
+      "person": {
+        "id": "2015037301401",
+        "name": "KUNJOONJAMMA E C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

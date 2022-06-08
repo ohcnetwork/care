@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346329200,
+  "date": "2019-08-21",
+  "name": "Aruvappulam  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Konni",
+  "area": "277.7km",
+  "localbody_code": "G030602",
+  "no_of_wards": 15,
+  "population": 21712,
+  "male": 10539,
+  "female": 11173,
+  "population_density": 78,
+  "sex_ratio": 1060,
+  "literacy_rate": 92.6,
+  "literacy_rate_male": 94.68,
+  "literacy_rate_female": 90.67,
+  "president": "SUNILVARGHESEANTONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MULAKUKODITHOTTAM",
+      "person": {
+        "id": "2015040700101",
+        "name": "VARGHESE THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUMMANNOOR",
+      "person": {
+        "id": "2015040700201",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOKKATHODU",
+      "person": {
+        "id": "2015040700301",
+        "name": "SUSAMMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NELLIKKAPPARA",
+      "person": {
+        "id": "2015040700401",
+        "name": "SUSAN THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLEITHOTTAM",
+      "person": {
+        "id": "2015040700501",
+        "name": "SINDHU P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLELI",
+      "person": {
+        "id": "2015040700601",
+        "name": "MATHEW VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUTHUPEZHUMKAL",
+      "person": {
+        "id": "2015040700701",
+        "name": "JAYA THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ATHIRUMKAL",
+      "person": {
+        "id": "2015040700801",
+        "name": "BIMAL KUMAR N"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MLANTHADAM",
+      "person": {
+        "id": "2015040700901",
+        "name": "C V SANTHAKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PADAPPACKAL",
+      "person": {
+        "id": "2015040701001",
+        "name": "AMBILY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "OOTTUPARA",
+      "person": {
+        "id": "2015040701101",
+        "name": "SUNIL VARGHESE ANTONY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULINCHANI",
+      "person": {
+        "id": "2015040701201",
+        "name": "R VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARUVAPPULAM",
+      "person": {
+        "id": "2015040701301",
+        "name": "SMITHA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MAVANAL",
+      "person": {
+        "id": "2015040701401",
+        "name": "PUSHPALATHA K L"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "IRAVON",
+      "person": {
+        "id": "2015040701501",
+        "name": "BINDHU S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

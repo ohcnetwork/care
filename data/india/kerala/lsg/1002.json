@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348896346,
+  "date": "2019-08-21",
+  "name": "Valayam  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thuneri",
+  "area": "31.08km",
+  "localbody_code": "G110205",
+  "no_of_wards": 14,
+  "population": 16705,
+  "male": 8285,
+  "female": 8420,
+  "population_density": 537,
+  "sex_ratio": 1016,
+  "literacy_rate": 84.81,
+  "literacy_rate_male": 92.04,
+  "literacy_rate_female": 77.84,
+  "president": "SUMATHIM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VANNARKANDI",
+      "person": {
+        "id": "2015100200101",
+        "name": "P K SANKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VARAYAL",
+      "person": {
+        "id": "2015100200201",
+        "name": "PREETHA P S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLUNIRA",
+      "person": {
+        "id": "2015100200301",
+        "name": "RAVEENDRAN A K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUNCHA",
+      "person": {
+        "id": "2015100200401",
+        "name": "AMBUJA C P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHUZHALI",
+      "person": {
+        "id": "2015100200501",
+        "name": "REEJA V P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NEELAND",
+      "person": {
+        "id": "2015100200601",
+        "name": "PUSHPA M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHALIYATTU POYIL",
+      "person": {
+        "id": "2015100200701",
+        "name": "VALSAN UZHINJERIKANDIYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NIRAV",
+      "person": {
+        "id": "2015100200801",
+        "name": "N P KANNAN MASTER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUTTIKKADU",
+      "person": {
+        "id": "2015100200901",
+        "name": "SUMATHI M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THEEKKUNI",
+      "person": {
+        "id": "2015100201001",
+        "name": "MUMTAZ M K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ONAPARAMB",
+      "person": {
+        "id": "2015100201101",
+        "name": "KUNHABDULLA C V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERUMOTH",
+      "person": {
+        "id": "2015100201201",
+        "name": "T M V ABDUL HAMEED"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANIYALA",
+      "person": {
+        "id": "2015100201301",
+        "name": "AJITHA T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEKKOTTA",
+      "person": {
+        "id": "2015100201401",
+        "name": "NANDAKUMAR T E"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

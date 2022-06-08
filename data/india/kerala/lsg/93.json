@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566345155485,
+  "date": "2019-08-21",
+  "name": "Vellangallur  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vellangallur",
+  "area": "105.08km",
+  "localbody_code": "B081300",
+  "no_of_wards": 13,
+  "population": 106929,
+  "male": 50261,
+  "female": 56668,
+  "population_density": 1017,
+  "sex_ratio": 1127,
+  "literacy_rate": 90.42,
+  "literacy_rate_male": 94.27,
+  "literacy_rate_female": 87.09,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDATHIRINJI",
+      "person": {
+        "id": "2015009300101",
+        "name": "K.S.RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAKKULAM",
+      "person": {
+        "id": "2015009300201",
+        "name": "VALSALA BABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLAMKUNNU",
+      "person": {
+        "id": "2015009300301",
+        "name": "VIJAYALAKSHMI VINAYACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THUMBOOR",
+      "person": {
+        "id": "2015009300401",
+        "name": "THOMAS KOLAMKANNY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PATTEPPADAM",
+      "person": {
+        "id": "2015009300501",
+        "name": "GEETHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHENCHIRA",
+      "person": {
+        "id": "2015009300601",
+        "name": "T.K. UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOMBATHUKADAVU",
+      "person": {
+        "id": "2015009300701",
+        "name": "SUBEESH C.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARUMATHRA",
+      "person": {
+        "id": "2015009300801",
+        "name": "BEENA MAJEED"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KONATHUKUNNU",
+      "person": {
+        "id": "2015009300901",
+        "name": "SHAJI NAKKARA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOVATHUMKADAVU",
+      "person": {
+        "id": "2015009301001",
+        "name": "PREETHY SURESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLANGALLUR",
+      "person": {
+        "id": "2015009301101",
+        "name": "SIMI KANNADASAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOMANGALAM",
+      "person": {
+        "id": "2015009301201",
+        "name": "ADV. JOSE MOONJELY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PADIYOOR",
+      "person": {
+        "id": "2015009301301",
+        "name": "LATHA VASU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

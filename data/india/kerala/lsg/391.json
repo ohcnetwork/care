@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346274928,
+  "date": "2019-08-21",
+  "name": "Chenneerkara  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Elanthur",
+  "area": "19.5km",
+  "localbody_code": "G030402",
+  "no_of_wards": 14,
+  "population": 19351,
+  "male": 9188,
+  "female": 10163,
+  "population_density": 992,
+  "sex_ratio": 1106,
+  "literacy_rate": 94.85,
+  "literacy_rate_male": 96.08,
+  "literacy_rate_female": 93.76,
+  "president": "KALAAJIT",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUTTATHUKONAM",
+      "person": {
+        "id": "2015039100101",
+        "name": "A . P  ANU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDANAD",
+      "person": {
+        "id": "2015039100201",
+        "name": "SREELATHA  SASI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PRAKKANAM",
+      "person": {
+        "id": "2015039100301",
+        "name": "SUSEELA  T GEORGE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUTTUKUDUKKA",
+      "person": {
+        "id": "2015039100401",
+        "name": "SUMA MANOJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UMMINIKAVU",
+      "person": {
+        "id": "2015039100501",
+        "name": "SAJI  K  K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VETTOLIMALA",
+      "person": {
+        "id": "2015039100601",
+        "name": "JAMES K SAM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALUTHARA",
+      "person": {
+        "id": "2015039100701",
+        "name": "LOVELY  VALUTHARAYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANJINIKKARA",
+      "person": {
+        "id": "2015039100801",
+        "name": "SUJA  REJI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATHOOR",
+      "person": {
+        "id": "2015039100901",
+        "name": "KALA  AJIT"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MURIPPARA",
+      "person": {
+        "id": "2015039101001",
+        "name": "JESSY BABY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AMBALAKADAVU",
+      "person": {
+        "id": "2015039101101",
+        "name": "OMANAKUTTAN NAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHENNEERKARA",
+      "person": {
+        "id": "2015039101201",
+        "name": "RADHAMANI SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OONNUKAL",
+      "person": {
+        "id": "2015039101301",
+        "name": "TITTY  JOHNS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NALLANIKKUNNU",
+      "person": {
+        "id": "2015039101401",
+        "name": "ABHILASH VISWANATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

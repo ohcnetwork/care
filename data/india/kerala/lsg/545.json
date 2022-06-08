@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346839621,
+  "date": "2019-08-21",
+  "name": "Pallickathodu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pampady",
+  "area": "22.46km",
+  "localbody_code": "G050705",
+  "no_of_wards": 13,
+  "population": 15388,
+  "male": 7691,
+  "female": 7697,
+  "population_density": 685,
+  "sex_ratio": 1001,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 95,
+  "president": "BENNYTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARUVIKUZHY",
+      "person": {
+        "id": "2015054500101",
+        "name": "BENNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KIZHAKKADAMBU",
+      "person": {
+        "id": "2015054500201",
+        "name": "REMADEVI RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VATTAKAKKAVU",
+      "person": {
+        "id": "2015054500301",
+        "name": "JAYA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANICKAD",
+      "person": {
+        "id": "2015054500401",
+        "name": "MOLLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VERUNGALPARA",
+      "person": {
+        "id": "2015054500501",
+        "name": "THANKAMMA P.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ELAMPALLY",
+      "person": {
+        "id": "2015054500601",
+        "name": "SHAJI ISSAC"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULLANITHAKIDI",
+      "person": {
+        "id": "2015054500701",
+        "name": "JINTO C KATTOOR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAYOORI",
+      "person": {
+        "id": "2015054500801",
+        "name": "SOBHANA KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDATHINAKAM",
+      "person": {
+        "id": "2015054500901",
+        "name": "SANU SANKAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOMPARA",
+      "person": {
+        "id": "2015054501001",
+        "name": "VIJAYAKUMARY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MYLADIKKARA",
+      "person": {
+        "id": "2015054501101",
+        "name": "VIPINACHANDRAN K.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUKKALI",
+      "person": {
+        "id": "2015054501201",
+        "name": "AJITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLADAMPOIKA",
+      "person": {
+        "id": "2015054501301",
+        "name": "JIJIMON JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

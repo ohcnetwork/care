@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347501588,
+  "date": "2019-08-21",
+  "name": "Panjal  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Pazhayannur",
+  "area": "30.39km",
+  "localbody_code": "G080404",
+  "no_of_wards": 16,
+  "population": 20727,
+  "male": 9839,
+  "female": 10888,
+  "population_density": 682,
+  "sex_ratio": 1107,
+  "literacy_rate": 84.44,
+  "literacy_rate_male": 89.21,
+  "literacy_rate_female": 80.24,
+  "president": "JOHNYMANICHIRA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAINKULAM VADAKKUMURI",
+      "person": {
+        "id": "2015073700101",
+        "name": "ASHOK KUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAINKULAM CENTRE",
+      "person": {
+        "id": "2015073700201",
+        "name": "SAVITHRY.K.P."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PAINKULAM KIZHAKKUMURI",
+      "person": {
+        "id": "2015073700301",
+        "name": "P.R.MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOZHUPADAM CENTRE",
+      "person": {
+        "id": "2015073700401",
+        "name": "ARIFA.K.U."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOZHUPADAM THEKKUMURI",
+      "person": {
+        "id": "2015073700501",
+        "name": "SMITHA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KEEZHILLAM",
+      "person": {
+        "id": "2015073700601",
+        "name": "KAMALAM.T.K."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULAMBU",
+      "person": {
+        "id": "2015073700701",
+        "name": "VASANTHAKUMARI .K.V."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KILLIMANGALAM PADINJATTUMURI",
+      "person": {
+        "id": "2015073700802",
+        "name": "ASIYA A M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KILLIMANGALAM CENTRE",
+      "person": {
+        "id": "2015073700901",
+        "name": "UNNIKRISHNAN.C."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "UDUVADY",
+      "person": {
+        "id": "2015073701001",
+        "name": "P.M.AMEER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERANKONAM",
+      "person": {
+        "id": "2015073701101",
+        "name": "SULAIKHA SAMAD"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARAPPURAM",
+      "person": {
+        "id": "2015073701201",
+        "name": "JOHNY MANICHIRA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SREEPUSHKARAM",
+      "person": {
+        "id": "2015073701301",
+        "name": "FASALU REHMAN.K.K."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANJAL",
+      "person": {
+        "id": "2015073701401",
+        "name": "GEETHA .C.V."
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "DALAPATHY",
+      "person": {
+        "id": "2015073701501",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PAINKULAM THEKKUMURI",
+      "person": {
+        "id": "2015073701601",
+        "name": "T.K.VASUDEVAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

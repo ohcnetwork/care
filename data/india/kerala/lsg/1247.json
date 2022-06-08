@@ -1,0 +1,285 @@
+{
+  "timeStamp": 1566349717227,
+  "date": "2019-08-21",
+  "name": "Maradu\n  Municipality, Ernakulam District",
+  "district": "Ernakulam",
+  "area": null,
+  "localbody_code": "M071100",
+  "no_of_wards": 33,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "chairperson": "T.H.NADEERA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NETTOOR NORTH",
+      "person": {
+        "id": "2015124700101",
+        "name": "SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNDANOOR NORTH",
+      "person": {
+        "id": "2015124700201",
+        "name": "ADV.T.K. DEVARAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANNADIKKADU EAST",
+      "person": {
+        "id": "2015124700301",
+        "name": "ANTONY ASHANPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNNALAKADU",
+      "person": {
+        "id": "2015124700401",
+        "name": "R K SURESHBABU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THURUTHY",
+      "person": {
+        "id": "2015124700501",
+        "name": "K.A. DEVASSY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MARADU NORTH",
+      "person": {
+        "id": "2015124700601",
+        "name": "BINDHU PRASANTH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTITHARA",
+      "person": {
+        "id": "2015124700701",
+        "name": "MOLY JAMES"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SANKAR NAGAR",
+      "person": {
+        "id": "2015124700801",
+        "name": "SHEELA SADASIVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MARTINPURAM",
+      "person": {
+        "id": "2015124700901",
+        "name": "VALSA JOHN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SASTHRYNAGAR",
+      "person": {
+        "id": "2015124701001",
+        "name": "N.V.BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAIRALI NAGAR",
+      "person": {
+        "id": "2015124701101",
+        "name": "T.R.KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SOCIETY",
+      "person": {
+        "id": "2015124701201",
+        "name": "MINI UDAYAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANDAVATHU",
+      "person": {
+        "id": "2015124701301",
+        "name": "AJITHA NANDAKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NERAVATHU",
+      "person": {
+        "id": "2015124701401",
+        "name": "SUJATHA SISUPALAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "J B SCHOOL",
+      "person": {
+        "id": "2015124701501",
+        "name": "RAJI THAMBY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUNDANOOR JUNCTION",
+      "person": {
+        "id": "2015124701601",
+        "name": "SUNEELA SIBY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "SUB REGISTRAR OFFICE",
+      "person": {
+        "id": "2015124701701",
+        "name": "BABY PAUL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANGAYIL",
+      "person": {
+        "id": "2015124701801",
+        "name": "M.P.SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MANNAPARAMBU",
+      "person": {
+        "id": "2015124701901",
+        "name": "M.V.ULLAS"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "AMBEDKAR NAGR",
+      "person": {
+        "id": "2015124702001",
+        "name": "SWAMINA SUJITH"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "AYURVEDA HOSPITAL",
+      "person": {
+        "id": "2015124702101",
+        "name": "JINSON PETER"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VALANTHAKADU",
+      "person": {
+        "id": "2015124702201",
+        "name": "RATHI DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "SANTHIVANOM",
+      "person": {
+        "id": "2015124702301",
+        "name": "AJITHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "NETTOOR SOUTH",
+      "person": {
+        "id": "2015124702401",
+        "name": "DIVYA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "THANDASSERY",
+      "person": {
+        "id": "2015124702501",
+        "name": "BINU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "PERINGATTU PARAMBU",
+      "person": {
+        "id": "2015124702601",
+        "name": "JAMEELA MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PURAKELI",
+      "person": {
+        "id": "2015124702701",
+        "name": "ABDUL JABBAR.P.A"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "SVUPS",
+      "person": {
+        "id": "2015124702801",
+        "name": "T.H.NADEERA"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "THEKKEPATTUPURACKAL",
+      "person": {
+        "id": "2015124702901",
+        "name": "BOBAN NEDUMPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "AMBALAKADAVU",
+      "person": {
+        "id": "2015124703001",
+        "name": "V.G.SHIBU"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "NORTH COLONY",
+      "person": {
+        "id": "2015124703101",
+        "name": "P.J.JOHNSON"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "NORTH PATTUPURACKAL",
+      "person": {
+        "id": "2015124703201",
+        "name": "DEVOOS"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "THATTEKADU",
+      "person": {
+        "id": "2015124703301",
+        "name": "DISHA PRATHAPAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

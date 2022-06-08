@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348743892,
+  "date": "2019-08-21",
+  "name": "Edarikode  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Vengara",
+  "area": "15.28km",
+  "localbody_code": "G101002",
+  "no_of_wards": 16,
+  "population": 25595,
+  "male": 12351,
+  "female": 13244,
+  "population_density": 1675,
+  "sex_ratio": 1072,
+  "literacy_rate": 87.33,
+  "literacy_rate_male": 91.78,
+  "literacy_rate_female": 82.88,
+  "president": "ABIDA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUTHUPPARAMBA",
+      "person": {
+        "id": "2015095800101",
+        "name": "JAMALUDHEEN KULANGARA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARATTANGADI",
+      "person": {
+        "id": "2015095800201",
+        "name": "RUKHIYA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OTTATHENGU",
+      "person": {
+        "id": "2015095800301",
+        "name": "ATHIQUE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NJARATHADAM",
+      "person": {
+        "id": "2015095800401",
+        "name": "ABDUL JALEEL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POTTIPPARA",
+      "person": {
+        "id": "2015095800501",
+        "name": "SAFIYA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AREEKAL CITY",
+      "person": {
+        "id": "2015095800601",
+        "name": "SHAIBA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAILIKULAMBU",
+      "person": {
+        "id": "2015095800701",
+        "name": "ALAVI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMBALAVATTOM",
+      "person": {
+        "id": "2015095800801",
+        "name": "JEEJA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUNNUMMAL",
+      "person": {
+        "id": "2015095800901",
+        "name": "SYAMALA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SWAGATHAMADU",
+      "person": {
+        "id": "2015095801001",
+        "name": "SAKKEENA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERUSHOLA",
+      "person": {
+        "id": "2015095801101",
+        "name": "SUBAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CLARI SOUTH",
+      "person": {
+        "id": "2015095801201",
+        "name": "ABIDA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EDARIKODE SOUTH",
+      "person": {
+        "id": "2015095801301",
+        "name": "PRASANNARAJ"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDARIKODE NORTH",
+      "person": {
+        "id": "2015095801401",
+        "name": "CHEKKUTTY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHUDALAPPARA",
+      "person": {
+        "id": "2015095801501",
+        "name": "UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARAYAKULAM",
+      "person": {
+        "id": "2015095801601",
+        "name": "AYISHABI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

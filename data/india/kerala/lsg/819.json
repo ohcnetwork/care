@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348212334,
+  "date": "2019-08-21",
+  "name": "Vallapuzha  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "21.64km",
+  "localbody_code": "G090307",
+  "no_of_wards": 16,
+  "population": 21634,
+  "male": 10275,
+  "female": 11359,
+  "population_density": 1000,
+  "sex_ratio": 1105,
+  "literacy_rate": 85.37,
+  "literacy_rate_male": 89.41,
+  "literacy_rate_female": 81.86,
+  "president": "NANDAVILASINI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOLAMUKKU",
+      "person": {
+        "id": "2015081900101",
+        "name": "K.SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THARAKKALPADI",
+      "person": {
+        "id": "2015081900201",
+        "name": "SATHYAVATHI.P.T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "APPAMKANDAM",
+      "person": {
+        "id": "2015081900301",
+        "name": "SAMEENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALAPARAMBU",
+      "person": {
+        "id": "2015081900401",
+        "name": "SAKKEENA THIRUNDIKKAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MECHERI",
+      "person": {
+        "id": "2015081900501",
+        "name": "K.SHEELA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHOONGAPPILAVU",
+      "person": {
+        "id": "2015081900601",
+        "name": "O.IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHAKKEKARA",
+      "person": {
+        "id": "2015081900701",
+        "name": "BINDU SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ULLAMBUZHA",
+      "person": {
+        "id": "2015081900801",
+        "name": "NANDAVILASINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATTAYA",
+      "person": {
+        "id": "2015081900901",
+        "name": "SHEEJA.C.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERIKKALLU",
+      "person": {
+        "id": "2015081901001",
+        "name": "JAYAPRAKASAN.V.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHOORAKKODE",
+      "person": {
+        "id": "2015081901101",
+        "name": "KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCHARATHUPADI",
+      "person": {
+        "id": "2015081901201",
+        "name": "ABOOBACKER SIDDIQUE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015081901301",
+        "name": "SAFARUNNISA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "YARAM",
+      "person": {
+        "id": "2015081901401",
+        "name": "HAMZA.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANNIYAMKUNNU",
+      "person": {
+        "id": "2015081901501",
+        "name": "HAMZA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANAKKALPADI",
+      "person": {
+        "id": "2015081901601",
+        "name": "SUBHADRA.K.N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

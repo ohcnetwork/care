@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346104000,
+  "date": "2019-08-21",
+  "name": "Munroethuruth  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chittumala",
+  "area": "13.37km",
+  "localbody_code": "G020705",
+  "no_of_wards": 13,
+  "population": 10380,
+  "male": 5128,
+  "female": 5252,
+  "population_density": 776,
+  "sex_ratio": 1024,
+  "literacy_rate": 91.91,
+  "literacy_rate_male": 94.85,
+  "literacy_rate_female": 89.06,
+  "president": "BINUKARUNAKARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KIDAPRAM NORTH",
+      "person": {
+        "id": "2015034700101",
+        "name": "AJITHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KIDAPRAM SOUTH",
+      "person": {
+        "id": "2015034700201",
+        "name": "BINU KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANDRAMKANI",
+      "person": {
+        "id": "2015034700301",
+        "name": "NITHYA BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VILLIMANGALAM WEST",
+      "person": {
+        "id": "2015034700401",
+        "name": "B.GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VILLIMANGALAM",
+      "person": {
+        "id": "2015034700501",
+        "name": "ANUPAMA.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NENMENI EAST",
+      "person": {
+        "id": "2015034700601",
+        "name": "SHIJU KUMAR.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THOOMPUM MUKHAM",
+      "person": {
+        "id": "2015034700701",
+        "name": "SANTHA KUMAR.K.T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NENMENI",
+      "person": {
+        "id": "2015034700801",
+        "name": "MANJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NENMENI SOUTH",
+      "person": {
+        "id": "2015034700901",
+        "name": "RAJILAL.N"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATTOMTHURUTHU EAST",
+      "person": {
+        "id": "2015034701001",
+        "name": "JYOTHI LEKSHMI.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PEZHUMTHURUTHU",
+      "person": {
+        "id": "2015034701101",
+        "name": "ABHIJITH.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATTOMTHURUTHU WEST",
+      "person": {
+        "id": "2015034701201",
+        "name": "SHYINI KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUNGALAM",
+      "person": {
+        "id": "2015034701301",
+        "name": "LATHA MOHANAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

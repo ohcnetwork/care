@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348506425,
+  "date": "2019-08-21",
+  "name": "Edakkara  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "65.38km",
+  "localbody_code": "G100105",
+  "no_of_wards": 16,
+  "population": 29239,
+  "male": 14389,
+  "female": 14850,
+  "population_density": 447,
+  "sex_ratio": 1032,
+  "literacy_rate": 88.27,
+  "literacy_rate_male": 91.66,
+  "literacy_rate_female": 84.88,
+  "president": "ALICEAMBATTU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALACHI",
+      "person": {
+        "id": "2015090100101",
+        "name": "ALICE AMBATTU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARUNECHI",
+      "person": {
+        "id": "2015090100201",
+        "name": "USHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLIPPADI",
+      "person": {
+        "id": "2015090100302",
+        "name": "M.K CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALEMAD",
+      "person": {
+        "id": "2015090100401",
+        "name": "DEEPA HARIDAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAYIMBADAM",
+      "person": {
+        "id": "2015090100501",
+        "name": "HUSSAIN P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SANKARAMKULAM",
+      "person": {
+        "id": "2015090100601",
+        "name": "SARALA K.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARLI",
+      "person": {
+        "id": "2015090100701",
+        "name": "AYISHAKUTTY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VELLARAMKUNNU",
+      "person": {
+        "id": "2015090100801",
+        "name": "ANSAR BEEGUM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MENONPOTTY",
+      "person": {
+        "id": "2015090100901",
+        "name": "SHYNY C.J"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EDAKKARA",
+      "person": {
+        "id": "2015090101001",
+        "name": "SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015090101101",
+        "name": "WELLINGTON SAMUEL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAKKAPARATHA",
+      "person": {
+        "id": "2015090101201",
+        "name": "AHAMMED KABEER PANOLI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THEYYATHUMPADAM",
+      "person": {
+        "id": "2015090101301",
+        "name": "KAVITHA M.R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUPPINI",
+      "person": {
+        "id": "2015090101401",
+        "name": "V.P RATNAKUMAR UNNITHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PATHIRIPPADAM",
+      "person": {
+        "id": "2015090101501",
+        "name": "ABDUL KHADER"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHATHAMUNDA",
+      "person": {
+        "id": "2015090101601",
+        "name": "ROY VARGHESE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347521347,
+  "date": "2019-08-21",
+  "name": "Nadathara  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Ollukkara",
+  "area": "20.91km",
+  "localbody_code": "G080502",
+  "no_of_wards": 17,
+  "population": 31857,
+  "male": 15495,
+  "female": 16362,
+  "population_density": 1524,
+  "sex_ratio": 1056,
+  "literacy_rate": 91.08,
+  "literacy_rate_male": 94.28,
+  "literacy_rate_female": 88.09,
+  "president": "ADV.P.RREJITH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NADATHARA",
+      "person": {
+        "id": "2015074200101",
+        "name": "GANESH PANDIAN V.M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOKKATTUKARA",
+      "person": {
+        "id": "2015074200201",
+        "name": "SREEVIDHYA RAJESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOZHUKKULLY",
+      "person": {
+        "id": "2015074200301",
+        "name": "RAJI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AYYAPPANKAVU",
+      "person": {
+        "id": "2015074200401",
+        "name": "DEEPA ANEESH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MULAYAM",
+      "person": {
+        "id": "2015074200501",
+        "name": "T.G PREMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ACHANKUNNU",
+      "person": {
+        "id": "2015074200601",
+        "name": "JINNY JOY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERUMKUZHI",
+      "person": {
+        "id": "2015074200701",
+        "name": "ANNIE APPACHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALAKKAVU",
+      "person": {
+        "id": "2015074200801",
+        "name": "NIBIN SREENIVASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PEEDIKAPARAMBU",
+      "person": {
+        "id": "2015074200901",
+        "name": "ADV. C.K VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOORKANIKKARA",
+      "person": {
+        "id": "2015074201001",
+        "name": "ADV. P.R REJITH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VEEMBU",
+      "person": {
+        "id": "2015074201101",
+        "name": "K.N VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POLUKKARA",
+      "person": {
+        "id": "2015074201201",
+        "name": "VALSALA RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOCHATTY",
+      "person": {
+        "id": "2015074201301",
+        "name": "NISHA(ASHA VISWANATHAN)"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELLIKKULANGARA",
+      "person": {
+        "id": "2015074201401",
+        "name": "USHA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ERAVIMANGALAM",
+      "person": {
+        "id": "2015074201501",
+        "name": "K.J JAYAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUMARAPURAM",
+      "person": {
+        "id": "2015074201601",
+        "name": "RAJI TEACHER"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MINOR ROAD",
+      "person": {
+        "id": "2015074201701",
+        "name": "MADHU UNNIKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

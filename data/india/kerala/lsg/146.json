@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345336294,
+  "date": "2019-08-21",
+  "name": "Kuthuparamba  Block Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "214.34km",
+  "localbody_code": "B130900",
+  "no_of_wards": 13,
+  "population": 223974,
+  "male": 106723,
+  "female": 117251,
+  "population_density": 1045,
+  "sex_ratio": 1099,
+  "literacy_rate": 91.47,
+  "literacy_rate_male": 95.7,
+  "literacy_rate_female": 87.71,
+  "president": "AASHOKAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VATTIPRAM",
+      "person": {
+        "id": "2015014600101",
+        "name": "C SREEJA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANDAMKUNNU",
+      "person": {
+        "id": "2015014600201",
+        "name": "RAYAROTHAN SHEELA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANANTHERI",
+      "person": {
+        "id": "2015014600301",
+        "name": "C CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHITTARIPARAMBA",
+      "person": {
+        "id": "2015014600401",
+        "name": "SAVITHRI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POYILOOR",
+      "person": {
+        "id": "2015014600501",
+        "name": "THETTATE T P ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOLAVALLOOR",
+      "person": {
+        "id": "2015014600601",
+        "name": "A V BALAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KADAVATHOOR",
+      "person": {
+        "id": "2015014600701",
+        "name": "DR.SALMA MAHAMOOD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHOOR",
+      "person": {
+        "id": "2015014600801",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHENDAYAD",
+      "person": {
+        "id": "2015014600901",
+        "name": "C V ABDULJALEEL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUTHIYANGA",
+      "person": {
+        "id": "2015014601001",
+        "name": "BEENA P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATTIAM",
+      "person": {
+        "id": "2015014601101",
+        "name": "SUJATHA  A  P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTAYAM",
+      "person": {
+        "id": "2015014601201",
+        "name": "P K ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANGATTIDAM",
+      "person": {
+        "id": "2015014601301",
+        "name": "A ASHOKAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

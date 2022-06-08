@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345719627,
+  "date": "2019-08-21",
+  "name": "Vettoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "6.82km",
+  "localbody_code": "G010107",
+  "no_of_wards": 14,
+  "population": 18790,
+  "male": 8856,
+  "female": 9934,
+  "population_density": 2755,
+  "sex_ratio": 1122,
+  "literacy_rate": 83.15,
+  "literacy_rate_male": 89.11,
+  "literacy_rate_female": 77.96,
+  "president": "ADV.A.ASSIMHUSAIN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "TOURIST BANGLOW",
+      "person": {
+        "id": "2015023100101",
+        "name": "BINDU.N"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AKKARAVILA",
+      "person": {
+        "id": "2015023100202",
+        "name": "V.REENA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THENGARA",
+      "person": {
+        "id": "2015023100301",
+        "name": "SUJI.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHENCHANTHA",
+      "person": {
+        "id": "2015023100401",
+        "name": "BINDU.R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAPPIL",
+      "person": {
+        "id": "2015023100501",
+        "name": "NIHAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VETTOOR",
+      "person": {
+        "id": "2015023100601",
+        "name": "GEETHA.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NETHAJI",
+      "person": {
+        "id": "2015023100701",
+        "name": "S.SUNIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAZHUTHUMMOODU",
+      "person": {
+        "id": "2015023100801",
+        "name": "PRASOBHANA.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VILABHAGOM",
+      "person": {
+        "id": "2015023100901",
+        "name": "GOPEENDRAN.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALAYANTAKUZHY",
+      "person": {
+        "id": "2015023101001",
+        "name": "N.VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PLAVAZHIKAM",
+      "person": {
+        "id": "2015023101101",
+        "name": "J.MEENAMBIKA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "RATHIKKAL",
+      "person": {
+        "id": "2015023101201",
+        "name": "NIZA ALIYAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUMAM",
+      "person": {
+        "id": "2015023101301",
+        "name": "ADV.A.ASSIM HUSAIN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHOOLAPPURA",
+      "person": {
+        "id": "2015023101401",
+        "name": "NASIMUDEEN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

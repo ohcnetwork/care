@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345020214,
+  "date": "2019-08-21",
+  "name": "Pallom  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pallom",
+  "area": "217km",
+  "localbody_code": "B050800",
+  "no_of_wards": 13,
+  "population": 234403,
+  "male": 116858,
+  "female": 117545,
+  "population_density": 1082,
+  "sex_ratio": 1006,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "TTSASEENDRANATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AYARKUNNAM",
+      "person": {
+        "id": "2015005400101",
+        "name": "SHAILAJA  REJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THIRUVANCHOOR",
+      "person": {
+        "id": "2015005400201",
+        "name": "T T SASEENDRANATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADAVATHOOR",
+      "person": {
+        "id": "2015005400301",
+        "name": "VINOD P KURIAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANGANAM",
+      "person": {
+        "id": "2015005400401",
+        "name": "REGI MON JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUTHUPPALLY",
+      "person": {
+        "id": "2015005400501",
+        "name": "SEEMOL  C  THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANACHIKADU",
+      "person": {
+        "id": "2015005400601",
+        "name": "LATHAKUMARI SALIMON"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALAKUNNAM",
+      "person": {
+        "id": "2015005400701",
+        "name": "BETTY  TOJO CHITTETTUKALAM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURICHI",
+      "person": {
+        "id": "2015005400801",
+        "name": "NEETHU  THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHAMUTTAM",
+      "person": {
+        "id": "2015005400901",
+        "name": "JESSY  CHACKO"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUZHIMATTOM",
+      "person": {
+        "id": "2015005401001",
+        "name": "M  BABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLLADU",
+      "person": {
+        "id": "2015005401101",
+        "name": "GIRIJA THULASEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NATTASSERY",
+      "person": {
+        "id": "2015005401201",
+        "name": "ROY  JOHN EDAYATHARA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NEERIKKADU",
+      "person": {
+        "id": "2015005401301",
+        "name": "JOICE JOSEPH KOTTATHIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

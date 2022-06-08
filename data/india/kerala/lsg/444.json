@@ -1,0 +1,164 @@
+{
+  "timeStamp": 1566346462636,
+  "date": "2019-08-21",
+  "name": "Aryad  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Aryad",
+  "area": "6.87km",
+  "localbody_code": "G040401",
+  "no_of_wards": 18,
+  "population": 24043,
+  "male": 11811,
+  "female": 12232,
+  "population_density": 3500,
+  "sex_ratio": 1036,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 92,
+  "president": "KAVITHAHARIDAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SAMSKARIKA NILAYAM",
+      "person": {
+        "id": "2015044400101",
+        "name": "ANITHA GOPINATHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAITHATHIL",
+      "person": {
+        "id": "2015044400201",
+        "name": "T B KARTHIKEYAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ASHAN SMARAKA  GRANDHASALA",
+      "person": {
+        "id": "2015044400301",
+        "name": "KAVITHA HARIDAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOMALAPURAM",
+      "person": {
+        "id": "2015044400401",
+        "name": "MAYA JAYARAJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "LUTHUREN HIGHS CHOOL",
+      "person": {
+        "id": "2015044400501",
+        "name": "PRASANNA RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KRISHIBHAVAN",
+      "person": {
+        "id": "2015044400601",
+        "name": "AJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHARAMPARAMBU",
+      "person": {
+        "id": "2015044400701",
+        "name": "RESHMI P K PANICKER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SARGAWARD",
+      "person": {
+        "id": "2015044400801",
+        "name": "P MANOJ"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMPANTHARA",
+      "person": {
+        "id": "2015044400901",
+        "name": "RENUKA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THIRUVILAKKU",
+      "person": {
+        "id": "2015044401001",
+        "name": "SHINI SHIJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AYYANKALI",
+      "person": {
+        "id": "2015044401101",
+        "name": "SHEEJA PRADEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NAVADARSHA",
+      "person": {
+        "name": "*****"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "RAMAVARMA",
+      "person": {
+        "id": "2015044401301",
+        "name": "BINDHU MADHUKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PASHNAMBALAM",
+      "person": {
+        "id": "2015044401401",
+        "name": "AJITHAKUMARI D"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "IKYABHARATHAM",
+      "person": {
+        "name": "*****"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NONTOWN THUMPOLOY",
+      "person": {
+        "id": "2015044401601",
+        "name": "T. R RAMESH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THUMPOLY THEERADESHAM",
+      "person": {
+        "id": "2015044401701",
+        "name": "SHEEBA SAJU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "A S CANAL",
+      "person": {
+        "id": "2015044401801",
+        "name": "SURESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

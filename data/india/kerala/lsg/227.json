@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566345707387,
+  "date": "2019-08-21",
+  "name": "Elakamon  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "17.79km",
+  "localbody_code": "G010103",
+  "no_of_wards": 16,
+  "population": 21523,
+  "male": 10185,
+  "female": 11338,
+  "population_density": 1213,
+  "sex_ratio": 1113,
+  "literacy_rate": 88.4,
+  "literacy_rate_male": 93.19,
+  "literacy_rate_female": 84.2,
+  "president": "V.SUMANGALA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THONIPPARA",
+      "person": {
+        "id": "2015022700101",
+        "name": "BINU.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "HARIHARAPURAM",
+      "person": {
+        "id": "2015022700201",
+        "name": "KALADEVI AMMA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OONNINMOODU",
+      "person": {
+        "id": "2015022700301",
+        "name": "RENJINI.R.B"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALIYIKKAL",
+      "person": {
+        "id": "2015022700401",
+        "name": "MINIMOL.S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAKAMON",
+      "person": {
+        "id": "2015022700501",
+        "name": "ADV.V.DEVADAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KIZHAKKEPPURAM",
+      "person": {
+        "id": "2015022700601",
+        "name": "M.SHAIJY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VENCODE",
+      "person": {
+        "id": "2015022700701",
+        "name": "SENCY.V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALAYAMKUNNU",
+      "person": {
+        "id": "2015022700801",
+        "name": "SHEELA.V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SASTHAMNADA",
+      "person": {
+        "id": "2015022700901",
+        "name": "K.K.RAVEENDRANATH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KADAVINKARA",
+      "person": {
+        "id": "2015022701001",
+        "name": "SOORYA.R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALATHARA",
+      "person": {
+        "id": "2015022701101",
+        "name": "SUMITHRA.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOOLABHAGAM",
+      "person": {
+        "id": "2015022701201",
+        "name": "ANIL.C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AYIROOR",
+      "person": {
+        "id": "2015022701301",
+        "name": "ADV.B.S.JOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAYALPURAM",
+      "person": {
+        "id": "2015022701401",
+        "name": "SAJEEYA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VILAPPURAM",
+      "person": {
+        "id": "2015022701501",
+        "name": "V.SUMANGALA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KEDAKULAM",
+      "person": {
+        "id": "2015022701601",
+        "name": "ASHANINA.N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

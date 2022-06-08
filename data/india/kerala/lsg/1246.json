@@ -1,0 +1,269 @@
+{
+  "timeStamp": 1566349714219,
+  "date": "2019-08-21",
+  "name": "Eloor\n  Municipality, Ernakulam District",
+  "district": "Ernakulam",
+  "area": null,
+  "localbody_code": "M071000",
+  "no_of_wards": 31,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "chairperson": "C.P.USHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELOOR DIPPO",
+      "person": {
+        "id": "2015124600101",
+        "name": "SATHEESH T  K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELOOR NORTH",
+      "person": {
+        "id": "2015124600201",
+        "name": "M.K.KUNJAPPAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELOOR NORTH EAST",
+      "person": {
+        "id": "2015124600301",
+        "name": "K.K.ABDUL LATHEEF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATTUPURACKAL",
+      "person": {
+        "id": "2015124600401",
+        "name": "TISHA VENU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUZHIKANDAM",
+      "person": {
+        "id": "2015124600501",
+        "name": "A.D.SUJIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HEADQUARTERS WARD",
+      "person": {
+        "id": "2015124600601",
+        "name": "BINDHU  MURALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ILANJIKAL WARD",
+      "person": {
+        "id": "2015124600701",
+        "name": "M.V.KARTHIKEYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELOOR EAST",
+      "person": {
+        "id": "2015124600801",
+        "name": "P.M.ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MEPIRIKUNNU",
+      "person": {
+        "id": "2015124600901",
+        "name": "SHERIN SATTEN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATHALAM",
+      "person": {
+        "id": "2015124601001",
+        "name": "JASMIN MUHAMMEDKUNJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ALUPURAM",
+      "person": {
+        "id": "2015124601101",
+        "name": "JOSEPH  SHERY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THARAMALI",
+      "person": {
+        "id": "2015124601201",
+        "name": "RAHEEMA.C.B"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "IDAMULA",
+      "person": {
+        "id": "2015124601301",
+        "name": "CHANDRAMATI KUNJAPPAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHIYAROAD",
+      "person": {
+        "id": "2015124601401",
+        "name": "SAJAN JOSEPH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTTIKATTUKARA SOUTH",
+      "person": {
+        "id": "2015124601501",
+        "name": "ALPHONSA JOY KOIKKARA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUTHALATH",
+      "person": {
+        "id": "2015124601601",
+        "name": "NAZEERA RAZAK"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "TOWNSHIP",
+      "person": {
+        "id": "2015124601701",
+        "name": "C.P.USHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PATHELAKKADU",
+      "person": {
+        "id": "2015124601801",
+        "name": "SIJI BABU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MANJUMMEL EAST",
+      "person": {
+        "id": "2015124601901",
+        "name": "BIJI SUBRAHMANYAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOTTAKKUNNU",
+      "person": {
+        "id": "2015124602001",
+        "name": "CHARLY JAMES"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MANJUMMEL SOUTH",
+      "person": {
+        "id": "2015124602101",
+        "name": "NELSON CORREYA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MUTTAR EAST",
+      "person": {
+        "id": "2015124602201",
+        "name": "A.K.NAVAS"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "MUTTAR WEST",
+      "person": {
+        "id": "2015124602301",
+        "name": "METTILDA JAMES"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "MANJUMMEL WEST",
+      "person": {
+        "id": "2015124602401",
+        "name": "P.AJITH KUMAR"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MANJUMMEL",
+      "person": {
+        "id": "2015124602501",
+        "name": "V.A.JESSY"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "DEVASWAMPADAM",
+      "person": {
+        "id": "2015124602601",
+        "name": "GEETHA RAJU"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KOCHAL",
+      "person": {
+        "id": "2015124602701",
+        "name": "MANJU.M.MENON"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MADAPPATTU",
+      "person": {
+        "id": "2015124602801",
+        "name": "LEELA BABU"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "PARACKAL",
+      "person": {
+        "id": "2015124602902",
+        "name": "BABY JOHN"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "HEAD QUARTES WEST",
+      "person": {
+        "id": "2015124603001",
+        "name": "T.N.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "AMBEDKAR WARD",
+      "person": {
+        "id": "2015124603101",
+        "name": "M.A.JAMES"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

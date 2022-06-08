@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349321373,
+  "date": "2019-08-21",
+  "name": "Malappattam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "19.3km",
+  "localbody_code": "G130403",
+  "no_of_wards": 13,
+  "population": 8708,
+  "male": 4266,
+  "female": 4442,
+  "population_density": 451,
+  "sex_ratio": 1041,
+  "literacy_rate": 89.19,
+  "literacy_rate_male": 94.54,
+  "literacy_rate_female": 84.08,
+  "president": "P.PUSHPAJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLANTHA",
+      "person": {
+        "id": "2015112300101",
+        "name": "V.V MOHANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ADOOR",
+      "person": {
+        "id": "2015112300201",
+        "name": "RADHAMANI. P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ADUVAPPURAM NORTH",
+      "person": {
+        "id": "2015112300301",
+        "name": "K. MUKUNDAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ADUVAPPURAM SOUTH",
+      "person": {
+        "id": "2015112300401",
+        "name": "SULOCHANA. T.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIMBEEL",
+      "person": {
+        "id": "2015112300501",
+        "name": "P.P BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THALAKODE EAST",
+      "person": {
+        "id": "2015112300601",
+        "name": "E. JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THALAKODE WEST",
+      "person": {
+        "id": "2015112300701",
+        "name": "RATHNAKUMARI. O.V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MALAPPATTAM EAST",
+      "person": {
+        "id": "2015112300801",
+        "name": "P. PUSHPAJAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MALAPPATTAM WEST",
+      "person": {
+        "id": "2015112300901",
+        "name": "SAVITHA. K.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOKKANDAM",
+      "person": {
+        "id": "2015112301001",
+        "name": "A. LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOVUNTHALA",
+      "person": {
+        "id": "2015112301101",
+        "name": "SURENDRAN. K.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ADICHERY",
+      "person": {
+        "id": "2015112301201",
+        "name": "JALAJA. T.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MALAPPATTAM CENTRE",
+      "person": {
+        "id": "2015112301301",
+        "name": "K.P. SANTHAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

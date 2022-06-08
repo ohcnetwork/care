@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349191479,
+  "date": "2019-08-21",
+  "name": "Muppainad  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": null,
+  "localbody_code": "G120409",
+  "no_of_wards": 16,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "R.YAMUNA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "JAIHIND",
+      "person": {
+        "id": "2015109500101",
+        "name": "SATHIDEVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARAPETTA N C",
+      "person": {
+        "id": "2015109500201",
+        "name": "HARIDASAN. P.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THINAPURAM",
+      "person": {
+        "id": "2015109500301",
+        "name": "YAHYAKHAN THALAKKAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULLOORKUNNU",
+      "person": {
+        "id": "2015109500401",
+        "name": "SHAHARBAN SAIDALAVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEDUMKARANA",
+      "person": {
+        "id": "2015109500501",
+        "name": "KAPPAN HAMZA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLIKKENI",
+      "person": {
+        "id": "2015109500601",
+        "name": "JOLLYSCARIA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHELLAMGODE",
+      "person": {
+        "id": "2015109500701",
+        "name": "VIJAYAN. K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VADUVANCHAL",
+      "person": {
+        "id": "2015109500801",
+        "name": "P. HARIHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KADACHIKKUNNU",
+      "person": {
+        "id": "2015109500901",
+        "name": "R. YAMUNA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "RIPPON",
+      "person": {
+        "id": "2015109501001",
+        "name": "RASIYA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHUKKAD",
+      "person": {
+        "id": "2015109501101",
+        "name": "SHAIBAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALLATHOOR",
+      "person": {
+        "id": "2015109501201",
+        "name": "A.K. RAFEEK"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARAMANGALAMCHAL",
+      "person": {
+        "id": "2015109501301",
+        "name": "PRABITHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ARAPETTA F D",
+      "person": {
+        "id": "2015109501401",
+        "name": "DAMODHARAN. K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANKUNNU",
+      "person": {
+        "id": "2015109501501",
+        "name": "YASHODHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUKKILPEEDIKA",
+      "person": {
+        "id": "2015109501601",
+        "name": "SANGEETHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

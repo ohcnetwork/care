@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345145759,
+  "date": "2019-08-21",
+  "name": "Cherpu  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Cherpu",
+  "area": "87.11km",
+  "localbody_code": "B081000",
+  "no_of_wards": 13,
+  "population": 181107,
+  "male": 88392,
+  "female": 92715,
+  "population_density": 2079,
+  "sex_ratio": 1048,
+  "literacy_rate": 92.67,
+  "literacy_rate_male": 95.62,
+  "literacy_rate_female": 89.9,
+  "president": "VRSARALA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODANNUR",
+      "person": {
+        "id": "2015009000101",
+        "name": "SUNNY.P.T"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAKKAL",
+      "person": {
+        "id": "2015009000201",
+        "name": "K A PRADEEP"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALLISSERY",
+      "person": {
+        "id": "2015009000301",
+        "name": "ADV.A.B ANEESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PERINCHERY",
+      "person": {
+        "id": "2015009000401",
+        "name": "N P THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHATHAKUDAM",
+      "person": {
+        "id": "2015009000501",
+        "name": "V R SARALA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VALLACHIRA",
+      "person": {
+        "id": "2015009000601",
+        "name": "N T SANKARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARATTUPUZHA",
+      "person": {
+        "id": "2015009000701",
+        "name": "SUJITHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ETTUMUNA",
+      "person": {
+        "id": "2015009000801",
+        "name": "JENSON GEORGE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERPU",
+      "person": {
+        "id": "2015009000901",
+        "name": "K D MILTON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEVOOR",
+      "person": {
+        "id": "2015009001001",
+        "name": "LEENA TEACHER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AMMADAM",
+      "person": {
+        "id": "2015009001101",
+        "name": "ASHA MATHEWS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THAYAMKULANGARA",
+      "person": {
+        "id": "2015009001201",
+        "name": "RENJINI THEKKATH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLIPURAM",
+      "person": {
+        "id": "2015009001301",
+        "name": "SIMI ARUN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

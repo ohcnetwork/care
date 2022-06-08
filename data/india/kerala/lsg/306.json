@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566345976107,
+  "date": "2019-08-21",
+  "name": "Thazhava  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Oachira",
+  "area": "23.58km",
+  "localbody_code": "G020104",
+  "no_of_wards": 22,
+  "population": 36197,
+  "male": 17735,
+  "female": 18462,
+  "population_density": 1535,
+  "sex_ratio": 1041,
+  "literacy_rate": 89.95,
+  "literacy_rate_male": 93.97,
+  "literacy_rate_female": 86.14,
+  "president": "SREELETHAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUTHIRAPANTHY",
+      "person": {
+        "id": "2015030600101",
+        "name": "SALIM S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKUM MURI",
+      "person": {
+        "id": "2015030600201",
+        "name": "BIJU V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADAKKUM MURI KIZHAKK",
+      "person": {
+        "id": "2015030600301",
+        "name": "MADHU M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANAPALLY NORTH",
+      "person": {
+        "id": "2015030600401",
+        "name": "THAJIRA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAVUMBA TEMPLE WARD",
+      "person": {
+        "id": "2015030600501",
+        "name": "ASWATHY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHIRACKAL",
+      "person": {
+        "id": "2015030600601",
+        "name": "JAYAKUMARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAVUMBA NORTH",
+      "person": {
+        "id": "2015030600701",
+        "name": "SARATH KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KALIYANCHANTHA",
+      "person": {
+        "id": "2015030600801",
+        "name": "KAVITHA MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALAMOODU",
+      "person": {
+        "id": "2015030600901",
+        "name": "LATHA K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAVUMBA SOUTH",
+      "person": {
+        "id": "2015030601001",
+        "name": "KRISHNA KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANAPPALLY",
+      "person": {
+        "id": "2015030601101",
+        "name": "SUNIL  KUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AZHAKIYAKAVU",
+      "person": {
+        "id": "2015030601201",
+        "name": "JAYALEKSHMI S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTIPPURAM",
+      "person": {
+        "id": "2015030601301",
+        "name": "ANUPAMA R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "GIRLS H S",
+      "person": {
+        "id": "2015030601401",
+        "name": "ANNIE PON"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THAZHAVA",
+      "person": {
+        "id": "2015030601501",
+        "name": "SREELETHA S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARUTHERI",
+      "person": {
+        "id": "2015030601601",
+        "name": "ADV.R.AMPILIKUTTAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "BOYS H S WARD",
+      "person": {
+        "id": "2015030601701",
+        "name": "VIPIN S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KADATHOOR EAST",
+      "person": {
+        "id": "2015030601801",
+        "name": "DEVI V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHITTUMOOLA",
+      "person": {
+        "id": "2015030601901",
+        "name": "VALEL SHOUKATH"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KADATHOOR",
+      "person": {
+        "id": "2015030602001",
+        "name": "RASHID A VAHID"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "SAMSKARIKA NILAYAM WARD",
+      "person": {
+        "id": "2015030602101",
+        "name": "SIMLA DEVI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MULLASSERIL WARD",
+      "person": {
+        "id": "2015030602201",
+        "name": "RETHNAKUMARY R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

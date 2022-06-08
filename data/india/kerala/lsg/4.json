@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566344850144,
+  "date": "2019-08-21",
+  "name": "Vamanapuram  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vamanpuram",
+  "area": "421.15km",
+  "localbody_code": "B010400",
+  "no_of_wards": 15,
+  "population": 203314,
+  "male": 98865,
+  "female": 104449,
+  "population_density": 483,
+  "sex_ratio": 1056,
+  "literacy_rate": 89.12,
+  "literacy_rate_male": 93.39,
+  "literacy_rate_female": 85.13,
+  "president": "KPCHANDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALAMACHAL",
+      "person": {
+        "id": "2015000400101",
+        "name": "B SANDHYA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLARA",
+      "person": {
+        "id": "2015000400201",
+        "name": "GIRIJAVIJAYAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MITHURMMALA",
+      "person": {
+        "id": "2015000400301",
+        "name": "SURESHBABU S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANGODU",
+      "person": {
+        "id": "2015000400401",
+        "name": "M M SHAFI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BHARATHANNOOR",
+      "person": {
+        "id": "2015000400501",
+        "name": "K ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ILAVUPALAM",
+      "person": {
+        "id": "2015000400601",
+        "name": "SHEEBA GIREESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PERINGAMMALA",
+      "person": {
+        "id": "2015000400701",
+        "name": "SUBHASH G"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALODE",
+      "person": {
+        "id": "2015000400801",
+        "name": "T K VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NANNIYODU",
+      "person": {
+        "id": "2015000400901",
+        "name": "K P CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULLAMPARA",
+      "person": {
+        "id": "2015000401001",
+        "name": "RADHAVIJAYAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALAYAL",
+      "person": {
+        "id": "2015000401101",
+        "name": "JALAJA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PIRAPPANCODU",
+      "person": {
+        "id": "2015000401201",
+        "name": "N CHANDRIKA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOLIYAKODU",
+      "person": {
+        "id": "2015000401301",
+        "name": "G KALAKUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NELLANAD",
+      "person": {
+        "id": "2015000401401",
+        "name": "K SHEELAKUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANIKKAMANGALAM",
+      "person": {
+        "id": "2015000401501",
+        "name": "M S SHAJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348368281,
+  "date": "2019-08-21",
+  "name": "Kollengode  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kollamgode",
+  "area": "49.33km",
+  "localbody_code": "G091001",
+  "no_of_wards": 18,
+  "population": 28323,
+  "male": 13640,
+  "female": 14683,
+  "population_density": 574,
+  "sex_ratio": 1076,
+  "literacy_rate": 75.57,
+  "literacy_rate_male": 83.58,
+  "literacy_rate_female": 68.23,
+  "president": "SALINIKARUPPESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUZHAKKALTHARA",
+      "person": {
+        "id": "2015086600101",
+        "name": "SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "P.K.VILLAGE",
+      "person": {
+        "id": "2015086600201",
+        "name": "JYOTHI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLLENGODE TOWN",
+      "person": {
+        "id": "2015086600301",
+        "name": "K.SATHYAPAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THADANARA",
+      "person": {
+        "id": "2015086600401",
+        "name": "SUDHA.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAMARI",
+      "person": {
+        "id": "2015086600501",
+        "name": "R. VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHIKKANAMPARA",
+      "person": {
+        "id": "2015086600601",
+        "name": "RAJESWARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDACHIRA",
+      "person": {
+        "id": "2015086600701",
+        "name": "SALINI KARUPPESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ACHANAMCODE",
+      "person": {
+        "id": "2015086600801",
+        "name": "V.KAMALAM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NENMENI",
+      "person": {
+        "id": "2015086600901",
+        "name": "K.SHANMUGHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PADINJARECHUTTICHIRA",
+      "person": {
+        "id": "2015086601001",
+        "name": "V.KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "S.V.STREET",
+      "person": {
+        "id": "2015086601101",
+        "name": "SUJITHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KONGANCHATHI",
+      "person": {
+        "id": "2015086601201",
+        "name": "GEETHA ARAVINDAKSHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHEERANI",
+      "person": {
+        "id": "2015086601301",
+        "name": "ANWAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PAZHAYANGADI",
+      "person": {
+        "id": "2015086601401",
+        "name": "T.N.RAMESHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAYYALORE",
+      "person": {
+        "id": "2015086601501",
+        "name": "PRAKASHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KACHAMKKURRISSI",
+      "person": {
+        "id": "2015086601601",
+        "name": "SUMATHI BALACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THACHAKORA",
+      "person": {
+        "id": "2015086601701",
+        "name": "C.MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ARUVANOORPARAMBU",
+      "person": {
+        "id": "2015086601801",
+        "name": "K.GANGADHARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

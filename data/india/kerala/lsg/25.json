@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566344921988,
+  "date": "2019-08-21",
+  "name": "Chadayamangalam  Block Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "249.03km",
+  "localbody_code": "B021100",
+  "no_of_wards": 15,
+  "population": 203296,
+  "male": 98403,
+  "female": 104893,
+  "population_density": 816,
+  "sex_ratio": 1066,
+  "literacy_rate": 89.2,
+  "literacy_rate_male": 93.64,
+  "literacy_rate_female": 85.09,
+  "president": "ARUNADEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMPALAMKUNNU",
+      "person": {
+        "id": "2015002500101",
+        "name": "SAM K DANIEL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELAMADU",
+      "person": {
+        "id": "2015002500201",
+        "name": "PUSHPA KUMARI C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAVAKKODU",
+      "person": {
+        "id": "2015002500301",
+        "name": "B SHAMLA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ITTIVA",
+      "person": {
+        "id": "2015002500401",
+        "name": "FATHIMA MAJEED"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHUNDA",
+      "person": {
+        "id": "2015002500501",
+        "name": "ARUNA DEVI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THUDAYANNOOR",
+      "person": {
+        "id": "2015002500601",
+        "name": "S SANDHYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHITHARA",
+      "person": {
+        "id": "2015002500701",
+        "name": "J BIJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAKKAMALA",
+      "person": {
+        "id": "2015002500801",
+        "name": "K B SABARINADH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATHIRA",
+      "person": {
+        "id": "2015002500901",
+        "name": "NAJEEBATH J"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUMMIL",
+      "person": {
+        "id": "2015002501001",
+        "name": "A SAFARULLA KHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KADAKKAL",
+      "person": {
+        "id": "2015002501101",
+        "name": "LILLY D"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALTHARAMOODU",
+      "person": {
+        "id": "2015002501201",
+        "name": "VELLARVATTAM SELVAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NILAMEL",
+      "person": {
+        "id": "2015002501301",
+        "name": "N S SALEENA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHADAYAMANGALAM",
+      "person": {
+        "id": "2015002501401",
+        "name": "RAKESH V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "OYOOR",
+      "person": {
+        "id": "2015002501501",
+        "name": "S S SARATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

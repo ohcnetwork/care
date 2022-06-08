@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346576028,
+  "date": "2019-08-21",
+  "name": "Kumarapuram  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Harippad",
+  "area": "13.75km",
+  "localbody_code": "G040903",
+  "no_of_wards": 15,
+  "population": 27087,
+  "male": 12712,
+  "female": 14375,
+  "population_density": 1970,
+  "sex_ratio": 1097,
+  "literacy_rate": 92,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 89,
+  "president": "SURESHKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KATTIL MARKET",
+      "person": {
+        "id": "2015047600101",
+        "name": "YAMUNA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "S.N.V.L.P.S",
+      "person": {
+        "id": "2015047600201",
+        "name": "AMMINI P.J"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THAMALLACKAL",
+      "person": {
+        "id": "2015047600301",
+        "name": "PRASANNAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANJIRATH",
+      "person": {
+        "id": "2015047600401",
+        "name": "SREELATHA K K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUMARAPURAM",
+      "person": {
+        "id": "2015047600501",
+        "name": "THANKAMMAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "N H",
+      "person": {
+        "id": "2015047600601",
+        "name": "SOBHA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANANTHAPURAM PALACE",
+      "person": {
+        "id": "2015047600701",
+        "name": "THAJUNNIZA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "LIBRARY",
+      "person": {
+        "id": "2015047600801",
+        "name": "JAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ERICKAVU",
+      "person": {
+        "id": "2015047600901",
+        "name": "VIJITHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SOCIETY",
+      "person": {
+        "id": "2015047601001",
+        "name": "SUBHASH R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015047601101",
+        "name": "C.S. RENJITH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POTHAPPALLY",
+      "person": {
+        "id": "2015047601201",
+        "name": "SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "E.A.L.P.S",
+      "person": {
+        "id": "2015047601301",
+        "name": "CHANDRAMOHANAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PAZHAYACHIRA",
+      "person": {
+        "id": "2015047601401",
+        "name": "D SUGESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "P H CENTRE",
+      "person": {
+        "id": "2015047601501",
+        "name": "SINDHU MOHANAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

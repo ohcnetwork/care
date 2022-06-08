@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348319637,
+  "date": "2019-08-21",
+  "name": "Kottayi  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kuzhalmannam",
+  "area": "19.86km",
+  "localbody_code": "G090801",
+  "no_of_wards": 15,
+  "population": 19069,
+  "male": 9216,
+  "female": 9853,
+  "population_density": 955,
+  "sex_ratio": 1069,
+  "literacy_rate": 80.69,
+  "literacy_rate_male": 87.58,
+  "literacy_rate_female": 84.3,
+  "president": "PREETHA.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTAYI",
+      "person": {
+        "id": "2015085300101",
+        "name": "DEEPA.C.R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AYYAMKULAM",
+      "person": {
+        "id": "2015085300201",
+        "name": "JAMEELA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MADATHUMPADI",
+      "person": {
+        "id": "2015085300301",
+        "name": "KUNCHILAKSHMI.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THUVARAKKAD",
+      "person": {
+        "id": "2015085300401",
+        "name": "BINDU.T.A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIYAMKODE",
+      "person": {
+        "id": "2015085300501",
+        "name": "KARUNAKARAN.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNACHIPARAMBU",
+      "person": {
+        "id": "2015085300601",
+        "name": "K.P.RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THEKKAKKAD",
+      "person": {
+        "id": "2015085300701",
+        "name": "V.R.BHASI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PULINELLI",
+      "person": {
+        "id": "2015085300801",
+        "name": "SATHYABHAMA.V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLEKKAD",
+      "person": {
+        "id": "2015085300901",
+        "name": "SURENDRAN.V.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SASTHAPURAM",
+      "person": {
+        "id": "2015085301001",
+        "name": "SAJI.M.M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHEMBAI",
+      "person": {
+        "id": "2015085301101",
+        "name": "SATHEESH.A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKEKKARA",
+      "person": {
+        "id": "2015085301201",
+        "name": "PREETHA.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANDALAKKODE",
+      "person": {
+        "id": "2015085301301",
+        "name": "RENUKA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHENNANGAD",
+      "person": {
+        "id": "2015085301401",
+        "name": "RADHA.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOOTHALAKKAD",
+      "person": {
+        "id": "2015085301501",
+        "name": "P.K SUDEVAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

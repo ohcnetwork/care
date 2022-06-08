@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347115547,
+  "date": "2019-08-21",
+  "name": "Varapuzha  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Alangad",
+  "area": "7.74km",
+  "localbody_code": "G070202",
+  "no_of_wards": 16,
+  "population": 22514,
+  "male": 10993,
+  "female": 11521,
+  "population_density": 2909,
+  "sex_ratio": 1048,
+  "literacy_rate": 93.88,
+  "literacy_rate_male": 96.38,
+  "literacy_rate_female": 91.5,
+  "president": "K.S.MUHAMMED",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THEVARKAD",
+      "person": {
+        "id": "2015063000101",
+        "name": "NIGHIL NALAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHIRAKKAKAM NORTH",
+      "person": {
+        "id": "2015063000201",
+        "name": "ELSAMMA JOY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHIRAKKAKAM SOUTH",
+      "person": {
+        "id": "2015063000301",
+        "name": "JAISON.P.T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHENPALLY NORTH",
+      "person": {
+        "id": "2015063000401",
+        "name": "JOSEMON PUDUSSERY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTTINAKAM NORTH",
+      "person": {
+        "id": "2015063000501",
+        "name": "KOCHURANI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTTINAKAM SOUTH",
+      "person": {
+        "id": "2015063000601",
+        "name": "SHAIJI LIJO"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHENPALLY SOUTH",
+      "person": {
+        "id": "2015063000701",
+        "name": "JOMON.T.J"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANNAMTHURUTH",
+      "person": {
+        "id": "2015063000801",
+        "name": "K.S.MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VARAPUZHA NORTH",
+      "person": {
+        "id": "2015063000901",
+        "name": "LIMA JOY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VARAPUZHA SOUTH",
+      "person": {
+        "id": "2015063001001",
+        "name": "SHERLY JOHNSON"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THUNDATHUMKADAVU SOUTH",
+      "person": {
+        "id": "2015063001101",
+        "name": "JOSEPH.T.A(BIJU OSTINE)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUNDATHUMKADAVU NORTH",
+      "person": {
+        "id": "2015063001201",
+        "name": "T.P.POLY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THUNDATHUMKADAVU HEAD QUARTERS",
+      "person": {
+        "id": "2015063001301",
+        "name": "MINI JOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHETTIBHAGHAM TOWN",
+      "person": {
+        "id": "2015063001401",
+        "name": "VALSALA BALAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHIRAKKAKAM PAADY",
+      "person": {
+        "id": "2015063001501",
+        "name": "GEETHA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "DEVASWAMPAADAM",
+      "person": {
+        "id": "2015063001601",
+        "name": "M.G.RAJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

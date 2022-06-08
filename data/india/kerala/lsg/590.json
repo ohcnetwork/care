@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346976570,
+  "date": "2019-08-21",
+  "name": "Udumbanchola  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Nedumkandam",
+  "area": "84km",
+  "localbody_code": "G060306",
+  "no_of_wards": 14,
+  "population": 28342,
+  "male": 13687,
+  "female": 14655,
+  "population_density": 337,
+  "sex_ratio": 939,
+  "literacy_rate": 66,
+  "literacy_rate_male": 75,
+  "literacy_rate_female": 57,
+  "president": "SASIKALAMURUKESAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SLEEVAMALA",
+      "person": {
+        "id": "2015059000101",
+        "name": "RANI SUNNY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAMPUPARA",
+      "person": {
+        "id": "2015059000201",
+        "name": "THOMAS MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMMANNAR",
+      "person": {
+        "id": "2015059000301",
+        "name": "JIMMY GEORGE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "UDUMBANCHOLA",
+      "person": {
+        "id": "2015059000401",
+        "name": "SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANATHODU",
+      "person": {
+        "id": "2015059000501",
+        "name": "SUNDHARI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALLUPALAM",
+      "person": {
+        "id": "2015059000601",
+        "name": "BEENAMOL K K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAPPANPARA",
+      "person": {
+        "id": "2015059000701",
+        "name": "S KANAKARAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARATHODU",
+      "person": {
+        "id": "2015059000801",
+        "name": "SASIKALA MURUKESAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALPPARA",
+      "person": {
+        "id": "2015059000901",
+        "name": "SUDHAKAR S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MAVADY",
+      "person": {
+        "id": "2015059001001",
+        "name": "SINSON RAJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POTHAKKALLY",
+      "person": {
+        "id": "2015059001101",
+        "name": "SANDHA BIJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015059001201",
+        "name": "T J  JOMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALLARAKKANPPARA",
+      "person": {
+        "id": "2015059001301",
+        "name": "LEELAMANI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THINGALKKADU",
+      "person": {
+        "id": "2015059001401",
+        "name": "SHIJI SURESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

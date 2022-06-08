@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346383928,
+  "date": "2019-08-21",
+  "name": "Kodumon  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Parakkode",
+  "area": "36.36km",
+  "localbody_code": "G030806",
+  "no_of_wards": 18,
+  "population": 25707,
+  "male": 12424,
+  "female": 13283,
+  "population_density": 707,
+  "sex_ratio": 1069,
+  "literacy_rate": 93.93,
+  "literacy_rate_male": 96.57,
+  "literacy_rate_female": 91.49,
+  "president": "KUNJANNAMMAKUNJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHANDANAPPALLY",
+      "person": {
+        "id": "2015042100101",
+        "name": "IKKARA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANDHICHANTHA",
+      "person": {
+        "id": "2015042100201",
+        "name": "SAHADEVAN UNNITHAAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANGADICAL NORTH",
+      "person": {
+        "id": "2015042100301",
+        "name": "BALACHANDRAN NAIR. C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ATTUVASSERRY",
+      "person": {
+        "id": "2015042100401",
+        "name": "SYAM SATHYA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OTTATHEKKU",
+      "person": {
+        "id": "2015042100501",
+        "name": "JITHESH KUMAR RAJEENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAYANAKUNNU",
+      "person": {
+        "id": "2015042100601",
+        "name": "VINI ANAND"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANGADICAL HIGH SCHOOL",
+      "person": {
+        "id": "2015042100701",
+        "name": "ARATHY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANAKKADU",
+      "person": {
+        "id": "2015042100801",
+        "name": "M.R SREEDHARAN UNNITHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODUMONCHIRA",
+      "person": {
+        "id": "2015042100901",
+        "name": "LEELAMANI VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KODUMON EAST",
+      "person": {
+        "id": "2015042101001",
+        "name": "LALITHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERUTHUVAKUNNU",
+      "person": {
+        "id": "2015042101101",
+        "name": "JYOTHI LEKSHMI. H"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHIRANIKKAL",
+      "person": {
+        "id": "2015042101201",
+        "name": "CHIRANICKAL SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODUMON",
+      "person": {
+        "id": "2015042101301",
+        "name": "KUNJANNAMMA KUNJU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "IKKADU",
+      "person": {
+        "id": "2015042101401",
+        "name": "OMANAYAMMA. K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "IKKADU PADINGARU",
+      "person": {
+        "id": "2015042101501",
+        "name": "N.K. UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "IKKADU VADAKKU",
+      "person": {
+        "id": "2015042101601",
+        "name": "PUSHPA LETHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PATTAMTHARA",
+      "person": {
+        "id": "2015042101701",
+        "name": "A.G. SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "EDATHITTA",
+      "person": {
+        "id": "2015042101801",
+        "name": "SARADA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

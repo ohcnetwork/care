@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346497536,
+  "date": "2019-08-21",
+  "name": "Edathua  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Champakkulam",
+  "area": "22.29km",
+  "localbody_code": "G040602",
+  "no_of_wards": 15,
+  "population": 21715,
+  "male": 10708,
+  "female": 11007,
+  "population_density": 974,
+  "sex_ratio": 1028,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "TESSY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODUPUNNA",
+      "person": {
+        "id": "2015045300101",
+        "name": "DEEPA GOPAKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THAYANKARY EAST",
+      "person": {
+        "id": "2015045300201",
+        "name": "TESSY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHANGANAKRI",
+      "person": {
+        "id": "2015045300301",
+        "name": "SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDATHUA NORTH",
+      "person": {
+        "id": "2015045300401",
+        "name": "ANNIE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDATHUA CENTER",
+      "person": {
+        "id": "2015045300501",
+        "name": "MEERA THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDATHUA EAST",
+      "person": {
+        "id": "2015045300601",
+        "name": "JAIN MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDATHUA SOUTH",
+      "person": {
+        "id": "2015045300701",
+        "name": "BETTY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANDANKARY SOUTH",
+      "person": {
+        "id": "2015045300801",
+        "name": "KURUVILA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANDANKARY WEST",
+      "person": {
+        "id": "2015045300901",
+        "name": "SYAMALA RAJAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOYILMUCK SOUTH",
+      "person": {
+        "id": "2015045301001",
+        "name": "MINCY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOYILMUCK NORTH",
+      "person": {
+        "id": "2015045301101",
+        "name": "THOMAS T.T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PACHA EAST",
+      "person": {
+        "id": "2015045301201",
+        "name": "ROSAMMA ANTONY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANGANKARY SOUTH",
+      "person": {
+        "id": "2015045301301",
+        "name": "ANITHA JACOB"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PACHA WEST",
+      "person": {
+        "id": "2015045301401",
+        "name": "SURESH M V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THAYANKARY WEST",
+      "person": {
+        "id": "2015045301501",
+        "name": "BAIJU JOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

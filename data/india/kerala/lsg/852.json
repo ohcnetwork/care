@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348317311,
+  "date": "2019-08-21",
+  "name": "Pirayiri  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Palakkad",
+  "area": "18.69km",
+  "localbody_code": "G090707",
+  "no_of_wards": 21,
+  "population": 30439,
+  "male": 15198,
+  "female": 15241,
+  "population_density": 1629,
+  "sex_ratio": 1003,
+  "literacy_rate": 81.8,
+  "literacy_rate_male": 89.29,
+  "literacy_rate_female": 74.38,
+  "president": "KKALLIYANI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VARAMPALLAM",
+      "person": {
+        "id": "2015085200101",
+        "name": "SURENDRAN M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANIKUTTIKALAM",
+      "person": {
+        "id": "2015085200201",
+        "name": "K G VIMALAKUMARI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANTHRAMKUNNU",
+      "person": {
+        "id": "2015085200301",
+        "name": "K KALLIYANI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PEZHUMKARA",
+      "person": {
+        "id": "2015085200401",
+        "name": "RIYAZ KHALID"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MEPPARAMBU",
+      "person": {
+        "id": "2015085200501",
+        "name": "KAJAHUSSAIN A V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PIRAYIRI",
+      "person": {
+        "id": "2015085200601",
+        "name": "SHAFEENA ABBAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MOZHIPULAM",
+      "person": {
+        "id": "2015085200701",
+        "name": "SASIKALA MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNAMKULANGARA",
+      "person": {
+        "id": "2015085200801",
+        "name": "R UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "IRUPPAKKAD",
+      "person": {
+        "id": "2015085200901",
+        "name": "M NAZEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALIYAMMAKAVU",
+      "person": {
+        "id": "2015085201001",
+        "name": "SANDEEP P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURISSAMKULAM",
+      "person": {
+        "id": "2015085201101",
+        "name": "P SURESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ERAYAPOTTA",
+      "person": {
+        "id": "2015085201201",
+        "name": "A F SHERINA BASHEER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAPPILAKKAD",
+      "person": {
+        "id": "2015085201301",
+        "name": "C SUNITHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUNDUKAD",
+      "person": {
+        "id": "2015085201401",
+        "name": "S JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KODUNTHIRAPULLY",
+      "person": {
+        "id": "2015085201501",
+        "name": "PREEJA SURESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHENGODE",
+      "person": {
+        "id": "2015085201601",
+        "name": "MANJU K K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THARUVAKKODE",
+      "person": {
+        "id": "2015085201701",
+        "name": "K SANTHA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PANAPARAMBU",
+      "person": {
+        "id": "2015085201801",
+        "name": "P NANDABALAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NAVAKKODE",
+      "person": {
+        "id": "2015085201901",
+        "name": "SUHARA BASHEER"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ATHALOOR",
+      "person": {
+        "id": "2015085202001",
+        "name": "K L AJITHA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MELATHI",
+      "person": {
+        "id": "2015085202101",
+        "name": "M ISMAIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

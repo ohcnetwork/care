@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348102351,
+  "date": "2019-08-21",
+  "name": "Perinjanam  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mathilakam",
+  "area": "9.3km",
+  "localbody_code": "G081404",
+  "no_of_wards": 15,
+  "population": 19257,
+  "male": 8933,
+  "female": 10324,
+  "population_density": 2071,
+  "sex_ratio": 1156,
+  "literacy_rate": 92.5,
+  "literacy_rate_male": 95.71,
+  "literacy_rate_female": 89.83,
+  "president": "K.K.SACHITH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERINJANAM NORTH",
+      "person": {
+        "id": "2015078800101",
+        "name": "SMITHA P M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAHALLARA",
+      "person": {
+        "id": "2015078800201",
+        "name": "SAYIDA MUTHUKKOYA THANGAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ACHAMKANDAM",
+      "person": {
+        "id": "2015078800301",
+        "name": "SATHEESH P V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PERINJANAM CENTRE",
+      "person": {
+        "id": "2015078800401",
+        "name": "AJAYAN T P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MOONNUPEETIKA",
+      "person": {
+        "id": "2015078800501",
+        "name": "PRAJITHA A  K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015078800601",
+        "name": "REEJA C K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANAL",
+      "person": {
+        "id": "2015078800701",
+        "name": "KUTTAN K K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAKKARAPPADAM",
+      "person": {
+        "id": "2015078800801",
+        "name": "DILEEP KUMAR.K.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SREEMURUKA",
+      "person": {
+        "id": "2015078800901",
+        "name": "SHILAJA PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTTILAKKADAVU",
+      "person": {
+        "id": "2015078801001",
+        "name": "P A SUDHEER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTAMKULAM",
+      "person": {
+        "id": "2015078801101",
+        "name": "HEMALATHA M A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERINJANAM SOUTH",
+      "person": {
+        "id": "2015078801201",
+        "name": "SINDHU UNNI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ONAPPARAMBU",
+      "person": {
+        "id": "2015078801301",
+        "name": "KAVITHA SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADAPPURAM SOUTH",
+      "person": {
+        "id": "2015078801401",
+        "name": "K.K.SACHITH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KADAPPURAM",
+      "person": {
+        "id": "2015078801501",
+        "name": "BINDU P K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

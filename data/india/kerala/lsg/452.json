@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346496155,
+  "date": "2019-08-21",
+  "name": "Thalavady  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Champakkulam",
+  "area": "15.76km",
+  "localbody_code": "G040601",
+  "no_of_wards": 15,
+  "population": 22166,
+  "male": 10760,
+  "female": 11406,
+  "population_density": 1406,
+  "sex_ratio": 1060,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 94,
+  "president": "ADVJENUBPUSHPAKARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALANGARA",
+      "person": {
+        "id": "2015045200101",
+        "name": "ADV:JENUB PUSHPAKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARIKUZHY",
+      "person": {
+        "id": "2015045200201",
+        "name": "SHEENA ELEZABATH JACOB"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THIRUVIRUKARI",
+      "person": {
+        "id": "2015045200301",
+        "name": "JIJI THOMAS PRASAD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NADUVILEMURI",
+      "person": {
+        "id": "2015045200401",
+        "name": "PRAKASH PANAVELY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELLAKKINAR",
+      "person": {
+        "id": "2015045200501",
+        "name": "BINU SURESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NARAKATHRAMUTT",
+      "person": {
+        "id": "2015045200601",
+        "name": "BABU VALIYAVEEDAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEERETTUPURAM",
+      "person": {
+        "id": "2015045200701",
+        "name": "LALY ALEX"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANATHARA",
+      "person": {
+        "id": "2015045200801",
+        "name": "ANUROOP M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAKKULAM",
+      "person": {
+        "id": "2015045200901",
+        "name": "MANI DAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANALEL",
+      "person": {
+        "id": "2015045201001",
+        "name": "RAMA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALAVADY",
+      "person": {
+        "id": "2015045201101",
+        "name": "AJITH KUMAR PISHARATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOOTTUMALI",
+      "person": {
+        "id": "2015045201201",
+        "name": "P.K VARGHESE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODAMBANADI",
+      "person": {
+        "id": "2015045201301",
+        "name": "PRIYA ARUN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOCHAMMANAM",
+      "person": {
+        "id": "2015045201401",
+        "name": "SUSHAMA SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ANAPRAMBAL",
+      "person": {
+        "id": "2015045201501",
+        "name": "DINU VINOD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

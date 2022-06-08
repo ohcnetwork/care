@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346905091,
+  "date": "2019-08-21",
+  "name": "Vazhoor  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vazhoor",
+  "area": "24.61km",
+  "localbody_code": "G051005",
+  "no_of_wards": 16,
+  "population": 22584,
+  "male": 11212,
+  "female": 11372,
+  "population_density": 918,
+  "sex_ratio": 1014,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "PROF.S.PUSHKALADEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULICKALKAVALA",
+      "person": {
+        "id": "2015056600101",
+        "name": "THANKAMMA ALEX"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NEDUMAVU",
+      "person": {
+        "id": "2015056600201",
+        "name": "M C  MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAIRAMALA",
+      "person": {
+        "id": "2015056600301",
+        "name": "PREMALATHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHENKAL",
+      "person": {
+        "id": "2015056600401",
+        "name": "SANJO  ANTONY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEKKANIKKADU",
+      "person": {
+        "id": "2015056600501",
+        "name": "LAISAMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SASTHAMKAVU",
+      "person": {
+        "id": "2015056600601",
+        "name": "PROF. S. PUSHKALA DEVI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AREECKAL",
+      "person": {
+        "id": "2015056600701",
+        "name": "V  P  REJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KODUNGOOR",
+      "person": {
+        "id": "2015056600801",
+        "name": "V N  MANOJ"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "T P PURAM",
+      "person": {
+        "id": "2015056600901",
+        "name": "RAMSHAD  RAHUMAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ILANGOI",
+      "person": {
+        "id": "2015056601001",
+        "name": "ALEYKKUTTY THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHAMAMPATHAL",
+      "person": {
+        "id": "2015056601101",
+        "name": "THOMAS VETTUVELIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANAM",
+      "person": {
+        "id": "2015056601201",
+        "name": "SHANIDA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANDRACHI",
+      "person": {
+        "id": "2015056601301",
+        "name": "LEELAMANI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAPPUKADU",
+      "person": {
+        "id": "2015056601401",
+        "name": "P M   JOHN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHELLIMATTOM",
+      "person": {
+        "id": "2015056601501",
+        "name": "RANI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ERUMATHALA",
+      "person": {
+        "id": "2015056601601",
+        "name": "T T  CHELLAPPAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

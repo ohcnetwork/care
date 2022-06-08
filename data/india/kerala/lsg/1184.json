@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349525959,
+  "date": "2019-08-21",
+  "name": "Kumbla  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Manjewswaram",
+  "area": "40.18km",
+  "localbody_code": "G140306",
+  "no_of_wards": 23,
+  "population": 35735,
+  "male": 17736,
+  "female": 17999,
+  "population_density": 889,
+  "sex_ratio": 1015,
+  "literacy_rate": 81.68,
+  "literacy_rate_male": 88.58,
+  "literacy_rate_female": 74.99,
+  "president": "PUNDARIKAKSHAKL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUMBOL",
+      "person": {
+        "id": "2015118400101",
+        "name": "ZAINABA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARIKADY",
+      "person": {
+        "id": "2015118400201",
+        "name": "FATHIMATH ZAUHRA B.A RAHMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAKKALAM KUNNU",
+      "person": {
+        "id": "2015118400301",
+        "name": "A K ARIF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BAMBRANA",
+      "person": {
+        "id": "2015118400401",
+        "name": "MARIYAMMA MOOSA DIDMA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UJAR",
+      "person": {
+        "id": "2015118400501",
+        "name": "GEETHA SHETTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ULUVAR",
+      "person": {
+        "id": "2015118400601",
+        "name": "AFSA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALATHUR",
+      "person": {
+        "id": "2015118400701",
+        "name": "SUKESH BHANDARI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MADVA",
+      "person": {
+        "id": "2015118400801",
+        "name": "ARUNA M ALVA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODIYAMMA",
+      "person": {
+        "id": "2015118400901",
+        "name": "PUNDARIKAKSHA K L"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ICHILAMPADY",
+      "person": {
+        "id": "2015118401001",
+        "name": "HARISH GATTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUJAMGAVU",
+      "person": {
+        "id": "2015118401101",
+        "name": "MURALIDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTEKKAR",
+      "person": {
+        "id": "2015118401201",
+        "name": "SUJITH RAI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SHANTHIPALLAM",
+      "person": {
+        "id": "2015118401301",
+        "name": "PUSHPALATHA N"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERVAD",
+      "person": {
+        "id": "2015118401401",
+        "name": "PUSHPALATHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BADRIYA NAGAR",
+      "person": {
+        "id": "2015118401501",
+        "name": "FATHIMA ABDULLA KUNHI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERAL",
+      "person": {
+        "id": "2015118401601",
+        "name": "ABDUL KHADER V P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "K K PURAM",
+      "person": {
+        "id": "2015118401701",
+        "name": "AYSHA MUHAMMAD"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MOGRAL",
+      "person": {
+        "id": "2015118401801",
+        "name": "KHAIRUNNISA ABDUL KHADAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOPPALAM",
+      "person": {
+        "id": "2015118401901",
+        "name": "MOHAMMED ALI B N"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOIPPADY KADAPURAM",
+      "person": {
+        "id": "2015118402001",
+        "name": "MOHAMMED KUNHI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MATTAMKUZHI",
+      "person": {
+        "id": "2015118402101",
+        "name": "PREMALATHA S"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "BATHERI",
+      "person": {
+        "id": "2015118402201",
+        "name": "SUDHAKARA KAMATH K"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUMBLA",
+      "person": {
+        "id": "2015118402301",
+        "name": "RAMESH BHAT A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

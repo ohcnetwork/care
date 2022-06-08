@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346892020,
+  "date": "2019-08-21",
+  "name": "Chirakkadavu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vazhoor",
+  "area": "38.81km",
+  "localbody_code": "G051001",
+  "no_of_wards": 20,
+  "population": 31813,
+  "male": 15945,
+  "female": 15868,
+  "population_density": 820,
+  "sex_ratio": 995,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "ADV.JAYASREEDHAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ATTICKAL",
+      "person": {
+        "id": "2015056200101",
+        "name": "MOLLYKUTTY THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOYIPALLY",
+      "person": {
+        "id": "2015056200201",
+        "name": "BINDU SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PATHASERI",
+      "person": {
+        "id": "2015056200301",
+        "name": "MOHANKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHITHRANJALI",
+      "person": {
+        "id": "2015056200401",
+        "name": "ADV . GIRISH .S. NAIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MOOLAKUNNU",
+      "person": {
+        "id": "2015056200501",
+        "name": "K.G KANNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "GRAMADEEPAM",
+      "person": {
+        "id": "2015056200601",
+        "name": "SUBITHA BINOY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNNUMBHAGAM",
+      "person": {
+        "id": "2015056200701",
+        "name": "ROSAMMA P.C (ROSAMMA TEACHER)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANNAMPLAVU",
+      "person": {
+        "id": "2015056200801",
+        "name": "SOMA ANEESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDABHAGAM",
+      "person": {
+        "id": "2015056200901",
+        "name": "PRAJITH . P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALAKKAYAM",
+      "person": {
+        "id": "2015056201001",
+        "name": "SHAJI PAMPOORY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERUVALLY",
+      "person": {
+        "id": "2015056201101",
+        "name": "JAYASREE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOOLEPLAVU",
+      "person": {
+        "id": "2015056201201",
+        "name": "THRESIYAMMA P.T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAILATHUKAVALA",
+      "person": {
+        "id": "2015056201301",
+        "name": "RAJI V.G"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOTTADIKUNNU",
+      "person": {
+        "id": "2015056201401",
+        "name": "T.N GIREESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHENNAKUNNU",
+      "person": {
+        "id": "2015056201501",
+        "name": "VAISAKH .S. NAIR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THEKKETHUKAVALA",
+      "person": {
+        "id": "2015056201601",
+        "name": "ADV. JAYA SREEDHAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHIRAKKADAVU CENTER",
+      "person": {
+        "id": "2015056201701",
+        "name": "B. RAVEENDRAN NAIR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANDHIRAM",
+      "person": {
+        "id": "2015056201801",
+        "name": "USHA SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THONIPARA",
+      "person": {
+        "id": "2015056201901",
+        "name": "MOHAN RAM"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KADUKKAMALA",
+      "person": {
+        "id": "2015056202001",
+        "name": "SMITHALAL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

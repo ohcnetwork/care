@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+
+{% block title %}Add Rooms{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl font-bold text-center">{% trans "Enter Your Hospital's Capacity" %}</h1>
+<p class="max-w-lg text-lg mt-3 text-gray-700 text-justify">The Chief Ministers's office request to know information about  total capacity and current Utlisation of Normal Beds, ICU Beds and Ventilators in your Hospital.
+<br>
+1. Normal Beds<br>
+2. ICU Beds<br>
+3. Ventilators</p>
+<form class="form-horizontal" method="post" action="">
+  {% csrf_token %}
+  {% if duplicate %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">The bed type you are trying to add has already been added to the hospital, Please pick a different bed type.</p>
+  {% endif %}
+  {% if validation_error %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Currently occupied number should be lesser than or equal to the total Capacity.</p>
+  {% endif %}
+  {{ form|crispy }}
+  <p class="max-w-lg text-lg mt-3 text-gray-700 text-justify">
+    <br>
+    1. Save and Add information about another bed type.<br>
+    2. Save the entered information and submit to the network<br>
+    3. Cancel</p>
+  <div class="control-group">
+    <div class="controls md:flex md:justify-between">
+      <button type="submit" name="addmore" class=" mt-4 btn btn-primary">Save & Enter more Information</button>
+      <button type="submit" class="mt-4 btn btn-primary">Save & Submit</button>
+      <a class=" mt-4 btn btn-primary" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

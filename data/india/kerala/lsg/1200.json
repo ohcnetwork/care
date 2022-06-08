@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349574778,
+  "date": "2019-08-21",
+  "name": "KodomBelur  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "95.44km",
+  "localbody_code": "G140502",
+  "no_of_wards": 19,
+  "population": 28198,
+  "male": 13996,
+  "female": 14202,
+  "population_density": 295,
+  "sex_ratio": 1015,
+  "literacy_rate": 79.29,
+  "literacy_rate_male": 84.78,
+  "literacy_rate_female": 73.89,
+  "president": "C.KUNHIKANNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAYAMBU",
+      "person": {
+        "id": "2015120000101",
+        "name": "V.K.LALITHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PODAVADUKAM",
+      "person": {
+        "id": "2015120000201",
+        "name": "AMBADI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDAYAPURAM",
+      "person": {
+        "id": "2015120000301",
+        "name": "SREELATHA.P.V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KODOM",
+      "person": {
+        "id": "2015120000401",
+        "name": "C.KUNHIKANNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AYAROTT",
+      "person": {
+        "id": "2015120000501",
+        "name": "KUNHAMBU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHULLIKKARA",
+      "person": {
+        "id": "2015120000601",
+        "name": "A.C.MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHAKKITTADUKAM",
+      "person": {
+        "id": "2015120000701",
+        "name": "SUMITHRA.T.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "BELUR",
+      "person": {
+        "id": "2015120000801",
+        "name": "INDIRA.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ATTAKKANDAM",
+      "person": {
+        "id": "2015120000901",
+        "name": "PUSHPA.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BANAM",
+      "person": {
+        "id": "2015120001001",
+        "name": "USHA.T.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANAPPETTY",
+      "person": {
+        "id": "2015120001101",
+        "name": "BHOOPESH.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MYANGANAM",
+      "person": {
+        "id": "2015120001201",
+        "name": "MUHAMMED MUSTAFA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALICHANADUKAM",
+      "person": {
+        "id": "2015120001301",
+        "name": "ANEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHERALAM",
+      "person": {
+        "id": "2015120001401",
+        "name": "LATHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THAYANNUR",
+      "person": {
+        "id": "2015120001501",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ENNAPPARA",
+      "person": {
+        "id": "2015120001601",
+        "name": "BINDULEKHA.N.V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AYYANKAVU",
+      "person": {
+        "id": "2015120001701",
+        "name": "ANIL KUMAR.A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PARAKLAYI",
+      "person": {
+        "id": "2015120001801",
+        "name": "C.KUNHAMBU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ANAKKALLU",
+      "person": {
+        "id": "2015120001901",
+        "name": "USHA.P.L"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

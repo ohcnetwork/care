@@ -1,0 +1,141 @@
+{
+  "timeStamp": 1566345183729,
+  "date": "2019-08-21",
+  "name": "Pattambi  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "224.21km",
+  "localbody_code": "B090200",
+  "no_of_wards": 15,
+  "population": 232425,
+  "male": 111238,
+  "female": 121187,
+  "population_density": 1037,
+  "sex_ratio": 1089,
+  "literacy_rate": 88.01,
+  "literacy_rate_male": 91.59,
+  "literacy_rate_female": 84.81,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THIRUVEGAPPURA",
+      "person": {
+        "id": "2015009900101",
+        "name": "K.K.A.AZEEZ"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAPPALAM",
+      "person": {
+        "id": "2015009900201",
+        "name": "BABURAJ.T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARINGANAD",
+      "person": {
+        "id": "2015009900301",
+        "name": "MUHAMMADALI.V.M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THATHANAMPULLY",
+      "person": {
+        "id": "2015009900401",
+        "name": "RAMANI MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KULUKKALLUR",
+      "person": {
+        "id": "2015009900501",
+        "name": "SUNITHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOPPAM",
+      "person": {
+        "id": "2015009900601",
+        "name": "KAMMUKUTTY HAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADUVATTAM",
+      "person": {
+        "id": "2015009900701",
+        "name": "FATHIMATH SHABNA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHUMURI",
+      "person": {
+        "id": "2015009900801",
+        "name": "SUMA SUNDHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VADANAMKURUSSI",
+      "person": {
+        "id": "2015009900901",
+        "name": "N.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARAKKAD",
+      "person": {
+        "id": "2015009901001",
+        "name": "SABEENA HASSANKUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONDOORKARA",
+      "person": {
+        "id": "2015009901101",
+        "name": "JUSNA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARAKOOTH",
+      "person": {
+        "id": "2015009901201",
+        "name": "SHAFEENA SHOOKUR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUMUDIYOOR",
+      "person": {
+        "id": "2015009901301",
+        "name": "ADV. VARUN RAGHUNATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARUTHUR",
+      "person": {
+        "id": "2015009901401",
+        "name": "VASUDEVAN.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARUVANPADI",
+      "person": {
+        "id": "2015009901501",
+        "name": "SAJITHA VINOD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348650897,
+  "date": "2019-08-21",
+  "name": "Morayur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Malappuram",
+  "area": "24.57km",
+  "localbody_code": "G100602",
+  "no_of_wards": 18,
+  "population": 24449,
+  "male": 11995,
+  "female": 12454,
+  "population_density": 995,
+  "sex_ratio": 1038,
+  "literacy_rate": 90.88,
+  "literacy_rate_male": 94.32,
+  "literacy_rate_female": 87.45,
+  "president": "K.M.SALEEMMASTER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "OZHUKUR",
+      "person": {
+        "id": "2015093100101",
+        "name": "BUSHRA .P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALLIMUKK",
+      "person": {
+        "id": "2015093100201",
+        "name": "AYYAPPAN .C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NERAVATH",
+      "person": {
+        "id": "2015093100301",
+        "name": "MOOSA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KEEZHMURI",
+      "person": {
+        "id": "2015093100401",
+        "name": "P. KAREEMUDHEEN HAJI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "HILLTOP",
+      "person": {
+        "id": "2015093100501",
+        "name": "SAKKENA BENGALATH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MONGAM",
+      "person": {
+        "id": "2015093100601",
+        "name": "LAILA .V.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERIKKAKAD",
+      "person": {
+        "id": "2015093100701",
+        "name": "K .M . SALEEM MASTER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARIMBRA",
+      "person": {
+        "id": "2015093100801",
+        "name": "HAMZA NHANDUKANNI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOTHANAPARAMB",
+      "person": {
+        "id": "2015093100901",
+        "name": "SAINABA .M.A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALATHUMPADI",
+      "person": {
+        "id": "2015093101001",
+        "name": "E .RAMLA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BIRIYAPURAM",
+      "person": {
+        "id": "2015093101101",
+        "name": "SUNEERA .P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARAKKAL",
+      "person": {
+        "id": "2015093101201",
+        "name": "HASEENA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALANCHERY",
+      "person": {
+        "id": "2015093101301",
+        "name": "HAMZA CHEKLAMTHODI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THIRUVALIPARAMB",
+      "person": {
+        "id": "2015093101401",
+        "name": "KHADEEJA SALAM ANATHAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MORAYUR",
+      "person": {
+        "id": "2015093101501",
+        "name": "MANNISSERI MUJEEB RAHMAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EDAPPARAMB",
+      "person": {
+        "id": "2015093101601",
+        "name": "HANEEFA .P.T"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALATHIPARAMB",
+      "person": {
+        "id": "2015093101701",
+        "name": "ABDUL GAFOOR K .C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUNNAKKAD",
+      "person": {
+        "id": "2015093101801",
+        "name": "SAKKEENA IQBAL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

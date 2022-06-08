@@ -1,0 +1,189 @@
+{
+  "timeStamp": 1566349084741,
+  "date": "2019-08-21",
+  "name": "Kodanchery  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnamangalam",
+  "area": "102.58km",
+  "localbody_code": "G111010",
+  "no_of_wards": 21,
+  "population": 32996,
+  "male": 16663,
+  "female": 16333,
+  "population_density": 322,
+  "sex_ratio": 980,
+  "literacy_rate": 92.24,
+  "literacy_rate_male": 94.39,
+  "literacy_rate_female": 90.05,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHIPPILITHODE",
+      "person": {
+        "id": "2015106200101",
+        "name": "KUMARAN N.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NOORAMTHODE",
+      "person": {
+        "id": "2015106200201",
+        "name": "K.M BASHEER"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMBUKADAVE",
+      "person": {
+        "id": "2015106200301",
+        "name": "K.P CHACKOCHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THUSHARAGIRI",
+      "person": {
+        "id": "2015106200401",
+        "name": "FRANCIS CHALIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MEEMUTTY",
+      "person": {
+        "id": "2015106200501",
+        "name": "TESSY SHIBU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLIPPOYIL",
+      "person": {
+        "id": "2015106200601",
+        "name": "PUSHPA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOOROTTUPARA",
+      "person": {
+        "id": "2015106200701",
+        "name": "SHAJI MALAMPARA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANJUVAYAL",
+      "person": {
+        "id": "2015106200801",
+        "name": "SHIJI VAVALUKUNNEL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALIYAKOLLY",
+      "person": {
+        "id": "2015106200901",
+        "name": "ANNAKKUTTY DEVASIA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KODENCHERY SOUTH",
+      "person": {
+        "id": "2015106201001",
+        "name": "LISSY CHACKO"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MURAMBATHY",
+      "person": {
+        "id": "2015106201101",
+        "name": "JOBY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELAMCODE",
+      "person": {
+        "id": "2015106201201",
+        "name": "SIJI BIJU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MYKKAVU",
+      "person": {
+        "id": "2015106201301",
+        "name": "ROOBY THAMBI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARIMBALAKKUNNU",
+      "person": {
+        "id": "2015106201401",
+        "name": "THAMBI PARAKANDATHIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANJIRAD",
+      "person": {
+        "id": "2015106201501",
+        "name": "BINDU GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NIRANNAPARA",
+      "person": {
+        "id": "2015106201601",
+        "name": "CHINNA ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KODENCHERY NORTH",
+      "person": {
+        "id": "2015106201701",
+        "name": "JESSY PINAKKATTU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THEYYAPPARA",
+      "person": {
+        "id": "2015106201801",
+        "name": "SAJINI RAMANKUTTY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KANNOTH SOUTH",
+      "person": {
+        "id": "2015106201901",
+        "name": "MERCY KAITHARA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KANNOTH NORTH",
+      "person": {
+        "id": "2015106202001",
+        "name": "U.T SHAJU"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KALAPPURAM",
+      "person": {
+        "id": "2015106202101",
+        "name": "JAMEELA AZEEZ P.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

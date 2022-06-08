@@ -1,0 +1,237 @@
+{
+  "timeStamp": 1566345494788,
+  "date": "2019-08-21",
+  "name": "Chengannur  Municipality, Alappuzha District",
+  "district": "Alappuzha",
+  "area": "13km",
+  "localbody_code": "M040100",
+  "no_of_wards": 27,
+  "population": 25391,
+  "male": 12087,
+  "female": 13304,
+  "population_density": 1990,
+  "sex_ratio": 1062,
+  "literacy_rate": 96.5,
+  "literacy_rate_male": 98.2,
+  "literacy_rate_female": 94.9,
+  "chairman": "JOHNMTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUNDENCAVU",
+      "person": {
+        "id": "2015018100101",
+        "name": "KUNJOONJAMMA (KUNJOONJAMMA PARAMPATHOOR)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KODIYATTUKARA",
+      "person": {
+        "id": "2015018100201",
+        "name": "SUDHAMONI  S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "TEMPLE",
+      "person": {
+        "id": "2015018100301",
+        "name": "BHARGAVI  T  T (BHARGAVI TEACHER)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MITHRAPPUZHA",
+      "person": {
+        "id": "2015018100401",
+        "name": "B  JAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VAZHARMANGALAM",
+      "person": {
+        "id": "2015018100501",
+        "name": "VALSALA MOHAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANGALAM SOUTH",
+      "person": {
+        "id": "2015018100601",
+        "name": "BETCY  THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANGALAM NORTH",
+      "person": {
+        "id": "2015018100701",
+        "name": "SAJAN SAMUEL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDANAD WEST",
+      "person": {
+        "id": "2015018100801",
+        "name": "P R PRADEEP KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDANAD EAST",
+      "person": {
+        "id": "2015018100901",
+        "name": "DEVI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUTHENCAVU  EAST",
+      "person": {
+        "id": "2015018101001",
+        "name": "VALSAMMA ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARATTUKADAVU",
+      "person": {
+        "id": "2015018101101",
+        "name": "B  SUDEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHENCAVU  WEST",
+      "person": {
+        "id": "2015018101201",
+        "name": "ABY CHACKO"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SASTHAMKULANGARA",
+      "person": {
+        "id": "2015018101301",
+        "name": "GEETHA KUSHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANGADICKAL",
+      "person": {
+        "id": "2015018101401",
+        "name": "SOBHA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MALAYIL",
+      "person": {
+        "id": "2015018101501",
+        "name": "K  SHIBURAJAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "I T I",
+      "person": {
+        "id": "2015018101601",
+        "name": "SUJA JOHN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015018101701",
+        "name": "SUSAMMA ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ANGADICKAL SOUTH",
+      "person": {
+        "id": "2015018101801",
+        "name": "K N HARIDAS"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "HATCHERY",
+      "person": {
+        "id": "2015018101901",
+        "name": "SREEKALA  S"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MOOLAPPADAVU",
+      "person": {
+        "id": "2015018102001",
+        "name": "ANILKUMAR (BABU)"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THITTAMEL",
+      "person": {
+        "id": "2015018102101",
+        "name": "SALLY (SALLY JAMES)"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PANDAVANPARA",
+      "person": {
+        "id": "2015018102201",
+        "name": "V V AJAYAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "BETHEL",
+      "person": {
+        "id": "2015018102301",
+        "name": "MERCY JOHN"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "TOWN",
+      "person": {
+        "id": "2015018102401",
+        "name": "SREEDEVI BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015018102501",
+        "name": "THOMAS VARGHESE (RAJAN KANNATTU)"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "VANDIMALA",
+      "person": {
+        "id": "2015018102601",
+        "name": "SHERLY"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "VALIYAPALLI",
+      "person": {
+        "id": "2015018102701",
+        "name": "JOHN  M THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

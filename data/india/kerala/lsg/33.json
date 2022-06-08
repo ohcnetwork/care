@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566344964359,
+  "date": "2019-08-21",
+  "name": "Parakkode  Block Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Parakkode",
+  "area": "251.1km",
+  "localbody_code": "B030800",
+  "no_of_wards": 15,
+  "population": 194952,
+  "male": 94417,
+  "female": 100535,
+  "population_density": 776,
+  "sex_ratio": 1065,
+  "literacy_rate": 92.17,
+  "literacy_rate_male": 94.67,
+  "literacy_rate_female": 89.85,
+  "president": "SOUDHAMINI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLICKAL",
+      "person": {
+        "id": "2015003300101",
+        "name": "VIMAL KUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAZHAKULAM",
+      "person": {
+        "id": "2015003300201",
+        "name": "MAYA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERINGANADU",
+      "person": {
+        "id": "2015003300301",
+        "name": "ASHA SHAJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VADAKKADATHUKAVU",
+      "person": {
+        "id": "2015003300401",
+        "name": "NIKHILA JIJUTHARAKAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EZHAMKULAM",
+      "person": {
+        "id": "2015003300501",
+        "name": "EZHAMKULAM AJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KODUMON",
+      "person": {
+        "id": "2015003300601",
+        "name": "ADV.C.PRAKASH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANGADICKAL",
+      "person": {
+        "id": "2015003300701",
+        "name": "BEENA PRABHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NEDUMONKAVU",
+      "person": {
+        "id": "2015003300801",
+        "name": "SOMARAJAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOODAL",
+      "person": {
+        "id": "2015003300901",
+        "name": "SOUDHAMINI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALANJOOR",
+      "person": {
+        "id": "2015003301001",
+        "name": "AJOMON"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ELAMANNOOR",
+      "person": {
+        "id": "2015003301101",
+        "name": "RAJAGOPALAN NAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAITHAPARAMBU",
+      "person": {
+        "id": "2015003301201",
+        "name": "REMA JOGEENDHAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ENATHU",
+      "person": {
+        "id": "2015003301301",
+        "name": "CHANDRAMATHI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VELUTHAMBI DALAVA",
+      "person": {
+        "id": "2015003301401",
+        "name": "R.SHEELA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KADAMPANADU",
+      "person": {
+        "id": "2015003301501",
+        "name": "S.RADHAKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

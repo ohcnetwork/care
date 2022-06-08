@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566348242525,
+  "date": "2019-08-21",
+  "name": "Pookkottukavu  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Sreekrishnapuram",
+  "area": "22.01km",
+  "localbody_code": "G090404",
+  "no_of_wards": 13,
+  "population": 12441,
+  "male": 5773,
+  "female": 6668,
+  "population_density": 565,
+  "sex_ratio": 1155,
+  "literacy_rate": 86.43,
+  "literacy_rate_male": 90.12,
+  "literacy_rate_female": 83.3,
+  "president": "JAYADEVANK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAKARAVOOR",
+      "person": {
+        "id": "2015082900101",
+        "name": "SASEENDRAN P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KINASSERY",
+      "person": {
+        "id": "2015082900201",
+        "name": "RAJESH P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLUVAZHI NORTH",
+      "person": {
+        "id": "2015082900301",
+        "name": "UNNIKRISHNAN V.C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THANAIKKAL",
+      "person": {
+        "id": "2015082900401",
+        "name": "ANITHA K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARIYANAMPATTA",
+      "person": {
+        "id": "2015082900501",
+        "name": "JANU M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTUKULAM",
+      "person": {
+        "id": "2015082900601",
+        "name": "REENA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THANIKKUNNU",
+      "person": {
+        "id": "2015082900701",
+        "name": "BEENA M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOKKOTTUKAVU NORTH",
+      "person": {
+        "id": "2015082900801",
+        "name": "K VILASINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOKKOTTUKAVU SOUTH",
+      "person": {
+        "id": "2015082900901",
+        "name": "C GOPALAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAZHUR",
+      "person": {
+        "id": "2015082901001",
+        "name": "JESHMA K.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUNNURKKODE SOUTH",
+      "person": {
+        "id": "2015082901101",
+        "name": "AJITH KUMAR K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNNURKKODE NORTH",
+      "person": {
+        "id": "2015082901201",
+        "name": "SIJI P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLUVAZHI SOUTH",
+      "person": {
+        "id": "2015082901301",
+        "name": "JAYADEVAN K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

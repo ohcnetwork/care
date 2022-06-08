@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347455308,
+  "date": "2019-08-21",
+  "name": "Erumapetty  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vadakkamchery",
+  "area": "32.12km",
+  "localbody_code": "G080302",
+  "no_of_wards": 18,
+  "population": 26222,
+  "male": 12388,
+  "female": 13834,
+  "population_density": 816,
+  "sex_ratio": 1117,
+  "literacy_rate": 85.3,
+  "literacy_rate_male": 89.69,
+  "literacy_rate_female": 81.47,
+  "president": "MEENASALAMON",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ERUMAPETTY",
+      "person": {
+        "id": "2015072600101",
+        "name": "K GOVINDANKUTTY(KANNAN)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PATHIYARAM",
+      "person": {
+        "id": "2015072600201",
+        "name": "ROSY PAUL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NELLUVAI NORTH",
+      "person": {
+        "id": "2015072600301",
+        "name": "MEENA SALAMON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUTTANCHERY",
+      "person": {
+        "id": "2015072600401",
+        "name": "BINOJ MASTER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MURIGATHERI",
+      "person": {
+        "id": "2015072600501",
+        "name": "PRASEETHA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANGAD",
+      "person": {
+        "id": "2015072600601",
+        "name": "JAISON C V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDAKKAD",
+      "person": {
+        "id": "2015072600701",
+        "name": "SHEEBA RADAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTTIKKAL",
+      "person": {
+        "id": "2015072600801",
+        "name": "REENA JOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHITTANDA",
+      "person": {
+        "id": "2015072600901",
+        "name": "RAJAN C K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIKKANAPATHIYARAM",
+      "person": {
+        "id": "2015072601001",
+        "name": "SUDINI DASAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNDANNUR CHUNGAM",
+      "person": {
+        "id": "2015072601101",
+        "name": "RAJASEKARAN K V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KODUMBU",
+      "person": {
+        "id": "2015072601201",
+        "name": "SURESH NALUPURAKKAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANJIRACODE",
+      "person": {
+        "id": "2015072601301",
+        "name": "SHYLA P M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUNDANNUR SOUTH",
+      "person": {
+        "id": "2015072601401",
+        "name": "PREETHY SATHEESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015072601501",
+        "name": "SHAJAN C T"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANGAD SOUTH",
+      "person": {
+        "id": "2015072601601",
+        "name": "JOSEPH C A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NELLUVAI SOUTH",
+      "person": {
+        "id": "2015072601701",
+        "name": "ANITHA VINCENT"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARIYANNUR",
+      "person": {
+        "id": "2015072601801",
+        "name": "KABEER"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

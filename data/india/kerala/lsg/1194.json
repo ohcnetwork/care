@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566349555588,
+  "date": "2019-08-21",
+  "name": "Madhur  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kasaragod",
+  "area": "26.04km",
+  "localbody_code": "G140303",
+  "no_of_wards": 20,
+  "population": 26260,
+  "male": 13216,
+  "female": 13044,
+  "population_density": 1008,
+  "sex_ratio": 987,
+  "literacy_rate": 84.49,
+  "literacy_rate_male": 90.48,
+  "literacy_rate_female": 78.49,
+  "president": "MALATHISURESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MAIPADY",
+      "person": {
+        "id": "2015119400101",
+        "name": "AVIN S V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PATLA",
+      "person": {
+        "id": "2015119400201",
+        "name": "MAJEED PATLA M A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLLYA",
+      "person": {
+        "id": "2015119400301",
+        "name": "VIJAYALAKSHMI A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARANTHOD",
+      "person": {
+        "id": "2015119400401",
+        "name": "SUJNANI S SHANBHOGUE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MADHUR",
+      "person": {
+        "id": "2015119400501",
+        "name": "YOGEESHA M R"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HIDAYATH NAGAR",
+      "person": {
+        "id": "2015119400601",
+        "name": "RASHEELA A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHETTUMKUZHI",
+      "person": {
+        "id": "2015119400701",
+        "name": "ASMINAS HABEEB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "UDAYAGIRI",
+      "person": {
+        "id": "2015119400801",
+        "name": "DIVAKARA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTEKANI",
+      "person": {
+        "id": "2015119400901",
+        "name": "MADHAVA MASTER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MEEPUGURI",
+      "person": {
+        "id": "2015119401001",
+        "name": "MALATHI SURESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SOORLU",
+      "person": {
+        "id": "2015119401101",
+        "name": "LEELAVATHI SHETTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KELUGUDDE",
+      "person": {
+        "id": "2015119401201",
+        "name": "SRIDHARA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALYANGAD",
+      "person": {
+        "id": "2015119401301",
+        "name": "S VENKATRAMANA ADIGE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "RAMDAS NAGAR",
+      "person": {
+        "id": "2015119401401",
+        "name": "SHREEDHAR KUDLU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUDLU",
+      "person": {
+        "id": "2015119401501",
+        "name": "RATHEESH MANNIPADY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANNIPADY",
+      "person": {
+        "id": "2015119401601",
+        "name": "HARSHITHA ANAND"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ULIYATHADUKKA",
+      "person": {
+        "id": "2015119401701",
+        "name": "PUSPHA K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ULIYA",
+      "person": {
+        "id": "2015119401801",
+        "name": "MAIMOONA ABBAS"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "BHAGAVATHI NAGAR",
+      "person": {
+        "id": "2015119401901",
+        "name": "BHASKARA M"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "SHIRIBAGILU",
+      "person": {
+        "id": "2015119402001",
+        "name": "SUMITHRA R MAYYA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

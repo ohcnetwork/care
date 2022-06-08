@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346136232,
+  "date": "2019-08-21",
+  "name": "Mayyanad  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Mukathala",
+  "area": "17.57km",
+  "localbody_code": "G020901",
+  "no_of_wards": 23,
+  "population": 41011,
+  "male": 20314,
+  "female": 20697,
+  "population_density": 2334,
+  "sex_ratio": 1019,
+  "literacy_rate": 92.17,
+  "literacy_rate_male": 95.2,
+  "literacy_rate_female": 89.22,
+  "president": "LEKSHMANAN.L",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAZHAPALLY",
+      "person": {
+        "id": "2015035600101",
+        "name": "B. MAYA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UMAYANALLOOR NORTH",
+      "person": {
+        "id": "2015035600201",
+        "name": "SINDHU. S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UMAYANALLOOR EAST",
+      "person": {
+        "id": "2015035600301",
+        "name": "RASHEEDA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTIYAM",
+      "person": {
+        "id": "2015035600401",
+        "name": "ANEESHA SALIM"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAKULAM",
+      "person": {
+        "id": "2015035600501",
+        "name": "NAZEERA NAZAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTIYAM SOUTH",
+      "person": {
+        "id": "2015035600601",
+        "name": "UMESH. U"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NADUVILAKARA",
+      "person": {
+        "id": "2015035600701",
+        "name": "SHEELAKUMARI. R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THEKKUMKARA EAST",
+      "person": {
+        "id": "2015035600801",
+        "name": "LESLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULLICHIRA",
+      "person": {
+        "id": "2015035600901",
+        "name": "DARLAMENT. V. DISMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "DHAVALAKUZHI",
+      "person": {
+        "id": "2015035601001",
+        "name": "LEKSHMANAN. L"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAKOTTUMOOLA",
+      "person": {
+        "id": "2015035601101",
+        "name": "VINOJ VARGHESE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUKKOM EAST",
+      "person": {
+        "id": "2015035601201",
+        "name": "SHEELAJA. N"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUKKOM WEST",
+      "person": {
+        "id": "2015035601301",
+        "name": "LEENA LAURANCE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MAYYANAD SOUTH",
+      "person": {
+        "id": "2015035601401",
+        "name": "ASHADAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MAYYANAD",
+      "person": {
+        "id": "2015035601501",
+        "name": "R. SARITHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MAYYANAD WEST",
+      "person": {
+        "id": "2015035601601",
+        "name": "S. LAILA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOOTTIKADA",
+      "person": {
+        "id": "2015035601701",
+        "name": "V. UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AYIRAMTHENGU",
+      "person": {
+        "id": "2015035601801",
+        "name": "K. SHEELA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THEKKUMKARA WEST",
+      "person": {
+        "id": "2015035601901",
+        "name": "HALEEMA. M"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KIZHAKKE PADANILAM",
+      "person": {
+        "id": "2015035602001",
+        "name": "MUHAMMED RAFI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PADANILAM",
+      "person": {
+        "id": "2015035602101",
+        "name": "V. BINDHU"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VENPALAKARA",
+      "person": {
+        "id": "2015035602201",
+        "name": "VIPIN VIKRAM"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PINAKKAL",
+      "person": {
+        "id": "2015035602301",
+        "name": "NAZARUDEEN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

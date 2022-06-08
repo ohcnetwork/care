@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566347163036,
+  "date": "2019-08-21",
+  "name": "Koovappady  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Koovappady",
+  "area": "43.98km",
+  "localbody_code": "G070405",
+  "no_of_wards": 20,
+  "population": 50441,
+  "male": 25417,
+  "female": 25024,
+  "population_density": 1147,
+  "sex_ratio": 984,
+  "literacy_rate": 90.08,
+  "literacy_rate_male": 93.57,
+  "literacy_rate_female": 86.54,
+  "president": "KUNJUMOLTHANKAPPAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANKUZHI",
+      "person": {
+        "id": "2015064700101",
+        "name": "MINI JOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERANALLOOR",
+      "person": {
+        "id": "2015064700201",
+        "name": "SANI GEORGE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERANALLOOR EAST",
+      "person": {
+        "id": "2015064700301",
+        "name": "MINIMOLE POULOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOTTUVA",
+      "person": {
+        "id": "2015064700401",
+        "name": "SAJAN C.B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KODANAD",
+      "person": {
+        "id": "2015064700501",
+        "name": "MAYA KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALATTUCHIRA",
+      "person": {
+        "id": "2015064700601",
+        "name": "SABU PATHICKAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHETTINADA",
+      "person": {
+        "id": "2015064700701",
+        "name": "P.SIVAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURICHILAKOD EAST",
+      "person": {
+        "id": "2015064700801",
+        "name": "SINDHU ARAVIND"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURICHILAKOD",
+      "person": {
+        "id": "2015064700901",
+        "name": "BINU MATHAMPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOVAPPADY SOUTH",
+      "person": {
+        "id": "2015064701002",
+        "name": "HARIDAS NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AIMURY",
+      "person": {
+        "id": "2015064701101",
+        "name": "KUNJUMOL THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAVUMPURAM NORTH",
+      "person": {
+        "id": "2015064701201",
+        "name": "SYAMALA RAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AIMURY EAST",
+      "person": {
+        "id": "2015064701301",
+        "name": "FEGIN PAUL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "TRIVENI",
+      "person": {
+        "id": "2015064701401",
+        "name": "SASIKALA RAMESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAVUMPURAM",
+      "person": {
+        "id": "2015064701501",
+        "name": "USHA DEVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PADIKKALAPPARA",
+      "person": {
+        "id": "2015064701601",
+        "name": "JESSY SHIJI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "POOPPANI",
+      "person": {
+        "id": "2015064701701",
+        "name": "MERCY POULOSE"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AYATHUPADY",
+      "person": {
+        "id": "2015064701801",
+        "name": "P.P.ALPHONSE MASTER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MAVELIPPADY",
+      "person": {
+        "id": "2015064701901",
+        "name": "STELLA SAJU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOOVAPPADY NORTH",
+      "person": {
+        "id": "2015064702001",
+        "name": "SUDHA RAJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

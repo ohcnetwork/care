@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346038652,
+  "date": "2019-08-21",
+  "name": "Vilakkudy  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "21.43km",
+  "localbody_code": "G020401",
+  "no_of_wards": 20,
+  "population": 30433,
+  "male": 14908,
+  "female": 15525,
+  "population_density": 1420,
+  "sex_ratio": 1041,
+  "literacy_rate": 89.9,
+  "literacy_rate_male": 94.05,
+  "literacy_rate_female": 85.97,
+  "president": "C.VIJAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNNICODE NORTH",
+      "person": {
+        "id": "2015032300102",
+        "name": "LEENA RANI R.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNICODE GOVT.L.P.S",
+      "person": {
+        "id": "2015032300201",
+        "name": "MAJITHA.M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KULAPPURAM",
+      "person": {
+        "id": "2015032300301",
+        "name": "JYOTHI.V.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VILAKUDY",
+      "person": {
+        "id": "2015032300401",
+        "name": "SAJEED.A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIYARA AMBALAM",
+      "person": {
+        "id": "2015032300501",
+        "name": "SREEJA.S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARYARA NORTH",
+      "person": {
+        "id": "2015032300601",
+        "name": "SHEREEF.I"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARIYARA",
+      "person": {
+        "id": "2015032300701",
+        "name": "BIJU.T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PAPER MILL",
+      "person": {
+        "id": "2015032300801",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANJAMANKALA",
+      "person": {
+        "id": "2015032300901",
+        "name": "K.G.VINU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ELICODE",
+      "person": {
+        "id": "2015032301001",
+        "name": "JIJI BIJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MARANGADU",
+      "person": {
+        "id": "2015032301101",
+        "name": "P.SREEDEVIAMMA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUVAZHI",
+      "person": {
+        "id": "2015032301201",
+        "name": "C.VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELAMPAL",
+      "person": {
+        "id": "2015032301301",
+        "name": "ASHA BIJU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEEYODU",
+      "person": {
+        "id": "2015032301401",
+        "name": "NAZARUDEEN.A.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VILAKUDY SOUTH",
+      "person": {
+        "id": "2015032301501",
+        "name": "KUNNICODE SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "DHARMAPURI",
+      "person": {
+        "id": "2015032301601",
+        "name": "M.AJIMOHAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015032301701",
+        "name": "J.SAJEEV"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KINATTINKKARA",
+      "person": {
+        "id": "2015032301801",
+        "name": "SUNI SURESH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNNICODE SOUTH",
+      "person": {
+        "id": "2015032301901",
+        "name": "PATHUMMABEEVI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KUNNICODE TOWN",
+      "person": {
+        "id": "2015032302001",
+        "name": "SHEEJA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

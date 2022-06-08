@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566349122450,
+  "date": "2019-08-21",
+  "name": "Vellamunda  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Mananthavady",
+  "area": "64.54km",
+  "localbody_code": "G120102",
+  "no_of_wards": 21,
+  "population": 30498,
+  "male": 15410,
+  "female": 15088,
+  "population_density": 473,
+  "sex_ratio": 979,
+  "literacy_rate": 81.84,
+  "literacy_rate_male": 89.13,
+  "literacy_rate_female": 74.42,
+  "president": "P.THANKAMANI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANDATHUVAYAL",
+      "person": {
+        "id": "2015107200101",
+        "name": "AMMATH HAJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLAMUNDA 10TH MILE",
+      "person": {
+        "id": "2015107200201",
+        "name": "KUNHIKOYA V S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PAZHANJANA",
+      "person": {
+        "id": "2015107200301",
+        "name": "EBRAHIM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MADATHUMKUNI",
+      "person": {
+        "id": "2015107200401",
+        "name": "ATHIKKA BAI M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELLAMUNDA 8 4",
+      "person": {
+        "id": "2015107200501",
+        "name": "SAKKEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTAYAD",
+      "person": {
+        "id": "2015107200601",
+        "name": "SHAJINI AJITH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOKKADAVU",
+      "person": {
+        "id": "2015107200701",
+        "name": "A.JOHNY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THARUVANA",
+      "person": {
+        "id": "2015107200801",
+        "name": "P.THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PEECHAMCODE",
+      "person": {
+        "id": "2015107200901",
+        "name": "SIDHEEQ E V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KELLUR",
+      "person": {
+        "id": "2015107201001",
+        "name": "ABDUL SALIM KELOTH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOMMAYAD",
+      "person": {
+        "id": "2015107201101",
+        "name": "MARGARET AUGUSTINE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARINGARI",
+      "person": {
+        "id": "2015107201201",
+        "name": "SATHY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAZHUVANNUR",
+      "person": {
+        "id": "2015107201301",
+        "name": "EBRAHIM HAJI KANHAI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALIYANA",
+      "person": {
+        "id": "2015107201401",
+        "name": "KUNHIRAMAN P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PULIKKADU",
+      "person": {
+        "id": "2015107201501",
+        "name": "RAHEENA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHERUKARA",
+      "person": {
+        "id": "2015107201601",
+        "name": "FOUSIYA K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "OZHUKKANMMOOLA",
+      "person": {
+        "id": "2015107201701",
+        "name": "GEETHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MOTHAKKARA",
+      "person": {
+        "id": "2015107201801",
+        "name": "KALYANI P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VARAMBETTA",
+      "person": {
+        "id": "2015107201901",
+        "name": "LEKHA PURUSHOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "NAROKKADAVU",
+      "person": {
+        "id": "2015107202001",
+        "name": "CHACKO VANDAN KUZHY"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PULINJAL",
+      "person": {
+        "id": "2015107202101",
+        "name": "ANDREWS JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

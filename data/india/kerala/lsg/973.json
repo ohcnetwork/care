@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348792498,
+  "date": "2019-08-21",
+  "name": "Ozhur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Thanur",
+  "area": "15.92km",
+  "localbody_code": "G101202",
+  "no_of_wards": 18,
+  "population": 25501,
+  "male": 12372,
+  "female": 13129,
+  "population_density": 1602,
+  "sex_ratio": 1061,
+  "literacy_rate": 82.76,
+  "literacy_rate_male": 88.42,
+  "literacy_rate_female": 77.11,
+  "president": "PRAJITHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ONAKKAD",
+      "person": {
+        "id": "2015097300101",
+        "name": "PRAJITHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERANELLUR",
+      "person": {
+        "id": "2015097300201",
+        "name": "NADEERA T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KURUVATTISSERY",
+      "person": {
+        "id": "2015097300301",
+        "name": "SAIDALAVI M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KORAD",
+      "person": {
+        "id": "2015097300401",
+        "name": "HAFIRA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OMACHAPPUZHA",
+      "person": {
+        "id": "2015097300501",
+        "name": "SAKEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VARIKKOTTUTHARA",
+      "person": {
+        "id": "2015097300601",
+        "name": "AYSHUMMA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANALIPPUZHA",
+      "person": {
+        "id": "2015097300701",
+        "name": "AYYAPPAN.N.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ESTATEPADI",
+      "person": {
+        "id": "2015097300801",
+        "name": "SAFIYA.T.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARINGAPPARA",
+      "person": {
+        "id": "2015097300901",
+        "name": "SAHAD K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAMMAL",
+      "person": {
+        "id": "2015097301001",
+        "name": "RAKHIYA K C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERINCHERY",
+      "person": {
+        "id": "2015097301101",
+        "name": "MANNIL SAITHALAVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MELMURI",
+      "person": {
+        "id": "2015097301201",
+        "name": "MOIDEENKUTTY T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AYYAYA SOUTH",
+      "person": {
+        "id": "2015097301301",
+        "name": "SHAWKATHALI C P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AYYAYA NORTH",
+      "person": {
+        "id": "2015097301401",
+        "name": "JAMEELA K K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THALAKKATTUR",
+      "person": {
+        "id": "2015097301501",
+        "name": "SHIHABUDHEEN C K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OZHUR",
+      "person": {
+        "id": "2015097301601",
+        "name": "PRAMEELA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KATHIRKULANGARA",
+      "person": {
+        "id": "2015097301701",
+        "name": "BALAKRSHNAN CHULLIYATH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VETTUKULAM",
+      "person": {
+        "id": "2015097301801",
+        "name": "ASHKAR KORAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

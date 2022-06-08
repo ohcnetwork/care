@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348346554,
+  "date": "2019-08-21",
+  "name": "Nallepilly  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Chittur",
+  "area": "39.87km",
+  "localbody_code": "G090903",
+  "no_of_wards": 19,
+  "population": 30032,
+  "male": 14534,
+  "female": 15498,
+  "population_density": 753,
+  "sex_ratio": 1099,
+  "literacy_rate": 68.96,
+  "literacy_rate_male": 77.38,
+  "literacy_rate_female": 60.81,
+  "president": "SARANGADHARANP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHETTIKULAM",
+      "person": {
+        "id": "2015086200101",
+        "name": "THANKAVELU K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTAMANGALAM",
+      "person": {
+        "id": "2015086200201",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ATHICODE",
+      "person": {
+        "id": "2015086200301",
+        "name": "SUSEELA N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SANKARACHAMPALAYAM",
+      "person": {
+        "id": "2015086200401",
+        "name": "LATHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MATTUMANTHA",
+      "person": {
+        "id": "2015086200501",
+        "name": "PREMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANAMKUTTY",
+      "person": {
+        "id": "2015086200601",
+        "name": "PERIYASWAMY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAKKAL",
+      "person": {
+        "id": "2015086200701",
+        "name": "HARIDAS P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "METTUKADA",
+      "person": {
+        "id": "2015086200801",
+        "name": "SAKTHIVEL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANAKKANPARA",
+      "person": {
+        "id": "2015086200901",
+        "name": "SUMATHI A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAKKINICHALLA",
+      "person": {
+        "id": "2015086201001",
+        "name": "GEETHA S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KENAMPULLY",
+      "person": {
+        "id": "2015086201101",
+        "name": "SUDHA R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANCHIRA",
+      "person": {
+        "id": "2015086201201",
+        "name": "VIJAYALATHA K . C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANDANAPPURAM",
+      "person": {
+        "id": "2015086201301",
+        "name": "KAMALAM C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANNIPPERUNTHALA",
+      "person": {
+        "id": "2015086201401",
+        "name": "SARANGADHARAN P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTAPPALLAM",
+      "person": {
+        "id": "2015086201501",
+        "name": "INDIRA A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THEKKUMURI",
+      "person": {
+        "id": "2015086201601",
+        "name": "SELVAKUMARI G"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALAYAMKULAMBU",
+      "person": {
+        "id": "2015086201701",
+        "name": "BINU V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NADUTHARA",
+      "person": {
+        "id": "2015086201801",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VADAKKANTHARA",
+      "person": {
+        "id": "2015086201901",
+        "name": "MURUGADAS A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

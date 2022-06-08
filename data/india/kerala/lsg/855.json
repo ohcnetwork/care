@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348322778,
+  "date": "2019-08-21",
+  "name": "Kuzhalmannam  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kuzhalmannam",
+  "area": "30.62km",
+  "localbody_code": "G090803",
+  "no_of_wards": 17,
+  "population": 25292,
+  "male": 12311,
+  "female": 12981,
+  "population_density": 826,
+  "sex_ratio": 1054,
+  "literacy_rate": 77.68,
+  "literacy_rate_male": 86.1,
+  "literacy_rate_female": 69.77,
+  "president": "C.PRAKASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUTHANTHARA",
+      "person": {
+        "id": "2015085500101",
+        "name": "SIVADASAN.K."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARINJAMTHODI",
+      "person": {
+        "id": "2015085500201",
+        "name": "VIJI.C."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AALINGAL",
+      "person": {
+        "id": "2015085500301",
+        "name": "MUKUNDAN C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHANTHAPURA",
+      "person": {
+        "id": "2015085500401",
+        "name": "MUMTHAS.K.A."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANNANUR",
+      "person": {
+        "id": "2015085500501",
+        "name": "GANGEJ.K.S."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHUCODE",
+      "person": {
+        "id": "2015085500601",
+        "name": "GEETHA.V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOZHINJAMPARAMBU",
+      "person": {
+        "id": "2015085500701",
+        "name": "K.T.VINODINI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PULLUPARA",
+      "person": {
+        "id": "2015085500801",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALAPPETTY",
+      "person": {
+        "id": "2015085500901",
+        "name": "REENA.A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMKUNNAM",
+      "person": {
+        "id": "2015085501001",
+        "name": "C.PRAKASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHITHALI",
+      "person": {
+        "id": "2015085501101",
+        "name": "SARAVANAN.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLENKONAM",
+      "person": {
+        "id": "2015085501201",
+        "name": "MANI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANJADI",
+      "person": {
+        "id": "2015085501301",
+        "name": "AMBIKA.A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POOPLIKAD",
+      "person": {
+        "id": "2015085501401",
+        "name": "CHANDRIKA.K."
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHARAPARAMBU",
+      "person": {
+        "id": "2015085501501",
+        "name": "MINI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KULAVANMOKKU",
+      "person": {
+        "id": "2015085501601",
+        "name": "SHAJAHAN.A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MANNAM",
+      "person": {
+        "id": "2015085501702",
+        "name": "PRABEETHA.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348493518,
+  "date": "2019-08-21",
+  "name": "Chungathara  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "199.69km",
+  "localbody_code": "G100102",
+  "no_of_wards": 20,
+  "population": 44569,
+  "male": 22095,
+  "female": 22474,
+  "population_density": 223,
+  "sex_ratio": 1017,
+  "literacy_rate": 89.14,
+  "literacy_rate_male": 92.31,
+  "literacy_rate_female": 85.97,
+  "president": "SWAPNA.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ERUMAMUNDA",
+      "person": {
+        "id": "2015089700101",
+        "name": "MANJU SAJAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURUMBALANGODE",
+      "person": {
+        "id": "2015089700201",
+        "name": "MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOKKOTTUMANNA",
+      "person": {
+        "id": "2015089700301",
+        "name": "SUSAMMA MATHAI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NALLAMTHANNI",
+      "person": {
+        "id": "2015089700401",
+        "name": "JAYANTHI P.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULIMUNDA",
+      "person": {
+        "id": "2015089700501",
+        "name": "SUMATHI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTICHIRA",
+      "person": {
+        "id": "2015089700601",
+        "name": "SUMAYYA A A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTEPPADAM",
+      "person": {
+        "id": "2015089700701",
+        "name": "O.T. PRABHAVATHY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KONNAMANNA",
+      "person": {
+        "id": "2015089700801",
+        "name": "JOHN MATHEW"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KATTILAPPADAM",
+      "person": {
+        "id": "2015089700901",
+        "name": "ABOOBACKAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALLIKUTH",
+      "person": {
+        "id": "2015089701001",
+        "name": "MINIMOL. R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANAMANNA",
+      "person": {
+        "id": "2015089701101",
+        "name": "SUDHEER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTTIKKADAVU",
+      "person": {
+        "id": "2015089701201",
+        "name": "SHOUKATH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANALI",
+      "person": {
+        "id": "2015089701301",
+        "name": "SWAPNA. K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALAKKUNNU",
+      "person": {
+        "id": "2015089701401",
+        "name": "C. K SURESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VELLARAMKUNNU",
+      "person": {
+        "id": "2015089701501",
+        "name": "NUSRATH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHALIKULAM",
+      "person": {
+        "id": "2015089701601",
+        "name": "LENIN M.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUNNATH",
+      "person": {
+        "id": "2015089701701",
+        "name": "RIYAS. C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KAIPPINI",
+      "person": {
+        "id": "2015089701801",
+        "name": "YAMINI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MUNDAPPADAM",
+      "person": {
+        "id": "2015089701901",
+        "name": "RAMLATH.P"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CHEMBANKOLLY",
+      "person": {
+        "id": "2015089702001",
+        "name": "MOHAMMED ABDURAHIMAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

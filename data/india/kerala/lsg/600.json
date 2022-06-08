@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347003880,
+  "date": "2019-08-21",
+  "name": "Vathikudy  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Idukki",
+  "area": "80.9km",
+  "localbody_code": "G060502",
+  "no_of_wards": 18,
+  "population": 25584,
+  "male": 12905,
+  "female": 12679,
+  "population_density": 316,
+  "sex_ratio": 982,
+  "literacy_rate": 94,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 92,
+  "president": "RAJUKUMARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THEKKINTHANDU",
+      "person": {
+        "id": "2015060000101",
+        "name": "PRADEEP GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MURICKASSERY",
+      "person": {
+        "id": "2015060000201",
+        "name": "DOLLY THOMAS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SENAPATHY",
+      "person": {
+        "id": "2015060000301",
+        "name": "VIJAYAKUMAR RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOONGAPPARA",
+      "person": {
+        "id": "2015060000401",
+        "name": "AJISH JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEMPAKAPPARA",
+      "person": {
+        "id": "2015060000501",
+        "name": "LEENA THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "JOSEPURAM",
+      "person": {
+        "id": "2015060000601",
+        "name": "DEEPA V V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "DAIVAMMEDU",
+      "person": {
+        "id": "2015060000701",
+        "name": "UNMESH K JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MELECHINNAR",
+      "person": {
+        "id": "2015060000801",
+        "name": "TOMY THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KADAKAYAM",
+      "person": {
+        "id": "2015060000901",
+        "name": "BINIMOL JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANAKAKUNNU",
+      "person": {
+        "id": "2015060001001",
+        "name": "SHAJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THOPRAMKUDY",
+      "person": {
+        "id": "2015060001101",
+        "name": "K. B SELVAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUMTHOTTY",
+      "person": {
+        "id": "2015060001201",
+        "name": "BINDHU SCARIA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "RAJAMUDY",
+      "person": {
+        "id": "2015060001301",
+        "name": "DAISY SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VATHIKUDY",
+      "person": {
+        "id": "2015060001401",
+        "name": "FEBIN RAJU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADAMUGHAM",
+      "person": {
+        "id": "2015060001501",
+        "name": "SHYNI THOMAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PATHINARAMKANDAM",
+      "person": {
+        "id": "2015060001601",
+        "name": "SULIKHA IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "UPPUTHODU",
+      "person": {
+        "id": "2015060001701",
+        "name": "RAJU KUMARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "POOMAMKANDAM",
+      "person": {
+        "id": "2015060001801",
+        "name": "SREEJA P R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349632796,
+  "date": "2019-08-21",
+  "name": "Kummil  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "15.83km",
+  "localbody_code": "G021108",
+  "no_of_wards": 14,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "NASEERABEEVI.E",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EYYAKKODU",
+      "person": {
+        "id": "2015121700101",
+        "name": "UMA.V.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUKKUNNAM",
+      "person": {
+        "id": "2015121700201",
+        "name": "MADHUSOODANAN.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015121700301",
+        "name": "P.T.LEELAMMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANGALUKADU",
+      "person": {
+        "id": "2015121700401",
+        "name": "USHA.S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "DARPPAKKADU",
+      "person": {
+        "id": "2015121700501",
+        "name": "R.SUBHASH CHANDRA BOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KONDODI",
+      "person": {
+        "id": "2015121700601",
+        "name": "NASEERA BEEVI.E"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANKADU",
+      "person": {
+        "id": "2015121700701",
+        "name": "SAJEENA.K.L"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUMMIL NORTH",
+      "person": {
+        "id": "2015121700801",
+        "name": "PADMAJA.G.R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUMMIL",
+      "person": {
+        "id": "2015121700901",
+        "name": "RAJEEV.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THACHONAM",
+      "person": {
+        "id": "2015121701001",
+        "name": "P.S.KRISHNAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MULLAKKARA",
+      "person": {
+        "id": "2015121701101",
+        "name": "RAJITHA KUMARI.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VATTATHAMARA",
+      "person": {
+        "id": "2015121701201",
+        "name": "SUDARSANAN.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SAMBRAMAM",
+      "person": {
+        "id": "2015121701301",
+        "name": "A.SHEEBA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHUKKODU",
+      "person": {
+        "id": "2015121701401",
+        "name": "A.M.ERSHAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

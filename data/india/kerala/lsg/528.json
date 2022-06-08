@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346786612,
+  "date": "2019-08-21",
+  "name": "Kozhuvanal  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Lalam",
+  "area": "21.13km",
+  "localbody_code": "G050503",
+  "no_of_wards": 13,
+  "population": 12550,
+  "male": 6092,
+  "female": 6458,
+  "population_density": 594,
+  "sex_ratio": 1060,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 94,
+  "president": "THOMASGEORGE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHERPUNKAL",
+      "person": {
+        "id": "2015052800101",
+        "name": "BINIMOL CHACKO"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KEZHUVAMKULAM EAST",
+      "person": {
+        "id": "2015052800201",
+        "name": "JOSEMON MUNDACKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MEVIDA EAST",
+      "person": {
+        "id": "2015052800301",
+        "name": "MINI BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MEVIDA WEST",
+      "person": {
+        "id": "2015052800401",
+        "name": "GEETHA RAVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MEVIDA",
+      "person": {
+        "id": "2015052800501",
+        "name": "MANJU DILEEP"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MOOLETHUNDI",
+      "person": {
+        "id": "2015052800601",
+        "name": "V. R LALU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THODANAL EAST",
+      "person": {
+        "id": "2015052800701",
+        "name": "SMITHA VINOD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THODANAL WEST",
+      "person": {
+        "id": "2015052800801",
+        "name": "THOMAS GEORGE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANAKKUNNU",
+      "person": {
+        "id": "2015052800901",
+        "name": "JINU B. NAIR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THOKKADU",
+      "person": {
+        "id": "2015052801001",
+        "name": "LILLY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOZHUVANAL TOWN",
+      "person": {
+        "id": "2015052801101",
+        "name": "JESSY GEORGE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOZHUVANAL NORTH",
+      "person": {
+        "id": "2015052801201",
+        "name": "SAJEEV GOVIND RAJ"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KEZHUVAMKULAM WEST",
+      "person": {
+        "id": "2015052801301",
+        "name": "SHAJI KARUNAKARAN NAIR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

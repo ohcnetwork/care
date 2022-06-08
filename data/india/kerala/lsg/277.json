@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345881391,
+  "date": "2019-08-21",
+  "name": "Pallichal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nemom",
+  "area": "21.7km",
+  "localbody_code": "G010802",
+  "no_of_wards": 23,
+  "population": 38896,
+  "male": 19458,
+  "female": 19438,
+  "population_density": 1792,
+  "sex_ratio": 999,
+  "literacy_rate": 89.77,
+  "literacy_rate_male": 93.16,
+  "literacy_rate_female": 86.42,
+  "president": "MALLIKAVIJAYAN.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAMAMCODE",
+      "person": {
+        "id": "2015027700101",
+        "name": "B.SASIKALA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MOOKKUNNIMALA",
+      "person": {
+        "id": "2015027700201",
+        "name": "JAYACHITRA.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANNACODU",
+      "person": {
+        "id": "2015027700301",
+        "name": "VISWAMBARAN.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KULAGARAKONAM",
+      "person": {
+        "id": "2015027700401",
+        "name": "SMITHA .I"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NADUCADU",
+      "person": {
+        "id": "2015027700501",
+        "name": "K.RAKESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NARUVAMOODU",
+      "person": {
+        "id": "2015027700601",
+        "name": "V.BINDHU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLAPPALLY",
+      "person": {
+        "id": "2015027700701",
+        "name": "GIRISHKUMAR P.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUKKAMPALAMOODU",
+      "person": {
+        "id": "2015027700801",
+        "name": "M.PAPPACHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THANNIVILA",
+      "person": {
+        "id": "2015027700901",
+        "name": "B.VIKRAMAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VADAKAVILA",
+      "person": {
+        "id": "2015027701001",
+        "name": "SASIDHARAN KOCHUKRISHNAN NADAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POONKODU",
+      "person": {
+        "id": "2015027701101",
+        "name": "AMBIKADEVI. S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "BHAGAVATHYNADA",
+      "person": {
+        "id": "2015027701201",
+        "name": "CHITRA.P.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KELESWARAM",
+      "person": {
+        "id": "2015027701301",
+        "name": "MALLIKAVIJAYAN.S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OFFICE WARD",
+      "person": {
+        "id": "2015027701401",
+        "name": "MALLIKA.T"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VEDIVACHANCOIL",
+      "person": {
+        "id": "2015027701501",
+        "name": "V.VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KURANDIVILA",
+      "person": {
+        "id": "2015027701601",
+        "name": "SUSEELA M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AYANIMOODU",
+      "person": {
+        "id": "2015027701701",
+        "name": "SATHEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MOTTAMOODU",
+      "person": {
+        "id": "2015027701801",
+        "name": "K.AMBILI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PERIGODE",
+      "person": {
+        "id": "2015027701901",
+        "name": "R. VALSALAKUMARI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "EDACODE",
+      "person": {
+        "id": "2015027702001",
+        "name": "REMESHBABU"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PALLICHAL",
+      "person": {
+        "id": "2015027702101",
+        "name": "BINDHU SURESH"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KUNDRATHERI",
+      "person": {
+        "id": "2015027702201",
+        "name": "MALLIKADAS"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PRAVACHAMBALAM",
+      "person": {
+        "id": "2015027702301",
+        "name": "GEETAKUMARI S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

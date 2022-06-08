@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348264645,
+  "date": "2019-08-21",
+  "name": "Karakurussi  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Manarkkad",
+  "area": "27km",
+  "localbody_code": "G090407",
+  "no_of_wards": 16,
+  "population": 19600,
+  "male": 9476,
+  "female": 10124,
+  "population_density": 726,
+  "sex_ratio": 1068,
+  "literacy_rate": 85.01,
+  "literacy_rate_male": 88.21,
+  "literacy_rate_female": 82.08,
+  "president": "MAJEED",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ALUPURAM",
+      "person": {
+        "id": "2015083400101",
+        "name": "SNEHA.C.R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALLIKURUP",
+      "person": {
+        "id": "2015083400201",
+        "name": "JAYAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANGODE",
+      "person": {
+        "id": "2015083400301",
+        "name": "VIJAYAN. P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARAPPARA",
+      "person": {
+        "id": "2015083400401",
+        "name": "CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLAMCHOLA",
+      "person": {
+        "id": "2015083400501",
+        "name": "MAJEED"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAVUMPADI",
+      "person": {
+        "id": "2015083400601",
+        "name": "RAFEEKHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULLUVAYIL",
+      "person": {
+        "id": "2015083400701",
+        "name": "LEELA. P.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALIYATTA",
+      "person": {
+        "id": "2015083400801",
+        "name": "AYISHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARAKURISSI",
+      "person": {
+        "id": "2015083400901",
+        "name": "BABY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PONTHIYAMPURAM",
+      "person": {
+        "id": "2015083401001",
+        "name": "PREMALATHA. A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULAPPARAL",
+      "person": {
+        "id": "2015083401101",
+        "name": "THANKAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KILIRANI",
+      "person": {
+        "id": "2015083401201",
+        "name": "MUHAMMED KASIM"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHULLIMUNDA",
+      "person": {
+        "id": "2015083401301",
+        "name": "AYISHA BEEVI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THONIPURAM",
+      "person": {
+        "id": "2015083401401",
+        "name": "FATHIMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SRAMBIKKAL",
+      "person": {
+        "id": "2015083401501",
+        "name": "BASHEER. K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELUNGODE",
+      "person": {
+        "id": "2015083401601",
+        "name": "JASEERA. C.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

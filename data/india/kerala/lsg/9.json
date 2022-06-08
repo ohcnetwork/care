@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566344875494,
+  "date": "2019-08-21",
+  "name": "Nemom  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nemom",
+  "area": "134.59km",
+  "localbody_code": "B010800",
+  "no_of_wards": 16,
+  "population": 255800,
+  "male": 127365,
+  "female": 128435,
+  "population_density": 1901,
+  "sex_ratio": 1008,
+  "literacy_rate": 90.54,
+  "literacy_rate_male": 93.71,
+  "literacy_rate_female": 87.41,
+  "president": "SAKUNTHALAKUMARI.L.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULIYARAKONAM",
+      "person": {
+        "id": "2015000900101",
+        "name": "A.GEORGEKUTTY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VILAPPILSALA",
+      "person": {
+        "id": "2015000900201",
+        "name": "B.RADHAKRISHNAN NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MALAYINKEEZHU",
+      "person": {
+        "id": "2015000900301",
+        "name": "ANITHA.L."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MARANALLOOR",
+      "person": {
+        "id": "2015000900401",
+        "name": "D.R.BIJUDAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OOROOTAMBALAM",
+      "person": {
+        "id": "2015000900501",
+        "name": "PRIYADARSHINI.S."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VALIYARATHALA",
+      "person": {
+        "id": "2015000900601",
+        "name": "SINDHUKUMARI ASOKAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "BALARAMAPURAM",
+      "person": {
+        "id": "2015000900701",
+        "name": "ADV.D.SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ATHIYANOOR",
+      "person": {
+        "id": "2015000900801",
+        "name": "S.JAYACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POONCODE",
+      "person": {
+        "id": "2015000900901",
+        "name": "VEERENDRAKUMAR.S."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POONKULAM",
+      "person": {
+        "id": "2015000901001",
+        "name": "GIRIJA.J."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLAYANI",
+      "person": {
+        "id": "2015000901101",
+        "name": "G.SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PRAVACHAMBALAM",
+      "person": {
+        "id": "2015000901201",
+        "name": "VINUKUMAR.M."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLICHAL",
+      "person": {
+        "id": "2015000901301",
+        "name": "V.IDA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MACHEL",
+      "person": {
+        "id": "2015000901401",
+        "name": "KUMARI AMBIKA (MAYA RAJENDRAN)"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PERUKAVU",
+      "person": {
+        "id": "2015000901501",
+        "name": "SAKUNTHALA KUMARI.L."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PEYAD",
+      "person": {
+        "id": "2015000901601",
+        "name": "REMA.T."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

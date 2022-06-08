@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349220407,
+  "date": "2019-08-21",
+  "name": "Peringome Vayakkara  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "152.9km",
+  "localbody_code": "G130106",
+  "no_of_wards": 16,
+  "population": 53106,
+  "male": 26597,
+  "female": 26509,
+  "population_density": 348,
+  "sex_ratio": 997,
+  "literacy_rate": 89.03,
+  "literacy_rate_male": 92.76,
+  "literacy_rate_female": 85.33,
+  "president": "P.NALINI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALLIPPILAVU",
+      "person": {
+        "id": "2015110600101",
+        "name": "RAVEENDRAN C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADIYOTTUCHAL",
+      "person": {
+        "id": "2015110600201",
+        "name": "MOHANAN K.V."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PADIYOTTUCHAL SOUTH",
+      "person": {
+        "id": "2015110600301",
+        "name": "V. V. VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THATTUMMAL",
+      "person": {
+        "id": "2015110600401",
+        "name": "P. NALINI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADUKKARAM",
+      "person": {
+        "id": "2015110600501",
+        "name": "JALAJAMANI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NHEKLI",
+      "person": {
+        "id": "2015110600601",
+        "name": "LATHA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PEDENA",
+      "person": {
+        "id": "2015110600701",
+        "name": "RAFEEQUE P.S."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERINGOME SOUTH",
+      "person": {
+        "id": "2015110600801",
+        "name": "M. JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJIRAPOYIL",
+      "person": {
+        "id": "2015110600901",
+        "name": "PRAJITHA K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERINTHATTA NORTH",
+      "person": {
+        "id": "2015110601001",
+        "name": "KUNHIRAMAN K.E."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERINTHATTA SOUTH",
+      "person": {
+        "id": "2015110601101",
+        "name": "P. PRAKASHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THAVIDISSERI",
+      "person": {
+        "id": "2015110601201",
+        "name": "T.P.USHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARAVANCHAL",
+      "person": {
+        "id": "2015110601301",
+        "name": "RUGMANI K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERINGOME WEST",
+      "person": {
+        "id": "2015110601401",
+        "name": "MINI MATHEW"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PERINGOME NORTH",
+      "person": {
+        "id": "2015110601501",
+        "name": "NALINI K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VAYAKKARA",
+      "person": {
+        "id": "2015110601601",
+        "name": "P.N. MANOJKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

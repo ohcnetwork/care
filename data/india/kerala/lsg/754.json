@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347576323,
+  "date": "2019-08-21",
+  "name": "Venkitangu  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mullassery",
+  "area": "20.47km",
+  "localbody_code": "G080704",
+  "no_of_wards": 17,
+  "population": 25222,
+  "male": 11883,
+  "female": 13339,
+  "population_density": 1232,
+  "sex_ratio": 1122,
+  "literacy_rate": 89.53,
+  "literacy_rate_male": 93.81,
+  "literacy_rate_female": 85.81,
+  "president": "RATHI.M.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADOOR WEST",
+      "person": {
+        "id": "2015075400101",
+        "name": "RASIYA IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADOOR EAST",
+      "person": {
+        "id": "2015075400201",
+        "name": "ASHARAF THANGAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PADOOR CENTRE",
+      "person": {
+        "id": "2015075400301",
+        "name": "SAJAMOL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VENKITANGU WEST",
+      "person": {
+        "id": "2015075400401",
+        "name": "SHAILAJA MADHU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VENKITANGU NORTH",
+      "person": {
+        "id": "2015075400501",
+        "name": "GRACY JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNOTH",
+      "person": {
+        "id": "2015075400601",
+        "name": "APPU. C. R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VENKITANGU EAST",
+      "person": {
+        "id": "2015075400701",
+        "name": "N. K. VIMALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARUVANTHALA EAST",
+      "person": {
+        "id": "2015075400801",
+        "name": "RATHI. M. S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KONJIRA",
+      "person": {
+        "id": "2015075400901",
+        "name": "RATHNAVALLY SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KETTUNGAL",
+      "person": {
+        "id": "2015075401001",
+        "name": "SHEELA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARUVANTHALA SOUTH",
+      "person": {
+        "id": "2015075401101",
+        "name": "K. V. VELUKUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MECHERIPADI",
+      "person": {
+        "id": "2015075401201",
+        "name": "SOBHANA MURALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THOYAKKAVU CENTRE",
+      "person": {
+        "id": "2015075401301",
+        "name": "V. J. ZACHARIAS(SUNNY VADAKKEN)"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KODAMUKKU",
+      "person": {
+        "id": "2015075401401",
+        "name": "SHAJU AMBALATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THOYAKKAVU WEST",
+      "person": {
+        "id": "2015075401501",
+        "name": "K. V. MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUNDAZHIYUR",
+      "person": {
+        "id": "2015075401601",
+        "name": "MINI BABU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PULIKKAKADAVU",
+      "person": {
+        "id": "2015075401701",
+        "name": "PADMINI. P. K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

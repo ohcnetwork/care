@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349456601,
+  "date": "2019-08-21",
+  "name": "Keezhallur  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "29.02km",
+  "localbody_code": "G131003",
+  "no_of_wards": 14,
+  "population": 17526,
+  "male": 8669,
+  "female": 8857,
+  "population_density": 604,
+  "sex_ratio": 1022,
+  "literacy_rate": 92.11,
+  "literacy_rate_male": 96.37,
+  "literacy_rate_female": 87.96,
+  "president": "RAJAN.M",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHALODE",
+      "person": {
+        "id": "2015116500101",
+        "name": "SHEEJA K V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAYANNUR",
+      "person": {
+        "id": "2015116500201",
+        "name": "JASEELA C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THERUR",
+      "person": {
+        "id": "2015116500301",
+        "name": "N K ANITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THERUR-PALAYODE",
+      "person": {
+        "id": "2015116500401",
+        "name": "BHANUMATHI P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAMPARA",
+      "person": {
+        "id": "2015116500502",
+        "name": "R K KARTHIKEYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELLIYAMPARAMBA",
+      "person": {
+        "id": "2015116500601",
+        "name": "PRABHAKARAN K K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAYAMTHODE",
+      "person": {
+        "id": "2015116500701",
+        "name": "THANKAMANI P R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTHERI",
+      "person": {
+        "id": "2015116500801",
+        "name": "RUDHEESH T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERAVOOR",
+      "person": {
+        "id": "2015116500901",
+        "name": "AMBIKA V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALAYODE",
+      "person": {
+        "id": "2015116501001",
+        "name": "K RAGESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KEEZHALLUR",
+      "person": {
+        "id": "2015116501101",
+        "name": "P ANILA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KEEZHALLUR NORTH",
+      "person": {
+        "id": "2015116501201",
+        "name": "P RADHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANAD",
+      "person": {
+        "id": "2015116501301",
+        "name": "RAJAN .M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANAYATHAM PARAMBA",
+      "person": {
+        "id": "2015116501401",
+        "name": "BINDU K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

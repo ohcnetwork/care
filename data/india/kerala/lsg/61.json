@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566345042236,
+  "date": "2019-08-21",
+  "name": "Elemdesam  Block Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "187.22km",
+  "localbody_code": "B060400",
+  "no_of_wards": 13,
+  "population": 117665,
+  "male": 59140,
+  "female": 58525,
+  "population_density": 628,
+  "sex_ratio": 990,
+  "literacy_rate": 93,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 90,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VANNAPPURAM",
+      "person": {
+        "id": "2015006100101",
+        "name": "SHINEY AUGUSTINE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MULLARINGADU",
+      "person": {
+        "id": "2015006100201",
+        "name": "AJITHA SABU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALIYAR",
+      "person": {
+        "id": "2015006100301",
+        "name": "RAJEEV BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEENIKUZHI",
+      "person": {
+        "id": "2015006100401",
+        "name": "SOMY AUGUSTINE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UDUMBANNOOR",
+      "person": {
+        "id": "2015006100501",
+        "name": "GIGI SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOMALA",
+      "person": {
+        "id": "2015006100601",
+        "name": "MARTIL MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLIYAMATTOM",
+      "person": {
+        "id": "2015006100701",
+        "name": "M.MONICHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUDAYATHOOR",
+      "person": {
+        "id": "2015006100801",
+        "name": "MATHEW P I"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALAKODE",
+      "person": {
+        "id": "2015006100901",
+        "name": "SUJA SHAJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANNOOR",
+      "person": {
+        "id": "2015006101001",
+        "name": "GOURI SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIMANNOOR",
+      "person": {
+        "id": "2015006101101",
+        "name": "BASIL JOHN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VANADAMATTOM",
+      "person": {
+        "id": "2015006101201",
+        "name": "BINDU PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODIKULAM",
+      "person": {
+        "id": "2015006101301",
+        "name": "SAJU MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

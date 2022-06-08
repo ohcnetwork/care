@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345848010,
+  "date": "2019-08-21",
+  "name": "Panavoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nedumangad",
+  "area": "21.9km",
+  "localbody_code": "G010603",
+  "no_of_wards": 15,
+  "population": 18128,
+  "male": 8803,
+  "female": 9325,
+  "population_density": 828,
+  "sex_ratio": 1059,
+  "literacy_rate": 89.9,
+  "literacy_rate_male": 94.33,
+  "literacy_rate_female": 85.76,
+  "president": "S.V.KISHORE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VISWAPURAM",
+      "person": {
+        "id": "2015026500101",
+        "name": "LEKHA. J"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERAYAM",
+      "person": {
+        "id": "2015026500201",
+        "name": "ANEESH.G.T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANAYAMUTTOM",
+      "person": {
+        "id": "2015026500301",
+        "name": "SUNITHA.V.I"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTHAKULANGARA",
+      "person": {
+        "id": "2015026500401",
+        "name": "RATHEESH.R.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MOTTAKKAVU",
+      "person": {
+        "id": "2015026500501",
+        "name": "MOTTAKKAVU RAJAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MEENNILAM",
+      "person": {
+        "id": "2015026500602",
+        "name": "SULOCHANA B"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ATTUKAL",
+      "person": {
+        "id": "2015026500701",
+        "name": "P K RAJENDRAN NAIR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARIKKUZHI",
+      "person": {
+        "id": "2015026500801",
+        "name": "SAJEEVKUMAR.V.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KONGANAMKODU",
+      "person": {
+        "id": "2015026500901",
+        "name": "BINU.Y.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANAVOOR",
+      "person": {
+        "id": "2015026501001",
+        "name": "PANAVOOR SHARAF"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VAZHODE",
+      "person": {
+        "id": "2015026501101",
+        "name": "S.V.KISHORE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MALAMUKAL",
+      "person": {
+        "id": "2015026501201",
+        "name": "KALAKUMARY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLANCHIRA",
+      "person": {
+        "id": "2015026501301",
+        "name": "AMBIKA K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "S N PURAM",
+      "person": {
+        "id": "2015026501401",
+        "name": "SUSHA.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AJAYAPURAM",
+      "person": {
+        "id": "2015026501501",
+        "name": "MINI.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

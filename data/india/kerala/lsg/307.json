@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566345979833,
+  "date": "2019-08-21",
+  "name": "Mynagappally  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Karunagappally",
+  "area": "19.7km",
+  "localbody_code": "G020207",
+  "no_of_wards": 22,
+  "population": 36391,
+  "male": 18076,
+  "female": 18315,
+  "population_density": 1847,
+  "sex_ratio": 1013,
+  "literacy_rate": 89.75,
+  "literacy_rate_male": 93.67,
+  "literacy_rate_female": 85.89,
+  "president": "P.S.JAYALEKSHMI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NORTH MYNAGAPPALLY WEST",
+      "person": {
+        "id": "2015030700101",
+        "name": "V.PATHUMMA BEEVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NORTH MYNAGAPPALLY EAST",
+      "person": {
+        "id": "2015030700201",
+        "name": "BINDHU.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NORTH MYNAGAPPALLY SOUTH",
+      "person": {
+        "id": "2015030700301",
+        "name": "JALAJA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAVANASSERY WEST",
+      "person": {
+        "id": "2015030700401",
+        "name": "B.REGHUNATHAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAVANASSERY EAST",
+      "person": {
+        "id": "2015030700501",
+        "name": "RAGINI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAVANASSERY SOUTH",
+      "person": {
+        "id": "2015030700601",
+        "name": "SANTHAKUMARI AMMA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VENGA NORTH",
+      "person": {
+        "id": "2015030700701",
+        "name": "Y.SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VENGA",
+      "person": {
+        "id": "2015030700801",
+        "name": "ABDUL SAMAD"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VENGA EAST",
+      "person": {
+        "id": "2015030700901",
+        "name": "RADHAKRISHNA PILLAI.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VENGA SOUTH",
+      "person": {
+        "id": "2015030701001",
+        "name": "M.SIVAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOVOOR EAST",
+      "person": {
+        "id": "2015030701101",
+        "name": "RAJANI SUNIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOVOOR",
+      "person": {
+        "id": "2015030701201",
+        "name": "K.KOCHUVELU MASTER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KIZHAKKEKARA NORTH",
+      "person": {
+        "id": "2015030701301",
+        "name": "RADHIKA GOPAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KIZHAKKEKARA SOUTH",
+      "person": {
+        "id": "2015030701401",
+        "name": "ANOOP KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KADAPPA SOUTH",
+      "person": {
+        "id": "2015030701501",
+        "name": "SIJU KOSHY VAIDYAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KADAPPA",
+      "person": {
+        "id": "2015030701601",
+        "name": "ADV.T.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KADAPPA EAST",
+      "person": {
+        "id": "2015030701701",
+        "name": "MURALEEDHARAN PILLAI.R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KADAPPA WEST",
+      "person": {
+        "id": "2015030701801",
+        "name": "AMBILY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KADAPPA NORTH",
+      "person": {
+        "id": "2015030701901",
+        "name": "NAJEEB.U"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "SOUTH MYNAGAPPALLY EAST",
+      "person": {
+        "id": "2015030702001",
+        "name": "PUSHPAKUMARI.P"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "SOUTH MYNAGAPPALLY WEST",
+      "person": {
+        "id": "2015030702101",
+        "name": "P.S.JAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "SOUTH MYNAGAPPALLY",
+      "person": {
+        "id": "2015030702201",
+        "name": "LATHA KUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

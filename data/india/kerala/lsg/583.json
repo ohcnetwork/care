@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346957724,
+  "date": "2019-08-21",
+  "name": "Chinnakanal  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Devikulam",
+  "area": "66.74km",
+  "localbody_code": "G060206",
+  "no_of_wards": 13,
+  "population": 11155,
+  "male": 5706,
+  "female": 5449,
+  "population_density": 167,
+  "sex_ratio": 955,
+  "literacy_rate": 68,
+  "literacy_rate_male": 79,
+  "literacy_rate_female": 57,
+  "president": "SREEDEVIANPURAJ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "POWERHOUSE",
+      "person": {
+        "id": "2015058300101",
+        "name": "CHELLAPPANDY ANDY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHINNAKANAL",
+      "person": {
+        "id": "2015058300201",
+        "name": "SARAVANAKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GUNDUMALA",
+      "person": {
+        "id": "2015058300301",
+        "name": "SIMON S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "LOWER SURIANELLI",
+      "person": {
+        "id": "2015058300401",
+        "name": "SELVI GNANADAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NAGAMALA",
+      "person": {
+        "id": "2015058300501",
+        "name": "SREEDEVI ANPURAJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAPPATHICHOLA",
+      "person": {
+        "id": "2015058300601",
+        "name": "ROSAMMAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEMPAKATHOZHUKUDY",
+      "person": {
+        "id": "2015058300701",
+        "name": "RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "B.L.RAM",
+      "person": {
+        "id": "2015058300801",
+        "name": "PALTHAI PANCHAMRITHAM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SINGUKANDAM",
+      "person": {
+        "id": "2015058300901",
+        "name": "MURUKESWARI RAVI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SURIANELLI",
+      "person": {
+        "id": "2015058301001",
+        "name": "VALLIYAMMAL R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERIAKANAL",
+      "person": {
+        "id": "2015058301101",
+        "name": "KARUPPAYEE C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENADU",
+      "person": {
+        "id": "2015058301201",
+        "name": "SEKAR RAM G"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUTTUKADU",
+      "person": {
+        "id": "2015058301301",
+        "name": "SREEJA JAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

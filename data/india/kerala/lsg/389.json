@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346271205,
+  "date": "2019-08-21",
+  "name": "Puramattom  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Koipuram",
+  "area": "14.66km",
+  "localbody_code": "G030306",
+  "no_of_wards": 13,
+  "population": 14308,
+  "male": 6891,
+  "female": 7417,
+  "population_density": 976,
+  "sex_ratio": 1076,
+  "literacy_rate": 94.88,
+  "literacy_rate_male": 97.52,
+  "literacy_rate_female": 92.49,
+  "president": "RENISANIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "GYALAXI NAGAR",
+      "person": {
+        "id": "2015038900101",
+        "name": "ASHA JAYAPALAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAVUNGUMPRAYAR",
+      "person": {
+        "id": "2015038900201",
+        "name": "RACHEL BOBAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VENNIKULAM",
+      "person": {
+        "id": "2015038900301",
+        "name": "SAJI CHACKO"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALANKARA",
+      "person": {
+        "id": "2015038900401",
+        "name": "RENI SANIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PADUTHODU",
+      "person": {
+        "id": "2015038900501",
+        "name": "VINEETH KUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTHUPALA",
+      "person": {
+        "id": "2015038900601",
+        "name": "EAPEN PAUL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLARA",
+      "person": {
+        "id": "2015038900701",
+        "name": "ALEYAMMA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTHAKULAM",
+      "person": {
+        "id": "2015038900801",
+        "name": "REVI E. T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MEMALA",
+      "person": {
+        "id": "2015038900901",
+        "name": "JOLLY JOHN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUNDAMALA",
+      "person": {
+        "id": "2015038901001",
+        "name": "THOMAS JACOB (RAJU PULIMOOTTIL)"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NEELAVATHUKKAL",
+      "person": {
+        "id": "2015038901101",
+        "name": "AJITH PRASAD M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PURAMATTOM",
+      "person": {
+        "id": "2015038901201",
+        "name": "REJANI JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "UMIKKUNNU",
+      "person": {
+        "id": "2015038901301",
+        "name": "SOSAMMA JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

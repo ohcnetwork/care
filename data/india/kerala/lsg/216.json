@@ -1,0 +1,245 @@
+{
+  "timeStamp": 1566345665361,
+  "date": "2019-08-21",
+  "name": "Kalpetta  Municipality, Wayanad District",
+  "district": "Wayanad",
+  "area": "40.74km",
+  "localbody_code": "M120100",
+  "no_of_wards": 28,
+  "population": 29602,
+  "male": 14850,
+  "female": 14752,
+  "population_density": 672,
+  "sex_ratio": 993,
+  "literacy_rate": 84.15,
+  "literacy_rate_male": 88.98,
+  "literacy_rate_female": 79.03,
+  "chairperson": "SANITHAJAGADEESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANIANGODE",
+      "person": {
+        "id": "2015021600101",
+        "name": "RUGMINI T K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULIYARMALA",
+      "person": {
+        "id": "2015021600201",
+        "name": "MANI T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GOVT.HIGH SCHOOL",
+      "person": {
+        "id": "2015021600301",
+        "name": "SOSAMMA V P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NEDUNGODE",
+      "person": {
+        "id": "2015021600401",
+        "name": "RASHEED  V  M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EMILY",
+      "person": {
+        "id": "2015021600501",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANYAGURUKULAM",
+      "person": {
+        "id": "2015021600601",
+        "name": "ISSAC T J"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAINATTY",
+      "person": {
+        "id": "2015021600701",
+        "name": "SURESH KUMAR A M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CIVIL STATION",
+      "person": {
+        "id": "2015021600801",
+        "name": "AJI BASHEER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHATHOTHUVAYAL",
+      "person": {
+        "id": "2015021600901",
+        "name": "UMAIBA MOIDEENKUTTY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015021601001",
+        "name": "AYISHA PALLIYALIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EMILY THADAM",
+      "person": {
+        "id": "2015021601101",
+        "name": "SAROJINI O"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMBILERY",
+      "person": {
+        "id": "2015021601201",
+        "name": "K K KUNHAMMED"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "GRAMATHU VAYAL",
+      "person": {
+        "id": "2015021601301",
+        "name": "SREEJA V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALLYTHAZHE",
+      "person": {
+        "id": "2015021601401",
+        "name": "K T BABU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHIYA BUS STAND",
+      "person": {
+        "id": "2015021601501",
+        "name": "RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULPARA",
+      "person": {
+        "id": "2015021601601",
+        "name": "A P HAMEED"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "RATTAKOLLY",
+      "person": {
+        "id": "2015021601701",
+        "name": "D RAJAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PUTHOORVAYAL QUARRY",
+      "person": {
+        "id": "2015021601801",
+        "name": "BINDU JOSE"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PUTHOORVAYAL",
+      "person": {
+        "id": "2015021601901",
+        "name": "HARIS V"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MADIYOORKUNI",
+      "person": {
+        "id": "2015021602001",
+        "name": "BINDU P R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PERUMTHATTA",
+      "person": {
+        "id": "2015021602101",
+        "name": "SANITHA JAGADEESH"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "VELLARAMKUNNU",
+      "person": {
+        "id": "2015021602201",
+        "name": "GIRISH A"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "ADLAYED",
+      "person": {
+        "id": "2015021602301",
+        "name": "JALTHRUDU CHACKO"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "ONIVAYAL",
+      "person": {
+        "id": "2015021602401",
+        "name": "VINOD KUMAR P"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "TURKEY",
+      "person": {
+        "id": "2015021602501",
+        "name": "AJITHA K"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "EDAGUNI",
+      "person": {
+        "id": "2015021602601",
+        "name": "P VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "MUNDERI",
+      "person": {
+        "id": "2015021602701",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MARAVAYAL",
+      "person": {
+        "id": "2015021602801",
+        "name": "P P ALI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

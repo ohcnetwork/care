@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566348974789,
+  "date": "2019-08-21",
+  "name": "Kayanna  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "16.83km",
+  "localbody_code": "G110604",
+  "no_of_wards": 13,
+  "population": 12578,
+  "male": 6409,
+  "female": 6169,
+  "population_density": 747,
+  "sex_ratio": 963,
+  "literacy_rate": 91.35,
+  "literacy_rate_male": 95.69,
+  "literacy_rate_female": 86.86,
+  "president": "PADMAJA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAKKAD",
+      "person": {
+        "id": "2015102400101",
+        "name": "ASSAINAR.P.C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURIKKAL KOLLI",
+      "person": {
+        "id": "2015102400201",
+        "name": "SULAIKHA .C.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MATTANODE",
+      "person": {
+        "id": "2015102400301",
+        "name": "SHINI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARAMUTHU",
+      "person": {
+        "id": "2015102400401",
+        "name": "RAMESH KUMAR .T.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBAYAPPARA",
+      "person": {
+        "id": "2015102400501",
+        "name": "SATHIAN .V.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOVATHAM KUNNU",
+      "person": {
+        "id": "2015102400601",
+        "name": "MARY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MOTTANTHARA",
+      "person": {
+        "id": "2015102400701",
+        "name": "BEENA PRABHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERUKKAD",
+      "person": {
+        "id": "2015102400801",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PADIKUNNU",
+      "person": {
+        "id": "2015102400901",
+        "name": "A.M.RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MARAPPATTA",
+      "person": {
+        "id": "2015102401001",
+        "name": "SHEENA.T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NEELIKUNNU",
+      "person": {
+        "id": "2015102401101",
+        "name": "P.P.SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNDUVAYAL",
+      "person": {
+        "id": "2015102401201",
+        "name": "PADMAJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NAMBRAMKUNNU",
+      "person": {
+        "id": "2015102401301",
+        "name": "U.V.BOBAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

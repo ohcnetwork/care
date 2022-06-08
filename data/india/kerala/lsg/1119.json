@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349279200,
+  "date": "2019-08-21",
+  "name": "Udayagiri  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "51.8km",
+  "localbody_code": "G130307",
+  "no_of_wards": 15,
+  "population": 19557,
+  "male": 9893,
+  "female": 9664,
+  "population_density": 378,
+  "sex_ratio": 977,
+  "literacy_rate": 95.1,
+  "literacy_rate_male": 96.29,
+  "literacy_rate_female": 93.89,
+  "president": "MINIMATHEW",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUTHUSSERI",
+      "person": {
+        "id": "2015111900101",
+        "name": "DAISY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THALIPPARA",
+      "person": {
+        "id": "2015111900201",
+        "name": "MANUVEL V. V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDAYAGIRI",
+      "person": {
+        "id": "2015111900301",
+        "name": "THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARIVILANJAPOYIL",
+      "person": {
+        "id": "2015111900401",
+        "name": "JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULLARI",
+      "person": {
+        "id": "2015111900501",
+        "name": "POULOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "LADAK",
+      "person": {
+        "id": "2015111900601",
+        "name": "MINI MATHEW"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAMPOYIL",
+      "person": {
+        "id": "2015111900701",
+        "name": "SIJO GEORGE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAYIKAMBA",
+      "person": {
+        "id": "2015111900801",
+        "name": "MOHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEEKKAD",
+      "person": {
+        "id": "2015111900901",
+        "name": "SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOORIKADAVU",
+      "person": {
+        "id": "2015111901001",
+        "name": "JOSI ZACHARIAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANAKADAVU",
+      "person": {
+        "id": "2015111901101",
+        "name": "BEENAMOL A. V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUKKADA",
+      "person": {
+        "id": "2015111901201",
+        "name": "SARITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARTHIKAPURAM",
+      "person": {
+        "id": "2015111901301",
+        "name": "PREETHA K. V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ERUTHAMADA",
+      "person": {
+        "id": "2015111901401",
+        "name": "V. B REMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POOVANCHAL",
+      "person": {
+        "id": "2015111901501",
+        "name": "THANKAMMA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

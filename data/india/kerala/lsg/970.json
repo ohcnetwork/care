@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348783648,
+  "date": "2019-08-21",
+  "name": "Peruvalloor  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirurangady",
+  "area": null,
+  "localbody_code": "G101107",
+  "no_of_wards": 19,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "RAMLA.P.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VATTAPPARAMBU",
+      "person": {
+        "id": "2015097000101",
+        "name": "ABDUL MAJEED MATTIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHATHRATHODI",
+      "person": {
+        "id": "2015097000201",
+        "name": "PALLIKKARA PRASHEELATHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAKKATHADAM",
+      "person": {
+        "id": "2015097000301",
+        "name": "KADEEJA CHEMBAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ILLATHUMADU",
+      "person": {
+        "id": "2015097000401",
+        "name": "VENUGOPALAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UNGUNGAL",
+      "person": {
+        "id": "2015097000501",
+        "name": "JAMEELA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NADUKKARA",
+      "person": {
+        "id": "2015097000601",
+        "name": "SALEENA PUTHAN PEEDIYAKKAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SIDHEEKHABADU",
+      "person": {
+        "id": "2015097000701",
+        "name": "ASHRAF. P.M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PENGATTUKUNDIL",
+      "person": {
+        "id": "2015097000801",
+        "name": "ISMAIL KAVUNGAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POTTAMMALMADU",
+      "person": {
+        "id": "2015097000901",
+        "name": "RASIYA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLLAMCHINA",
+      "person": {
+        "id": "2015097001002",
+        "name": "KHADEEJA K. T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANNIYATHUMADU",
+      "person": {
+        "id": "2015097001101",
+        "name": "VEERAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PARAMBILPEEDIKA",
+      "person": {
+        "id": "2015097001201",
+        "name": "AYYAPPAN KARUVANTHADATHIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MENGOLIMADU",
+      "person": {
+        "id": "2015097001301",
+        "name": "ABDUL MUNEER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OTTAPPILAKKAL",
+      "person": {
+        "id": "2015097001401",
+        "name": "FOUSIYA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POOVATHUMADU",
+      "person": {
+        "id": "2015097001501",
+        "name": "SUNIL MUSLIYAR THODI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SUPER BAZAR",
+      "person": {
+        "id": "2015097001601",
+        "name": "RAMLA. P.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALATHINGAL",
+      "person": {
+        "id": "2015097001701",
+        "name": "FATHIMA BIND ERUMBAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "SHANKARAMDU",
+      "person": {
+        "id": "2015097001801",
+        "name": "MUHAMMED ARAKKAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VADAKKEELMADU",
+      "person": {
+        "id": "2015097001901",
+        "name": "BEEGAM. K. SABIRA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

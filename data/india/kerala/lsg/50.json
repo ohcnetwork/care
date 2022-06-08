@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345008859,
+  "date": "2019-08-21",
+  "name": "Uzhavoor  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Uzhavoor",
+  "area": "221km",
+  "localbody_code": "B050400",
+  "no_of_wards": 13,
+  "population": 144149,
+  "male": 72218,
+  "female": 71931,
+  "population_density": 652,
+  "sex_ratio": 996,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 94,
+  "president": "MOLLYLUKOSE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELIYANNOOR",
+      "person": {
+        "id": "2015005000101",
+        "name": "VALSA RAJAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAZHAMALA",
+      "person": {
+        "id": "2015005000201",
+        "name": "LISSY BABY MULAYINKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RAMAPURAM",
+      "person": {
+        "id": "2015005000301",
+        "name": "K R SASEENDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "UZHAVOOR",
+      "person": {
+        "id": "2015005000401",
+        "name": "MOLLY LUKOSE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MARANGATTUPILLY",
+      "person": {
+        "id": "2015005000501",
+        "name": "NIRMALA DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADAPLAMATTOM",
+      "person": {
+        "id": "2015005000601",
+        "name": "THOMAS T KEEPURAM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VEMPALLY",
+      "person": {
+        "id": "2015005000701",
+        "name": "BIJU MATHEW (BIJU PATHIRIMALAYIL)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANAKKARY",
+      "person": {
+        "id": "2015005000801",
+        "name": "K P JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURUMULLOOR",
+      "person": {
+        "id": "2015005000901",
+        "name": "BIJUMON MATHEW"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANJOOR",
+      "person": {
+        "id": "2015005001001",
+        "name": "MARY JOSE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTHANALLOOR",
+      "person": {
+        "id": "2015005001101",
+        "name": "C M GEORGE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KURAVILANGAD",
+      "person": {
+        "id": "2015005001201",
+        "name": "ANCY JOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MONIPPALLY",
+      "person": {
+        "id": "2015005001301",
+        "name": "LILLY MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349184579,
+  "date": "2019-08-21",
+  "name": "Padinharathara  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "55.18km",
+  "localbody_code": "G120407",
+  "no_of_wards": 16,
+  "population": 21398,
+  "male": 10820,
+  "female": 10578,
+  "population_density": 388,
+  "sex_ratio": 978,
+  "literacy_rate": 82.72,
+  "literacy_rate_male": 89.2,
+  "literacy_rate_female": 76.12,
+  "president": "SAJESHP.G.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAPPANAM",
+      "person": {
+        "id": "2015109200101",
+        "name": "AMMED KATTAYADAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THENGUMUNDA",
+      "person": {
+        "id": "2015109200201",
+        "name": "BUSHRA USMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMBAKAMOOLA",
+      "person": {
+        "id": "2015109200301",
+        "name": "SANTHOSH K.S."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUSSERIKADAVU",
+      "person": {
+        "id": "2015109200401",
+        "name": "SINDHU PURATHOOTTU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUNDAKUTTY",
+      "person": {
+        "id": "2015109200501",
+        "name": "SAJESH P.G."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERIYAMKOLLY",
+      "person": {
+        "id": "2015109200601",
+        "name": "JOSEPH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KURUMANI",
+      "person": {
+        "id": "2015109200701",
+        "name": "A.K.BABU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNALAM",
+      "person": {
+        "id": "2015109200801",
+        "name": "HARIS C.E."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARAMBATTAKUNNU",
+      "person": {
+        "id": "2015109200901",
+        "name": "USHA A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANTHOTTAM",
+      "person": {
+        "id": "2015109201001",
+        "name": "SATHI VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PADINHARATHARA",
+      "person": {
+        "id": "2015109201101",
+        "name": "NOUSHAD M.P."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VEETIKKAMOOLA",
+      "person": {
+        "id": "2015109201201",
+        "name": "ASYA CHERAPURATH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANJOORA",
+      "person": {
+        "id": "2015109201301",
+        "name": "USHA VARGHEESE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAPPUNDIKKAL",
+      "person": {
+        "id": "2015109201401",
+        "name": "HARIS KANDIYAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAPPIKALAM",
+      "person": {
+        "id": "2015109201501",
+        "name": "SANTHINI SHAJI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANTHIPOYIL",
+      "person": {
+        "id": "2015109201601",
+        "name": "NASEEMA PONNANDI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

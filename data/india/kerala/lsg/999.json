@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348885165,
+  "date": "2019-08-21",
+  "name": "Edacheri  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thuneri",
+  "area": "16.17km",
+  "localbody_code": "G110202",
+  "no_of_wards": 17,
+  "population": 23979,
+  "male": 11475,
+  "female": 12504,
+  "population_density": 1483,
+  "sex_ratio": 1090,
+  "literacy_rate": 86.16,
+  "literacy_rate_male": 92.78,
+  "literacy_rate_female": 80.22,
+  "president": "ARAVINDAKSHAN.T.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAYAPPANACHI",
+      "person": {
+        "id": "2015099900101",
+        "name": "GREESHMA.E"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IRINGANNUR WEST",
+      "person": {
+        "id": "2015099900201",
+        "name": "CHANDRI.M.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "IRINGANNUR HIGH SCHOOL",
+      "person": {
+        "id": "2015099900301",
+        "name": "T.P.PURUSHU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "IRINGANNUR",
+      "person": {
+        "id": "2015099900401",
+        "name": "GANGADHARAN.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "HEALTH CENTER",
+      "person": {
+        "id": "2015099900501",
+        "name": "ARAVINDAKSHAN.T.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTEMBRAM",
+      "person": {
+        "id": "2015099900601",
+        "name": "NIJESH KANDIYIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KACHERI",
+      "person": {
+        "id": "2015099900701",
+        "name": "THADATHIL RADHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDACHERI NORTH",
+      "person": {
+        "id": "2015099900801",
+        "name": "SHYJA.P.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHUNDAYIL",
+      "person": {
+        "id": "2015099900901",
+        "name": "SHEEMA VALLIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AALISSERY",
+      "person": {
+        "id": "2015099901001",
+        "name": "SHEEJA.C.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALAYI NORTH",
+      "person": {
+        "id": "2015099901101",
+        "name": "M.KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THALAYI",
+      "person": {
+        "id": "2015099901201",
+        "name": "E.GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NARIKKUNNU",
+      "person": {
+        "id": "2015099901301",
+        "name": "MAHIJA.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALIYAM VELLI",
+      "person": {
+        "id": "2015099901401",
+        "name": "BABU.T.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAKKANNUR`",
+      "person": {
+        "id": "2015099901501",
+        "name": "SHYNI.M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EDACHERI CENTRAL",
+      "person": {
+        "id": "2015099901601",
+        "name": "MOITHU.O.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THURUTHI",
+      "person": {
+        "id": "2015099901701",
+        "name": "SUNITHA.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

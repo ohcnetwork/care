@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344992742,
+  "date": "2019-08-21",
+  "name": "Mavelikara  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Mavelikkara",
+  "area": "87.79km",
+  "localbody_code": "B041000",
+  "no_of_wards": 13,
+  "population": 126462,
+  "male": 60556,
+  "female": 65906,
+  "population_density": 1441,
+  "sex_ratio": 1088,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "KREGHUPRASAD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANNAR",
+      "person": {
+        "id": "2015004400101",
+        "name": "SASIKALA REGHUNATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUTTAMPERROR",
+      "person": {
+        "id": "2015004400201",
+        "name": "VIDYA G"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENNITHALA",
+      "person": {
+        "id": "2015004400301",
+        "name": "ABHILASH THOOMPINATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THAZHAKKARA",
+      "person": {
+        "id": "2015004400401",
+        "name": "K REGHU PRASAD"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ERAVANKARA",
+      "person": {
+        "id": "2015004400501",
+        "name": "SARASU SARA MATHEW"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VETTIYAR",
+      "person": {
+        "id": "2015004400601",
+        "name": "VIKRAMAN UNNITHAN T P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KURATHIKAD",
+      "person": {
+        "id": "2015004400701",
+        "name": "SHILAJA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHENKULANGARA",
+      "person": {
+        "id": "2015004400801",
+        "name": "SUJA SOMAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLARIMANGALAM",
+      "person": {
+        "id": "2015004400901",
+        "name": "DEEPA JAYANADAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EREZHA",
+      "person": {
+        "id": "2015004401001",
+        "name": "SREEJITH S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHETTIKULANGARA",
+      "person": {
+        "id": "2015004401101",
+        "name": "SHOBHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARAZHMA",
+      "person": {
+        "id": "2015004401201",
+        "name": "P B SURAJ"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALIYAPERUMPUZHA",
+      "person": {
+        "id": "2015004401301",
+        "name": "DR. T A SUDHAKARA KURUP"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

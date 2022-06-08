@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349583833,
+  "date": "2019-08-21",
+  "name": "PullurPeriya  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kanhangad",
+  "area": "63.25km",
+  "localbody_code": "G140405",
+  "no_of_wards": 17,
+  "population": 22879,
+  "male": 11298,
+  "female": 11581,
+  "population_density": 362,
+  "sex_ratio": 1025,
+  "literacy_rate": 79.28,
+  "literacy_rate_male": 85.97,
+  "literacy_rate_female": 72.21,
+  "president": "SARADAS.NAIR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNIYA",
+      "person": {
+        "id": "2015120400101",
+        "name": "SHAHEEDA. K.A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AYAMPARA",
+      "person": {
+        "id": "2015120400201",
+        "name": "SATHEESAN C.A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOODANAM",
+      "person": {
+        "id": "2015120400301",
+        "name": "KRISHNAN P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THANNITHODE",
+      "person": {
+        "id": "2015120400401",
+        "name": "SASIDHARAN C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLYOTE",
+      "person": {
+        "id": "2015120400501",
+        "name": "USHA A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "IRIYA",
+      "person": {
+        "id": "2015120400601",
+        "name": "SATHEESAN V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUMBALA",
+      "person": {
+        "id": "2015120400701",
+        "name": "JAYA C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMBALATHARA",
+      "person": {
+        "id": "2015120400801",
+        "name": "KRISHNAKUMAR C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODAVALAM",
+      "person": {
+        "id": "2015120400901",
+        "name": "BINDU. K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VISHNUMANGALAM",
+      "person": {
+        "id": "2015120401001",
+        "name": "SANTHOSH KUMAR A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "HARIPURAM",
+      "person": {
+        "id": "2015120401101",
+        "name": "SEETHA K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THATTUMMAL",
+      "person": {
+        "id": "2015120401201",
+        "name": "BINDU. T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KELOTH",
+      "person": {
+        "id": "2015120401301",
+        "name": "VELAYUDHAN B.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHALINGAL",
+      "person": {
+        "id": "2015120401401",
+        "name": "INDIRA. M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAYAKKULAM",
+      "person": {
+        "id": "2015120401501",
+        "name": "KUMARAN K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERIYE",
+      "person": {
+        "id": "2015120401601",
+        "name": "SARADA S.NAIR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERIYE BAZAR",
+      "person": {
+        "id": "2015120401701",
+        "name": "SAROJINI KRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

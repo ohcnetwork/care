@@ -1,0 +1,141 @@
+{
+  "timeStamp": 1566347017021,
+  "date": "2019-08-21",
+  "name": "Kamakshy  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Idukki",
+  "area": "32.38km",
+  "localbody_code": "G060504",
+  "no_of_wards": 15,
+  "population": 20425,
+  "male": 10359,
+  "female": 10066,
+  "population_density": 631,
+  "sex_ratio": 972,
+  "literacy_rate": 95,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 94,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARIKKINMEDU",
+      "person": {
+        "id": "2015060200101",
+        "name": "SHERLY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PRAKASH",
+      "person": {
+        "id": "2015060200201",
+        "name": "S.T AUGUSTINE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDAYAGIRY",
+      "person": {
+        "id": "2015060200301",
+        "name": "MANU PRASAD K.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUSHPAGIRY",
+      "person": {
+        "id": "2015060200401",
+        "name": "VALSAMMA JOY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBALAMEDU",
+      "person": {
+        "id": "2015060200501",
+        "name": "OMANA SIVANKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAMAKSHY",
+      "person": {
+        "id": "2015060200601",
+        "name": "JANARDHANAN KONTHY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NELLIPPARA",
+      "person": {
+        "id": "2015060200701",
+        "name": "THOMAS GEORGE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "8TH MILE",
+      "person": {
+        "id": "2015060200801",
+        "name": "SOBHA SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CALVAYMOUNT",
+      "person": {
+        "id": "2015060200902",
+        "name": "BIJUMON THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOTTAKALLU",
+      "person": {
+        "id": "2015060201001",
+        "name": "LIVIYA SIJO"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THANKAMANY EAST",
+      "person": {
+        "id": "2015060201101",
+        "name": "JOY THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANKAMANY WEST",
+      "person": {
+        "id": "2015060201201",
+        "name": "SHAINY BABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NEELIVAYAL",
+      "person": {
+        "id": "2015060201301",
+        "name": "SHAJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANDIPPARA",
+      "person": {
+        "id": "2015060201401",
+        "name": "SOUMYA SHIBU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ERUKOOTTY",
+      "person": {
+        "id": "2015060201501",
+        "name": "SMITHA CHACKO"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345809095,
+  "date": "2019-08-21",
+  "name": "Vellanad  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "22.19km",
+  "localbody_code": "G010503",
+  "no_of_wards": 18,
+  "population": 25306,
+  "male": 12511,
+  "female": 12795,
+  "population_density": 1140,
+  "sex_ratio": 1023,
+  "literacy_rate": 91.62,
+  "literacy_rate_male": 94.84,
+  "literacy_rate_female": 88.4,
+  "president": "VELLANADSASI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANYARUPARA",
+      "person": {
+        "id": "2015025700101",
+        "name": "NALINAKUMARI K."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTAVILA",
+      "person": {
+        "id": "2015025700201",
+        "name": "SAJITHA S.W."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KIDANGUMMAL",
+      "person": {
+        "id": "2015025700301",
+        "name": "RAJALEKSHMI K.S."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VELIYANNUR",
+      "person": {
+        "id": "2015025700401",
+        "name": "VELLANAD SASI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANGA",
+      "person": {
+        "id": "2015025700501",
+        "name": "M.V.RENJITH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUKULAM",
+      "person": {
+        "id": "2015025700601",
+        "name": "BIJUKUMAR A.R."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHUMANGALAM",
+      "person": {
+        "id": "2015025700701",
+        "name": "BINDU M."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUNALAL",
+      "person": {
+        "id": "2015025700801",
+        "name": "SATHYANESAN D"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "URIYACODE",
+      "person": {
+        "id": "2015025700901",
+        "name": "J.KUMARADAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "COMPANIMUKKU",
+      "person": {
+        "id": "2015025701001",
+        "name": "VELLANAD SREEKANDAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULAKKODE",
+      "person": {
+        "id": "2015025701101",
+        "name": "SATHEESH KUMAR S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLANAD TOWN",
+      "person": {
+        "id": "2015025701201",
+        "name": "S.GIRIJA KUMARI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNAMPALLY",
+      "person": {
+        "id": "2015025701301",
+        "name": "PRATHEEJA L."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADUKKAMOODU",
+      "person": {
+        "id": "2015025701401",
+        "name": "JOSE T."
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTHIRAKALAM",
+      "person": {
+        "id": "2015025701501",
+        "name": "BINDHU. S."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VALIYARA",
+      "person": {
+        "id": "2015025701601",
+        "name": "DEEPAKUMARI. M. S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MELAMKODE",
+      "person": {
+        "id": "2015025701701",
+        "name": "SHALINI R."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KONGANAM",
+      "person": {
+        "id": "2015025701801",
+        "name": "ASWATHY M.R.."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

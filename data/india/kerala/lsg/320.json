@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346028005,
+  "date": "2019-08-21",
+  "name": "Mylom  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Vettikkavala",
+  "area": "27.49km",
+  "localbody_code": "G020304",
+  "no_of_wards": 20,
+  "population": 30443,
+  "male": 14660,
+  "female": 15783,
+  "population_density": 1107,
+  "sex_ratio": 1077,
+  "literacy_rate": 90.24,
+  "literacy_rate_male": 94.14,
+  "literacy_rate_female": 86.64,
+  "president": "GIRIJAMURALEEDHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANTHAMON",
+      "person": {
+        "id": "2015032000101",
+        "name": "L.USHAKUMARY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALAYAPURAM",
+      "person": {
+        "id": "2015032000201",
+        "name": "SUSAMMA BABY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THAMARAKUDY",
+      "person": {
+        "id": "2015032000301",
+        "name": "R.GOPALA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AKKAVILA",
+      "person": {
+        "id": "2015032000401",
+        "name": "MARGARET"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MYLOM",
+      "person": {
+        "id": "2015032000501",
+        "name": "ARUN.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MYLOM  THEKKEKARA",
+      "person": {
+        "id": "2015032000601",
+        "name": "SRASAMMA RAMACHANDRAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ITTYAPARAMBU",
+      "person": {
+        "id": "2015032000701",
+        "name": "SANTHOSHKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PULAMON",
+      "person": {
+        "id": "2015032000801",
+        "name": "SINDHU YESODHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUTTAMPALAM",
+      "person": {
+        "id": "2015032000901",
+        "name": "GOPALAKRISHNAN.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALLICKAL EAST",
+      "person": {
+        "id": "2015032001001",
+        "name": "GIRIJA MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLICKAL",
+      "person": {
+        "id": "2015032001101",
+        "name": "N.KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PALLICKAL WEST",
+      "person": {
+        "id": "2015032001201",
+        "name": "K.V.SANTHOSH BABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTTATHALA",
+      "person": {
+        "id": "2015032001301",
+        "name": "MINIMOL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOTTATHALA WEST",
+      "person": {
+        "id": "2015032001401",
+        "name": "ARYA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MOOZHIKKODU",
+      "person": {
+        "id": "2015032001501",
+        "name": "JESSY.V.R"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015032001601",
+        "name": "ANJU.R.S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLICKAL NOTRH",
+      "person": {
+        "id": "2015032001701",
+        "name": "K.G.LEKSHMI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "INCHAKKADU SOUTH",
+      "person": {
+        "id": "2015032001801",
+        "name": "ROSAMMA.Y"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "INCHAKKADU",
+      "person": {
+        "id": "2015032001901",
+        "name": "UNNIKRISHNAN NAIR.G"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "INCHAKKADU EAST",
+      "person": {
+        "id": "2015032002001",
+        "name": "KUMARAN.G"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

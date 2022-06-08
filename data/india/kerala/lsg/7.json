@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344861581,
+  "date": "2019-08-21",
+  "name": "Kazhakuttom  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kzhakuttam",
+  "area": "133.38km",
+  "localbody_code": "B010700",
+  "no_of_wards": 13,
+  "population": 229920,
+  "male": 114052,
+  "female": 115868,
+  "population_density": 1724,
+  "sex_ratio": 1016,
+  "literacy_rate": 89.12,
+  "literacy_rate_male": 93.17,
+  "literacy_rate_female": 85.16,
+  "president": "SHANIBABEEGUM.A",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AZHOOR",
+      "person": {
+        "id": "2015000700101",
+        "name": "K .RAVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUTTAPPALAM",
+      "person": {
+        "id": "2015000700201",
+        "name": "ADV.S.KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VEILOOR",
+      "person": {
+        "id": "2015000700301",
+        "name": "VASANTHAKUMARI.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUDAVOOR",
+      "person": {
+        "id": "2015000700401",
+        "name": "ADV.M.YASIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MURUKKUMPUZHA",
+      "person": {
+        "id": "2015000700501",
+        "name": "SHANIBA BEEGUM.A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANJAMALA",
+      "person": {
+        "id": "2015000700601",
+        "name": "VINEETHA.D"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POTHENCODE",
+      "person": {
+        "id": "2015000700701",
+        "name": "NAZEEMA.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ANDOORKONAM",
+      "person": {
+        "id": "2015000700801",
+        "name": "JALAJAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANIYAPURAM",
+      "person": {
+        "id": "2015000700901",
+        "name": "PARAMBILPALAM NIZAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MAITHANI",
+      "person": {
+        "id": "2015000701001",
+        "name": "ADV.M.ALTHAF"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MENAMKULAM",
+      "person": {
+        "id": "2015000701101",
+        "name": "ASHAMOL.V.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUMBA",
+      "person": {
+        "id": "2015000701201",
+        "name": "JOLLY PATHROS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHUKKURICHI",
+      "person": {
+        "id": "2015000701301",
+        "name": "MARY SHEELA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

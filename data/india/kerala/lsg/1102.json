@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349211866,
+  "date": "2019-08-21",
+  "name": "Kadannappally Panapuzha  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "53.75km",
+  "localbody_code": "G130309",
+  "no_of_wards": 15,
+  "population": 19535,
+  "male": 9482,
+  "female": 10053,
+  "population_density": 363,
+  "sex_ratio": 1060,
+  "literacy_rate": 88.18,
+  "literacy_rate_male": 94.49,
+  "literacy_rate_female": 82.33,
+  "president": "BALAKRISHNAN.E.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHANDAPPURA",
+      "person": {
+        "id": "2015110200101",
+        "name": "RAMACHANDRAN.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANDONTHAR",
+      "person": {
+        "id": "2015110200201",
+        "name": "RATNAMANI THEKKILLATHU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANAPPUZHA",
+      "person": {
+        "id": "2015110200301",
+        "name": "C.P.PREETHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOODENGA",
+      "person": {
+        "id": "2015110200401",
+        "name": "LAKSHMI.K.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAVUR",
+      "person": {
+        "id": "2015110200501",
+        "name": "T.V.CHANDANKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AALAKKAD",
+      "person": {
+        "id": "2015110200601",
+        "name": "JAMSHEER.M.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ERYAM",
+      "person": {
+        "id": "2015110200701",
+        "name": "T.AJITHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANARAMVAYAL",
+      "person": {
+        "id": "2015110200801",
+        "name": "N.SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERUVICHERI",
+      "person": {
+        "id": "2015110200901",
+        "name": "SUJITH.N.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKEKKARA",
+      "person": {
+        "id": "2015110201001",
+        "name": "BALAKRISHNAN.E.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKEKKARA",
+      "person": {
+        "id": "2015110201101",
+        "name": "BINDU.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MEDICAL COLLEGE",
+      "person": {
+        "id": "2015110201201",
+        "name": "T.V.SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VILAYANKODE",
+      "person": {
+        "id": "2015110201301",
+        "name": "SARALA.P.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHITTANNUR",
+      "person": {
+        "id": "2015110201401",
+        "name": "SUBHA.M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADINJAREKKARA",
+      "person": {
+        "id": "2015110201501",
+        "name": "M.SAROJINI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

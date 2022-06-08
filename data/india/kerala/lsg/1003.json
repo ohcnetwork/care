@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348897721,
+  "date": "2019-08-21",
+  "name": "Vanimal  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thuneri",
+  "area": "36.53km",
+  "localbody_code": "G110206",
+  "no_of_wards": 16,
+  "population": 21356,
+  "male": 10610,
+  "female": 10746,
+  "population_density": 585,
+  "sex_ratio": 1013,
+  "literacy_rate": 85.61,
+  "literacy_rate_male": 91.87,
+  "literacy_rate_female": 79.47,
+  "president": "JAYANO.C",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHELAMUKK",
+      "person": {
+        "id": "2015100300101",
+        "name": "ASHRAF KOTTALA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VAYALPEEDIKA",
+      "person": {
+        "id": "2015100300201",
+        "name": "JAMEELA N.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VERKKADAVU",
+      "person": {
+        "id": "2015100300301",
+        "name": "NAJMA KUNIYIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BHOOMIVATHUKKAL",
+      "person": {
+        "id": "2015100300401",
+        "name": "SABIRA TEACHER V.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELLIYODE",
+      "person": {
+        "id": "2015100300501",
+        "name": "JAYAN O.C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHUKKUDI",
+      "person": {
+        "id": "2015100300601",
+        "name": "DEVI N.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NIDUMPARAMP",
+      "person": {
+        "id": "2015100300701",
+        "name": "VASU N.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHITTAARI",
+      "person": {
+        "id": "2015100300801",
+        "name": "USHA KARUNAKARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALOOR",
+      "person": {
+        "id": "2015100300901",
+        "name": "RAJU ALEX"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VILANGAD",
+      "person": {
+        "id": "2015100301001",
+        "name": "VARGESE THEKKAYIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARUKULAM",
+      "person": {
+        "id": "2015100301101",
+        "name": "BABU K.T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOMMIYODE",
+      "person": {
+        "id": "2015100301201",
+        "name": "RAJEEVAN KP"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PARAPPUPARAA",
+      "person": {
+        "id": "2015100301301",
+        "name": "MUNEERA KARIYATT"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KODIYURA",
+      "person": {
+        "id": "2015100301401",
+        "name": "RANIYA P.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KULAPPARAMP",
+      "person": {
+        "id": "2015100301501",
+        "name": "NASEERA KARUVANTAVIDA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VANIMEL",
+      "person": {
+        "id": "2015100301601",
+        "name": "ABDUL MAJEED M.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

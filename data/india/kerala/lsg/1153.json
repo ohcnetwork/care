@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349421411,
+  "date": "2019-08-21",
+  "name": "New Mahe  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thalassery",
+  "area": "5.08km",
+  "localbody_code": "G130704",
+  "no_of_wards": 13,
+  "population": 17732,
+  "male": 8264,
+  "female": 9468,
+  "population_density": 3491,
+  "sex_ratio": 1146,
+  "literacy_rate": 93.99,
+  "literacy_rate_male": 96.73,
+  "literacy_rate_female": 91.66,
+  "president": "A.V.CHANDRADASAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KURICHIYIL",
+      "person": {
+        "id": "2015115300101",
+        "name": "SIDDIK.T.M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAREEKUNNU",
+      "person": {
+        "id": "2015115300201",
+        "name": "LATHA.M.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EYYATHUMKADU",
+      "person": {
+        "id": "2015115300301",
+        "name": "A.V.CHANDRADASAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDANOOR",
+      "person": {
+        "id": "2015115300401",
+        "name": "PREEJA.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUMUNDERY",
+      "person": {
+        "id": "2015115300501",
+        "name": "UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANGOTUVAYAL",
+      "person": {
+        "id": "2015115300601",
+        "name": "FATHIMA.K.T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANGAD",
+      "person": {
+        "id": "2015115300701",
+        "name": "REEJA.C.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALLIPRAM",
+      "person": {
+        "id": "2015115300801",
+        "name": "ANITHA.A.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINGADI",
+      "person": {
+        "id": "2015115300901",
+        "name": "P.P.HASEENA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEWMAHE TOWN",
+      "person": {
+        "id": "2015115301001",
+        "name": "PRAMEELA.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AZHEEKKAL",
+      "person": {
+        "id": "2015115301101",
+        "name": "SREEDEVI.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHAVOKUNU",
+      "person": {
+        "id": "2015115301202",
+        "name": "C K MAHROOF"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KURICHIYIL BEACH",
+      "person": {
+        "id": "2015115301301",
+        "name": "SAITHUN.M.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

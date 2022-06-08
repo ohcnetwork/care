@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346410597,
+  "date": "2019-08-21",
+  "name": "Arookutty  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Thycattussery",
+  "area": "11.1km",
+  "localbody_code": "G040101",
+  "no_of_wards": 13,
+  "population": 15693,
+  "male": 7840,
+  "female": 7853,
+  "population_density": 1414,
+  "sex_ratio": 1002,
+  "literacy_rate": 90,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 84,
+  "president": "ABIDAAZEEZ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MATHANAM",
+      "person": {
+        "id": "2015042600101",
+        "name": "P.S BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "OFFICE",
+      "person": {
+        "id": "2015042600201",
+        "name": "B VINOD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ST.ANTONY'S",
+      "person": {
+        "id": "2015042600301",
+        "name": "BINITHA PRAMOD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOOLAMKUZHI",
+      "person": {
+        "id": "2015042600401",
+        "name": "K.P KABEER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANNARAPALLY",
+      "person": {
+        "id": "2015042600501",
+        "name": "ABIDA AZEEZ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTILEMADOM",
+      "person": {
+        "id": "2015042600601",
+        "name": "MUMTHAS SUBAIR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTUPURAM",
+      "person": {
+        "id": "2015042600701",
+        "name": "YASMIN H"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUDAPURAM",
+      "person": {
+        "id": "2015042600801",
+        "name": "DEEPA MOL M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MADURAKKULAM",
+      "person": {
+        "id": "2015042600901",
+        "name": "SHALIMA MOL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADUVATH",
+      "person": {
+        "id": "2015042601001",
+        "name": "SHAILA NAVAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015042601101",
+        "name": "V.A RAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOTTOORPALLY",
+      "person": {
+        "id": "2015042601201",
+        "name": "AHAMMED KUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "C.H.C",
+      "person": {
+        "id": "2015042601301",
+        "name": "M ASHOKAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

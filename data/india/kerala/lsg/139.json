@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345312501,
+  "date": "2019-08-21",
+  "name": "Kalpetta  Block Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "582.21km",
+  "localbody_code": "B120400",
+  "no_of_wards": 14,
+  "population": 193646,
+  "male": 97486,
+  "female": 96160,
+  "population_density": 333,
+  "sex_ratio": 986,
+  "literacy_rate": 82.8,
+  "literacy_rate_male": 88.31,
+  "literacy_rate_female": 77.23,
+  "president": "USHATHAMBI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADINJARATHARA",
+      "person": {
+        "id": "2015013900102",
+        "name": "P C  MAMMOOTY (P AHAMMED)"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTATHARA",
+      "person": {
+        "id": "2015013900201",
+        "name": "SHAKUNTHALA SHANMUKHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VENGAPPALLY",
+      "person": {
+        "id": "2015013900301",
+        "name": "KOCHURANI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MADAKKIMALA",
+      "person": {
+        "id": "2015013900401",
+        "name": "AYYAPPAN P C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTTIL",
+      "person": {
+        "id": "2015013900501",
+        "name": "DEVASSIA M O"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THRIKKAIPPATTA",
+      "person": {
+        "id": "2015013900601",
+        "name": "BINDU PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUPPAINAD",
+      "person": {
+        "id": "2015013900701",
+        "name": "JASHEER PALLIVAYAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARAPETTA",
+      "person": {
+        "id": "2015013900801",
+        "name": "VIJAYAKUMARI.N.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHOORALMALA",
+      "person": {
+        "id": "2015013900901",
+        "name": "ROSHINA YOOSAF"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MEPPADI",
+      "person": {
+        "id": "2015013901001",
+        "name": "P.BALAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHARITTY",
+      "person": {
+        "id": "2015013901101",
+        "name": "USHA THAMBI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VYTHIRI",
+      "person": {
+        "id": "2015013901201",
+        "name": "M.SAID"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POZHUTHANA",
+      "person": {
+        "id": "2015013901301",
+        "name": "K K HANEEFA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THARIODE",
+      "person": {
+        "id": "2015013901401",
+        "name": "JINCY SUNNY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

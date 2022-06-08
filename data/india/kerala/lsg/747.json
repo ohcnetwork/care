@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347542186,
+  "date": "2019-08-21",
+  "name": "Avanur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Puzhakkal",
+  "area": "18.25km",
+  "localbody_code": "G080602",
+  "no_of_wards": 15,
+  "population": 17322,
+  "male": 8442,
+  "female": 8879,
+  "population_density": 949,
+  "sex_ratio": 1052,
+  "literacy_rate": 91.44,
+  "literacy_rate_male": 94.79,
+  "literacy_rate_female": 88.32,
+  "president": "VIJAYABABURAJ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THANGALOOR",
+      "person": {
+        "id": "2015074700101",
+        "name": "SUBRAMANYAN .P . A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAKULAM",
+      "person": {
+        "id": "2015074700201",
+        "name": "A.N.REGHUNANDHANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELAPPAYA",
+      "person": {
+        "id": "2015074700301",
+        "name": "PARVATHY V K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MEDICAL COLLEGE",
+      "person": {
+        "id": "2015074700401",
+        "name": "RIMA BAIJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELAPPAYA SOUTH",
+      "person": {
+        "id": "2015074700501",
+        "name": "SALINI SULOCHANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANITHARA",
+      "person": {
+        "id": "2015074700601",
+        "name": "VIJAYA BABURAJ"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHOOLISSERY",
+      "person": {
+        "id": "2015074700701",
+        "name": "DHANYA A.A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NARAYANATHARA",
+      "person": {
+        "id": "2015074700801",
+        "name": "P.G. SREENIVASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOLANGATTUKARA",
+      "person": {
+        "id": "2015074700901",
+        "name": "P.G DHILEEP KUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VARADIYAM EAST",
+      "person": {
+        "id": "2015074701001",
+        "name": "NELSON.K.FRANCIS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VARADIYAM SOUTH",
+      "person": {
+        "id": "2015074701101",
+        "name": "JISHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMBETHKAR GRAMAM",
+      "person": {
+        "id": "2015074701201",
+        "name": "V V RAMAKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VARADIYAM NORTH",
+      "person": {
+        "id": "2015074701301",
+        "name": "SUJA RAJU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AVANUR",
+      "person": {
+        "id": "2015074701401",
+        "name": "KARUNAKARAN P P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARORE",
+      "person": {
+        "id": "2015074701501",
+        "name": "GEETHA MOHANLAL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

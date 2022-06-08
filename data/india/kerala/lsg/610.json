@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347042936,
+  "date": "2019-08-21",
+  "name": "AyyappanCoil  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Kattappana",
+  "area": "42.68km",
+  "localbody_code": "G060606",
+  "no_of_wards": 13,
+  "population": 13667,
+  "male": 6934,
+  "female": 6733,
+  "population_density": 320,
+  "sex_ratio": 971,
+  "literacy_rate": 86,
+  "literacy_rate_male": 92,
+  "literacy_rate_female": 85,
+  "president": "BABUA.L.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AYYAPPANCOIL",
+      "person": {
+        "id": "2015061000101",
+        "name": "VIJAYYAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAKUZHY",
+      "person": {
+        "id": "2015061000201",
+        "name": "BABU A.L."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MATTUKKATTA",
+      "person": {
+        "id": "2015061000301",
+        "name": "ABHILASH MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEMBALAM",
+      "person": {
+        "id": "2015061000401",
+        "name": "AJESH MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "DORLAND",
+      "person": {
+        "id": "2015061000501",
+        "name": "SULOJANA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALANIKAVU",
+      "person": {
+        "id": "2015061000601",
+        "name": "MUTHUPANDY M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SULTHANIYA",
+      "person": {
+        "id": "2015061000701",
+        "name": "MURUKESWARI MUTHU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PACHAKKADU",
+      "person": {
+        "id": "2015061000801",
+        "name": "JAIMOL JOHNSON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "HEAVENVALLY",
+      "person": {
+        "id": "2015061000901",
+        "name": "RAJANI KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHAPPATH",
+      "person": {
+        "id": "2015061001001",
+        "name": "JANCY CHERIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ALADY",
+      "person": {
+        "id": "2015061001101",
+        "name": "NISHAMOL BINOJ"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOVANTHIKUDY",
+      "person": {
+        "id": "2015061001201",
+        "name": "PREDEEP P.P."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARYKULAM",
+      "person": {
+        "id": "2015061001301",
+        "name": "SAJI VARGHESE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

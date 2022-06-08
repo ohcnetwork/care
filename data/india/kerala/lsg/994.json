@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348863348,
+  "date": "2019-08-21",
+  "name": "Azhiyur  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Vadakara",
+  "area": "9.77km",
+  "localbody_code": "G110101",
+  "no_of_wards": 18,
+  "population": 25700,
+  "male": 12092,
+  "female": 13608,
+  "population_density": 2631,
+  "sex_ratio": 1125,
+  "literacy_rate": 92.94,
+  "literacy_rate_male": 95.81,
+  "literacy_rate_female": 90.44,
+  "president": "E.T.AYYOOB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "POOZHITHALA",
+      "person": {
+        "id": "2015099400101",
+        "name": "E.T.AYYOOB"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHUNGAM NORTH",
+      "person": {
+        "id": "2015099400201",
+        "name": "SUDHA KULANGARA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015099400301",
+        "name": "THOTTATHIL MAHIJA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTAMALA",
+      "person": {
+        "id": "2015099400401",
+        "name": "USHA KUNNUMMAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANANKARA",
+      "person": {
+        "id": "2015099400501",
+        "name": "SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOROTHROAD",
+      "person": {
+        "id": "2015099400601",
+        "name": "ANANDASADANM SREEJESH KUMAR.P.V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANADA",
+      "person": {
+        "id": "2015099400701",
+        "name": "WAFA FAISAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHIRAYIL PEEDIKA",
+      "person": {
+        "id": "2015099400801",
+        "name": "SHEEBA ANIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLAMALA",
+      "person": {
+        "id": "2015099400901",
+        "name": "SUBHA MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLARADTHERU",
+      "person": {
+        "id": "2015099401001",
+        "name": "P.P.SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUKKALI TOWN",
+      "person": {
+        "id": "2015099401101",
+        "name": "REENA RAYAROTH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOMBAL HARBOUR",
+      "person": {
+        "id": "2015099401201",
+        "name": "K.LEELA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARAPPAKUNNU",
+      "person": {
+        "id": "2015099401301",
+        "name": "V.P.JAYAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AVIKKARA",
+      "person": {
+        "id": "2015099401401",
+        "name": "USHA CHATHANKANDY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUNHIPPALLY",
+      "person": {
+        "id": "2015099401501",
+        "name": "SUDHA MALIYEKKAL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ANDICOMPANY",
+      "person": {
+        "id": "2015099401601",
+        "name": "JASMINA KALLERI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHUNGAM SOUTH",
+      "person": {
+        "id": "2015099401701",
+        "name": "ALI MANOLI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ANJAMPEEDIKA",
+      "person": {
+        "id": "2015099401801",
+        "name": "SAHIR PUNATHIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345065784,
+  "date": "2019-08-21",
+  "name": "Alangad  Block Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Alangad",
+  "area": "79.41km",
+  "localbody_code": "B070200",
+  "no_of_wards": 13,
+  "population": 148800,
+  "male": 74850,
+  "female": 73950,
+  "population_density": 1874,
+  "sex_ratio": 988,
+  "literacy_rate": 91.48,
+  "literacy_rate_male": 94.98,
+  "literacy_rate_female": 87.94,
+  "president": "VIJUJOSEPH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANAKKAPADY",
+      "person": {
+        "id": "2015006700101",
+        "name": "BEENA BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARUMALLOOR",
+      "person": {
+        "id": "2015006700201",
+        "name": "A. N. ASOKAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELIYATHUNADU",
+      "person": {
+        "id": "2015006700301",
+        "name": "K.H. SHAHABAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADUNGALLOOR NORTH",
+      "person": {
+        "id": "2015006700401",
+        "name": "BHADRA DEVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADUNGALLOOR WEST",
+      "person": {
+        "id": "2015006700501",
+        "name": "KEERTHI DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUPPATHADAM CENTRAL",
+      "person": {
+        "id": "2015006700601",
+        "name": "SAJITHA HABEEB"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUPPATHADAM SOUTH",
+      "person": {
+        "id": "2015006700701",
+        "name": "T.K.SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHANPALLY",
+      "person": {
+        "id": "2015006700801",
+        "name": "MERCY JOHNY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VARAPPUZHA",
+      "person": {
+        "id": "2015006700901",
+        "name": "K.V. KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHIRAKKAKAM",
+      "person": {
+        "id": "2015006701001",
+        "name": "VIJU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONGORPPILLY",
+      "person": {
+        "id": "2015006701101",
+        "name": "K.M.HAMEED SHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALANGAD",
+      "person": {
+        "id": "2015006701201",
+        "name": "SREEKALA MADHU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALANGAD WEST",
+      "person": {
+        "id": "2015006701301",
+        "name": "JAYASREE GOPIKRISHNAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

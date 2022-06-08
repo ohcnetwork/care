@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348781344,
+  "date": "2019-08-21",
+  "name": "Nannambra  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirurangady",
+  "area": "18.35km",
+  "localbody_code": "G101106",
+  "no_of_wards": 21,
+  "population": 30308,
+  "male": 14485,
+  "female": 15823,
+  "population_density": 1652,
+  "sex_ratio": 1092,
+  "literacy_rate": 86.59,
+  "literacy_rate_male": 91.32,
+  "literacy_rate_female": 81.57,
+  "president": "MUSTHAFAPANAYATHIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALAMTHIRUTHI",
+      "person": {
+        "id": "2015096900101",
+        "name": "HAFSATH KUNNATHERI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUROOL",
+      "person": {
+        "id": "2015096900201",
+        "name": "ASYA THERAMBIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KADUVALOOR",
+      "person": {
+        "id": "2015096900301",
+        "name": "MARIYAMMA KURIKKALPEEDIYEKKAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERUMUKK WEST",
+      "person": {
+        "id": "2015096900401",
+        "name": "HASEENA KEEZHUVEETIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ADRIKAD",
+      "person": {
+        "id": "2015096900501",
+        "name": "SUHARA SHIHAB OLLAKKAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUMUKK TOWN",
+      "person": {
+        "id": "2015096900601",
+        "name": "MUJEEBU RAHMAN ERAPARAMBAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNDOOR",
+      "person": {
+        "id": "2015096900701",
+        "name": "CHANDRAN PANDARATHIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNDOOR EAST",
+      "person": {
+        "id": "2015096900801",
+        "name": "FATHIMA KAVUNGAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ATHANIKKAL",
+      "person": {
+        "id": "2015096900901",
+        "name": "FAIZAL A.C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOOLAKKAL",
+      "person": {
+        "id": "2015096901001",
+        "name": "PRABHAKARAN KUNNUMMAL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEYYALA",
+      "person": {
+        "id": "2015096901101",
+        "name": "SAIDALAVI KUNNATHAKATHU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANDIMUTTAM",
+      "person": {
+        "id": "2015096901201",
+        "name": "FATHIMA HANEEFA PUTHANVEETIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLIYAMBURAM",
+      "person": {
+        "id": "2015096901301",
+        "name": "MUSTHAFA PANAYATHIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHOOLANKUNN",
+      "person": {
+        "id": "2015096901401",
+        "name": "NISHA CHOLAKKAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MELEPPURAM",
+      "person": {
+        "id": "2015096901501",
+        "name": "ANITHA KURUVEDATH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THATTATHALAM",
+      "person": {
+        "id": "2015096901601",
+        "name": "MOHAMMED HASSAN. M.P MELEPEEDIAKKAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANAKKATHAYAM",
+      "person": {
+        "id": "2015096901701",
+        "name": "SAMEER POTTANIKKAL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MACHINGATHAYAM",
+      "person": {
+        "id": "2015096901801",
+        "name": "SHAMEENA .V.K VALIYAKANDATHIL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOTATH",
+      "person": {
+        "id": "2015096901901",
+        "name": "SAIDALAVI URPAYI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KODINHI TOWN",
+      "person": {
+        "id": "2015096902001",
+        "name": "SHABNA ABULLAIS PALAKKATT"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THIRUTHI",
+      "person": {
+        "id": "2015096902101",
+        "name": "HYDROS KOYA THANGAL KODINHIPALLIKKAL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

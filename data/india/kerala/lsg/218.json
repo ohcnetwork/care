@@ -1,0 +1,293 @@
+{
+  "timeStamp": 1566345672229,
+  "date": "2019-08-21",
+  "name": "Thalipparamba  Municipality, Kannur District",
+  "district": "Kannur",
+  "area": "43.08km",
+  "localbody_code": "M130200",
+  "no_of_wards": 34,
+  "population": 67441,
+  "male": 32511,
+  "female": 34930,
+  "population_density": 1398,
+  "sex_ratio": 1021,
+  "literacy_rate": 90,
+  "literacy_rate_male": 95.54,
+  "literacy_rate_female": 84.52,
+  "chairman": "ALLAMKULAMMAHAMOOD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUPPAM",
+      "person": {
+        "id": "2015021800101",
+        "name": "K M FATHIMA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAJARAJESWARA",
+      "person": {
+        "id": "2015021800201",
+        "name": "P V MADHAVI TEACHER"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUZHAKULANGARA",
+      "person": {
+        "id": "2015021800301",
+        "name": "VALSALA PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUKKOLA",
+      "person": {
+        "id": "2015021800401",
+        "name": "P K SUBAIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NHATTUVAYAL",
+      "person": {
+        "id": "2015021800501",
+        "name": "NASEER P  C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARYAMBALAM",
+      "person": {
+        "id": "2015021800601",
+        "name": "KODIYIL SALEEM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SALAMATH NAGAR",
+      "person": {
+        "id": "2015021800701",
+        "name": "C UMMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNDAMKUZHI",
+      "person": {
+        "id": "2015021800801",
+        "name": "KADEEJA K P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SAYED NAGAR",
+      "person": {
+        "id": "2015021800901",
+        "name": "P M MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ASAD NAGAR",
+      "person": {
+        "id": "2015021801001",
+        "name": "K SAHITHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUSHPAGIRI",
+      "person": {
+        "id": "2015021801101",
+        "name": "ALLAMKULAM MAHAMOOD"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALLAMKULAM",
+      "person": {
+        "id": "2015021801201",
+        "name": "MUHAMMED SIRAJ C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "FAROOK NAGAR",
+      "person": {
+        "id": "2015021801301",
+        "name": "K MUHAMMED BASHEER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "BADARIYA NAGAR",
+      "person": {
+        "id": "2015021801401",
+        "name": "MUHAMMED IQBAL P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANNA",
+      "person": {
+        "id": "2015021801501",
+        "name": "SHABITHA M K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "HABEEB NAGAR",
+      "person": {
+        "id": "2015021801601",
+        "name": "P P MUHAMMED NIZAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "TOWN",
+      "person": {
+        "id": "2015021801701",
+        "name": "K  HAFSATH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KODATHI MOTTA",
+      "person": {
+        "id": "2015021801801",
+        "name": "VALSARAJAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PALAKULANGARA",
+      "person": {
+        "id": "2015021801901",
+        "name": "K V GAYATHRI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "NETHAJI",
+      "person": {
+        "id": "2015021802001",
+        "name": "DEEPA RANJITH"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "TRICHAMBARAM",
+      "person": {
+        "id": "2015021802101",
+        "name": "RAJANI REMANAND"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KAKKANCHAL",
+      "person": {
+        "id": "2015021802201",
+        "name": "NABEESA BEEVI K"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUTTIKOL",
+      "person": {
+        "id": "2015021802301",
+        "name": "NIMISHA E"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "THURUTHI",
+      "person": {
+        "id": "2015021802401",
+        "name": "PREETHA O K"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KOOVODE",
+      "person": {
+        "id": "2015021802501",
+        "name": "M CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "EZHAM MILE",
+      "person": {
+        "id": "2015021802601",
+        "name": "RAFEEQUE M P"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PLATHOTTAM",
+      "person": {
+        "id": "2015021802701",
+        "name": "T PRAKASAN"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THULLANOOR",
+      "person": {
+        "id": "2015021802801",
+        "name": "K LATHA"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "POOKOTH THERU",
+      "person": {
+        "id": "2015021802901",
+        "name": "NISHA K"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "KEEZHATTOOR",
+      "person": {
+        "id": "2015021803001",
+        "name": "P PRAKASAN"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "MANTHAMKUND",
+      "person": {
+        "id": "2015021803101",
+        "name": "MURALEEDHARAN KOMATH"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "PALAYAD",
+      "person": {
+        "id": "2015021803201",
+        "name": "VALSALA"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "PULIMPARAMB",
+      "person": {
+        "id": "2015021803301",
+        "name": "KUNHIRAMAN V V"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "CHALATHUR",
+      "person": {
+        "id": "2015021803401",
+        "name": "SHAIMA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

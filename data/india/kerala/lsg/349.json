@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346116354,
+  "date": "2019-08-21",
+  "name": "Thekkumbhagom  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chavara",
+  "area": "20.26km",
+  "localbody_code": "G020801",
+  "no_of_wards": 13,
+  "population": 15813,
+  "male": 7789,
+  "female": 8024,
+  "population_density": 781,
+  "sex_ratio": 1030,
+  "literacy_rate": 91.91,
+  "literacy_rate_male": 95.21,
+  "literacy_rate_female": 88.73,
+  "president": "P.ANILKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUTTATHU",
+      "person": {
+        "id": "2015034900101",
+        "name": "NIRMALA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AMMAYARNADA",
+      "person": {
+        "id": "2015034900201",
+        "name": "SUJA KUMARI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "DESAKKALLU",
+      "person": {
+        "id": "2015034900301",
+        "name": "P.OMANAKUTTAKURUP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOLUKADAVU",
+      "person": {
+        "id": "2015034900401",
+        "name": "A.YESUDASAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEKKUMVILA",
+      "person": {
+        "id": "2015034900501",
+        "name": "K.SUSEELA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UDAYADITHYAPURAM",
+      "person": {
+        "id": "2015034900601",
+        "name": "K.PRATHEEPA KUMARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NJARAMMOODU",
+      "person": {
+        "id": "2015034900701",
+        "name": "L.SINDHI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALLIKKODI",
+      "person": {
+        "id": "2015034900801",
+        "name": "S.ANGEL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "DALAVAPURAM",
+      "person": {
+        "id": "2015034900901",
+        "name": "S.BINDHU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GUHANANDAPURAM",
+      "person": {
+        "id": "2015034901001",
+        "name": "P.ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUDAVOOR",
+      "person": {
+        "id": "2015034901101",
+        "name": "K.SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AZHAKATHU",
+      "person": {
+        "id": "2015034901201",
+        "name": "SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NADAKKAVU",
+      "person": {
+        "id": "2015034901301",
+        "name": "THANKACHY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

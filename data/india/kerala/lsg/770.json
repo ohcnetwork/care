@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348042281,
+  "date": "2019-08-21",
+  "name": "Mattathur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Kodakara",
+  "area": "103.11km",
+  "localbody_code": "G081103",
+  "no_of_wards": 23,
+  "population": 42043,
+  "male": 20353,
+  "female": 21690,
+  "population_density": 408,
+  "sex_ratio": 1065,
+  "literacy_rate": 86.29,
+  "literacy_rate_male": 91.22,
+  "literacy_rate_female": 81.75,
+  "president": "P.CSUBRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NOOLUVALLI",
+      "person": {
+        "id": "2015077000101",
+        "name": "C.V.GINEESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NADIPARA",
+      "person": {
+        "id": "2015077000201",
+        "name": "SUBITHA VINODKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KORECHAL",
+      "person": {
+        "id": "2015077000301",
+        "name": "SREEDHARAN KALARIKKAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "INCHAKUND",
+      "person": {
+        "id": "2015077000401",
+        "name": "REJI GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MURIKUNGAL",
+      "person": {
+        "id": "2015077000501",
+        "name": "LAILA BASHEER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VADAKKE KODALY",
+      "person": {
+        "id": "2015077000601",
+        "name": "SOUMYA SHIJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHAKKE KODALY",
+      "person": {
+        "id": "2015077000701",
+        "name": "SHEEBA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KODUNGA",
+      "person": {
+        "id": "2015077000801",
+        "name": "CLARA JOHNY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHOKKANA",
+      "person": {
+        "id": "2015077000901",
+        "name": "K.V JOY KAVUNGAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VELLIKULANGARA",
+      "person": {
+        "id": "2015077001001",
+        "name": "A.K.PUSHPAKARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MONODY",
+      "person": {
+        "id": "2015077001101",
+        "name": "SUBHASHINI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADAMBODE",
+      "person": {
+        "id": "2015077001201",
+        "name": "AMBUJAKSHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANKUTTIPAADAM",
+      "person": {
+        "id": "2015077001301",
+        "name": "BEENA NANDAKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOPLIPAADAM",
+      "person": {
+        "id": "2015077001401",
+        "name": "MOLY THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THEKKE KODALAY",
+      "person": {
+        "id": "2015077001501",
+        "name": "SANDHYA SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OMBATHUNGAL",
+      "person": {
+        "id": "2015077001601",
+        "name": "SHEELA VIPINACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AVITTAPILLY",
+      "person": {
+        "id": "2015077001701",
+        "name": "C.K.GOPINATHAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KAVANAD",
+      "person": {
+        "id": "2015077001801",
+        "name": "P.C SUBRAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MATTATHURKUNNU",
+      "person": {
+        "id": "2015077001901",
+        "name": "JAYA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MOOLAMKUDAM",
+      "person": {
+        "id": "2015077002001",
+        "name": "VRINDA BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "VASUPURAM",
+      "person": {
+        "id": "2015077002101",
+        "name": "SHEELA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MOONNUMURY",
+      "person": {
+        "id": "2015077002201",
+        "name": "SURENDRAN NJATTUVETTI"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHEMBUCHIRA",
+      "person": {
+        "id": "2015077002301",
+        "name": "PRASANTH PULLARIKKAL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

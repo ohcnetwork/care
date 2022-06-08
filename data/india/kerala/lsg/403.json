@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346313993,
+  "date": "2019-08-21",
+  "name": "Seethathodu  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "651.94km",
+  "localbody_code": "G030507",
+  "no_of_wards": 13,
+  "population": 18222,
+  "male": 9268,
+  "female": 8954,
+  "population_density": 28,
+  "sex_ratio": 966,
+  "literacy_rate": 92.4,
+  "literacy_rate_male": 94.63,
+  "literacy_rate_female": 90.12,
+  "president": "LEKHASURESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTAMONPARA",
+      "person": {
+        "id": "2015040300101",
+        "name": "P R PRAMOD"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALATHADIYAR",
+      "person": {
+        "id": "2015040300201",
+        "name": "BEENA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GAVI",
+      "person": {
+        "id": "2015040300301",
+        "name": "V KUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANGAMOOZHI",
+      "person": {
+        "id": "2015040300401",
+        "name": "SREENA SHIBU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALUPARA",
+      "person": {
+        "id": "2015040300501",
+        "name": "LEKHA SURESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAMBILINE",
+      "person": {
+        "id": "2015040300601",
+        "name": "SATHI MADHU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOCHUKOYICKAL",
+      "person": {
+        "id": "2015040300701",
+        "name": "SAJINI SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTTAKUZHI",
+      "person": {
+        "id": "2015040300801",
+        "name": "SUSAN MABLE SALIM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "GURUNATHANMANNU",
+      "person": {
+        "id": "2015040300901",
+        "name": "SUMESHKUMAR B S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SEETHAKUZHI",
+      "person": {
+        "id": "2015040301001",
+        "name": "SYAMALA UDHAYABHANU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SEETHATHODU",
+      "person": {
+        "id": "2015040301101",
+        "name": "G NANDAKUAMR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOONNUKALLU",
+      "person": {
+        "id": "2015040301201",
+        "name": "BEENA MUHAMMED RAFI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALLUMKAL",
+      "person": {
+        "id": "2015040301301",
+        "name": "D ACHANKUNJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

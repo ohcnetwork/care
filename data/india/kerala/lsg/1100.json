@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349205150,
+  "date": "2019-08-21",
+  "name": "Mattool  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "12.82km",
+  "localbody_code": "G130204",
+  "no_of_wards": 17,
+  "population": 24262,
+  "male": 11653,
+  "female": 12609,
+  "population_density": 1893,
+  "sex_ratio": 1082,
+  "literacy_rate": 88.27,
+  "literacy_rate_male": 93.68,
+  "literacy_rate_female": 83.4,
+  "president": "MUHAMMADALIK.V",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MATTOOL NORTH",
+      "person": {
+        "id": "2015110000101",
+        "name": "A. C ABDULRAHIMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAVILE PARAMBA",
+      "person": {
+        "id": "2015110000201",
+        "name": "V. P. K ABDUL SALAM"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SIDDEEQUABAD",
+      "person": {
+        "id": "2015110000301",
+        "name": "ABHILASH P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEKKUMBAD",
+      "person": {
+        "id": "2015110000401",
+        "name": "ZEENATH P.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MATTOOL CENTRAL",
+      "person": {
+        "id": "2015110000501",
+        "name": "P.V IBRAHIM KUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MADAKKARA EAST",
+      "person": {
+        "id": "2015110000601",
+        "name": "ALEEMA ONDEN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MADAKKARA WEST",
+      "person": {
+        "id": "2015110000701",
+        "name": "NANCY BIYATRIS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MATTOOL PALLI PRADESHAM",
+      "person": {
+        "id": "2015110000801",
+        "name": "SAJNA M.A.V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATTOOL SOUTH",
+      "person": {
+        "id": "2015110000901",
+        "name": "K. V MUSTHAFA HAJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MATTOOL SOUTH MUNAMB",
+      "person": {
+        "id": "2015110001001",
+        "name": "ANAS K.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MATTOOL SOUTH CHAL",
+      "person": {
+        "id": "2015110001101",
+        "name": "ASMA A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MATTOOL THANGALE PALLI CHAL",
+      "person": {
+        "id": "2015110001201",
+        "name": "V.V SHIBI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MATTOOL KOLKARAN CHAL",
+      "person": {
+        "id": "2015110001301",
+        "name": "MUHAMMADALI K. V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MATTOOL CENTRAL CHAL",
+      "person": {
+        "id": "2015110001401",
+        "name": "KOULATH T"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MATTOOL ARIYIL CHAL",
+      "person": {
+        "id": "2015110001501",
+        "name": "SONY SIBLE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MATTOOL BAVU VALAPPIL CHAL",
+      "person": {
+        "id": "2015110001601",
+        "name": "C.H KHAIRUNNISSA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MATTOOL KAKKADAN CHAL",
+      "person": {
+        "id": "2015110001701",
+        "name": "ABDUL RASHEED K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

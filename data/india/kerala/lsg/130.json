@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345292101,
+  "date": "2019-08-21",
+  "name": "Perambra  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "275.02km",
+  "localbody_code": "B110600",
+  "no_of_wards": 13,
+  "population": 146788,
+  "male": 73772,
+  "female": 73016,
+  "population_density": 534,
+  "sex_ratio": 990,
+  "literacy_rate": 90.75,
+  "literacy_rate_male": 95.41,
+  "literacy_rate_female": 86.05,
+  "president": "A.C.SATHI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AVALA",
+      "person": {
+        "id": "2015013000101",
+        "name": "K.NARAYANAKURUP"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERAVATTOR",
+      "person": {
+        "id": "2015013000201",
+        "name": "V.K.SUNEESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KADIYANGAD",
+      "person": {
+        "id": "2015013000301",
+        "name": "SOUFI THAZHEKKANDY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALERI",
+      "person": {
+        "id": "2015013000402",
+        "name": "KIZHAKKEYIL BALAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANGAROTH",
+      "person": {
+        "id": "2015013000501",
+        "name": "SAIRA BANU M."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTHUKAD",
+      "person": {
+        "id": "2015013000601",
+        "name": "SHYLA JAMES"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHAKKITTAPARA",
+      "person": {
+        "id": "2015013000701",
+        "name": "JITHESH MUTHUKAD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOOTHALI",
+      "person": {
+        "id": "2015013000801",
+        "name": "E.P.KARTHIAYANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERAMBRA",
+      "person": {
+        "id": "2015013000901",
+        "name": "AJITHA N.K."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAYANNA",
+      "person": {
+        "id": "2015013001001",
+        "name": "A.C.SATHI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NOCHAD",
+      "person": {
+        "id": "2015013001101",
+        "name": "MOOSSA K.K."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALPATHUR",
+      "person": {
+        "id": "2015013001201",
+        "name": "BABU.C.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUVANNUR",
+      "person": {
+        "id": "2015013001301",
+        "name": "M.K.SATHI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

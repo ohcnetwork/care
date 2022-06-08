@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346066502,
+  "date": "2019-08-21",
+  "name": "Anchal  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "24.45km",
+  "localbody_code": "G020504",
+  "no_of_wards": 19,
+  "population": 28612,
+  "male": 14026,
+  "female": 14586,
+  "population_density": 1170,
+  "sex_ratio": 1040,
+  "literacy_rate": 90.75,
+  "literacy_rate_male": 93.93,
+  "literacy_rate_female": 87.76,
+  "president": "SUJACHANDRABABU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MYLOTTUKONAM",
+      "person": {
+        "id": "2015033200101",
+        "name": "SIVAKUMAR K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHORANADU",
+      "person": {
+        "id": "2015033200201",
+        "name": "VALIYAVILA  VENULAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AREEPLACHY",
+      "person": {
+        "id": "2015033200301",
+        "name": "MABEL ROY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VADAMON",
+      "person": {
+        "id": "2015033200401",
+        "name": "ANILKUMAR N"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUVIKKONAM",
+      "person": {
+        "id": "2015033200501",
+        "name": "AJITH KUMAR N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ARCHAL",
+      "person": {
+        "id": "2015033200601",
+        "name": "S.SHEELA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEDIYARA",
+      "person": {
+        "id": "2015033200701",
+        "name": "V.S. SHIJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARAVILA",
+      "person": {
+        "id": "2015033200801",
+        "name": "SUJA CHANDRABABU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AGASTHYACODU",
+      "person": {
+        "id": "2015033200901",
+        "name": "NANDAKUMAR V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "COLLEGE WARD",
+      "person": {
+        "id": "2015033201001",
+        "name": "V.Y  VARGHESE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015033201101",
+        "name": "BEENA BALACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VATTAMON",
+      "person": {
+        "id": "2015033201201",
+        "name": "BINDHU MURALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHOORAKKULAM",
+      "person": {
+        "id": "2015033201301",
+        "name": "RAJESWARY SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THAZHAMEL",
+      "person": {
+        "id": "2015033201401",
+        "name": "MINI SURESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MARKET WARD",
+      "person": {
+        "id": "2015033201501",
+        "name": "SUBAIDHA SAKHEER  HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANAYAMCHERY",
+      "person": {
+        "id": "2015033201601",
+        "name": "M. MANIKUTTAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VENMANIYODU",
+      "person": {
+        "id": "2015033201701",
+        "name": "V.SUNITHAKUMARY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PONGUMMUKAL",
+      "person": {
+        "id": "2015033201801",
+        "name": "SANTHOSHKUMAR S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "AERAM TOWN WARD",
+      "person": {
+        "id": "2015033201901",
+        "name": "GEETHAKUMARI M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

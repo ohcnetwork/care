@@ -1,0 +1,245 @@
+{
+  "timeStamp": 1566345576287,
+  "date": "2019-08-21",
+  "name": "Muvattupuzha  Municipality, Ernakulam District",
+  "district": "Ernakulam",
+  "area": "13.18km",
+  "localbody_code": "M070500",
+  "no_of_wards": 28,
+  "population": 27595,
+  "male": 13892,
+  "female": 13703,
+  "population_density": 2093,
+  "sex_ratio": 986,
+  "literacy_rate": 92.87,
+  "literacy_rate_male": 95.83,
+  "literacy_rate_female": 91.72,
+  "chairperson": "USHASASIDHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAZHAPPILLY CENTRAL",
+      "person": {
+        "id": "2015019500101",
+        "name": "P K BABURAJ"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "JANASAKTHI",
+      "person": {
+        "id": "2015019500201",
+        "name": "VIJAYAKUMAR P S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOONNUKANDAM COLONY",
+      "person": {
+        "id": "2015019500301",
+        "name": "JAISON THOTTATHIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MOLEKKUDY",
+      "person": {
+        "id": "2015019500401",
+        "name": "M A SAHEER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "M.I.E.T SCHOOL",
+      "person": {
+        "id": "2015019500501",
+        "name": "SUMISHA NAUSHAD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ILAHIYA SCHOOL",
+      "person": {
+        "id": "2015019500601",
+        "name": "UMAMATH SALIM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NSS SCHOOL",
+      "person": {
+        "id": "2015019500701",
+        "name": "P PREMCHAND"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THARBIYATH SCHOOL",
+      "person": {
+        "id": "2015019500801",
+        "name": "P Y NOORUDEEN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MARKET",
+      "person": {
+        "id": "2015019500901",
+        "name": "SHYLA ABDULLA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMATTOM",
+      "person": {
+        "id": "2015019501001",
+        "name": "C M SHUKKOOR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "RANDARKARA",
+      "person": {
+        "id": "2015019501101",
+        "name": "PRAMEELA GIRISHKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KIZHAKKEKARA",
+      "person": {
+        "id": "2015019501201",
+        "name": "C M SEETHY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EAST HIGH SCHOOL",
+      "person": {
+        "id": "2015019501301",
+        "name": "ABDUL SALAM K A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUNICIPAL PARK",
+      "person": {
+        "id": "2015019501401",
+        "name": "XAVIER K J"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANDARIMALA",
+      "person": {
+        "id": "2015019501501",
+        "name": "CELINE GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PETTA",
+      "person": {
+        "id": "2015019501601",
+        "name": "SHIJI THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "TALUK HOSPITAL",
+      "person": {
+        "id": "2015019501701",
+        "name": "SHYLAJA ASOKAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MODEL HIGH SCHOOL",
+      "person": {
+        "id": "2015019501801",
+        "name": "JINU ANTONY"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "HOUSING BOARD",
+      "person": {
+        "id": "2015019501901",
+        "name": "K B BINEESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MARADY U.P SCHOOL",
+      "person": {
+        "id": "2015019502001",
+        "name": "K S JAYAKRISHNAN NAIR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "S N D P SCHOOL",
+      "person": {
+        "id": "2015019502101",
+        "name": "SINDHU SHAIJU"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015019502201",
+        "name": "SANTHOSHKUMAR P K"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "MUVATTUPUZHA CLUB",
+      "person": {
+        "id": "2015019502301",
+        "name": "BINDU SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "SANGAMAM",
+      "person": {
+        "id": "2015019502401",
+        "name": "RAJI DILEEP"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MUNICIPAL INDUSTRIAL PARK",
+      "person": {
+        "id": "2015019502501",
+        "name": "P.P.NISHA"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "J B SCHOOL",
+      "person": {
+        "id": "2015019502601",
+        "name": "MARY GEORGE THOTTAM"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "THEEKKOLLIPPARA",
+      "person": {
+        "id": "2015019502701",
+        "name": "USHA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MUNICIPAL COLONY",
+      "person": {
+        "id": "2015019502801",
+        "name": "SHALINA BASHEER"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344970605,
+  "date": "2019-08-21",
+  "name": "Thycattussery  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Thycattussery",
+  "area": "86.38km",
+  "localbody_code": "B040100",
+  "no_of_wards": 13,
+  "population": 96320,
+  "male": 47731,
+  "female": 48589,
+  "population_density": 1115,
+  "sex_ratio": 1018,
+  "literacy_rate": 91,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 86,
+  "president": "NIRMALASELVARAJ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AROOKUTTY",
+      "person": {
+        "id": "2015003500101",
+        "name": "P K KOCHAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUMBALAM",
+      "person": {
+        "id": "2015003500201",
+        "name": "P G MURALEEDHARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAZHATHARAVELI",
+      "person": {
+        "id": "2015003500301",
+        "name": "NIRMALA SELVARAJ"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOCHACKAL",
+      "person": {
+        "id": "2015003500401",
+        "name": "MEGHA VENU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEVARVATTOM",
+      "person": {
+        "id": "2015003500501",
+        "name": "RETHY NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAKKEKADAVU",
+      "person": {
+        "id": "2015003500601",
+        "name": "SINDHU MAHESAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIPPURAM",
+      "person": {
+        "id": "2015003500701",
+        "name": "P D SABEESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THIRUNALLOOR",
+      "person": {
+        "id": "2015003500801",
+        "name": "SHEELA RAGHUVARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLUVELI",
+      "person": {
+        "id": "2015003500901",
+        "name": "RAJESH RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THYCATTUSSERY",
+      "person": {
+        "id": "2015003501001",
+        "name": "ABRAHAM GEORGE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALIYAPARAMBU",
+      "person": {
+        "id": "2015003501101",
+        "name": "NEETHU RANJITH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THRICHATTUKULAM",
+      "person": {
+        "id": "2015003501201",
+        "name": "USHA RAJAGOPAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NADUVATH NAGAR",
+      "person": {
+        "id": "2015003501301",
+        "name": "SHAYAMALA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349038148,
+  "date": "2019-08-21",
+  "name": "Narikunni  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Chelannur",
+  "area": "17.75km",
+  "localbody_code": "G110905",
+  "no_of_wards": 15,
+  "population": 28804,
+  "male": 15166,
+  "female": 13638,
+  "population_density": 1122,
+  "sex_ratio": 988,
+  "literacy_rate": 91.91,
+  "literacy_rate_male": 95.84,
+  "literacy_rate_female": 87.96,
+  "president": "ADV.P.K.VABITHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUNDAYI",
+      "person": {
+        "id": "2015104400101",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANNIKKOTTOOR",
+      "person": {
+        "id": "2015104400201",
+        "name": "NISHA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOORKHANKUNDU",
+      "person": {
+        "id": "2015104400301",
+        "name": "MARIYAM.R.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARUKULANGARA",
+      "person": {
+        "id": "2015104400401",
+        "name": "VENUGOPAL.C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VATTAPPARAPPOYIL",
+      "person": {
+        "id": "2015104400501",
+        "name": "VASANTHA KUMARI.C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NARIKKUNI",
+      "person": {
+        "id": "2015104400601",
+        "name": "V.ILYAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARANNUR",
+      "person": {
+        "id": "2015104400701",
+        "name": "FOUSIYA RAHMAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALOLITHAZHAM",
+      "person": {
+        "id": "2015104400801",
+        "name": "ABDUL JABBAR.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALKUDUMBU",
+      "person": {
+        "id": "2015104400901",
+        "name": "VASANTHA KUMARI.P.N"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHENGOTTUPOYIL",
+      "person": {
+        "id": "2015104401001",
+        "name": "AMINA.I"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NELLIYERITHAZHAM",
+      "person": {
+        "id": "2015104401101",
+        "name": "P .I.VASUDEVANNAMBOODIRI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ODUPARA",
+      "person": {
+        "id": "2015104401201",
+        "name": "ADV.P.K.VABITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAVUMPOYIL",
+      "person": {
+        "id": "2015104401301",
+        "name": "GIRIJA.C.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALATHILPARA",
+      "person": {
+        "id": "2015104401401",
+        "name": "SHIJI.P.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KODOLI",
+      "person": {
+        "id": "2015104401501",
+        "name": "FASAL MUHAMMED"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

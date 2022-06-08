@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566347529341,
+  "date": "2019-08-21",
+  "name": "Puthur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Ollukkara",
+  "area": "79.07km",
+  "localbody_code": "G080504",
+  "no_of_wards": 23,
+  "population": 39632,
+  "male": 19462,
+  "female": 20170,
+  "population_density": 501,
+  "sex_ratio": 1036,
+  "literacy_rate": 89.85,
+  "literacy_rate_male": 93.52,
+  "literacy_rate_female": 86.37,
+  "president": "MINIUNNIKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAINOOR",
+      "person": {
+        "id": "2015074400101",
+        "name": "JAYA GOPI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THONIPPARA",
+      "person": {
+        "id": "2015074400201",
+        "name": "GOPI K K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUKUNNU",
+      "person": {
+        "id": "2015074400301",
+        "name": "V R RAMESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EZHAMKALLU",
+      "person": {
+        "id": "2015074400401",
+        "name": "ALICE KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNAMANGALAM",
+      "person": {
+        "id": "2015074400501",
+        "name": "REJI GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELLAKKARITHADAM",
+      "person": {
+        "id": "2015074400601",
+        "name": "SUBITHA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MARUTHUKUZHY",
+      "person": {
+        "id": "2015074400701",
+        "name": "GEORGE PANTHAPILLY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MAROTTICHAL",
+      "person": {
+        "id": "2015074400801",
+        "name": "PREETHY JOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLAIKUNNU",
+      "person": {
+        "id": "2015074400901",
+        "name": "JOSEY BABY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMBAMKANDAM",
+      "person": {
+        "id": "2015074401001",
+        "name": "T K SREENIVASAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PONNUKKARA EAST",
+      "person": {
+        "id": "2015074401101",
+        "name": "SIVAN K.N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOCHERIKUNNU",
+      "person": {
+        "id": "2015074401201",
+        "name": "P.G.SHAJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PONNUKKARA",
+      "person": {
+        "id": "2015074401301",
+        "name": "MINI UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHUR EAST",
+      "person": {
+        "id": "2015074401401",
+        "name": "PREMA MANI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PONNUKKARA WEST",
+      "person": {
+        "id": "2015074401501",
+        "name": "JAYASREE MADHUSUDHANAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUTHUR",
+      "person": {
+        "id": "2015074401601",
+        "name": "NALINI VISWAMBARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PUZHAMPALLAM",
+      "person": {
+        "id": "2015074401701",
+        "name": "SANTHOSH KUMAR N.P."
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUNJANAMPARA",
+      "person": {
+        "id": "2015074401801",
+        "name": "SHEEBA SHAJAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KANAKASSERY",
+      "person": {
+        "id": "2015074401901",
+        "name": "BABY DAVIS"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MARATHAKKARA EAST",
+      "person": {
+        "id": "2015074402001",
+        "name": "SINDHU VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MARATHAKKARA WEST",
+      "person": {
+        "id": "2015074402101",
+        "name": "SREEJA PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PERUVAMKULANGARA",
+      "person": {
+        "id": "2015074402201",
+        "name": "RAPPAI CHULLIPARAMBAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "ELAMTHURUTHY",
+      "person": {
+        "id": "2015074402301",
+        "name": "BINDHU SETHUMADHAVAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

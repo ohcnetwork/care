@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566347084117,
+  "date": "2019-08-21",
+  "name": "Kumily  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Azhutta",
+  "area": "816.73km",
+  "localbody_code": "G060802",
+  "no_of_wards": 20,
+  "population": 33722,
+  "male": 17273,
+  "female": 16449,
+  "population_density": 412,
+  "sex_ratio": 952,
+  "literacy_rate": 84,
+  "literacy_rate_male": 89,
+  "literacy_rate_female": 78,
+  "president": "SHEEBASURESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ETTEKKAR",
+      "person": {
+        "id": "2015061900101",
+        "name": "OMANA SIVASANKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENKARA",
+      "person": {
+        "id": "2015061900201",
+        "name": "BIJU P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLARAMKUNNU",
+      "person": {
+        "id": "2015061900301",
+        "name": "BINOY KURIAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATHUMURY",
+      "person": {
+        "id": "2015061900401",
+        "name": "SUNCY MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OTTAKATHALAMEDU",
+      "person": {
+        "id": "2015061900501",
+        "name": "VARKEY VARKEY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AMARAVATHY",
+      "person": {
+        "id": "2015061900601",
+        "name": "SHINU SIBU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NOOLAMPARA",
+      "person": {
+        "id": "2015061900701",
+        "name": "MANU V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALIYAKANDAM",
+      "person": {
+        "id": "2015061900801",
+        "name": "MARY ASPIN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ROSSAPPOOKANDAM",
+      "person": {
+        "id": "2015061900901",
+        "name": "SUMAYYA SAHEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THAMARAKANDAM",
+      "person": {
+        "id": "2015061901001",
+        "name": "PRAJEESH N.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKADY",
+      "person": {
+        "id": "2015061901101",
+        "name": "USHA RAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUMILY",
+      "person": {
+        "id": "2015061901201",
+        "name": "ANCY JAMES"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOLLAMPATTADA",
+      "person": {
+        "id": "2015061901301",
+        "name": "SHAJIMON S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUZHIKANDAM",
+      "person": {
+        "id": "2015061901401",
+        "name": "RAJAN P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ATTAPPALLAM",
+      "person": {
+        "id": "2015061901501",
+        "name": "BIJU DANIEAL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SPRING VALLEY",
+      "person": {
+        "id": "2015061901601",
+        "name": "SHEEBA SURESH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHOTTUPARA",
+      "person": {
+        "id": "2015061901701",
+        "name": "HYDROSE MEERAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VISWANATHAPURAM",
+      "person": {
+        "id": "2015061901801",
+        "name": "TRESYAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ODAMEDU",
+      "person": {
+        "id": "2015061901901",
+        "name": "JESSY ROBIN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ANAKKUZHI",
+      "person": {
+        "id": "2015061902001",
+        "name": "MANI (MANIMEKHALA) MUNIYADHAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

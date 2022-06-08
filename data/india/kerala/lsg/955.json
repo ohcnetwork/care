@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348736743,
+  "date": "2019-08-21",
+  "name": "Kuttippuram  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kuttipuram",
+  "area": "31.31km",
+  "localbody_code": "G100905",
+  "no_of_wards": 23,
+  "population": 37156,
+  "male": 18047,
+  "female": 19109,
+  "population_density": 1187,
+  "sex_ratio": 1059,
+  "literacy_rate": 88.57,
+  "literacy_rate_male": 92.37,
+  "literacy_rate_female": 84.77,
+  "president": "SHAMEELA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANIYAMKAD",
+      "person": {
+        "id": "2015095500101",
+        "name": "KANDAMPARAMBIL VINOD"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOLATHOL",
+      "person": {
+        "id": "2015095500201",
+        "name": "HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OOROTHU PALLIYAL",
+      "person": {
+        "id": "2015095500301",
+        "name": "PARAPPARA JASEENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PAKARANELLUR",
+      "person": {
+        "id": "2015095500401",
+        "name": "SIDDIKH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHELLUR",
+      "person": {
+        "id": "2015095500501",
+        "name": "PRIYA PARAPPURATH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATHANIKKAL",
+      "person": {
+        "id": "2015095500601",
+        "name": "SHAMEELA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KODIKKUNNU",
+      "person": {
+        "id": "2015095500701",
+        "name": "SOUDA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARIMPANAPEEDIKA",
+      "person": {
+        "id": "2015095500801",
+        "name": "RAMLA KARATHODIYIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANDIKASALA",
+      "person": {
+        "id": "2015095500901",
+        "name": "ABDUL HAMEED C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAINKANNUR",
+      "person": {
+        "id": "2015095501001",
+        "name": "VASEEMA VELERI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERASSANOOR",
+      "person": {
+        "id": "2015095501101",
+        "name": "PREETHI KUNDUKANDATHIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDACHALAM",
+      "person": {
+        "id": "2015095501201",
+        "name": "ABOOBACKER VALANCHARTHODI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOLAKKADU",
+      "person": {
+        "id": "2015095501301",
+        "name": "PARAMESWARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ATHANIBAZAR",
+      "person": {
+        "id": "2015095501401",
+        "name": "SHIGINA K K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BANGLAMKUNNU",
+      "person": {
+        "id": "2015095501501",
+        "name": "MOHANAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHIRATTAKKUNNU",
+      "person": {
+        "id": "2015095501601",
+        "name": "MOHAMEDKUTTY T K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUTTIPPURAM",
+      "person": {
+        "id": "2015095501701",
+        "name": "LATHA MARAYATH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PUZHANAMBRAM",
+      "person": {
+        "id": "2015095501801",
+        "name": "RAZILA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KAZHUTHALLUR",
+      "person": {
+        "id": "2015095501901",
+        "name": "SHAMSUDHEEN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PAZHUR",
+      "person": {
+        "id": "2015095502001",
+        "name": "FASEENA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NARIKKULAM",
+      "person": {
+        "id": "2015095502101",
+        "name": "SABITHA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "NADUVATTOM",
+      "person": {
+        "id": "2015095502201",
+        "name": "KAKKOTTIL PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "RANGATTUR",
+      "person": {
+        "id": "2015095502301",
+        "name": "MUHAMEDKUTTY T P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

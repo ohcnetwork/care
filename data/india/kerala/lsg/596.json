@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346989249,
+  "date": "2019-08-21",
+  "name": "Velliyamattom  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "30.56km",
+  "localbody_code": "G060405",
+  "no_of_wards": 15,
+  "population": 19652,
+  "male": 9931,
+  "female": 9721,
+  "population_density": 643,
+  "sex_ratio": 979,
+  "literacy_rate": 91,
+  "literacy_rate_male": 93,
+  "literacy_rate_female": 88,
+  "president": "SHEEBARAJASEKHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELEMDESOM WEST",
+      "person": {
+        "id": "2015059600101",
+        "name": "V.G.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELEMDESOM EAST",
+      "person": {
+        "id": "2015059600201",
+        "name": "ANJU C.G."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAMDESOM THOTTAM",
+      "person": {
+        "id": "2015059600301",
+        "name": "SHEMEENA ABDULKARIM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANNIMATTOM",
+      "person": {
+        "id": "2015059600401",
+        "name": "RAJU KUTTAPPAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUVAKKAYAM",
+      "person": {
+        "id": "2015059600501",
+        "name": "THANKAMMA RAMAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "METHOTTY",
+      "person": {
+        "id": "2015059600601",
+        "name": "AKKAMMA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOMALA",
+      "person": {
+        "id": "2015059600701",
+        "name": "LALITHAMMA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOOVAKANDOM",
+      "person": {
+        "id": "2015059600801",
+        "name": "MOHANDAS DAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHIPPALLY",
+      "person": {
+        "id": "2015059600901",
+        "name": "RAGHAVAN KANDA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLAPRAM",
+      "person": {
+        "id": "2015059601001",
+        "name": "PRAMOD S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOCHAPRA",
+      "person": {
+        "id": "2015059601101",
+        "name": "SUDHA JOHNEY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLIYAMATTOM",
+      "person": {
+        "id": "2015059601201",
+        "name": "ANOOPKUMAR A.K."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARUKAPPALLY",
+      "person": {
+        "id": "2015059601301",
+        "name": "TESSYMOL MATHEW"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NJARALAMPUZHA",
+      "person": {
+        "id": "2015059601401",
+        "name": "SHEEBA RAJASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VETTIMATTOM",
+      "person": {
+        "id": "2015059601501",
+        "name": "LALY JOSSY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

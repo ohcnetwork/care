@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349264676,
+  "date": "2019-08-21",
+  "name": "Kurumathur  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thaliparamba",
+  "area": "50.79km",
+  "localbody_code": "G130303",
+  "no_of_wards": 17,
+  "population": 22391,
+  "male": 10958,
+  "female": 11433,
+  "population_density": 441,
+  "sex_ratio": 1043,
+  "literacy_rate": 87.13,
+  "literacy_rate_male": 93.56,
+  "literacy_rate_female": 81.05,
+  "president": "NARAYANANIV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARAKKODI",
+      "person": {
+        "id": "2015111400101",
+        "name": "LEELA K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALIKKADAVU",
+      "person": {
+        "id": "2015111400201",
+        "name": "DEVI P V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOONAM",
+      "person": {
+        "id": "2015111400301",
+        "name": "NARAYANAN I V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAITHALA",
+      "person": {
+        "id": "2015111400401",
+        "name": "RAJANI K C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUMATHOOR",
+      "person": {
+        "id": "2015111400501",
+        "name": "RAZAK N P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHORUKKALA",
+      "person": {
+        "id": "2015111400601",
+        "name": "VALSALA K P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULLANJIYOD",
+      "person": {
+        "id": "2015111400701",
+        "name": "SHYNI PADINJARE PURAYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUNDERI",
+      "person": {
+        "id": "2015111400801",
+        "name": "DHANYA RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VADAKKANCHERY",
+      "person": {
+        "id": "2015111400901",
+        "name": "SUNITHA T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARAD",
+      "person": {
+        "id": "2015111401001",
+        "name": "RAJAN KANAYI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHEPPANNOOL",
+      "person": {
+        "id": "2015111401101",
+        "name": "JANAKI K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUYYAM",
+      "person": {
+        "id": "2015111401201",
+        "name": "MUHAMMED KUNHI K P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANAKKAD",
+      "person": {
+        "id": "2015111401301",
+        "name": "RAJEEVAN PACHENI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHAVANAPUZHA",
+      "person": {
+        "id": "2015111401401",
+        "name": "SHEEBA P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POOMANGALAM",
+      "person": {
+        "id": "2015111401501",
+        "name": "LAKSHMANAN P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MAZHOOR",
+      "person": {
+        "id": "2015111401601",
+        "name": "SEENA V M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PANNIYOOR",
+      "person": {
+        "id": "2015111401701",
+        "name": "AYOOB K V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

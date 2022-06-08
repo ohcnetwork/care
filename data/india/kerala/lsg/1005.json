@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566348901338,
+  "date": "2019-08-21",
+  "name": "Nadapuram  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnummal",
+  "area": "20.44km",
+  "localbody_code": "G110207",
+  "no_of_wards": 22,
+  "population": 35245,
+  "male": 17000,
+  "female": 18245,
+  "population_density": 1724,
+  "sex_ratio": 1073,
+  "literacy_rate": 86.32,
+  "literacy_rate_male": 93.56,
+  "literacy_rate_female": 79.75,
+  "president": "SAFEERAMOONNAMKUNI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "IYYANKODE WEST",
+      "person": {
+        "id": "2015100500101",
+        "name": "RAMANI KAKKATTIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IYYANKODE EAST",
+      "person": {
+        "id": "2015100500201",
+        "name": "SWATHI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VISHNUMANGALAM",
+      "person": {
+        "id": "2015100500301",
+        "name": "V.V.MUHAMMADALI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VISHNUMANGALAM WEST",
+      "person": {
+        "id": "2015100500401",
+        "name": "K.M.CHANDRI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTIPRAM",
+      "person": {
+        "id": "2015100500501",
+        "name": "VADAKKE CHATHYALAM VEETTIL NISHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUVANKARA",
+      "person": {
+        "id": "2015100500601",
+        "name": "VASU ERANHIKKAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEEYYOOR",
+      "person": {
+        "id": "2015100500701",
+        "name": "BEENA ANIYAREEMMAL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHELAKKAD NORTH",
+      "person": {
+        "id": "2015100500801",
+        "name": "MOLY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHELAKKAD SOUTH",
+      "person": {
+        "id": "2015100500901",
+        "name": "C.H.NAJMA BEEVI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALLACHI TOWN",
+      "person": {
+        "id": "2015100501001",
+        "name": "C.V.KUNHIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ONPATH KANDAM",
+      "person": {
+        "id": "2015100501101",
+        "name": "P.K.DAMUMASTER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NARIKKATTERI",
+      "person": {
+        "id": "2015100501201",
+        "name": "SUBAIDA THAZHE KOROLLATHIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VARIKKOLI",
+      "person": {
+        "id": "2015100501301",
+        "name": "P.K.KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUMMAMKODE",
+      "person": {
+        "id": "2015100501401",
+        "name": "ADV. K.M. RAGHUNATH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAKKAMVELLI",
+      "person": {
+        "id": "2015100501501",
+        "name": "HYRUNNISA.K.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUMMAMKODE SOUTH",
+      "person": {
+        "id": "2015100501601",
+        "name": "M.P.SOOPPY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUMMAMKODE EAST",
+      "person": {
+        "id": "2015100501701",
+        "name": "BANGLATH MUHAMMAD"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALLACHI",
+      "person": {
+        "id": "2015100501801",
+        "name": "REEJA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NADAPURAM",
+      "person": {
+        "id": "2015100501901",
+        "name": "SUHARA PUTHIYARAKKAL"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PULIKKOOL",
+      "person": {
+        "id": "2015100502001",
+        "name": "V.A.MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NADAPURAM TOWN",
+      "person": {
+        "id": "2015100502101",
+        "name": "SAFEERA MOONNAMKUNI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KAKKATTIL",
+      "person": {
+        "id": "2015100502201",
+        "name": "C.K.NASAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,133 @@
+{
+  "timeStamp": 1566348109550,
+  "date": "2019-08-21",
+  "name": "Edavilangu  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Kodungallur",
+  "area": "7.6km",
+  "localbody_code": "G081406",
+  "no_of_wards": 14,
+  "population": 18749,
+  "male": 8959,
+  "female": 9790,
+  "population_density": 2467,
+  "sex_ratio": 1092,
+  "literacy_rate": 89.37,
+  "literacy_rate_male": 93.65,
+  "literacy_rate_female": 85.54,
+  "president": "ADARSHAP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KATHIYALAM",
+      "person": {
+        "id": "2015079000101",
+        "name": "MINI THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAHILA SAMAJAM",
+      "person": {
+        "id": "2015079000201",
+        "name": "K B SHAFEEK"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "FISHERIES SCHOOL",
+      "person": {
+        "id": "2015079000301",
+        "name": "M G ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAVILANGU",
+      "person": {
+        "id": "2015079000401",
+        "name": "K K UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAVILANGU NORTH",
+      "person": {
+        "id": "2015079000501",
+        "name": "K K RAMESH BABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHINATTARAYALAM",
+      "person": {
+        "id": "2015079000601",
+        "name": "ADARSH A P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PODIYAN BAZAR",
+      "person": {
+        "id": "2015079000701",
+        "name": "SURESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANCHAYATH OFFICE",
+      "person": {
+        "id": "2015079000801",
+        "name": "AMBIKA ASOKAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KUNJAYINI",
+      "person": {
+        "id": "2015079000901",
+        "name": "LAISA PRATHAPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARA EAST",
+      "person": {
+        "id": "2015079001001",
+        "name": "JAINI JOSHY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHIYA ROAD EAST",
+      "person": {
+        "id": "2015079001101",
+        "name": "SUMA VALSAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ARAPPA",
+      "person": {
+        "id": "2015079001201",
+        "name": "PRASANNA SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARA WEST",
+      "person": {
+        "id": "2015079001301",
+        "name": "SAJITHA K G"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "FISHERIES SCHOOL WEST",
+      "person": {
+        "name": "*****"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

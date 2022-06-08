@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349607869,
+  "date": "2019-08-21",
+  "name": "Pilicode  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "26.77km",
+  "localbody_code": "G140603",
+  "no_of_wards": 16,
+  "population": 21210,
+  "male": 10167,
+  "female": 11043,
+  "population_density": 792,
+  "sex_ratio": 1086,
+  "literacy_rate": 88.88,
+  "literacy_rate_male": 94.68,
+  "literacy_rate_female": 83.56,
+  "president": "SREEDHARANT.V",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANNANKAI",
+      "person": {
+        "id": "2015121000101",
+        "name": "VIPANCHIKA P.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PILICODE",
+      "person": {
+        "id": "2015121000201",
+        "name": "OMANA T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHILOT",
+      "person": {
+        "id": "2015121000301",
+        "name": "T.P RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANIKKADI",
+      "person": {
+        "id": "2015121000401",
+        "name": "P.V KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POLLAPOYIL",
+      "person": {
+        "id": "2015121000501",
+        "name": "M KUNHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADIKKEEL",
+      "person": {
+        "id": "2015121000601",
+        "name": "P SANTHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "OLAT",
+      "person": {
+        "id": "2015121000701",
+        "name": "M GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KODAKKAD",
+      "person": {
+        "id": "2015121000802",
+        "name": "MAIMOONATH M.T.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELLACHAL",
+      "person": {
+        "id": "2015121000901",
+        "name": "SAILAJA P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EACHIKOVVAL",
+      "person": {
+        "id": "2015121001001",
+        "name": "GEETHA T.T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALIKKADAVU",
+      "person": {
+        "id": "2015121001101",
+        "name": "V.P RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHANDERA",
+      "person": {
+        "id": "2015121001201",
+        "name": "M.T.P NISHAMUDHEEN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANIYAT",
+      "person": {
+        "id": "2015121001301",
+        "name": "NALINI T.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THIRUNELI",
+      "person": {
+        "id": "2015121001401",
+        "name": "DAMODARAN K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VAYAL",
+      "person": {
+        "id": "2015121001501",
+        "name": "SANTHA K.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARAPPATH",
+      "person": {
+        "id": "2015121001601",
+        "name": "SREEDHARAN T.V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

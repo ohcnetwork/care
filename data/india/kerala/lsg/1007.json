@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348905603,
+  "date": "2019-08-21",
+  "name": "Kavilumpara  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnummal",
+  "area": "84.81km",
+  "localbody_code": "G110303",
+  "no_of_wards": 16,
+  "population": 20320,
+  "male": 10324,
+  "female": 9996,
+  "population_density": 240,
+  "sex_ratio": 968,
+  "literacy_rate": 89.99,
+  "literacy_rate_male": 94.44,
+  "literacy_rate_female": 85.42,
+  "president": "ANNAMMAGEORGE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARINGAD",
+      "person": {
+        "id": "2015100700101",
+        "name": "REENA KUYYADI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOODALIL",
+      "person": {
+        "id": "2015100700201",
+        "name": "K.T SURESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARIMUNDA",
+      "person": {
+        "id": "2015100700301",
+        "name": "ALLEY BALACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOTHAMPARA",
+      "person": {
+        "id": "2015100700401",
+        "name": "RONI MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHAPPANTHOTTAM",
+      "person": {
+        "id": "2015100700501",
+        "name": "BOBBY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VANNATHIYETT",
+      "person": {
+        "id": "2015100700601",
+        "name": "PUSHPA THOTTUMCHIRA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VATTIPANA",
+      "person": {
+        "id": "2015100700701",
+        "name": "MAYA PULLATTU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNDUTHODE",
+      "person": {
+        "id": "2015100700801",
+        "name": "JOSEPH KANJIRATHINKAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHUKKAD",
+      "person": {
+        "id": "2015100700901",
+        "name": "NICY JOSE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NAGAMPARA",
+      "person": {
+        "id": "2015100701001",
+        "name": "CHANDRAN P.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ASWASI",
+      "person": {
+        "id": "2015100701101",
+        "name": "SURESH C.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALANGODE",
+      "person": {
+        "id": "2015100701201",
+        "name": "ANNAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOYILOTHARA",
+      "person": {
+        "id": "2015100701301",
+        "name": "VIJAYALAKSHMI K.T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKELAKKANDI",
+      "person": {
+        "id": "2015100701401",
+        "name": "SOOPPY MANAKKARA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAIKKALANGADI",
+      "person": {
+        "id": "2015100701501",
+        "name": "K.P.MUHAMMED SHAMSHEER"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THOTTILPALAM",
+      "person": {
+        "id": "2015100701601",
+        "name": "MOLI K.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

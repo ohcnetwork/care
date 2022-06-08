@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348681304,
+  "date": "2019-08-21",
+  "name": "Thazhekkode  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Perinthalmanna",
+  "area": "45.03km",
+  "localbody_code": "G100705",
+  "no_of_wards": 21,
+  "population": 30666,
+  "male": 14939,
+  "female": 15727,
+  "population_density": 681,
+  "sex_ratio": 1052,
+  "literacy_rate": 83.06,
+  "literacy_rate_male": 87.28,
+  "literacy_rate_female": 78.84,
+  "president": "ABDULNASARAK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANAMBI",
+      "person": {
+        "id": "2015094000101",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AMMINIKKAD",
+      "person": {
+        "id": "2015094000201",
+        "name": "HAMZA A K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAPPUMUGAM",
+      "person": {
+        "id": "2015094000301",
+        "name": "MUNEERA  K P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VELLAPARA",
+      "person": {
+        "id": "2015094000401",
+        "name": "ABDUL NASAR A K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MATTARAKKAL",
+      "person": {
+        "id": "2015094000501",
+        "name": "MARIYAKUTTY THEKKEKARA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUTTIPULI",
+      "person": {
+        "id": "2015094000601",
+        "name": "SHARAFUDHEEN C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANTHONIKKUNNU",
+      "person": {
+        "id": "2015094000701",
+        "name": "KADEEJA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHOOR",
+      "person": {
+        "id": "2015094000801",
+        "name": "JAIFAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOMBAKKALKUNNU",
+      "person": {
+        "id": "2015094000901",
+        "name": "AFSATH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANJIRATHADAM",
+      "person": {
+        "id": "2015094001001",
+        "name": "SEENATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ONGODU",
+      "person": {
+        "id": "2015094001101",
+        "name": "P T HYDRESS HAJI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MADAMPARA",
+      "person": {
+        "id": "2015094001201",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NELLIPARAMABU",
+      "person": {
+        "id": "2015094001301",
+        "name": "SULAIMAN N"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAPPUPARAMABA",
+      "person": {
+        "id": "2015094001401",
+        "name": "SHEELA K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARINKALLATHANI",
+      "person": {
+        "id": "2015094001501",
+        "name": "MOIDUPPU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUWATHANI",
+      "person": {
+        "id": "2015094001601",
+        "name": "SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THAZHEKODE",
+      "person": {
+        "id": "2015094001701",
+        "name": "SEENATH P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUTHIRAMANNA",
+      "person": {
+        "id": "2015094001801",
+        "name": "BINISHA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MARUTHALA",
+      "person": {
+        "id": "2015094001901",
+        "name": "SOUDHA K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ATHIKKAL",
+      "person": {
+        "id": "2015094002001",
+        "name": "HAMSA C"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PATHAYIKKARA",
+      "person": {
+        "id": "2015094002101",
+        "name": "SHAKUNNI K K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

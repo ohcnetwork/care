@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346041413,
+  "date": "2019-08-21",
+  "name": "Thalavoor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "33.67km",
+  "localbody_code": "G020402",
+  "no_of_wards": 20,
+  "population": 31804,
+  "male": 15440,
+  "female": 16364,
+  "population_density": 945,
+  "sex_ratio": 1069,
+  "literacy_rate": 90.61,
+  "literacy_rate_male": 94.08,
+  "literacy_rate_female": 87.37,
+  "president": "SRAKESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANDITHITTA",
+      "person": {
+        "id": "2015032400101",
+        "name": "ANU XAVIER KADAKAMPALLY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AMBALATHIN NIRAPPU",
+      "person": {
+        "id": "2015032400201",
+        "name": "RAJESH V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THATHAMANGALAM",
+      "person": {
+        "id": "2015032400301",
+        "name": "SHINU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MELEPPURA",
+      "person": {
+        "id": "2015032400401",
+        "name": "ANNAMMA PHILIP"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARANKIMAMMUKAL",
+      "person": {
+        "id": "2015032400501",
+        "name": "VALSALA A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAZHANJIKADAVU",
+      "person": {
+        "id": "2015032400601",
+        "name": "O PONNACHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANAMPATTA",
+      "person": {
+        "id": "2015032400701",
+        "name": "T.M BIJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PIDAVOOR",
+      "person": {
+        "id": "2015032400801",
+        "name": "G RADHAMOHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARUVITHARA",
+      "person": {
+        "id": "2015032400901",
+        "name": "N RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAMUKUMCHERRY",
+      "person": {
+        "id": "2015032401001",
+        "name": "K.R SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHITTASSERY",
+      "person": {
+        "id": "2015032401101",
+        "name": "K.R SURESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEDUVANNOOR",
+      "person": {
+        "id": "2015032401201",
+        "name": "SHEENA MURALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANJAKALA",
+      "person": {
+        "id": "2015032401301",
+        "name": "GEETHA KUMARY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NADUTHERI",
+      "person": {
+        "id": "2015032401401",
+        "name": "VIJAYALEKSHMI AMMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "RANDALUMMOODU",
+      "person": {
+        "id": "2015032401501",
+        "name": "JYOTHILEKSHMI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NJARAKADU",
+      "person": {
+        "id": "2015032401601",
+        "name": "S RAKESH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ARINGADA",
+      "person": {
+        "id": "2015032401701",
+        "name": "DEEPA R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VADACODU",
+      "person": {
+        "id": "2015032401801",
+        "name": "AMBILI DASAPPAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ALAKKUZHY",
+      "person": {
+        "id": "2015032401901",
+        "name": "R VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KURA",
+      "person": {
+        "id": "2015032402001",
+        "name": "JALAJA GOPINADH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

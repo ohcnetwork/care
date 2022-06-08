@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566345749922,
+  "date": "2019-08-21",
+  "name": "Pulimath  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "26.93km",
+  "localbody_code": "G010208",
+  "no_of_wards": 19,
+  "population": 31856,
+  "male": 15290,
+  "female": 16566,
+  "population_density": 1030,
+  "sex_ratio": 1101,
+  "literacy_rate": 90.02,
+  "literacy_rate_male": 94.07,
+  "literacy_rate_female": 86.39,
+  "president": "VISHNUB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SHEEMAVILA",
+      "person": {
+        "id": "2015023900101",
+        "name": "V SOMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULLAYIL",
+      "person": {
+        "id": "2015023900201",
+        "name": "VASANTHA KUMARI K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULIMATH",
+      "person": {
+        "id": "2015023900301",
+        "name": "AISHABEEVI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PORUNTHAMON",
+      "person": {
+        "id": "2015023900401",
+        "name": "JAYAKUMAR B N"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015023900501",
+        "name": "ANJANA S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUDAPPARA",
+      "person": {
+        "id": "2015023900601",
+        "name": "GEETHAMMA P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTUMPURAM",
+      "person": {
+        "id": "2015023900701",
+        "name": "AJITHAKUMARI C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARIVARIKUZHI",
+      "person": {
+        "id": "2015023900801",
+        "name": "NASIMUDEEN M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOLLUVILA",
+      "person": {
+        "id": "2015023900901",
+        "name": "A AHAMAD KABEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAYATTINGAKUZHI",
+      "person": {
+        "id": "2015023901001",
+        "name": "LEKHA S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALIKUZHI",
+      "person": {
+        "id": "2015023901101",
+        "name": "SANTHAKUMARI B"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMUKINKUZHI",
+      "person": {
+        "id": "2015023901201",
+        "name": "SUSMITHA S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARETTE",
+      "person": {
+        "id": "2015023901301",
+        "name": "V BINU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PEDIKULAM",
+      "person": {
+        "id": "2015023901401",
+        "name": "SANDHYA D"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PLAVODU",
+      "person": {
+        "id": "2015023901501",
+        "name": "VISHNU B"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARINELLOOR",
+      "person": {
+        "id": "2015023901601",
+        "name": "SREEKALA P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KODUVAZHANOOR",
+      "person": {
+        "id": "2015023901701",
+        "name": "SAIJU C S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PANTHUVILA",
+      "person": {
+        "id": "2015023901801",
+        "name": "BALACHNADRAN M A"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ERUTHINADU",
+      "person": {
+        "id": "2015023901901",
+        "name": "G SANTHAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

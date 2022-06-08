@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346248563,
+  "date": "2019-08-21",
+  "name": "Niranam  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Pulikezhu",
+  "area": "13.17km",
+  "localbody_code": "G030203",
+  "no_of_wards": 13,
+  "population": 14774,
+  "male": 7212,
+  "female": 7562,
+  "population_density": 1122,
+  "sex_ratio": 1049,
+  "literacy_rate": 96.76,
+  "literacy_rate_male": 97.96,
+  "literacy_rate_female": 95.64,
+  "president": "LATHAPRASAD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KATTUNILAM",
+      "person": {
+        "id": "2015038100101",
+        "name": "MARIAMMA MATHAI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKUMBHAGOM PADINJARU",
+      "person": {
+        "id": "2015038100201",
+        "name": "SHAMEENA H"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADAKKUMBHAGOM KIZHAKKU",
+      "person": {
+        "id": "2015038100301",
+        "name": "MATHEW M VARGHESE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANNASSA",
+      "person": {
+        "id": "2015038100401",
+        "name": "P C PURUSHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "YMCA",
+      "person": {
+        "id": "2015038100501",
+        "name": "BENJAMIN THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "DUCK FARM",
+      "person": {
+        "id": "2015038100601",
+        "name": "JOLLY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHAKKUMMURI",
+      "person": {
+        "id": "2015038100701",
+        "name": "LATHA PRASAD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOTTUMADA",
+      "person": {
+        "id": "2015038100801",
+        "name": "RACHEL MATHEW"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANCHAYATH OFFICE",
+      "person": {
+        "id": "2015038100901",
+        "name": "JULIE RENNY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PHC",
+      "person": {
+        "id": "2015038101001",
+        "name": "ALEX JOHN PUTHOOPPALLIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERATHODU",
+      "person": {
+        "id": "2015038101101",
+        "name": "VIMALA RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOMBANKERY",
+      "person": {
+        "id": "2015038101201",
+        "name": "KURUVILLA KOSHY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THOTTADI",
+      "person": {
+        "id": "2015038101301",
+        "name": "BALAKRISHNAN P N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

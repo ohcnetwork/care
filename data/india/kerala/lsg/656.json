@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347197510,
+  "date": "2019-08-21",
+  "name": "Cheranalloor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Edappally",
+  "area": "10.59km",
+  "localbody_code": "G070602",
+  "no_of_wards": 17,
+  "population": 21407,
+  "male": 10606,
+  "female": 10801,
+  "population_density": 2021,
+  "sex_ratio": 1018,
+  "literacy_rate": 95.08,
+  "literacy_rate_male": 97.69,
+  "literacy_rate_female": 92.49,
+  "president": "SONYCHEEKUVIRONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BLAYIKKADAVU",
+      "person": {
+        "id": "2015065600101",
+        "name": "RAJU ANTONY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PRIMARY HEALTH CENTRE",
+      "person": {
+        "id": "2015065600201",
+        "name": "SHIMMY FRANCIS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THYKKAVU",
+      "person": {
+        "id": "2015065600301",
+        "name": "ARIFA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "GLPS CHERANALLOOR",
+      "person": {
+        "id": "2015065600401",
+        "name": "ANSAR V B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ST.JAMES CHURCH",
+      "person": {
+        "id": "2015065600501",
+        "name": "LEENA THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAYAKUNNAM KSHETRAM",
+      "person": {
+        "id": "2015065600601",
+        "name": "BENNY FRANCIS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "HMCA",
+      "person": {
+        "id": "2015065600701",
+        "name": "LISA ANTONY(LISA JOLLY)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAYALAR VALLASSERY",
+      "person": {
+        "id": "2015065600801",
+        "name": "SONY CHEEKU(VIRONY)"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VILLAGE OFFICE",
+      "person": {
+        "id": "2015065600901",
+        "name": "RAJU C K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHITTOOR TEMPLE",
+      "person": {
+        "id": "2015065601001",
+        "name": "K G RAJESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHITTOOR TELEPHONE EXCHANGE",
+      "person": {
+        "id": "2015065601101",
+        "name": "RAJALAKSHMI R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015065601201",
+        "name": "SHEEBA K P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALAM",
+      "person": {
+        "id": "2015065601301",
+        "name": "PAUL JOSEPH(JOLLY EMBLASSERY)"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAPPELA",
+      "person": {
+        "id": "2015065601401",
+        "name": "GEORGE P J"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MATTUMMEL",
+      "person": {
+        "id": "2015065601501",
+        "name": "SANGEETHA K T"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VISHNUPURAM",
+      "person": {
+        "id": "2015065601601",
+        "name": "SHEEJA P K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MARAPARAMBU",
+      "person": {
+        "id": "2015065601701",
+        "name": "LISSY VARIATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

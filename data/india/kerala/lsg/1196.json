@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349562824,
+  "date": "2019-08-21",
+  "name": "Kuttikol  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kasaragod",
+  "area": null,
+  "localbody_code": "G140207",
+  "no_of_wards": 16,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "LISSY.P.J",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BETHURPARA",
+      "person": {
+        "id": "2015119600101",
+        "name": "MANIKANDAN K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHADAKAM",
+      "person": {
+        "id": "2015119600201",
+        "name": "GOPINATHAN P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SANKARAMPADY",
+      "person": {
+        "id": "2015119600301",
+        "name": "RAJESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "OTTAMAVUNGAL",
+      "person": {
+        "id": "2015119600401",
+        "name": "K.N.RAJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BANDADKA",
+      "person": {
+        "id": "2015119600501",
+        "name": "SAMEERA KHADER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALAR",
+      "person": {
+        "id": "2015119600601",
+        "name": "DHARMAVATHI.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "BETHALAM",
+      "person": {
+        "id": "2015119600701",
+        "name": "OMANA BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VEETTIYADI",
+      "person": {
+        "id": "2015119600801",
+        "name": "SUNEESH JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHOORITHODU",
+      "person": {
+        "id": "2015119600901",
+        "name": "DAMODARAN.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ENIYADI",
+      "person": {
+        "id": "2015119601001",
+        "name": "RANJINI.K.R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIVEDAKAM",
+      "person": {
+        "id": "2015119601101",
+        "name": "LISSY.P.J"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALINUTHAZHE",
+      "person": {
+        "id": "2015119601201",
+        "name": "JOSEPH PARATHATTEL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PADUPPU",
+      "person": {
+        "id": "2015119601301",
+        "name": "SUBHA LOHITHAKSHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NHERU",
+      "person": {
+        "id": "2015119601401",
+        "name": "P.DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALAKKARA",
+      "person": {
+        "id": "2015119601501",
+        "name": "N.T.LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUTTIKOL",
+      "person": {
+        "id": "2015119601601",
+        "name": "NIRMALAKUMARI.H"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

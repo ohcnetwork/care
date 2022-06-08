@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346549958,
+  "date": "2019-08-21",
+  "name": "Budhanoor  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Chengannur",
+  "area": "12.92km",
+  "localbody_code": "G040806",
+  "no_of_wards": 14,
+  "population": 17469,
+  "male": 8418,
+  "female": 9051,
+  "population_density": 1352,
+  "sex_ratio": 1075,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "ADV.P.VISWAMBHARAPANICKER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADAMPOOR",
+      "person": {
+        "id": "2015046900101",
+        "name": "ADV. P. VISWAMBHARA PANICKER"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BUDHANOOR EAST",
+      "person": {
+        "id": "2015046900201",
+        "name": "SUNIL KUMAR P.R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "BUDHANOOR WEST",
+      "person": {
+        "id": "2015046900301",
+        "name": "RAKENDU RAJESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BUDHANOOR SOUTH",
+      "person": {
+        "id": "2015046900401",
+        "name": "ANASWARA P.R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELANJIMEL",
+      "person": {
+        "id": "2015046900501",
+        "name": "R. PUSHPALATHA MADHU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERINGILIPURAM EAST",
+      "person": {
+        "id": "2015046900601",
+        "name": "SOBHA MAHESAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PERINGILIPURAM WEST",
+      "person": {
+        "id": "2015046900701",
+        "name": "JAYASREE K.B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ULUNTHY EAST",
+      "person": {
+        "id": "2015046900801",
+        "name": "RAJESH. A"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ULUNTHY",
+      "person": {
+        "id": "2015046900901",
+        "name": "JOSEPH KUTTY KADAVIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GRAMAM",
+      "person": {
+        "id": "2015046901001",
+        "name": "N. RADHAKRISHNA PILLAI (AMMANAN)"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ENNAKKAD SOUTH",
+      "person": {
+        "id": "2015046901101",
+        "name": "AMBIKA KURUP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ENNAKKAD NORTH",
+      "person": {
+        "id": "2015046901201",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THAYYOOR",
+      "person": {
+        "id": "2015046901301",
+        "name": "SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERINGAD",
+      "person": {
+        "id": "2015046901401",
+        "name": "NIRMALA GOVINDAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

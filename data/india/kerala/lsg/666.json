@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566347226540,
+  "date": "2019-08-21",
+  "name": "Kumbalanghi  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Palluruthy",
+  "area": "15.77km",
+  "localbody_code": "G070802",
+  "no_of_wards": 17,
+  "population": 24601,
+  "male": 11927,
+  "female": 12674,
+  "population_density": 1560,
+  "sex_ratio": 1062,
+  "literacy_rate": 93.72,
+  "literacy_rate_male": 96.8,
+  "literacy_rate_female": 90.84,
+  "president": "MARTINANTONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BHUVANESWARI  KSHETHRAM",
+      "person": {
+        "id": "2015066600101",
+        "name": "M P RATHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ST. JOSEPH CHURCH",
+      "person": {
+        "id": "2015066600201",
+        "name": "TESSY JACOB"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ST. JOSEPH CHAPPEL",
+      "person": {
+        "id": "2015066600301",
+        "name": "SEENA ANTONY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SUBRAMANYAKSHETHRAM",
+      "person": {
+        "id": "2015066600401",
+        "name": "THOMAS ANTONY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "WATER TANK",
+      "person": {
+        "id": "2015066600501",
+        "name": "SHEELA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUMBALANGHI CENTAL EAST",
+      "person": {
+        "id": "2015066600601",
+        "name": "RAJEEV"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KELTRON FERRY",
+      "person": {
+        "id": "2015066600701",
+        "name": "MARGARET LAWRENCE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EZHUPUNNA FERRY",
+      "person": {
+        "id": "2015066600801",
+        "name": "AMALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SREE NARAYANA GURUVARA MADOM",
+      "person": {
+        "id": "2015066600901",
+        "name": "SABU THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ST GEORGE CHURCH",
+      "person": {
+        "id": "2015066601001",
+        "name": "JYOTHI P J"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANJILITHARA",
+      "person": {
+        "id": "2015066601101",
+        "name": "DOLLY SAVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUMBALANGHI CENTRAL WEST",
+      "person": {
+        "id": "2015066601201",
+        "name": "JASMIN RAJESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAMSEYI MARKET",
+      "person": {
+        "id": "2015066601301",
+        "name": "SURESH BABU K K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AZHEEKAKAM",
+      "person": {
+        "id": "2015066601401",
+        "name": "SUBEESH N S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANCHAYATH OFFICE",
+      "person": {
+        "id": "2015066601501",
+        "name": "MARTIN ANTONY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALANCHERY",
+      "person": {
+        "id": "2015066601601",
+        "name": "ANTONY JOBY PANAKKAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "SEHIYON OTTUSHALA",
+      "person": {
+        "id": "2015066601701",
+        "name": "AMALA RESTOM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

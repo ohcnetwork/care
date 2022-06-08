@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566347030626,
+  "date": "2019-08-21",
+  "name": "Upputhara  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Kattappana",
+  "area": "135km",
+  "localbody_code": "G060602",
+  "no_of_wards": 18,
+  "population": 31642,
+  "male": 15810,
+  "female": 15832,
+  "population_density": 336,
+  "sex_ratio": 999,
+  "literacy_rate": 86,
+  "literacy_rate_male": 92,
+  "literacy_rate_female": 83,
+  "president": "SAJIMONTITUS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULIMKATTA",
+      "person": {
+        "id": "2015060600101",
+        "name": "AMBILY SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTHAPARA",
+      "person": {
+        "id": "2015060600201",
+        "name": "SHEEBA SATHYANATHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANNAMPADY",
+      "person": {
+        "id": "2015060600301",
+        "name": "BALAKRISHNAN K K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALAKAVU",
+      "person": {
+        "id": "2015060600401",
+        "name": "SAJIMON TITUS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAKKATHODU",
+      "person": {
+        "id": "2015060600501",
+        "name": "GEETHA AJAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UPPUTHARA",
+      "person": {
+        "id": "2015060600601",
+        "name": "SHEELA RAJAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MATTUTHAVALUM",
+      "person": {
+        "id": "2015060600701",
+        "name": "DENCY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALACODE",
+      "person": {
+        "id": "2015060600801",
+        "name": "USHA NANDINI THANKACHEN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PASUPARA",
+      "person": {
+        "id": "2015060600901",
+        "name": "K SATHIAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANAPPALUM",
+      "person": {
+        "id": "2015060601001",
+        "name": "BLESSY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHUKADA",
+      "person": {
+        "id": "2015060601101",
+        "name": "R PERUMAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PORIKANNI",
+      "person": {
+        "id": "2015060601201",
+        "name": "G SHAJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "LONETREE",
+      "person": {
+        "id": "2015060601301",
+        "name": "PRAMEELA RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARINTHARUVI",
+      "person": {
+        "id": "2015060601401",
+        "name": "JESSY CHINNADURAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAITHAPATHAL",
+      "person": {
+        "id": "2015060601501",
+        "name": "JOSE MATHEW"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KATTADIKAVALA",
+      "person": {
+        "id": "2015060601601",
+        "name": "A SODARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAPPIPATHAL",
+      "person": {
+        "id": "2015060601701",
+        "name": "BIJU PAUL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PASUPARAPUTHUVAL",
+      "person": {
+        "id": "2015060601801",
+        "name": "SHAMS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

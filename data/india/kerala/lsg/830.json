@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348244578,
+  "date": "2019-08-21",
+  "name": "Sreekrishnapuram  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Sreekrishnapuram",
+  "area": "29.56km",
+  "localbody_code": "G090405",
+  "no_of_wards": 14,
+  "population": 17476,
+  "male": 8153,
+  "female": 9323,
+  "population_density": 591,
+  "sex_ratio": 1144,
+  "literacy_rate": 90.58,
+  "literacy_rate_male": 94.55,
+  "literacy_rate_female": 87.16,
+  "president": "SHAJUSANKARC.N",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALAMBILIMANGALAM",
+      "person": {
+        "id": "2015083000101",
+        "name": "UNNIKRISHNAN V.C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VALAMBILIMANGALAM EAST",
+      "person": {
+        "id": "2015083000201",
+        "name": "VINOJ V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EASWARAMANGALAM",
+      "person": {
+        "id": "2015083000301",
+        "name": "MADHAVIKUTTY C"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SREEKRISHNAPURAM",
+      "person": {
+        "id": "2015083000401",
+        "name": "SARIKA T"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNAMPATTA",
+      "person": {
+        "id": "2015083000501",
+        "name": "RADHIKA V.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOZHIYAPARAMBU",
+      "person": {
+        "id": "2015083000601",
+        "name": "SHAJU SANKAR C.N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULAKKATTUKURSSI",
+      "person": {
+        "id": "2015083000701",
+        "name": "RAJAN K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUNNAMPARAMBU",
+      "person": {
+        "id": "2015083000801",
+        "name": "RAJIKA C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALAYINAKKADU",
+      "person": {
+        "id": "2015083000901",
+        "name": "RATHNAKUMAR A.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARTHALA",
+      "person": {
+        "id": "2015083001001",
+        "name": "JAYASREE C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANGALAMKUNNU",
+      "person": {
+        "id": "2015083001101",
+        "name": "GANGADHARAN P.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "RAGAMCORNER",
+      "person": {
+        "id": "2015083001201",
+        "name": "GIREESAN P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANTHAPURA",
+      "person": {
+        "id": "2015083001301",
+        "name": "RUGMINI M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUMANGODE",
+      "person": {
+        "id": "2015083001401",
+        "name": "USHAKUMARY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

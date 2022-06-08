@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349359127,
+  "date": "2019-08-21",
+  "name": "Valapattanam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Kannur",
+  "area": "2.04km",
+  "localbody_code": "G130504",
+  "no_of_wards": 13,
+  "population": 8920,
+  "male": 4580,
+  "female": 4340,
+  "population_density": 4373,
+  "sex_ratio": 948,
+  "literacy_rate": 93.25,
+  "literacy_rate_male": 97.16,
+  "literacy_rate_female": 89.12,
+  "president": "MANORAMA.N.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MURUKANDIKKAL",
+      "person": {
+        "id": "2015113400101",
+        "name": "MUHAMMED ASHRAF.T.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOTTARIK",
+      "person": {
+        "id": "2015113400201",
+        "name": "PRAKASHAN.C.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NAGARAM",
+      "person": {
+        "id": "2015113400301",
+        "name": "SUNOOBIYA.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTABHAGAM",
+      "person": {
+        "id": "2015113400401",
+        "name": "SAMEERA.A.T"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIYIL",
+      "person": {
+        "id": "2015113400501",
+        "name": "K.P.VASANTHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "HIGHWAYSIDE",
+      "person": {
+        "id": "2015113400601",
+        "name": "V.K.LALITHA DEVI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALARIVATHUKKAL EAST",
+      "person": {
+        "id": "2015113400701",
+        "name": "SHYLAJA.N.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KALARIVATHUKKAL SOUTH",
+      "person": {
+        "id": "2015113400801",
+        "name": "MANORAMA.N.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALARIVATHUKKAL WEST",
+      "person": {
+        "id": "2015113400901",
+        "name": "V.P.NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARINGALPPADI",
+      "person": {
+        "id": "2015113401001",
+        "name": "K.M.NISAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THANGALVAYAL SOUTH",
+      "person": {
+        "id": "2015113401101",
+        "name": "HANEEFA.C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANGALVAYAL WEST",
+      "person": {
+        "id": "2015113401201",
+        "name": "NAJMA.T.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALOTTUVAYAL",
+      "person": {
+        "id": "2015113401301",
+        "name": "SHAMEEMA.P.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348926999,
+  "date": "2019-08-21",
+  "name": "Villiappally  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thodannur",
+  "area": "17.35km",
+  "localbody_code": "G110402",
+  "no_of_wards": 19,
+  "population": 29996,
+  "male": 14613,
+  "female": 15383,
+  "population_density": 1729,
+  "sex_ratio": 1053,
+  "literacy_rate": 89.15,
+  "literacy_rate_male": 94.92,
+  "literacy_rate_female": 83.78,
+  "president": "MOHANANKAYAKKOOLTHAZHAKUNI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VAIKKILASSERY ROAD",
+      "person": {
+        "id": "2015101300101",
+        "name": "T. BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAYYANNUR NORTH",
+      "person": {
+        "id": "2015101300201",
+        "name": "KRISHNAN KODAKKALANKANDY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VILLIAPPALLY TOWN",
+      "person": {
+        "id": "2015101300301",
+        "name": "BINDU CHETTYAMVEETTIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THIRUMANA",
+      "person": {
+        "id": "2015101300401",
+        "name": "SINDU PADINHARAYIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERIPOYIL",
+      "person": {
+        "id": "2015101300501",
+        "name": "SAVITHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAIKKULANGARA",
+      "person": {
+        "id": "2015101300601",
+        "name": "SUBAIDA KUYYADIYIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VILLIAPPALLY",
+      "person": {
+        "id": "2015101300701",
+        "name": "MOHANAN KAYAKKOOL THAZHAKUNI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANATHAMBRA",
+      "person": {
+        "id": "2015101300801",
+        "name": "FEBINA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MEMUNDA NORTH",
+      "person": {
+        "id": "2015101300901",
+        "name": "REENA PUTHIYEDATH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MEMUNDA SOUTH",
+      "person": {
+        "id": "2015101301001",
+        "name": "BABU OTTAPILAKKOOL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KEEZHAL NORTH",
+      "person": {
+        "id": "2015101301101",
+        "name": "RAJITHA MEETHALE PUTHIYEDUTH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KEEZHAL SOUTH",
+      "person": {
+        "id": "2015101301201",
+        "name": "PRADEEP KUMAR THAZHE NIDUNGOTTIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTOTH SOUTH",
+      "person": {
+        "id": "2015101301301",
+        "name": "SALGUNAN VATTAMBATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUTTOTH NORTH",
+      "person": {
+        "id": "2015101301401",
+        "name": "KOTAKKATTU BABU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAYAMKUTTIMALA",
+      "person": {
+        "id": "2015101301501",
+        "name": "RISHA THATTANKANDIYIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHALLIVAYAL",
+      "person": {
+        "id": "2015101301601",
+        "name": "SOBHA KUNINGADANKANDI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ARAKULANGARA",
+      "person": {
+        "id": "2015101301701",
+        "name": "SUJATHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MAYYANNUR SOUTH",
+      "person": {
+        "id": "2015101301801",
+        "name": "EBRAYI. P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOOTTANGARAM",
+      "person": {
+        "id": "2015101301901",
+        "name": "BHASKARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

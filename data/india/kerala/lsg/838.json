@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348278285,
+  "date": "2019-08-21",
+  "name": "Kanhirapuzha  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Manarkkad",
+  "area": "58.44km",
+  "localbody_code": "G090505",
+  "no_of_wards": 19,
+  "population": 26492,
+  "male": 12887,
+  "female": 13605,
+  "population_density": 453,
+  "sex_ratio": 1056,
+  "literacy_rate": 82.1,
+  "literacy_rate_male": 87.38,
+  "literacy_rate_female": 77.39,
+  "president": "P.MANIKANDAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALAYAMKODE",
+      "person": {
+        "id": "2015083800101",
+        "name": "V.K.SHAMSUDHEEN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUMBALAMCHOLA",
+      "person": {
+        "id": "2015083800201",
+        "name": "SUMALATHA.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLAMALA",
+      "person": {
+        "id": "2015083800301",
+        "name": "P.MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALLAMKULAM",
+      "person": {
+        "id": "2015083800401",
+        "name": "CHINNAKUTTAN.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBAMKUNNU",
+      "person": {
+        "id": "2015083800501",
+        "name": "BABY CHERUKARA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POONCHOLA",
+      "person": {
+        "id": "2015083800601",
+        "name": "SABU.M.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "IRUMBAKACHOLA",
+      "person": {
+        "id": "2015083800701",
+        "name": "VIKAS JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VARMAMKODE",
+      "person": {
+        "id": "2015083800801",
+        "name": "RAFEEK"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJIRAPUZHA",
+      "person": {
+        "id": "2015083800901",
+        "name": "NUSRATH CHEPPODAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUNDAKUNNU",
+      "person": {
+        "id": "2015083801001",
+        "name": "KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALLIPPADI",
+      "person": {
+        "id": "2015083801101",
+        "name": "ARUN MATHEW"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANJIRAM",
+      "person": {
+        "id": "2015083801201",
+        "name": "BINDU MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AKKIYAMPADAM",
+      "person": {
+        "id": "2015083801301",
+        "name": "SREEJA VINEESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUPPAKURUSSI",
+      "person": {
+        "id": "2015083801401",
+        "name": "RATHNAVATHI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALLAMKUZHI",
+      "person": {
+        "id": "2015083801501",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THRIKKALLUR",
+      "person": {
+        "id": "2015083801601",
+        "name": "RAMANI RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHIRAKKALPADI",
+      "person": {
+        "id": "2015083801701",
+        "name": "SMITHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOTTIYODE",
+      "person": {
+        "id": "2015083801801",
+        "name": "RASHEEDA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NOTTAMALA",
+      "person": {
+        "id": "2015083801901",
+        "name": "RADHAKRISHNAN @ UNNI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

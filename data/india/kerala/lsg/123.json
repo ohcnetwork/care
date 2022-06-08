@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345258899,
+  "date": "2019-08-21",
+  "name": "Ponnani  Block Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Ponnani",
+  "area": "99.49km",
+  "localbody_code": "B101400",
+  "no_of_wards": 13,
+  "population": 134031,
+  "male": 64296,
+  "female": 69735,
+  "population_density": 1347,
+  "sex_ratio": 1084,
+  "literacy_rate": 88.21,
+  "literacy_rate_male": 92.22,
+  "literacy_rate_female": 84.2,
+  "president": "K.LAKSHMI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "TAVANUR",
+      "person": {
+        "id": "2015012300101",
+        "name": "K.V.VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "TRIKKANAPURAM",
+      "person": {
+        "id": "2015012300201",
+        "name": "MISIRIYA M.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANDANAKAM",
+      "person": {
+        "id": "2015012300301",
+        "name": "RAMANI T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAPAL CHUNGAM",
+      "person": {
+        "id": "2015012300401",
+        "name": "K. LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTYPALA",
+      "person": {
+        "id": "2015012300501",
+        "name": "M.A.NAVAB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAMKULAM",
+      "person": {
+        "id": "2015012300601",
+        "name": "KOHINOOR MOHAMMED"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALADITHARA",
+      "person": {
+        "id": "2015012300701",
+        "name": "K RAJANI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOLOLOMBA",
+      "person": {
+        "id": "2015012300801",
+        "name": "N.SHEEJA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THUYYAM",
+      "person": {
+        "id": "2015012300901",
+        "name": "P.V.LEELA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EDAPAL",
+      "person": {
+        "id": "2015012301001",
+        "name": "P.P.MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POTHANUR",
+      "person": {
+        "id": "2015012301101",
+        "name": "BALKEES .K.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALADI",
+      "person": {
+        "id": "2015012301201",
+        "name": "ABDUL SALAM.N.V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARAVANCHERI",
+      "person": {
+        "id": "2015012301301",
+        "name": "P.V.JAYARAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

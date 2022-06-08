@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348328685,
+  "date": "2019-08-21",
+  "name": "Peringottukurissi  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kuzhalmannam",
+  "area": "31.45km",
+  "localbody_code": "G090805",
+  "no_of_wards": 16,
+  "population": 22334,
+  "male": 10665,
+  "female": 11669,
+  "population_density": 710,
+  "sex_ratio": 1094,
+  "literacy_rate": 81.81,
+  "literacy_rate_male": 88.97,
+  "literacy_rate_female": 75.38,
+  "president": "GOPINATHAN.A.V",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ODUVANKADU",
+      "person": {
+        "id": "2015085700101",
+        "name": "DHANWANTHARI.O.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNATHUPARAMBU",
+      "person": {
+        "id": "2015085700201",
+        "name": "BHAGYALATHA.P.H"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUDUPPULLY",
+      "person": {
+        "id": "2015085700301",
+        "name": "JAYACHITHRA.K.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARUTHIPULLY",
+      "person": {
+        "id": "2015085700401",
+        "name": "GOPALAN.M.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUVALA",
+      "person": {
+        "id": "2015085700501",
+        "name": "GOPINATHAN.A.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANIYAMPARA",
+      "person": {
+        "id": "2015085700601",
+        "name": "PREEJA.K.G"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NJETTIYODE",
+      "person": {
+        "id": "2015085700701",
+        "name": "MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "BEMMANUR",
+      "person": {
+        "id": "2015085700801",
+        "name": "BINDU.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANDAPATHINKAVE",
+      "person": {
+        "id": "2015085700901",
+        "name": "PRIYAMOL.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PILAPPULLY",
+      "person": {
+        "id": "2015085701001",
+        "name": "ANISHA.K.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERINGOTTUKURISSI",
+      "person": {
+        "id": "2015085701101",
+        "name": "VELAYUDHAN.T.N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NARANGAPARAMBU",
+      "person": {
+        "id": "2015085701201",
+        "name": "PANKAJAM.M.C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHOOLANUR",
+      "person": {
+        "id": "2015085701301",
+        "name": "K.RAVEENDRANATHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VADAKKUMURI",
+      "person": {
+        "id": "2015085701401",
+        "name": "SHAJINI.V.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NADUVATHAPARA",
+      "person": {
+        "id": "2015085701501",
+        "name": "M.A.BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THOTTUMUKKE",
+      "person": {
+        "id": "2015085701601",
+        "name": "CHANDRIKA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

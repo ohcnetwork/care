@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566345903866,
+  "date": "2019-08-21",
+  "name": "Kalliyoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nemom",
+  "area": "17.23km",
+  "localbody_code": "G010807",
+  "no_of_wards": 21,
+  "population": 31579,
+  "male": 15722,
+  "female": 15857,
+  "population_density": 1833,
+  "sex_ratio": 1009,
+  "literacy_rate": 90.93,
+  "literacy_rate_male": 93.91,
+  "literacy_rate_female": 88,
+  "president": "RJAYALEKSHMI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAPPANCHANI",
+      "person": {
+        "id": "2015028200101",
+        "name": "G. JAYAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLAYANI",
+      "person": {
+        "id": "2015028200201",
+        "name": "MANOJ K NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUKALOORMOOLA",
+      "person": {
+        "id": "2015028200301",
+        "name": "R. RAJALEKSHMY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SARVODHAYAM",
+      "person": {
+        "id": "2015028200401",
+        "name": "S. JAYANTHI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SANTHIVILA",
+      "person": {
+        "id": "2015028200501",
+        "name": "SANDHYA M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KULAKUDIYOORKONAM",
+      "person": {
+        "id": "2015028200601",
+        "name": "V SARITHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "UPANIYOOR",
+      "person": {
+        "id": "2015028200701",
+        "name": "K K CHANDHU KRISHNA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OOKODE",
+      "person": {
+        "id": "2015028200801",
+        "name": "S KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHENKODE",
+      "person": {
+        "id": "2015028200901",
+        "name": "R JAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALLAMCODE",
+      "person": {
+        "id": "2015028201001",
+        "name": "PRADEEP KUMAR K S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAKALOOR",
+      "person": {
+        "id": "2015028201101",
+        "name": "SINDHU G S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUNNAMOODU",
+      "person": {
+        "id": "2015028201201",
+        "name": "P. PADMAKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OFFICE",
+      "person": {
+        "id": "2015028201301",
+        "name": "SAILAJA. S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERINGAMALA",
+      "person": {
+        "id": "2015028201401",
+        "name": "MINI A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUZHITHALACHAL",
+      "person": {
+        "id": "2015028201501",
+        "name": "RAJALEKSHMI P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "HOSPITAL WARD",
+      "person": {
+        "id": "2015028201601",
+        "name": "T JAYAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANNANKUZHI",
+      "person": {
+        "id": "2015028201701",
+        "name": "V SUJATHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KAKKAMOOLA",
+      "person": {
+        "id": "2015028201801",
+        "name": "KIRAN KUMAR T S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "POONKULAM",
+      "person": {
+        "id": "2015028201901",
+        "name": "S KUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "SIGNAL STATION",
+      "person": {
+        "id": "2015028202001",
+        "name": "BEENA. S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "A G C (AGRICULTURE COLLEGE )",
+      "person": {
+        "id": "2015028202101",
+        "name": "PRAVEENAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

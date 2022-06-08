@@ -1,0 +1,325 @@
+{
+  "timeStamp": 1566345643241,
+  "date": "2019-08-21",
+  "name": "Tirur  Municipality, Malappuram District",
+  "district": "Malappuram",
+  "area": "16.55km",
+  "localbody_code": "M100400",
+  "no_of_wards": 38,
+  "population": 58490,
+  "male": 28649,
+  "female": 29841,
+  "population_density": 2981,
+  "sex_ratio": 1026,
+  "literacy_rate": 91.23,
+  "literacy_rate_male": 94.42,
+  "literacy_rate_female": 86.04,
+  "chairman": "K.BAVA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PORUR",
+      "person": {
+        "id": "2015021200101",
+        "name": "K.M ALI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THAZHEPALAM",
+      "person": {
+        "id": "2015021200201",
+        "name": "MOIDEENKUTTY.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADUVILANGADI",
+      "person": {
+        "id": "2015021200301",
+        "name": "BIJITHA.T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOKAYIL",
+      "person": {
+        "id": "2015021200401",
+        "name": "ISHAQUE MOHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUVAZHIYAMBALAM",
+      "person": {
+        "id": "2015021200501",
+        "name": "HAFSATH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MICHABHOOMI",
+      "person": {
+        "id": "2015021200601",
+        "name": "V.K.RUGMINI TEACHER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THUMARAKKAVU",
+      "person": {
+        "id": "2015021200702",
+        "name": "MUSTHAFA NEDIYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEMBRA NORTH",
+      "person": {
+        "id": "2015021200801",
+        "name": "HASEENA ABDURAHMAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMBRA",
+      "person": {
+        "id": "2015021200901",
+        "name": "SAJITHA KABIR MOOPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANCHIRAKUND",
+      "person": {
+        "id": "2015021201001",
+        "name": "K.P.HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MYLADIKUNNU",
+      "person": {
+        "id": "2015021201101",
+        "name": "T.P.KUNHIMOHAMMED"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALINCHUVADU",
+      "person": {
+        "id": "2015021201201",
+        "name": "KUNHEETHU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTT EAST",
+      "person": {
+        "id": "2015021201301",
+        "name": "SAFIYA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARANNEKKAD",
+      "person": {
+        "id": "2015021201401",
+        "name": "ASHRAF THARAMMAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BUS STAND",
+      "person": {
+        "id": "2015021201501",
+        "name": "K.N.NAJIRA ASHRAF"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VARIYATHARA",
+      "person": {
+        "id": "2015021201601",
+        "name": "K.KUNHIMOIDEEN ALIAS KALPABAVA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015021201701",
+        "name": "RAMLA.K.P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOTT WEST",
+      "person": {
+        "id": "2015021201801",
+        "name": "RANEESH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PANAMBALAM",
+      "person": {
+        "id": "2015021201901",
+        "name": "C.M.ALI HAJI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "EZHUR EAST",
+      "person": {
+        "id": "2015021202001",
+        "name": "ABDUL KADER"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KOLARKUNDU",
+      "person": {
+        "id": "2015021202101",
+        "name": "SAJIRA. I.P"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "THALAPPALLIPADAM",
+      "person": {
+        "id": "2015021202201",
+        "name": "RAIHANATH.P.I"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "MUTHUR",
+      "person": {
+        "id": "2015021202301",
+        "name": "AYISHAKUTTY"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "EZHUR WEST",
+      "person": {
+        "id": "2015021202401",
+        "name": "P.KOYA I.R.S(RETD)"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "EZHUR SOUTH",
+      "person": {
+        "id": "2015021202501",
+        "name": "SAKKEENA.K"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KOOTHPARAMB",
+      "person": {
+        "id": "2015021202601",
+        "name": "SABIRA"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "THEKKUMURI EAST",
+      "person": {
+        "id": "2015021202701",
+        "name": "SARASWATHI. A. K"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THEKKUMURI SOUTH",
+      "person": {
+        "id": "2015021202801",
+        "name": "SANTHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "PATTUPARAMBU",
+      "person": {
+        "id": "2015021202901",
+        "name": "K.BAVA"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "SOUTH ANNARA",
+      "person": {
+        "id": "2015021203001",
+        "name": "KADEEJA. T.P"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "ILLATHPARAMBU",
+      "person": {
+        "id": "2015021203101",
+        "name": "GEETHA PALLIYERI"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "TRIKKANDIYUR",
+      "person": {
+        "id": "2015021203201",
+        "name": "NIRMALA KUTTIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "VISHUPADAM",
+      "person": {
+        "id": "2015021203301",
+        "name": "VENUGOPAL.K"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "TRIKKANDIYUR EAST",
+      "person": {
+        "id": "2015021203401",
+        "name": "ADV.S.GIRISH"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "POOGOTUKULAM",
+      "person": {
+        "id": "2015021203501",
+        "name": "SAFFIYA TEACHER.P"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "THUNCHANPARAMBU",
+      "person": {
+        "id": "2015021203601",
+        "name": "P.K.K. THANGAL"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "TOWNHALL",
+      "person": {
+        "id": "2015021203701",
+        "name": "MUNEERA"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "NORTH ANNARA",
+      "person": {
+        "id": "2015021203801",
+        "name": "ABDURAHIMAN.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346101863,
+  "date": "2019-08-21",
+  "name": "Perayam  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chittumala",
+  "area": "15.45km",
+  "localbody_code": "G020704",
+  "no_of_wards": 14,
+  "population": 19478,
+  "male": 9701,
+  "female": 9777,
+  "population_density": 1261,
+  "sex_ratio": 1008,
+  "literacy_rate": 94.34,
+  "literacy_rate_male": 95.4,
+  "literacy_rate_female": 93.28,
+  "president": "STANCYYESUDASAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUTHIRAMUNMBU",
+      "person": {
+        "id": "2015034600101",
+        "name": "ANISHKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADAPPAKARA",
+      "person": {
+        "id": "2015034600201",
+        "name": "STANCY YESUDASAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARIKUZHI",
+      "person": {
+        "id": "2015034600301",
+        "name": "SUDHARMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUMBALAM",
+      "person": {
+        "id": "2015034600401",
+        "name": "SAJIMON.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUMBALAM PHC",
+      "person": {
+        "id": "2015034600501",
+        "name": "JESPINKUTTY VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERAYAM A",
+      "person": {
+        "id": "2015034600601",
+        "name": "MERCY JAMES"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIYARA",
+      "person": {
+        "id": "2015034600701",
+        "name": "JOHN. J.L"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTTAPURAM",
+      "person": {
+        "id": "2015034600801",
+        "name": "REJITHA KUMARY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MULAVANA",
+      "person": {
+        "id": "2015034600901",
+        "name": "P.REMESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERAYAM B",
+      "person": {
+        "id": "2015034601001",
+        "name": "J.VICTOR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANJIRACODE",
+      "person": {
+        "id": "2015034601101",
+        "name": "VIJAYAKUMAR.L"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEEROZHIKKIL",
+      "person": {
+        "id": "2015034601201",
+        "name": "S.SAJEEV"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "S.J. LIBRARY",
+      "person": {
+        "id": "2015034601301",
+        "name": "MARYSTELLA.P.L"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "FATIMA JUNCTION",
+      "person": {
+        "id": "2015034601401",
+        "name": "AMBIKA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

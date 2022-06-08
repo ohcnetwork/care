@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346990642,
+  "date": "2019-08-21",
+  "name": "Karimannoor  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "33.33km",
+  "localbody_code": "G060406",
+  "no_of_wards": 14,
+  "population": 18812,
+  "male": 9318,
+  "female": 9494,
+  "population_density": 564,
+  "sex_ratio": 1019,
+  "literacy_rate": 94,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 92,
+  "president": "DEVASIADEVASIA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEYYASSERY",
+      "person": {
+        "id": "2015059700101",
+        "name": "SIVANKUTTY P.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANIKKUZHA",
+      "person": {
+        "id": "2015059700201",
+        "name": "SOSAMMA ANTONY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THOMMANKUTHU",
+      "person": {
+        "id": "2015059700301",
+        "name": "BEENA SOMANKUNJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MULAPPURAM",
+      "person": {
+        "id": "2015059700401",
+        "name": "ANIAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOTTAKKAVALA",
+      "person": {
+        "id": "2015059700501",
+        "name": "NIZAMOL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLIMALA",
+      "person": {
+        "id": "2015059700601",
+        "name": "JOSMI JOSE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAZHOOKKARA",
+      "person": {
+        "id": "2015059700701",
+        "name": "V.A SAKKEER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALLICKAMURY",
+      "person": {
+        "id": "2015059700801",
+        "name": "BINDU ROBERT"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANNOOR",
+      "person": {
+        "id": "2015059700901",
+        "name": "ANCY CYRIAC"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERADY",
+      "person": {
+        "id": "2015059701001",
+        "name": "DAISY JOSHY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIMANOOR TOWN",
+      "person": {
+        "id": "2015059701101",
+        "name": "DEVASIA DEVASIA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KILIYARA",
+      "person": {
+        "id": "2015059701201",
+        "name": "SIBY KUZHIKATTU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EZHUMUTTAM",
+      "person": {
+        "id": "2015059701301",
+        "name": "TOJO PAUL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KURUMPALAMATTAM",
+      "person": {
+        "id": "2015059701401",
+        "name": "SUKU KUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

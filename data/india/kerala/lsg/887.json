@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566348450970,
+  "date": "2019-08-21",
+  "name": "Malampuzha  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Malampuzha",
+  "area": "183.42km",
+  "localbody_code": "G091302",
+  "no_of_wards": 13,
+  "population": 12860,
+  "male": 6543,
+  "female": 6317,
+  "population_density": 70,
+  "sex_ratio": 965,
+  "literacy_rate": 82.07,
+  "literacy_rate_male": 88.25,
+  "literacy_rate_female": 75.69,
+  "president": "INDIRARAMACHANDRANV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLLAMKUNNU",
+      "person": {
+        "id": "2015088700101",
+        "name": "THOMAS A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAKKAL",
+      "person": {
+        "id": "2015088700201",
+        "name": "UNNIKRISHNAN A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AYYAPPANPOTTA",
+      "person": {
+        "id": "2015088700301",
+        "name": "SALY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANAKKALKKAD",
+      "person": {
+        "id": "2015088700401",
+        "name": "KOMALAM E.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUNUPPULLY",
+      "person": {
+        "id": "2015088700501",
+        "name": "SAJITHA BABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VARANI",
+      "person": {
+        "id": "2015088700601",
+        "name": "OMANA PARAMESWARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KADUKKAMKUNNU EAST",
+      "person": {
+        "id": "2015088700702",
+        "name": "SOUMYA SATHEESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KADUKKAMKUNNU WEST",
+      "person": {
+        "id": "2015088700801",
+        "name": "SASIKUMAR C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANTHAKKAD SOUTH",
+      "person": {
+        "id": "2015088700901",
+        "name": "PRASANNA G"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANTHAKKAD NORTH",
+      "person": {
+        "id": "2015088701001",
+        "name": "INDIRA RAMACHANDRAN V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SASTHA COLONY",
+      "person": {
+        "id": "2015088701101",
+        "name": "SHIBU C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MALAMPUZHA CENTRAL",
+      "person": {
+        "id": "2015088701201",
+        "name": "BABU N"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERAD",
+      "person": {
+        "id": "2015088701301",
+        "name": "THOMAS VAZHAPPALLIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

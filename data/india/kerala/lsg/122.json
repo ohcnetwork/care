@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345254309,
+  "date": "2019-08-21",
+  "name": "Tirur  Block Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirur",
+  "area": "102.69km",
+  "localbody_code": "B101300",
+  "no_of_wards": 15,
+  "population": 181276,
+  "male": 86583,
+  "female": 94693,
+  "population_density": 1765,
+  "sex_ratio": 1094,
+  "literacy_rate": 86.21,
+  "literacy_rate_male": 90.34,
+  "literacy_rate_female": 82.08,
+  "president": "R.K.HAFSATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARAVANNA",
+      "person": {
+        "id": "2015012200101",
+        "name": "V.E.ABDUL LATHEEF"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VETTOM",
+      "person": {
+        "id": "2015012200201",
+        "name": "DILSHA MOOLASSERI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THALAKKAD",
+      "person": {
+        "id": "2015012200301",
+        "name": "BINDU.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUTTUR",
+      "person": {
+        "id": "2015012200401",
+        "name": "VASANTHA.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAITHAKARA",
+      "person": {
+        "id": "2015012200501",
+        "name": "RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAKULAM",
+      "person": {
+        "id": "2015012200601",
+        "name": "SAIFUNNISA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THIRUNAVAYA",
+      "person": {
+        "id": "2015012200701",
+        "name": "MOHAMMAD ALI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOZHIKUNNU",
+      "person": {
+        "id": "2015012200801",
+        "name": "SUDHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALATHIYUR",
+      "person": {
+        "id": "2015012200901",
+        "name": "RAMLA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHAMRAVATTAM",
+      "person": {
+        "id": "2015012201001",
+        "name": "R.K.HAFSATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHUPALLI",
+      "person": {
+        "id": "2015012201101",
+        "name": "K.UMMER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PURATHUR",
+      "person": {
+        "id": "2015012201202",
+        "name": "BABURAJAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANGALAM",
+      "person": {
+        "id": "2015012201301",
+        "name": "YESODA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOOTAYI",
+      "person": {
+        "id": "2015012201401",
+        "name": "C.P.ABDUL SHUKOOR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VAKKAD",
+      "person": {
+        "id": "2015012201501",
+        "name": "ADV.P.NASARULLA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348305829,
+  "date": "2019-08-21",
+  "name": "Mankara  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Palakkad",
+  "area": "20.53km",
+  "localbody_code": "G090703",
+  "no_of_wards": 14,
+  "population": 15946,
+  "male": 7646,
+  "female": 8300,
+  "population_density": 777,
+  "sex_ratio": 1086,
+  "literacy_rate": 79.95,
+  "literacy_rate_male": 87.63,
+  "literacy_rate_female": 73.1,
+  "president": "JINSI.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARANGAD",
+      "person": {
+        "id": "2015084800101",
+        "name": "SHAMEENA.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PULLODE",
+      "person": {
+        "id": "2015084800201",
+        "name": "P.S.MOIDEENKUTTY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAKKODE",
+      "person": {
+        "id": "2015084800301",
+        "name": "K. R. SHAJEEV"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOORATH",
+      "person": {
+        "id": "2015084800401",
+        "name": "KUMARAN. P. C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANKURUSSI",
+      "person": {
+        "id": "2015084800501",
+        "name": "VINEETHA. K. A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUNNEKKAD",
+      "person": {
+        "id": "2015084800601",
+        "name": "SADASIVAN. P. P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARATTUPARAMB",
+      "person": {
+        "id": "2015084800701",
+        "name": "PREMA. K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANKARA.R.S",
+      "person": {
+        "id": "2015084800802",
+        "name": "V.K. SHIBU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANJAKKARA",
+      "person": {
+        "id": "2015084800901",
+        "name": "JINSI. S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARIYASSERI",
+      "person": {
+        "id": "2015084801001",
+        "name": "C. VINAYAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ATHIRKKAD",
+      "person": {
+        "id": "2015084801101",
+        "name": "SHASHI. E. R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUNIYAMPADAM",
+      "person": {
+        "id": "2015084801201",
+        "name": "SUCHITHRA. M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNAMPARIYARAM",
+      "person": {
+        "id": "2015084801301",
+        "name": "SASIKALA. K. V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLUR",
+      "person": {
+        "id": "2015084801401",
+        "name": "SHEEJA. V. B"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

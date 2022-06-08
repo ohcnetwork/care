@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347039627,
+  "date": "2019-08-21",
+  "name": "Erattayar  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Kattappana",
+  "area": "32.37km",
+  "localbody_code": "G060605",
+  "no_of_wards": 14,
+  "population": 18627,
+  "male": 9439,
+  "female": 9188,
+  "population_density": 575,
+  "sex_ratio": 973,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 94,
+  "president": "ANIYAMMAJOSEPH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEMPAKAPARA",
+      "person": {
+        "id": "2015060900101",
+        "name": "MATHEW THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EATTITHOPPU",
+      "person": {
+        "id": "2015060900201",
+        "name": "K D RAJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLICKANAM",
+      "person": {
+        "id": "2015060900301",
+        "name": "SREEKALA  P R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ERATTAYAR NORTH",
+      "person": {
+        "id": "2015060900401",
+        "name": "REJI ELIPPULIKKATTU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EZHUKUMVAYAL",
+      "person": {
+        "id": "2015060900501",
+        "name": "PRIYAMOL A M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTADIKKAVALA",
+      "person": {
+        "id": "2015060900601",
+        "name": "ALEYKUTTY CHACKO"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ERATTAYAR",
+      "person": {
+        "id": "2015060900701",
+        "name": "SALY THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SANTHIGRAM SOUTH",
+      "person": {
+        "id": "2015060900801",
+        "name": "LEELAMMA JOHN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "UPPUKANDAM",
+      "person": {
+        "id": "2015060900901",
+        "name": "MOLLY RAJAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THULASIPPARA",
+      "person": {
+        "id": "2015060901001",
+        "name": "SHAJI BHASURANGAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VAZHAVARA",
+      "person": {
+        "id": "2015060901101",
+        "name": "ANIYAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NALUMUKKU",
+      "person": {
+        "id": "2015060901201",
+        "name": "RANI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SANTHIGRAM",
+      "person": {
+        "id": "2015060901301",
+        "name": "LALACHAN VELLAKKADA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDINJAMALA",
+      "person": {
+        "id": "2015060901401",
+        "name": "JOSUKUTTY MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345104952,
+  "date": "2019-08-21",
+  "name": "Chavakkad  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chavakkad",
+  "area": "86.04km",
+  "localbody_code": "B080100",
+  "no_of_wards": 13,
+  "population": 158970,
+  "male": 74670,
+  "female": 84300,
+  "population_density": 1847,
+  "sex_ratio": 1128,
+  "literacy_rate": 87.72,
+  "literacy_rate_male": 92.18,
+  "literacy_rate_female": 83.91,
+  "president": "UMMERMUKKANDATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANDATHODE",
+      "person": {
+        "id": "2015008100101",
+        "name": "SUBAIDA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "TRIPPATTU",
+      "person": {
+        "id": "2015008100201",
+        "name": "ALATHAYIL MOOSA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUNNAYURKULAM",
+      "person": {
+        "id": "2015008100301",
+        "name": "JASEERA NASEER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARAYANGADU",
+      "person": {
+        "id": "2015008100401",
+        "name": "SAFURA A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VYLATHUR",
+      "person": {
+        "id": "2015008100501",
+        "name": "DHANYA GIREESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NAYARANGADI",
+      "person": {
+        "id": "2015008100601",
+        "name": "M V HAIDHARALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ORUMANAYUR",
+      "person": {
+        "id": "2015008100701",
+        "name": "T C CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTHAMMAVU",
+      "person": {
+        "id": "2015008100801",
+        "name": "M A ABOOBAKKAR HAJI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ANCHANGADI",
+      "person": {
+        "id": "2015008100901",
+        "name": "SHAJITHA HAMSA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "FOCUS",
+      "person": {
+        "id": "2015008101001",
+        "name": "MUSTHAKKALI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EDAKAZHIYUR",
+      "person": {
+        "id": "2015008101101",
+        "name": "NASEEMA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDAKKARA",
+      "person": {
+        "id": "2015008101201",
+        "name": "UMMER MUKKANDATH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "BADERPALLY",
+      "person": {
+        "id": "2015008101301",
+        "name": "SHAMEERA KADHAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

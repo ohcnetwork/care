@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566345703379,
+  "date": "2019-08-21",
+  "name": "Chemmaruthy  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "17.54km",
+  "localbody_code": "G010101",
+  "no_of_wards": 19,
+  "population": 30930,
+  "male": 14480,
+  "female": 16450,
+  "population_density": 1545,
+  "sex_ratio": 1130,
+  "literacy_rate": 88.56,
+  "literacy_rate_male": 93.16,
+  "literacy_rate_female": 84.55,
+  "president": "ALIHASSANSALIM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VANDIPPURA",
+      "person": {
+        "id": "2015022500101",
+        "name": "JANARDHANAKURUP R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAYAMKUNNU",
+      "person": {
+        "id": "2015022500201",
+        "name": "JAYASIMHAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOVOOR",
+      "person": {
+        "id": "2015022500301",
+        "name": "KUTTAPPAN THAMPI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SIVAPURAM",
+      "person": {
+        "id": "2015022500401",
+        "name": "JAYALEKSHMI S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTHANA",
+      "person": {
+        "id": "2015022500501",
+        "name": "SUBHASH V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAVINMOODU",
+      "person": {
+        "id": "2015022500601",
+        "name": "THANKAPPAN S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NJEKKADU",
+      "person": {
+        "id": "2015022500701",
+        "name": "GEETHA NALAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEMMARUTHY",
+      "person": {
+        "id": "2015022500801",
+        "name": "ARAVINDAN M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015022500901",
+        "name": "ARUNA S LAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALIYAVILA",
+      "person": {
+        "id": "2015022501001",
+        "name": "VIJAYA S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THARATTA",
+      "person": {
+        "id": "2015022501101",
+        "name": "SREELEKHA KURUP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THOKKADU",
+      "person": {
+        "id": "2015022501201",
+        "name": "ALIHASSAN SALIM"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PRALEYAGIRI",
+      "person": {
+        "id": "2015022501301",
+        "name": "JESSY V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PANAYARA",
+      "person": {
+        "id": "2015022501401",
+        "name": "BEENA B"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THACHODE",
+      "person": {
+        "id": "2015022501501",
+        "name": "AJI A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SREENIVASAPURAM",
+      "person": {
+        "id": "2015022501601",
+        "name": "RAM MOHAN S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NADAYARA",
+      "person": {
+        "id": "2015022501701",
+        "name": "MUHAMMED IQBAL A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUTTAPPALAM",
+      "person": {
+        "id": "2015022501801",
+        "name": "GEETHA KUMARI V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHAVADIMUKKU",
+      "person": {
+        "id": "2015022501901",
+        "name": "REJANI PREMJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

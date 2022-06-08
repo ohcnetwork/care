@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345298228,
+  "date": "2019-08-21",
+  "name": "Koduvally  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Koduvaliy",
+  "area": "390.48km",
+  "localbody_code": "B111000",
+  "no_of_wards": 18,
+  "population": 227833,
+  "male": 113875,
+  "female": 113958,
+  "population_density": 583,
+  "sex_ratio": 1001,
+  "literacy_rate": 90.76,
+  "literacy_rate_male": 95.01,
+  "literacy_rate_female": 86.55,
+  "president": "VANAJAC.T.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KATTIPPARA",
+      "person": {
+        "id": "2015013400101",
+        "name": "BEENA GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ENGAPUZHA",
+      "person": {
+        "id": "2015013400201",
+        "name": "SOBI J.P."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MALAPURAM",
+      "person": {
+        "id": "2015013400301",
+        "name": "RAJESH JOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAITHAPOYIL",
+      "person": {
+        "id": "2015013400401",
+        "name": "MUHAMMED ASHRAF"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLIPOYIL",
+      "person": {
+        "id": "2015013400501",
+        "name": "LEELAMMA JOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANAKAMPOIL",
+      "person": {
+        "id": "2015013400601",
+        "name": "ANCY SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOODARANHI",
+      "person": {
+        "id": "2015013400701",
+        "name": "GIMMY JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THIRUVAMBADY",
+      "person": {
+        "id": "2015013400801",
+        "name": "ELEYAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODANCHERY",
+      "person": {
+        "id": "2015013400901",
+        "name": "AUGUSTHY PALLATTU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOODATHAI",
+      "person": {
+        "id": "2015013401001",
+        "name": "M.M.RADHAMANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "OMASSERY",
+      "person": {
+        "id": "2015013401101",
+        "name": "SUPER AHAMMED KUTTY HAJEE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PULLALOOR",
+      "person": {
+        "id": "2015013401201",
+        "name": "SASI CHAKKALAKKAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MADAVOOR",
+      "person": {
+        "id": "2015013401301",
+        "name": "ALIYYI MASTER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KIZHAKKOTH",
+      "person": {
+        "id": "2015013401401",
+        "name": "P.K..MOIDEEN HAJEE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ELETTIL",
+      "person": {
+        "id": "2015013401501",
+        "name": "VANAJA C.T."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAPPANPOYIL",
+      "person": {
+        "id": "2015013401601",
+        "name": "MAIMOONA HAMZA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THACHAMPOYIL",
+      "person": {
+        "id": "2015013401701",
+        "name": "A.P.USSAIN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOLIKKAL",
+      "person": {
+        "id": "2015013401801",
+        "name": "RAMLA O.K.M.KUNHI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

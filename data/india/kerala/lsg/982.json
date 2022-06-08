@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348815548,
+  "date": "2019-08-21",
+  "name": "Triprangode  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirur",
+  "area": "20.67km",
+  "localbody_code": "G101303",
+  "no_of_wards": 21,
+  "population": 32221,
+  "male": 15352,
+  "female": 16869,
+  "population_density": 1559,
+  "sex_ratio": 1099,
+  "literacy_rate": 88.14,
+  "literacy_rate_male": 94.51,
+  "literacy_rate_female": 81.77,
+  "president": "P.KUMARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLAMASSERY",
+      "person": {
+        "id": "2015098200101",
+        "name": "SHERIFA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "POOZHIKKUNNU",
+      "person": {
+        "id": "2015098200201",
+        "name": "K. USHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POILISSERY",
+      "person": {
+        "id": "2015098200301",
+        "name": "KUMARI .P.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAINIKKARA",
+      "person": {
+        "id": "2015098200401",
+        "name": "JAMSEENA .N.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAPPADI",
+      "person": {
+        "id": "2015098200501",
+        "name": "NAZER. P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "BEERANCHIRA",
+      "person": {
+        "id": "2015098200601",
+        "name": "KALARIKKAL JASMIN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALOTH PARAMB",
+      "person": {
+        "id": "2015098200701",
+        "name": "HAJARA .P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERIYAPARAPOOR",
+      "person": {
+        "id": "2015098200801",
+        "name": "MUHAMMED HANEEFA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAMRAVATTOM NORTH",
+      "person": {
+        "id": "2015098200901",
+        "name": "MARIYAMU .V.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHAMRAVATTOM SOUTH",
+      "person": {
+        "id": "2015098201001",
+        "name": "P.V. MANOJ"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARUMATHIL",
+      "person": {
+        "id": "2015098201101",
+        "name": "ABDUL RASHEED"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUNTHALLOOR SOUTH",
+      "person": {
+        "id": "2015098201201",
+        "name": "KOLUPARAMBIL RAMLA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUNTHALLOOR NORTH",
+      "person": {
+        "id": "2015098201301",
+        "name": "SHAJAHAN.V.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "TRIPRANGODE",
+      "person": {
+        "id": "2015098201401",
+        "name": "ANAT SAJITH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ALINGAL",
+      "person": {
+        "id": "2015098201501",
+        "name": "HYDERALI.P.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POTTODI",
+      "person": {
+        "id": "2015098201601",
+        "name": "P. KUMARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAIMALASSERY",
+      "person": {
+        "id": "2015098201701",
+        "name": "ABDUL MAJEED .P.P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THANDILLAKARA",
+      "person": {
+        "id": "2015098201801",
+        "name": "P.K. KAMARUDHEEN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PARAPPERI",
+      "person": {
+        "id": "2015098201901",
+        "name": "SALINI.V"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ALATHIYUR EAST",
+      "person": {
+        "id": "2015098202001",
+        "name": "AFILA.E"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ALATHIYUR WEST",
+      "person": {
+        "id": "2015098202101",
+        "name": "SARADA.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

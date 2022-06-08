@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346590462,
+  "date": "2019-08-21",
+  "name": "Veeyapuram  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Harippad",
+  "area": "14.02km",
+  "localbody_code": "G040908",
+  "no_of_wards": 13,
+  "population": 12445,
+  "male": 5991,
+  "female": 6454,
+  "population_density": 888,
+  "sex_ratio": 1077,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 94,
+  "president": "N.PRASADKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VEEYAPURAM",
+      "person": {
+        "id": "2015048100101",
+        "name": "SOWDAMANI RASHEED"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VEEYAPURAM EAST",
+      "person": {
+        "id": "2015048100201",
+        "name": "ABIDA BEEVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THURUTHEL BHAGAM",
+      "person": {
+        "id": "2015048100301",
+        "name": "VINU JOHN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MELPADOM NORTH",
+      "person": {
+        "id": "2015048100401",
+        "name": "JYOTHI PRAKASH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MELPADOM SOUTH",
+      "person": {
+        "id": "2015048100501",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELLAMKULANGARA",
+      "person": {
+        "id": "2015048100601",
+        "name": "SUJA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARICHAL NORTH",
+      "person": {
+        "id": "2015048100701",
+        "name": "P.P.PRASAD"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARICHAL SOUTH",
+      "person": {
+        "id": "2015048100801",
+        "name": "N.PRASADKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALAYAMKULANGARA",
+      "person": {
+        "id": "2015048100901",
+        "name": "GIRISH.R"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIVIKRAMAPURAM",
+      "person": {
+        "id": "2015048101001",
+        "name": "SHEEJA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAYIPAD EAST",
+      "person": {
+        "id": "2015048101101",
+        "name": "SANTHA BALAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PAYIPAD WEST",
+      "person": {
+        "id": "2015048101201",
+        "name": "SAJAN.A.J"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MURINJAPUZHA BHAGAM",
+      "person": {
+        "id": "2015048101301",
+        "name": "M.K.RADHAMANI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345806039,
+  "date": "2019-08-21",
+  "name": "Poovachal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "30.06km",
+  "localbody_code": "G010502",
+  "no_of_wards": 23,
+  "population": 37980,
+  "male": 18764,
+  "female": 19216,
+  "population_density": 1263,
+  "sex_ratio": 1024,
+  "literacy_rate": 89.44,
+  "literacy_rate_male": 92.84,
+  "literacy_rate_female": 86.03,
+  "president": "RAMACHANDRANK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KONNIYOOR",
+      "person": {
+        "id": "2015025600101",
+        "name": "REMYA V G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UNDAPPARA",
+      "person": {
+        "id": "2015025600201",
+        "name": "SHEREEFA BEEVI R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ALAMUKKU",
+      "person": {
+        "id": "2015025600301",
+        "name": "SURESH KUMAR M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUZHAKKADU",
+      "person": {
+        "id": "2015025600401",
+        "name": "SUNI SOMAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULINKODU",
+      "person": {
+        "id": "2015025600501",
+        "name": "NASEEMA BEEVI J"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOVILVILA",
+      "person": {
+        "id": "2015025600601",
+        "name": "RENUKA KUMARI D"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELAYKODU",
+      "person": {
+        "id": "2015025600701",
+        "name": "LALSI PRASANNAKUMARI L L"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANNIYODE",
+      "person": {
+        "id": "2015025600801",
+        "name": "S VIJAYADAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLAMAM",
+      "person": {
+        "id": "2015025600901",
+        "name": "SUJA O"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATTAKULAM",
+      "person": {
+        "id": "2015025601001",
+        "name": "S STEPHEN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VEERANAKAVU",
+      "person": {
+        "id": "2015025601101",
+        "name": "P MANIKANTAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHAYKULAM",
+      "person": {
+        "id": "2015025601201",
+        "name": "BINDHU RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MYLOTTUMOOZHI",
+      "person": {
+        "id": "2015025601301",
+        "name": "V SREEKANTAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ANAKODU",
+      "person": {
+        "id": "2015025601401",
+        "name": "BEENA L"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUNDUKONAM",
+      "person": {
+        "id": "2015025601501",
+        "name": "RAJESWARI P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUTHIYAVILA",
+      "person": {
+        "id": "2015025601601",
+        "name": "RAMACHANDRAN K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THOTTAMPARA",
+      "person": {
+        "id": "2015025601701",
+        "name": "DINESH A K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KATTAKADA MARKET",
+      "person": {
+        "id": "2015025601801",
+        "name": "BINDHU S R"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHAMAVILA",
+      "person": {
+        "id": "2015025601901",
+        "name": "R RAGHAVALAL"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KARIYAMKODE",
+      "person": {
+        "id": "2015025602001",
+        "name": "C J PREMALATHA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PONNEDUTHAKUZHI",
+      "person": {
+        "id": "2015025602101",
+        "name": "MINI P"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "POOVACHAL",
+      "person": {
+        "id": "2015025602201",
+        "name": "G O SHAJI"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KAPPIKADU",
+      "person": {
+        "id": "2015025602301",
+        "name": "SHAYLAJADAS L"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348047261,
+  "date": "2019-08-21",
+  "name": "Pudukad  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Kodakara",
+  "area": "15.41km",
+  "localbody_code": "G081105",
+  "no_of_wards": 15,
+  "population": 20871,
+  "male": 10131,
+  "female": 10740,
+  "population_density": 1354,
+  "sex_ratio": 1060,
+  "literacy_rate": 90.96,
+  "literacy_rate_male": 94.11,
+  "literacy_rate_female": 88.02,
+  "president": "AMBILISIVARAJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VADAKKE THORAVU",
+      "person": {
+        "id": "2015077200101",
+        "name": "SARITHA RAJESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PUDUKAD",
+      "person": {
+        "id": "2015077200201",
+        "name": "JOLLY CHUKKIRI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANJOOR",
+      "person": {
+        "id": "2015077200301",
+        "name": "SIJU ANTONY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANNAMBATHUR",
+      "person": {
+        "id": "2015077200401",
+        "name": "NIHA JAYAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SNEHAPURAM",
+      "person": {
+        "id": "2015077200501",
+        "name": "TESLIN ANOOP"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MATTUMALA",
+      "person": {
+        "id": "2015077200601",
+        "name": "SAJEEVAN.K.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SHANTHINAGAR",
+      "person": {
+        "id": "2015077200701",
+        "name": "RAJU SUKUMARAN T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SOORYAGRAMAM",
+      "person": {
+        "id": "2015077200801",
+        "name": "JENSON P V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHENGALOOR",
+      "person": {
+        "id": "2015077200901",
+        "name": "GEETHA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "S N PURAM",
+      "person": {
+        "id": "2015077201001",
+        "name": "THOBY T I"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "RANDAMKALLU",
+      "person": {
+        "id": "2015077201101",
+        "name": "UNNIKRISHNAN(BABY KEEDAYIL)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHACKOCHIRA",
+      "person": {
+        "id": "2015077201201",
+        "name": "SATHI SUDHEER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KURUMALI",
+      "person": {
+        "id": "2015077201301",
+        "name": "MURALI M T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKE THORAVU",
+      "person": {
+        "id": "2015077201401",
+        "name": "PHILOMINA FRANCIS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BLOCK OFFICE",
+      "person": {
+        "id": "2015077201501",
+        "name": "AMBILI SIVARAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

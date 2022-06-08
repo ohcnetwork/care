@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345993045,
+  "date": "2019-08-21",
+  "name": "Thodiyoor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Karunagappally",
+  "area": "20.61km",
+  "localbody_code": "G020106",
+  "no_of_wards": 23,
+  "population": 40593,
+  "male": 20340,
+  "female": 20253,
+  "population_density": 1970,
+  "sex_ratio": 996,
+  "literacy_rate": 89.94,
+  "literacy_rate_male": 94.36,
+  "literacy_rate_female": 85.52,
+  "president": "KADAVIKKATTUMOHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULIYOOR VANCHI WEST",
+      "person": {
+        "id": "2015031000101",
+        "name": "SUJATHA K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHITTUMOOLA",
+      "person": {
+        "id": "2015031000201",
+        "name": "RAHUMATH SHAJI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULIYOOR VANCHI NORTH",
+      "person": {
+        "id": "2015031000301",
+        "name": "BIJI SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAKULANGARA NORTH",
+      "person": {
+        "id": "2015031000401",
+        "name": "K SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELUTHAMANAL WEST",
+      "person": {
+        "id": "2015031000501",
+        "name": "BINDHU RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULIYOOR VANCHI SOUTH",
+      "person": {
+        "id": "2015031000601",
+        "name": "L GANGAKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULIYOOR VANCHI EAST",
+      "person": {
+        "id": "2015031000701",
+        "name": "BINDHUDEVI AMMA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "H S WARD",
+      "person": {
+        "id": "2015031000801",
+        "name": "AJITHA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARAMATHMADAM",
+      "person": {
+        "id": "2015031000901",
+        "name": "BHASURA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THODIYOOR",
+      "person": {
+        "id": "2015031001001",
+        "name": "SHAHANAZ A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MALUMEL",
+      "person": {
+        "id": "2015031001101",
+        "name": "MINI SAJITH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENGARA",
+      "person": {
+        "id": "2015031001201",
+        "name": "GEETHA BHEETHEHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELUTHAMANAL",
+      "person": {
+        "id": "2015031001301",
+        "name": "NASAR PATTAKANDATHIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUZHANGODI EAST",
+      "person": {
+        "id": "2015031001401",
+        "name": "RADHAKRISHNA PILLAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUZHANGODI",
+      "person": {
+        "id": "2015031001501",
+        "name": "O AMBIKADEVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUZHANGODI SOUTH EAST",
+      "person": {
+        "id": "2015031001601",
+        "name": "RAGESH KUMAR R"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MARARITHOTTAM NORTH",
+      "person": {
+        "id": "2015031001701",
+        "name": "M M SALIM"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MARARITHOTTAM",
+      "person": {
+        "id": "2015031001801",
+        "name": "SHEEJA BABURAJ"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHAMBAKADAV",
+      "person": {
+        "id": "2015031001901",
+        "name": "KADAVIKKATTU MOHANAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KALLELIBHAGOM SOUTH",
+      "person": {
+        "id": "2015031002001",
+        "name": "ROHINI R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KALLELIBHAGOM",
+      "person": {
+        "id": "2015031002101",
+        "name": "K OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KALLELIBHAGOM NORTH",
+      "person": {
+        "id": "2015031002201",
+        "name": "SURYA"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "EDAKULANGARA",
+      "person": {
+        "id": "2015031002301",
+        "name": "B PADMAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566348930504,
+  "date": "2019-08-21",
+  "name": "Maniyur  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thodannur",
+  "area": "31.03km",
+  "localbody_code": "G110403",
+  "no_of_wards": 21,
+  "population": 34600,
+  "male": 16878,
+  "female": 17722,
+  "population_density": 1115,
+  "sex_ratio": 1050,
+  "literacy_rate": 90.06,
+  "literacy_rate_male": 95.68,
+  "literacy_rate_female": 84.77,
+  "president": "JAYAPRABHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PATHIYARAKKARA NORTH",
+      "person": {
+        "id": "2015101400101",
+        "name": "RAGEESH V V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUDAPPILAVIL NORTH",
+      "person": {
+        "id": "2015101400201",
+        "name": "P P BALAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUDAPPILAVIL CENTRE",
+      "person": {
+        "id": "2015101400301",
+        "name": "JAYAPRABHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANTHARATHUR",
+      "person": {
+        "id": "2015101400401",
+        "name": "SHAHABATH JOONA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDATHUMKARA",
+      "person": {
+        "id": "2015101400501",
+        "name": "REMA P.T.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KURUNTHODI EAST",
+      "person": {
+        "id": "2015101400601",
+        "name": "MOLY K.T.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KURUNTHODI WEST",
+      "person": {
+        "id": "2015101400701",
+        "name": "VIJAYAKUMAR N.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELAMBILAD",
+      "person": {
+        "id": "2015101400801",
+        "name": "C. VINODAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERANDATHUR",
+      "person": {
+        "id": "2015101400901",
+        "name": "SHYMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANKARA",
+      "person": {
+        "id": "2015101401001",
+        "name": "AHAMMED SWALIH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANIYUR EAST",
+      "person": {
+        "id": "2015101401101",
+        "name": "GEETHA T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANIYUR SOUTH",
+      "person": {
+        "id": "2015101401201",
+        "name": "PUTHIYOTTIL SURESH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANIYUR NORTH",
+      "person": {
+        "id": "2015101401301",
+        "name": "MOLI M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUTHUVANA",
+      "person": {
+        "id": "2015101401401",
+        "name": "K.P KUNHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUNNATHUKARA",
+      "person": {
+        "id": "2015101401501",
+        "name": "MOIDEEN R.O"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MEENATHUKARA",
+      "person": {
+        "id": "2015101401601",
+        "name": "NAVANEETHA T"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KARUVANCHERI",
+      "person": {
+        "id": "2015101401701",
+        "name": "VENUGOPALAN M"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALAYAD",
+      "person": {
+        "id": "2015101401801",
+        "name": "SATHIYAN K.V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PATHIYARAKKARA SOUTH",
+      "person": {
+        "id": "2015101401901",
+        "name": "VALSALA C.T.K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PATHIYARAKKARA CENTRE",
+      "person": {
+        "id": "2015101402001",
+        "name": "BIJILA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NADUVAYAL",
+      "person": {
+        "id": "2015101402101",
+        "name": "LASITHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

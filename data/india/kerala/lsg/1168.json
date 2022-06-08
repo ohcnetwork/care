@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349476049,
+  "date": "2019-08-21",
+  "name": "Payam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "31.21km",
+  "localbody_code": "G131006",
+  "no_of_wards": 18,
+  "population": 25360,
+  "male": 12722,
+  "female": 12638,
+  "population_density": 813,
+  "sex_ratio": 993,
+  "literacy_rate": 90.46,
+  "literacy_rate_male": 94.2,
+  "literacy_rate_female": 86.71,
+  "president": "N.ASHOKAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERINKERI",
+      "person": {
+        "id": "2015116800101",
+        "name": "PAVITHRAN KARIPPAYI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MATTINI",
+      "person": {
+        "id": "2015116800202",
+        "name": "SURESH P N"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KILIYANTHARA",
+      "person": {
+        "id": "2015116800301",
+        "name": "LIZY PHILIP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALLITHODE",
+      "person": {
+        "id": "2015116800401",
+        "name": "TOM MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAPANTHI KAVALA",
+      "person": {
+        "id": "2015116800501",
+        "name": "JAMEELA NASSAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNNOTH",
+      "person": {
+        "id": "2015116800601",
+        "name": "JANCY THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOLIKKADAVU",
+      "person": {
+        "id": "2015116800701",
+        "name": "V.K.PREMARAJAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEENGAKUNDAM",
+      "person": {
+        "id": "2015116800801",
+        "name": "V.K.CHANDHU VYDYAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KONDAMBRA",
+      "person": {
+        "id": "2015116800901",
+        "name": "SAVITHRI.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAYAM",
+      "person": {
+        "id": "2015116801001",
+        "name": "MEENA.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VATTIYARA",
+      "person": {
+        "id": "2015116801101",
+        "name": "K.K.KUNCHIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MADATHIL",
+      "person": {
+        "id": "2015116801201",
+        "name": "MANEESHA.C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THANTHODE",
+      "person": {
+        "id": "2015116801301",
+        "name": "V.SHEEBA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUMPARAMBA",
+      "person": {
+        "id": "2015116801401",
+        "name": "V.K.SUNEESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ALAPRA",
+      "person": {
+        "id": "2015116801501",
+        "name": "K.K.VIMALA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VILAMANA",
+      "person": {
+        "id": "2015116801601",
+        "name": "N.ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MALAPOTTU",
+      "person": {
+        "id": "2015116801701",
+        "name": "SHEEBA REMESHAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "UDAYAGIRI",
+      "person": {
+        "id": "2015116801801",
+        "name": "OMANA ASHOKAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

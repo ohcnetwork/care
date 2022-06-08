@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346181740,
+  "date": "2019-08-21",
+  "name": "Kadakkal  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "48.9km",
+  "localbody_code": "G021102",
+  "no_of_wards": 19,
+  "population": 45291,
+  "male": 21749,
+  "female": 23542,
+  "population_density": 926,
+  "sex_ratio": 1082,
+  "literacy_rate": 89.86,
+  "literacy_rate_male": 94.47,
+  "literacy_rate_female": 85.7,
+  "president": "R.S.BIJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELAMPAZHANNOOR",
+      "person": {
+        "id": "2015036600101",
+        "name": "USHA BABU K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLARVATTAM",
+      "person": {
+        "id": "2015036600201",
+        "name": "BINUMOL. S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015036600301",
+        "name": "SUJEESH KUMAR. S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUTTIKKADU",
+      "person": {
+        "id": "2015036600401",
+        "name": "SREEJA. R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VADAKKEVAYAL",
+      "person": {
+        "id": "2015036600501",
+        "name": "K. DEVAYANI AMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARAKKADU",
+      "person": {
+        "id": "2015036600601",
+        "name": "SINDHU. S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANTHALAMMUKKU",
+      "person": {
+        "id": "2015036600701",
+        "name": "SUJA. B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUKUNNERI",
+      "person": {
+        "id": "2015036600801",
+        "name": "AJITHA. S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALAKKAL",
+      "person": {
+        "id": "2015036600901",
+        "name": "M. SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHINGELI",
+      "person": {
+        "id": "2015036601001",
+        "name": "SAINUDEEN A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ALTHARAMOODU",
+      "person": {
+        "id": "2015036601101",
+        "name": "SYAMALA KUMARY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUMBODU",
+      "person": {
+        "id": "2015036601202",
+        "name": "MURPHY J M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KADAKKAL TOWN",
+      "person": {
+        "id": "2015036601301",
+        "name": "ASHOK. R. NAIR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "GOVINDAMANGALAM",
+      "person": {
+        "id": "2015036601401",
+        "name": "ANISH. T"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MATTIDAMPARA",
+      "person": {
+        "id": "2015036601501",
+        "name": "R. S. BIJU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULLUPANA",
+      "person": {
+        "id": "2015036601601",
+        "name": "G. SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ATTUPURAM",
+      "person": {
+        "id": "2015036601701",
+        "name": "R. LATHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARYAM",
+      "person": {
+        "id": "2015036601801",
+        "name": "SHYLAJA. S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "EDATHARA",
+      "person": {
+        "id": "2015036601901",
+        "name": "K. DEEPA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

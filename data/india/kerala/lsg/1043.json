@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349034179,
+  "date": "2019-08-21",
+  "name": "Nanminda  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Chelannur",
+  "area": "23.01km",
+  "localbody_code": "G110904",
+  "no_of_wards": 17,
+  "population": 23461,
+  "male": 11428,
+  "female": 12033,
+  "population_density": 1020,
+  "sex_ratio": 1053,
+  "literacy_rate": 92.95,
+  "literacy_rate_male": 97.36,
+  "literacy_rate_female": 88.82,
+  "president": "KUNDOORBIJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLATHUR",
+      "person": {
+        "id": "2015104300101",
+        "name": "MANI M.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARIYANIMALA",
+      "person": {
+        "id": "2015104300201",
+        "name": "NILAMUDHEEN. T. P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLIYOD",
+      "person": {
+        "id": "2015104300301",
+        "name": "KAVITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARAYANAPOYIL",
+      "person": {
+        "id": "2015104300401",
+        "name": "HAJARA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THIYYAKKOTH",
+      "person": {
+        "id": "2015104300501",
+        "name": "NISHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNNATHERU",
+      "person": {
+        "id": "2015104300601",
+        "name": "PUSHPA. K. K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NANMINDA 14",
+      "person": {
+        "id": "2015104300701",
+        "name": "GIRIJA. M. V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THALI",
+      "person": {
+        "id": "2015104300801",
+        "name": "KUNDOOR BIJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NANMINDA",
+      "person": {
+        "id": "2015104300901",
+        "name": "V. K. NITHYAKALA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EHZUKULAM",
+      "person": {
+        "id": "2015104301001",
+        "name": "O. P. VASU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NATIONAL",
+      "person": {
+        "id": "2015104301101",
+        "name": "P. MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NANMINDA 12",
+      "person": {
+        "id": "2015104301201",
+        "name": "RASIYA ISMAIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NARAKASSERY",
+      "person": {
+        "id": "2015104301301",
+        "name": "AJITHA. T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POOKKUNNU",
+      "person": {
+        "id": "2015104301401",
+        "name": "REMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARINKALIKAVU",
+      "person": {
+        "id": "2015104301501",
+        "name": "SUDHAKARAN. T. K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUNNOORKKAYIL",
+      "person": {
+        "id": "2015104301601",
+        "name": "VIMALA THEROTH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHEEKKILODE",
+      "person": {
+        "id": "2015104301701",
+        "name": "C.K. RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

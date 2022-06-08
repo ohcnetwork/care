@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345715284,
+  "date": "2019-08-21",
+  "name": "Cherunniyoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "10.87km",
+  "localbody_code": "G010106",
+  "no_of_wards": 14,
+  "population": 16325,
+  "male": 7495,
+  "female": 8830,
+  "population_density": 1502,
+  "sex_ratio": 1178,
+  "literacy_rate": 87.44,
+  "literacy_rate_male": 92.22,
+  "literacy_rate_female": 83.42,
+  "president": "N.NAVAPRAKASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AYANTHI",
+      "person": {
+        "id": "2015023000101",
+        "name": "S.SIVAPRASAD"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALACHIRA",
+      "person": {
+        "id": "2015023000201",
+        "name": "MOHAMMED IRFAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VADASSERIKONAM",
+      "person": {
+        "id": "2015023000301",
+        "name": "GIRIJA.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THETTIKULAM",
+      "person": {
+        "id": "2015023000401",
+        "name": "OMANA SIVAKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLETTIL",
+      "person": {
+        "id": "2015023000501",
+        "name": "N.SIVAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ACHUMAMUKKU",
+      "person": {
+        "id": "2015023000601",
+        "name": "SHAMLA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "DALAVAPURAM",
+      "person": {
+        "id": "2015023000701",
+        "name": "RAJANI.O"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERUNNIYOOR",
+      "person": {
+        "id": "2015023000801",
+        "name": "ARYA.G.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAKAKAPOYKA",
+      "person": {
+        "id": "2015023000901",
+        "name": "LATHA SENAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUDIACODE",
+      "person": {
+        "id": "2015023001001",
+        "name": "C.BALAKRISHNAN NAIR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THANNIMOODU",
+      "person": {
+        "id": "2015023001101",
+        "name": "SUMESH.B"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENNICODE",
+      "person": {
+        "id": "2015023001201",
+        "name": "M.MURALIDHARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTING",
+      "person": {
+        "id": "2015023001301",
+        "name": "S.USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLUMALAKUNNU",
+      "person": {
+        "id": "2015023001401",
+        "name": "N.NAVAPRAKASH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

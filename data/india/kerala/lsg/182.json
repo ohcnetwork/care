@@ -1,0 +1,245 @@
+{
+  "timeStamp": 1566345496188,
+  "date": "2019-08-21",
+  "name": "Mavelikara  Municipality, Alappuzha District",
+  "district": "Alappuzha",
+  "area": "12.65km",
+  "localbody_code": "M040200",
+  "no_of_wards": 28,
+  "population": 28440,
+  "male": 13499,
+  "female": 14941,
+  "population_density": 2237,
+  "sex_ratio": 1082,
+  "literacy_rate": 96.7,
+  "literacy_rate_male": 97.9,
+  "literacy_rate_female": 95.6,
+  "chairperson": "LEELAABHILASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MATTOM NORTH",
+      "person": {
+        "id": "2015018200101",
+        "name": "SREE RANJINI AMMA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURUVIKKADU",
+      "person": {
+        "id": "2015018200201",
+        "name": "JAYASREE AJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANDIYOOR",
+      "person": {
+        "id": "2015018200301",
+        "name": "LATHA G"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUNICIPAL BUS STAND",
+      "person": {
+        "id": "2015018200401",
+        "name": "K GOPAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PRAYIKKARA TEMPLE",
+      "person": {
+        "id": "2015018200501",
+        "name": "LEELAMANY S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PRAYIKKARA",
+      "person": {
+        "id": "2015018200601",
+        "name": "AJANTHA PRASAD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "GOVT. HOSPITAL WARD",
+      "person": {
+        "id": "2015018200701",
+        "name": "SAJINI JOHN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THAZHAKKARA",
+      "person": {
+        "id": "2015018200801",
+        "name": "JEEMOL CHERIAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHIYAKAVU MARKET",
+      "person": {
+        "id": "2015018200901",
+        "name": "SHINY THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOTTARKAVU",
+      "person": {
+        "id": "2015018201001",
+        "name": "PRASANNA BABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015018201101",
+        "name": "MADHUBALA NATARAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLUMALA",
+      "person": {
+        "id": "2015018201201",
+        "name": "SATHI KOMALAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "UMBERNADU",
+      "person": {
+        "id": "2015018201301",
+        "name": "AMBIKA SIVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AYURVEDA HOSPITAL",
+      "person": {
+        "id": "2015018201401",
+        "name": "KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POWER HOUSE",
+      "person": {
+        "id": "2015018201501",
+        "name": "KOSHY THUNDU PARAMPIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PADEETHODU",
+      "person": {
+        "id": "2015018201601",
+        "name": "K PADMAKARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PUNNAMOOD MARKET",
+      "person": {
+        "id": "2015018201701",
+        "name": "K. HEMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PONAKAM",
+      "person": {
+        "id": "2015018201801",
+        "name": "ADV. NAVEEN MATHEW DAVID"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "FACTORY",
+      "person": {
+        "id": "2015018201901",
+        "name": "LEELA ABHILASH"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CIVIL STATION WARD",
+      "person": {
+        "id": "2015018202001",
+        "name": "VJAYAMMA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KOCHICKAL SOUTH",
+      "person": {
+        "id": "2015018202101",
+        "name": "P K MAHENDRAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PONNARAM THOTTAM",
+      "person": {
+        "id": "2015018202201",
+        "name": "SHAJI M PANICKER"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KOTTAKKAKAM",
+      "person": {
+        "id": "2015018202301",
+        "name": "SUJATHA DEVI S"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015018202401",
+        "name": "S RAJESH"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KOCHIKKAL",
+      "person": {
+        "id": "2015018202501",
+        "name": "M RAMESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "PANACHAMOODU",
+      "person": {
+        "id": "2015018202601",
+        "name": "RAJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KANDIYOOR SOUTH",
+      "person": {
+        "id": "2015018202701",
+        "name": "UMAYAMMA VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THATTARAMBALAM",
+      "person": {
+        "id": "2015018202801",
+        "name": "C SURESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

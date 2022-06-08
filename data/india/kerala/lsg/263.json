@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566345841948,
+  "date": "2019-08-21",
+  "name": "Anad  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nedumangad",
+  "area": "24.15km",
+  "localbody_code": "G010601",
+  "no_of_wards": 19,
+  "population": 27367,
+  "male": 13364,
+  "female": 14003,
+  "population_density": 1133,
+  "sex_ratio": 1048,
+  "literacy_rate": 90.28,
+  "literacy_rate_male": 96.1,
+  "literacy_rate_female": 86.67,
+  "president": "SURESHKUMARS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THEERTHAMKARA",
+      "person": {
+        "id": "2015026300101",
+        "name": "SHEELAKUMARI.L"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHELA",
+      "person": {
+        "id": "2015026300201",
+        "name": "S SUNIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLIYODU",
+      "person": {
+        "id": "2015026300301",
+        "name": "T.R.CHITHRALEKHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "IRIYANADU",
+      "person": {
+        "id": "2015026300401",
+        "name": "N.SREEKALA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANDRAMANGALAM",
+      "person": {
+        "id": "2015026300501",
+        "name": "K.JAYACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANAD TOWN",
+      "person": {
+        "id": "2015026300601",
+        "name": "T.SINDHU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERUVELI",
+      "person": {
+        "id": "2015026300701",
+        "name": "SHEEBA BEEVI.N"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VANCHUVAM",
+      "person": {
+        "id": "2015026300801",
+        "name": "M.NIZARUDEEN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANOORKONAM",
+      "person": {
+        "id": "2015026300901",
+        "name": "SHEELA.S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THAZHNNAMALA",
+      "person": {
+        "id": "2015026301001",
+        "name": "VIJAYARAJ S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHULLIMANOOR",
+      "person": {
+        "id": "2015026301101",
+        "name": "AKBARSHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NETTARAKONAM",
+      "person": {
+        "id": "2015026301201",
+        "name": "PRABHA M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANDAPAM",
+      "person": {
+        "id": "2015026301301",
+        "name": "SURESH KUMAR S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHENPALAM",
+      "person": {
+        "id": "2015026301401",
+        "name": "SHAHEED A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THIRICHITTOR",
+      "person": {
+        "id": "2015026301501",
+        "name": "T.K.MINI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VETTAMPALLY",
+      "person": {
+        "id": "2015026301601",
+        "name": "DIVYA R.S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VENKAVILA",
+      "person": {
+        "id": "2015026301701",
+        "name": "VENKAVILA SAJI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THANNIMOODU",
+      "person": {
+        "id": "2015026301801",
+        "name": "SATHIKUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "IRINCHAYAM",
+      "person": {
+        "id": "2015026301901",
+        "name": "P.S.LEKHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

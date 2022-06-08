@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348372078,
+  "date": "2019-08-21",
+  "name": "Muthalamada  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kollamgode",
+  "area": "66.76km",
+  "localbody_code": "G091003",
+  "no_of_wards": 20,
+  "population": 33935,
+  "male": 16957,
+  "female": 16978,
+  "population_density": 508,
+  "sex_ratio": 1001,
+  "literacy_rate": 62.52,
+  "literacy_rate_male": 70.35,
+  "literacy_rate_female": 54.73,
+  "president": "BABYSUDHA.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUTTIPPADAM",
+      "person": {
+        "id": "2015086800101",
+        "name": "ARJUNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAMPALLAM",
+      "person": {
+        "id": "2015086800201",
+        "name": "V. VANAJA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MALLANKOLUMBU",
+      "person": {
+        "id": "2015086800301",
+        "name": "BABY SUDHA. K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLAM",
+      "person": {
+        "id": "2015086800401",
+        "name": "THAJUDHEEN. M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PAPPANCHALLA",
+      "person": {
+        "id": "2015086800501",
+        "name": "K. SATHEESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MEENKARA",
+      "person": {
+        "id": "2015086800601",
+        "name": "SOWMYA SANKAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "M PUDUR",
+      "person": {
+        "id": "2015086800701",
+        "name": "VIMALADEVI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "GOVINDAPURAM",
+      "person": {
+        "id": "2015086800801",
+        "name": "M. RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMMANAMPATHI",
+      "person": {
+        "id": "2015086800901",
+        "name": "V. SHANTHI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUCHAMKUNDU",
+      "person": {
+        "id": "2015086801001",
+        "name": "KRISHNAKUMAR S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARAMBIKULAM",
+      "person": {
+        "id": "2015086801101",
+        "name": "M. SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDUKKUPARA",
+      "person": {
+        "id": "2015086801201",
+        "name": "KARUPPATHAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ATTAYAMPATHY",
+      "person": {
+        "id": "2015086801301",
+        "name": "MUMTHAJ. A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VALIYACHALLA",
+      "person": {
+        "id": "2015086801401",
+        "name": "R. BIJOY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAMBRATHUCHALLA",
+      "person": {
+        "id": "2015086801501",
+        "name": "SURENDRAN. M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHULLIYAR",
+      "person": {
+        "id": "2015086801601",
+        "name": "VINESH. C"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARAYAMPALLAM",
+      "person": {
+        "id": "2015086801701",
+        "name": "KOMALAM. C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KADAMKURISSI",
+      "person": {
+        "id": "2015086801801",
+        "name": "REMYA. R"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NANDANKIZHAYA",
+      "person": {
+        "id": "2015086801901",
+        "name": "NIZARUDEEN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "POTHAMPADAM",
+      "person": {
+        "id": "2015086802001",
+        "name": "SUKHILA. C. V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

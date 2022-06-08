@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346485059,
+  "date": "2019-08-21",
+  "name": "Ambalapuzha North  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Ambalapuzha",
+  "area": null,
+  "localbody_code": "G040503",
+  "no_of_wards": 18,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "AFSATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VANDANAM COASTAL AREA",
+      "person": {
+        "id": "2015045000101",
+        "name": "SIBILAL. M. D"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "T.D.M.C WARD",
+      "person": {
+        "id": "2015045000201",
+        "name": "SHEEJA NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KURAVANTHODU EAST",
+      "person": {
+        "id": "2015045000301",
+        "name": "V. SREEJITH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VANDANAM EAST",
+      "person": {
+        "id": "2015045000401",
+        "name": "HARIS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VANDANAM SOUTH",
+      "person": {
+        "id": "2015045000501",
+        "name": "MINI VENU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANCHAYAT OFFICE WARD",
+      "person": {
+        "id": "2015045000601",
+        "name": "SHEMEER A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEERKUNNAM EAST",
+      "person": {
+        "id": "2015045000701",
+        "name": "HALEEMA HASHIM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KANJIPPADAM NORTH",
+      "person": {
+        "id": "2015045000801",
+        "name": "C. PRADEEP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJIPPADAM SOUTH",
+      "person": {
+        "id": "2015045000901",
+        "name": "G. RADHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALANJAVAZHY EAST",
+      "person": {
+        "id": "2015045001001",
+        "name": "AFSATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAKKAZHOM H S WARD",
+      "person": {
+        "id": "2015045001101",
+        "name": "LEKHAMOL SANIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMBIVALAPPU WARD",
+      "person": {
+        "id": "2015045001201",
+        "name": "VAHIDA KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAKKAZHOM WEST WARD",
+      "person": {
+        "id": "2015045001301",
+        "name": "U. RAJUMON"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "BEACH WARD",
+      "person": {
+        "id": "2015045001401",
+        "name": "K. SINIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALANJAVAZHY WEST",
+      "person": {
+        "id": "2015045001501",
+        "name": "SHINOYMON. N"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NEERKUNNAM WEST",
+      "person": {
+        "id": "2015045001601",
+        "name": "SREEJAMOL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "M C H WARD",
+      "person": {
+        "id": "2015045001701",
+        "name": "SHAJI (ANIYAN)"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "SISUVIHAR",
+      "person": {
+        "id": "2015045001801",
+        "name": "RAJESWARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

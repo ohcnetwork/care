@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566345185994,
+  "date": "2019-08-21",
+  "name": "Ottapalam  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Ottappalam",
+  "area": "165.07km",
+  "localbody_code": "B090300",
+  "no_of_wards": 16,
+  "population": 123806,
+  "male": 58471,
+  "female": 65335,
+  "population_density": 750,
+  "sex_ratio": 1117,
+  "literacy_rate": 86.76,
+  "literacy_rate_male": 90.62,
+  "literacy_rate_female": 83.39,
+  "president": "SSIVARAMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALLAPPUZHA",
+      "person": {
+        "id": "2015010000101",
+        "name": "A ABDUL JAMAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EZHUVANTHALA",
+      "person": {
+        "id": "2015010000201",
+        "name": "K P VASANTHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NELLAYA",
+      "person": {
+        "id": "2015010000301",
+        "name": "SUHARA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHALAVARA",
+      "person": {
+        "id": "2015010000401",
+        "name": "C PREETHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THRIKKADEERI",
+      "person": {
+        "id": "2015010000501",
+        "name": "T GOVINDANKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANGODE",
+      "person": {
+        "id": "2015010000601",
+        "name": "KUTTIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AMBALAPPARA",
+      "person": {
+        "id": "2015010000701",
+        "name": "PREETHA MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VENGASSERY",
+      "person": {
+        "id": "2015010000801",
+        "name": "SAJANIDEVI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AKALUR",
+      "person": {
+        "id": "2015010000901",
+        "name": "S SIVARAMAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "LAKKIDI",
+      "person": {
+        "id": "2015010001001",
+        "name": "N PUSHPAVALLI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHUNANGAD",
+      "person": {
+        "id": "2015010001101",
+        "name": "JAYPRAKASH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ANANGANADI",
+      "person": {
+        "id": "2015010001201",
+        "name": "MUHAMMED ALI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATHAMKULAM",
+      "person": {
+        "id": "2015010001301",
+        "name": "JAMALNASAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANIYAMKULAM",
+      "person": {
+        "id": "2015010001401",
+        "name": "V C CHANDRIKA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOONATHARA",
+      "person": {
+        "id": "2015010001501",
+        "name": "HARIDASAN P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAYILIAD",
+      "person": {
+        "id": "2015010001601",
+        "name": "K V SHEELA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

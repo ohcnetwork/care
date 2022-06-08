@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566345949383,
+  "date": "2019-08-21",
+  "name": "Venganoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Athiyannoor",
+  "area": "10.12km",
+  "localbody_code": "G011005",
+  "no_of_wards": 20,
+  "population": 28742,
+  "male": 14360,
+  "female": 14382,
+  "population_density": 2840,
+  "sex_ratio": 1002,
+  "literacy_rate": 89.91,
+  "literacy_rate_male": 93,
+  "literacy_rate_female": 86.84,
+  "president": "SREEKALAG.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLAR",
+      "person": {
+        "id": "2015029600101",
+        "name": "SALINI.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADAVINMOOLA",
+      "person": {
+        "id": "2015029600201",
+        "name": "JAYAKUMARI.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUTTACAUD",
+      "person": {
+        "id": "2015029600301",
+        "name": "R.S.SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANAGODU",
+      "person": {
+        "id": "2015029600401",
+        "name": "VALSALA .M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VENNIYOOR",
+      "person": {
+        "id": "2015029600501",
+        "name": "SANTHOSH KUMAR A.S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLIVILA",
+      "person": {
+        "id": "2015029600601",
+        "name": "JINU S SIMON"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAVUVILA",
+      "person": {
+        "id": "2015029600701",
+        "name": "ADV.VENIIYOOR A. RAJAYYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OFFICEWARD",
+      "person": {
+        "id": "2015029600801",
+        "name": "JINU LAL S.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINGAMMALA",
+      "person": {
+        "id": "2015029600901",
+        "name": "SULEKHA S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EDUVA",
+      "person": {
+        "id": "2015029601001",
+        "name": "LATHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANGALATHUKONAM",
+      "person": {
+        "id": "2015029601101",
+        "name": "SULEKHA S.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KATTACHALKUZHY",
+      "person": {
+        "id": "2015029601201",
+        "name": "SREEKALA G.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHAVADINADA",
+      "person": {
+        "id": "2015029601301",
+        "name": "VISHNU R.C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "SISILIPURAM",
+      "person": {
+        "id": "2015029601401",
+        "name": "MINI VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VENGANOOR",
+      "person": {
+        "id": "2015029601501",
+        "name": "VENGANOOR SATHEESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "DR.AMBEDKARGRAMAM",
+      "person": {
+        "id": "2015029601601",
+        "name": "R.SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALLUVETTANKUZHY",
+      "person": {
+        "id": "2015029601701",
+        "name": "LALAN G.R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AZHAKULAM",
+      "person": {
+        "id": "2015029601801",
+        "name": "BIPIN.B"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THOZHICHAL",
+      "person": {
+        "id": "2015029601901",
+        "name": "G.SOBHANA KUMARI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOVALAM",
+      "person": {
+        "id": "2015029602001",
+        "name": "SHEELA AJITH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

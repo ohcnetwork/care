@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348717647,
+  "date": "2019-08-21",
+  "name": "Puzhakkattiri  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Mankada",
+  "area": "22.69km",
+  "localbody_code": "G100806",
+  "no_of_wards": 17,
+  "population": 21982,
+  "male": 10609,
+  "female": 11373,
+  "population_density": 1193,
+  "sex_ratio": 1072,
+  "literacy_rate": 89.45,
+  "literacy_rate_male": 92.83,
+  "literacy_rate_female": 86.09,
+  "president": "P.KJAYARAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "RAMAPURAM NORTH",
+      "person": {
+        "id": "2015094800101",
+        "name": "ABDUL BASHEER .P.T"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAMAPURAM",
+      "person": {
+        "id": "2015094800201",
+        "name": "KHADEEJA BEEVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANANGAGARA 38",
+      "person": {
+        "id": "2015094800301",
+        "name": "RAMLATH KP"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANANGAGARA",
+      "person": {
+        "id": "2015094800401",
+        "name": "RASHEED.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "RAMAPURAM UDUMBANASSERI",
+      "person": {
+        "id": "2015094800501",
+        "name": "MOOSAKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHIRAMANNA WEST",
+      "person": {
+        "id": "2015094800601",
+        "name": "SUDEEP M.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PATHIRAMANNA EAST",
+      "person": {
+        "id": "2015094800701",
+        "name": "HABIDA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANNUMKULAM",
+      "person": {
+        "id": "2015094800801",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTUVADU WEST PALLIYAAL",
+      "person": {
+        "id": "2015094800901",
+        "name": "BABY SUJATHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUZHAKKATTIRI",
+      "person": {
+        "id": "2015094801001",
+        "name": "P.K JAYARAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KADUNGAPURAM EAST",
+      "person": {
+        "id": "2015094801101",
+        "name": "SHAMSA E"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADUNGAPURAM WEST",
+      "person": {
+        "id": "2015094801201",
+        "name": "MUHAMED FASALUDHEEN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POTTIPPARA",
+      "person": {
+        "id": "2015094801301",
+        "name": "RAMLATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARAVAKKAL",
+      "person": {
+        "id": "2015094801401",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADAPPARAMBU",
+      "person": {
+        "id": "2015094801501",
+        "name": "ALI PK"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KATTILASSERI",
+      "person": {
+        "id": "2015094801601",
+        "name": "NAJMUNNEESA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "RAMAPURAM SOUTH",
+      "person": {
+        "id": "2015094801701",
+        "name": "ABDUL MUJEEB K.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

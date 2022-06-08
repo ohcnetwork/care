@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566345840160,
+  "date": "2019-08-21",
+  "name": "Kattakada  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "22.54km",
+  "localbody_code": "G010508",
+  "no_of_wards": 21,
+  "population": 33423,
+  "male": 16547,
+  "female": 16876,
+  "population_density": 1483,
+  "sex_ratio": 1020,
+  "literacy_rate": 89.9,
+  "literacy_rate_male": 93.28,
+  "literacy_rate_female": 86.62,
+  "president": "AJITHA.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANAYAMCODE",
+      "person": {
+        "id": "2015026200102",
+        "name": "R.JOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KATTAKODE",
+      "person": {
+        "id": "2015026200201",
+        "name": "D.G.SANIL BOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KULATHUMMEL",
+      "person": {
+        "id": "2015026200301",
+        "name": "G.SATHEENDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KATTAKADA",
+      "person": {
+        "id": "2015026200401",
+        "name": "SREEREKHA.T.S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PLAVOOR",
+      "person": {
+        "id": "2015026200501",
+        "name": "K.SARATHCHANDRAN NAIR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANGALAYKKAL",
+      "person": {
+        "id": "2015026200601",
+        "name": "AJITHA.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHANDRAMANGALAM",
+      "person": {
+        "id": "2015026200701",
+        "name": "S.PURUSHOTHAMAN NAIR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMACHEL",
+      "person": {
+        "id": "2015026200801",
+        "name": "V.CHANDRALEKHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURUTHEMCODE",
+      "person": {
+        "id": "2015026200901",
+        "name": "E.BABU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMBANACODE",
+      "person": {
+        "id": "2015026201001",
+        "name": "K.A.JAYAMOHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANACODE",
+      "person": {
+        "id": "2015026201101",
+        "name": "SUJATHA.C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMBALATHINKALA",
+      "person": {
+        "id": "2015026201201",
+        "name": "M.R.SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PARACHEL",
+      "person": {
+        "id": "2015026201301",
+        "name": "VEENA.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOMBADIKKAL",
+      "person": {
+        "id": "2015026201401",
+        "name": "LAILA.B"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHETTIKONAM",
+      "person": {
+        "id": "2015026201501",
+        "name": "A.RADHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THOONGAMPARA",
+      "person": {
+        "id": "2015026201601",
+        "name": "G.RADHA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PONNARA",
+      "person": {
+        "id": "2015026201701",
+        "name": "ANITHA C.S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ETTIRUTHY",
+      "person": {
+        "id": "2015026201801",
+        "name": "T.S.THARA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KILLI",
+      "person": {
+        "id": "2015026201901",
+        "name": "K.BIJITH KUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KAVINPURAM",
+      "person": {
+        "id": "2015026202001",
+        "name": "JAREENA. J"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KOLLODE",
+      "person": {
+        "id": "2015026202101",
+        "name": "SUNITHA.V.J"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

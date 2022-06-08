@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566345039827,
+  "date": "2019-08-21",
+  "name": "Nedumkandam  Block Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Nedumkandam",
+  "area": "341.9km",
+  "localbody_code": "B060300",
+  "no_of_wards": 13,
+  "population": 136801,
+  "male": 69510,
+  "female": 67291,
+  "population_density": 400,
+  "sex_ratio": 968,
+  "literacy_rate": 95,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 92,
+  "president": "MUKESHMOHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "RAJAKKAD",
+      "person": {
+        "id": "2015006000101",
+        "name": "RAJI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "N R CITY",
+      "person": {
+        "name": "*****"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RAJAKUMARY",
+      "person": {
+        "id": "2015006000301",
+        "name": "SHERLY WILSON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SENAPATHY",
+      "person": {
+        "id": "2015006000401",
+        "name": "JUBEE AJI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEMMANNAR",
+      "person": {
+        "id": "2015006000501",
+        "name": "SINDHU REGHU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARATHODU",
+      "person": {
+        "id": "2015006000601",
+        "name": "MARY JOSEPH(DAISSAMMA JOSEPH)"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEDUMKANDAM",
+      "person": {
+        "id": "2015006000701",
+        "name": "MUKESH MOHANAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOOKKUPALAM",
+      "person": {
+        "id": "2015006000801",
+        "name": "SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "RAMAKKALMEDU",
+      "person": {
+        "id": "2015006000901",
+        "name": "ADV.G.GOPAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAMBAMMETTU",
+      "person": {
+        "id": "2015006001001",
+        "name": "K.K KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BALAGRAM",
+      "person": {
+        "id": "2015006001101",
+        "name": "SINDHU SUKUMARAN NAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PAMPADUMPARA",
+      "person": {
+        "id": "2015006001201",
+        "name": "LEENA JACOB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PONNAMALA",
+      "person": {
+        "id": "2015006001301",
+        "name": "THOMAS THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

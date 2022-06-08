@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566347232286,
+  "date": "2019-08-21",
+  "name": "Udayamperoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Mullamthuruthy",
+  "area": "24.86km",
+  "localbody_code": "G070901",
+  "no_of_wards": 20,
+  "population": 28545,
+  "male": 14159,
+  "female": 14386,
+  "population_density": 1148,
+  "sex_ratio": 1016,
+  "literacy_rate": 92.61,
+  "literacy_rate_male": 96.89,
+  "literacy_rate_female": 88.41,
+  "president": "JOHNJACOB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALEKADU",
+      "person": {
+        "id": "2015066900101",
+        "name": "SHEENA SUNIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUMTHRIKKOVIL",
+      "person": {
+        "id": "2015066900201",
+        "name": "ANILKUMAR M. K."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UDAYAMPEROOR",
+      "person": {
+        "id": "2015066900301",
+        "name": "SHEEJA BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANDANAD",
+      "person": {
+        "id": "2015066900401",
+        "name": "REENA GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALIYAKULAM EAST",
+      "person": {
+        "id": "2015066900501",
+        "name": "VINOD CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NADAKAVU",
+      "person": {
+        "id": "2015066900601",
+        "name": "P. V. LOHITHAKSHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOCHUPALLY",
+      "person": {
+        "id": "2015066900701",
+        "name": "JOHN JACOB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOTHOTTA",
+      "person": {
+        "id": "2015066900801",
+        "name": "JAYA KESAVADAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHANKAVU",
+      "person": {
+        "id": "2015066900901",
+        "name": "REENA RAVINDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUNNACKAVELI",
+      "person": {
+        "id": "2015066901001",
+        "name": "THULASI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKAN PARAVOOR MARKET",
+      "person": {
+        "id": "2015066901101",
+        "name": "SAJITHA SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THATTAMPARAMBU",
+      "person": {
+        "id": "2015066901201",
+        "name": "T. P. SHAJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHUKULANGARA",
+      "person": {
+        "id": "2015066901301",
+        "name": "P. C. BINESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUTHIRAPARAMBU",
+      "person": {
+        "id": "2015066901401",
+        "name": "C. P. SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KURUPPASSERY",
+      "person": {
+        "id": "2015066901501",
+        "name": "GIRIJA VARADAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "AMEDA",
+      "person": {
+        "id": "2015066901601",
+        "name": "E. S. JAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANNEMPILLY",
+      "person": {
+        "id": "2015066901701",
+        "name": "SAJU PONGALAYIL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "UDAYAMPEROOR MARKET",
+      "person": {
+        "id": "2015066901801",
+        "name": "DEVARAJAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MANGAIKAVALA WEST",
+      "person": {
+        "id": "2015066901901",
+        "name": "MINI DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THEREKKAL",
+      "person": {
+        "id": "2015066902001",
+        "name": "USHA PAVITRAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

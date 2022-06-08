@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345341733,
+  "date": "2019-08-21",
+  "name": "Iritty  Block Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "372.94km",
+  "localbody_code": "B131000",
+  "no_of_wards": 13,
+  "population": 160277,
+  "male": 80433,
+  "female": 79844,
+  "population_density": 430,
+  "sex_ratio": 993,
+  "literacy_rate": 90.44,
+  "literacy_rate_male": 94.4,
+  "literacy_rate_female": 86.46,
+  "president": "N.T.ROSAMMA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PATTANNUR",
+      "person": {
+        "id": "2015014700101",
+        "name": "K.V. MOHANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MADATHIL",
+      "person": {
+        "id": "2015014700201",
+        "name": "MOHANAN. K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALLITHODE",
+      "person": {
+        "id": "2015014700301",
+        "name": "ANITHA JANIGHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHARAL",
+      "person": {
+        "id": "2015014700401",
+        "name": "BENNY PHILIP"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANGADIKKADAVU",
+      "person": {
+        "id": "2015014700501",
+        "name": "JOHN KOCHUKAROTTU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KEEZHPALLY",
+      "person": {
+        "id": "2015014700601",
+        "name": "DAISY MANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELIMANAM",
+      "person": {
+        "id": "2015014700701",
+        "name": "LEELAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDOOR",
+      "person": {
+        "id": "2015014700801",
+        "name": "N.T. ROSAMMA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALAYAD",
+      "person": {
+        "id": "2015014700901",
+        "name": "V.K. KARTHYAYANI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THILLENKERY",
+      "person": {
+        "id": "2015014701001",
+        "name": "PRASANTHAN.M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KEEZHALLUR",
+      "person": {
+        "id": "2015014701101",
+        "name": "C.K. RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "EDAYANNUR",
+      "person": {
+        "id": "2015014701201",
+        "name": "MINI. K.V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOODALI",
+      "person": {
+        "id": "2015014701301",
+        "name": "B. SEENA PRADEEP"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

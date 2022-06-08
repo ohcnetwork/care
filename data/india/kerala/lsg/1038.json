@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349017464,
+  "date": "2019-08-21",
+  "name": "Moodadi  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Panthalayani",
+  "area": "16.02km",
+  "localbody_code": "G110803",
+  "no_of_wards": 18,
+  "population": 27653,
+  "male": 13510,
+  "female": 14143,
+  "population_density": 1726,
+  "sex_ratio": 1047,
+  "literacy_rate": 89.92,
+  "literacy_rate_male": 95.52,
+  "literacy_rate_female": 84.66,
+  "president": "SHEEJA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KODIKKAL",
+      "person": {
+        "id": "2015103800101",
+        "name": "MADHAVAN U V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IRUPATHAM MILE",
+      "person": {
+        "id": "2015103800201",
+        "name": "JEEVANANDAN K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAMBILAD",
+      "person": {
+        "id": "2015103800301",
+        "name": "SURESH V  V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VEERAVANCHERY",
+      "person": {
+        "id": "2015103800401",
+        "name": "MINI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHINGAPURAM",
+      "person": {
+        "id": "2015103800501",
+        "name": "HARSHALATHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VALIYAMALA",
+      "person": {
+        "id": "2015103800601",
+        "name": "C K RAJANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NERAVATH",
+      "person": {
+        "id": "2015103800701",
+        "name": "JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUCHUKUNNU NORTH",
+      "person": {
+        "id": "2015103800801",
+        "name": "SASI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUCHUKUNNU CENTRAL",
+      "person": {
+        "id": "2015103800901",
+        "name": "C K SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUCHUKUNNU SOUTH",
+      "person": {
+        "id": "2015103801001",
+        "name": "V P BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "GOPALAPURAM",
+      "person": {
+        "id": "2015103801101",
+        "name": "PREMALATHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PALAKKULAM",
+      "person": {
+        "id": "2015103801201",
+        "name": "K SATHYAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOODADI",
+      "person": {
+        "id": "2015103801301",
+        "name": "P V GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "HILLBAZAR",
+      "person": {
+        "id": "2015103801401",
+        "name": "SREEJITHA K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NANDI",
+      "person": {
+        "id": "2015103801501",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VEEMANGALAM",
+      "person": {
+        "id": "2015103801601",
+        "name": "SOMALATHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KATALOOR",
+      "person": {
+        "id": "2015103801701",
+        "name": "NAFEESA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AVIKKAL",
+      "person": {
+        "id": "2015103801801",
+        "name": "RASHEEDA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,365 @@
+{
+  "timeStamp": 1566345694350,
+  "date": "2019-08-21",
+  "name": "Kanhangad  Municipality, Kasargode District",
+  "district": "Kasargode",
+  "area": "39.54km",
+  "localbody_code": "M140100",
+  "no_of_wards": 43,
+  "population": 65499,
+  "male": 31599,
+  "female": 33900,
+  "population_density": 1446,
+  "sex_ratio": 1047,
+  "literacy_rate": 85.51,
+  "literacy_rate_male": 91.65,
+  "literacy_rate_female": 79.31,
+  "chairman": "VVRAMESHAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "BALLAKADAPURAM WEST",
+      "person": {
+        "id": "2015022300101",
+        "name": "VELAYUDHAN K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BALLAKADAPURAM EAST",
+      "person": {
+        "id": "2015022300201",
+        "name": "M P JAFAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANHANGAD TOWN",
+      "person": {
+        "id": "2015022300301",
+        "name": "GANGA RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ATHIYAMBOOR",
+      "person": {
+        "id": "2015022300401",
+        "name": "V V RAMESHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "DURGGA HIGHER SECONDARY SCHOOL",
+      "person": {
+        "id": "2015022300501",
+        "name": "SREEDHARAN H R"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARATTUVAYAL",
+      "person": {
+        "id": "2015022300601",
+        "name": "SUKANYA H R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NELLIKATTU",
+      "person": {
+        "id": "2015022300701",
+        "name": "SAVITRI K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "G.H.S  BALLA EAST",
+      "person": {
+        "id": "2015022300801",
+        "name": "LATHA K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "A C NAGAR",
+      "person": {
+        "id": "2015022300901",
+        "name": "AJAYAKUMAR T V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ADAMBIL",
+      "person": {
+        "id": "2015022301001",
+        "name": "BALAKRISHNAN M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THOYAMMAL",
+      "person": {
+        "id": "2015022301101",
+        "name": "K V RATHEESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ARANGADI",
+      "person": {
+        "id": "2015022301201",
+        "name": "LATHA A D"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "N G O QUARTERS",
+      "person": {
+        "id": "2015022301301",
+        "name": "VIJAYA MUKUND"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015022301401",
+        "name": "RAMSHEED HOSDURG"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "LAKSHMI NAGAR",
+      "person": {
+        "id": "2015022301501",
+        "name": "M BALRAJ"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KANIYAMKULAM",
+      "person": {
+        "id": "2015022301601",
+        "name": "SUMAYYA T K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MATHOTH",
+      "person": {
+        "id": "2015022301701",
+        "name": "USHA K V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NILANKARA",
+      "person": {
+        "id": "2015022301801",
+        "name": "K V MEERA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KANHANGAD SOUTH HIGHER SECONDARY SCHOOL",
+      "person": {
+        "id": "2015022301901",
+        "name": "UNNIKRISHNAN N"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ARAYI KARTHIKA",
+      "person": {
+        "id": "2015022302001",
+        "name": "C K VALSALAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "BHOODANAM COLONY",
+      "person": {
+        "id": "2015022302101",
+        "name": "MINI K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHEDI ROAD DIVYAMPARA",
+      "person": {
+        "id": "2015022302201",
+        "name": "SHARADA M"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "UPPILIKAI HIGH SCHOOL",
+      "person": {
+        "id": "2015022302301",
+        "name": "BHAGEERATHI T V"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "PUTHUKAI",
+      "person": {
+        "id": "2015022302401",
+        "name": "A SOUMINI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MADURAMKAI",
+      "person": {
+        "id": "2015022302501",
+        "name": "SARASWATHI K V"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "AINGOTH",
+      "person": {
+        "id": "2015022302601",
+        "name": "K K GEETHA"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PADANNAKAD",
+      "person": {
+        "id": "2015022302701",
+        "name": "ABDUL RAZAK THAILAKANDY"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THEERTHAMKARA",
+      "person": {
+        "id": "2015022302801",
+        "name": "M M NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "MARAKAPPU KADAPPURAM",
+      "person": {
+        "id": "2015022302901",
+        "name": "SHYJA"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "OZHINJAVALAPPU",
+      "person": {
+        "id": "2015022303001",
+        "name": "K SUMATHI"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KARUVALAM",
+      "person": {
+        "id": "2015022303101",
+        "name": "SULAIKA L"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KURUNTHOOR",
+      "person": {
+        "id": "2015022303201",
+        "name": "REMANI M"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "NHANIKKADAVU",
+      "person": {
+        "id": "2015022303301",
+        "name": "ABOOBACKER P"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "MOOVARIKUNDU",
+      "person": {
+        "id": "2015022303401",
+        "name": "K T VASANTHI"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "PATTAKKAL",
+      "person": {
+        "id": "2015022303501",
+        "name": "ASSINAR KALLURAVI"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "MURIYANAVI",
+      "person": {
+        "id": "2015022303601",
+        "name": "SAKKEENA YOUSUF"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "KALLOORAVI",
+      "person": {
+        "id": "2015022303701",
+        "name": "KHADEEJA P"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "AVIYIL",
+      "person": {
+        "id": "2015022303801",
+        "name": "MAHAMOOD MURIYANAVI"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "KUSHAL NAGAR SOUTH",
+      "person": {
+        "id": "2015022303901",
+        "name": "SANTHOSH K"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "HOSDURG KADAPPURAM",
+      "person": {
+        "id": "2015022304001",
+        "name": "K MOHAMMED KUNHI"
+      }
+    },
+    {
+      "ward_number": "41",
+      "name": "KOVVAL",
+      "person": {
+        "id": "2015022304101",
+        "name": "SAVITHA KUMARI K T"
+      }
+    },
+    {
+      "ward_number": "42",
+      "name": "AVIKARA",
+      "person": {
+        "id": "2015022304201",
+        "name": "NARAYANAN A"
+      }
+    },
+    {
+      "ward_number": "43",
+      "name": "MEENAPPIES",
+      "person": {
+        "id": "2015022304301",
+        "name": "KADHEEJA HAMEED"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

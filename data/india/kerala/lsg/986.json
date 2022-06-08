@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348833671,
+  "date": "2019-08-21",
+  "name": "Tavanur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Ponnani",
+  "area": "42.37km",
+  "localbody_code": "G101401",
+  "no_of_wards": 19,
+  "population": 46993,
+  "male": 22587,
+  "female": 24406,
+  "population_density": 1109,
+  "sex_ratio": 1080,
+  "literacy_rate": 87.12,
+  "literacy_rate_male": 90.96,
+  "literacy_rate_female": 82.29,
+  "president": "SUBRAHMANIANKODIPARAMBIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "TAVANUR",
+      "person": {
+        "id": "2015098600101",
+        "name": "UNNIKRISHNAN V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "TAVANUR SOUTH",
+      "person": {
+        "id": "2015098600201",
+        "name": "NASEERA C P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOOVANKRA",
+      "person": {
+        "id": "2015098600301",
+        "name": "ASSAINAR HAJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADAKASSERY NORTH",
+      "person": {
+        "id": "2015098600401",
+        "name": "SUBAIDA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADAKASSERY",
+      "person": {
+        "id": "2015098600501",
+        "name": "SHINI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELLANCHERY",
+      "person": {
+        "id": "2015098600601",
+        "name": "MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MADHIRASSERY",
+      "person": {
+        "id": "2015098600701",
+        "name": "SUBRAHMANIAN KODIPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOORADA",
+      "person": {
+        "id": "2015098600801",
+        "name": "ABDUL NAZER P P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THRIKKANAPURAM EAST",
+      "person": {
+        "id": "2015098600901",
+        "name": "ANEESH P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THRIKKANAPURAM WEST",
+      "person": {
+        "id": "2015098601001",
+        "name": "SINDHU CHAMAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KACHERIPPARAMBU",
+      "person": {
+        "id": "2015098601101",
+        "name": "GOPI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MARAVANCHERY EAST",
+      "person": {
+        "id": "2015098601201",
+        "name": "SARAFUNEESA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARAVANCHERY",
+      "person": {
+        "id": "2015098601301",
+        "name": "K SOBHANA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLOOR",
+      "person": {
+        "id": "2015098601401",
+        "name": "PREMALATHA A K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AYANKALAM",
+      "person": {
+        "id": "2015098601501",
+        "name": "RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ANTHYALAMKUDAM",
+      "person": {
+        "id": "2015098601601",
+        "name": "SIVADAS T V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ATHALUR",
+      "person": {
+        "id": "2015098601701",
+        "name": "SUNITHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MATHUR",
+      "person": {
+        "id": "2015098601801",
+        "name": "P PRAMEELA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MATTAM",
+      "person": {
+        "id": "2015098601901",
+        "name": "JAMEELA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

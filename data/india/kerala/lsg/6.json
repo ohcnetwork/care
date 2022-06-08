@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344856876,
+  "date": "2019-08-21",
+  "name": "Nedumangad  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nedumangad",
+  "area": "123.5km",
+  "localbody_code": "B010600",
+  "no_of_wards": 13,
+  "population": 147296,
+  "male": 72573,
+  "female": 74723,
+  "population_density": 1192,
+  "sex_ratio": 1030,
+  "literacy_rate": 90.15,
+  "literacy_rate_male": 94.2,
+  "literacy_rate_female": 86.24,
+  "president": "BBIJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANAVOOR",
+      "person": {
+        "id": "2015000600101",
+        "name": "SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ATTUKAL",
+      "person": {
+        "id": "2015000600201",
+        "name": "R J MANJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHULLIMANOOR",
+      "person": {
+        "id": "2015000600301",
+        "name": "SUNITHAKUMARI M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARUVIKKARA",
+      "person": {
+        "id": "2015000600401",
+        "name": "PREETHA O S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERIYAKONNI",
+      "person": {
+        "id": "2015000600501",
+        "name": "SUVARNNA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KACHANI",
+      "person": {
+        "id": "2015000600601",
+        "name": "GEETHANJALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARAKULAM",
+      "person": {
+        "id": "2015000600701",
+        "name": "SURESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MARUTHOOR",
+      "person": {
+        "id": "2015000600801",
+        "name": "B BIJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VATTAPPARA",
+      "person": {
+        "id": "2015000600901",
+        "name": "B PRABHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NANNATTUKAVU",
+      "person": {
+        "id": "2015000601001",
+        "name": "SAJUKUMAR S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VETTINADU",
+      "person": {
+        "id": "2015000601101",
+        "name": "RAJESH KANNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENKAVILA",
+      "person": {
+        "id": "2015000601201",
+        "name": "IRIYANAD K R SREEJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THEKKADA",
+      "person": {
+        "id": "2015000601301",
+        "name": "ANASUL REHMAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348153540,
+  "date": "2019-08-21",
+  "name": "Anakkara  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Thrithala",
+  "area": "20.95km",
+  "localbody_code": "G090101",
+  "no_of_wards": 16,
+  "population": 20047,
+  "male": 9627,
+  "female": 10420,
+  "population_density": 957,
+  "sex_ratio": 1082,
+  "literacy_rate": 88.41,
+  "literacy_rate_male": 92.14,
+  "literacy_rate_female": 85.03,
+  "president": "SINDHURAVINDRAKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "UMMATHOOR",
+      "person": {
+        "id": "2015080400101",
+        "name": "K.P PRABHAVATHI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOTTAZHIYAM",
+      "person": {
+        "id": "2015080400201",
+        "name": "VENUGOPALAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANNIYAMPERUMBALAM",
+      "person": {
+        "id": "2015080400301",
+        "name": "DIVYA ASHOK"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUTHUVILAYUMKUNNU",
+      "person": {
+        "id": "2015080400401",
+        "name": "CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTAKADAV",
+      "person": {
+        "id": "2015080400501",
+        "name": "GEETHA. M.T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUDALLUR",
+      "person": {
+        "id": "2015080400601",
+        "name": "HARIF SUBAIR .N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALAMAKKAV",
+      "person": {
+        "id": "2015080400701",
+        "name": "DEEPA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURINJIKKAV",
+      "person": {
+        "id": "2015080400801",
+        "name": "RAJU.V.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NAYYOOR",
+      "person": {
+        "id": "2015080400901",
+        "name": "M.V.BASHEER"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANNIYYOOR",
+      "person": {
+        "id": "2015080401001",
+        "name": "VINOD POOPPALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PURAMATHILSERY",
+      "person": {
+        "id": "2015080401101",
+        "name": "MINI.E.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNDRAKKODE",
+      "person": {
+        "id": "2015080401201",
+        "name": "SINDHU RAVINDRAKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANAKKARA",
+      "person": {
+        "id": "2015080401301",
+        "name": "VALSALA.M.T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MELEZHIYAM",
+      "person": {
+        "id": "2015080401401",
+        "name": "DIVYA.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUMBIDI",
+      "person": {
+        "id": "2015080401501",
+        "name": "C.T.SAIDALAVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERUMBALAM",
+      "person": {
+        "id": "2015080401601",
+        "name": "K.VIJAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

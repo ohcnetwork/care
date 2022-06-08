@@ -1,0 +1,125 @@
+{
+  "timeStamp": 1566349739919,
+  "date": "2019-08-21",
+  "name": "Edamalakkudy\n  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "area": null,
+  "localbody_code": "G060209",
+  "no_of_wards": 13,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "GOVINDARAJ",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MEENKUTHIKUDI",
+      "person": {
+        "id": "2015125100101",
+        "name": "AMBIKA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NENMANALKUDI",
+      "person": {
+        "id": "2015125100201",
+        "name": "BALAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULAKUTHARAKUDI",
+      "person": {
+        "id": "2015125100301",
+        "name": "GOVINDARAJ"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KEZPATHAMKUDI",
+      "person": {
+        "id": "2015125100401",
+        "name": "ESWARI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SHEDDUKUDI",
+      "person": {
+        "id": "2015125100501",
+        "name": "MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NOORADIKUDI",
+      "person": {
+        "id": "2015125100601",
+        "name": "JAYALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAPAYARKUDI",
+      "person": {
+        "id": "2015125100701",
+        "name": "MANIKALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THENPARAKUDI",
+      "person": {
+        "id": "2015125100801",
+        "name": "KASHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NORTH.EDALIPARAKUDI",
+      "person": {
+        "id": "2015125100901",
+        "name": "SHIKAPPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SOUTH.EDALIPARAKUDI",
+      "person": {
+        "id": "2015125101001",
+        "name": "RADHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANDAVANKUDI",
+      "person": {
+        "id": "2015125101101",
+        "name": "SHANMUKHAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SOCITYKUDI",
+      "person": {
+        "id": "2015125101201",
+        "name": "AMARAVATHI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AMBALAPADIKUDI",
+      "person": {
+        "id": "2015125101301",
+        "name": "LAKSHMI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

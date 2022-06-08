@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346796121,
+  "date": "2019-08-21",
+  "name": "Mutholy  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Lalam",
+  "area": "18.12km",
+  "localbody_code": "G050506",
+  "no_of_wards": 13,
+  "population": 15267,
+  "male": 7673,
+  "female": 7594,
+  "population_density": 843,
+  "sex_ratio": 990,
+  "literacy_rate": 97,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 96,
+  "president": "RUBYJOSE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADINJATTINKARA",
+      "person": {
+        "id": "2015053100101",
+        "name": "LEKHA SABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANIYAKKADU",
+      "person": {
+        "id": "2015053100201",
+        "name": "JOHN MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ALLUNKALKUNNU",
+      "person": {
+        "id": "2015053100301",
+        "name": "E.V.SUBRAMANIAN NAMBOOTHIRI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULIYANNOOR",
+      "person": {
+        "id": "2015053100401",
+        "name": "RAJAN MUNDAMATTOM"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULIYANNOOR SOUTH",
+      "person": {
+        "id": "2015053100501",
+        "name": "MINI MANOJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADAPPATTOOR",
+      "person": {
+        "id": "2015053100601",
+        "name": "MAYADEVI. N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLIYEPPALLY",
+      "person": {
+        "id": "2015053100701",
+        "name": "SANDHYA. G. NAIR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MEENACHIL",
+      "person": {
+        "id": "2015053100801",
+        "name": "RANJEET. G MEENABHAVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANTHATHALA",
+      "person": {
+        "id": "2015053100901",
+        "name": "BEENA BABY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUTHOLY",
+      "person": {
+        "id": "2015053101001",
+        "name": "RUBY JOSE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NEYOOR",
+      "person": {
+        "id": "2015053101101",
+        "name": "SCARIA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKUMURY",
+      "person": {
+        "id": "2015053101202",
+        "name": "P.R SASI PERUMPUZHAKUNNEL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THEKKUMMURY NORTH",
+      "person": {
+        "id": "2015053101302",
+        "name": "ADV. JISEMOL THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

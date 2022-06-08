@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349447651,
+  "date": "2019-08-21",
+  "name": "Pattiam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "27.88km",
+  "localbody_code": "G130905",
+  "no_of_wards": 18,
+  "population": 27589,
+  "male": 13221,
+  "female": 14368,
+  "population_density": 990,
+  "sex_ratio": 1087,
+  "literacy_rate": 92.41,
+  "literacy_rate_male": 95.9,
+  "literacy_rate_female": 89.24,
+  "president": "BALANMASTERV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KONGATTA NORTH",
+      "person": {
+        "id": "2015116100101",
+        "name": "ROJA M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "POOKODE",
+      "person": {
+        "id": "2015116100201",
+        "name": "NISHA K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "OTTACHIMAKKOOL",
+      "person": {
+        "id": "2015116100301",
+        "name": "PREMAN V . P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SOUTH PATTIAM",
+      "person": {
+        "id": "2015116100401",
+        "name": "DEEPA P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MOOZHIVAYAL",
+      "person": {
+        "id": "2015116100501",
+        "name": "K PRAVEEN KUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHIYATHERU",
+      "person": {
+        "id": "2015116100601",
+        "name": "P .C PUSHPA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUDIYANGA",
+      "person": {
+        "id": "2015116100701",
+        "name": "SUMATHI C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARYATTUPURAM",
+      "person": {
+        "id": "2015116100801",
+        "name": "BHASURI P.M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOOTERIPOIL",
+      "person": {
+        "id": "2015116100901",
+        "name": "SREELATHA P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEERATTA",
+      "person": {
+        "id": "2015116101001",
+        "name": "SOUDHA K.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVATHOOR",
+      "person": {
+        "id": "2015116101101",
+        "name": "BABY ROBERT V .V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANNAVAM COLONY",
+      "person": {
+        "id": "2015116101201",
+        "name": "SURENDRAN P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUVANCHERY",
+      "person": {
+        "id": "2015116101301",
+        "name": "VALLAYADAN RATHEESAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PATHAYAKKUNNU",
+      "person": {
+        "id": "2015116101401",
+        "name": "MAJISHA P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOTTAYODI",
+      "person": {
+        "id": "2015116101501",
+        "name": "BALAN MASTER V"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KONKACHI",
+      "person": {
+        "id": "2015116101601",
+        "name": "MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EAST KADIRUR",
+      "person": {
+        "id": "2015116101701",
+        "name": "SURESH A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KONGATTA",
+      "person": {
+        "id": "2015116101801",
+        "name": "JEENA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

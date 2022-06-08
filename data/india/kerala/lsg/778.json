@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348071133,
+  "date": "2019-08-21",
+  "name": "Parappukkara  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Irinjalkkuda",
+  "area": "22.02km",
+  "localbody_code": "G081204",
+  "no_of_wards": 18,
+  "population": 26641,
+  "male": 12961,
+  "female": 13680,
+  "population_density": 1210,
+  "sex_ratio": 1055,
+  "literacy_rate": 91.57,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 88.35,
+  "president": "KARTHIKAJAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MULANGU",
+      "person": {
+        "id": "2015077800101",
+        "name": "K V MOLI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARAPPUKKARA PALLAM",
+      "person": {
+        "id": "2015077800202",
+        "name": "P J SIBI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "RAPPAL",
+      "person": {
+        "id": "2015077800301",
+        "name": "REMYA ANIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KURUMALI",
+      "person": {
+        "id": "2015077800401",
+        "name": "KARTHIKA JAYAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLAYI",
+      "person": {
+        "id": "2015077800501",
+        "name": "K K RAJAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANTHALLUR",
+      "person": {
+        "id": "2015077800601",
+        "name": "SHAILA DASAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOLATHUR",
+      "person": {
+        "id": "2015077800701",
+        "name": "P D NELSON"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALATHUR SOUTH",
+      "person": {
+        "id": "2015077800801",
+        "name": "JALAJA THILAKAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALATHUR NORTH",
+      "person": {
+        "id": "2015077800901",
+        "name": "PREETHA SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAILOOR",
+      "person": {
+        "id": "2015077801001",
+        "name": "K S JOHNSON"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NANDIKKARA",
+      "person": {
+        "id": "2015077801101",
+        "name": "V S VENU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PONGOTHRA",
+      "person": {
+        "id": "2015077801201",
+        "name": "AMBILY SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUTHRATHIKKARA",
+      "person": {
+        "id": "2015077801301",
+        "name": "RADHA UNNICHEKKAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUTHRATHIKKARA WEST",
+      "person": {
+        "id": "2015077801401",
+        "name": "N M PUSHPAKARAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAPPUKKARA",
+      "person": {
+        "id": "2015077801501",
+        "name": "REENA FRANCIS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NEDUMBAL",
+      "person": {
+        "id": "2015077801601",
+        "name": "ANIL P A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THOTTIPAL SOUTH",
+      "person": {
+        "id": "2015077801701",
+        "name": "A N PRASANTH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THOTTIPAL NORTH",
+      "person": {
+        "id": "2015077801801",
+        "name": "SHAJU MONATT"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

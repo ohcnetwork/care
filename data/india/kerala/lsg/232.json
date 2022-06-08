@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345726645,
+  "date": "2019-08-21",
+  "name": "Kilimanoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "19.04km",
+  "localbody_code": "G010201",
+  "no_of_wards": 15,
+  "population": 17839,
+  "male": 8601,
+  "female": 9238,
+  "population_density": 937,
+  "sex_ratio": 1074,
+  "literacy_rate": 88.94,
+  "literacy_rate_male": 93.26,
+  "literacy_rate_female": 85,
+  "president": "S.RAJALEKSHMIAMMAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MALAKKAL",
+      "person": {
+        "id": "2015023200101",
+        "name": "A.BINDU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANAPPAMKUNNU",
+      "person": {
+        "id": "2015023200201",
+        "name": "M.VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VILANGARA",
+      "person": {
+        "id": "2015023200301",
+        "name": "SHAJUMOL.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUMANGALAM",
+      "person": {
+        "id": "2015023200401",
+        "name": "A.DEVADAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MULAKKALATHUKAVU",
+      "person": {
+        "id": "2015023200501",
+        "name": "K.RAVI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AROOR",
+      "person": {
+        "id": "2015023200601",
+        "name": "S.LISSY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULIMBALLIKONAM",
+      "person": {
+        "id": "2015023200701",
+        "name": "J.SAJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MALAYAMADOM",
+      "person": {
+        "id": "2015023200801",
+        "name": "B.S.REJI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "R.R.V",
+      "person": {
+        "id": "2015023200901",
+        "name": "BEENA.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHOOTTAYIL",
+      "person": {
+        "id": "2015023201001",
+        "name": "N.LUPITHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTARAM",
+      "person": {
+        "id": "2015023201101",
+        "name": "S.RAJALEKSHMI AMMAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "DEVESWARAM",
+      "person": {
+        "id": "2015023201201",
+        "name": "BINDU.L"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALATHUKAVU",
+      "person": {
+        "id": "2015023201301",
+        "name": "ANITHA.S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PONGANADU",
+      "person": {
+        "id": "2015023201401",
+        "name": "SINI.S.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VARINJOTTUKONAM",
+      "person": {
+        "id": "2015023201501",
+        "name": "LILLYKUTTY.K.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

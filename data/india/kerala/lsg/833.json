@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348255932,
+  "date": "2019-08-21",
+  "name": "Alanallur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Manarkkad",
+  "area": "58.24km",
+  "localbody_code": "G090501",
+  "no_of_wards": 23,
+  "population": 39136,
+  "male": 19056,
+  "female": 20080,
+  "population_density": 672,
+  "sex_ratio": 1054,
+  "literacy_rate": 84.23,
+  "literacy_rate_male": 89.24,
+  "literacy_rate_female": 79.53,
+  "president": "REJI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHALAVA",
+      "person": {
+        "id": "2015083300101",
+        "name": "AYYAPPAN KUROOPPADATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UPPUKULAM",
+      "person": {
+        "id": "2015083300201",
+        "name": "SHYLAJA MADATHODI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PADIKKAPPADAM",
+      "person": {
+        "id": "2015083300301",
+        "name": "MADATHODI RAHMATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUNDAKKUNNU",
+      "person": {
+        "id": "2015083300401",
+        "name": "MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAIRALI",
+      "person": {
+        "id": "2015083300501",
+        "name": "DEVAKI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLIKKUNNU",
+      "person": {
+        "id": "2015083300601",
+        "name": "ZEENATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALIKKUNNU",
+      "person": {
+        "id": "2015083300701",
+        "name": "K.A. SUDARSANA KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERIMBADARI",
+      "person": {
+        "id": "2015083300801",
+        "name": "SUJATHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KATTUKULAM",
+      "person": {
+        "id": "2015083300901",
+        "name": "ABDUL RASHEED"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAKATHU KULAMBU",
+      "person": {
+        "id": "2015083301001",
+        "name": "GEETHA DEVI. K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNAMKUNDU",
+      "person": {
+        "id": "2015083301101",
+        "name": "RASHEED. P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALANGOTTIRI",
+      "person": {
+        "id": "2015083301201",
+        "name": "MOHANAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALANALLUR TOWN",
+      "person": {
+        "id": "2015083301301",
+        "name": "SUJITHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VAZHANGALLI",
+      "person": {
+        "id": "2015083301401",
+        "name": "P. MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARA",
+      "person": {
+        "id": "2015083301501",
+        "name": "UMAR KHATHAB. N"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHIRATTAKULAM",
+      "person": {
+        "id": "2015083301601",
+        "name": "AFSARA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "UNNIYAL",
+      "person": {
+        "id": "2015083301701",
+        "name": "S. RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ALUNGAL",
+      "person": {
+        "id": "2015083301801",
+        "name": "REJI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NALLORPPULLI",
+      "person": {
+        "id": "2015083301901",
+        "name": "MEHARBAN. M"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "YATHEEMKHANA",
+      "person": {
+        "id": "2015083302001",
+        "name": "K.T. ABDUL NASSER"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ALUMKUNNU",
+      "person": {
+        "id": "2015083302101",
+        "name": "YAHIYA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KOTTAPPALLA",
+      "person": {
+        "id": "2015083302201",
+        "name": "GIRIJA. P"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUNJUKULAM",
+      "person": {
+        "id": "2015083302301",
+        "name": "SUNITHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

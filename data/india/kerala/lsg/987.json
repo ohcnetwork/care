@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348842048,
+  "date": "2019-08-21",
+  "name": "Vattamkulam  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Ponnani",
+  "area": "20.84km",
+  "localbody_code": "G101402",
+  "no_of_wards": 19,
+  "population": 28469,
+  "male": 13698,
+  "female": 14771,
+  "population_density": 1366,
+  "sex_ratio": 1078,
+  "literacy_rate": 88.05,
+  "literacy_rate_male": 91.93,
+  "literacy_rate_female": 84.17,
+  "president": "SREEJAP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANOOR",
+      "person": {
+        "id": "2015098700101",
+        "name": "SHAJI MOL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADUNGAMKUNNU",
+      "person": {
+        "id": "2015098700201",
+        "name": "JAMEELA P P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AREKKAVU",
+      "person": {
+        "id": "2015098700301",
+        "name": "SREEJA P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEKANOOR",
+      "person": {
+        "id": "2015098700401",
+        "name": "PATHIL ASHRAF"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POTTUR",
+      "person": {
+        "id": "2015098700501",
+        "name": "RAMACHANDRAN P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANTHALOOR",
+      "person": {
+        "id": "2015098700601",
+        "name": "ANITHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUTTIPPALA",
+      "person": {
+        "id": "2015098700701",
+        "name": "P KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHOLAKKUNNU",
+      "person": {
+        "id": "2015098700801",
+        "name": "MUSTHAFA M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PURAMUNDEKKADU",
+      "person": {
+        "id": "2015098700901",
+        "name": "SEENATH A V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADUVATTAM",
+      "person": {
+        "id": "2015098701001",
+        "name": "ABDUL MAJEED"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALADITHARA",
+      "person": {
+        "id": "2015098701101",
+        "name": "PREETHA P V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANIKKUNNU",
+      "person": {
+        "id": "2015098701201",
+        "name": "RABIYA K P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VATTAMKULAM",
+      "person": {
+        "id": "2015098701301",
+        "name": "NAJEEB M A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDAPPAL CHUNGAM",
+      "person": {
+        "id": "2015098701401",
+        "name": "BINDHU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THYKKADU",
+      "person": {
+        "id": "2015098701501",
+        "name": "SHAREEFA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAVUPRA",
+      "person": {
+        "id": "2015098701601",
+        "name": "K PREMALATHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUDUR",
+      "person": {
+        "id": "2015098701701",
+        "name": "AMEENA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ERUVAPRA",
+      "person": {
+        "id": "2015098701801",
+        "name": "RANJUSHA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MELMURI",
+      "person": {
+        "id": "2015098701902",
+        "name": "K V KUMARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

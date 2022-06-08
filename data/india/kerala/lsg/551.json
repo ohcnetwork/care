@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346853173,
+  "date": "2019-08-21",
+  "name": "Panachikkad  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pallom",
+  "area": "22.74km",
+  "localbody_code": "G050803",
+  "no_of_wards": 23,
+  "population": 35916,
+  "male": 17789,
+  "female": 18127,
+  "population_density": 1579,
+  "sex_ratio": 1019,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "E.RSUNILKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUNNACKAL",
+      "person": {
+        "id": "2015055100101",
+        "name": "C.V CHACKO"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ALAPUZHA",
+      "person": {
+        "id": "2015055100201",
+        "name": "ANNAMMA (THANKAMMA MARKOSE)"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLLAD",
+      "person": {
+        "id": "2015055100301",
+        "name": "SHEBIN JACOB"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALAMELKAVU",
+      "person": {
+        "id": "2015055100401",
+        "name": "T T BIJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANIYAMALA",
+      "person": {
+        "id": "2015055100501",
+        "name": "PRIYA MADHUSOODANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHOZHIYAKADU",
+      "person": {
+        "id": "2015055100601",
+        "name": "JAYASREE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARUTHUMPARA",
+      "person": {
+        "id": "2015055100701",
+        "name": "BINDHU JIJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NELLICKAL",
+      "person": {
+        "id": "2015055100801",
+        "name": "PRASEEDA C RAJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANACHIKAD",
+      "person": {
+        "id": "2015055100901",
+        "name": "SUMA MUKUNDAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VELLUTHURUTHY",
+      "person": {
+        "id": "2015055101001",
+        "name": "SINI ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PADIYARA",
+      "person": {
+        "id": "2015055101101",
+        "name": "E.R SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VILAKKAMKUNNU",
+      "person": {
+        "id": "2015055101201",
+        "name": "SUPRIYA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATHAMUTTOM",
+      "person": {
+        "id": "2015055101301",
+        "name": "PUNNOOSE THOMAS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MAYILADUMKUNNU",
+      "person": {
+        "id": "2015055101401",
+        "name": "ABYSON K ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUZHIMATTOM",
+      "person": {
+        "id": "2015055101501",
+        "name": "ROY MATHEW"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015055101601",
+        "name": "JOMOL MANOJ"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AKKALAM",
+      "person": {
+        "id": "2015055101701",
+        "name": "C M SALI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHANNANIKAD",
+      "person": {
+        "id": "2015055101801",
+        "name": "DR. LIJI S NAIR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THOPPIL",
+      "person": {
+        "id": "2015055101901",
+        "name": "PRASANNA SHAJI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "POOVANTHURUTH",
+      "person": {
+        "id": "2015055102001",
+        "name": "UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "POWERHOUSE",
+      "person": {
+        "id": "2015055102101",
+        "name": "E T ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KADUVAKULAM",
+      "person": {
+        "id": "2015055102201",
+        "name": "ANIE MAMMAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KUNNAMPALLI",
+      "person": {
+        "id": "2015055102301",
+        "name": "ANILA VIJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

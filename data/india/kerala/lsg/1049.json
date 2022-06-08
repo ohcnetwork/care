@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349051454,
+  "date": "2019-08-21",
+  "name": "Kizhakkoth  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Koduvaliy",
+  "area": "19.84km",
+  "localbody_code": "G111003",
+  "no_of_wards": 18,
+  "population": 25184,
+  "male": 12704,
+  "female": 12480,
+  "population_density": 1269,
+  "sex_ratio": 982,
+  "literacy_rate": 90.53,
+  "literacy_rate_male": 95.68,
+  "literacy_rate_female": 85.32,
+  "president": "USSAINN.C",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELETTIL",
+      "person": {
+        "id": "2015104900101",
+        "name": "ASHIQUE REHMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHALIKODE",
+      "person": {
+        "id": "2015104900201",
+        "name": "SREEJA SATHYAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PONNUMTHORA",
+      "person": {
+        "id": "2015104900301",
+        "name": "GEETHA V.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALIYAPARAMBA",
+      "person": {
+        "id": "2015104900401",
+        "name": "ABDUL JABBAR KANNANKUNNUMMEL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AVILORA",
+      "person": {
+        "id": "2015104900501",
+        "name": "MAIMOONA KAYYALKADUKAYIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AVILORA CENTRE",
+      "person": {
+        "id": "2015104900601",
+        "name": "USSAIN N.C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAKKUNNU",
+      "person": {
+        "id": "2015104900701",
+        "name": "T.P IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVATHODUKA",
+      "person": {
+        "id": "2015104900801",
+        "name": "SARALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIZHAKKOTH EAST",
+      "person": {
+        "id": "2015104900901",
+        "name": "SHIJI M. ORALAKKOTT"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKOTH",
+      "person": {
+        "id": "2015104901001",
+        "name": "JAMEELA CHELEKKATTIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KACHERIMUKKU",
+      "person": {
+        "id": "2015104901101",
+        "name": "NASEEMA JAMALUDHEEN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAVILUMMARAM",
+      "person": {
+        "id": "2015104901201",
+        "name": "MANOJ V M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARIVEETTILTHAZHAM",
+      "person": {
+        "id": "2015104901301",
+        "name": "INDU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANDIYIL",
+      "person": {
+        "id": "2015104901401",
+        "name": "NAFEESA U.P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANNOOR",
+      "person": {
+        "id": "2015104901501",
+        "name": "MUHAMMED ASHRAF"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OZHALAKKUNNU",
+      "person": {
+        "id": "2015104901601",
+        "name": "ABDURAHMAN OZHALAKKUNNUMMAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ELETTIL EAST",
+      "person": {
+        "id": "2015104901701",
+        "name": "RAJNA KURUKKAMPOYIL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHETTAKKADAVU",
+      "person": {
+        "id": "2015104901801",
+        "name": "MUHAMMED M.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

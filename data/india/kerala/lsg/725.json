@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566347452682,
+  "date": "2019-08-21",
+  "name": "Desamangalam  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vadakkamchery",
+  "area": "23.34km",
+  "localbody_code": "G080301",
+  "no_of_wards": 15,
+  "population": 18237,
+  "male": 8816,
+  "female": 9421,
+  "population_density": 781,
+  "sex_ratio": 1068,
+  "literacy_rate": 80.23,
+  "literacy_rate_male": 84.64,
+  "literacy_rate_female": 76.22,
+  "president": "MANJULAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VARAVATTOOR",
+      "person": {
+        "id": "2015072500101",
+        "name": "SURESH BABU K.G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KONDAYOOR",
+      "person": {
+        "id": "2015072500201",
+        "name": "MANOJ P.B"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLOOR CENTRE",
+      "person": {
+        "id": "2015072500301",
+        "name": "SUDHA P.N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLOOR EAST",
+      "person": {
+        "id": "2015072500402",
+        "name": "JAYARAJ. K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NAMBRAM",
+      "person": {
+        "id": "2015072500501",
+        "name": "RAHMATHBEEVI A.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTUVATTOOR",
+      "person": {
+        "id": "2015072500601",
+        "name": "AJITHA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "DESAMANGALAM CENTRE",
+      "person": {
+        "id": "2015072500701",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ATTUPURAM",
+      "person": {
+        "id": "2015072500801",
+        "name": "MANEESH M.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLAM",
+      "person": {
+        "id": "2015072500901",
+        "name": "SALEEM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNNUMPURAM",
+      "person": {
+        "id": "2015072501001",
+        "name": "MALATHY K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MELE THALASSERY",
+      "person": {
+        "id": "2015072501101",
+        "name": "ABDUL RASAK"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "DESAMANGALAM WEST",
+      "person": {
+        "id": "2015072501201",
+        "name": "LAKSHMANAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THALASSERY",
+      "person": {
+        "id": "2015072501301",
+        "name": "NISHA K.A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADUKASSERY",
+      "person": {
+        "id": "2015072501401",
+        "name": "RAMANI R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARANGOTTUKARA",
+      "person": {
+        "id": "2015072501501",
+        "name": "MANJULA M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346132865,
+  "date": "2019-08-21",
+  "name": "Thrikkaruva  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchalummoodu",
+  "area": "18.39km",
+  "localbody_code": "G020708",
+  "no_of_wards": 16,
+  "population": 23122,
+  "male": 11358,
+  "female": 11764,
+  "population_density": 1257,
+  "sex_ratio": 1036,
+  "literacy_rate": 89.95,
+  "literacy_rate_male": 94.24,
+  "literacy_rate_female": 85.96,
+  "president": "K.CHANDRASEKHARANPILLAI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ASHTAMUDI",
+      "person": {
+        "id": "2015035500101",
+        "name": "PRIYA.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VADAKKEKKARA",
+      "person": {
+        "id": "2015035500201",
+        "name": "PERINAD THULASI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADUVILACHERRY",
+      "person": {
+        "id": "2015035500301",
+        "name": "K.CHANDRASEKHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "INCHAVILA",
+      "person": {
+        "id": "2015035500401",
+        "name": "RADHAKRISHNAN.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "STADIUM",
+      "person": {
+        "id": "2015035500501",
+        "name": "S.SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANJIRAMKUZHI",
+      "person": {
+        "id": "2015035500601",
+        "name": "ANIL KUMAR.P.R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NJARACKAL",
+      "person": {
+        "id": "2015035500701",
+        "name": "PUNTHALA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VANMALA",
+      "person": {
+        "id": "2015035500801",
+        "name": "SIDHIK LAL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJAVELY",
+      "person": {
+        "id": "2015035500901",
+        "name": "SUDHAMANY.T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MADURASSERRIL",
+      "person": {
+        "id": "2015035501001",
+        "name": "M.ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SAMBRANNIKKODI",
+      "person": {
+        "id": "2015035501101",
+        "name": "THANKAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "FRIENDS",
+      "person": {
+        "id": "2015035501201",
+        "name": "JAYASREE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PRAKKULAM",
+      "person": {
+        "id": "2015035501301",
+        "name": "NANDINI.G"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THEKKECHERRY",
+      "person": {
+        "id": "2015035501401",
+        "name": "S.SOBHANA KUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANALIKKADA",
+      "person": {
+        "id": "2015035501501",
+        "name": "JESSY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "HIGH SCHOOL",
+      "person": {
+        "id": "2015035501601",
+        "name": "SIVASHYLA.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

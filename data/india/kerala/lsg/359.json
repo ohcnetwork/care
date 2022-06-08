@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346152109,
+  "date": "2019-08-21",
+  "name": "Elampalloor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Mukathala",
+  "area": "0km",
+  "localbody_code": "G020904",
+  "no_of_wards": 21,
+  "population": 45427,
+  "male": 22548,
+  "female": 22879,
+  "population_density": 3244,
+  "sex_ratio": 0,
+  "literacy_rate": 80,
+  "literacy_rate_male": 90,
+  "literacy_rate_female": 70,
+  "president": "SUJATHAMOHAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOVILMUKKU",
+      "person": {
+        "id": "2015035900101",
+        "name": "GOPAKUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRIVENI",
+      "person": {
+        "id": "2015035900201",
+        "name": "GIREESHKUMAR.G"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAMPALLOOR",
+      "person": {
+        "id": "2015035900301",
+        "name": "RAJILA LATHEEF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ASUPATHRIMUKKU",
+      "person": {
+        "id": "2015035900401",
+        "name": "ANILKUMAR .N"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBIPOIKA",
+      "person": {
+        "id": "2015035900501",
+        "name": "SIVAPRABHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNDARA EAST",
+      "person": {
+        "id": "2015035900601",
+        "name": "ANILKUMAR .A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NJALIYODU",
+      "person": {
+        "id": "2015035900701",
+        "name": "MARYKUTTY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "RADIOMUKKU",
+      "person": {
+        "id": "2015035900801",
+        "name": "SINDHU GOPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUNNAMUKKU",
+      "person": {
+        "id": "2015035900901",
+        "name": "RAJANI. N"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMPUZHA",
+      "person": {
+        "id": "2015035901001",
+        "name": "K.P RENJINI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015035901101",
+        "name": "SHYLA.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMPIKKADA",
+      "person": {
+        "id": "2015035901201",
+        "name": "ANILKUMAR .N"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUREEPPALLY",
+      "person": {
+        "id": "2015035901301",
+        "name": "A . SHEREEK"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MOTHEEMUKKU",
+      "person": {
+        "id": "2015035901401",
+        "name": "JALAJA GOPAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ALUMMOODU",
+      "person": {
+        "id": "2015035901501",
+        "name": "JAYANTHIDEVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KANYAKUZHY",
+      "person": {
+        "id": "2015035901601",
+        "name": "T.VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THALAPPARAMPU",
+      "person": {
+        "id": "2015035901701",
+        "name": "SREEJA .C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHIRAYADI",
+      "person": {
+        "id": "2015035901801",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PUNUKKANNOOR",
+      "person": {
+        "id": "2015035901901",
+        "name": "SUJATHA MOHAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KULAPRA",
+      "person": {
+        "id": "2015035902001",
+        "name": "RAJI.R"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MUNDAKKAL",
+      "person": {
+        "id": "2015035902101",
+        "name": "ANILKUMAR .R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

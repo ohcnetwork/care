@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566348374956,
+  "date": "2019-08-21",
+  "name": "Pudunagaram  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kollamgode",
+  "area": "9.24km",
+  "localbody_code": "G091004",
+  "no_of_wards": 13,
+  "population": 15691,
+  "male": 7783,
+  "female": 7908,
+  "population_density": 1698,
+  "sex_ratio": 1016,
+  "literacy_rate": 79.48,
+  "literacy_rate_male": 89.04,
+  "literacy_rate_female": 70.21,
+  "president": "MOHAMEDFAROOK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARUMANCHALA",
+      "person": {
+        "id": "2015086900101",
+        "name": "MOHAMED FAROOK"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THEKKATHIVATTARAM",
+      "person": {
+        "id": "2015086900201",
+        "name": "SHAKEELA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUDUNAGARAM TOWN",
+      "person": {
+        "id": "2015086900301",
+        "name": "REENA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOSAKKADA",
+      "person": {
+        "id": "2015086900401",
+        "name": "SAFIYA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANDAPETTAVATTARAM",
+      "person": {
+        "id": "2015086900501",
+        "name": "IBRAHIMSHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLIBASAR",
+      "person": {
+        "id": "2015086900601",
+        "name": "ISMAIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTUTHERUVU",
+      "person": {
+        "id": "2015086900701",
+        "name": "SAMEENA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KULATHUMEDU",
+      "person": {
+        "id": "2015086900801",
+        "name": "SASIKALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ADICHIRA",
+      "person": {
+        "id": "2015086900901",
+        "name": "SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VARIYATHUKALAM",
+      "person": {
+        "id": "2015086901001",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIPODE THARA",
+      "person": {
+        "id": "2015086901101",
+        "name": "SWAMINATHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VEETIYODE",
+      "person": {
+        "id": "2015086901201",
+        "name": "ANITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANGODE",
+      "person": {
+        "id": "2015086901301",
+        "name": "BABY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

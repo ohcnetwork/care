@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348100976,
+  "date": "2019-08-21",
+  "name": "Mathilakam  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mathilakam",
+  "area": "12.92km",
+  "localbody_code": "G081403",
+  "no_of_wards": 17,
+  "population": 25417,
+  "male": 11817,
+  "female": 13600,
+  "population_density": 1967,
+  "sex_ratio": 1156,
+  "literacy_rate": 91.01,
+  "literacy_rate_male": 95.09,
+  "literacy_rate_female": 87.6,
+  "president": "EGSURENDRAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOOLIMUTTAM NORTH",
+      "person": {
+        "id": "2015078700101",
+        "name": "E G SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NEDUMPARAMBU",
+      "person": {
+        "id": "2015078700201",
+        "name": "HASEENA FATHAH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KATHIKODU",
+      "person": {
+        "id": "2015078700301",
+        "name": "P K MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHIYAKAVU EAST",
+      "person": {
+        "id": "2015078700401",
+        "name": "K K AHAMED KABEER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PUNNAKKABASAR",
+      "person": {
+        "id": "2015078700501",
+        "name": "BINDU SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLIVALAVU",
+      "person": {
+        "id": "2015078700601",
+        "name": "ANI ROY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MATHILAKAM",
+      "person": {
+        "id": "2015078700701",
+        "name": "K Y AZEEZ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVATHUMKADAVU",
+      "person": {
+        "id": "2015078700801",
+        "name": "SUNIL PUTHIYEDATH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ONCHAMMAVU",
+      "person": {
+        "id": "2015078700901",
+        "name": "V K RAGHUNATH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "HIGHSCHOOL",
+      "person": {
+        "id": "2015078701001",
+        "name": "HASEENA RASHEED"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALARIPARAMBU",
+      "person": {
+        "id": "2015078701101",
+        "name": "SINDHU RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHIYAKAVU SOUTH",
+      "person": {
+        "id": "2015078701201",
+        "name": "K  V AJITHKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAZHUVILANGU",
+      "person": {
+        "id": "2015078701301",
+        "name": "VIJAYALEKSHMI BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THATTUNGAL",
+      "person": {
+        "id": "2015078701401",
+        "name": "V S RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EMMAD",
+      "person": {
+        "id": "2015078701501",
+        "name": "OMANA SADHASIVAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POKLAI",
+      "person": {
+        "id": "2015078701601",
+        "name": "HEMALATHA GOPALAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOOLIMUTTAM SOUTH",
+      "person": {
+        "id": "2015078701701",
+        "name": "SUVARNA JAYASANKAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

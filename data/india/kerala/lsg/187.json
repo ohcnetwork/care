@@ -1,0 +1,228 @@
+{
+  "timeStamp": 1566345534153,
+  "date": "2019-08-21",
+  "name": "Vaikom  Municipality, Kottayam District",
+  "district": "Kottayam",
+  "area": "8.73km",
+  "localbody_code": "M050200",
+  "no_of_wards": 26,
+  "population": 22637,
+  "male": 10955,
+  "female": 11682,
+  "population_density": 2496,
+  "sex_ratio": 1030,
+  "literacy_rate": 78,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 90,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "UDAYANAPURAM",
+      "person": {
+        "id": "2015018700101",
+        "name": "ROHINIKUTTY AYYAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARUVALLI",
+      "person": {
+        "id": "2015018700201",
+        "name": "G SREEKUMARAN NAIR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERINCHILA",
+      "person": {
+        "id": "2015018700301",
+        "name": "SHERLY JAYAPRAKASH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHALAPPARAMBU",
+      "person": {
+        "id": "2015018700401",
+        "name": "P SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "INDUSTRIAL",
+      "person": {
+        "id": "2015018700501",
+        "name": "S HARIDASAN NAIR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "LINK ROAD",
+      "person": {
+        "id": "2015018700601",
+        "name": "S INDIRADEVI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEERAMKUNNUMPURAM",
+      "person": {
+        "id": "2015018700701",
+        "name": "ANOOP V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHULLITHARA",
+      "person": {
+        "id": "2015018700801",
+        "name": "SHIBI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PRAYIKKATHARA",
+      "person": {
+        "id": "2015018700901",
+        "name": "NIRMALA GOPI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ARATTUKULAM",
+      "person": {
+        "id": "2015018701001",
+        "name": "SREEKUMARI U NAIR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMPALLIYAZHAM",
+      "person": {
+        "id": "2015018701101",
+        "name": "MANIYAMMA A C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUZHAVAYIKULANGARA",
+      "person": {
+        "id": "2015018701201",
+        "name": "O MOHANA KUMARI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CONVENT",
+      "person": {
+        "id": "2015018701301",
+        "name": "SINDHU SAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THURUTHIKKARA",
+      "person": {
+        "id": "2015018701401",
+        "name": "SUMA KUSUMAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAYIPPURAM",
+      "person": {
+        "id": "2015018701501",
+        "name": "SANGEETHA K R"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015018701601",
+        "name": "R SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MOOKAMBIKACHIRA",
+      "person": {
+        "id": "2015018701701",
+        "name": "ADV.AMBARISH G VASU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "JAWAHAR WARD",
+      "person": {
+        "id": "2015018701801",
+        "name": "M T ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "V K VELAPPAN",
+      "person": {
+        "id": "2015018701901",
+        "name": "D RANJITHKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MAHADEVAKSHETHRAM",
+      "person": {
+        "id": "2015018702001",
+        "name": "ANIL BISWAS"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "L F CHURCH",
+      "person": {
+        "id": "2015018702101",
+        "name": "ADV.V V SATHYAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "E V R",
+      "person": {
+        "id": "2015018702201",
+        "name": "SOUDAMINI"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KARAYIL",
+      "person": {
+        "id": "2015018702301",
+        "name": "BIJU .V. KANNEZHATHU"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KOVILAKATHUMKADAVU",
+      "person": {
+        "id": "2015018702401",
+        "name": "SALBY SIVADAS"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "POLASSERRY",
+      "person": {
+        "id": "2015018702501",
+        "name": "P N KISHORKUMAR"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "SREENARAYANAPURAM",
+      "person": {
+        "id": "2015018702601",
+        "name": "BIJINI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

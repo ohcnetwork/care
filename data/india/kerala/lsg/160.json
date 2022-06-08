@@ -1,0 +1,253 @@
+{
+  "timeStamp": 1566345381542,
+  "date": "2019-08-21",
+  "name": "Thrissur  District Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "area": "3032km",
+  "localbody_code": "D080000",
+  "no_of_wards": 29,
+  "population": 2975440,
+  "male": 1422047,
+  "female": 1553393,
+  "population_density": 903,
+  "sex_ratio": 1085,
+  "literacy_rate": 90.18,
+  "literacy_rate_male": 93.77,
+  "literacy_rate_female": 86.94,
+  "president": "MARYTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VADAKKEKKAD",
+      "person": {
+        "id": "2015016000101",
+        "name": "T A AYISHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KATAKAMPAL",
+      "person": {
+        "id": "2015016000201",
+        "name": "K JAYASANKAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERUMAPPETTY",
+      "person": {
+        "id": "2015016000301",
+        "name": "KALYANI S NAIR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALLATHOL NAGAR",
+      "person": {
+        "id": "2015016000401",
+        "name": "K P RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THIRUVILLWAMALA",
+      "person": {
+        "id": "2015016000501",
+        "name": "DEEPA P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHELAKKARA",
+      "person": {
+        "id": "2015016000601",
+        "name": "E VENUGOPALA MENON"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAZHANI",
+      "person": {
+        "id": "2015016000701",
+        "name": "MARY THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AVANUR",
+      "person": {
+        "id": "2015016000801",
+        "name": "P R SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PEECHI",
+      "person": {
+        "id": "2015016000901",
+        "name": "LILLY FRANCIS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUTHUR",
+      "person": {
+        "id": "2015016001001",
+        "name": "E A OMANA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AMBALLUR",
+      "person": {
+        "id": "2015016001101",
+        "name": "ADV. JAYANTHI SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHUKKAD",
+      "person": {
+        "id": "2015016001201",
+        "name": "K J DIXON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ATHIRAPPILLY",
+      "person": {
+        "id": "2015016001301",
+        "name": "C G SINI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KORATTY",
+      "person": {
+        "id": "2015016001401",
+        "name": "ADV. K R SUMESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MALA",
+      "person": {
+        "id": "2015016001501",
+        "name": "ADV. NIRMAL C PATHADAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ALOOR",
+      "person": {
+        "id": "2015016001601",
+        "name": "KATHERINE PAUL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARAPPUKARA",
+      "person": {
+        "id": "2015016001701",
+        "name": "T G SANKARANARAYANAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ERIYADU",
+      "person": {
+        "id": "2015016001801",
+        "name": "NOUSHAD K A"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KAIPAMANGALAM",
+      "person": {
+        "id": "2015016001902",
+        "name": "B G VISHNU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THRIPRAYAR",
+      "person": {
+        "id": "2015016002001",
+        "name": "SOBHASUBIN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KATTOOR",
+      "person": {
+        "id": "2015016002101",
+        "name": "UDAYAPRAKASAN N K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHERPU",
+      "person": {
+        "id": "2015016002201",
+        "name": "P K LOHITHAKSHAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "AMMADAM",
+      "person": {
+        "id": "2015016002301",
+        "name": "SHEELA VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "ANTHIKKAD",
+      "person": {
+        "id": "2015016002401",
+        "name": "SIJI MOHANDAS"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "THALIKKUALAM",
+      "person": {
+        "id": "2015016002501",
+        "name": "MANJULARUNAN"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "KADAPPUARAM",
+      "person": {
+        "id": "2015016002601",
+        "name": "HAZEENA THAJUDHEEN"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "MULLASSERY",
+      "person": {
+        "id": "2015016002701",
+        "name": "JENNY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "ADAT",
+      "person": {
+        "id": "2015016002801",
+        "name": "AJITHA KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "CHOONDAL",
+      "person": {
+        "id": "2015016002901",
+        "name": "PADMINI M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

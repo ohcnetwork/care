@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348570707,
+  "date": "2019-08-21",
+  "name": "Thiruvali  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Wandoor",
+  "area": "33.83km",
+  "localbody_code": "G100305",
+  "no_of_wards": 16,
+  "population": 19937,
+  "male": 9580,
+  "female": 10357,
+  "population_density": 589,
+  "sex_ratio": 1081,
+  "literacy_rate": 81.58,
+  "literacy_rate_male": 81,
+  "literacy_rate_female": 82.16,
+  "president": "A.KOMALAVALLY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ILLATHKUNNU",
+      "person": {
+        "id": "2015091100101",
+        "name": "PRAVIL KUMAR.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAITHAYIL",
+      "person": {
+        "id": "2015091100201",
+        "name": "GOURI.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THAYAMKODE",
+      "person": {
+        "id": "2015091100301",
+        "name": "YASHIK.M.T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADAKALIPARAMB",
+      "person": {
+        "id": "2015091100401",
+        "name": "P.BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NADUVATH",
+      "person": {
+        "id": "2015091100501",
+        "name": "VIJAYALAKSHMI.P.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "A.K.G NAGAR",
+      "person": {
+        "id": "2015091100602",
+        "name": "V.K BABY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANDAMANGALAM",
+      "person": {
+        "id": "2015091100701",
+        "name": "JYOTHI MOL.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALORINGAL",
+      "person": {
+        "id": "2015091100801",
+        "name": "K.SHIVADASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTAKKUNN",
+      "person": {
+        "id": "2015091100901",
+        "name": "A.KOMALAVALLY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOLAKKAL",
+      "person": {
+        "id": "2015091101001",
+        "name": "P.RAMAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUNNAPPALA",
+      "person": {
+        "id": "2015091101101",
+        "name": "M.RAJAGOPALAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUVALI",
+      "person": {
+        "id": "2015091101201",
+        "name": "SMITHA.M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THODAYAM",
+      "person": {
+        "id": "2015091101301",
+        "name": "AMBILI.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VATTAPPARAMB",
+      "person": {
+        "id": "2015091101401",
+        "name": "SREEJA SUNIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PATHIRIYAL",
+      "person": {
+        "id": "2015091101501",
+        "name": "JAIDEV . C.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SHARATHKUNNU",
+      "person": {
+        "id": "2015091101601",
+        "name": "ANFAH.A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

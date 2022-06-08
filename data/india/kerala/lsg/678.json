@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566347264236,
+  "date": "2019-08-21",
+  "name": "Mazhuvannoor  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vadavucode",
+  "area": "49.11km",
+  "localbody_code": "G071004",
+  "no_of_wards": 19,
+  "population": 29508,
+  "male": 14866,
+  "female": 14642,
+  "population_density": 601,
+  "sex_ratio": 984,
+  "literacy_rate": 92.3,
+  "literacy_rate_male": 95.57,
+  "literacy_rate_female": 88.1,
+  "president": "AMMUKUTTYSUDARSHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALAYANCHIRANGARA",
+      "person": {
+        "id": "2015067800101",
+        "name": "MITHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAMRATA",
+      "person": {
+        "id": "2015067800201",
+        "name": "SATHI RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANOOR",
+      "person": {
+        "id": "2015067800301",
+        "name": "DHANYA JAYASEKHAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "TRIKKALATHUR",
+      "person": {
+        "id": "2015067800401",
+        "name": "LIJI THAMPI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VEETOOR",
+      "person": {
+        "id": "2015067800501",
+        "name": "SHAINY KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NELLAD",
+      "person": {
+        "id": "2015067800602",
+        "name": "SEEBA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERUNELLAD",
+      "person": {
+        "id": "2015067800701",
+        "name": "ALLEY JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNAKKURUDY",
+      "person": {
+        "id": "2015067800801",
+        "name": "JOYKUTTY V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015067800901",
+        "name": "VIJAYALAKSHMI SASI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATHALAPPARAMBU",
+      "person": {
+        "id": "2015067801001",
+        "name": "NALINI MOHANAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTIPPILLY",
+      "person": {
+        "id": "2015067801101",
+        "name": "ANU .E. VARGHESE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANGALATHUNADA",
+      "person": {
+        "id": "2015067801201",
+        "name": "LATHEESH .K. AYYAPPAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAZHUVANNOOR",
+      "person": {
+        "id": "2015067801301",
+        "name": "P.N. SUDARSHANAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADACKANAD",
+      "person": {
+        "id": "2015067801401",
+        "name": "BENNY MATHEW"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EZHIPRAM",
+      "person": {
+        "id": "2015067801501",
+        "name": "BABY KURIACHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THATTAMUKAL",
+      "person": {
+        "id": "2015067801601",
+        "name": "BETTEENA ELDHO"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "BLANDEVAR",
+      "person": {
+        "id": "2015067801701",
+        "name": "AMMUKUTTY SUDARSHANAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VALAMBUR",
+      "person": {
+        "id": "2015067801801",
+        "name": "ARUN VASU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHEENIKUZHY",
+      "person": {
+        "id": "2015067801902",
+        "name": "BASIL K GEORGE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

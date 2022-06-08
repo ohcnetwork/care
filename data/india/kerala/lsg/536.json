@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346812202,
+  "date": "2019-08-21",
+  "name": "Poonjar Thekkekara  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Erattupetta",
+  "area": "60.86km",
+  "localbody_code": "G050605",
+  "no_of_wards": 14,
+  "population": 18486,
+  "male": 9373,
+  "female": 9113,
+  "population_density": 304,
+  "sex_ratio": 972,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 95,
+  "president": "NIRMALAMOHANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "POONJAR TOWN",
+      "person": {
+        "id": "2015053600101",
+        "name": "TESSY BIJU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLEKKULAM",
+      "person": {
+        "id": "2015053600201",
+        "name": "BINDU SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PERINGULAM",
+      "person": {
+        "id": "2015053600301",
+        "name": "SHINY SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ADIVARAM",
+      "person": {
+        "id": "2015053600401",
+        "name": "JISSOY THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAIPPALLY",
+      "person": {
+        "id": "2015053600501",
+        "name": "T N VINOD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATTINAL",
+      "person": {
+        "id": "2015053600601",
+        "name": "SAJI SIBI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDAMALA",
+      "person": {
+        "id": "2015053600701",
+        "name": "SATHEESH V S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNONNI",
+      "person": {
+        "id": "2015053600801",
+        "name": "GEETHA RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHAMPUZHA",
+      "person": {
+        "id": "2015053600901",
+        "name": "MINIMOL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHOLATHADAM",
+      "person": {
+        "id": "2015053601001",
+        "name": "REJI SHAJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MURINGAPPURAM",
+      "person": {
+        "id": "2015053601101",
+        "name": "BEENA BENNY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADALADIMATTAM",
+      "person": {
+        "id": "2015053601201",
+        "name": "T S SNEHADHANAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAYYANITHOTTAM",
+      "person": {
+        "id": "2015053601301",
+        "name": "ANILKUMAR M K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADOOPPARA",
+      "person": {
+        "id": "2015053601403",
+        "name": "NIRMALA MOHANAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

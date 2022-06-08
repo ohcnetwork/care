@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349113361,
+  "date": "2019-08-21",
+  "name": "Olavanna  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kozhikode",
+  "area": "21.43km",
+  "localbody_code": "G111204",
+  "no_of_wards": 23,
+  "population": 44398,
+  "male": 21963,
+  "female": 22435,
+  "population_density": 2072,
+  "sex_ratio": 1022,
+  "literacy_rate": 93.29,
+  "literacy_rate_male": 97.11,
+  "literacy_rate_female": 89.57,
+  "president": "K.THANKAMANI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "IRINGALLUR",
+      "person": {
+        "id": "2015107000101",
+        "name": "M.M.PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PALAZHI PALA",
+      "person": {
+        "id": "2015107000201",
+        "name": "T.P.SUMA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALAZHI WEST",
+      "person": {
+        "id": "2015107000301",
+        "name": "USHADEVI.M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALAZHI EAST",
+      "person": {
+        "id": "2015107000401",
+        "name": "JAYALAKSHMI.K.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANTHEERANKAVE NORTH",
+      "person": {
+        "id": "2015107000501",
+        "name": "HARSHALATHA.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANTHEERANKAVE SOUTH",
+      "person": {
+        "id": "2015107000601",
+        "name": "SHEENA.A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOLENKARA",
+      "person": {
+        "id": "2015107000701",
+        "name": "SABISHA. P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTHUVANATHARA",
+      "person": {
+        "id": "2015107000801",
+        "name": "PUSHPAKUMARI.A.M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANAKKADAVE",
+      "person": {
+        "id": "2015107000901",
+        "name": "SHAJI.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KODAL NADAKKAVE",
+      "person": {
+        "id": "2015107001001",
+        "name": "RAMANI.E"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOORKKANAD",
+      "person": {
+        "id": "2015107001101",
+        "name": "SAJITHA.C.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHATHOTHARA",
+      "person": {
+        "id": "2015107001201",
+        "name": "M.N.VENUGOPALAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODINATTUMUKKU",
+      "person": {
+        "id": "2015107001301",
+        "name": "VIJAYAN. V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALAKURUMBA",
+      "person": {
+        "id": "2015107001401",
+        "name": "PALAKURUMBIL JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "OLAVANNA",
+      "person": {
+        "id": "2015107001501",
+        "name": "MADATHIL ABDUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THONDILAKKADAVE",
+      "person": {
+        "id": "2015107001601",
+        "name": "VELAYUDHAN.P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAYATTI",
+      "person": {
+        "id": "2015107001701",
+        "name": "K.K.JAYAPRAKASAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ODUMBRA",
+      "person": {
+        "id": "2015107001801",
+        "name": "K.THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KAMBILIPARAMBU",
+      "person": {
+        "id": "2015107001901",
+        "name": "SOUDA.P.M"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KUNNATHUPALAM",
+      "person": {
+        "id": "2015107002001",
+        "name": "MANOJ PALATHODI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "M.G.NAGAR",
+      "person": {
+        "id": "2015107002101",
+        "name": "SHIBU.N.M"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MATHARA",
+      "person": {
+        "id": "2015107002201",
+        "name": "MINI. P"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KONTHANARI",
+      "person": {
+        "id": "2015107002301",
+        "name": "KRISHNADAS. K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

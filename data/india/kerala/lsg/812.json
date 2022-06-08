@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348184165,
+  "date": "2019-08-21",
+  "name": "Kulukkallur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Pattambi",
+  "area": "22.74km",
+  "localbody_code": "G090202",
+  "no_of_wards": 17,
+  "population": 22193,
+  "male": 10595,
+  "female": 11598,
+  "population_density": 970,
+  "sex_ratio": 1095,
+  "literacy_rate": 88.78,
+  "literacy_rate_male": 92.01,
+  "literacy_rate_female": 85.94,
+  "president": "GOPAKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHUNDAMPATTA",
+      "person": {
+        "id": "2015081200101",
+        "name": "VIRALIKKATTIL NUSAIBA ASHARAF"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NATYAMANGALAM NORTH",
+      "person": {
+        "id": "2015081200201",
+        "name": "M K.RASHEEDA GAFOOR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NATYAMANGALAM",
+      "person": {
+        "id": "2015081200301",
+        "name": "M. SAIDALAVI MASTER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHUNDAMPATTA EAST",
+      "person": {
+        "id": "2015081200401",
+        "name": "MUHAMMED NOORUDHEEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THATHNAMPULLY",
+      "person": {
+        "id": "2015081200501",
+        "name": "MISITHA SOORAJ"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THATHNAMPULLY  SOUTH",
+      "person": {
+        "id": "2015081200601",
+        "name": "RAJENDRANUNNI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAPPATUKARA WEST",
+      "person": {
+        "id": "2015081200702",
+        "name": "RAJAN POOTHANAYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MAPPATUKARA EAST",
+      "person": {
+        "id": "2015081200801",
+        "name": "RATHEESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PURAMATHRA",
+      "person": {
+        "id": "2015081200901",
+        "name": "V.RAMANI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PURAMATHRA SOUTH",
+      "person": {
+        "id": "2015081201001",
+        "name": "PRASAD CHENDRATHODI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULUKKALLUR",
+      "person": {
+        "id": "2015081201101",
+        "name": "RESMI RAJESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ERAVATHRA",
+      "person": {
+        "id": "2015081201201",
+        "name": "MUMTHAS LAILA KALIMADATHIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MULAYANKAVU SOUTH",
+      "person": {
+        "id": "2015081201301",
+        "name": "ABDUL KAREEM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MULAYANKAVU NORTH",
+      "person": {
+        "id": "2015081201401",
+        "name": "SREEJA TEACHER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VANDUMTHARA",
+      "person": {
+        "id": "2015081201501",
+        "name": "GOPAKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VALIYAPARAMBU",
+      "person": {
+        "id": "2015081201601",
+        "name": "KADEEJA MECHERIKUNNATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHUNDAMPATTA WEST",
+      "person": {
+        "id": "2015081201701",
+        "name": "VP.BULKEES YUSUF"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

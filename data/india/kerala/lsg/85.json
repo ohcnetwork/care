@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345129649,
+  "date": "2019-08-21",
+  "name": "Ollukkara  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Ollukkara",
+  "area": "315.72km",
+  "localbody_code": "B080500",
+  "no_of_wards": 13,
+  "population": 224751,
+  "male": 110527,
+  "female": 114224,
+  "population_density": 712,
+  "sex_ratio": 1033,
+  "literacy_rate": 90.89,
+  "literacy_rate_male": 94.2,
+  "literacy_rate_female": 87.71,
+  "president": "ISUMADEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KATTILAPPOOVAM",
+      "person": {
+        "id": "2015008500101",
+        "name": "MEERA  SUJANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PATTIKKAD",
+      "person": {
+        "id": "2015008500201",
+        "name": "K  V  CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PEECHI",
+      "person": {
+        "id": "2015008500301",
+        "name": "SHEELA  ALEX"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAROTTICHAL",
+      "person": {
+        "id": "2015008500401",
+        "name": "BINOY O B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PONNUKKARA",
+      "person": {
+        "id": "2015008500501",
+        "name": "RAJANI JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MARATHAKKARA",
+      "person": {
+        "id": "2015008500601",
+        "name": "SINI BABU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHUR",
+      "person": {
+        "id": "2015008500701",
+        "name": "ANDREWS K J"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALAKKAVU",
+      "person": {
+        "id": "2015008500801",
+        "name": "P K VIJESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MOORKANIKKARA",
+      "person": {
+        "id": "2015008500901",
+        "name": "GEETHA  RAVEENDRAKSHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NADATHARA",
+      "person": {
+        "id": "2015008501001",
+        "name": "SHEENA SHAJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNARA",
+      "person": {
+        "id": "2015008501101",
+        "name": "V  C  SUJITH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHIRAKKEKODE",
+      "person": {
+        "id": "2015008501201",
+        "name": "SUDHEESH M  S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MADAKKATHARA",
+      "person": {
+        "id": "2015008501301",
+        "name": "I S UMADEVI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

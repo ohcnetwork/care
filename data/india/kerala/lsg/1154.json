@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349422776,
+  "date": "2019-08-21",
+  "name": "Mokeri  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "10.53km",
+  "localbody_code": "G130805",
+  "no_of_wards": 14,
+  "population": 17917,
+  "male": 8430,
+  "female": 9487,
+  "population_density": 1702,
+  "sex_ratio": 1125,
+  "literacy_rate": 92.84,
+  "literacy_rate_male": 97.3,
+  "literacy_rate_female": 90.84,
+  "president": "VIMALAT",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ATTUPURAM",
+      "person": {
+        "id": "2015115400101",
+        "name": "VALSAN P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PATHIPPALAM",
+      "person": {
+        "id": "2015115400201",
+        "name": "KANAKAM T K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALLYAYI NORTH",
+      "person": {
+        "id": "2015115400301",
+        "name": "SHOBHANA N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALLYAYI EAST",
+      "person": {
+        "id": "2015115400401",
+        "name": "RAJASREE M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VALLYAYI",
+      "person": {
+        "id": "2015115400501",
+        "name": "VIMALA T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAKKOOL PEEDIKA",
+      "person": {
+        "id": "2015115400601",
+        "name": "UMMUKULSU M P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUTHARI PEEDIKA",
+      "person": {
+        "id": "2015115400701",
+        "name": "DIBIN K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PAREMMAL",
+      "person": {
+        "id": "2015115400801",
+        "name": "PRIYESH V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VALLANGAD",
+      "person": {
+        "id": "2015115400901",
+        "name": "SUCHITHRA A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOKERI",
+      "person": {
+        "id": "2015115401001",
+        "name": "SURESH BABU D"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KADEPRAM",
+      "person": {
+        "id": "2015115401101",
+        "name": "UMA A K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOORARA",
+      "person": {
+        "id": "2015115401201",
+        "name": "REENA P V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PADINHARE MOKERI",
+      "person": {
+        "id": "2015115401301",
+        "name": "SHYNI V P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOORARA NORTH",
+      "person": {
+        "id": "2015115401401",
+        "name": "ABOOBACKER M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

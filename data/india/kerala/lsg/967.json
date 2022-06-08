@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566348772848,
+  "date": "2019-08-21",
+  "name": "Vallikkunnu  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Tirurangady",
+  "area": "25.14km",
+  "localbody_code": "G101104",
+  "no_of_wards": 23,
+  "population": 35517,
+  "male": 17173,
+  "female": 18344,
+  "population_density": 1413,
+  "sex_ratio": 1068,
+  "literacy_rate": 88.41,
+  "literacy_rate_male": 83.21,
+  "literacy_rate_female": 81.87,
+  "president": "SHOBANAVN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KADALUNDI NAGARAM NORTH",
+      "person": {
+        "id": "2015096700101",
+        "name": "HASEENA C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KEEZHAYIL",
+      "person": {
+        "id": "2015096700201",
+        "name": "FATHIMA P V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NAVAJEEVAN",
+      "person": {
+        "id": "2015096700301",
+        "name": "E. DASAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BALATHIRUTHY",
+      "person": {
+        "id": "2015096700401",
+        "name": "PATTAYIL BABURAJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAYARANGADI",
+      "person": {
+        "id": "2015096700501",
+        "name": "SHIMALATHA A K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MADATHIL PURAYA",
+      "person": {
+        "id": "2015096700601",
+        "name": "SHOBANA V N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHAKKEMALA",
+      "person": {
+        "id": "2015096700701",
+        "name": "AJAYLAL K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OLIPRAM",
+      "person": {
+        "id": "2015096700801",
+        "name": "PRASANTH CHAMMINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARUTHIKKAD",
+      "person": {
+        "id": "2015096700901",
+        "name": "SATHIDEVI K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POTTANKUZHI",
+      "person": {
+        "id": "2015096701001",
+        "name": "P K VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KACHERIKUNNU",
+      "person": {
+        "id": "2015096701101",
+        "name": "C V RUGMANI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARUMARAKKAD",
+      "person": {
+        "id": "2015096701201",
+        "name": "SHEEBA CHENCHORODI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODAKKAD EAST",
+      "person": {
+        "id": "2015096701301",
+        "name": "VISWANADAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KODAKKAD SOUTH",
+      "person": {
+        "id": "2015096701401",
+        "name": "SUHARA C"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KODAKKAD WEST",
+      "person": {
+        "id": "2015096701501",
+        "name": "RAHMATHUNISA A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ARIYALLOR EAST",
+      "person": {
+        "id": "2015096701601",
+        "name": "NISAR KUNNUMMAL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MADAVANANDAM",
+      "person": {
+        "id": "2015096701701",
+        "name": "BINDU K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ARIYALLUR SOUTH",
+      "person": {
+        "id": "2015096701801",
+        "name": "LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ARIYALLUR BEACH",
+      "person": {
+        "id": "2015096701901",
+        "name": "NABEESA K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ARIYALLUR NORTH",
+      "person": {
+        "id": "2015096702001",
+        "name": "ANEESH VALIYATOOR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ANANGADI SOUTH",
+      "person": {
+        "id": "2015096702101",
+        "name": "ASIF MASHHOOD K P"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "ANANGADI",
+      "person": {
+        "id": "2015096702202",
+        "name": "HAIRUNNISA KMP"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KADALUNDINAGARAM SOUTH",
+      "person": {
+        "id": "2015096702301",
+        "name": "HANEEFA K P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

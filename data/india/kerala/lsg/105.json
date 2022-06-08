@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345204328,
+  "date": "2019-08-21",
+  "name": "Kuzhalmannam  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kuzhalmannam",
+  "area": "192.12km",
+  "localbody_code": "B090800",
+  "no_of_wards": 13,
+  "population": 156657,
+  "male": 75929,
+  "female": 80728,
+  "population_density": 815,
+  "sex_ratio": 1063,
+  "literacy_rate": 78.07,
+  "literacy_rate_male": 86.23,
+  "literacy_rate_female": 70.48,
+  "president": "SHELIP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARUTHIPULLY",
+      "person": {
+        "id": "2015010500101",
+        "name": "RATHEESH BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTAYI",
+      "person": {
+        "id": "2015010500202",
+        "name": "JAYARAJ M R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PULINELLY",
+      "person": {
+        "id": "2015010500301",
+        "name": "LALITHA B MENON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHUNGAMANNAM",
+      "person": {
+        "id": "2015010500401",
+        "name": "DEVI SANKARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THACHANKKAD",
+      "person": {
+        "id": "2015010500501",
+        "name": "M LEELAVATHI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHIKKAL",
+      "person": {
+        "id": "2015010500601",
+        "name": "DEVI M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THANNIRPANDAL",
+      "person": {
+        "id": "2015010500701",
+        "name": "K T UDAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THENKURISSI",
+      "person": {
+        "id": "2015010500801",
+        "name": "SHELI P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANJALOOR",
+      "person": {
+        "id": "2015010500901",
+        "name": "A CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KULAVANMUKKU",
+      "person": {
+        "id": "2015010501001",
+        "name": "AJITHA TEACHER"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MALANCHITTY",
+      "person": {
+        "id": "2015010501101",
+        "name": "LEELA BALAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARADIYAMPARA",
+      "person": {
+        "id": "2015010501201",
+        "name": "V PAZHANIMALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHULANUR",
+      "person": {
+        "id": "2015010501301",
+        "name": "A ANITHANDAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

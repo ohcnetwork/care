@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345859042,
+  "date": "2019-08-21",
+  "name": "Kadinamkulam  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kzhakuttam",
+  "area": "17.68km",
+  "localbody_code": "G010702",
+  "no_of_wards": 23,
+  "population": 40406,
+  "male": 19751,
+  "female": 20655,
+  "population_density": 2285,
+  "sex_ratio": 1046,
+  "literacy_rate": 81.54,
+  "literacy_rate_male": 85.29,
+  "literacy_rate_female": 78.02,
+  "president": "FELIXP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHERAMANTHURUTHU",
+      "person": {
+        "id": "2015026900101",
+        "name": "ABDULLA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADINAMKULAM",
+      "person": {
+        "id": "2015026900201",
+        "name": "RANJINI R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANDAVILA",
+      "person": {
+        "id": "2015026900301",
+        "name": "ANITHAKUMARI R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHANNANKARA",
+      "person": {
+        "id": "2015026900401",
+        "name": "NASEEMA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAKKAPILLA",
+      "person": {
+        "id": "2015026900501",
+        "name": "ABDUL SALAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADINJATTUMUKKU",
+      "person": {
+        "id": "2015026900601",
+        "name": "ABDUL VAHEED"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHIRACKAL",
+      "person": {
+        "id": "2015026900701",
+        "name": "NASEEMA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHITTATTUMUKKU",
+      "person": {
+        "id": "2015026900801",
+        "name": "V.MOLY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MENAMKULAM",
+      "person": {
+        "id": "2015026900901",
+        "name": "SUNIJA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KALPANA",
+      "person": {
+        "id": "2015026901001",
+        "name": "PRAMEELA J"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VILAYILKULAM",
+      "person": {
+        "id": "2015026901101",
+        "name": "AMBILY YASHODA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUMBA",
+      "person": {
+        "id": "2015026901201",
+        "name": "ROLUDONE V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ST.ANDREW'S",
+      "person": {
+        "id": "2015026901301",
+        "name": "RAPHEL ALBY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHANTHOPE SOUTH",
+      "person": {
+        "id": "2015026901401",
+        "name": "SUKU KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHANTHOPE NORTH",
+      "person": {
+        "id": "2015026901501",
+        "name": "LILLY THOMAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VETTUTHURA",
+      "person": {
+        "id": "2015026901601",
+        "name": "REETHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PUTHUVAL",
+      "person": {
+        "id": "2015026901701",
+        "name": "SHIBU R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "SANTHIPURAM",
+      "person": {
+        "id": "2015026901801",
+        "name": "JOHNSON MARCILIN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MARIANADU SOUTH",
+      "person": {
+        "id": "2015026901901",
+        "name": "NJANA SELVAM"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MARIANADU NORTH",
+      "person": {
+        "id": "2015026902001",
+        "name": "JOSE NICHOLAS"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PUTHUKURICHY EAST",
+      "person": {
+        "id": "2015026902101",
+        "name": "HELEN FERNANDEZ"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PUTHUKURICHY WEST",
+      "person": {
+        "id": "2015026902201",
+        "name": "FELIX P"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PUTHUKURICHY NORTH",
+      "person": {
+        "id": "2015026902301",
+        "name": "SHAMI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

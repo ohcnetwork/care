@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345221692,
+  "date": "2019-08-21",
+  "name": "Wandoor  Block Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Wandoor",
+  "area": "565.97km",
+  "localbody_code": "B100300",
+  "no_of_wards": 15,
+  "population": 249374,
+  "male": 122364,
+  "female": 127010,
+  "population_density": 441,
+  "sex_ratio": 1038,
+  "literacy_rate": 88.48,
+  "literacy_rate_male": 92.12,
+  "literacy_rate_female": 84.84,
+  "president": "ASSIYA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VADAPURAM",
+      "person": {
+        "id": "2015011200101",
+        "name": "GEORGE UMMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NADUVATH",
+      "person": {
+        "id": "2015011200201",
+        "name": "ADVOCATE SHEENA RAJAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "WANDOOR",
+      "person": {
+        "id": "2015011200301",
+        "name": "ANIL NIRAVIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARAD",
+      "person": {
+        "id": "2015011200401",
+        "name": "RADHAMANI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VANNIYAMBALAM",
+      "person": {
+        "id": "2015011200501",
+        "name": "SATHYABHAMA . A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PORUR",
+      "person": {
+        "id": "2015011200601",
+        "name": "K.T.JUVAIRIYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHATHANGOTTUPURAM",
+      "person": {
+        "id": "2015011200701",
+        "name": "SHAMNA.M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEMBRASERI",
+      "person": {
+        "id": "2015011200802",
+        "name": "MOIDEEN T H"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANDIKKAD",
+      "person": {
+        "id": "2015011200901",
+        "name": "SUMIYYA .P.T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALLUVANGAD",
+      "person": {
+        "id": "2015011201001",
+        "name": "ASSIYA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ELANGUR",
+      "person": {
+        "id": "2015011201101",
+        "name": "NARAYANAN VALIYAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THRIKKALANGODE",
+      "person": {
+        "id": "2015011201201",
+        "name": "P.K.MYMOONA TEACHER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARAKKUNNU",
+      "person": {
+        "id": "2015011201301",
+        "name": "SAIJAL.S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THIRUVALI",
+      "person": {
+        "id": "2015011201401",
+        "name": "P.SASI KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MAMPAD",
+      "person": {
+        "id": "2015011201501",
+        "name": "ABDUL KAREEM .P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

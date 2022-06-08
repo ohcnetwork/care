@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345175867,
+  "date": "2019-08-21",
+  "name": "Chalakudy  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chalakudy",
+  "area": "674.2km",
+  "localbody_code": "B081600",
+  "no_of_wards": 13,
+  "population": 135679,
+  "male": 67278,
+  "female": 68401,
+  "population_density": 201,
+  "sex_ratio": 1016,
+  "literacy_rate": 89.3,
+  "literacy_rate_male": 92.82,
+  "literacy_rate_female": 85.87,
+  "president": "SHEEJUKK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELINJIPRA",
+      "person": {
+        "id": "2015009700101",
+        "name": "K.K.SARASWATHY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHETTIKKULAM",
+      "person": {
+        "id": "2015009700201",
+        "name": "PUSHPY WILSON"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUTTICHIRA",
+      "person": {
+        "id": "2015009700301",
+        "name": "SALBI JAMES"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANJIRAPPILLY",
+      "person": {
+        "id": "2015009700401",
+        "name": "LIGY PAULY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ATHIRAPPILLY",
+      "person": {
+        "id": "2015009700501",
+        "name": "ADV.VIJU VAZHAKKALA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUSHPAGIRI",
+      "person": {
+        "id": "2015009700601",
+        "name": "SHEEJU K K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHIRANGARA",
+      "person": {
+        "id": "2015009700701",
+        "name": "K A GRACY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KATTAPPURAM",
+      "person": {
+        "id": "2015009700801",
+        "name": "LEELA SUBRAMANION"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ANNANADU",
+      "person": {
+        "id": "2015009700901",
+        "name": "M.RAJAGOPAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VYNTHALA",
+      "person": {
+        "id": "2015009701001",
+        "name": "PADMANABHAN V A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MURINGOOR",
+      "person": {
+        "id": "2015009701101",
+        "name": "V D THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOLANI",
+      "person": {
+        "id": "2015009701201",
+        "name": "P A SABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTIKKADU",
+      "person": {
+        "id": "2015009701301",
+        "name": "USHA RAMUNNY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346046706,
+  "date": "2019-08-21",
+  "name": "Pattazhi  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "18.65km",
+  "localbody_code": "G020405",
+  "no_of_wards": 13,
+  "population": 19388,
+  "male": 9623,
+  "female": 9765,
+  "population_density": 1030,
+  "sex_ratio": 1057,
+  "literacy_rate": 141.17,
+  "literacy_rate_male": 70.3,
+  "literacy_rate_female": 70.87,
+  "president": "KBSREEDEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THAZHATHUVADAKKU",
+      "person": {
+        "id": "2015032700101",
+        "name": "ANURAJ A R"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERATHUVADAKKU",
+      "person": {
+        "id": "2015032700201",
+        "name": "JAYASREE LAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MEENAM",
+      "person": {
+        "id": "2015032700301",
+        "name": "K B SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANTHAPLAVE",
+      "person": {
+        "id": "2015032700401",
+        "name": "AJAYAKUMAR R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANTHRANDUMURI",
+      "person": {
+        "id": "2015032700501",
+        "name": "RATHI S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULIVILA",
+      "person": {
+        "id": "2015032700601",
+        "name": "SHEEJA KUMARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAYILADUMPARA",
+      "person": {
+        "id": "2015032700701",
+        "name": "B S SUJATHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANAYANAM",
+      "person": {
+        "id": "2015032700801",
+        "name": "MEENAM RAJESH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "TOWN",
+      "person": {
+        "id": "2015032700901",
+        "name": "SUNITHA MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANNIMEL",
+      "person": {
+        "id": "2015032701001",
+        "name": "JOBY JOHN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NADUTHERI",
+      "person": {
+        "id": "2015032701101",
+        "name": "PUTHUSERI GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKETHERI",
+      "person": {
+        "id": "2015032701201",
+        "name": "KUNJUMOLE GEORGEKUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARUTHAMONBHAGOM",
+      "person": {
+        "id": "2015032701301",
+        "name": "RAJANI BABU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

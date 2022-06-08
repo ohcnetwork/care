@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566349024779,
+  "date": "2019-08-21",
+  "name": "Kakkodi  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Chelannur",
+  "area": "18.59km",
+  "localbody_code": "G110901",
+  "no_of_wards": 21,
+  "population": 30024,
+  "male": 14785,
+  "female": 15239,
+  "population_density": 1615,
+  "sex_ratio": 1031,
+  "literacy_rate": 92.42,
+  "literacy_rate_male": 96.28,
+  "literacy_rate_female": 88.72,
+  "president": "K.K.CHOYIKKUTTY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHERUKULAM",
+      "person": {
+        "id": "2015104000101",
+        "name": "K.K.CHOYIKKUTTY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BADIROOR",
+      "person": {
+        "id": "2015104000201",
+        "name": "UNNIKRISHNAN.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTUPADAM",
+      "person": {
+        "id": "2015104000301",
+        "name": "MANJULA PRAJITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEKKANNITHAZHAM",
+      "person": {
+        "id": "2015104000401",
+        "name": "SHAHIDA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHELAPRAM",
+      "person": {
+        "id": "2015104000501",
+        "name": "SHIBU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAKKAL THAZHAM",
+      "person": {
+        "id": "2015104000601",
+        "name": "RAJULA.K.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOODATHUMPOYIL",
+      "person": {
+        "id": "2015104000701",
+        "name": "MINIJA.K.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERINJILAMALA",
+      "person": {
+        "id": "2015104000801",
+        "name": "HARIDASAN.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANNADICHALIL",
+      "person": {
+        "id": "2015104000901",
+        "name": "C.V.VILSAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PADINHATTUMMURI",
+      "person": {
+        "id": "2015104001001",
+        "name": "THANKAMANI.P.K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANIYARAKKAL",
+      "person": {
+        "id": "2015104001101",
+        "name": "VIJILA.C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALAPPIL THAZHAM",
+      "person": {
+        "id": "2015104001201",
+        "name": "SREELATHA BABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KIZHAKKUMURI",
+      "person": {
+        "id": "2015104001301",
+        "name": "E.M.GIREESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAKKATTUMALA",
+      "person": {
+        "id": "2015104001401",
+        "name": "K.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KIRALOOR",
+      "person": {
+        "id": "2015104001501",
+        "name": "PREMAVALLY.P.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAKKODI BAZAR EAST",
+      "person": {
+        "id": "2015104001601",
+        "name": "RAJENDRAN.M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KAKKODI",
+      "person": {
+        "id": "2015104001701",
+        "name": "MELAL MOHANAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MORIKKARA",
+      "person": {
+        "id": "2015104001801",
+        "name": "SUSHAMA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MORIKKARA NORTH",
+      "person": {
+        "id": "2015104001901",
+        "name": "T.M.BINDU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "OTTATHENGU SOUTH",
+      "person": {
+        "id": "2015104002001",
+        "name": "SREEJILA.K"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "OTTATHENGU",
+      "person": {
+        "id": "2015104002101",
+        "name": "SAJEEVAN KAKKADAVATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

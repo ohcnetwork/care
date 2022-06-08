@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348522007,
+  "date": "2019-08-21",
+  "name": "Pothukallu  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "77km",
+  "localbody_code": "G100106",
+  "no_of_wards": 17,
+  "population": 27750,
+  "male": 13042,
+  "female": 14708,
+  "population_density": 360,
+  "sex_ratio": 1021,
+  "literacy_rate": 0,
+  "literacy_rate_male": 0,
+  "literacy_rate_female": 0,
+  "president": "SUBASH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SANTHIGRAM",
+      "person": {
+        "id": "2015090300101",
+        "name": "RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THAMBURATTIKKALLU",
+      "person": {
+        "id": "2015090300201",
+        "name": "SHARAFUNNEESA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUNDERI",
+      "person": {
+        "id": "2015090300301",
+        "name": "RAMLATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MURAMTHOOKKI",
+      "person": {
+        "id": "2015090300401",
+        "name": "SUNI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELUMBIYAMPADAM",
+      "person": {
+        "id": "2015090300501",
+        "name": "UMAIMATH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AMBITTAMPOTTY",
+      "person": {
+        "id": "2015090300601",
+        "name": "RUBEENA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POTHUKALLU",
+      "person": {
+        "id": "2015090300702",
+        "name": "SULAIMAN HAJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTHUKULAM",
+      "person": {
+        "id": "2015090300801",
+        "name": "JOSEPH JOHN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODALIPOYIL",
+      "person": {
+        "id": "2015090300901",
+        "name": "ABDUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANAKKALLU",
+      "person": {
+        "id": "2015090301001",
+        "name": "SUBASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NETTIKULAM",
+      "person": {
+        "id": "2015090301102",
+        "name": "RAJANI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "UPPADA",
+      "person": {
+        "id": "2015090301201",
+        "name": "THRESSIAMMA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLIMUTTAM",
+      "person": {
+        "id": "2015090301301",
+        "name": "ABDUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PATHAR",
+      "person": {
+        "id": "2015090301401",
+        "name": "BARTHILA BABY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "POOLAPPADAM",
+      "person": {
+        "id": "2015090301501",
+        "name": "VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANAMKAYAM",
+      "person": {
+        "id": "2015090301601",
+        "name": "KARUNAKARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "BHOODANAM",
+      "person": {
+        "id": "2015090301701",
+        "name": "VALSALA ARAVINDAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

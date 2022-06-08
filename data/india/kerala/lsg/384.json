@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566346258315,
+  "date": "2019-08-21",
+  "name": "Ayroor  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Koipuram",
+  "area": "2576km",
+  "localbody_code": "G030301",
+  "no_of_wards": 16,
+  "population": 22711,
+  "male": 10921,
+  "female": 11790,
+  "population_density": 882,
+  "sex_ratio": 1080,
+  "literacy_rate": 96.24,
+  "literacy_rate_male": 97.35,
+  "literacy_rate_female": 95.23,
+  "president": "THOMASTHAMPY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ITTIYAPARA",
+      "person": {
+        "id": "2015038400101",
+        "name": "VARUGESE PHILIP MONAI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADAYAR",
+      "person": {
+        "id": "2015038400201",
+        "name": "ANANDAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLIYARA",
+      "person": {
+        "id": "2015038400301",
+        "name": "JAYAKUMARI B"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANNIKUNNU",
+      "person": {
+        "id": "2015038400401",
+        "name": "THOMAS THAMPY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PODIPARA",
+      "person": {
+        "id": "2015038400501",
+        "name": "T.T.THOMASKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PLANKAMON",
+      "person": {
+        "id": "2015038400601",
+        "name": "SALY THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PEROORCHAL",
+      "person": {
+        "id": "2015038400701",
+        "name": "SULEKHA CHANDRASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDAPPAVOOR",
+      "person": {
+        "id": "2015038400801",
+        "name": "AMBILI PRABHAKARAN NAIR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHAKODY",
+      "person": {
+        "id": "2015038400901",
+        "name": "K.K.GOPINADHAN NAIR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOTTATHOOR",
+      "person": {
+        "id": "2015038401001",
+        "name": "GOPIKA HARIKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NJUZHOOR",
+      "person": {
+        "id": "2015038401101",
+        "name": "SURAJ.M.G"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AYROOR",
+      "person": {
+        "id": "2015038401201",
+        "name": "VALSAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHERUKOLPUZHA",
+      "person": {
+        "id": "2015038401301",
+        "name": "PREETHA.B.NAIR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHEZHUM",
+      "person": {
+        "id": "2015038401401",
+        "name": "ANITHA  KURUP"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANJEETUKARA",
+      "person": {
+        "id": "2015038401501",
+        "name": "PRADEEP AYROOR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THADIYOOR",
+      "person": {
+        "id": "2015038401601",
+        "name": "SURESH KUZHIVELIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348656047,
+  "date": "2019-08-21",
+  "name": "Ponmala  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Malappuram",
+  "area": "21.6km",
+  "localbody_code": "G100603",
+  "no_of_wards": 18,
+  "population": 23505,
+  "male": 11398,
+  "female": 12107,
+  "population_density": 1088,
+  "sex_ratio": 1062,
+  "literacy_rate": 8740,
+  "literacy_rate_male": 90.99,
+  "literacy_rate_female": 83.82,
+  "president": "MOIDEEN.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "POOVAD",
+      "person": {
+        "id": "2015093300101",
+        "name": "THAMI PARANGADAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PONMALA",
+      "person": {
+        "id": "2015093300201",
+        "name": "PARAVENGAL LAILA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLIYALIL",
+      "person": {
+        "id": "2015093300301",
+        "name": "MANIKANDAN APPAMCHORATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MELMURI",
+      "person": {
+        "id": "2015093300401",
+        "name": "ABDUL HAFIS .P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHAPPANANGADI",
+      "person": {
+        "id": "2015093300501",
+        "name": "BUSHRA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VATTAPPARAMBA",
+      "person": {
+        "id": "2015093300601",
+        "name": "KHADEEJA .K.P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANNAZHI",
+      "person": {
+        "id": "2015093300701",
+        "name": "NARAYANAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHENGOTTUR",
+      "person": {
+        "id": "2015093300801",
+        "name": "SHAYINA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AKKAPPARAMBA",
+      "person": {
+        "id": "2015093300901",
+        "name": "BEERAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLKKALAM",
+      "person": {
+        "id": "2015093301001",
+        "name": "JAMEELA KADAKKADAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHOONUR",
+      "person": {
+        "id": "2015093301101",
+        "name": "MUNEERA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THALAKAPPU",
+      "person": {
+        "id": "2015093301201",
+        "name": "MAIMOONA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOORIYADU",
+      "person": {
+        "id": "2015093301301",
+        "name": "MOIDEEN .K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PARANKIMOOCHIKKAL",
+      "person": {
+        "id": "2015093301401",
+        "name": "MUHAMMED MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAMMAL",
+      "person": {
+        "id": "2015093301501",
+        "name": "HAMZA ATHIMANNIL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VADAKKEKULAMBA",
+      "person": {
+        "id": "2015093301601",
+        "name": "UMMU SAFARIYA.P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "POOKKUNNU",
+      "person": {
+        "id": "2015093301701",
+        "name": "KUNDUVAYIL HAJARA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANOOR",
+      "person": {
+        "id": "2015093301801",
+        "name": "MUSTHAFA MULLAPPALLI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

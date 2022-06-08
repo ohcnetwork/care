@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346693987,
+  "date": "2019-08-21",
+  "name": "Kaduthuruthy  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kaduthuruthy",
+  "area": "36.31km",
+  "localbody_code": "G050201",
+  "no_of_wards": 19,
+  "population": 30720,
+  "male": 15209,
+  "female": 15511,
+  "population_density": 846,
+  "sex_ratio": 1020,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "SUNILPV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANNAR",
+      "person": {
+        "id": "2015050500101",
+        "name": "ACHAMMA CYRIAC"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "GOVT. HIGH SCHOOL",
+      "person": {
+        "id": "2015050500201",
+        "name": "SINI ALBERT"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "K.S. PURAM",
+      "person": {
+        "id": "2015050500301",
+        "name": "ANUJA BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANGADU",
+      "person": {
+        "id": "2015050500401",
+        "name": "P K RAGHAVAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ALARY",
+      "person": {
+        "id": "2015050500501",
+        "name": "ANILKUMAR M R"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADUTHURUTHY",
+      "person": {
+        "id": "2015050500601",
+        "name": "SUNIL P V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015050500701",
+        "name": "MATHEW"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARAMBRAM",
+      "person": {
+        "id": "2015050500801",
+        "name": "SAINAMMA SHAJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUTTUCHIRA",
+      "person": {
+        "id": "2015050500901",
+        "name": "K P BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUTTUCHIRA WEST",
+      "person": {
+        "id": "2015050501001",
+        "name": "JINCY ELZABATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALACHIRA",
+      "person": {
+        "id": "2015050501101",
+        "name": "THANKAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ADITHYAPURAM",
+      "person": {
+        "id": "2015050501201",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAPIKKADU",
+      "person": {
+        "id": "2015050501301",
+        "name": "MATHEW"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MADHURAVELI",
+      "person": {
+        "id": "2015050501401",
+        "name": "C P PURUSHOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AYAMKUDY",
+      "person": {
+        "id": "2015050501501",
+        "name": "T G PRAKASAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EZHUMANTHURUTHU",
+      "person": {
+        "id": "2015050501601",
+        "name": "SHILA ARAVINDAKSHAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "APPUZHA",
+      "person": {
+        "id": "2015050501701",
+        "name": "SANDHYAMOL M V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VELLASSERY",
+      "person": {
+        "id": "2015050501801",
+        "name": "THOMAS"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "POLYTECHNIC",
+      "person": {
+        "id": "2015050501901",
+        "name": "RATHNAKUMARI B"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

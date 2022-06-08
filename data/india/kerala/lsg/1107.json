@@ -1,0 +1,173 @@
+{
+  "timeStamp": 1566349229029,
+  "date": "2019-08-21",
+  "name": "Cherupuzha  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "75.64km",
+  "localbody_code": "G130107",
+  "no_of_wards": 19,
+  "population": 32089,
+  "male": 15942,
+  "female": 16147,
+  "population_density": 424.23,
+  "sex_ratio": 1010,
+  "literacy_rate": 76,
+  "literacy_rate_male": 76,
+  "literacy_rate_female": 76,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLLADA",
+      "person": {
+        "id": "2015110700101",
+        "name": "JAMEELA M P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERUPUZHA",
+      "person": {
+        "id": "2015110700201",
+        "name": "LALITHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLUVALLY",
+      "person": {
+        "id": "2015110700301",
+        "name": "MANOJ MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHUNDA",
+      "person": {
+        "id": "2015110700401",
+        "name": "P RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULINGOME",
+      "person": {
+        "id": "2015110700501",
+        "name": "JANCY JOHNSON"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAVARAMBA",
+      "person": {
+        "id": "2015110700601",
+        "name": "CICALY GEORGE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARIYIKKARA",
+      "person": {
+        "id": "2015110700701",
+        "name": "DENNY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "RAJAGIRI",
+      "person": {
+        "id": "2015110700802",
+        "name": "LALI THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "JOSEGIRI",
+      "person": {
+        "id": "2015110700901",
+        "name": "SHANTY KALADHARAN SECRETARY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOZHICHAL",
+      "person": {
+        "id": "2015110701001",
+        "name": "KOCHURANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHATTIVAYAL",
+      "person": {
+        "id": "2015110701101",
+        "name": "JOY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MARUTHUMPADI",
+      "person": {
+        "id": "2015110701201",
+        "name": "ROSILY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THIRUMENI",
+      "person": {
+        "id": "2015110701301",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EYYANKALLU",
+      "person": {
+        "id": "2015110701401",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PRAPOYIL",
+      "person": {
+        "id": "2015110701501",
+        "name": "SULOCHANA P R"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PAROTHUMNEER",
+      "person": {
+        "id": "2015110701601",
+        "name": "SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MANJAKKADU",
+      "person": {
+        "id": "2015110701701",
+        "name": "VIJESH P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KAKKENCHAL",
+      "person": {
+        "id": "2015110701801",
+        "name": "V KRISHNAN MASTER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNDAMTHADAM",
+      "person": {
+        "id": "2015110701901",
+        "name": "RAJAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348137783,
+  "date": "2019-08-21",
+  "name": "Pariyaram  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Chalakudy",
+  "area": "27.19km",
+  "localbody_code": "G081605",
+  "no_of_wards": 15,
+  "population": 20931,
+  "male": 10274,
+  "female": 10657,
+  "population_density": 770,
+  "sex_ratio": 1037,
+  "literacy_rate": 89.67,
+  "literacy_rate_male": 92.78,
+  "literacy_rate_female": 86.69,
+  "president": "JENEESHPJOSE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELINJIPRA",
+      "person": {
+        "id": "2015080200101",
+        "name": "SINI DAVIS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARIYARAM",
+      "person": {
+        "id": "2015080200201",
+        "name": "SHAJU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PARAKKUNNU",
+      "person": {
+        "id": "2015080200301",
+        "name": "ADV. ANOOP DAVIS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUTTIKKAD",
+      "person": {
+        "id": "2015080200401",
+        "name": "SMITHA JOY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHANKANKUTTY",
+      "person": {
+        "id": "2015080200501",
+        "name": "AJITHA K P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANNUMPURAM",
+      "person": {
+        "id": "2015080200601",
+        "name": "P P POULY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PEELARMUZHY",
+      "person": {
+        "id": "2015080200701",
+        "name": "JIPSY JAITTAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KONNAKUZHY",
+      "person": {
+        "id": "2015080200801",
+        "name": "SHYAM P S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJIRAPPILLY",
+      "person": {
+        "id": "2015080200901",
+        "name": "JENEESH P JOSE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ORAPPANA",
+      "person": {
+        "id": "2015080201001",
+        "name": "LIJI SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THOOMBACODE",
+      "person": {
+        "id": "2015080201101",
+        "name": "DENNY ANTONY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THRIPPAPPILLY",
+      "person": {
+        "id": "2015080201201",
+        "name": "SHAINY ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOVATHINGAL",
+      "person": {
+        "id": "2015080201301",
+        "name": "BABU A V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MOOZHIKKAKADAVU",
+      "person": {
+        "id": "2015080201401",
+        "name": "SINDHU SHOJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KADUNGAD",
+      "person": {
+        "id": "2015080201501",
+        "name": "K T VARGHESE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

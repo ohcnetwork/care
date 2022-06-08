@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346861658,
+  "date": "2019-08-21",
+  "name": "Manarcadu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pallom",
+  "area": null,
+  "localbody_code": "G050708",
+  "no_of_wards": 17,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "LISSYBABYCHEN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THIRUVANCHOOR",
+      "person": {
+        "id": "2015055400101",
+        "name": "LISSY CHERIAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARAMBUKARA",
+      "person": {
+        "id": "2015055400202",
+        "name": "SINDHU ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADACKAL",
+      "person": {
+        "id": "2015055400301",
+        "name": "ANEYAMMA CHACKO"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALAM",
+      "person": {
+        "id": "2015055400401",
+        "name": "LISSY BABYCHEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARAPPALLIKUNNU",
+      "person": {
+        "id": "2015055400501",
+        "name": "THANKAPPAN P  M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AREEPARAMBU",
+      "person": {
+        "id": "2015055400601",
+        "name": "CHERIAN P  E"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAROTTIPUZHA",
+      "person": {
+        "id": "2015055400701",
+        "name": "THAMPAN PARAYIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANDAVARKALARI",
+      "person": {
+        "id": "2015055400801",
+        "name": "AMBILY MANIKUTTAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "COLLEGE WARD",
+      "person": {
+        "id": "2015055400901",
+        "name": "BIJU THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "I.T.C",
+      "person": {
+        "id": "2015055401001",
+        "name": "ANU ELSA  BINU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTIYAKUNNU",
+      "person": {
+        "id": "2015055401101",
+        "name": "THOMAS KUNNEL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SANKARASSERY",
+      "person": {
+        "id": "2015055401201",
+        "name": "JOJI C JOHN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VENNASSERY",
+      "person": {
+        "id": "2015055401301",
+        "name": "REJI M  PHILIPOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANARCAD",
+      "person": {
+        "id": "2015055401401",
+        "name": "SUJA THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "IRATTUNADA",
+      "person": {
+        "id": "2015055401501",
+        "name": "SUJA SAMUEL"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUZHIPURAYIDAM",
+      "person": {
+        "id": "2015055401601",
+        "name": "T  P THOMAS"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANNIYAMKUNNU",
+      "person": {
+        "id": "2015055401701",
+        "name": "GRACY KARIMPANOOR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

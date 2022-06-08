@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566347116916,
+  "date": "2019-08-21",
+  "name": "Alangad  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Alangad",
+  "area": "18.35km",
+  "localbody_code": "G070203",
+  "no_of_wards": 21,
+  "population": 31870,
+  "male": 15873,
+  "female": 15997,
+  "population_density": 1739,
+  "sex_ratio": 1008,
+  "literacy_rate": 91.55,
+  "literacy_rate_male": 94.97,
+  "literacy_rate_female": 87.96,
+  "president": "RADHAMANIJAYASINGH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEERICODE WEST",
+      "person": {
+        "id": "2015063100101",
+        "name": "V.B JABBAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NEERICODE EAST",
+      "person": {
+        "id": "2015063100201",
+        "name": "KANCHANA SOMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANCHAYAT HEAD QUARTERS",
+      "person": {
+        "id": "2015063100301",
+        "name": "AJA SABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KODUVAZHANGA NORTH",
+      "person": {
+        "id": "2015063100401",
+        "name": "JOSE GOPURATHINGAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "IRAVIPURAM",
+      "person": {
+        "id": "2015063100501",
+        "name": "P.S JAGADEESAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAPURAM",
+      "person": {
+        "id": "2015063100601",
+        "name": "GEETHA THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALIKAMPEEDIKA",
+      "person": {
+        "id": "2015063100701",
+        "name": "MINI BABU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALANGAD",
+      "person": {
+        "id": "2015063100801",
+        "name": "ELSA JACOB"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THIRUVALLOOR",
+      "person": {
+        "id": "2015063100901",
+        "name": "K.K SURESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNNEL",
+      "person": {
+        "id": "2015063101001",
+        "name": "AMBIKA REMESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KODUVAZHANGA",
+      "person": {
+        "id": "2015063101101",
+        "name": "K.N UNNI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANAYIKKULAM",
+      "person": {
+        "id": "2015063101201",
+        "name": "V.H SIRAJUDEEN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "METHANAM",
+      "person": {
+        "id": "2015063101301",
+        "name": "VARGHESE KOLARIKKAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHIRAYAM",
+      "person": {
+        "id": "2015063101401",
+        "name": "RUBY JUSTIN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KONGORPPILLY EAST",
+      "person": {
+        "id": "2015063101501",
+        "name": "RADHAMANI JAYASINGH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OLANAD",
+      "person": {
+        "id": "2015063101601",
+        "name": "SEBASTIAN V.J"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THIRUMUPPAM",
+      "person": {
+        "id": "2015063101701",
+        "name": "ANNA ANSILY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KONGORPPILLY WEST",
+      "person": {
+        "id": "2015063101801",
+        "name": "SHEEJA MICHAEL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PAZHAMPILLY",
+      "person": {
+        "id": "2015063101901",
+        "name": "JANCY DEVASSYKUTTY"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KARINGAMTHURUTHU SOUTH",
+      "person": {
+        "id": "2015063102001",
+        "name": "SMITHA JIDESH"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KARINGAMTHURUTHU NORTH",
+      "person": {
+        "id": "2015063102101",
+        "name": "NISHAD DEVASSY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

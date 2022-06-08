@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346254056,
+  "date": "2019-08-21",
+  "name": "Peringara  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Pulikezhu",
+  "area": "20.1km",
+  "localbody_code": "G030205",
+  "no_of_wards": 15,
+  "population": 22167,
+  "male": 10672,
+  "female": 11495,
+  "population_density": 1113,
+  "sex_ratio": 1077,
+  "literacy_rate": 96.74,
+  "literacy_rate_male": 98.19,
+  "literacy_rate_female": 95.41,
+  "president": "ALEYAMMATHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MEPRAL PADINJARU",
+      "person": {
+        "id": "2015038300101",
+        "name": "MINIMOL JOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MEPRAL",
+      "person": {
+        "id": "2015038300201",
+        "name": "RAJAN VARGHESE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MEPRAL KIZHAKKU",
+      "person": {
+        "id": "2015038300301",
+        "name": "RACHEL THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALUMTHURUTHY",
+      "person": {
+        "id": "2015038300401",
+        "name": "SANTHAMMA R NAIR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "IDINIJILLAM",
+      "person": {
+        "id": "2015038300501",
+        "name": "SHAINY CHERIAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUMTHURUTHY",
+      "person": {
+        "id": "2015038300601",
+        "name": "CHRISTOPHER PHILIP"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHALAKKUZHY",
+      "person": {
+        "id": "2015038300701",
+        "name": "ALEYAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUZHIVELIPURAM",
+      "person": {
+        "id": "2015038300801",
+        "name": "JAYAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARACKAL",
+      "person": {
+        "id": "2015038300901",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERINGARA KIZHAKKU",
+      "person": {
+        "id": "2015038301001",
+        "name": "ASHA DEVI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERINGARA",
+      "person": {
+        "id": "2015038301101",
+        "name": "PRAKASH P G"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARACKAL THEKKU",
+      "person": {
+        "id": "2015038301201",
+        "name": "SHIBU N M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERINGARA PADINJARU",
+      "person": {
+        "id": "2015038301301",
+        "name": "VILASINI SHAJI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHATHENKARY",
+      "person": {
+        "id": "2015038301401",
+        "name": "P B SANDEEP KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHATHENKARY VADAKKU",
+      "person": {
+        "id": "2015038301501",
+        "name": "ANNIE ABRAHAM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

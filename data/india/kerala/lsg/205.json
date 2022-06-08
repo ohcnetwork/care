@@ -1,0 +1,309 @@
+{
+  "timeStamp": 1566345612421,
+  "date": "2019-08-21",
+  "name": "Ottapalam  Municipality, Palakkad District",
+  "district": "Palakkad",
+  "area": "32.66km",
+  "localbody_code": "M090100",
+  "no_of_wards": 36,
+  "population": 42022,
+  "male": 19995,
+  "female": 22027,
+  "population_density": 1353,
+  "sex_ratio": 1123,
+  "literacy_rate": 90.18,
+  "literacy_rate_male": 93.67,
+  "literacy_rate_female": 87.14,
+  "chairman": "NMNARAYANANNAMBOODIRI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANANGANMALA",
+      "person": {
+        "id": "2015020500101",
+        "name": "SABITHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VARODE",
+      "person": {
+        "id": "2015020500201",
+        "name": "ABDUL NASAR K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERIKKUNNE",
+      "person": {
+        "id": "2015020500301",
+        "name": "SUJATHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOTTAKKARA",
+      "person": {
+        "id": "2015020500401",
+        "name": "K RETNAMMA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MYLUMPURAM",
+      "person": {
+        "id": "2015020500501",
+        "name": "K B SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AREEKKAPPADAM",
+      "person": {
+        "id": "2015020500601",
+        "name": "PRADEEP KUMAR T P"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALAT ROAD",
+      "person": {
+        "id": "2015020500701",
+        "name": "U P PREMARAJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOLOTH KUNNE",
+      "person": {
+        "id": "2015020500801",
+        "name": "MUHAMMED ILLIYAS T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EAST OTTAPPALAM",
+      "person": {
+        "id": "2015020500901",
+        "name": "SUNEERA MUJEEB"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOLAKKUND",
+      "person": {
+        "id": "2015020501001",
+        "name": "MUHAMMED FAYIS T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KIZHAKKEKKAD",
+      "person": {
+        "id": "2015020501101",
+        "name": "SUJI A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PATHIRIKKODE",
+      "person": {
+        "id": "2015020501201",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AZHEEKKILAPARAMB",
+      "person": {
+        "id": "2015020501301",
+        "name": "T S SREEKUMARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PALAPPURAM THERUV",
+      "person": {
+        "id": "2015020501401",
+        "name": "R MANIKANDAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHINAKKATHOOR KAVU",
+      "person": {
+        "id": "2015020501501",
+        "name": "PARVATHY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "AAPPEPPURAM",
+      "person": {
+        "id": "2015020501601",
+        "name": "S GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PALLARMANGALAM",
+      "person": {
+        "id": "2015020501701",
+        "name": "SAJITHA T K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015020501801",
+        "name": "SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KAYAREMPARA",
+      "person": {
+        "id": "2015020501901",
+        "name": "PUSHPALATHA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "N.S.S COLLEGE",
+      "person": {
+        "id": "2015020502001",
+        "name": "MANOJ  STEPHEN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "ERAKKOTTIRI",
+      "person": {
+        "id": "2015020502101",
+        "name": "V S KRISHNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MEETNA",
+      "person": {
+        "id": "2015020502201",
+        "name": "JOSE THOMAS"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "POSTAL QUARTERS",
+      "person": {
+        "id": "2015020502301",
+        "name": "SYLAJA"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KOOMBARAM KUNNU",
+      "person": {
+        "id": "2015020502401",
+        "name": "ABDUL JALEEL P M"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015020502501",
+        "name": "P AKBAR SIYAZ"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "THENNADI BAZAR",
+      "person": {
+        "id": "2015020502601",
+        "name": "N M NARAYANAN NAMBOODIRI"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KANNIYAMPURAM THERUV",
+      "person": {
+        "id": "2015020502701",
+        "name": "SUJITHA"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "KILLIKKAVU",
+      "person": {
+        "id": "2015020502801",
+        "name": "A RUPA UNNI"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KANNIYAMPURAM VAYANASALA",
+      "person": {
+        "id": "2015020502902",
+        "name": "K K RAMAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "GOVT: HOSPITAL",
+      "person": {
+        "id": "2015020503001",
+        "name": "SATHYAN PERUMBARAKODE"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KUMMAMPARA",
+      "person": {
+        "id": "2015020503101",
+        "name": "K V SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KANNIYAMPURAM U P SCHOOL",
+      "person": {
+        "id": "2015020503201",
+        "name": "E PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "PANAMANNA VAYANASALA",
+      "person": {
+        "id": "2015020503301",
+        "name": "VIJAYASREE"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "PANAMANNA VATTANAAL",
+      "person": {
+        "id": "2015020503401",
+        "name": "RAJANI"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "VEETTAAM PARA",
+      "person": {
+        "id": "2015020503501",
+        "name": "T LATHA"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "KOLOTH PARAMB",
+      "person": {
+        "id": "2015020503601",
+        "name": "PADMINI C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

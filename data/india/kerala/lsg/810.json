@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348176323,
+  "date": "2019-08-21",
+  "name": "Trithala  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Thrithala",
+  "area": "22.78km",
+  "localbody_code": "G090107",
+  "no_of_wards": 17,
+  "population": 22312,
+  "male": 10524,
+  "female": 11788,
+  "population_density": 983,
+  "sex_ratio": 1120,
+  "literacy_rate": 88.75,
+  "literacy_rate_male": 92.57,
+  "literacy_rate_female": 85.41,
+  "president": "KRISHNAKUMAR.A.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLIYANKALLU",
+      "person": {
+        "id": "2015081000101",
+        "name": "PRIYA. A. P."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRITHALA",
+      "person": {
+        "id": "2015081000201",
+        "name": "SUJATHA. K."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THACHARAMKUNNU",
+      "person": {
+        "id": "2015081000301",
+        "name": "SUNITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VARANDUKUTTIKKADAVU",
+      "person": {
+        "id": "2015081000401",
+        "name": "SOFIYA KUYILANGATTIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ULLANNOOR",
+      "person": {
+        "id": "2015081000501",
+        "name": "GANAPATHY. U."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THALAYANAPPARAMB",
+      "person": {
+        "id": "2015081000601",
+        "name": "KRISHNAKUMAR. A."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THOTTAPPAYA",
+      "person": {
+        "id": "2015081000701",
+        "name": "K. T. RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NHANGATTIRI",
+      "person": {
+        "id": "2015081000801",
+        "name": "JAYAKUMAR. P."
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHIKKOTTIRI",
+      "person": {
+        "id": "2015081000901",
+        "name": "PREMALATHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MATTAYA",
+      "person": {
+        "id": "2015081001001",
+        "name": "MUHAMMAD SALEEM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNANNOOR",
+      "person": {
+        "id": "2015081001101",
+        "name": "P. K. CHERIYARAMAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUDAVANNOOR",
+      "person": {
+        "id": "2015081001201",
+        "name": "DEEPA. P."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODANAD",
+      "person": {
+        "id": "2015081001301",
+        "name": "JINI. N. V."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARYEYIL",
+      "person": {
+        "id": "2015081001401",
+        "name": "JAYANTHI. T."
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MEZHATHUR",
+      "person": {
+        "id": "2015081001501",
+        "name": "KHAIRUNNISA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THURUTH",
+      "person": {
+        "id": "2015081001601",
+        "name": "AL-AMEEN. M. M."
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUNNATHUKAVU",
+      "person": {
+        "id": "2015081001701",
+        "name": "MOHAN KUMAR. M. V."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

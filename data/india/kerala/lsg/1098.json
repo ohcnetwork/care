@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349199421,
+  "date": "2019-08-21",
+  "name": "Kunhimangalam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Payyannur",
+  "area": "15.44km",
+  "localbody_code": "G130101",
+  "no_of_wards": 14,
+  "population": 17279,
+  "male": 8137,
+  "female": 9142,
+  "population_density": 1119,
+  "sex_ratio": 1124,
+  "literacy_rate": 89.62,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 84.05,
+  "president": "KUHIRAMANMANDHYATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDAT",
+      "person": {
+        "id": "2015109800101",
+        "name": "E V NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERATT",
+      "person": {
+        "id": "2015109800201",
+        "name": "REENA AZHAKATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUNNINUKIZHAKKU",
+      "person": {
+        "id": "2015109800301",
+        "name": "PAVOOR RAGINI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PARAMBATH",
+      "person": {
+        "id": "2015109800401",
+        "name": "RAJANI C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KIZHAKKANI",
+      "person": {
+        "id": "2015109800501",
+        "name": "U BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MALLIYOTE",
+      "person": {
+        "id": "2015109800601",
+        "name": "SOYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANACHIRA",
+      "person": {
+        "id": "2015109800701",
+        "name": "MANAYIL VALAPPIL ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ANGADI",
+      "person": {
+        "id": "2015109800801",
+        "name": "THAJUDHEEN T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALAYI",
+      "person": {
+        "id": "2015109800901",
+        "name": "SAHADEVAN E"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THEKKUMBAD",
+      "person": {
+        "id": "2015109801001",
+        "name": "KUHIRAMAN MANDHYATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHIYAPUZHAKKARA",
+      "person": {
+        "id": "2015109801101",
+        "name": "GEETHA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUTHIRUMMAL",
+      "person": {
+        "id": "2015109801201",
+        "name": "P V SHYAMALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANDAMKULANGARA",
+      "person": {
+        "id": "2015109801301",
+        "name": "K ANITHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VADAKKUMBAD",
+      "person": {
+        "id": "2015109801401",
+        "name": "M JANARDHANAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

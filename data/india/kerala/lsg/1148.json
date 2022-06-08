@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349407174,
+  "date": "2019-08-21",
+  "name": "Kottayam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thalassery",
+  "area": "8.43km",
+  "localbody_code": "G130906",
+  "no_of_wards": 14,
+  "population": 16526,
+  "male": 8047,
+  "female": 8479,
+  "population_density": 1960,
+  "sex_ratio": 1054,
+  "literacy_rate": 93.73,
+  "literacy_rate_male": 96.9,
+  "literacy_rate_female": 90.75,
+  "president": "SHABNA.T",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MOUVERRY",
+      "person": {
+        "id": "2015114800101",
+        "name": "CHAMBADAN DAMU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KINAVAKKAL",
+      "person": {
+        "id": "2015114800201",
+        "name": "NOUFAL. N .V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PURAKKALAM",
+      "person": {
+        "id": "2015114800301",
+        "name": "BINDHU U"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTAYAM ANGADI",
+      "person": {
+        "id": "2015114800401",
+        "name": "M SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THALLOD",
+      "person": {
+        "id": "2015114800501",
+        "name": "A BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAYAMPOIL",
+      "person": {
+        "id": "2015114800601",
+        "name": "DEEPA.T K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANATHUM CHIRA",
+      "person": {
+        "id": "2015114800701",
+        "name": "P K. RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNINU MEETHAL",
+      "person": {
+        "id": "2015114800801",
+        "name": "M SUDHAKARAN MASTER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AARAMMILE",
+      "person": {
+        "id": "2015114800901",
+        "name": "REMYA KADATHANADAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ERUVATTY",
+      "person": {
+        "id": "2015114801001",
+        "name": "LATHA.C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOLABAZAR",
+      "person": {
+        "id": "2015114801101",
+        "name": "M DHARMAJA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOOVAPADI",
+      "person": {
+        "id": "2015114801201",
+        "name": "ANITHA.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OLAYIKKARA",
+      "person": {
+        "id": "2015114801301",
+        "name": "C.RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANGALOTTCHAAL",
+      "person": {
+        "id": "2015114801401",
+        "name": "SHABNA.T"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

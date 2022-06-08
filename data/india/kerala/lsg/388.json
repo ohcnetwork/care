@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346267840,
+  "date": "2019-08-21",
+  "name": "Ezhumattoor  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Koipuram",
+  "area": "27.89km",
+  "localbody_code": "G030305",
+  "no_of_wards": 14,
+  "population": 18918,
+  "male": 9155,
+  "female": 9763,
+  "population_density": 678,
+  "sex_ratio": 1066,
+  "literacy_rate": 96.34,
+  "literacy_rate_male": 97.81,
+  "literacy_rate_female": 94.38,
+  "president": "JAYAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTANKUDY",
+      "person": {
+        "id": "2015038800101",
+        "name": "ANIL KUMAR G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALEKEEZHU",
+      "person": {
+        "id": "2015038800201",
+        "name": "SHEEJA M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "METHANAM",
+      "person": {
+        "id": "2015038800301",
+        "name": "ANNAMMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EZHUMATTOOR",
+      "person": {
+        "id": "2015038800401",
+        "name": "SANTHOSH E R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "IRUMBUKUZHY",
+      "person": {
+        "id": "2015038800501",
+        "name": "SURESH A K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "INDANADU",
+      "person": {
+        "id": "2015038800601",
+        "name": "ALICE GEORGE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "EDACKADU",
+      "person": {
+        "id": "2015038800701",
+        "name": "THOMAS JACOB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALLIKALA",
+      "person": {
+        "id": "2015038800801",
+        "name": "JAYAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTIYAMBALAM",
+      "person": {
+        "id": "2015038800901",
+        "name": "G ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THELLIYOOR",
+      "person": {
+        "id": "2015038801001",
+        "name": "THOMAS  M PATIYANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUMBRACADU",
+      "person": {
+        "id": "2015038801101",
+        "name": "JIJI P ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALAKUZHY",
+      "person": {
+        "id": "2015038801201",
+        "name": "SUSAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SANTHIPURAM",
+      "person": {
+        "id": "2015038801301",
+        "name": "SUSAN THOMAS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VEGHAZA",
+      "person": {
+        "id": "2015038801401",
+        "name": "SUGATHAKUMARY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

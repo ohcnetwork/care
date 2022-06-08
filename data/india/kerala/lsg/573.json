@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346929918,
+  "date": "2019-08-21",
+  "name": "Adimaly  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Adimaly",
+  "area": "271.53km",
+  "localbody_code": "G060101",
+  "no_of_wards": 21,
+  "population": 30041,
+  "male": 15197,
+  "female": 14844,
+  "population_density": 111,
+  "sex_ratio": 977,
+  "literacy_rate": 83,
+  "literacy_rate_male": 89,
+  "literacy_rate_female": 77,
+  "president": "DEEPARAJIVE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAZHAMPILLICHAL",
+      "person": {
+        "id": "2015057300101",
+        "name": "SEEMA BIJU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARISAKALLU",
+      "person": {
+        "id": "2015057300201",
+        "name": "MARY YACOB"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "IRUMPUPALAM",
+      "person": {
+        "id": "2015057300301",
+        "name": "SIYAD SULAIMAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PLAKKAYAM",
+      "person": {
+        "id": "2015057300401",
+        "name": "SUMESH THANKAPPAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "14TH MILE",
+      "person": {
+        "id": "2015057300501",
+        "name": "MAKKAR BAVA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MACHIPLAVU",
+      "person": {
+        "id": "2015057300601",
+        "name": "ACHAMMA CHACKOCHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHATTUPARA",
+      "person": {
+        "id": "2015057300701",
+        "name": "SALINI NILESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ADIMALI NORTH",
+      "person": {
+        "id": "2015057300801",
+        "name": "SREEJA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THALAMALI",
+      "person": {
+        "id": "2015057300902",
+        "name": "MANJU BIJU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARIMKULAM",
+      "person": {
+        "id": "2015057301001",
+        "name": "AJITHA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POONJARKANDAM",
+      "person": {
+        "id": "2015057301101",
+        "name": "GEORGE POULOSE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOOMPANPARA",
+      "person": {
+        "id": "2015057301201",
+        "name": "PRINCY MATHEW"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "200 ACRE",
+      "person": {
+        "id": "2015057301301",
+        "name": "VARGHES PAILY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANNAMKALA",
+      "person": {
+        "id": "2015057301401",
+        "name": "P R BINU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ADIMALI",
+      "person": {
+        "id": "2015057301501",
+        "name": "THAMPI GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHINNAPPARAKKUDY",
+      "person": {
+        "id": "2015057301601",
+        "name": "DEEPA MANOJ"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MACHIPLAVU WEST",
+      "person": {
+        "id": "2015057301701",
+        "name": "M P VARGHESE"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MEZHUKUMCHAL",
+      "person": {
+        "id": "2015057301801",
+        "name": "RAJANI SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "DEVIYAR",
+      "person": {
+        "id": "2015057301901",
+        "name": "BABU ULAKAN"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KANJIRAVELI",
+      "person": {
+        "id": "2015057302001",
+        "name": "SREENIVASAN NEELAKANDAN(M N SREENIVASAN)"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "VALARA",
+      "person": {
+        "id": "2015057302101",
+        "name": "DEEPA RAJIVE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

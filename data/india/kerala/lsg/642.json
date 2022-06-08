@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566347153047,
+  "date": "2019-08-21",
+  "name": "MalayattoorNeeleswaram  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Angamally",
+  "area": "34.22km",
+  "localbody_code": "G070308",
+  "no_of_wards": 17,
+  "population": 26813,
+  "male": 13789,
+  "female": 13024,
+  "population_density": 783.55,
+  "sex_ratio": 986,
+  "literacy_rate": 87.63,
+  "literacy_rate_male": 91.82,
+  "literacy_rate_female": 83.39,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NADUVATTAM",
+      "person": {
+        "id": "2015064200101",
+        "name": "JINCY BENNY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNILANGADY",
+      "person": {
+        "id": "2015064200201",
+        "name": "LIGY TOMY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUNDANGAMATTAM",
+      "person": {
+        "id": "2015064200301",
+        "name": "ANIE JOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "WEST COLONY",
+      "person": {
+        "id": "2015064200401",
+        "name": "MINI BABU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KADAPPARA",
+      "person": {
+        "id": "2015064200501",
+        "name": "SHAGIN KANDATHIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ILLITHODU",
+      "person": {
+        "id": "2015064200601",
+        "name": "SAJEEV CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MULAMKUZHI",
+      "person": {
+        "id": "2015064200701",
+        "name": "ATHIRA DILEEP"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PURAMTHODU",
+      "person": {
+        "id": "2015064200801",
+        "name": "ANIMOL BABY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MALAYATTOOR",
+      "person": {
+        "id": "2015064200901",
+        "name": "SALOMI TOMY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARTHANAPURAM",
+      "person": {
+        "id": "2015064201001",
+        "name": "STEPHEN MADAVANA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THOTTUVA",
+      "person": {
+        "id": "2015064201101",
+        "name": "MINI SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEELEESWARAM EAST",
+      "person": {
+        "id": "2015064201201",
+        "name": "VIJI REJI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTTAMAM",
+      "person": {
+        "id": "2015064201301",
+        "name": "K.J PAUL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALAMBATTUPURAM",
+      "person": {
+        "id": "2015064201401",
+        "name": "LISY ROCKEY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VISWAKARMAPURAM",
+      "person": {
+        "id": "2015064201501",
+        "name": "BIBY SEBY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MADHUVINMEL",
+      "person": {
+        "id": "2015064201601",
+        "name": "SHINY AVARACHAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NEELEESWARAM WEST",
+      "person": {
+        "id": "2015064201701",
+        "name": "SHEEBA BABU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

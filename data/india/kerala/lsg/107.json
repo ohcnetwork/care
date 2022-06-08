@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345210251,
+  "date": "2019-08-21",
+  "name": "Kollengode  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Kollamgode",
+  "area": "163.32km",
+  "localbody_code": "B091000",
+  "no_of_wards": 13,
+  "population": 119886,
+  "male": 58832,
+  "female": 61054,
+  "population_density": 734,
+  "sex_ratio": 1038,
+  "literacy_rate": 73.46,
+  "literacy_rate_male": 81.22,
+  "literacy_rate_female": 66.07,
+  "president": "SARADATHULASIDAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KERALAPURAM",
+      "person": {
+        "id": "2015010700101",
+        "name": "ASOKAN C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAALATHULLI",
+      "person": {
+        "id": "2015010700201",
+        "name": "SIVARAMAN K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUTHUNAGARAM TOWN",
+      "person": {
+        "id": "2015010700301",
+        "name": "M.A GANESAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATTANCHERY",
+      "person": {
+        "id": "2015010700401",
+        "name": "SUGUNA P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANNIMARI",
+      "person": {
+        "id": "2015010700501",
+        "name": "SAJITHA C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUTTIPAADAM",
+      "person": {
+        "id": "2015010700601",
+        "name": "KRISHNAN C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "GOVINDHAPURAM",
+      "person": {
+        "id": "2015010700701",
+        "name": "SARADA THULASIDAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAMBRATHU CHALLA",
+      "person": {
+        "id": "2015010700801",
+        "name": "JASMINE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAYYILOOR",
+      "person": {
+        "id": "2015010700901",
+        "name": "OMANA SUBRAMANIYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOLEENGODE TOWN",
+      "person": {
+        "id": "2015010701001",
+        "name": "UDAYAKUMAR R"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATTATHALACHI",
+      "person": {
+        "id": "2015010701101",
+        "name": "PONNAMMA(SUDHA)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARIPPODE",
+      "person": {
+        "id": "2015010701201",
+        "name": "ABDULL HAKEEM K. U"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ETHANNUR",
+      "person": {
+        "id": "2015010701301",
+        "name": "RAJANI R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

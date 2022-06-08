@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566349451216,
+  "date": "2019-08-21",
+  "name": "Aralam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Iritty",
+  "area": "77.93km",
+  "localbody_code": "G131001",
+  "no_of_wards": 17,
+  "population": 24195,
+  "male": 12250,
+  "female": 11945,
+  "population_density": 310,
+  "sex_ratio": 975,
+  "literacy_rate": 89.57,
+  "literacy_rate_male": 92.41,
+  "literacy_rate_female": 86.65,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDOOR",
+      "person": {
+        "id": "2015116300101",
+        "name": "LILLY MURIYANKARY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANCHUVAD",
+      "person": {
+        "id": "2015116300201",
+        "name": "SHIJI NADUPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUNDUMANGODE",
+      "person": {
+        "id": "2015116300301",
+        "name": "KARUNAKARAN PUTHUSSERY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHATHIROOR",
+      "person": {
+        "id": "2015116300401",
+        "name": "SHANTY PAZHAYATHOTTTHIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VIYATNAM",
+      "person": {
+        "id": "2015116300501",
+        "name": "RAIHANATH(SUBI)"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ARALAM FARM",
+      "person": {
+        "id": "2015116300601",
+        "name": "K.VELAYUDHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KEEZHPALLY",
+      "person": {
+        "id": "2015116300701",
+        "name": "M.K.SASI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VELIMANAM",
+      "person": {
+        "id": "2015116300801",
+        "name": "JIMMY MATHEW ANTHEENATTU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AMBALAKANDY",
+      "person": {
+        "id": "2015116300901",
+        "name": "P.ROSA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VEERPAD",
+      "person": {
+        "id": "2015116301001",
+        "name": "BINDU.U.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "URUPPUMKUND",
+      "person": {
+        "id": "2015116301101",
+        "name": "DR.THRESIAMMA KONGOLA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLARA",
+      "person": {
+        "id": "2015116301201",
+        "name": "JOSHY PALAMATTATHIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHEDIKKULAM",
+      "person": {
+        "id": "2015116301301",
+        "name": "ARAVINDAN AKKANASSERY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUMPAZHASSI",
+      "person": {
+        "id": "2015116301401",
+        "name": "SUMA DINESAN.P.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARALAM",
+      "person": {
+        "id": "2015116301501",
+        "name": "RAJITHA MAVILA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "POOTHAKUNDU",
+      "person": {
+        "id": "2015116301601",
+        "name": "P.RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOOTTAKKALAM",
+      "person": {
+        "id": "2015116301701",
+        "name": "JOSHY MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

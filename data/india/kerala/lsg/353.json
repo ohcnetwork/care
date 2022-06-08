@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346130196,
+  "date": "2019-08-21",
+  "name": "Neendakara  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chavara",
+  "area": "10.19km",
+  "localbody_code": "G020805",
+  "no_of_wards": 13,
+  "population": 15424,
+  "male": 7727,
+  "female": 7697,
+  "population_density": 1514,
+  "sex_ratio": 996,
+  "literacy_rate": 89.57,
+  "literacy_rate_male": 92.01,
+  "literacy_rate_female": 87.14,
+  "president": "SETHULEKSHMIS.",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "A.M.C.",
+      "person": {
+        "id": "2015035300101",
+        "name": "MOLY. S."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PUTHENTHURA",
+      "person": {
+        "id": "2015035300201",
+        "name": "VASANTHAKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "FISHERMEN COLONY",
+      "person": {
+        "id": "2015035300301",
+        "name": "JAGADAMMA. K."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PANNACKALTHURUTHU",
+      "person": {
+        "id": "2015035300401",
+        "name": "CHANDRASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAMKANDAM",
+      "person": {
+        "id": "2015035300501",
+        "name": "S. MAYA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MARYLAND",
+      "person": {
+        "id": "2015035300601",
+        "name": "ANTONY PATHROSE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEENDAKARA",
+      "person": {
+        "id": "2015035300701",
+        "name": "ANTONIO WILLIAM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PORT WARD",
+      "person": {
+        "id": "2015035300801",
+        "name": "HENTRY. X. FERNANDEZ"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VETTUTHARA",
+      "person": {
+        "id": "2015035300901",
+        "name": "SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARIMANAM SOUTH",
+      "person": {
+        "id": "2015035301001",
+        "name": "C.S. MINI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PARIMANAM",
+      "person": {
+        "id": "2015035301101",
+        "name": "SETHULEKSHMI S."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "FOUNDATION",
+      "person": {
+        "id": "2015035301201",
+        "name": "L. SOJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALTHARA BEACH",
+      "person": {
+        "id": "2015035301301",
+        "name": "NIJA ANIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

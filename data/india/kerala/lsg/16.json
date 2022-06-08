@@ -1,0 +1,133 @@
+{
+  "timeStamp": 1566344898271,
+  "date": "2019-08-21",
+  "name": "Vettikavala  Block Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Vettikkavala",
+  "area": "169.47km",
+  "localbody_code": "B020300",
+  "no_of_wards": 14,
+  "population": 177189,
+  "male": 85946,
+  "female": 91243,
+  "population_density": 1046,
+  "sex_ratio": 1062,
+  "literacy_rate": 91.88,
+  "literacy_rate_male": 95.07,
+  "literacy_rate_female": 88.89,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PUTHOOR",
+      "person": {
+        "id": "2015001600101",
+        "name": "ANILKUMAR C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VENDAR",
+      "person": {
+        "id": "2015001600201",
+        "name": "VASANTHAKUMARI K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KULAKKADA",
+      "person": {
+        "id": "2015001600301",
+        "name": "DEEPA R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALAYAPURAM",
+      "person": {
+        "id": "2015001600401",
+        "name": "CHANDRAKUMARY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOTTATHALA",
+      "person": {
+        "id": "2015001600501",
+        "name": "AJAYAKUMAR G"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MYLOM",
+      "person": {
+        "id": "2015001600601",
+        "name": "ADV.MYLOM GANESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHAKKETHERUVU",
+      "person": {
+        "id": "2015001600701",
+        "name": "SUSAN THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MELILA",
+      "person": {
+        "id": "2015001600801",
+        "name": "RENUKA R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAKKUVARACKAL",
+      "person": {
+        "id": "2015001600901",
+        "name": "ADV.SHINE PRABHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHIRATTAKONAM",
+      "person": {
+        "id": "2015001601001",
+        "name": "SALIKUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VETTIKAVALA",
+      "person": {
+        "id": "2015001601101",
+        "name": "RETNAMANY S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALAKAM",
+      "person": {
+        "id": "2015001601201",
+        "name": "P.K JHONSON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "UMMANNOOR",
+      "person": {
+        "id": "2015001601301",
+        "name": "SUNIL.T.DANIEL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PAVITHRESWARAM",
+      "person": {
+        "id": "2015001601401",
+        "name": "ASOKAN N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

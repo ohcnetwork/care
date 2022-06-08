@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349559453,
+  "date": "2019-08-21",
+  "name": "MogralPuthur  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kasaragod",
+  "area": "14.24km",
+  "localbody_code": "G140304",
+  "no_of_wards": 15,
+  "population": 19256,
+  "male": 9581,
+  "female": 9675,
+  "population_density": 1352,
+  "sex_ratio": 1010,
+  "literacy_rate": 80.92,
+  "literacy_rate_male": 88.12,
+  "literacy_rate_female": 73.85,
+  "president": "A.A.JALEEL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MOGAR",
+      "person": {
+        "id": "2015119500101",
+        "name": "A.A. JALEEL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BALLUR",
+      "person": {
+        "id": "2015119500201",
+        "name": "ABDUL HAMEED"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAKUNNU",
+      "person": {
+        "id": "2015119500301",
+        "name": "JAYANTHI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAMBAR",
+      "person": {
+        "id": "2015119500401",
+        "name": "SUHARA .K.M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UJIRKARA SHASTHA NAGAR",
+      "person": {
+        "id": "2015119500501",
+        "name": "PRAMEELA. M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAJAL",
+      "person": {
+        "id": "2015119500601",
+        "name": "K.A. ABDULLA KUNHI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AZAD NAGAR",
+      "person": {
+        "id": "2015119500701",
+        "name": "MUJEEB KAMBAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERNADKA",
+      "person": {
+        "id": "2015119500801",
+        "name": "K.LEELA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KELUGUDDE BALLIMOGAR",
+      "person": {
+        "id": "2015119500901",
+        "name": "ASHOKA. B.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ERIYAL",
+      "person": {
+        "id": "2015119501001",
+        "name": "FATHIMATH SOUJANA.E.M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULANGARA",
+      "person": {
+        "id": "2015119501101",
+        "name": "SUMAYYA. T.A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOWKI KUNNIL",
+      "person": {
+        "id": "2015119501201",
+        "name": "S.H.HAMEED"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAVUGOLI KADAPPURAM",
+      "person": {
+        "id": "2015119501301",
+        "name": "ANANDA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLANGAI",
+      "person": {
+        "id": "2015119501401",
+        "name": "ADV. SHAMEERA FAISAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MOGRAL PUTHUR",
+      "person": {
+        "id": "2015119501501",
+        "name": "AYSHATH FOUZIYA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566345729515,
+  "date": "2019-08-21",
+  "name": "Pazhayakunnumel  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "25.31km",
+  "localbody_code": "G010202",
+  "no_of_wards": 17,
+  "population": 23353,
+  "male": 11169,
+  "female": 12184,
+  "population_density": 923,
+  "sex_ratio": 1091,
+  "literacy_rate": 87.94,
+  "literacy_rate_male": 93.3,
+  "literacy_rate_female": 83.1,
+  "president": "SINDHU.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THATTATHUMALA",
+      "person": {
+        "id": "2015023300101",
+        "name": "G.L.AJEESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARANDAKUZHY",
+      "person": {
+        "id": "2015023300201",
+        "name": "RATHEESH.G"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMPAKASSERI",
+      "person": {
+        "id": "2015023300301",
+        "name": "K.S.SHIBU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KULAPPARA",
+      "person": {
+        "id": "2015023300401",
+        "name": "THAHIRA BEEVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SHEDDILKKADA",
+      "person": {
+        "id": "2015023300501",
+        "name": "INDIRA.M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERUNARAKAMCODU",
+      "person": {
+        "id": "2015023300601",
+        "name": "AJITHA KUMARI.D.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THOLIKKUZHI",
+      "person": {
+        "id": "2015023300701",
+        "name": "S.JAFAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ADAYAMON",
+      "person": {
+        "id": "2015023300801",
+        "name": "PRASANNA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VANDANOOR",
+      "person": {
+        "id": "2015023300901",
+        "name": "K.RAJENDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANARA",
+      "person": {
+        "id": "2015023301001",
+        "name": "SINDHU.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MAHADEVESWARAM",
+      "person": {
+        "id": "2015023301101",
+        "name": "GOVINDANPOTTI.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015023301201",
+        "name": "S.JALAJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNNUMMEL",
+      "person": {
+        "id": "2015023301301",
+        "name": "LALI.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHIYAKAVU",
+      "person": {
+        "id": "2015023301401",
+        "name": "DHARALIKA.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAZHAYAKUNNUMMEL",
+      "person": {
+        "id": "2015023301501",
+        "name": "U.S.SUJITH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PAPPALA",
+      "person": {
+        "id": "2015023301601",
+        "name": "S.SHEEJA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MANALETHUPACHA",
+      "person": {
+        "id": "2015023301701",
+        "name": "NISHA.A.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

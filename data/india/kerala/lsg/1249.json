@@ -1,0 +1,285 @@
+{
+  "timeStamp": 1566349735928,
+  "date": "2019-08-21",
+  "name": "Nilambur\n  Municipality, Malappuram District",
+  "district": "Malappuram",
+  "area": null,
+  "localbody_code": "M100600",
+  "no_of_wards": 33,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "chairperson": "PADMINIGOPINATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ASUPATHRIKKUNNU",
+      "person": {
+        "id": "2015124900101",
+        "name": "GIREESH MOLOORMADATHIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOVILAKATHUMURI",
+      "person": {
+        "id": "2015124900201",
+        "name": "ARUMA P T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUVATHUKUNNU",
+      "person": {
+        "id": "2015124900301",
+        "name": "BUSHRA MUNEEB"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "SCHOOLKUNNU",
+      "person": {
+        "id": "2015124900401",
+        "name": "MUMTHAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHARANKULAM",
+      "person": {
+        "id": "2015124900501",
+        "name": "SAMEERA K P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARIMPUZHA",
+      "person": {
+        "id": "2015124900601",
+        "name": "VELUKUTTY N"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUMMULLI",
+      "person": {
+        "id": "2015124900701",
+        "name": "HAMZA P V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MAYYANTHANI",
+      "person": {
+        "id": "2015124900801",
+        "name": "PADMINI GOPINATH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANDAKKUNNU",
+      "person": {
+        "id": "2015124900901",
+        "name": "MUSTHAFA K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUKKATTA",
+      "person": {
+        "id": "2015124901001",
+        "name": "ASRATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALLAPPUZHA",
+      "person": {
+        "id": "2015124901101",
+        "name": "P M BASHEER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTHEERI",
+      "person": {
+        "id": "2015124901201",
+        "name": "KUNHIMUHAMMED"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATHIPPARA",
+      "person": {
+        "id": "2015124901301",
+        "name": "SURESH P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ENANTHI",
+      "person": {
+        "id": "2015124901401",
+        "name": "SREEJA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAYYAMPALLI",
+      "person": {
+        "id": "2015124901501",
+        "name": "THONGODAN SUNDARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "IYYAMMADA",
+      "person": {
+        "id": "2015124901601",
+        "name": "SHERLY MOL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VEETTICHAL",
+      "person": {
+        "id": "2015124901701",
+        "name": "E S MUJEEB"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THONIPOYIL",
+      "person": {
+        "id": "2015124901801",
+        "name": "PALOLY MEHABOOB"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MUTHUKAD",
+      "person": {
+        "id": "2015124901901",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "RAMANKUTH",
+      "person": {
+        "id": "2015124902001",
+        "name": "ADUKKATH ISHAK"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THEKKUMPADAM",
+      "person": {
+        "id": "2015124902101",
+        "name": "NAICY"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "POTTIPPARA",
+      "person": {
+        "id": "2015124902201",
+        "name": "GOPINATHAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "NEDUMUNDAKKUNNU",
+      "person": {
+        "id": "2015124902301",
+        "name": "NOORJAHAN P"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "PADIKKUNNU",
+      "person": {
+        "id": "2015124902401",
+        "name": "SUBAIDA THATTARASSERI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MANALODI",
+      "person": {
+        "id": "2015124902501",
+        "name": "GOPALAKRISHNAN P"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "IRUTHAMPOYIL",
+      "person": {
+        "id": "2015124902601",
+        "name": "UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PATTARAKKA",
+      "person": {
+        "id": "2015124902701",
+        "name": "SHAREEFA"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "CHAKKALAKKUTH",
+      "person": {
+        "id": "2015124902801",
+        "name": "DAISY CHACKO"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "THAMARAKKULAM",
+      "person": {
+        "id": "2015124902901",
+        "name": "MUJEEB DEVASSERI"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "VEETTIKKUTH",
+      "person": {
+        "id": "2015124903001",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KALLEMADAM",
+      "person": {
+        "id": "2015124903101",
+        "name": "SUMEERA P"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "VARADEMPADAM",
+      "person": {
+        "id": "2015124903201",
+        "name": "RADHA P"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "KULAKKANDAM",
+      "person": {
+        "id": "2015124903301",
+        "name": "BINU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

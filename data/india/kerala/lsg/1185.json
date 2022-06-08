@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349534568,
+  "date": "2019-08-21",
+  "name": "Paivalike  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Manjewswaram",
+  "area": "72.51km",
+  "localbody_code": "G140106",
+  "no_of_wards": 19,
+  "population": 27913,
+  "male": 13965,
+  "female": 13948,
+  "population_density": 385,
+  "sex_ratio": 999,
+  "literacy_rate": 76.64,
+  "literacy_rate_male": 85.83,
+  "literacy_rate_female": 67.54,
+  "president": "BHARATHI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KURUDAPADAVU",
+      "person": {
+        "id": "2015118500101",
+        "name": "THARA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "SIRANTHADKA",
+      "person": {
+        "id": "2015118500201",
+        "name": "CHANIYA KOMMANGALA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHIPPAR",
+      "person": {
+        "id": "2015118500301",
+        "name": "RAZIYA RAZAK CHIPPAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AVALA",
+      "person": {
+        "id": "2015118500401",
+        "name": "RAHIM NADUMANE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MULIGADDE",
+      "person": {
+        "id": "2015118500501",
+        "name": "BHAVYA.B"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERVODY",
+      "person": {
+        "id": "2015118500601",
+        "name": "KISHORE KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "BERIPADAVU",
+      "person": {
+        "id": "2015118500701",
+        "name": "JAYALAKSHMI BHAT.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SUDEMBALA",
+      "person": {
+        "id": "2015118500801",
+        "name": "GANESHA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERAL",
+      "person": {
+        "id": "2015118500901",
+        "name": "VASANTHI.B"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SAJANKILA",
+      "person": {
+        "id": "2015118501001",
+        "name": "SUBRAHMANYA BHAT.A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANIPPADI",
+      "person": {
+        "id": "2015118501101",
+        "name": "BASHEER DEVAKANA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERMUDE",
+      "person": {
+        "id": "2015118501201",
+        "name": "M.K.AMEER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUDAL",
+      "person": {
+        "id": "2015118501301",
+        "name": "BHARATHI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEVAR",
+      "person": {
+        "id": "2015118501401",
+        "name": "HAREESH BOTTARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PARAMBALA",
+      "person": {
+        "id": "2015118501501",
+        "name": "RAJEEVI PRASAD RAI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KAYYAR",
+      "person": {
+        "id": "2015118501601",
+        "name": "FATHIMATH JOURA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PAIVALIKE",
+      "person": {
+        "id": "2015118501701",
+        "name": "RABIYA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALAI",
+      "person": {
+        "id": "2015118501801",
+        "name": "SUNEETHA VALTI D SOUZA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KADENKODI",
+      "person": {
+        "id": "2015118501901",
+        "name": "SUJATHA.B.RAI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566345951615,
+  "date": "2019-08-21",
+  "name": "Chenkal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Parassala",
+  "area": "19.37km",
+  "localbody_code": "G011101",
+  "no_of_wards": 21,
+  "population": 32672,
+  "male": 16407,
+  "female": 16265,
+  "population_density": 1687,
+  "sex_ratio": 991,
+  "literacy_rate": 86.98,
+  "literacy_rate_male": 90.77,
+  "literacy_rate_female": 83.19,
+  "president": "VATTAVILARAJKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KEEZHKOLLA",
+      "person": {
+        "id": "2015029700101",
+        "name": "RAJKUMAR.S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VATTAVILA",
+      "person": {
+        "id": "2015029700201",
+        "name": "LALY.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUDUMBOTTUKONAM",
+      "person": {
+        "id": "2015029700301",
+        "name": "V.S.JAYARAM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOCHOTTUKONAM",
+      "person": {
+        "id": "2015029700401",
+        "name": "R.SUPRABHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UDHIYANKULANGARA",
+      "person": {
+        "id": "2015029700501",
+        "name": "SANTHA KUMAR.P.T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAMAM",
+      "person": {
+        "id": "2015029700601",
+        "name": "M.D.SHEELA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARAYOOR",
+      "person": {
+        "id": "2015029700701",
+        "name": "SHIBU.D"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARAYOOR KIZHAKKU",
+      "person": {
+        "id": "2015029700801",
+        "name": "R.P.RAJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PONVILA",
+      "person": {
+        "id": "2015029700901",
+        "name": "C.SUSEELA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THOTTINKARA",
+      "person": {
+        "id": "2015029701001",
+        "name": "SUNI VINCENT"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PORANNOOR",
+      "person": {
+        "id": "2015029701101",
+        "name": "A.R.PRASOON"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MELAMMAKAM",
+      "person": {
+        "id": "2015029701201",
+        "name": "THRESIA SELVISTER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KODANKARA",
+      "person": {
+        "id": "2015029701301",
+        "name": "ELIZABATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MARIAPURAM",
+      "person": {
+        "id": "2015029701401",
+        "name": "M.THOMAS"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUNNANVILA",
+      "person": {
+        "id": "2015029701501",
+        "name": "RADHAMMA.D"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHENKAL KIZHAKKU",
+      "person": {
+        "id": "2015029701601",
+        "name": "G.V.AJITHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHENKAL",
+      "person": {
+        "id": "2015029701701",
+        "name": "VATTAVILA RAJKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VLATHANKARA KIZHAKKU",
+      "person": {
+        "id": "2015029701801",
+        "name": "T.MINI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KEEZHAMMAKAM",
+      "person": {
+        "id": "2015029701901",
+        "name": "ADV.POOZHIKUNNU SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "VLATHANKARA",
+      "person": {
+        "id": "2015029702001",
+        "name": "M.PUSHPA RANI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NOCHIYOOR",
+      "person": {
+        "id": "2015029702101",
+        "name": "PRASANTH.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

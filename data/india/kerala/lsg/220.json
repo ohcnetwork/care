@@ -1,0 +1,373 @@
+{
+  "timeStamp": 1566345676663,
+  "date": "2019-08-21",
+  "name": "Payyannur  Municipality, Kannur District",
+  "district": "Kannur",
+  "area": "54.63km",
+  "localbody_code": "M130400",
+  "no_of_wards": 44,
+  "population": 68711,
+  "male": 32678,
+  "female": 36033,
+  "population_density": 1172,
+  "sex_ratio": 1067,
+  "literacy_rate": 91.48,
+  "literacy_rate_male": 96.41,
+  "literacy_rate_female": 86.95,
+  "chairman": "SASIVATTAKKOVVAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANIYERI",
+      "person": {
+        "id": "2015022000101",
+        "name": "P P DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KIZHAKKUMBAD",
+      "person": {
+        "id": "2015022000201",
+        "name": "JYOTHI K P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLOOR EAST",
+      "person": {
+        "id": "2015022000301",
+        "name": "SREEJA K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EACHILAM VAYAL",
+      "person": {
+        "id": "2015022000401",
+        "name": "NARAYANAN PAVOOR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANDOTH",
+      "person": {
+        "id": "2015022000501",
+        "name": "K PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOROME NORTH",
+      "person": {
+        "id": "2015022000601",
+        "name": "RAVINDRAN P V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOROME CENTRAL",
+      "person": {
+        "id": "2015022000701",
+        "name": "V BALAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOROME SOUTH",
+      "person": {
+        "id": "2015022000801",
+        "name": "C NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUTHIYALAM",
+      "person": {
+        "id": "2015022000901",
+        "name": "RAGHAVAN KADANKOT VEETTIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANAYI NORTH",
+      "person": {
+        "id": "2015022001001",
+        "name": "K M CHANTHU KUTTY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANIYARA",
+      "person": {
+        "id": "2015022001101",
+        "name": "VANAJAKSHI E"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KANAYI SOUTH",
+      "person": {
+        "id": "2015022001201",
+        "name": "P BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PARAVANTHATTA",
+      "person": {
+        "id": "2015022001301",
+        "name": "LEELA P P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOKKOTT",
+      "person": {
+        "id": "2015022001401",
+        "name": "P V KUNHAPPAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHITTARIKKOVVAL",
+      "person": {
+        "id": "2015022001501",
+        "name": "M LATHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERUMBA",
+      "person": {
+        "id": "2015022001601",
+        "name": "BUSHRA K M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "HOSPITAL",
+      "person": {
+        "id": "2015022001701",
+        "name": "SHINI K P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOKKANISSERI",
+      "person": {
+        "id": "2015022001801",
+        "name": "A K SREEJA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "TOWN WARD",
+      "person": {
+        "id": "2015022001901",
+        "name": "V NANDAKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MAVICHERI",
+      "person": {
+        "id": "2015022002001",
+        "name": "USHA DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KANDANKALI NORTH",
+      "person": {
+        "id": "2015022002102",
+        "name": "PRASEETHA P K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KANDANKALI SOUTH",
+      "person": {
+        "id": "2015022002201",
+        "name": "SEEMA SURESH"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PUNCHAKKAD",
+      "person": {
+        "id": "2015022002301",
+        "name": "M PRADEEPAN"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KOTTY",
+      "person": {
+        "id": "2015022002401",
+        "name": "SAROJINI T"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "MAMBALAM",
+      "person": {
+        "id": "2015022002501",
+        "name": "NALINI N"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "PADOLI",
+      "person": {
+        "id": "2015022002601",
+        "name": "PREETHA P"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "TEMPLE WARD",
+      "person": {
+        "id": "2015022002701",
+        "name": "SREEKANTH K M"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "GRAMAM EAST",
+      "person": {
+        "id": "2015022002801",
+        "name": "INDULEKHA PUTHALATH"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "GRAMAM WEST",
+      "person": {
+        "id": "2015022002901",
+        "name": "SASI VATTAKKOVVAL"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "KELOTH SOUTH",
+      "person": {
+        "id": "2015022003001",
+        "name": "SANJEEVAN M"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KELOTH NORTH",
+      "person": {
+        "id": "2015022003101",
+        "name": "P V DASAN"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KAVVAYI",
+      "person": {
+        "id": "2015022003201",
+        "name": "NASEEMA A"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "THAYINERI WEST",
+      "person": {
+        "id": "2015022003301",
+        "name": "SHAMEEMA M K"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "THAYINERI EAST",
+      "person": {
+        "id": "2015022003401",
+        "name": "KRISHNAN POTHERA"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "MUCHILOTT WARD",
+      "person": {
+        "id": "2015022003501",
+        "name": "RAJITHA T V"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "ANNOOR SOUTH",
+      "person": {
+        "id": "2015022003601",
+        "name": "DHANADHA SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "ANNOOR EAST",
+      "person": {
+        "id": "2015022003701",
+        "name": "USHA T E"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "ANNOOR KIZHAKKEKOVVAL",
+      "person": {
+        "id": "2015022003801",
+        "name": "E P SHYAMALA"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "SANTHI GRAMAM",
+      "person": {
+        "id": "2015022003901",
+        "name": "SREELATHA K K V"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "KARA",
+      "person": {
+        "id": "2015022004001",
+        "name": "V P SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "41",
+      "name": "ANNOOR WEST",
+      "person": {
+        "id": "2015022004101",
+        "name": "K C SMITHA"
+      }
+    },
+    {
+      "ward_number": "42",
+      "name": "KARAMEL WEST",
+      "person": {
+        "id": "2015022004201",
+        "name": "SHEEBA N V"
+      }
+    },
+    {
+      "ward_number": "43",
+      "name": "KARAMEL EAST",
+      "person": {
+        "id": "2015022004301",
+        "name": "BALAN K V"
+      }
+    },
+    {
+      "ward_number": "44",
+      "name": "VELLOOR WEST",
+      "person": {
+        "id": "2015022004401",
+        "name": "E BHASKARAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345180503,
+  "date": "2019-08-21",
+  "name": "Trithala  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Thrithala",
+  "area": "172.16km",
+  "localbody_code": "B090100",
+  "no_of_wards": 14,
+  "population": 164254,
+  "male": 78408,
+  "female": 85846,
+  "population_density": 954,
+  "sex_ratio": 1095,
+  "literacy_rate": 87.49,
+  "literacy_rate_male": 91.36,
+  "literacy_rate_female": 84.04,
+  "president": "K.P.M.PUSHPAJA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUMBIDI",
+      "person": {
+        "id": "2015009800101",
+        "name": "M.K. PRADEEP"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOODALLUR",
+      "person": {
+        "id": "2015009800201",
+        "name": "P.BALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANGADI",
+      "person": {
+        "id": "2015009800301",
+        "name": "A.O.KOMALAVALLI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALOOR",
+      "person": {
+        "id": "2015009800401",
+        "name": "K.P.M.PUSHPAJA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MEZHATHUR",
+      "person": {
+        "id": "2015009800501",
+        "name": "BINDU M.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THRITHALA",
+      "person": {
+        "id": "2015009800601",
+        "name": "HILER.K.V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THIRUMITTACODE",
+      "person": {
+        "id": "2015009800701",
+        "name": "JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARUKAPUTHUR",
+      "person": {
+        "id": "2015009800801",
+        "name": "SASIDHARAN.P.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NAGALASSERY",
+      "person": {
+        "id": "2015009800901",
+        "name": "K.MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOTHACHIRA",
+      "person": {
+        "id": "2015009801002",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHALISSERY",
+      "person": {
+        "id": "2015009801101",
+        "name": "DHANYA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAVUKKODE",
+      "person": {
+        "id": "2015009801201",
+        "name": "C.K.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAPPUR",
+      "person": {
+        "id": "2015009801301",
+        "name": "FATHIMA V P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUMARANELLUR",
+      "person": {
+        "id": "2015009801401",
+        "name": "T.K.SUNITHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

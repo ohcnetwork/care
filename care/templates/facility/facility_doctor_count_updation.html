@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}{{facility.name}}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-center">{% trans "Edit Doctor Count" %}</h1><form class="form-horizontal" method="post" action="">
+  {% if duplicate %}
+  <p class="max-w-lg text-lg mt-3 text-red-700 text-justify">Please enter an area that is not entered already</p>
+  {% endif %}
+  {% csrf_token %}
+  {{ form|crispy }}
+  <div class="control-group">
+    <div class="controls mt-4">
+      <button type="submit" class="btn btn-primary">UPDATE</button>
+      <a class="btn btn-primary" href="{% url 'facility:facility-view' pk=facility.id %}">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

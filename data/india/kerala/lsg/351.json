@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346119113,
+  "date": "2019-08-21",
+  "name": "Thevalakkara  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chavara",
+  "area": "15.71km",
+  "localbody_code": "G020803",
+  "no_of_wards": 23,
+  "population": 37717,
+  "male": 18581,
+  "female": 19136,
+  "population_density": 2401,
+  "sex_ratio": 1030,
+  "literacy_rate": 87.65,
+  "literacy_rate_male": 92.79,
+  "literacy_rate_female": 82.69,
+  "president": "I.SHIHAB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADINJATTAKKARA NORTH",
+      "person": {
+        "id": "2015035100101",
+        "name": "SUNITHA OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PADINJATTAKKARA EAST",
+      "person": {
+        "id": "2015035100201",
+        "name": "S.RAJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADUVILAKKARA",
+      "person": {
+        "id": "2015035100301",
+        "name": "BINDHIYA AJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MULLIKKALA",
+      "person": {
+        "id": "2015035100401",
+        "name": "SHAINA SUMESH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARINALLOOR WEST",
+      "person": {
+        "id": "2015035100501",
+        "name": "AKHILA.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ARINALLOOR NORTH",
+      "person": {
+        "id": "2015035100601",
+        "name": "JOSE ANTONY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARINALLOOR",
+      "person": {
+        "id": "2015035100701",
+        "name": "AJITHAKUMARI.V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARINALLOOR SOUTH",
+      "person": {
+        "id": "2015035100801",
+        "name": "BIJI PETER"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PADAPPANAL",
+      "person": {
+        "id": "2015035100901",
+        "name": "PRIYANKA SALIM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MULLIKKALA SOUTH",
+      "person": {
+        "id": "2015035101001",
+        "name": "SHABEENA NIZAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOIVILA EAST",
+      "person": {
+        "id": "2015035101101",
+        "name": "JOSE HENRY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOIVILA SOUTH",
+      "person": {
+        "id": "2015035101201",
+        "name": "XAVIER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOIVILA WEST",
+      "person": {
+        "id": "2015035101302",
+        "name": "P.OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHENSANKETHAM SOUTH",
+      "person": {
+        "id": "2015035101401",
+        "name": "I.SHIHAB"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAYYAMKULAM",
+      "person": {
+        "id": "2015035101501",
+        "name": "REGHU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUTHENSANKETHAM NORTH",
+      "person": {
+        "id": "2015035101601",
+        "name": "PRASANNAKUMARI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOIVILA NORTH",
+      "person": {
+        "id": "2015035101701",
+        "name": "M.ISMAIL KUNJU"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALACKAL",
+      "person": {
+        "id": "2015035101801",
+        "name": "RASHEEDA NAZER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PALACKAL SOUTH",
+      "person": {
+        "id": "2015035101901",
+        "name": "M.ISMAIL KUNJU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MOTTACKAL",
+      "person": {
+        "id": "2015035102001",
+        "name": "SUNIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NADUVILAKKARA SOUTH",
+      "person": {
+        "id": "2015035102101",
+        "name": "RADHALEKSHMI.G"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PALACKAL NORTH",
+      "person": {
+        "id": "2015035102201",
+        "name": "ABOOBAKER KUNJU"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PADINJATTAKKARA SOUTH",
+      "person": {
+        "id": "2015035102301",
+        "name": "SUJATHA RAJENDRAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

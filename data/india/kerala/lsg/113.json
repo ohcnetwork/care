@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566345223039,
+  "date": "2019-08-21",
+  "name": "Kondotty  Block Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kondotty",
+  "area": "212.68km",
+  "localbody_code": "B100400",
+  "no_of_wards": 17,
+  "population": 247902,
+  "male": 122903,
+  "female": 124999,
+  "population_density": 1166,
+  "sex_ratio": 1017,
+  "literacy_rate": 89.97,
+  "literacy_rate_male": 93.85,
+  "literacy_rate_female": 86.08,
+  "president": "NAZEERA.P.A",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARAD",
+      "person": {
+        "id": "2015011300101",
+        "name": "P.CHANDRADASAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAKKOVE",
+      "person": {
+        "id": "2015011300201",
+        "name": "SABEERA.K.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAZHAKKAD",
+      "person": {
+        "id": "2015011300301",
+        "name": "FATHIMA.M"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAVANNAPPARA",
+      "person": {
+        "id": "2015011300401",
+        "name": "SHARAFUNNISA.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OLAVATTOOR",
+      "person": {
+        "id": "2015011300501",
+        "name": "NAZEERA. P.A"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTHUVALLOOR",
+      "person": {
+        "id": "2015011300601",
+        "name": "MARAKKARUTTY.T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THAVANUR",
+      "person": {
+        "id": "2015011300701",
+        "name": "M.P. MOHAMMED"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NOONJALLUR",
+      "person": {
+        "id": "2015011300801",
+        "name": "BUSHRA-CHEERANGAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015011300901",
+        "name": "THANKA.P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARIPPUR",
+      "person": {
+        "id": "2015011301001",
+        "name": "AMBALACHERY SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHURPALLIKKAL",
+      "person": {
+        "id": "2015011301101",
+        "name": "V.BABU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PALLIKKAL",
+      "person": {
+        "id": "2015011301201",
+        "name": "JAMEELA. A.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAINGOTTUR",
+      "person": {
+        "id": "2015011301301",
+        "name": "JAMEELA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHELEMBRA",
+      "person": {
+        "id": "2015011301401",
+        "name": "K.P. AMEER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AYIKKARAPPADI",
+      "person": {
+        "id": "2015011301502",
+        "name": "FAISAL KOLLOLY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KANNAMVETTIKKAVU",
+      "person": {
+        "id": "2015011301601",
+        "name": "ABDUL KAREEM. A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PUTHUKKODU",
+      "person": {
+        "id": "2015011301701",
+        "name": "APPUTTY. K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

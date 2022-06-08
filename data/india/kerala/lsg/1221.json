@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349651192,
+  "date": "2019-08-21",
+  "name": "Muthuvalloor  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Areekkode",
+  "area": "26.09km",
+  "localbody_code": "G100409",
+  "no_of_wards": 15,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "AHAMMEDSAGHIR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARATHAKKAD",
+      "person": {
+        "id": "2015122100101",
+        "name": "MOIDEEN KOYA.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUTHUPARAMBA",
+      "person": {
+        "id": "2015122100201",
+        "name": "BABURAJ PALLIKKUNNATH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PEEDIKAKKANDI",
+      "person": {
+        "id": "2015122100301",
+        "name": "AHAMMED SAGHIR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUNDILAKKAL",
+      "person": {
+        "id": "2015122100401",
+        "name": "SHAHIDA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHULLIKKODE",
+      "person": {
+        "id": "2015122100501",
+        "name": "ABDULLA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAPPUR",
+      "person": {
+        "id": "2015122100601",
+        "name": "KUMARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VILAYIL",
+      "person": {
+        "id": "2015122100701",
+        "name": "BASHEER.K.N"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANATALUNGAL",
+      "person": {
+        "id": "2015122100801",
+        "name": "SARABI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VADAKKEPARAMBA",
+      "person": {
+        "id": "2015122100901",
+        "name": "RESHMI.E.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THANIYAMPURAM",
+      "person": {
+        "id": "2015122101001",
+        "name": "SHAHARBAN.C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANEERI",
+      "person": {
+        "id": "2015122101101",
+        "name": "KHAIRUNEESA.P.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTHUVALLOOR",
+      "person": {
+        "id": "2015122101201",
+        "name": "RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAPPATH",
+      "person": {
+        "id": "2015122101301",
+        "name": "SHEELA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MUNDAKKULAM SOUTH",
+      "person": {
+        "id": "2015122101401",
+        "name": "SUNUMOL. P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUNDAKKULAM NORTH",
+      "person": {
+        "id": "2015122101501",
+        "name": "RAHMA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

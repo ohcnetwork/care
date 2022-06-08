@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346645150,
+  "date": "2019-08-21",
+  "name": "Mavelikara Thamarakulam  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Bharinikavu",
+  "area": "20.89km",
+  "localbody_code": "G041104",
+  "no_of_wards": 17,
+  "population": 24470,
+  "male": 12047,
+  "female": 12423,
+  "population_density": 1171,
+  "sex_ratio": 1031,
+  "literacy_rate": 87,
+  "literacy_rate_male": 87,
+  "literacy_rate_female": 86,
+  "president": "GEETHASOMAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANNANAKUZHY WEST",
+      "person": {
+        "id": "2015048900101",
+        "name": "BINDU SHAMSUDEEN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANNANAKUZHY",
+      "person": {
+        "id": "2015048900201",
+        "name": "SANTHA SASANKAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANNANAKUZHY EAST",
+      "person": {
+        "id": "2015048900301",
+        "name": "BIJI SUGATHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHARUMMOODU",
+      "person": {
+        "id": "2015048900401",
+        "name": "PHILIP OOMMEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PEROORKARANMA",
+      "person": {
+        "id": "2015048900501",
+        "name": "SAJEEV.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAKATTUSERRY NORTH",
+      "person": {
+        "id": "2015048900601",
+        "name": "SUJA OMANAKUTTAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTAKATTUSERRY",
+      "person": {
+        "id": "2015048900701",
+        "name": "LAILA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "GURUNADHANKULANGARA",
+      "person": {
+        "id": "2015048900801",
+        "name": "M.SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHANCHANTHA",
+      "person": {
+        "id": "2015048900901",
+        "name": "DEEPA.R"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKEMURI",
+      "person": {
+        "id": "2015048901001",
+        "name": "V.RAJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKEMURI",
+      "person": {
+        "id": "2015048901101",
+        "name": "BASHEER RAWTHER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "IRAPPANPARA",
+      "person": {
+        "id": "2015048901201",
+        "name": "S.A.RAHIM"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THAMARAKULAM TOWN",
+      "person": {
+        "id": "2015048901301",
+        "name": "A.ABDUL SALIM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHATHIYARA SOUTH",
+      "person": {
+        "id": "2015048901401",
+        "name": "N.AJAYAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHATHIYARA NORTH",
+      "person": {
+        "id": "2015048901501",
+        "name": "GEETHASOMAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VEDARAPLAVU",
+      "person": {
+        "id": "2015048901601",
+        "name": "SUNITHA.S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHETTARIKKAL",
+      "person": {
+        "id": "2015048901701",
+        "name": "RAJI.M.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

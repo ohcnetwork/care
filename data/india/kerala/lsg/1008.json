@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348907013,
+  "date": "2019-08-21",
+  "name": "Kuttiadi  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnummal",
+  "area": "15.22km",
+  "localbody_code": "G110304",
+  "no_of_wards": 14,
+  "population": 17108,
+  "male": 8461,
+  "female": 8647,
+  "population_density": 1124,
+  "sex_ratio": 1022,
+  "literacy_rate": 89.28,
+  "literacy_rate_male": 95.26,
+  "literacy_rate_female": 83.52,
+  "president": "BALAKRISHNANC.N",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MEETHALE VATAYAM",
+      "person": {
+        "id": "2015100800101",
+        "name": "SANTHOSH K.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NARKOOTUMCHALIL",
+      "person": {
+        "id": "2015100800201",
+        "name": "BINDHU K.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOORARA",
+      "person": {
+        "id": "2015100800301",
+        "name": "NABEESA THEVARKANDI MEETHAL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOLATHARA",
+      "person": {
+        "id": "2015100800401",
+        "name": "T.K DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTIADY",
+      "person": {
+        "id": "2015100800501",
+        "name": "JAMEELA K.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAMMANATHAZHA",
+      "person": {
+        "id": "2015100800601",
+        "name": "AYSHA HAMEED"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NOTTIKANDY",
+      "person": {
+        "id": "2015100800701",
+        "name": "GEETHA M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "URATH",
+      "person": {
+        "id": "2015100800801",
+        "name": "RAVEENDRAN P.C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MAVULLA CHALIL",
+      "person": {
+        "id": "2015100800901",
+        "name": "BALAKRISHNAN C.N"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANNIVAYAL",
+      "person": {
+        "id": "2015100801001",
+        "name": "MOIDU VADAKKEPARAMBATH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PALONKARA",
+      "person": {
+        "id": "2015100801101",
+        "name": "HAJARA T.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NADUPPOYIL",
+      "person": {
+        "id": "2015100801201",
+        "name": "NANU EDATHUMKARA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NITTOOR",
+      "person": {
+        "id": "2015100801301",
+        "name": "RAJITHA M.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PONNELAYI",
+      "person": {
+        "id": "2015100801401",
+        "name": "BALAN ERATH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346906448,
+  "date": "2019-08-21",
+  "name": "Erumely  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kanjirappally",
+  "area": "82.35km",
+  "localbody_code": "G051101",
+  "no_of_wards": 23,
+  "population": 38908,
+  "male": 19382,
+  "female": 19526,
+  "population_density": 472,
+  "sex_ratio": 1007,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 92,
+  "president": "T.SKRISHNAKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAZHAYIDOM",
+      "person": {
+        "id": "2015056700101",
+        "name": "ANITHA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENAPPADY",
+      "person": {
+        "id": "2015056700201",
+        "name": "SUDHA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KIZHAKKEKKARA",
+      "person": {
+        "id": "2015056700301",
+        "name": "A.R RAJAPPAN NAIR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERUVALLY ESTATE",
+      "person": {
+        "id": "2015056700401",
+        "name": "V.P SUGATHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OZHAKKANAD",
+      "person": {
+        "id": "2015056700501",
+        "name": "T.S KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAZHAKKALA",
+      "person": {
+        "id": "2015056700601",
+        "name": "K.R AJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NERCHAPPARA",
+      "person": {
+        "id": "2015056700701",
+        "name": "JASNA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARISSERY",
+      "person": {
+        "id": "2015056700801",
+        "name": "JOMON VAZHAPPANADI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "IRUMPOONNIKKARA",
+      "person": {
+        "id": "2015056700901",
+        "name": "REJANI CHANDRASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THUMARAMPARA",
+      "person": {
+        "id": "2015056701001",
+        "name": "GIRIJA MOL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PAMPAVALLEY",
+      "person": {
+        "id": "2015056701101",
+        "name": "SUSAMMA RAJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ANGELVALLEY",
+      "person": {
+        "id": "2015056701201",
+        "name": "VALSAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOOKKENPETTY",
+      "person": {
+        "id": "2015056701301",
+        "name": "SOMAN THERUVATHIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANAMALA",
+      "person": {
+        "id": "2015056701401",
+        "name": "ANISH VAZHAYIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "UMIKUPPA",
+      "person": {
+        "id": "2015056701501",
+        "name": "SOJAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUKKOOTTUTHARA",
+      "person": {
+        "id": "2015056701601",
+        "name": "PRAKASH PULICKAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUTTAPPALLY",
+      "person": {
+        "id": "2015056701701",
+        "name": "KUNJAMMA TEACHER"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ELIVALIKKARA",
+      "person": {
+        "id": "2015056701801",
+        "name": "P.A IRSHAD"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PRAPOSE",
+      "person": {
+        "id": "2015056701901",
+        "name": "ANNAMMA RAJU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ERUMELY TOWN",
+      "person": {
+        "id": "2015056702001",
+        "name": "FARISA JAMAL"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PORIYANMALA",
+      "person": {
+        "id": "2015056702101",
+        "name": "E.K.SUBRAMANIAN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KANAKAPPALAM",
+      "person": {
+        "id": "2015056702201",
+        "name": "JOLLY"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "SREENIPURAM",
+      "person": {
+        "id": "2015056702301",
+        "name": "REGIMOL SASI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

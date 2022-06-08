@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566349188743,
+  "date": "2019-08-21",
+  "name": "Meppadi  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "198.65km",
+  "localbody_code": "G120408",
+  "no_of_wards": 22,
+  "population": 56530,
+  "male": 28345,
+  "female": 28185,
+  "population_density": 285,
+  "sex_ratio": 994,
+  "literacy_rate": 82.32,
+  "literacy_rate_male": 87.98,
+  "literacy_rate_female": 76.66,
+  "president": "K.K.SAHAD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLITHODU",
+      "person": {
+        "id": "2015109300101",
+        "name": "M. USHA TEACHER"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRIKAIPATTA",
+      "person": {
+        "id": "2015109300201",
+        "name": "CHANDRASEKHARAN THAMBI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EZHAMCHIRA",
+      "person": {
+        "id": "2015109300301",
+        "name": "BENNY PETER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NEDUMBALA",
+      "person": {
+        "id": "2015109300401",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "POOTHAKOLLY",
+      "person": {
+        "id": "2015109300501",
+        "name": "OMANA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MEPPADI TOWN",
+      "person": {
+        "id": "2015109300601",
+        "name": "T. HAMZA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015109300701",
+        "name": "GIRIJA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NELLIMUNDA",
+      "person": {
+        "id": "2015109300801",
+        "name": "ABDUL SALAM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHUMALA",
+      "person": {
+        "id": "2015109300901",
+        "name": "CHANDRAN. K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ATTAMALA",
+      "person": {
+        "id": "2015109301001",
+        "name": "SABITHA. V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUNDAKKAI",
+      "person": {
+        "id": "2015109301101",
+        "name": "SHAIJA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOORALMALA",
+      "person": {
+        "id": "2015109301201",
+        "name": "SEENATH C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHULIKA",
+      "person": {
+        "id": "2015109301301",
+        "name": "MUHAMMED YUNUS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KADOOR",
+      "person": {
+        "id": "2015109301401",
+        "name": "K.K. SAHAD"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUNNAMANGALAMVAYAL",
+      "person": {
+        "id": "2015109301501",
+        "name": "BINSU. P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHEMBRA",
+      "person": {
+        "id": "2015109301601",
+        "name": "RADHA RAMASWAMY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015109301701",
+        "name": "T.K SULAIMAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "AUDATHODE",
+      "person": {
+        "id": "2015109301801",
+        "name": "K. BABU"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KUNNAMPETTA",
+      "person": {
+        "id": "2015109301901",
+        "name": "NASEEMA. T.K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOTTANAD",
+      "person": {
+        "id": "2015109302001",
+        "name": "PRATHEEJA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHEMBOTHARA",
+      "person": {
+        "id": "2015109302101",
+        "name": "LALITHA"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PUTHOORVAYAL",
+      "person": {
+        "id": "2015109302201",
+        "name": "SAHISHNA. P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

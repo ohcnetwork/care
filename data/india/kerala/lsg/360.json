@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346157124,
+  "date": "2019-08-21",
+  "name": "Poothakulam  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Ithikkara",
+  "area": "16.56km",
+  "localbody_code": "G021001",
+  "no_of_wards": 18,
+  "population": 27667,
+  "male": 13420,
+  "female": 14247,
+  "population_density": 1481,
+  "sex_ratio": 1121,
+  "literacy_rate": 87.18,
+  "literacy_rate_male": 92.88,
+  "literacy_rate_female": 82.19,
+  "president": "M.K.SREEKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTUVANKONAM",
+      "person": {
+        "id": "2015036000101",
+        "name": "SAJEEV.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUKKADA",
+      "person": {
+        "id": "2015036000201",
+        "name": "V.G.JAYA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOONAMKULAM",
+      "person": {
+        "id": "2015036000301",
+        "name": "DEEPA.V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHANKULAM",
+      "person": {
+        "id": "2015036000401",
+        "name": "V.K.SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OONNINMOODU",
+      "person": {
+        "id": "2015036000501",
+        "name": "V.JOY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EZHAMVILA",
+      "person": {
+        "id": "2015036000601",
+        "name": "CHITRALEKHA.C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOTHAKULAM",
+      "person": {
+        "id": "2015036000701",
+        "name": "SOBHA.R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "H.S.WARD",
+      "person": {
+        "id": "2015036000801",
+        "name": "M.SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUNNEKKULAM",
+      "person": {
+        "id": "2015036000901",
+        "name": "SHEELA.S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EDAYADI",
+      "person": {
+        "id": "2015036001001",
+        "name": "VIDYA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "STADIUM",
+      "person": {
+        "id": "2015036001101",
+        "name": "M.K.SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NELLETTIL",
+      "person": {
+        "id": "2015036001201",
+        "name": "JAYA.J"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAVILA",
+      "person": {
+        "id": "2015036001301",
+        "name": "SREERESHMI.G.S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDAVATTAM",
+      "person": {
+        "id": "2015036001401",
+        "name": "SREELATHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALAKKODU",
+      "person": {
+        "id": "2015036001501",
+        "name": "SUNILKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "P.H.C",
+      "person": {
+        "id": "2015036001601",
+        "name": "G.PARAMESWARAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015036001701",
+        "name": "V.ASOKAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "NJARODU",
+      "person": {
+        "id": "2015036001801",
+        "name": "RETNAMMA AMMA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

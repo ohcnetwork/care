@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349499029,
+  "date": "2019-08-21",
+  "name": "Kolayad  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Peravoor",
+  "area": "33.15km",
+  "localbody_code": "G131105",
+  "no_of_wards": 14,
+  "population": 18062,
+  "male": 8921,
+  "female": 9141,
+  "population_density": 545,
+  "sex_ratio": 1025,
+  "literacy_rate": 89.14,
+  "literacy_rate_male": 92.68,
+  "literacy_rate_female": 85.73,
+  "president": "KPSURESHKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ALACHERY",
+      "person": {
+        "id": "2015117400101",
+        "name": "SUJATHA C"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MENACHODI",
+      "person": {
+        "id": "2015117400201",
+        "name": "SANKARAN T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARYAPARAMBA",
+      "person": {
+        "id": "2015117400301",
+        "name": "MINI K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAYANNUR",
+      "person": {
+        "id": "2015117400401",
+        "name": "BEENA PRASANTH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VEKKALAM",
+      "person": {
+        "id": "2015117400501",
+        "name": "VINCY KATTAKKAYAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ERAYIKKOLLY",
+      "person": {
+        "id": "2015117400601",
+        "name": "K P SURESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NIDUMPURAMCHAL",
+      "person": {
+        "id": "2015117400701",
+        "name": "GEETHA JAYARAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOMMERI",
+      "person": {
+        "id": "2015117400801",
+        "name": "VALSA OLIKKUZHIYIL"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHALAM",
+      "person": {
+        "id": "2015117400901",
+        "name": "RAJAN KANNANKERY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAKKAMTHODU",
+      "person": {
+        "id": "2015117401001",
+        "name": "ANNA JOLLY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLAYAD",
+      "person": {
+        "id": "2015117401101",
+        "name": "AT KUNHAMMED"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PADIPARAMBU",
+      "person": {
+        "id": "2015117401201",
+        "name": "N KAMALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUVA",
+      "person": {
+        "id": "2015117401301",
+        "name": "REMYA PC"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EDAYAR",
+      "person": {
+        "id": "2015117401401",
+        "name": "KV JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

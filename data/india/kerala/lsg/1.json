@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344833944,
+  "date": "2019-08-21",
+  "name": "Varkala  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Varkala",
+  "area": "86.67km",
+  "localbody_code": "B010100",
+  "no_of_wards": 13,
+  "population": 143985,
+  "male": 67677,
+  "female": 76308,
+  "population_density": 1661,
+  "sex_ratio": 1128,
+  "literacy_rate": 87.23,
+  "literacy_rate_male": 92.41,
+  "literacy_rate_female": 82.82,
+  "president": "M.K.YOOSAF",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAPPIL",
+      "person": {
+        "id": "2015000100101",
+        "name": "A.BALIQU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELAKAMON",
+      "person": {
+        "id": "2015000100201",
+        "name": "V.S.VANITHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALAYAMKUNNU",
+      "person": {
+        "id": "2015000100301",
+        "name": "BENNY.K.G"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEMMARUTHY",
+      "person": {
+        "id": "2015000100401",
+        "name": "MINIKUMARI. S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTTAPPALAM",
+      "person": {
+        "id": "2015000100501",
+        "name": "SASEENDRA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VADASSERIKKONAM",
+      "person": {
+        "id": "2015000100601",
+        "name": "ADV.C.S.RAJEEV"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "OTTOOR",
+      "person": {
+        "id": "2015000100701",
+        "name": "ADV. SMITHA SUNDARESAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANAMBOOR",
+      "person": {
+        "id": "2015000100801",
+        "name": "P.J.NAHAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAVALAYOOR",
+      "person": {
+        "id": "2015000100901",
+        "name": "M.S.SUSHAMMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERUNNIYOOR",
+      "person": {
+        "id": "2015000101001",
+        "name": "SALIM ISMAIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VENNICODE",
+      "person": {
+        "id": "2015000101101",
+        "name": "SABEENA SASANKAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VETTOOR",
+      "person": {
+        "id": "2015000101201",
+        "name": "M.K.YOOSAF"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EDAVA",
+      "person": {
+        "id": "2015000101301",
+        "name": "MERLY.G.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

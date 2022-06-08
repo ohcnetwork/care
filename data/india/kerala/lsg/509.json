@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346713927,
+  "date": "2019-08-21",
+  "name": "Neezhoor  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kaduthuruthy",
+  "area": "28.91km",
+  "localbody_code": "G050204",
+  "no_of_wards": 14,
+  "population": 17651,
+  "male": 8840,
+  "female": 8811,
+  "population_density": 611,
+  "sex_ratio": 997,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "JOHNSONTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SANTHIPURAM",
+      "person": {
+        "id": "2015050900101",
+        "name": "SANTHOSH JOSEPH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MARANGOLI",
+      "person": {
+        "id": "2015050900201",
+        "name": "SCARIA VARKEY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VISWABHARATHI",
+      "person": {
+        "id": "2015050900301",
+        "name": "RADHAKRISHNAN P.D."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BHAJANAMADAM",
+      "person": {
+        "id": "2015050900401",
+        "name": "GEETHA J"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VADAKKENIRAPPU",
+      "person": {
+        "id": "2015050900501",
+        "name": "BEENA MATHEW"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAKKADU",
+      "person": {
+        "id": "2015050900601",
+        "name": "ELSY JOHN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUKKAVALAKKUNNU",
+      "person": {
+        "id": "2015050900701",
+        "name": "SOMAN U.K."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KATTAMPACK",
+      "person": {
+        "id": "2015050900801",
+        "name": "THRESIAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAYAMMAKKU",
+      "person": {
+        "id": "2015050900901",
+        "name": "N.MANILAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THOTTAKKUTTY",
+      "person": {
+        "id": "2015050901001",
+        "name": "TESSY CYRIAC"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THIRUVAMBADY",
+      "person": {
+        "id": "2015050901101",
+        "name": "SAJI MOL JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MADATHIPPARAMBU",
+      "person": {
+        "id": "2015050901201",
+        "name": "JOHNSON THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NJEEZHOOR WEST",
+      "person": {
+        "id": "2015050901301",
+        "name": "BEENA SHIBU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NJEEZHOOR TOWN",
+      "person": {
+        "id": "2015050901401",
+        "name": "V. B. VINODKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

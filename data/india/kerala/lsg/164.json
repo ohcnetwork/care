@@ -1,0 +1,149 @@
+{
+  "timeStamp": 1566345396526,
+  "date": "2019-08-21",
+  "name": "Wayanad  District Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "area": "2131km",
+  "localbody_code": "D120000",
+  "no_of_wards": 16,
+  "population": 786627,
+  "male": 393397,
+  "female": 393230,
+  "population_density": 315,
+  "sex_ratio": 966,
+  "literacy_rate": 82.73,
+  "literacy_rate_male": 87.59,
+  "literacy_rate_female": 77.69,
+  "president": "KBNASEEMA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THAVINHAL",
+      "person": {
+        "id": "2015016400101",
+        "name": "A PRABAKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THIRUNELLY",
+      "person": {
+        "id": "2015016400201",
+        "name": "A.N.PRABAKARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PANAMARAM",
+      "person": {
+        "id": "2015016400301",
+        "name": "ASMATH P K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MULLANKOLLY",
+      "person": {
+        "id": "2015016400401",
+        "name": "VARGHEESE MURIAN KAVIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULPALLY",
+      "person": {
+        "id": "2015016400501",
+        "name": "ADV.O.R.RAGHU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANIYAMBATTA",
+      "person": {
+        "id": "2015016400601",
+        "name": "P ISMAIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MEENANGADI",
+      "person": {
+        "id": "2015016400701",
+        "name": "C OMANATEACHER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEERAL",
+      "person": {
+        "id": "2015016400801",
+        "name": "BINDU MANOJ"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THOMATTUCHAL",
+      "person": {
+        "id": "2015016400901",
+        "name": "P K ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AMBALAVAYAL",
+      "person": {
+        "id": "2015016401001",
+        "name": "N P KUNJUMOL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUTTIL",
+      "person": {
+        "id": "2015016401101",
+        "name": "K MINI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MEPPADI",
+      "person": {
+        "id": "2015016401201",
+        "name": "ANILA THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POZHUTHANA",
+      "person": {
+        "id": "2015016401301",
+        "name": "P N VIMALA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PADINHARETHARA",
+      "person": {
+        "id": "2015016401401",
+        "name": "K B NASEEMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VELLAMUNDA",
+      "person": {
+        "id": "2015016401501",
+        "name": "DEVAKI A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EDAVAKA",
+      "person": {
+        "id": "2015016401601",
+        "name": "T USHAKUMARI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

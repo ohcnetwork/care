@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566349413541,
+  "date": "2019-08-21",
+  "name": "Chokli  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Thalassery",
+  "area": "11.98km",
+  "localbody_code": "G130802",
+  "no_of_wards": 17,
+  "population": 25849,
+  "male": 11866,
+  "female": 13983,
+  "population_density": 2158,
+  "sex_ratio": 1178,
+  "literacy_rate": 94.77,
+  "literacy_rate_male": 97.73,
+  "literacy_rate_female": 92.33,
+  "president": "RAKESH.V.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NIDUMBRAM",
+      "person": {
+        "id": "2015115000101",
+        "name": "REMYA.C.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NIDUMBRAM VAYLIL PEEDIKA",
+      "person": {
+        "id": "2015115000201",
+        "name": "GEETHA.P.T.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "REGISTRAR OFFICE",
+      "person": {
+        "id": "2015115000301",
+        "name": "MINI.P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MARANKANDI",
+      "person": {
+        "id": "2015115000401",
+        "name": "PRASEETHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANDIPEEDIKA",
+      "person": {
+        "id": "2015115000501",
+        "name": "I.K.GANESHAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KURUNTHALIPEEDIKA",
+      "person": {
+        "id": "2015115000601",
+        "name": "P.BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUTTIYILPEEDIKA",
+      "person": {
+        "id": "2015115000701",
+        "name": "JALAJA KANNOTH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MEKKUNNU",
+      "person": {
+        "id": "2015115000801",
+        "name": "SHANID.K.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANHIRATHIN KEEZHIL",
+      "person": {
+        "id": "2015115000901",
+        "name": "SANTHARAM.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MATHIPPARAMBA",
+      "person": {
+        "id": "2015115001001",
+        "name": "K.K.SREEJA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NARAYANAN PARAMBA",
+      "person": {
+        "id": "2015115001101",
+        "name": "AJITHA CHEPRATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "OLAVILAM",
+      "person": {
+        "id": "2015115001201",
+        "name": "K.PRDEEPAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MEKKARAVEETIL THAZHA",
+      "person": {
+        "id": "2015115001301",
+        "name": "T.K.SHEEBA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAVIYYOR EAST",
+      "person": {
+        "id": "2015115001401",
+        "name": "VASU.P.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAVIYYOR",
+      "person": {
+        "id": "2015115001501",
+        "name": "RAKESH.V.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHOKLI TOWN",
+      "person": {
+        "id": "2015115001601",
+        "name": "FOUSY.N.S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NIDUMBRAM ILLATH PEEDIKA",
+      "person": {
+        "id": "2015115001701",
+        "name": "V.PADMANABHAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

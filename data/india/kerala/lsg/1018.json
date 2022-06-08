@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348952231,
+  "date": "2019-08-21",
+  "name": "Thikkodi  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Melady",
+  "area": "14.15km",
+  "localbody_code": "G110503",
+  "no_of_wards": 17,
+  "population": 22998,
+  "male": 11019,
+  "female": 11979,
+  "population_density": 1625,
+  "sex_ratio": 1087,
+  "literacy_rate": 90.27,
+  "literacy_rate_male": 95.53,
+  "literacy_rate_female": 85.49,
+  "president": "CHANEEFA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THRIKKOTTUR WEST",
+      "person": {
+        "id": "2015101800101",
+        "name": "T KHALID"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRIKKOTTUR NORTH",
+      "person": {
+        "id": "2015101800201",
+        "name": "VIJILA MAHESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLIKKARA NORTH",
+      "person": {
+        "id": "2015101800301",
+        "name": "SHEEJA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLIKKARA CENTRAL",
+      "person": {
+        "id": "2015101800401",
+        "name": "SASIBHOOSHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALLIKKARA SOUTH",
+      "person": {
+        "id": "2015101800501",
+        "name": "SREENIVASAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PURAKKAD KOPRAKANDAM",
+      "person": {
+        "id": "2015101800601",
+        "name": "BINDU.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIDANHIKUNNU",
+      "person": {
+        "id": "2015101800701",
+        "name": "C HANEEFA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PURAKKAD",
+      "person": {
+        "id": "2015101800802",
+        "name": "RAGHAVAN NITTODI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PURAKKAD WEST",
+      "person": {
+        "id": "2015101800901",
+        "name": "P K SATYAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOZHIPURAM",
+      "person": {
+        "id": "2015101801001",
+        "name": "PRASEETHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THIKKODI TOWN",
+      "person": {
+        "id": "2015101801101",
+        "name": "DEEPA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PALOOR",
+      "person": {
+        "id": "2015101801201",
+        "name": "MAHAMOOD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALOOR WEST",
+      "person": {
+        "id": "2015101801301",
+        "name": "RAJULA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THIKKODI WEST",
+      "person": {
+        "id": "2015101801401",
+        "name": "VAHEEDA M K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THIKKODI ANGADI",
+      "person": {
+        "id": "2015101801501",
+        "name": "PREMAN M K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THRIKKOTTUR SOUTH",
+      "person": {
+        "id": "2015101801601",
+        "name": "REMA CHERUKUTTY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THRIKKOTTUR",
+      "person": {
+        "id": "2015101801701",
+        "name": "SHEENA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346338608,
+  "date": "2019-08-21",
+  "name": "Thannithodu  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Konni",
+  "area": "428.45km",
+  "localbody_code": "G030606",
+  "no_of_wards": 13,
+  "population": 14885,
+  "male": 7437,
+  "female": 7448,
+  "population_density": 35,
+  "sex_ratio": 1001,
+  "literacy_rate": 94.31,
+  "literacy_rate_male": 95.84,
+  "literacy_rate_female": 92.79,
+  "president": "AMBILIMV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANCHUKUZHY",
+      "person": {
+        "id": "2015041100101",
+        "name": "INDIRA M S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANCHAYAT PADI",
+      "person": {
+        "id": "2015041100201",
+        "name": "M K MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARIMANTHODU",
+      "person": {
+        "id": "2015041100301",
+        "name": "P K GOPI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOOMPAKKULAM",
+      "person": {
+        "id": "2015041100401",
+        "name": "MANJU G M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THEKKUTHODE CENTRAL",
+      "person": {
+        "id": "2015041100501",
+        "name": "JOY CHITTARUVICKAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EZHAMTHALA",
+      "person": {
+        "id": "2015041100601",
+        "name": "AMBILI M V"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PARAKKULAM",
+      "person": {
+        "id": "2015041100701",
+        "name": "AJITHA SOMAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ALLUMKAL",
+      "person": {
+        "id": "2015041100801",
+        "name": "SUJA MATHEW"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MANNEERA",
+      "person": {
+        "id": "2015041100902",
+        "name": "TIJO THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ELIMULLUMPLACKAL",
+      "person": {
+        "id": "2015041101001",
+        "name": "SHEEJA C P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "V K PARA",
+      "person": {
+        "id": "2015041101101",
+        "name": "JOHN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANNITHODU MOOZHI",
+      "person": {
+        "id": "2015041101201",
+        "name": "SUMATHY K N"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MEKKANNAM",
+      "person": {
+        "id": "2015041101301",
+        "name": "SUBHASH K V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

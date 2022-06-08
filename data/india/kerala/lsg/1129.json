@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349341571,
+  "date": "2019-08-21",
+  "name": "Padiyoor   Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "128.77km",
+  "localbody_code": "G130408",
+  "no_of_wards": 15,
+  "population": 50481,
+  "male": 25511,
+  "female": 24970,
+  "population_density": 392,
+  "sex_ratio": 979,
+  "literacy_rate": 89.86,
+  "literacy_rate_male": 93.92,
+  "literacy_rate_female": 85.71,
+  "president": "SREEJA.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANNERI",
+      "person": {
+        "id": "2015112900101",
+        "name": "OMANA.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BLATHUR",
+      "person": {
+        "id": "2015112900201",
+        "name": "RAMACHANDRAN.A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THIRUR",
+      "person": {
+        "id": "2015112900301",
+        "name": "K.T.MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "URATHUR",
+      "person": {
+        "id": "2015112900401",
+        "name": "M.M.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARYAMKODE",
+      "person": {
+        "id": "2015112900501",
+        "name": "K.P.BABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULIKKAD",
+      "person": {
+        "id": "2015112900601",
+        "name": "V.V. RAJEEV"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLUVAYAL",
+      "person": {
+        "id": "2015112900701",
+        "name": "SHERLY AUGUSTINE.P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NIDIYODI",
+      "person": {
+        "id": "2015112900801",
+        "name": "SREEJA.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PADIYOOR",
+      "person": {
+        "id": "2015112900901",
+        "name": "REENA.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOVVAM",
+      "person": {
+        "id": "2015112901001",
+        "name": "SHAHANA.C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUYILOOR",
+      "person": {
+        "id": "2015112901101",
+        "name": "M.KUNHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PERUMANNU",
+      "person": {
+        "id": "2015112901201",
+        "name": "C.PRASANNA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PEDAYANGODE",
+      "person": {
+        "id": "2015112901301",
+        "name": "NAILOFAR.K.V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLIAD",
+      "person": {
+        "id": "2015112901401",
+        "name": "P.K.JANARDHANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHOLAKKARI",
+      "person": {
+        "id": "2015112901501",
+        "name": "ANITHA.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

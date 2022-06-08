@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349363407,
+  "date": "2019-08-21",
+  "name": "Azhikode  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Kannur",
+  "area": "16.04km",
+  "localbody_code": "G130505",
+  "no_of_wards": 23,
+  "population": 42354,
+  "male": 20578,
+  "female": 21776,
+  "population_density": 2639,
+  "sex_ratio": 1058,
+  "literacy_rate": 94.7,
+  "literacy_rate_male": 97.49,
+  "literacy_rate_female": 92.09,
+  "president": "C.PRASANNA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AZHIKKAL",
+      "person": {
+        "id": "2015113500101",
+        "name": "FASAL. P. P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAPPAKADAVU",
+      "person": {
+        "id": "2015113500201",
+        "name": "SAJEEVAN. C. H"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POITHUMKADAVU",
+      "person": {
+        "id": "2015113500301",
+        "name": "K. V. ASHRAF"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLIKKUNNUMBRAM",
+      "person": {
+        "id": "2015113500401",
+        "name": "SARADA. V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THERU",
+      "person": {
+        "id": "2015113500501",
+        "name": "P. PRAVEEN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MAILADATHADAM",
+      "person": {
+        "id": "2015113500601",
+        "name": "K. K. BEENA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MOLOLAM",
+      "person": {
+        "id": "2015113500701",
+        "name": "T. MALINI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAKKARAPARA",
+      "person": {
+        "id": "2015113500801",
+        "name": "SINDHU. P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARAMKOTTAM",
+      "person": {
+        "id": "2015113500901",
+        "name": "NITHYA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEERKADAVU",
+      "person": {
+        "id": "2015113501001",
+        "name": "P. A. PADHMANABHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKUBHAGAM",
+      "person": {
+        "id": "2015113501101",
+        "name": "A. SURESHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEMMARASSERIPARA",
+      "person": {
+        "id": "2015113501201",
+        "name": "MINI. K. K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUNNAKKAPARA",
+      "person": {
+        "id": "2015113501301",
+        "name": "KUNHAMSU MASTER. P. A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MEENKUNNU",
+      "person": {
+        "id": "2015113501401",
+        "name": "T. V. VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VAYIPARAMBA",
+      "person": {
+        "id": "2015113501501",
+        "name": "SREELATAHA. T. P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VANKULATHUVAYAL",
+      "person": {
+        "id": "2015113501601",
+        "name": "PADMAVATHI. P. P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MOONNUNIRATH",
+      "person": {
+        "id": "2015113501701",
+        "name": "C. PRASANNA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "UPPAYICHAL",
+      "person": {
+        "id": "2015113501801",
+        "name": "C. ROOPA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ETTODI",
+      "person": {
+        "id": "2015113501901",
+        "name": "K. P. SULOCHANA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CHAL BEACH",
+      "person": {
+        "id": "2015113502001",
+        "name": "R. SANEESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NADUVILE CHAL",
+      "person": {
+        "id": "2015113502101",
+        "name": "PAVITHRAN PUTHIYANDI"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PADINCHARE CHAL",
+      "person": {
+        "id": "2015113502201",
+        "name": "SANTHINI. M. P"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "AZHIKKAL KADAPPURAM",
+      "person": {
+        "id": "2015113502302",
+        "name": "ASHOKAN T"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

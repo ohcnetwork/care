@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349175773,
+  "date": "2019-08-21",
+  "name": "Pozhuthana  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "71.3km",
+  "localbody_code": "G120405",
+  "no_of_wards": 13,
+  "population": 16229,
+  "male": 8079,
+  "female": 8150,
+  "population_density": 228,
+  "sex_ratio": 1008,
+  "literacy_rate": 79.89,
+  "literacy_rate_male": 86.02,
+  "literacy_rate_female": 73.9,
+  "president": "N.C.PRASAD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDIYAMVAYAL",
+      "person": {
+        "id": "2015109000101",
+        "name": "JAMES"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VAYANAMKUNNU",
+      "person": {
+        "id": "2015109000201",
+        "name": "A.INDHIRA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARAVAYAL",
+      "person": {
+        "id": "2015109000301",
+        "name": "SANDHYA K.M."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ATHIMOOLA",
+      "person": {
+        "id": "2015109000401",
+        "name": "AMBIKA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANOTH",
+      "person": {
+        "id": "2015109000501",
+        "name": "ANILA KUMARI P.C."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUMKODA",
+      "person": {
+        "id": "2015109000601",
+        "name": "UMMU SALMA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KALLOOR",
+      "person": {
+        "id": "2015109000701",
+        "name": "P.D.DASAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SUGANDHAGIRI",
+      "person": {
+        "id": "2015109000801",
+        "name": "M.M. JOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAKKUNU",
+      "person": {
+        "id": "2015109000901",
+        "name": "K. ACHAPPAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POZHUTHANA",
+      "person": {
+        "id": "2015109001001",
+        "name": "N.C. PRASAD"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ACHOOR NORTH",
+      "person": {
+        "id": "2015109001101",
+        "name": "NADHEERA MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALIYAPARA",
+      "person": {
+        "id": "2015109001201",
+        "name": "SAKKENA MUJEEB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KURICHARMALA",
+      "person": {
+        "id": "2015109001301",
+        "name": "K.V. BABU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

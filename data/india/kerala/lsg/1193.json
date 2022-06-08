@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566349553197,
+  "date": "2019-08-21",
+  "name": "Bedadka  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Kasaragod",
+  "area": "151.49km",
+  "localbody_code": "G140206",
+  "no_of_wards": 17,
+  "population": 43918,
+  "male": 21991,
+  "female": 21927,
+  "population_density": 290,
+  "sex_ratio": 997,
+  "literacy_rate": 76.5,
+  "literacy_rate_male": 82.59,
+  "literacy_rate_female": 70.44,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALLALI",
+      "person": {
+        "id": "2015119300101",
+        "name": "V. DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VARIKKULAM",
+      "person": {
+        "id": "2015119300201",
+        "name": "C. KUNHIKANNAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MARUTHADUKKAM",
+      "person": {
+        "id": "2015119300301",
+        "name": "ROHINI. B"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARAKKAD",
+      "person": {
+        "id": "2015119300401",
+        "name": "KRIPAJYOTHI. V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "BEEMBUMGAL",
+      "person": {
+        "id": "2015119300502",
+        "name": "C M VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHEMBAKKAD",
+      "person": {
+        "id": "2015119300601",
+        "name": "RAJANI. E"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNDOOCHI",
+      "person": {
+        "id": "2015119300701",
+        "name": "GOPALAN .T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "BEDAKAM",
+      "person": {
+        "id": "2015119300801",
+        "name": "A. MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERINGANAM",
+      "person": {
+        "id": "2015119300901",
+        "name": "C. RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULIKKOD",
+      "person": {
+        "id": "2015119301001",
+        "name": "UMAVATHY. K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VAVADUKKAM",
+      "person": {
+        "id": "2015119301101",
+        "name": "KRISHNAVENI. C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUNNAD",
+      "person": {
+        "id": "2015119301201",
+        "name": "BALAN. M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AMBILADY",
+      "person": {
+        "id": "2015119301301",
+        "name": "DHANYA. M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THARAMTHATTA",
+      "person": {
+        "id": "2015119301401",
+        "name": "K. REMANI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "BEDIRA",
+      "person": {
+        "id": "2015119301501",
+        "name": "K . KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KUNDAMKUZHY",
+      "person": {
+        "id": "2015119301601",
+        "name": "NAFEESA. M .P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERLADUKKAM",
+      "person": {
+        "id": "2015119301701",
+        "name": "SANTHAKUMARI. M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

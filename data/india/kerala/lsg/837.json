@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348276911,
+  "date": "2019-08-21",
+  "name": "Kumaramputhur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Manarkkad",
+  "area": "37.25km",
+  "localbody_code": "G090504",
+  "no_of_wards": 18,
+  "population": 24193,
+  "male": 11807,
+  "female": 12386,
+  "population_density": 649,
+  "sex_ratio": 1049,
+  "literacy_rate": 85.25,
+  "literacy_rate_male": 89.62,
+  "literacy_rate_female": 81.17,
+  "president": "MUHAMMEDHUSSAIN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NECHULLY",
+      "person": {
+        "id": "2015083700101",
+        "name": "KUNJIRAMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARAPPADAM",
+      "person": {
+        "id": "2015083700201",
+        "name": "JOSE K J"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PAYYANADAM",
+      "person": {
+        "id": "2015083700301",
+        "name": "MUSTHAFA VARODAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDERAM",
+      "person": {
+        "id": "2015083700401",
+        "name": "MANJU THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AKKIPADAM",
+      "person": {
+        "id": "2015083700501",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MYLAMKODE",
+      "person": {
+        "id": "2015083700601",
+        "name": "MUHAMMEDALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHUNGAM",
+      "person": {
+        "id": "2015083700701",
+        "name": "A.K ABDUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAKKARAKULAMB",
+      "person": {
+        "id": "2015083700801",
+        "name": "RUGMINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANGALEERI",
+      "person": {
+        "id": "2015083700901",
+        "name": "VISWESWARI BHASKAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOTHIKKAL",
+      "person": {
+        "id": "2015083701001",
+        "name": "MUHAMMED HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NJETTARAKADAVU",
+      "person": {
+        "id": "2015083701101",
+        "name": "HAMSA K.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENDAMKURUSSI",
+      "person": {
+        "id": "2015083701201",
+        "name": "SREEKALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULAPPADAM",
+      "person": {
+        "id": "2015083701301",
+        "name": "DHAYANANDAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OZHUKUPARA",
+      "person": {
+        "id": "2015083701401",
+        "name": "SINDHU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARIYOOR",
+      "person": {
+        "id": "2015083701501",
+        "name": "K.P.RAMLA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALLIKUNNU",
+      "person": {
+        "id": "2015083701601",
+        "name": "ARSAL ERERATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KUNNATHULLY",
+      "person": {
+        "id": "2015083701701",
+        "name": "JAMSHEELA USMAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PUTHILLAM",
+      "person": {
+        "id": "2015083701801",
+        "name": "FASEELA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

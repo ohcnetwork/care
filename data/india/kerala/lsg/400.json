@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346302583,
+  "date": "2019-08-21",
+  "name": "Ranni Perunadu  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "82.05km",
+  "localbody_code": "G030504",
+  "no_of_wards": 15,
+  "population": 22130,
+  "male": 11106,
+  "female": 11024,
+  "population_density": 270,
+  "sex_ratio": 993,
+  "literacy_rate": 92.75,
+  "literacy_rate_male": 94.58,
+  "literacy_rate_female": 90.91,
+  "president": "BEENA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUKKAM",
+      "person": {
+        "id": "2015040000101",
+        "name": "SOBHANA P.G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUNAD",
+      "person": {
+        "id": "2015040000201",
+        "name": "JIJU SREEDHAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MADATHUMMOOZHY",
+      "person": {
+        "id": "2015040000301",
+        "name": "C.R.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUKKADA",
+      "person": {
+        "id": "2015040000401",
+        "name": "V.K.VASUDEVAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ARAYANJILIMON",
+      "person": {
+        "id": "2015040000501",
+        "name": "GRACYKUTTY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THULAPPALLY",
+      "person": {
+        "id": "2015040000601",
+        "name": "PRASOBHANA.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NARANAMTHODU",
+      "person": {
+        "id": "2015040000701",
+        "name": "USHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KISSUMAM",
+      "person": {
+        "id": "2015040000801",
+        "name": "L.V.MATHEW"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SABARIMALA",
+      "person": {
+        "id": "2015040000901",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANAKKAYAM",
+      "person": {
+        "id": "2015040001001",
+        "name": "LEKSHMI MOL K.O"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNANNUMON",
+      "person": {
+        "id": "2015040001101",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NEDUMON",
+      "person": {
+        "id": "2015040001201",
+        "name": "RAJU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAMPARA",
+      "person": {
+        "id": "2015040001301",
+        "name": "RADHA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAKKAD",
+      "person": {
+        "id": "2015040001401",
+        "name": "JAYA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MADAMON",
+      "person": {
+        "id": "2015040001501",
+        "name": "NEENA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

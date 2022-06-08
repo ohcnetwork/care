@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566348627987,
+  "date": "2019-08-21",
+  "name": "Keezhuparamba  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Areekkode",
+  "area": "14.99km",
+  "localbody_code": "G100503",
+  "no_of_wards": 14,
+  "population": 14637,
+  "male": 7231,
+  "female": 7406,
+  "population_density": 976,
+  "sex_ratio": 1024,
+  "literacy_rate": 93.08,
+  "literacy_rate_male": 95.36,
+  "literacy_rate_female": 89.25,
+  "president": "RAIHANAK.V",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALLINGAL",
+      "person": {
+        "id": "2015092400101",
+        "name": "KRISHNAN E.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THRIKKALAYOOR",
+      "person": {
+        "id": "2015092400201",
+        "name": "SUDHA PALATHINGAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLITTAPPALAM",
+      "person": {
+        "id": "2015092400301",
+        "name": "ABOOBACKER K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALILLAPUZHA",
+      "person": {
+        "id": "2015092400401",
+        "name": "SHAHARBAN K.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KUTTOOLI",
+      "person": {
+        "id": "2015092400501",
+        "name": "RAIHANA K.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARAKKAD",
+      "person": {
+        "id": "2015092400601",
+        "name": "E.K GOPALAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIPPADI",
+      "person": {
+        "id": "2015092400701",
+        "name": "HAJARA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "WEST PATHANAPURAM",
+      "person": {
+        "id": "2015092400801",
+        "name": "SHAFEEKATH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARIYANIPOTTA",
+      "person": {
+        "id": "2015092400901",
+        "name": "NAJEEB KARANGADAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANVAR NAGAR KUNIYIL",
+      "person": {
+        "id": "2015092401001",
+        "name": "AYISHA KOLOTHUMTHODI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NEW BAZAR KUNIYIL",
+      "person": {
+        "id": "2015092401101",
+        "name": "JAMEELA KOLOTHUMTHODI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MELAMPARAMB",
+      "person": {
+        "id": "2015092401201",
+        "name": "HAMEEDALI N.T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "OTHUPALLIPURAYA",
+      "person": {
+        "id": "2015092401301",
+        "name": "JASNA M.M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KEEZHUPARAMBA",
+      "person": {
+        "id": "2015092401401",
+        "name": "P.K KAMMAD KUTTY HAJI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

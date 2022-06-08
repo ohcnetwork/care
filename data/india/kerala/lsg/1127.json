@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566349333282,
+  "date": "2019-08-21",
+  "name": "Mayyil  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "33.08km",
+  "localbody_code": "G130406",
+  "no_of_wards": 18,
+  "population": 25223,
+  "male": 12430,
+  "female": 12793,
+  "population_density": 762,
+  "sex_ratio": 1029,
+  "literacy_rate": 88.93,
+  "literacy_rate_male": 94.54,
+  "literacy_rate_female": 83.5,
+  "president": "BALANP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ORAPPADI",
+      "person": {
+        "id": "2015112700101",
+        "name": "BALAN P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANDAKKAI",
+      "person": {
+        "id": "2015112700201",
+        "name": "SREEDHARAN M.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAYAD",
+      "person": {
+        "id": "2015112700301",
+        "name": "MANOHARAN K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "IRUVAPPUZHA NAMBRAM",
+      "person": {
+        "id": "2015112700401",
+        "name": "SUNIL KUMAR A"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUVANGHOOR",
+      "person": {
+        "id": "2015112700501",
+        "name": "AJAYAKUMAR K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VELAM",
+      "person": {
+        "id": "2015112700601",
+        "name": "RADHIKA K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAYYIL",
+      "person": {
+        "id": "2015112700701",
+        "name": "USHA K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VALLIYOTTU",
+      "person": {
+        "id": "2015112700801",
+        "name": "SREENA K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THAYAMPOYIL",
+      "person": {
+        "id": "2015112700901",
+        "name": "RADHAMANI M.V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NIRANTHODE",
+      "person": {
+        "id": "2015112701001",
+        "name": "AJITHA M.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARAYIDATHUCHIRA",
+      "person": {
+        "id": "2015112701101",
+        "name": "PRABHAKARAN V.O"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERUPAZHASSI",
+      "person": {
+        "id": "2015112701201",
+        "name": "NABEESA P.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUMACHERY",
+      "person": {
+        "id": "2015112701301",
+        "name": "PURUSHOTHAMAN C.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MECHERI",
+      "person": {
+        "id": "2015112701401",
+        "name": "RAVI M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAYARALAM",
+      "person": {
+        "id": "2015112701501",
+        "name": "SREEJA P.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NANIYOOR NAMBRAM",
+      "person": {
+        "id": "2015112701601",
+        "name": "PRATHIUSH P.V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ARIMBRA",
+      "person": {
+        "id": "2015112701701",
+        "name": "GIRIJA V V"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MULLAKKODI",
+      "person": {
+        "id": "2015112701801",
+        "name": "PREETHA P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

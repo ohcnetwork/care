@@ -1,0 +1,157 @@
+{
+  "timeStamp": 1566346199676,
+  "date": "2019-08-21",
+  "name": "Velinalloor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "27.46km",
+  "localbody_code": "G021105",
+  "no_of_wards": 17,
+  "population": 24293,
+  "male": 11982,
+  "female": 12311,
+  "population_density": 885,
+  "sex_ratio": 1027,
+  "literacy_rate": 88.45,
+  "literacy_rate_male": 93,
+  "literacy_rate_female": 84.07,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "AMBALAMKUNNU",
+      "person": {
+        "id": "2015036900101",
+        "name": "G SANIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENKOOR",
+      "person": {
+        "id": "2015036900201",
+        "name": "A NISAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MULAYARACHAL",
+      "person": {
+        "id": "2015036900301",
+        "name": "SHEEJA NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERIYA VELINALLOOR",
+      "person": {
+        "id": "2015036900401",
+        "name": "JAMES N CHACKO"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ROADUVILA",
+      "person": {
+        "id": "2015036900501",
+        "name": "B SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ANJOOTTINALU",
+      "person": {
+        "id": "2015036900601",
+        "name": "NASIYA NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ALUMMOODU",
+      "person": {
+        "id": "2015036900701",
+        "name": "M.K.NIRMALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MOTORKUNNU",
+      "person": {
+        "id": "2015036900801",
+        "name": "P M SUHARA BEEVI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "AKKAL",
+      "person": {
+        "id": "2015036900901",
+        "name": "ABDUL HAKKIM S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ATTOORKKONAM",
+      "person": {
+        "id": "2015036901001",
+        "name": "R RAJANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PUTHUSSERY",
+      "person": {
+        "id": "2015036901101",
+        "name": "SIMI MANOJ"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARINGANNOOR",
+      "person": {
+        "id": "2015036901201",
+        "name": "P R SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "UGRAMKUNNU",
+      "person": {
+        "id": "2015036901301",
+        "name": "RUGMINI PRAKASH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALAVAYAL",
+      "person": {
+        "id": "2015036901401",
+        "name": "SUNITHA GOPAL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "OYOOR",
+      "person": {
+        "id": "2015036901501",
+        "name": "B REGHA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VATTAPPARA",
+      "person": {
+        "id": "2015036901601",
+        "name": "S NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MEEYANA",
+      "person": {
+        "id": "2015036901701",
+        "name": "SUNILKUMAR K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

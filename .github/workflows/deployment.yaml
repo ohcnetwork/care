@@ -1,0 +1,365 @@
+name: Deploy Care
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+      - production
+    paths-ignore:
+      - 'docs/**'
+  push:
+    branches:
+      - master
+      - production
+    paths-ignore:
+      - 'docs/**'
+
+env:
+  IMAGE_NAME: care
+  AWS_DEFAULT_REGION: ap-south-1
+  AWS_DEFAULT_OUTPUT: json
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Test build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Run tests
+        run: |
+          echo "running tests..."
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  build-staging:
+    needs: test
+    name: Build & Push Staging to container registries
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          tags: |
+            type=raw,value=latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  build-production:
+    needs: test
+    name: Build & Push Production to container registries
+    if: github.ref == 'refs/heads/production'
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          tags: |
+            type=raw,value=production-latest,enable=${{ github.ref == 'refs/heads/production' }}
+            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  deploy-staging-egov:
+    needs: build-staging
+    name: Deploy to EKS Egov
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging-egov
+      url: https://careapi.coronasafe.in
+    steps:
+
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
+        with:
+          repository: coronasafe/infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Deploy Care Staging Egov
+        run: |
+          mkdir -p $HOME/.kube/
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml
+
+
+  deploy-production-gdc:
+    needs: build-production
+    name: Deploy to EKS GDC
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging-gdc
+      url: https://gdcapi.coronasafe.network
+    steps:
+
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
+        with:
+          repository: coronasafe/gdc_infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Deploy Care Staging GDC
+        run: |
+          mkdir -p $HOME/.kube/
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml
+
+
+  deploy-production-futureace:
+    needs: build-production
+    name: Deploy to EKS Futureace
+    runs-on: ubuntu-latest
+    environment:
+      name: Production-futureace
+      url: https://careapi.plexusindia.in
+    steps:
+
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
+        with:
+          repository: coronasafe/future-hospitals-infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Deploy Care Production Futureace
+        run: |
+          mkdir -p $HOME/.kube/
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml
+
+
+  deploy-production-manipur:
+    needs: build-production
+    name: Deploy to GKE Manipur
+    runs-on: ubuntu-latest
+    environment:
+      name: Production-Manipur
+      url: https://careapi.mn.gov.in
+    steps:
+
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
+        with:
+          repository: coronasafe/mn-care-infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+        id: install
+
+      - name: Deploy Care Production Manipur
+        run: |
+          mkdir -p $HOME/.kube/
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml

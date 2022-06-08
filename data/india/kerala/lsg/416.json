@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346359134,
+  "date": "2019-08-21",
+  "name": "Enadimangalam  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Parakkode",
+  "area": "30.77km",
+  "localbody_code": "G030801",
+  "no_of_wards": 15,
+  "population": 20252,
+  "male": 9809,
+  "female": 10443,
+  "population_density": 658,
+  "sex_ratio": 1045,
+  "literacy_rate": 91.8,
+  "literacy_rate_male": 94.08,
+  "literacy_rate_female": 89.69,
+  "president": "PREETHAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANGADU VADAK",
+      "person": {
+        "id": "2015041600101",
+        "name": "BINOY RAJU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "POOTHAMKARA PADINJARU",
+      "person": {
+        "id": "2015041600201",
+        "name": "ASHOK KUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOTHAMKARA VETTIPPURAM",
+      "person": {
+        "id": "2015041600301",
+        "name": "RAJAMANI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOTHAMKARA EAST",
+      "person": {
+        "id": "2015041600401",
+        "name": "SAJITHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MAROOR NORTH",
+      "person": {
+        "id": "2015041600501",
+        "name": "VALSALA KUMARI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHANGOOR",
+      "person": {
+        "id": "2015041600601",
+        "name": "DEEPA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAROOR SOUTH",
+      "person": {
+        "id": "2015041600701",
+        "name": "ARUN RAJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KURUMBAKARA KIZHAKKU",
+      "person": {
+        "id": "2015041600801",
+        "name": "SHEEJA SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MARROOR KATTOOKKALA",
+      "person": {
+        "id": "2015041600901",
+        "name": "C RAJPRAKASH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KURUMBAKARA PADINJARU",
+      "person": {
+        "id": "2015041601001",
+        "name": "VALSAMMA K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNNIDA KIZHAKKU",
+      "person": {
+        "id": "2015041601101",
+        "name": "PRAJEESH P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUNNIDA PADINJARU",
+      "person": {
+        "id": "2015041601201",
+        "name": "RENJITH R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELAMANNOOR KIZHAKKU",
+      "person": {
+        "id": "2015041601301",
+        "name": "BIJU S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ELAMANNOOR PADINJARU",
+      "person": {
+        "id": "2015041601401",
+        "name": "PREETHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANGADU THEKKU",
+      "person": {
+        "id": "2015041601501",
+        "name": "SAJINI ALEX"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

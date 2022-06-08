@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346987863,
+  "date": "2019-08-21",
+  "name": "Alakode  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Elamdesom",
+  "area": "22.54km",
+  "localbody_code": "G060404",
+  "no_of_wards": 13,
+  "population": 8855,
+  "male": 4431,
+  "female": 4424,
+  "population_density": 393,
+  "sex_ratio": 998,
+  "literacy_rate": 93,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 91,
+  "president": "MINIJERRY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHILAVU WEST",
+      "person": {
+        "id": "2015059500101",
+        "name": "EMMANUEL MATHAI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHILAVU EAST",
+      "person": {
+        "id": "2015059500201",
+        "name": "SAFIYA MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "UPPUKULAM",
+      "person": {
+        "id": "2015059500301",
+        "name": "BIJU JOSEPH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHAVARNA",
+      "person": {
+        "id": "2015059500401",
+        "name": "MINI MICHAEL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURICHIPADAM",
+      "person": {
+        "id": "2015059500501",
+        "name": "SANUJA SUBAIR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALAPPILLY",
+      "person": {
+        "id": "2015059500601",
+        "name": "JAIMON ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THALAYANADU",
+      "person": {
+        "id": "2015059500701",
+        "name": "SREEJA BABU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANJAPRA",
+      "person": {
+        "id": "2015059500801",
+        "name": "BABY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "IDIVETTIPPARA",
+      "person": {
+        "id": "2015059500901",
+        "name": "DALLY FRANCIS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANCHIRI",
+      "person": {
+        "id": "2015059501001",
+        "name": "TOMY THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "INCHIYANI",
+      "person": {
+        "id": "2015059501101",
+        "name": "MINI JERRY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALAKODE SOUTH",
+      "person": {
+        "id": "2015059501201",
+        "name": "REGI SEVI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ALAKODE NORTH",
+      "person": {
+        "id": "2015059501301",
+        "name": "CHANDRAN A.N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

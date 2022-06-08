@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566346244979,
+  "date": "2019-08-21",
+  "name": "Kuttoor  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Pulikezhu",
+  "area": "12.16km",
+  "localbody_code": "G030202",
+  "no_of_wards": 14,
+  "population": 18433,
+  "male": 9015,
+  "female": 9418,
+  "population_density": 1516,
+  "sex_ratio": 1045,
+  "literacy_rate": 97.36,
+  "literacy_rate_male": 98.49,
+  "literacy_rate_female": 96.3,
+  "president": "SREELEKHAREGHUNATH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENPALA",
+      "person": {
+        "id": "2015038000101",
+        "name": "HARI KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADALIMANGALAM",
+      "person": {
+        "id": "2015038000201",
+        "name": "INDULEKHA C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUTTOOR",
+      "person": {
+        "id": "2015038000301",
+        "name": "SREELEKHA REGHUNATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUTTOOR VADAKKU",
+      "person": {
+        "id": "2015038000401",
+        "name": "PRASAD E.M."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ELAKUTTOOR",
+      "person": {
+        "id": "2015038000501",
+        "name": "ADV.ANOOP ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADINJATTOTHARA",
+      "person": {
+        "id": "2015038000601",
+        "name": "ANISH THOMAS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PADINJATTOTHARA KIZHAKKU",
+      "person": {
+        "id": "2015038000701",
+        "name": "ADV.CHERIAN C.THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOTHAVIRUTHI",
+      "person": {
+        "id": "2015038000801",
+        "name": "SUJITHA K.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THYMARAVUMKARA",
+      "person": {
+        "id": "2015038000901",
+        "name": "BINCY ARAMMAMOOTTIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTTOOR KIZHAKKU",
+      "person": {
+        "id": "2015038001001",
+        "name": "JAYA BIJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTOOR THEKKU",
+      "person": {
+        "id": "2015038001101",
+        "name": "AJI KUMAR K.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THALAYAR",
+      "person": {
+        "id": "2015038001201",
+        "name": "RAJALAKSHMI K.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTOOR PADINJARU",
+      "person": {
+        "id": "2015038001301",
+        "name": "PRASANNA SATHEESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THENGELI",
+      "person": {
+        "id": "2015038001401",
+        "name": "BINDU MONCY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

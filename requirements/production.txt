@@ -1,0 +1,11 @@
+# PRECAUTION: avoid production dependencies that aren't in development
+
+-r ./base.txt
+
+gunicorn==20.0.4  # https://github.com/benoitc/gunicorn
+psycopg2==2.8.4 --no-binary psycopg2  # https://github.com/psycopg/psycopg2
+sentry-sdk==0.14.2  # https://github.com/getsentry/sentry-python
+
+# Django
+# ------------------------------------------------------------------------------
+django-anymail[mailgun]==7.0.0  # https://github.com/anymail/django-anymail

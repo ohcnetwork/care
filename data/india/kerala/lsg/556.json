@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346866315,
+  "date": "2019-08-21",
+  "name": "Kurichy  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Madappally",
+  "area": "16.22km",
+  "localbody_code": "G050805",
+  "no_of_wards": 20,
+  "population": 29577,
+  "male": 14868,
+  "female": 14709,
+  "population_density": 1823,
+  "sex_ratio": 989,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "MANOJGEORGE",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANCHALASSERY",
+      "person": {
+        "id": "2015055600101",
+        "name": "RATHEESAN A.N"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUTTATHUKADAVU",
+      "person": {
+        "id": "2015055600201",
+        "name": "RAJAGOPAL R"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANDHIRAM",
+      "person": {
+        "id": "2015055600301",
+        "name": "RAJAN CHACKO"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AASRAMAM",
+      "person": {
+        "id": "2015055600401",
+        "name": "ARUN BABU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SWAMIKAVALA",
+      "person": {
+        "id": "2015055600501",
+        "name": "SUJATHA BIJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHELACHIRA",
+      "person": {
+        "id": "2015055600601",
+        "name": "SUGATHAN K D"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUMARAMKULAM",
+      "person": {
+        "id": "2015055600701",
+        "name": "PANKAJAKSHAN P K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PONPUZHA",
+      "person": {
+        "id": "2015055600801",
+        "name": "MANJEESH B R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULIMOODU",
+      "person": {
+        "id": "2015055600901",
+        "name": "GIGI GEORGE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PEECHAMKERI",
+      "person": {
+        "id": "2015055601001",
+        "name": "SHYJA KUMARY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ELAMKAVU",
+      "person": {
+        "id": "2015055601101",
+        "name": "VALSALA MOHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MALAKUNNAM",
+      "person": {
+        "id": "2015055601201",
+        "name": "LUCY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AANAKUZHY",
+      "person": {
+        "id": "2015055601301",
+        "name": "ASWATHY K S"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEMPUCHIRA",
+      "person": {
+        "id": "2015055601401",
+        "name": "REMYA RETHEESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PULIKUZHY",
+      "person": {
+        "id": "2015055601501",
+        "name": "MANOJ GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHAMAKULAM",
+      "person": {
+        "id": "2015055601601",
+        "name": "MERCY SUNNY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "SANKARAPURAM",
+      "person": {
+        "id": "2015055601701",
+        "name": "PREETHAKUMARI K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHERUVELIPPADY",
+      "person": {
+        "id": "2015055601801",
+        "name": "BINDHU RAMESH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "OUTPOST",
+      "person": {
+        "id": "2015055601901",
+        "name": "ELSY RAJU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MOSCO",
+      "person": {
+        "id": "2015055602001",
+        "name": "BIJU THOMAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

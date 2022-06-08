@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348057623,
+  "date": "2019-08-21",
+  "name": "Karalam  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Irinjalkkuda",
+  "area": "17.79km",
+  "localbody_code": "G081201",
+  "no_of_wards": 15,
+  "population": 18359,
+  "male": 8523,
+  "female": 9836,
+  "population_density": 1032,
+  "sex_ratio": 1154,
+  "literacy_rate": 90.74,
+  "literacy_rate_male": 94.68,
+  "literacy_rate_female": 87.41,
+  "president": "SHEEJASANTHOSH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NANTHI",
+      "person": {
+        "id": "2015077500101",
+        "name": "SHAMEER K.B"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUMARAMCHIRA",
+      "person": {
+        "id": "2015077500201",
+        "name": "FRANCIS I D"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ILAMPUZHA",
+      "person": {
+        "id": "2015077500301",
+        "name": "SHEEJA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEMMANDA",
+      "person": {
+        "id": "2015077500401",
+        "name": "MINI RAJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULLATHARA",
+      "person": {
+        "id": "2015077500501",
+        "name": "DHANESHBABU K.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KIZHUTHANI EAST",
+      "person": {
+        "id": "2015077500601",
+        "name": "SHAIJA VETTIYATTIL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KIZHUTHANI WEST",
+      "person": {
+        "id": "2015077500701",
+        "name": "PRASAD T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHUTHANI SOUTH",
+      "person": {
+        "id": "2015077500801",
+        "name": "BABU K.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PATHANAPURAM",
+      "person": {
+        "id": "2015077500901",
+        "name": "AMBIKA SUBHASH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "HARIPURAM",
+      "person": {
+        "id": "2015077501001",
+        "name": "SREEJITH V.G"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THANISSERY",
+      "person": {
+        "id": "2015077501101",
+        "name": "VINEESH K.V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POWER HOUSE",
+      "person": {
+        "id": "2015077501201",
+        "name": "SARITHA VINOD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLANI WEST",
+      "person": {
+        "id": "2015077501301",
+        "name": "SUNITHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VELLANI EAST",
+      "person": {
+        "id": "2015077501401",
+        "name": "REMA TEACHER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARALAM",
+      "person": {
+        "id": "2015077501501",
+        "name": "PRAMEELA DASAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

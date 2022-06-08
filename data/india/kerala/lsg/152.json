@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345359100,
+  "date": "2019-08-21",
+  "name": "Nileshwar  Block Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "414.37km",
+  "localbody_code": "B140600",
+  "no_of_wards": 13,
+  "population": 237364,
+  "male": 115414,
+  "female": 121950,
+  "population_density": 573,
+  "sex_ratio": 1057,
+  "literacy_rate": 88.53,
+  "literacy_rate_male": 93.68,
+  "literacy_rate_female": 83.72,
+  "president": "V.P.JANAKI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THURUTHI",
+      "person": {
+        "id": "2015015200101",
+        "name": "SUNITHA.V.V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHERUVATHUR",
+      "person": {
+        "id": "2015015200201",
+        "name": "PALATHERA KUNCHIRAMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KLAIKKODE",
+      "person": {
+        "id": "2015015200301",
+        "name": "SUMITHRA.U"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAYYUR",
+      "person": {
+        "id": "2015015200401",
+        "name": "DILEEP THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHEEMENI",
+      "person": {
+        "id": "2015015200501",
+        "name": "V.P.JANAKI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KODAKKAD",
+      "person": {
+        "id": "2015015200601",
+        "name": "K. NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PILICODE",
+      "person": {
+        "id": "2015015200701",
+        "name": "A. KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "UDINOOR",
+      "person": {
+        "id": "2015015200801",
+        "name": "BINDU.K.V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "TRIKKARIPUR TOWN",
+      "person": {
+        "id": "2015015200901",
+        "name": "C.RAVI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OLAVARA",
+      "person": {
+        "id": "2015015201001",
+        "name": "P.P GEETHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLAP",
+      "person": {
+        "id": "2015015201101",
+        "name": "SAJITHA SAFFARULLA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VALIYAPARAMBA",
+      "person": {
+        "id": "2015015201201",
+        "name": "M.K MUNEERA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PADNE",
+      "person": {
+        "id": "2015015201301",
+        "name": "MUSHTHAK. U.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

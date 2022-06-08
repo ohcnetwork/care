@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345101891,
+  "date": "2019-08-21",
+  "name": "Parakkadavu  Block Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Parakkadavu",
+  "area": "101.62km",
+  "localbody_code": "B071300",
+  "no_of_wards": 13,
+  "population": 126834,
+  "male": 62696,
+  "female": 64138,
+  "population_density": 1248,
+  "sex_ratio": 1023,
+  "literacy_rate": 90.72,
+  "literacy_rate_male": 93.38,
+  "literacy_rate_female": 87.52,
+  "president": "SHEENASEBASTIAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELANTHIKKARA",
+      "person": {
+        "id": "2015007900101",
+        "name": "K C RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUTHIYATHODE",
+      "person": {
+        "id": "2015007900201",
+        "name": "BINDHU SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PARAKKADAVU",
+      "person": {
+        "id": "2015007900301",
+        "name": "S B CHANDRASEKHARA WARRIER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PULIYANAM",
+      "person": {
+        "id": "2015007900401",
+        "name": "C S RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUMASSERY",
+      "person": {
+        "id": "2015007900501",
+        "name": "SANGEETHA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VAPPALASSERY",
+      "person": {
+        "id": "2015007900601",
+        "name": "SHIBU MOOLAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SREEMOOLANAGARAM",
+      "person": {
+        "id": "2015007900701",
+        "name": "SINI JOHNY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SREEMOOLANAGARAM SOUTH",
+      "person": {
+        "id": "2015007900801",
+        "name": "SAJITHA BEERAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "DESOM",
+      "person": {
+        "id": "2015007900901",
+        "name": "RAJESH MADATHIMOOLA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEDUMBASSERY",
+      "person": {
+        "id": "2015007901001",
+        "name": "SANDHYA NARAYANA PILLAI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENGAMANAD",
+      "person": {
+        "id": "2015007901101",
+        "name": "ADV. IBRAHIMKUTTY T A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUTTIPUZHA",
+      "person": {
+        "id": "2015007901201",
+        "name": "RENJINI AMBUJAKSHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHENVELIKKARA",
+      "person": {
+        "id": "2015007901301",
+        "name": "SHEENA SEBASTIAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

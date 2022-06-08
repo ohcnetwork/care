@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347378401,
+  "date": "2019-08-21",
+  "name": "Valakom  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Muvattupuzha",
+  "area": "23.72km",
+  "localbody_code": "G071403",
+  "no_of_wards": 14,
+  "population": 16085,
+  "male": 8167,
+  "female": 7918,
+  "population_density": 762,
+  "sex_ratio": 970,
+  "literacy_rate": 92.39,
+  "literacy_rate_male": 95.71,
+  "literacy_rate_female": 89.01,
+  "president": "LEELABABU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALANNATTIL KAVALA",
+      "person": {
+        "id": "2015070600101",
+        "name": "P.A RAJU PALLATHU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "POTTUMUGAL",
+      "person": {
+        "id": "2015070600201",
+        "name": "R.RAMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANACKAPADY",
+      "person": {
+        "id": "2015070600301",
+        "name": "SUJATHA SATHEESAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNNACKAL",
+      "person": {
+        "id": "2015070600401",
+        "name": "JACOB PAULOSE (YACOB.P)"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PEECHAD",
+      "person": {
+        "id": "2015070600501",
+        "name": "REJITHA SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KADATHY",
+      "person": {
+        "id": "2015070600601",
+        "name": "LEELA BABU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "SAKTHIPURAM",
+      "person": {
+        "id": "2015070600701",
+        "name": "DEEPTHI MANOJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "RACKAD",
+      "person": {
+        "id": "2015070600801",
+        "name": "SEEMA ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "GANAPATHI",
+      "person": {
+        "id": "2015070600901",
+        "name": "P.M MADANAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MEKKADAMPU",
+      "person": {
+        "id": "2015070601001",
+        "name": "ELDHAO ULAHANNAN(BABU VELIYATH)"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERIA OORAYAM",
+      "person": {
+        "id": "2015070601101",
+        "name": "DIBU.C.JOHN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "BATHANIPPADY",
+      "person": {
+        "id": "2015070601201",
+        "name": "BINDHU GEORGE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VALAKOM",
+      "person": {
+        "id": "2015070601301",
+        "name": "SHEELA MATHAI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AVUNDA",
+      "person": {
+        "id": "2015070601401",
+        "name": "SOMAN.A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348606750,
+  "date": "2019-08-21",
+  "name": "Vazhayur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kondotty",
+  "area": "21.19km",
+  "localbody_code": "G100406",
+  "no_of_wards": 17,
+  "population": 22948,
+  "male": 11420,
+  "female": 11528,
+  "population_density": 1083,
+  "sex_ratio": 1010,
+  "literacy_rate": 91.59,
+  "literacy_rate_male": 9576,
+  "literacy_rate_female": 87.42,
+  "president": "VIMALAPARAKANDATHIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANDIKKADENKUZHI",
+      "person": {
+        "id": "2015091900101",
+        "name": "K.P.ADBUL AZEEZ"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AZHINHILAM",
+      "person": {
+        "id": "2015091900201",
+        "name": "JIJESH.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARAD",
+      "person": {
+        "id": "2015091900301",
+        "name": "BHAGYANATH N"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PONNEMPADAM",
+      "person": {
+        "id": "2015091900401",
+        "name": "P.K UNNIPERAVAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THIRUTHIYAD",
+      "person": {
+        "id": "2015091900501",
+        "name": "M.K  MOOSSAFOULAD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUNCHAPPADAM",
+      "person": {
+        "id": "2015091900601",
+        "name": "JAYASREE T C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUNDAKASSERI",
+      "person": {
+        "id": "2015091900701",
+        "name": "SAFIYA BASHEER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAZHAYOOR",
+      "person": {
+        "id": "2015091900801",
+        "name": "K ABDURAHIMAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ALUNGAL",
+      "person": {
+        "id": "2015091900901",
+        "name": "BINDU C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAKKOVE",
+      "person": {
+        "id": "2015091901001",
+        "name": "SYAMALA N K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTUPADAM",
+      "person": {
+        "id": "2015091901101",
+        "name": "P V ABDUL MAJEED"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHARALODI",
+      "person": {
+        "id": "2015091901201",
+        "name": "SEKHARAN PULLALAYIL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EAST KARAD",
+      "person": {
+        "id": "2015091901301",
+        "name": "VIMALA PARAKANDATHIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUTHUKKODE",
+      "person": {
+        "id": "2015091901401",
+        "name": "REETHA N C"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AREEKKUNNU",
+      "person": {
+        "id": "2015091901501",
+        "name": "THULASI A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAMMAL",
+      "person": {
+        "id": "2015091901601",
+        "name": "RADHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KALIPARAMB",
+      "person": {
+        "id": "2015091901701",
+        "name": "SAJNA MALAYIL"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

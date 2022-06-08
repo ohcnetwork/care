@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566349075121,
+  "date": "2019-08-21",
+  "name": "Chathamangalam  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnamangalam",
+  "area": "40.24km",
+  "localbody_code": "G111106",
+  "no_of_wards": 23,
+  "population": 36231,
+  "male": 18298,
+  "female": 17933,
+  "population_density": 900,
+  "sex_ratio": 980,
+  "literacy_rate": 91.83,
+  "literacy_rate_male": 96.27,
+  "literacy_rate_female": 87.3,
+  "president": "BEENAKS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULLANOOR",
+      "person": {
+        "id": "2015106000101",
+        "name": "MAIMOONA .P.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALAYAMMA",
+      "person": {
+        "id": "2015106000201",
+        "name": "K.M. SAMI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUTTAYAM",
+      "person": {
+        "id": "2015106000301",
+        "name": "ALIKUNJI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EAST MALAYAMMA",
+      "person": {
+        "id": "2015106000401",
+        "name": "MUMTHAZ.E"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KATTANGAL",
+      "person": {
+        "id": "2015106000501",
+        "name": "NUSRATH.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARATHAPOYIL",
+      "person": {
+        "id": "2015106000601",
+        "name": "SOBHANA.M.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ERIMALA",
+      "person": {
+        "id": "2015106000701",
+        "name": "BEENA K S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NAYARKUZHI",
+      "person": {
+        "id": "2015106000801",
+        "name": "SUKUMARAN. K. P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAZHOOR",
+      "person": {
+        "id": "2015106000901",
+        "name": "LINI.C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOLIMADU",
+      "person": {
+        "id": "2015106001001",
+        "name": "M.K. NADEERA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARAYANGODU",
+      "person": {
+        "id": "2015106001101",
+        "name": "SABITHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHIYADAM",
+      "person": {
+        "id": "2015106001201",
+        "name": "N.P.KAMALA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLALASSERI",
+      "person": {
+        "id": "2015106001301",
+        "name": "SHEEJA.E"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHOOLUR",
+      "person": {
+        "id": "2015106001401",
+        "name": "A.PRASAD"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHETTIKKADAVU",
+      "person": {
+        "id": "2015106001501",
+        "name": "SURESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELLANUR",
+      "person": {
+        "id": "2015106001601",
+        "name": "T.A.REMESAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOOZHAKKOD",
+      "person": {
+        "id": "2015106001701",
+        "name": "KOOZHAKODEN KRISHNAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOZHIMANNA",
+      "person": {
+        "id": "2015106001801",
+        "name": "SOBHANA.R"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHATHAMANGALAM",
+      "person": {
+        "id": "2015106001901",
+        "name": "SHAJU KUNIYIL"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "VENGERIMADAM",
+      "person": {
+        "id": "2015106002001",
+        "name": "NARAYANAN  NAMBOODIRI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "POOLAKODE",
+      "person": {
+        "id": "2015106002101",
+        "name": "DIVYA MANOJ"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHENOTH",
+      "person": {
+        "id": "2015106002201",
+        "name": "BIJU"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PULLAVOOR",
+      "person": {
+        "id": "2015106002301",
+        "name": "HASEENA P.V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

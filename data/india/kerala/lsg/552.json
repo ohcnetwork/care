@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346855469,
+  "date": "2019-08-21",
+  "name": "Thiruvarppu  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pallom",
+  "area": "33.59km",
+  "localbody_code": "G050307",
+  "no_of_wards": 18,
+  "population": 27195,
+  "male": 13656,
+  "female": 13539,
+  "population_density": 810,
+  "sex_ratio": 991,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 94,
+  "president": "JESSYNINAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MORCADU",
+      "person": {
+        "id": "2015055200102",
+        "name": "MAYA MURALI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENGALAM KUNNUMPURAM",
+      "person": {
+        "id": "2015055200201",
+        "name": "K. K. SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHENGALATHUKAVU",
+      "person": {
+        "id": "2015055200301",
+        "name": "RACHEL JACOB"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHUSSERY",
+      "person": {
+        "id": "2015055200401",
+        "name": "RUBY CHACKO"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THONDAMBRAL",
+      "person": {
+        "id": "2015055200501",
+        "name": "THARA SABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MADAKKANDA",
+      "person": {
+        "id": "2015055200601",
+        "name": "O. N. SURESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KULAPPURA",
+      "person": {
+        "id": "2015055200701",
+        "name": "THALHATH A. S."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUMMANAM AMBOORAM",
+      "person": {
+        "id": "2015055200801",
+        "name": "M. M. KHALID"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ILLICKAL",
+      "person": {
+        "id": "2015055200901",
+        "name": "P. A. ABDUL KAREEM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANCHAYATH CENTRAL",
+      "person": {
+        "id": "2015055201001",
+        "name": "VEENA ARUSH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ARUNOOTTIMANGALAM",
+      "person": {
+        "id": "2015055201101",
+        "name": "SUBHAGA P. R."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KILIROOR KUNNUMPURAM",
+      "person": {
+        "id": "2015055201201",
+        "name": "P. M. MANI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MALARICKAL",
+      "person": {
+        "id": "2015055201301",
+        "name": "SHERLY PRASAD"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MEENCHIRA",
+      "person": {
+        "id": "2015055201401",
+        "name": "ASHA SHINIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAKATHUSSERY",
+      "person": {
+        "id": "2015055201501",
+        "name": "JESSY NINAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THIRUVARPPU CENTRAL",
+      "person": {
+        "id": "2015055201601",
+        "name": "K. B. SIVADAS"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARUTHIYAKOM",
+      "person": {
+        "id": "2015055201701",
+        "name": "C. T. RAJESH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHENGALAM VAYANASSAL",
+      "person": {
+        "id": "2015055201801",
+        "name": "ADV. DEEPTHI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

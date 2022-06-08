@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345804660,
+  "date": "2019-08-21",
+  "name": "Aryanad  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Vellanad",
+  "area": "104.92km",
+  "localbody_code": "G010501",
+  "no_of_wards": 18,
+  "population": 24735,
+  "male": 11995,
+  "female": 12740,
+  "population_density": 236,
+  "sex_ratio": 1062,
+  "literacy_rate": 87.11,
+  "literacy_rate_male": 92.36,
+  "literacy_rate_female": 82.26,
+  "president": "SHAMILABEEGUMS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KEEZHPALOOR",
+      "person": {
+        "id": "2015025500101",
+        "name": "PRADEEP KUMAR V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MEENANKAL",
+      "person": {
+        "id": "2015025500201",
+        "name": "VIJITHA V S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THEVIYARUKUNNU",
+      "person": {
+        "id": "2015025500301",
+        "name": "YESUDAS J"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POTTANCHIRA",
+      "person": {
+        "id": "2015025500401",
+        "name": "SREEJA C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ENCHAPPURI",
+      "person": {
+        "id": "2015025500501",
+        "name": "AMBILIKUMARY L"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOKKOTTELA",
+      "person": {
+        "id": "2015025500601",
+        "name": "ANITHADEVI G S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALAIKKONAM",
+      "person": {
+        "id": "2015025500701",
+        "name": "GIRIJA S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "IRINJAL",
+      "person": {
+        "id": "2015025500801",
+        "name": "ASEEM S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLIVETTA",
+      "person": {
+        "id": "2015025500901",
+        "name": "NAZARUDEEN A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANJIRAMMOODU",
+      "person": {
+        "id": "2015025501001",
+        "name": "ANIL KUMAR S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANAKKUZHI",
+      "person": {
+        "id": "2015025501101",
+        "name": "SHAJITHA P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHOOZHA",
+      "person": {
+        "id": "2015025501201",
+        "name": "LEKHA K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARYANAD TOWN",
+      "person": {
+        "id": "2015025501301",
+        "name": "AJITHA K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOTTAKKAKAM",
+      "person": {
+        "id": "2015025501401",
+        "name": "KISHORE M L"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ERAVOOR",
+      "person": {
+        "id": "2015025501501",
+        "name": "NIRMALAN B"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VALIYAKALUNGU",
+      "person": {
+        "id": "2015025501601",
+        "name": "SHAMILA BEEGUM S"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PARANDODE",
+      "person": {
+        "id": "2015025501701",
+        "name": "ELIZABETH R"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PURUTHIPPARA",
+      "person": {
+        "id": "2015025501801",
+        "name": "SUDHAKAR MITHAL T S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

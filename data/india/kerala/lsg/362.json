@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346170810,
+  "date": "2019-08-21",
+  "name": "Chathannoor  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Ithikkara",
+  "area": "33.76km",
+  "localbody_code": "G021003",
+  "no_of_wards": 18,
+  "population": 46419,
+  "male": 22483,
+  "female": 23936,
+  "population_density": 1375,
+  "sex_ratio": 1065,
+  "literacy_rate": 91.68,
+  "literacy_rate_male": 94.79,
+  "literacy_rate_female": 88.79,
+  "president": "K.NIMMY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALIYAKKULAM",
+      "person": {
+        "id": "2015036200101",
+        "name": "SHIBU P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NJAVAROOR",
+      "person": {
+        "id": "2015036200201",
+        "name": "A. SURESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MAMPALLIKUNNAM",
+      "person": {
+        "id": "2015036200301",
+        "name": "RESHMA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOIPPADU",
+      "person": {
+        "id": "2015036200401",
+        "name": "MAHESWARI O"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALAVILA",
+      "person": {
+        "id": "2015036200501",
+        "name": "SUBHASH PULICKAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDANADU",
+      "person": {
+        "id": "2015036200601",
+        "name": "NIRMALA VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAYALIKKADA",
+      "person": {
+        "id": "2015036200701",
+        "name": "AMBIKA SASI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VARINJAM",
+      "person": {
+        "id": "2015036200801",
+        "name": "SUGATHAKUMARI J"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARAMCODU",
+      "person": {
+        "id": "2015036200901",
+        "name": "SUNNY V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOSHNAKKAVU",
+      "person": {
+        "id": "2015036201001",
+        "name": "USHADEVI P."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ERAM",
+      "person": {
+        "id": "2015036201101",
+        "name": "K. CHACKO"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CIVIL STATION",
+      "person": {
+        "id": "2015036201201",
+        "name": "SHEEJA . R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THAZHAM",
+      "person": {
+        "id": "2015036201301",
+        "name": "SUNITHA S."
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KALLUVETTANKUZHY",
+      "person": {
+        "id": "2015036201401",
+        "name": "K.NIMMY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "M.C. PURAM",
+      "person": {
+        "id": "2015036201501",
+        "name": "INDIRA K."
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MEENAD EAST",
+      "person": {
+        "id": "2015036201601",
+        "name": "A. SHARAFUDEEN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MEENAD",
+      "person": {
+        "id": "2015036201701",
+        "name": "G. KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOTTUVATHUKKAL",
+      "person": {
+        "id": "2015036201801",
+        "name": "NAJEEM A."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

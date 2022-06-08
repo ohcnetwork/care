@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566347600300,
+  "date": "2019-08-21",
+  "name": "Manalur  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Anthikkad",
+  "area": "18.22km",
+  "localbody_code": "G080904",
+  "no_of_wards": 19,
+  "population": 34297,
+  "male": 16978,
+  "female": 17319,
+  "population_density": 1882,
+  "sex_ratio": 1020,
+  "literacy_rate": 99.15,
+  "literacy_rate_male": 96.56,
+  "literacy_rate_female": 90.78,
+  "president": "VIJUVIJISASI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAZHY",
+      "person": {
+        "id": "2015076300101",
+        "name": "JISHA SURESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANALUR VADAKKUMURI",
+      "person": {
+        "id": "2015076300201",
+        "name": "M K SADANANDAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANALUR KIZHAKKUMURI",
+      "person": {
+        "id": "2015076300301",
+        "name": "MINI ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANAKKADU VADAKKU",
+      "person": {
+        "id": "2015076300401",
+        "name": "SEETHA GANESH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANAKKADU",
+      "person": {
+        "id": "2015076300501",
+        "name": "JANARDHANAN MANNUMMAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AMBALAKKADU",
+      "person": {
+        "id": "2015076300601",
+        "name": "SHEEJA DINESAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANJANY",
+      "person": {
+        "id": "2015076300701",
+        "name": "C.R RAMESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THRIKKUNNU",
+      "person": {
+        "id": "2015076300801",
+        "name": "SARITHA SHAJU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHENKULAM",
+      "person": {
+        "id": "2015076300901",
+        "name": "PUSHPA VISWAMBHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANALUR NADUMURI",
+      "person": {
+        "id": "2015076301001",
+        "name": "SHIJULA@ SHIJALA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANALUR PADINJATTUMURI",
+      "person": {
+        "id": "2015076301101",
+        "name": "MOHANAN M.R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHENKULAM WEST",
+      "person": {
+        "id": "2015076301201",
+        "name": "VIJU @ VIJI SASI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SOUTH KARAMUCK",
+      "person": {
+        "id": "2015076301301",
+        "name": "RAJEEV P.R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANJANY WEST",
+      "person": {
+        "id": "2015076301401",
+        "name": "V.G.ASOKAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANGATTUKARA",
+      "person": {
+        "id": "2015076301501",
+        "name": "ROBIN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARIKKODY",
+      "person": {
+        "id": "2015076301601",
+        "name": "JOHNSON P.T"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KANDASSANKADAVU",
+      "person": {
+        "id": "2015076301701",
+        "name": "PIOUS P.J.@ JOYMON"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KARAMUCK NORTH",
+      "person": {
+        "id": "2015076301801",
+        "name": "SINDHU SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MAMBILLY",
+      "person": {
+        "id": "2015076301901",
+        "name": "SHAINI P K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

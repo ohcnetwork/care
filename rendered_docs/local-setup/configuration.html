@@ -1,0 +1,508 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Debugging with Pycharm" href="../pycharm/configuration.html" /><link rel="prev" title="Welcome to Care’s documentation!" href="../index.html" />
+
+    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
+        <title>Setting up development environment - Care documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Care  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Care  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Setting up development environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pycharm/configuration.html">Debugging with Pycharm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../working-components/configuration.html">Working Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../django-commands/configuration.html">Django Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../github-repo/configuration.html">GitHub Repository</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="setting-up-development-environment">
+<h1>Setting up development environment<a class="headerlink" href="#setting-up-development-environment" title="Permalink to this heading">#</a></h1>
+<p>There are two ways to run the development server:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference internal" href="#using-docker-compose">Using Docker Compose</a> (most recommended)</p></li>
+<li><p><a class="reference external" href="#manual-setup">Setup it manually</a> (if you don’t have Docker Compose)</p></li>
+</ol>
+</div></blockquote>
+<section id="using-docker-compose">
+<h2>Using Docker Compose<a class="headerlink" href="#using-docker-compose" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>This setup will run 5 Docker containers:</p>
+<ul class="simple">
+<li><p>PostGIS</p></li>
+<li><p>care (main repo)</p></li>
+<li><p>redis (in-memory cache)</p></li>
+<li><p>celery (task queue)</p></li>
+<li><p>localstack (to mimic AWS services locally)</p></li>
+</ul>
+</div></blockquote>
+<p>This is the most recommended way of setting up care locally,
+as it installs appropriate dependencies in containers so there
+is no chance of conflicting dependencies. If you are running this
+first time, it might take a while depending upon your internet speed and machine specs.</p>
+<ul>
+<li><p>Steps to run the development server:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><dl>
+<dt>Run the following command to start the development environment:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make up
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p>Open a browser and go to <cite>http://localhost:9000</cite></p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><dl>
+<dt>To stop the development environment:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make down
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>To run tests:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make <span class="nb">test</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="manual-setup">
+<h2>Manual setup<a class="headerlink" href="#manual-setup" title="Permalink to this heading">#</a></h2>
+<section id="setting-up-postgres-for-the-first-time">
+<h3>Setting up postgres for the first time<a class="headerlink" href="#setting-up-postgres-for-the-first-time" title="Permalink to this heading">#</a></h3>
+<p>After installation of Postgresql</p>
+<p>Run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>If you see error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FATAL</span><span class="p">:</span> <span class="n">Peer</span> <span class="n">authentication</span> <span class="n">failed</span> <span class="k">for</span> <span class="n">user</span> <span class="s2">&quot;postgres&quot;</span><span class="n">FATAL</span><span class="p">:</span> <span class="n">Peer</span> <span class="n">authentication</span> <span class="n">failed</span> <span class="k">for</span> <span class="n">user</span> <span class="s2">&quot;postgres&quot;</span>
+</pre></div>
+</div>
+<p>Do the following steps to set up password authentication.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span>
+</pre></div>
+</div>
+<p>In the <cite>postgres#</cite> shell type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">password</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>to change the password</p>
+<p>Exit psql:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">q</span>
+</pre></div>
+</div>
+<p>Edit <cite>/etc/postgresql/&lt;postgres-version&gt;/main/pg_hba.conf</cite> and change:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">local</span>    <span class="nb">all</span>        <span class="n">postgres</span>                               <span class="n">peer</span>
+</pre></div>
+</div>
+<p>To:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">local</span>    <span class="nb">all</span>        <span class="n">postgres</span>                               <span class="n">md5</span>
+</pre></div>
+</div>
+<p>Restart postgresql:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">service</span> <span class="n">postgresql</span> <span class="n">restart</span>
+</pre></div>
+</div>
+<p>Login to the postgres shell and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">care</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">care</span> <span class="n">TO</span> <span class="n">postgres</span><span class="p">;</span>
+\<span class="n">q</span>
+</pre></div>
+</div>
+<p>You may replace <cite>care</cite> with the database name of your preference</p>
+<p>You also might have to install PostGIS scripts.</p>
+<ul>
+<li><p>Linux users can install PostGIS scripts by running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install postgresql-&lt;version&gt;-postgis-scripts
+</pre></div>
+</div>
+</li>
+<li><dl class="simple">
+<dt>Windows users can install</dt><dd><ul class="simple">
+<li><p>PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.</p></li>
+<li><p>OSGeo4W from this <a class="reference external" href="https://trac.osgeo.org/osgeo4w/">site</a>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Then follow the steps listed <a class="reference external" href="https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html">here</a>.</p>
+</section>
+<section id="setting-up-pre-commit">
+<h3>Setting up Pre-Commit<a class="headerlink" href="#setting-up-pre-commit" title="Permalink to this heading">#</a></h3>
+<p>Git hooks is a feature which helps to fix small issues in your code before you commit the code.
+Pre-Commit is a package manager and tool for running and organising your git hooks. More here at <a class="reference external" href="https://pre-commit.com/">pre_commit_site</a>.</p>
+<ul>
+<li><dl>
+<dt>Install pre-commit</dt><dd><p>pre-commit is installed while you run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">/</span><span class="n">local</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Setup</dt><dd><p>this installs all the git-hooks</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pre-commit install
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Running pre-commits</dt><dd><p>The git hooks run every time you commit code to the repo.
+If you want to run it before committing, use the following command</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pre-commit run --all-files
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>FAQs and Issues with pre-commit</dt><dd><ul class="simple">
+<li><p>Reach out on the #coronasafe_django channel in slack to resolve the issues.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="basic-commands">
+<h3>Basic Commands<a class="headerlink" href="#basic-commands" title="Permalink to this heading">#</a></h3>
+<section id="setting-up-your-users">
+<h4>Setting Up Your Users<a class="headerlink" href="#setting-up-your-users" title="Permalink to this heading">#</a></h4>
+<ul>
+<li><p>To create an <strong>superuser account</strong>, run this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py createsuperuser
+</pre></div>
+</div>
+</li>
+</ul>
+<p>If the command prompts for username only and after entering if it goes to error
+do make sure that you have done the following</p>
+<p>Note: Make sure that you have created a database named <cite>care</cite> (replace thisw with your database name)  with privileges set for the user <cite>postgres</cite></p>
+<p>In the virtualenv shell type the following commands also:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">DATABASE_URL</span><span class="o">=</span><span class="n">postgres</span><span class="p">:</span><span class="o">//</span><span class="n">postgres</span><span class="p">:</span><span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;@</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5432</span><span class="o">/</span><span class="n">care</span>
+
+<span class="n">export</span> <span class="n">TEST_POSTGIS_URL</span><span class="o">=</span><span class="s2">&quot;postgis://postgres:&lt;password&gt;@127.0.0.1:5432/care&quot;</span>
+</pre></div>
+</div>
+<p>You may replace <strong>care</strong> with the database you have created before.</p>
+<p>After doing this you can type the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py migrate
+</pre></div>
+</div>
+<p>and after you make sure everything is ok</p>
+<p>run this command again:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py createsuperuser
+</pre></div>
+</div>
+<p>This will now prompt for the following details - Ignore any warnings.</p>
+<ul class="simple">
+<li><p>username: give the username here</p></li>
+<li><p>usertype: Give the value <cite>10</cite> [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]</p></li>
+<li><p>gender: 1 for male, 2 for female, 3 for other</p></li>
+<li><p>email: give e-mail id</p></li>
+<li><p>phonenumber: give your ten digit phone number here</p></li>
+<li><p>password: Give the password here</p></li>
+</ul>
+<p>To copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles, you may use the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py collectstatic
+</pre></div>
+</div>
+</section>
+<section id="type-checks">
+<h4>Type checks<a class="headerlink" href="#type-checks" title="Permalink to this heading">#</a></h4>
+<p>Running type checks with mypy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mypy care
+</pre></div>
+</div>
+</section>
+<section id="run-tests">
+<h4>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this heading">#</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py test --settings=config.settings.test -n
+</pre></div>
+</div>
+<p>If you get an <code class="code docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> error regarding the Spatialite library extension, install it with the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install libsqlite3-mod-spatialite
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../pycharm/configuration.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Debugging with Pycharm</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Care
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Setting up development environment</a><ul>
+<li><a class="reference internal" href="#using-docker-compose">Using Docker Compose</a></li>
+<li><a class="reference internal" href="#manual-setup">Manual setup</a><ul>
+<li><a class="reference internal" href="#setting-up-postgres-for-the-first-time">Setting up postgres for the first time</a></li>
+<li><a class="reference internal" href="#setting-up-pre-commit">Setting up Pre-Commit</a></li>
+<li><a class="reference internal" href="#basic-commands">Basic Commands</a><ul>
+<li><a class="reference internal" href="#setting-up-your-users">Setting Up Your Users</a></li>
+<li><a class="reference internal" href="#type-checks">Type checks</a></li>
+<li><a class="reference internal" href="#run-tests">Run Tests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>

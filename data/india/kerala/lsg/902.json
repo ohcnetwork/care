@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348513796,
+  "date": "2019-08-21",
+  "name": "Kalikavu  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Nilambur",
+  "area": "217.31km",
+  "localbody_code": "G100203",
+  "no_of_wards": 19,
+  "population": 50620,
+  "male": 24675,
+  "female": 25945,
+  "population_density": 233,
+  "sex_ratio": 1051,
+  "literacy_rate": 89.74,
+  "literacy_rate_male": 93.1,
+  "literacy_rate_female": 86.38,
+  "president": "SAITHALIN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARUTHENI",
+      "person": {
+        "id": "2015090200101",
+        "name": "SAKKARIA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANCHACHAVIDI",
+      "person": {
+        "id": "2015090200201",
+        "name": "ASMABI C T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VENTHODANPADI",
+      "person": {
+        "id": "2015090200301",
+        "name": "ABDUL NAZAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLISSERI",
+      "person": {
+        "id": "2015090200401",
+        "name": "MUHAMMED HARIS P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AMBALAKKADAVU",
+      "person": {
+        "id": "2015090200501",
+        "name": "AYISHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALIKAVU TOWN",
+      "person": {
+        "id": "2015090200601",
+        "name": "ABDUL NASAR VP"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MELE KALIKAVU",
+      "person": {
+        "id": "2015090200701",
+        "name": "KARUVATHIL NAJEEB"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ADAKKAKUNDU",
+      "person": {
+        "id": "2015090200801",
+        "name": "KAULATH C"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARASSERI",
+      "person": {
+        "id": "2015090200901",
+        "name": "SUFAIRA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ENADI",
+      "person": {
+        "id": "2015090201001",
+        "name": "SOUMYA C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENKOD",
+      "person": {
+        "id": "2015090201101",
+        "name": "SULAIKHA V"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHAZHIYOD",
+      "person": {
+        "id": "2015090201201",
+        "name": "HASEENA C"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLAMKUNNU",
+      "person": {
+        "id": "2015090201301",
+        "name": "IMBICHI BEEVI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THANDUCODE",
+      "person": {
+        "id": "2015090201401",
+        "name": "ASMABI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ILASSERI",
+      "person": {
+        "id": "2015090201501",
+        "name": "PREETHI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULIYAMKALLU",
+      "person": {
+        "id": "2015090201601",
+        "name": "RAMACHANDRAN K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VELLAYOOR",
+      "person": {
+        "id": "2015090201701",
+        "name": "SAITHALI N"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHERIPALAM",
+      "person": {
+        "id": "2015090201801",
+        "name": "CHATHUKUTTY P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "POONGOD",
+      "person": {
+        "id": "2015090201901",
+        "name": "MANSOOR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

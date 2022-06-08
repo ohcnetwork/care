@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345758797,
+  "date": "2019-08-21",
+  "name": "Anchuthengu  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Chirayinkeezhu",
+  "area": "3.36km",
+  "localbody_code": "G010301",
+  "no_of_wards": 14,
+  "population": 16732,
+  "male": 8267,
+  "female": 8475,
+  "population_density": 4983,
+  "sex_ratio": 1025,
+  "literacy_rate": 72.49,
+  "literacy_rate_male": 74.02,
+  "literacy_rate_female": 71.02,
+  "president": "CRISTYSIMON",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAYIKKARA ASAN SMARAKAM",
+      "person": {
+        "id": "2015024100101",
+        "name": "ARCHANA DAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NEDUNGANDA",
+      "person": {
+        "id": "2015024100201",
+        "name": "P VIMALRAJ"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAIKKARA",
+      "person": {
+        "id": "2015024100301",
+        "name": "AJAYAKUMAR H"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAPALEESWARAM",
+      "person": {
+        "id": "2015024100401",
+        "name": "RAJITHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUDIPPURA",
+      "person": {
+        "id": "2015024100501",
+        "name": "LIJA BOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHEN NADA",
+      "person": {
+        "id": "2015024100601",
+        "name": "S PRAVEENCHANDRA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALIYA PALLI",
+      "person": {
+        "id": "2015024100701",
+        "name": "CRISTY SIMON"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOTHURA",
+      "person": {
+        "id": "2015024100801",
+        "name": "PHILOMENA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CONVENT",
+      "person": {
+        "id": "2015024100901",
+        "name": "C PIOUS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015024101001",
+        "name": "RAJU GEORGE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANCHUTHENGU JUNCTION",
+      "person": {
+        "id": "2015024101101",
+        "name": "YESUDASAN STEPHEN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANNAKKULAM",
+      "person": {
+        "id": "2015024101201",
+        "name": "THRESI SOLOMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUNDUTHURA",
+      "person": {
+        "id": "2015024101301",
+        "name": "HELEN AGUSTIN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MAMPALLY",
+      "person": {
+        "id": "2015024101401",
+        "name": "NELSON ISSAC"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

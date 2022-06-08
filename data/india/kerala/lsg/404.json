@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346319110,
+  "date": "2019-08-21",
+  "name": "Naranammoozhy  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "33.61km",
+  "localbody_code": "G030508",
+  "no_of_wards": 13,
+  "population": 15988,
+  "male": 7928,
+  "female": 8060,
+  "population_density": 476,
+  "sex_ratio": 1017,
+  "literacy_rate": 94.16,
+  "literacy_rate_male": 95.47,
+  "literacy_rate_female": 92.9,
+  "president": "MOHANRAJJACOB",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDAMURI",
+      "person": {
+        "id": "2015040400101",
+        "name": "JEEMOL  MARY KOSHY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THOMPIKANDAM",
+      "person": {
+        "id": "2015040400201",
+        "name": "PRASANNA SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMPANOLI",
+      "person": {
+        "id": "2015040400301",
+        "name": "CHACKO MATHEW (SHAJI PATHALIL)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADUMEENCHIRA",
+      "person": {
+        "id": "2015040400401",
+        "name": "VALSAMMA PURUSHOTHAMAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUMPANMOOZHY",
+      "person": {
+        "id": "2015040400501",
+        "name": "MOHAN RAJ  JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUDAMURUTTY",
+      "person": {
+        "id": "2015040400601",
+        "name": "MOHANAN T T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOPALLY",
+      "person": {
+        "id": "2015040400701",
+        "name": "ADV.MANJISH MATHEW"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ATHIKKAYAM",
+      "person": {
+        "id": "2015040400801",
+        "name": "BIJU E V"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NARANAMMOOZHY",
+      "person": {
+        "id": "2015040400901",
+        "name": "LICY THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHOLLANAVAYAL",
+      "person": {
+        "id": "2015040401001",
+        "name": "THANKAMANI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ADICHIPUZHA",
+      "person": {
+        "id": "2015040401101",
+        "name": "BINDU SUDEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAKKUDIMON",
+      "person": {
+        "id": "2015040401201",
+        "name": "LEELA BHAI  K  V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PONNAMPARA",
+      "person": {
+        "id": "2015040401301",
+        "name": "AJITH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

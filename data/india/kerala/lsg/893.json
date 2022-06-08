@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566348476889,
+  "date": "2019-08-21",
+  "name": "Polpully  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Malampuzha",
+  "area": "19.96km",
+  "localbody_code": "G090907",
+  "no_of_wards": 13,
+  "population": 15121,
+  "male": 7298,
+  "female": 7823,
+  "population_density": 758,
+  "sex_ratio": 1072,
+  "literacy_rate": 74.5,
+  "literacy_rate_male": 82.66,
+  "literacy_rate_female": 66.94,
+  "president": "JAYANTHIS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOORIKKAD",
+      "person": {
+        "id": "2015089300101",
+        "name": "SANTHOSH K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANTHAPARAMBU",
+      "person": {
+        "id": "2015089300201",
+        "name": "APPUKUTTAN P.G."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOLAKKULAM",
+      "person": {
+        "id": "2015089300301",
+        "name": "RAMANKUTTY. A."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ERUMAKKALODU",
+      "person": {
+        "id": "2015089300401",
+        "name": "BINDUMOL. S."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VERKOLY",
+      "person": {
+        "id": "2015089300501",
+        "name": "BEENA. A."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PLAPULLY",
+      "person": {
+        "id": "2015089300601",
+        "name": "ABBAS. M."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHIRAVATTOM",
+      "person": {
+        "id": "2015089300701",
+        "name": "NITHYA P.C."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHUKKUDY",
+      "person": {
+        "id": "2015089300801",
+        "name": "SANTHOSHKUMAR  S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NELLUKUTHUPARA",
+      "person": {
+        "id": "2015089300901",
+        "name": "THANKAM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEDUMPURA",
+      "person": {
+        "id": "2015089301001",
+        "name": "AMBIKA.  A"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANAYUR",
+      "person": {
+        "id": "2015089301101",
+        "name": "PREMA. M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLUKOOTTIYAL",
+      "person": {
+        "id": "2015089301201",
+        "name": "JAYANTHI S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOTHAMPULLY",
+      "person": {
+        "id": "2015089301301",
+        "name": "KUNJUNNI P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

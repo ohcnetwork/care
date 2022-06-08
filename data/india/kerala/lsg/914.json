@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348581151,
+  "date": "2019-08-21",
+  "name": "Chelembra  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kondotty",
+  "area": "15.81km",
+  "localbody_code": "G100401",
+  "no_of_wards": 18,
+  "population": 24663,
+  "male": 12260,
+  "female": 12403,
+  "population_density": 1560,
+  "sex_ratio": 1012,
+  "literacy_rate": 91.78,
+  "literacy_rate_male": 95.31,
+  "literacy_rate_female": 88.36,
+  "president": "C.RAJESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERUNTHODIPPADAM",
+      "person": {
+        "id": "2015091400101",
+        "name": "UMMER FAROOK.V.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHELEMBRAPADAM",
+      "person": {
+        "id": "2015091400201",
+        "name": "SIVADASAN.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "IDIMUZHIKKAL",
+      "person": {
+        "id": "2015091400301",
+        "name": "KAMMALASSERI DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDANDAPPADAM",
+      "person": {
+        "id": "2015091400401",
+        "name": "BEENA.E.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PADINJATTIN PAI",
+      "person": {
+        "id": "2015091400501",
+        "name": "UDAYAKUMARI.K.N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULLUMKUNNU",
+      "person": {
+        "id": "2015091400601",
+        "name": "AJITHA KUMARI.P.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHAKKAMMADKUNNU",
+      "person": {
+        "id": "2015091400701",
+        "name": "BABY.K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAKKANCHERI",
+      "person": {
+        "id": "2015091400801",
+        "name": "SUBRAHMANIAN.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAINGOTTOOR",
+      "person": {
+        "id": "2015091400901",
+        "name": "MUHAMMED IQBAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEENADAM",
+      "person": {
+        "id": "2015091401001",
+        "name": "SREEJITH.C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHELOOPPADAM",
+      "person": {
+        "id": "2015091401101",
+        "name": "FATHIMA BEEVI.M.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANAYAPPURAM",
+      "person": {
+        "id": "2015091401201",
+        "name": "JAMEELA.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUTTEELIPPARAMB",
+      "person": {
+        "id": "2015091401301",
+        "name": "BABY.M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANDAYIPPADAM",
+      "person": {
+        "id": "2015091401401",
+        "name": "C.RAJESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THENERIPPARA",
+      "person": {
+        "id": "2015091401501",
+        "name": "KHADEEJA.K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PULLIPPARAMB",
+      "person": {
+        "id": "2015091401601",
+        "name": "ABDUL AZEEZ.C"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PERUNNEERI",
+      "person": {
+        "id": "2015091401701",
+        "name": "SUJITHA.C.K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KUTTEERIYIL",
+      "person": {
+        "id": "2015091401801",
+        "name": "KUNHIMUTTY.K.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348904220,
+  "date": "2019-08-21",
+  "name": "Kayakkody  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnummal",
+  "area": "28.14km",
+  "localbody_code": "G110302",
+  "no_of_wards": 16,
+  "population": 21175,
+  "male": 10413,
+  "female": 10762,
+  "population_density": 752,
+  "sex_ratio": 1034,
+  "literacy_rate": 87.79,
+  "literacy_rate_male": 94.09,
+  "literacy_rate_female": 81.72,
+  "president": "ASWATHIKT",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEDUMANNOOR",
+      "person": {
+        "id": "2015100600101",
+        "name": "SATHEESAN M P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANAYAMKODE",
+      "person": {
+        "id": "2015100600201",
+        "name": "K RAJAN MASTER"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KAYAKKODY",
+      "person": {
+        "id": "2015100600301",
+        "name": "ASWATHI K T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALOLY",
+      "person": {
+        "id": "2015100600401",
+        "name": "K CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIMBALAKKANDY",
+      "person": {
+        "id": "2015100600501",
+        "name": "K P SUMATHI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "DEVERKOVIL",
+      "person": {
+        "id": "2015100600601",
+        "name": "HALEEMA TEACHER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "THALEEKKARA",
+      "person": {
+        "id": "2015100600701",
+        "name": "SUFIRA M A"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOLAKKANDY",
+      "person": {
+        "id": "2015100600801",
+        "name": "SAJITHA E P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUTTUNADA",
+      "person": {
+        "id": "2015100600901",
+        "name": "KARUNAKARAN C K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOTTOOR",
+      "person": {
+        "id": "2015100601001",
+        "name": "BINDHU U V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULANGARATHAZHA",
+      "person": {
+        "id": "2015100601101",
+        "name": "RASIYA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARANDODE",
+      "person": {
+        "id": "2015100601201",
+        "name": "K PRAMOD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHANGARAMKULAM",
+      "person": {
+        "id": "2015100601301",
+        "name": "SATHI K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOVUKKUNNU",
+      "person": {
+        "id": "2015100601401",
+        "name": "P P NANU"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAREKKUNNU",
+      "person": {
+        "id": "2015100601501",
+        "name": "SAJIDA A M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALAYAD",
+      "person": {
+        "id": "2015100601601",
+        "name": "SHIJIL O P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

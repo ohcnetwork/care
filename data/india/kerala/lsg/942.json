@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566348695224,
+  "date": "2019-08-21",
+  "name": "Kuruva  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Mankada",
+  "area": "35.79km",
+  "localbody_code": "G100801",
+  "no_of_wards": 22,
+  "population": 44711,
+  "male": 21699,
+  "female": 23012,
+  "population_density": 943,
+  "sex_ratio": 1074,
+  "literacy_rate": 85.73,
+  "literacy_rate_male": 89.47,
+  "literacy_rate_female": 81.98,
+  "president": "YOOSUFM.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MULLAPPALLI",
+      "person": {
+        "id": "2015094200101",
+        "name": "MUNEERA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KURUVA",
+      "person": {
+        "id": "2015094200201",
+        "name": "FARHANA .VK"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SAMOOSAPPADI",
+      "person": {
+        "id": "2015094200301",
+        "name": "PUSHPA LATHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VATTALLOOR",
+      "person": {
+        "id": "2015094200401",
+        "name": "JAMSHEER .P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NECHIKKUTHPARAMBA",
+      "person": {
+        "id": "2015094200501",
+        "name": "SHAHEEDA.P.T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARINJAPADI",
+      "person": {
+        "id": "2015094200601",
+        "name": "ABDUL AZEEZ.K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PADAPPARAMBA",
+      "person": {
+        "id": "2015094200701",
+        "name": "SARAFUNNISA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KIZHAKKAN PANG",
+      "person": {
+        "id": "2015094200801",
+        "name": "HAMZA.NP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THORA",
+      "person": {
+        "id": "2015094200901",
+        "name": "SALINI .M.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THEKKAN PANG",
+      "person": {
+        "id": "2015094201001",
+        "name": "NASEERA MOL .P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOKKODE",
+      "person": {
+        "id": "2015094201101",
+        "name": "MUHAMMED JASIR. K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMBALAPPARAMBU",
+      "person": {
+        "id": "2015094201201",
+        "name": "T.JANAKIKUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHENDI",
+      "person": {
+        "id": "2015094201301",
+        "name": "KUNHAYAMU.A.C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PADINHATTUMURI",
+      "person": {
+        "id": "2015094201401",
+        "name": "NIZARUDEEN. A"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHANDANAPPARAMBA",
+      "person": {
+        "id": "2015094201501",
+        "name": "UMMU HABEEBA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "CHANDAPPARAMBA",
+      "person": {
+        "id": "2015094201601",
+        "name": "ALAVIKUTTY. P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHERUKKULAMBA",
+      "person": {
+        "id": "2015094201701",
+        "name": "ABDUL LATHEEF C"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "CHERUKKULAMBA WEST",
+      "person": {
+        "id": "2015094201801",
+        "name": "SHAJI. V.P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MEKKULAMBA",
+      "person": {
+        "id": "2015094201901",
+        "name": "RASIYA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THEKKUMKULAMBA",
+      "person": {
+        "id": "2015094202001",
+        "name": "SULAIKHA"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PAZHAMALLOOR",
+      "person": {
+        "id": "2015094202101",
+        "name": "JINOSH. P"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MEENARKUZHI",
+      "person": {
+        "id": "2015094202201",
+        "name": "YOOSUF M.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

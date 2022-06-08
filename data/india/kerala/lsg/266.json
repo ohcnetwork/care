@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345850787,
+  "date": "2019-08-21",
+  "name": "Karakulam  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nedumangad",
+  "area": "25.01km",
+  "localbody_code": "G010604",
+  "no_of_wards": 23,
+  "population": 40503,
+  "male": 20184,
+  "female": 20319,
+  "population_density": 1619,
+  "sex_ratio": 1007,
+  "literacy_rate": 91.86,
+  "literacy_rate_male": 95.12,
+  "literacy_rate_female": 88.65,
+  "president": "ANILA.MS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VATTAPPARA WEST",
+      "person": {
+        "id": "2015026600101",
+        "name": "GILDA BAI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VATTAPPARA EAST",
+      "person": {
+        "id": "2015026600201",
+        "name": "PUSHPAKUMARY.M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARAYALATHUKONAM",
+      "person": {
+        "id": "2015026600301",
+        "name": "LEKHA RANI.U"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PLATHARA",
+      "person": {
+        "id": "2015026600401",
+        "name": "SREEKUMAR.R"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VENCODE",
+      "person": {
+        "id": "2015026600501",
+        "name": "R.PREETHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KIZHAKKELA",
+      "person": {
+        "id": "2015026600601",
+        "name": "ADV. A. YARSHAD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHEKKAKONAM",
+      "person": {
+        "id": "2015026600701",
+        "name": "RAVEENDRAN. V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AYANIKADU",
+      "person": {
+        "id": "2015026600801",
+        "name": "SASIKALA. A"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THARATTA",
+      "person": {
+        "id": "2015026600901",
+        "name": "ANILA. M S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KACHANI",
+      "person": {
+        "id": "2015026601002",
+        "name": "VIKAS D"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUDISASTHAMCODE",
+      "person": {
+        "id": "2015026601101",
+        "name": "RAJAMMA SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAZHAYILA",
+      "person": {
+        "id": "2015026601201",
+        "name": "CHITHRA. S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ARAMKALLU",
+      "person": {
+        "id": "2015026601301",
+        "name": "VEENA CHANDRAN. G.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARAKULAM",
+      "person": {
+        "id": "2015026601401",
+        "name": "R. PRAMOD KUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUKKOLA",
+      "person": {
+        "id": "2015026601501",
+        "name": "LATHA.S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EANIKKARA",
+      "person": {
+        "id": "2015026601601",
+        "name": "ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NEDUMPARA",
+      "person": {
+        "id": "2015026601701",
+        "name": "PUSHPALEELA. B"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALLAYAM",
+      "person": {
+        "id": "2015026601801",
+        "name": "PADMAJAKUMARI. S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PLAVUVILA",
+      "person": {
+        "id": "2015026601901",
+        "name": "VASANTHAKUMARI. M. S"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "NEDUMAN",
+      "person": {
+        "id": "2015026602001",
+        "name": "ANITHA. P"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MARUTHOOR",
+      "person": {
+        "id": "2015026602101",
+        "name": "P.N. MADHU"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KAZHUNAD",
+      "person": {
+        "id": "2015026602201",
+        "name": "S. BIJUKUMAR"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "CHITTAZHA",
+      "person": {
+        "id": "2015026602301",
+        "name": "I. CHRISTUDANAM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

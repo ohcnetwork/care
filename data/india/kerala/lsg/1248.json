@@ -1,0 +1,277 @@
+{
+  "timeStamp": 1566349731599,
+  "date": "2019-08-21",
+  "name": "Kottakkal\n  Municipality, Malappuram District",
+  "district": "Malappuram",
+  "area": null,
+  "localbody_code": "M100700",
+  "no_of_wards": 32,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "chairman": "K.K.NASAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHANGUVETTY",
+      "person": {
+        "id": "2015124800101",
+        "name": "EDAKKANDAN YOOSUF"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHUNDA",
+      "person": {
+        "id": "2015124800201",
+        "name": "SULAIMAN PARAMMAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAKKAL TOWN",
+      "person": {
+        "id": "2015124800301",
+        "name": "ABDUL NASAR THIRUNILATH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOTTAKKAL THAZHE ANGADI",
+      "person": {
+        "id": "2015124800401",
+        "name": "USMANKUTTY PARAVAKKAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALAPPURA",
+      "person": {
+        "id": "2015124800501",
+        "name": "BUSHRA SHABEER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MYTHRI NAGAR",
+      "person": {
+        "id": "2015124800601",
+        "name": "K.V RAJASULOCHANA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NAYADIPPARA",
+      "person": {
+        "id": "2015124800701",
+        "name": "CHANDRIKA .K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEENAMBUTHUR",
+      "person": {
+        "id": "2015124800802",
+        "name": "GIRIJA M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAVATHIKALAM WEST",
+      "person": {
+        "id": "2015124800901",
+        "name": "P. RAMLA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAVATHIKALAM EAST",
+      "person": {
+        "id": "2015124801001",
+        "name": "ALAVI THAIKKAT"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALIYAPARAMBA",
+      "person": {
+        "id": "2015124801101",
+        "name": "T.P. SUBAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "WEST VILLUR",
+      "person": {
+        "id": "2015124801201",
+        "name": "ABDUL RAHEEM (NANI)"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PAPPAAYI",
+      "person": {
+        "id": "2015124801301",
+        "name": "T.V. SULAIKHABI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EAST VILLUR",
+      "person": {
+        "id": "2015124801401",
+        "name": "K.K. NASAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KOORIYAD",
+      "person": {
+        "id": "2015124801501",
+        "name": "JAMEELA ABOO"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANIKKARKUNDU",
+      "person": {
+        "id": "2015124801601",
+        "name": "RAMLA KARUTHEDATH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "INDIANOOR WEST",
+      "person": {
+        "id": "2015124801701",
+        "name": "MATTUMMALTHODI FAREEDA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "INDIANOOR",
+      "person": {
+        "id": "2015124801801",
+        "name": "NANDAKUMAR P"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MULIYANKOTTA",
+      "person": {
+        "id": "2015124801901",
+        "name": "ABDURAHIMAN K.V"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MARAVATTAM",
+      "person": {
+        "id": "2015124802001",
+        "name": "AYISHA UMMER"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KOTTOOR",
+      "person": {
+        "id": "2015124802101",
+        "name": "LAILA RASHEED"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MADRASAPPADI",
+      "person": {
+        "id": "2015124802201",
+        "name": "KARUVAKKOTTIL SUHARABI"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "AMAPPARA",
+      "person": {
+        "id": "2015124802301",
+        "name": "GIRIJA K"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "KUTTIPPURAM",
+      "person": {
+        "id": "2015124802401",
+        "name": "SAIDALAVI"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "ALINCHUVADU",
+      "person": {
+        "id": "2015124802501",
+        "name": "AMARIYIL ASHITHA RASACK"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "POOZHIKKUNNU",
+      "person": {
+        "id": "2015124802601",
+        "name": "JINI"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PALATHARA",
+      "person": {
+        "id": "2015124802701",
+        "name": "VAHEEDA PULIKKAL"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "KOTTAKKULAM",
+      "person": {
+        "id": "2015124802801",
+        "name": "ABDULLAKUTTY"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "PULIKKODU",
+      "person": {
+        "id": "2015124802901",
+        "name": "AHAMED M.P"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "THOKKAMPARA",
+      "person": {
+        "id": "2015124803001",
+        "name": "KAMALAKSHI .K"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "CHANGUVETTYKKUNDU",
+      "person": {
+        "id": "2015124803101",
+        "name": "SAJID MANGATTIL"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "KHURBANI",
+      "person": {
+        "id": "2015124803201",
+        "name": "RAMACHANDRAN. M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

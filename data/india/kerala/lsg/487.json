@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346637469,
+  "date": "2019-08-21",
+  "name": "Vallikunnam  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Bharinikavu",
+  "area": "21.37km",
+  "localbody_code": "G041102",
+  "no_of_wards": 18,
+  "population": 27483,
+  "male": 13261,
+  "female": 14222,
+  "population_density": 1286,
+  "sex_ratio": 1072,
+  "literacy_rate": 93,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 89,
+  "president": "INDIRA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOONAD",
+      "person": {
+        "id": "2015048700101",
+        "name": "G. RAJEEV KUMAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ELIPPAKKULAM",
+      "person": {
+        "id": "2015048700201",
+        "name": "V.K. ANIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALLIKUNNAM",
+      "person": {
+        "id": "2015048700301",
+        "name": "BIJIKUMARI. V.V"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHENCHANTHA",
+      "person": {
+        "id": "2015048700401",
+        "name": "J. RAVEENDRANATH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PADAYANIVETTAM",
+      "person": {
+        "id": "2015048700501",
+        "name": "AMPILIKUMARIYAMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARIYARATHKULANGARA",
+      "person": {
+        "id": "2015048700601",
+        "name": "ANITHA. C"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MALAMELCHANTHA",
+      "person": {
+        "id": "2015048700701",
+        "name": "ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KADUVINAL",
+      "person": {
+        "id": "2015048700801",
+        "name": "VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KANJIRATHINMOODU",
+      "person": {
+        "id": "2015048700901",
+        "name": "DEEPA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THALIRADI",
+      "person": {
+        "id": "2015048701001",
+        "name": "PRAKASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONDODIMUKAL",
+      "person": {
+        "id": "2015048701101",
+        "name": "PRASANNA. R"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMBISSERY",
+      "person": {
+        "id": "2015048701201",
+        "name": "SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THEKKEMURI",
+      "person": {
+        "id": "2015048701301",
+        "name": "PRABHAKARAN.A"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANNIMEL",
+      "person": {
+        "id": "2015048701401",
+        "name": "MURALI. G"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALACHAL",
+      "person": {
+        "id": "2015048701501",
+        "name": "SUMA"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KADUVUMKAL",
+      "person": {
+        "id": "2015048701601",
+        "name": "INDIRA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KARAZHMA",
+      "person": {
+        "id": "2015048701701",
+        "name": "AMBIILI. A"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VATTAKKAD",
+      "person": {
+        "id": "2015048701801",
+        "name": "LATHIKA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

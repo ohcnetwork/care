@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345282151,
+  "date": "2019-08-21",
+  "name": "Thodannur  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Thodannur",
+  "area": "96.77km",
+  "localbody_code": "B110400",
+  "no_of_wards": 13,
+  "population": 118583,
+  "male": 57978,
+  "female": 60605,
+  "population_density": 1225,
+  "sex_ratio": 1045,
+  "literacy_rate": 88.64,
+  "literacy_rate_male": 94.46,
+  "literacy_rate_female": 83.16,
+  "president": "THIRUVALLURMURALI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PONMERI",
+      "person": {
+        "id": "2015012800101",
+        "name": "VINODAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KADAMERI",
+      "person": {
+        "id": "2015012800201",
+        "name": "SAJITHA M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "AYANCHERI",
+      "person": {
+        "id": "2015012800301",
+        "name": "THERATH KUNHI KRISHNAN NAMBIYAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THIRUVALLOOR",
+      "person": {
+        "id": "2015012800401",
+        "name": "SUMA TV"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VELLUKKARA",
+      "person": {
+        "id": "2015012800501",
+        "name": "THIRUVALLUR MURALI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANIYOOR",
+      "person": {
+        "id": "2015012800601",
+        "name": "C BALAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KURUNTHODI",
+      "person": {
+        "id": "2015012800701",
+        "name": "ANANDAVALLI MK"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALAYADU",
+      "person": {
+        "id": "2015012800801",
+        "name": "BINDU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THODANNUR",
+      "person": {
+        "id": "2015012800901",
+        "name": "PRABHAVATHI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHEMMARATHUR",
+      "person": {
+        "id": "2015012801001",
+        "name": "BAVITH MALOL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUTTOTH",
+      "person": {
+        "id": "2015012801101",
+        "name": "SAFIYA MALAYIL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MEYYANNUR",
+      "person": {
+        "id": "2015012801201",
+        "name": "SUNITHA TK"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VILYAPPALI",
+      "person": {
+        "id": "2015012801301",
+        "name": "HAJARA A.C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

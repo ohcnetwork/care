@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348980530,
+  "date": "2019-08-21",
+  "name": "Chakkittapara  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "142.45km",
+  "localbody_code": "G110607",
+  "no_of_wards": 15,
+  "population": 20360,
+  "male": 10371,
+  "female": 9989,
+  "population_density": 143,
+  "sex_ratio": 963,
+  "literacy_rate": 93.62,
+  "literacy_rate_male": 96.16,
+  "literacy_rate_female": 90.97,
+  "president": "SHEEJASASI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANNIKKOTTUR",
+      "person": {
+        "id": "2015102700101",
+        "name": "DEVI VAZHAYIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHEMPANODA",
+      "person": {
+        "id": "2015102700201",
+        "name": "SEMILI SUNIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KURATHIPPARA",
+      "person": {
+        "id": "2015102700301",
+        "name": "LAISA GEORGE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOZHITHODE",
+      "person": {
+        "id": "2015102700401",
+        "name": "SHYLA. T.D"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MUTHUKAD",
+      "person": {
+        "id": "2015102700501",
+        "name": "SHEENA AYANIKKUNNUMAL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHENKOTTAKKOLLI",
+      "person": {
+        "id": "2015102700601",
+        "name": "BIJU KUNNAMKANDY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ILAMKAD",
+      "person": {
+        "id": "2015102700701",
+        "name": "SHEENA ROBIN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PLANTATION",
+      "person": {
+        "id": "2015102700801",
+        "name": "JAYESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NARINADA",
+      "person": {
+        "id": "2015102700901",
+        "name": "SUBHASH THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANNAKKUTTANCHAL",
+      "person": {
+        "id": "2015102701001",
+        "name": "SHEEJA SASI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PERUVANNAMUZHI",
+      "person": {
+        "id": "2015102701101",
+        "name": "SUNIL KALLUNKAL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHAKKITTAPARA",
+      "person": {
+        "id": "2015102701201",
+        "name": "DAISY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KULATHUVAYAL",
+      "person": {
+        "id": "2015102701301",
+        "name": "UMMAR THEKKATH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THANNIYOD",
+      "person": {
+        "id": "2015102701401",
+        "name": "ANEESH V.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KULATHUMTHARA",
+      "person": {
+        "id": "2015102701501",
+        "name": "PREMAN NADUKKANDY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

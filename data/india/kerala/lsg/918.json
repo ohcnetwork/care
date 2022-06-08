@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566348602447,
+  "date": "2019-08-21",
+  "name": "Pallikkal  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kondotty",
+  "area": "25.85km",
+  "localbody_code": "G100405",
+  "no_of_wards": 22,
+  "population": 31715,
+  "male": 15673,
+  "female": 16042,
+  "population_density": 1227,
+  "sex_ratio": 1024,
+  "literacy_rate": 87.62,
+  "literacy_rate_male": 92.03,
+  "literacy_rate_female": 83.32,
+  "president": "MIDHUNA.P",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOZHIPPURAM",
+      "person": {
+        "id": "2015091800101",
+        "name": "MIDHUNA.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "OTTUPARA",
+      "person": {
+        "id": "2015091800201",
+        "name": "KHALID.M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PALLIKKAL",
+      "person": {
+        "id": "2015091800301",
+        "name": "SHAJU.T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOOTTAKALLUNGAL",
+      "person": {
+        "id": "2015091800401",
+        "name": "BUSHRA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARIPPUR",
+      "person": {
+        "id": "2015091800501",
+        "name": "JAFAR SADIQUE.T.P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AIRPORT",
+      "person": {
+        "id": "2015091800601",
+        "name": "GENSABI.P.T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUMMINIPPARAMB",
+      "person": {
+        "id": "2015091800701",
+        "name": "SAIDALAVI.K.C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KODIYAMPARAMB",
+      "person": {
+        "id": "2015091800801",
+        "name": "MOHAMMED MUSTHAFA.P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THARAYITTAL",
+      "person": {
+        "id": "2015091800901",
+        "name": "RAMANKUTTY.U"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KOOTTALUNGAL",
+      "person": {
+        "id": "2015091801001",
+        "name": "JASEENA LATHEEF"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULIYAMPARAMBU",
+      "person": {
+        "id": "2015091801101",
+        "name": "JASLI .T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARAKKATTUPARAMB",
+      "person": {
+        "id": "2015091801201",
+        "name": "VAHEEDA.P.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALAPPETTI",
+      "person": {
+        "id": "2015091801301",
+        "name": "AHAMMED KABEER.E"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOONULMADU",
+      "person": {
+        "id": "2015091801401",
+        "name": "ABOOBACKAR.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SRAMBYABAZAR",
+      "person": {
+        "id": "2015091801501",
+        "name": "VAHIDA BHANU.A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARUTHIKKODU",
+      "person": {
+        "id": "2015091801601",
+        "name": "ABDUL KHADAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PUTHURPALLIKKAL",
+      "person": {
+        "id": "2015091801701",
+        "name": "SAJIDA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ANKAPPARAMBU",
+      "person": {
+        "id": "2015091801801",
+        "name": "KHAIRABI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHENAKKAL",
+      "person": {
+        "id": "2015091801901",
+        "name": "NARAYANI.C"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "NEDUNGOTTUMADU",
+      "person": {
+        "id": "2015091802001",
+        "name": "ISMAIL.P.K"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KURUNTHALA",
+      "person": {
+        "id": "2015091802101",
+        "name": "MOHANDAS.K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHETTIYARMADU",
+      "person": {
+        "id": "2015091802201",
+        "name": "SABIRA.K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

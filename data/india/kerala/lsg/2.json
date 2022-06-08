@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566344837735,
+  "date": "2019-08-21",
+  "name": "Kilimanoor  Block Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Kilimannoor",
+  "area": "179.77km",
+  "localbody_code": "B010200",
+  "no_of_wards": 15,
+  "population": 185520,
+  "male": 88999,
+  "female": 96521,
+  "population_density": 1032,
+  "sex_ratio": 1085,
+  "literacy_rate": 88.49,
+  "literacy_rate_male": 93.23,
+  "literacy_rate_female": 84.2,
+  "president": "SREEJASHAIJUDEV",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLICKAL",
+      "person": {
+        "id": "2015000200101",
+        "name": "BABY SUDHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MADAVOOR",
+      "person": {
+        "id": "2015000200201",
+        "name": "SURAJA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THUMBODE",
+      "person": {
+        "id": "2015000200301",
+        "name": "SREEJA SHAIJUDEV"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PONGANADU",
+      "person": {
+        "id": "2015000200401",
+        "name": "MALATHY AMMA. J"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KILIMANOOR",
+      "person": {
+        "id": "2015000200501",
+        "name": "SANU S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAZHAYAKUNNUMMEL",
+      "person": {
+        "id": "2015000200601",
+        "name": "G BABUKUTTAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015000200701",
+        "name": "YAHIYA S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PULIMATH",
+      "person": {
+        "id": "2015000200801",
+        "name": "K VALSALA KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KODUVAZHANOOR",
+      "person": {
+        "id": "2015000200901",
+        "name": "G HARIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NAGAROOR",
+      "person": {
+        "id": "2015000201001",
+        "name": "SALINI L"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLALLOR",
+      "person": {
+        "id": "2015000201101",
+        "name": "RAJENDRAN N"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VANCHIYOOR",
+      "person": {
+        "id": "2015000201201",
+        "name": "K SUBHASH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARAVARAM",
+      "person": {
+        "id": "2015000201301",
+        "name": "ADV. P R RAJEEV"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NAVAIKULAM",
+      "person": {
+        "id": "2015000201401",
+        "name": "K SANTHAMMA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THRIKKOVILVATTAM",
+      "person": {
+        "id": "2015000201501",
+        "name": "NISSA A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

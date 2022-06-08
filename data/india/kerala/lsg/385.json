@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346259965,
+  "date": "2019-08-21",
+  "name": "Eraviperoor  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Koipuram",
+  "area": "18.64km",
+  "localbody_code": "G030302",
+  "no_of_wards": 17,
+  "population": 24558,
+  "male": 11715,
+  "female": 12843,
+  "population_density": 1317,
+  "sex_ratio": 1096,
+  "literacy_rate": 96.84,
+  "literacy_rate_male": 97.91,
+  "literacy_rate_female": 95.88,
+  "president": "ANASOOYADEVIMT",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ERAVIPEROOR PADINJARU",
+      "person": {
+        "id": "2015038500101",
+        "name": "PRAKASINI RAMESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ERAVIPEROOR",
+      "person": {
+        "id": "2015038500201",
+        "name": "GEETHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERAVIPEROOR KIZHAKKU",
+      "person": {
+        "id": "2015038500301",
+        "name": "JOHN VARGHESE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ERAVIPEROOR THEKKU",
+      "person": {
+        "id": "2015038500401",
+        "name": "VIJAYAN BABU P S"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOTTAPPUZHA",
+      "person": {
+        "id": "2015038500501",
+        "name": "SASIDHARAN PILLAI K B"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THEVARCAD",
+      "person": {
+        "id": "2015038500601",
+        "name": "SALLY JACOB"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "OTHARA EAST",
+      "person": {
+        "id": "2015038500701",
+        "name": "SOSAMMA V T  (SALLY)"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OTHERA",
+      "person": {
+        "id": "2015038500801",
+        "name": "BINDU K NAIR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "OTHERA THEKKU",
+      "person": {
+        "id": "2015038500901",
+        "name": "PRAJITHA L"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "OTHERA PADINJARU",
+      "person": {
+        "id": "2015038501001",
+        "name": "JAYAPAL A T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOZHIMALA",
+      "person": {
+        "id": "2015038501101",
+        "name": "MERCYMOL K S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NANNUR KIZHAKKU",
+      "person": {
+        "id": "2015038501201",
+        "name": "LEELAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NANNUR THEKKU",
+      "person": {
+        "id": "2015038501301",
+        "name": "ANASOOYA DEVI M T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NANNUR PADINJARU",
+      "person": {
+        "id": "2015038501401",
+        "name": "PRASANNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALLAMKULAM PADINJARU",
+      "person": {
+        "id": "2015038501501",
+        "name": "OMANAKUTTAN V K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VALLAMKULAM THEKKU",
+      "person": {
+        "id": "2015038501601",
+        "name": "ADV. RAJEEV N"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NELLAD",
+      "person": {
+        "id": "2015038501701",
+        "name": "JOHN VARGHESE (V V REJI)"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

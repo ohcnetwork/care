@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345016457,
+  "date": "2019-08-21",
+  "name": "Erattupetta  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Erattupetta",
+  "area": "283km",
+  "localbody_code": "B050600",
+  "no_of_wards": 13,
+  "population": 119669,
+  "male": 60720,
+  "female": 58949,
+  "population_density": 424,
+  "sex_ratio": 971,
+  "literacy_rate": 96,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 84,
+  "president": "PREMJI.R",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MELUKAVU",
+      "person": {
+        "id": "2015005200101",
+        "name": "MARIAMMA FERNANDAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MOONNILAVU",
+      "person": {
+        "id": "2015005200201",
+        "name": "SAJEEVAN GOPALAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THALANAD",
+      "person": {
+        "id": "2015005200301",
+        "name": "ROHINI BAI UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEEKOY",
+      "person": {
+        "id": "2015005200401",
+        "name": "BINOY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALLEKULAM",
+      "person": {
+        "id": "2015005200501",
+        "name": "ROHINI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATHAMPUZHA",
+      "person": {
+        "id": "2015005200601",
+        "name": "SINDHU SHAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALATHOOKKU",
+      "person": {
+        "id": "2015005200701",
+        "name": "ANIYAMMA SANNI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POONJAR",
+      "person": {
+        "id": "2015005200801",
+        "name": "K.R.MOHANAN NAIR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PINNAKKANADU",
+      "person": {
+        "id": "2015005200901",
+        "name": "V.T.THOMAS VADAKARA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THIDANAD",
+      "person": {
+        "id": "2015005201001",
+        "name": "LISSY THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONDOOR",
+      "person": {
+        "id": "2015005201101",
+        "name": "A.V SAMUEL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THALAPPALAM",
+      "person": {
+        "id": "2015005201201",
+        "name": "PREMJI.R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALATHUKADAVU",
+      "person": {
+        "id": "2015005201301",
+        "name": "SOUMYA JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345293740,
+  "date": "2019-08-21",
+  "name": "Balussery  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Balussery",
+  "area": "278.53km",
+  "localbody_code": "B110700",
+  "no_of_wards": 15,
+  "population": 212592,
+  "male": 105961,
+  "female": 106631,
+  "population_density": 763,
+  "sex_ratio": 1006,
+  "literacy_rate": 91.4,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 86.88,
+  "president": "VPRATHIBHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARUVANNUR",
+      "person": {
+        "id": "2015013100101",
+        "name": "PREETHY M K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOTTUR",
+      "person": {
+        "id": "2015013100201",
+        "name": "GIIJA N T"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAKAYAD",
+      "person": {
+        "id": "2015013100301",
+        "name": "M CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOORACHUNDU",
+      "person": {
+        "id": "2015013100401",
+        "name": "MANI N J"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANANGAD",
+      "person": {
+        "id": "2015013100501",
+        "name": "V PRATHIBHA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THALAYAD",
+      "person": {
+        "id": "2015013100601",
+        "name": "K AHAMAD KOYA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KINALOOR",
+      "person": {
+        "id": "2015013100701",
+        "name": "N P BABU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EKAROOL",
+      "person": {
+        "id": "2015013100801",
+        "name": "T K SUDHEER KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POONOOR",
+      "person": {
+        "id": "2015013100901",
+        "name": "USMAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "SIVAPURAM",
+      "person": {
+        "id": "2015013101001",
+        "name": "REETHA RAMACHANDAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BALUSSERI",
+      "person": {
+        "id": "2015013101101",
+        "name": "SHEEBA V K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOKKALLUR",
+      "person": {
+        "id": "2015013101201",
+        "name": "P N ASOKAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ULLIYERI",
+      "person": {
+        "id": "2015013101301",
+        "name": "JAMEELA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KANNUR",
+      "person": {
+        "id": "2015013101401",
+        "name": "VILACINY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NADUVANNUR",
+      "person": {
+        "id": "2015013101501",
+        "name": "SHYMA K K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

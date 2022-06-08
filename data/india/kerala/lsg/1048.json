@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349049766,
+  "date": "2019-08-21",
+  "name": "Koodaranhi  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Koduvaliy",
+  "area": "98.21km",
+  "localbody_code": "G111002",
+  "no_of_wards": 14,
+  "population": 16503,
+  "male": 8361,
+  "female": 8142,
+  "population_density": 168,
+  "sex_ratio": 974,
+  "literacy_rate": 93.48,
+  "literacy_rate_male": 95.11,
+  "literacy_rate_female": 91.83,
+  "president": "SOLYJOSEPH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KARIMKUTTI",
+      "person": {
+        "id": "2015104800101",
+        "name": "DEEPA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KULIRAMUTTI",
+      "person": {
+        "id": "2015104800201",
+        "name": "JOHNY VALIPLAKKAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOVARAMTHOD",
+      "person": {
+        "id": "2015104800301",
+        "name": "SUNNY"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANHAKKADAV",
+      "person": {
+        "id": "2015104800401",
+        "name": "THOMAS MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KAKKADAMPOYIL",
+      "person": {
+        "id": "2015104800501",
+        "name": "K S ARUN KUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PEEDIKAPPARA",
+      "person": {
+        "id": "2015104800601",
+        "name": "V A NASEER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOOMBARA",
+      "person": {
+        "id": "2015104800701",
+        "name": "GRACY KEELATH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MARANCHATTI",
+      "person": {
+        "id": "2015104800801",
+        "name": "SOLY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ANAYOD",
+      "person": {
+        "id": "2015104800901",
+        "name": "MARY THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PANAKKACHAL",
+      "person": {
+        "id": "2015104801001",
+        "name": "JESSY JOSE PANDAMPADATHIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VEETTIPPARA",
+      "person": {
+        "id": "2015104801101",
+        "name": "ALEYAMMA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOODARANHI TOWN",
+      "person": {
+        "id": "2015104801201",
+        "name": "JOSE PALLIKKUNNEL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATTOTH",
+      "person": {
+        "id": "2015104801301",
+        "name": "SHEMEENA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THAZHE KOODARANHI",
+      "person": {
+        "id": "2015104801401",
+        "name": "GIGI KATTAKKAYAM"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

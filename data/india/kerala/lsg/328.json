@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346050522,
+  "date": "2019-08-21",
+  "name": "Pathanapuram  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Pathanapuram",
+  "area": "26.65km",
+  "localbody_code": "G020406",
+  "no_of_wards": 19,
+  "population": 29161,
+  "male": 14350,
+  "female": 14811,
+  "population_density": 1094,
+  "sex_ratio": 1032,
+  "literacy_rate": 89.33,
+  "literacy_rate_male": 93.12,
+  "literacy_rate_female": 85.7,
+  "president": "NAJEEBMOHAMMED.H",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDATHARA",
+      "person": {
+        "id": "2015032800101",
+        "name": "O.SAINULADEEN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NADUMURUPPU",
+      "person": {
+        "id": "2015032800201",
+        "name": "NEJIMUNISHA.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAZHAPPARA",
+      "person": {
+        "id": "2015032800301",
+        "name": "SHEEJA CHANDRA BABU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHITHALVETTY",
+      "person": {
+        "id": "2015032800401",
+        "name": "J.NISHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANCODE",
+      "person": {
+        "id": "2015032800501",
+        "name": "K.P.RAJU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOMKULANJI",
+      "person": {
+        "id": "2015032800601",
+        "name": "NAZEEMA SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEDUMPARAMBU",
+      "person": {
+        "id": "2015032800701",
+        "name": "RAJIFA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUKKUNU NORTH",
+      "person": {
+        "id": "2015032800801",
+        "name": "M.SHAIK PAREETH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "NADUKKUNNU SOUTH",
+      "person": {
+        "id": "2015032800901",
+        "name": "BELKEES BEEGAM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "TOWN SOUTH",
+      "person": {
+        "id": "2015032801001",
+        "name": "RETNAMMA.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MANCHALLOOR",
+      "person": {
+        "id": "2015032801101",
+        "name": "S. ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARAMOODU",
+      "person": {
+        "id": "2015032801201",
+        "name": "M.HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MOOLAKKADA",
+      "person": {
+        "id": "2015032801301",
+        "name": "S.M.SHERIEF"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUNDAYAM",
+      "person": {
+        "id": "2015032801401",
+        "name": "M. AJITHA BEEGOM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MARKET",
+      "person": {
+        "id": "2015032801501",
+        "name": "NAJEEB MOHAMMED.H"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KALLUMKADAVU",
+      "person": {
+        "id": "2015032801601",
+        "name": "K.C.MANI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "TOWN CENTRAL",
+      "person": {
+        "id": "2015032801701",
+        "name": "SHOUBEELA SHAJAHAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "TOWN NORTH",
+      "person": {
+        "id": "2015032801801",
+        "name": "ANNAMMA ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PATHIRIKKAL",
+      "person": {
+        "id": "2015032801901",
+        "name": "C.RAJENDRAN NAIR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

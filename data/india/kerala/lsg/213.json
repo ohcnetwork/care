@@ -1,0 +1,341 @@
+{
+  "timeStamp": 1566345646517,
+  "date": "2019-08-21",
+  "name": "Malappuram  Municipality, Malappuram District",
+  "district": "Malappuram",
+  "area": "33.61km",
+  "localbody_code": "M100500",
+  "no_of_wards": 40,
+  "population": 75740,
+  "male": 36457,
+  "female": 39283,
+  "population_density": 1478,
+  "sex_ratio": 1019,
+  "literacy_rate": 93.39,
+  "literacy_rate_male": 95.98,
+  "literacy_rate_female": 90.81,
+  "chairperson": "CH.JAMEELATEACHER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PADINHAREMUKKU",
+      "person": {
+        "id": "2015021300101",
+        "name": "ABDUHAJI P P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "NOORENGALMUKKU",
+      "person": {
+        "id": "2015021300201",
+        "name": "P.A.ABDUL SALIM ALIAS BAPPUTY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUPARAMBU",
+      "person": {
+        "id": "2015021300301",
+        "name": "HAJARA PULLIYIL"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALLADIMUKKU",
+      "person": {
+        "id": "2015021300401",
+        "name": "MOIDEEN.E.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MACHINGAL",
+      "person": {
+        "id": "2015021300501",
+        "name": "FASEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHOLAKKAL",
+      "person": {
+        "id": "2015021300601",
+        "name": "PREETHAKUMARI.K.T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATTUNGAL",
+      "person": {
+        "id": "2015021300701",
+        "name": "RAJEENA HUSSAIN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "GOVT.COLLEGE",
+      "person": {
+        "id": "2015021300801",
+        "name": "MOHAMMED KUTTY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUNDUPARAMBU",
+      "person": {
+        "id": "2015021300901",
+        "name": "HAMZA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KARUVALA",
+      "person": {
+        "id": "2015021301001",
+        "name": "O SAHADEVAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOONNAMPADI",
+      "person": {
+        "id": "2015021301101",
+        "name": "PARVATHY KUTTY TEACHER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAVUNGAL",
+      "person": {
+        "id": "2015021301201",
+        "name": "K.V.SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALAMBADI",
+      "person": {
+        "id": "2015021301301",
+        "name": "MAJEED URUNIYAN PARAMBIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANNARKUNDU",
+      "person": {
+        "id": "2015021301401",
+        "name": "MIRSHAD IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THAMARAKKUZHY",
+      "person": {
+        "id": "2015021301501",
+        "name": "HARIS AMIAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOTTAKKUNNU",
+      "person": {
+        "id": "2015021301601",
+        "name": "SALEENA RAZAK"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHERATTUKUZHY",
+      "person": {
+        "id": "2015021301701",
+        "name": "KALLIDUMBIL VINOD"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOTTAPPADI",
+      "person": {
+        "id": "2015021301801",
+        "name": "K.V.VALSALAKUMARI"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CIVILSTATION",
+      "person": {
+        "id": "2015021301901",
+        "name": "SALEENA"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CHEMMANKADAVU",
+      "person": {
+        "id": "2015021302001",
+        "name": "BUSHRA THARAYIL"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "CHEENITHODE",
+      "person": {
+        "id": "2015021302101",
+        "name": "MACHINGAL HAFSATH"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "MAILAPPURAM",
+      "person": {
+        "id": "2015021302201",
+        "name": "BUSHRA SAKEER"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "VALIYAVARAMBU",
+      "person": {
+        "id": "2015021302301",
+        "name": "PERUMBALLY SAID"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "VALIYANGADI",
+      "person": {
+        "id": "2015021302401",
+        "name": "APPUKUTTAN.P"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KIZHAKKETHALA",
+      "person": {
+        "id": "2015021302501",
+        "name": "CH.JAMEELA TEACHER"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "VARANGODE",
+      "person": {
+        "id": "2015021302601",
+        "name": "ASIA NANATH"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PAITHINIPARAMBA",
+      "person": {
+        "id": "2015021302701",
+        "name": "K K MUSTHAFA"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "ADHIKARITHODI",
+      "person": {
+        "id": "2015021302801",
+        "name": "HAMZA KAPPOOR"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KONOMPARA",
+      "person": {
+        "id": "2015021302901",
+        "name": "ABDUL JAEEL.C.K"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "ALATHURPADI",
+      "person": {
+        "id": "2015021303001",
+        "name": "FATHIMA KUNHEEDU"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "KAINODE",
+      "person": {
+        "id": "2015021303101",
+        "name": "KONNOLA SUMAYYA ANWER"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "MUTHUVATHUPARAMBA",
+      "person": {
+        "id": "2015021303201",
+        "name": "SAINABA T T"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "KOLMANNA",
+      "person": {
+        "id": "2015021303301",
+        "name": "SUNITHA CHEMBRERI"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "SPINNINGMILL",
+      "person": {
+        "id": "2015021303401",
+        "name": "MARIYUMMA SHAREEF KONOTHODI"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "PATTARKADAVU",
+      "person": {
+        "id": "2015021303501",
+        "name": "MUSLIYAR SAJEER"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "KARAPARAMBU",
+      "person": {
+        "id": "2015021303601",
+        "name": "ADV.RINISHA RAFEEQ"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "PANAKKAD",
+      "person": {
+        "id": "2015021303701",
+        "name": "PARI ABDUL MAJEED"
+      }
+    },
+    {
+      "ward_number": "38",
+      "name": "BHOOTANAMCOLONY",
+      "person": {
+        "id": "2015021303801",
+        "name": "UMMER K K"
+      }
+    },
+    {
+      "ward_number": "39",
+      "name": "PODIYAD",
+      "person": {
+        "id": "2015021303901",
+        "name": "SUMAYYA SIDDEEQUE"
+      }
+    },
+    {
+      "ward_number": "40",
+      "name": "PERUMBARAMBU",
+      "person": {
+        "id": "2015021304001",
+        "name": "K SIDHEEQUE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

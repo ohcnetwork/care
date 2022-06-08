@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349628353,
+  "date": "2019-08-21",
+  "name": "Valiyaparamba  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "16.14km",
+  "localbody_code": "G140605",
+  "no_of_wards": 13,
+  "population": 11917,
+  "male": 5621,
+  "female": 6296,
+  "population_density": 738,
+  "sex_ratio": 1120,
+  "literacy_rate": 86.4,
+  "literacy_rate_male": 91.97,
+  "literacy_rate_female": 81.49,
+  "president": "MTABDULJABBAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ORIYARA",
+      "person": {
+        "id": "2015121500101",
+        "name": "SUMA KANNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAYILEKKAD",
+      "person": {
+        "id": "2015121500201",
+        "name": "KARUNAKARAN V K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MADAKKAL",
+      "person": {
+        "id": "2015121500301",
+        "name": "ABDUL HAKKEEM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THAYYIL KADAPURAM",
+      "person": {
+        "id": "2015121500401",
+        "name": "PRASANNA P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANNUVEEDU KADAPURAM",
+      "person": {
+        "id": "2015121500501",
+        "name": "M V SAROJINI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "UDINUR KADAPURAM",
+      "person": {
+        "id": "2015121500601",
+        "name": "K PUSHPA"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALIYAPARAMBA",
+      "person": {
+        "id": "2015121500701",
+        "name": "P P SHARADHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PATEL KADAPURAM",
+      "person": {
+        "id": "2015121500801",
+        "name": "K MADHAVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PADANNA KADAPURAM",
+      "person": {
+        "id": "2015121500901",
+        "name": "K K MOHAMMED KUNHI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BEECHARA KADAPURAM",
+      "person": {
+        "id": "2015121501001",
+        "name": "SUHARA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PANDRANDIL",
+      "person": {
+        "id": "2015121501101",
+        "name": "C K SUMATHI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELUTHAPOYYA",
+      "person": {
+        "id": "2015121501201",
+        "name": "M K M ABDUL KHADER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAVILA KADAPURAM",
+      "person": {
+        "id": "2015121501301",
+        "name": "M T ABDUL JABBAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

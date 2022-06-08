@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348559256,
+  "date": "2019-08-21",
+  "name": "Porur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Wandoor",
+  "area": "34.86km",
+  "localbody_code": "G100303",
+  "no_of_wards": 17,
+  "population": 21522,
+  "male": 10550,
+  "female": 10972,
+  "population_density": 617,
+  "sex_ratio": 1040,
+  "literacy_rate": 88.26,
+  "literacy_rate_male": 91.71,
+  "literacy_rate_female": 84.82,
+  "president": "ARCHANAN.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAKKODE",
+      "person": {
+        "id": "2015090900101",
+        "name": "UNNICHATHAN C.P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "RAVIMANGALAM",
+      "person": {
+        "id": "2015090900201",
+        "name": "SANKARANARAYANAN P.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MELANNAM",
+      "person": {
+        "id": "2015090900301",
+        "name": "ABDUL LATHEEF. K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERUKODE",
+      "person": {
+        "id": "2015090900401",
+        "name": "JULFEENA  K.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULIYAKKODE",
+      "person": {
+        "id": "2015090900501",
+        "name": "SAHIDA. C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOTTAKKUNNU",
+      "person": {
+        "id": "2015090900601",
+        "name": "MUJEEB RAHMAN K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PORUR",
+      "person": {
+        "id": "2015090900701",
+        "name": "P. RAMANI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALLIKKUNNU",
+      "person": {
+        "id": "2015090900801",
+        "name": "NALINI. K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOTHRAKKOVE",
+      "person": {
+        "id": "2015090900901",
+        "name": "PUSHPAVALLY K.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THODIKAPPULAM",
+      "person": {
+        "id": "2015090901001",
+        "name": "MOHAMMED BASHEER. N"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THALIYAMKUNDU",
+      "person": {
+        "id": "2015090901101",
+        "name": "MANJUSHA C.K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AYANIKKODE",
+      "person": {
+        "id": "2015090901201",
+        "name": "MUJEEB RAHMAN. M"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VEETHANASSERI",
+      "person": {
+        "id": "2015090901301",
+        "name": "MOHAMMEDALI. K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PATTANAMKUNDU",
+      "person": {
+        "id": "2015090901401",
+        "name": "ARCHANA N.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ERANHIKKUNNU",
+      "person": {
+        "id": "2015090901501",
+        "name": "SUNITHADEVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NIRANNAPARAMBU",
+      "person": {
+        "id": "2015090901601",
+        "name": "UMMUL HIND. T"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "THALAPPOLIPARAMBU",
+      "person": {
+        "id": "2015090901701",
+        "name": "ABDUL KAREEM  KANNIYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,173 @@
+{
+  "timeStamp": 1566348971538,
+  "date": "2019-08-21",
+  "name": "Changaroth  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Perambra",
+  "area": "30.24km",
+  "localbody_code": "G110603",
+  "no_of_wards": 19,
+  "population": 27748,
+  "male": 13947,
+  "female": 13801,
+  "population_density": 918,
+  "sex_ratio": 990,
+  "literacy_rate": 88.69,
+  "literacy_rate_male": 94.21,
+  "literacy_rate_female": 83.13,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHERIYAKUMBALAM",
+      "person": {
+        "id": "2015102300101",
+        "name": "LEEJA V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KAITHERIMUKKU",
+      "person": {
+        "id": "2015102300201",
+        "name": "RAVI EDATHIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THOTTATHAMKANDY",
+      "person": {
+        "id": "2015102300301",
+        "name": "NANU P P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNNASSERI",
+      "person": {
+        "id": "2015102300401",
+        "name": "REENA CHETTIAMKANDY MEETHAL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THARIPPILODE",
+      "person": {
+        "id": "2015102300501",
+        "name": "SANTHA EDACHERICHALIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PATTANIPPARA",
+      "person": {
+        "id": "2015102300601",
+        "name": "LEELA K K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AVADUKKA",
+      "person": {
+        "id": "2015102300701",
+        "name": "KUNHIKKANNAN P C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PANTHIRIKKARA",
+      "person": {
+        "id": "2015102300801",
+        "name": "JAYESH K P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANGAROTH",
+      "person": {
+        "id": "2015102300901",
+        "name": "AYISHA K K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VILAYARA",
+      "person": {
+        "id": "2015102301001",
+        "name": "E T SAREESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULAKKANADAM",
+      "person": {
+        "id": "2015102301101",
+        "name": "HYRUNNISA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADIYANGAD",
+      "person": {
+        "id": "2015102301201",
+        "name": "MOOSA KOTHAMBRA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KALLOOR",
+      "person": {
+        "id": "2015102301301",
+        "name": "IBRAHIM"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PURAVOOR",
+      "person": {
+        "id": "2015102301401",
+        "name": "SAFIYA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MUTHUVANNACHA",
+      "person": {
+        "id": "2015102301501",
+        "name": "NIDHEESH N S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KANNATTY",
+      "person": {
+        "id": "2015102301601",
+        "name": "VIJAYAN N P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VADAKKUMPAD",
+      "person": {
+        "id": "2015102301701",
+        "name": "SUMATHI V K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALERI",
+      "person": {
+        "id": "2015102301801",
+        "name": "FATHIMA M K"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOONIYODE",
+      "person": {
+        "id": "2015102301901",
+        "name": "SHYLAJA  C"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

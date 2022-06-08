@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346816688,
+  "date": "2019-08-21",
+  "name": "Teekoy  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Erattupetta",
+  "area": "27.19km",
+  "localbody_code": "G050607",
+  "no_of_wards": 13,
+  "population": 10272,
+  "male": 5127,
+  "female": 5145,
+  "population_density": 378,
+  "sex_ratio": 1004,
+  "literacy_rate": 95,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 93,
+  "president": "P.JSEBASTIANSHAJANPURAPPANTHANAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARUKONMALA",
+      "person": {
+        "id": "2015053800101",
+        "name": "JESSY THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "TEEKOY TOWN",
+      "person": {
+        "id": "2015053800201",
+        "name": "LEELAMMA GEORGEKUTTY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANGALAGIRI",
+      "person": {
+        "id": "2015053800301",
+        "name": "VIJAYAMMA GOPI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "TEEKOY ESTATE",
+      "person": {
+        "id": "2015053800401",
+        "name": "P. MURUGAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "OTTAYEETTI",
+      "person": {
+        "id": "2015053800501",
+        "name": "NICEAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARIKADU",
+      "person": {
+        "id": "2015053800601",
+        "name": "MANJU SIJO"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VELLIKULAM",
+      "person": {
+        "id": "2015053800701",
+        "name": "SHINY BABY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MALAMEL",
+      "person": {
+        "id": "2015053800801",
+        "name": "ANCY JUSTIN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELATHUSSERI",
+      "person": {
+        "id": "2015053800901",
+        "name": "M I BABY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAGAMATTOM",
+      "person": {
+        "id": "2015053801001",
+        "name": "P.J SEBASTIAN (SHAJAN PURAPPANTHANAM)"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHERIMALA",
+      "person": {
+        "id": "2015053801101",
+        "name": "K.C JAMES"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCHAYAT JUNCTION",
+      "person": {
+        "id": "2015053801201",
+        "name": "FRANCIS JACOB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANIYILAPPU",
+      "person": {
+        "id": "2015053801301",
+        "name": "K. K PARIKKOCHU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

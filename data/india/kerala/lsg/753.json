@@ -1,0 +1,141 @@
+{
+  "timeStamp": 1566347574871,
+  "date": "2019-08-21",
+  "name": "Pavaratty  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Mullassery",
+  "area": "9.19km",
+  "localbody_code": "G080703",
+  "no_of_wards": 15,
+  "population": 24213,
+  "male": 7145,
+  "female": 8327,
+  "population_density": 2146,
+  "sex_ratio": 1155,
+  "literacy_rate": 91.42,
+  "literacy_rate_male": 95.48,
+  "literacy_rate_female": 88,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KALANI",
+      "person": {
+        "id": "2015075300101",
+        "name": "SABEESH MARUTHAYOOR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KUNNATHOOR",
+      "person": {
+        "id": "2015075300201",
+        "name": "RAGEENA  M M"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLAMTHOD",
+      "person": {
+        "id": "2015075300301",
+        "name": "RAVI CHERATTI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VILAKKATTUPADAM",
+      "person": {
+        "id": "2015075300401",
+        "name": "GRACY FRANCIS PUTHUR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANAPPADI",
+      "person": {
+        "id": "2015075300501",
+        "name": "VIMALA SETHUMADHAVAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNANTHRIKKOVIL",
+      "person": {
+        "id": "2015075300601",
+        "name": "V K  JOSEPH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PERINGAD",
+      "person": {
+        "id": "2015075300701",
+        "name": "MANIKANDAN  M T"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHANAMBALAM",
+      "person": {
+        "id": "2015075300801",
+        "name": "C P VALSALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHAMUKKU",
+      "person": {
+        "id": "2015075300901",
+        "name": "SOBHA RENJITH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THATHAKULANGARA",
+      "person": {
+        "id": "2015075301001",
+        "name": "SHINY GIREESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KONNANBAZAR",
+      "person": {
+        "id": "2015075301101",
+        "name": "ABOOBACKER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MARUTHAYOOR",
+      "person": {
+        "id": "2015075301201",
+        "name": "N P KADERMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VETTIKKAL",
+      "person": {
+        "id": "2015075301301",
+        "name": "DROUPATHY  K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PAVARATTY",
+      "person": {
+        "id": "2015075301401",
+        "name": "MINI LEO"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHUMANASSERY",
+      "person": {
+        "id": "2015075301501",
+        "name": "NOORJAHAN BASHEER"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

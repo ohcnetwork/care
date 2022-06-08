@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566346943010,
+  "date": "2019-08-21",
+  "name": "Vellathooval  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Adimaly",
+  "area": "43.06km",
+  "localbody_code": "G060104",
+  "no_of_wards": 17,
+  "population": 25461,
+  "male": 12914,
+  "female": 12547,
+  "population_density": 591,
+  "sex_ratio": 972,
+  "literacy_rate": 92,
+  "literacy_rate_male": 95,
+  "literacy_rate_female": 89,
+  "president": "BIJITR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOOMPANPARA",
+      "person": {
+        "id": "2015057600101",
+        "name": "ANEES M M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANAVIRATTY",
+      "person": {
+        "id": "2015057600201",
+        "name": "SHERLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SENGULAM",
+      "person": {
+        "id": "2015057600301",
+        "name": "JOSE CHERIYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THOKKUPARA",
+      "person": {
+        "id": "2015057600401",
+        "name": "JAYAN CHAKRAPANI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANACHAL",
+      "person": {
+        "id": "2015057600501",
+        "name": "SUKUMARAN P R"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EETTICITY",
+      "person": {
+        "id": "2015057600601",
+        "name": "SOBHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNJITHANNY",
+      "person": {
+        "id": "2015057600701",
+        "name": "SOBHANA KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POTHUPARA",
+      "person": {
+        "id": "2015057600801",
+        "name": "ANTO MATHEW"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MUTHUVANKUDY",
+      "person": {
+        "id": "2015057600901",
+        "name": "SMITHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTHUPARA",
+      "person": {
+        "id": "2015057601001",
+        "name": "ROY JOHN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLATHOOVAL",
+      "person": {
+        "id": "2015057601101",
+        "name": "OMANA SHAJI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLATHOOVAL WEST",
+      "person": {
+        "id": "2015057601201",
+        "name": "KAVITHA SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SELLIAMPARA",
+      "person": {
+        "id": "2015057601301",
+        "name": "MUHAMMED SHAFI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANKADAVU",
+      "person": {
+        "id": "2015057601401",
+        "name": "JAYALEKHA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KALLARKUTTY",
+      "person": {
+        "id": "2015057601501",
+        "name": "SUDHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SOUTH KATHIPARA",
+      "person": {
+        "id": "2015057601601",
+        "name": "SHIJI SHIJU"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "1000 ACRE",
+      "person": {
+        "id": "2015057601701",
+        "name": "BIJI T R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

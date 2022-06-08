@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344957856,
+  "date": "2019-08-21",
+  "name": "Ranni  Block Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "1004.61km",
+  "localbody_code": "B030500",
+  "no_of_wards": 13,
+  "population": 171893,
+  "male": 85410,
+  "female": 86483,
+  "population_density": 171,
+  "sex_ratio": 1013,
+  "literacy_rate": 94.49,
+  "literacy_rate_male": 96.03,
+  "literacy_rate_female": 93.39,
+  "president": "GIRIJAMADHU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MAKKAPUZHA",
+      "person": {
+        "id": "2015003000101",
+        "name": "ANSON THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAZHAVANGADI",
+      "person": {
+        "id": "2015003000201",
+        "name": "K.UTHAMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NARANAMMOOZHY",
+      "person": {
+        "id": "2015003000301",
+        "name": "THOMAS(RAJAN NEERAMPLACKAL)"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VECHOOCHIRA",
+      "person": {
+        "id": "2015003000401",
+        "name": "BIBIN MATHEW"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOLLAMULA",
+      "person": {
+        "id": "2015003000501",
+        "name": "MINU ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERUNADU",
+      "person": {
+        "id": "2015003000601",
+        "name": "GIRIJA MADHU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANGAMOOZHY",
+      "person": {
+        "id": "2015003000701",
+        "name": "JACOB VALAYAMPALLI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SEETHATHODU",
+      "person": {
+        "id": "2015003000801",
+        "name": "SHANU SALIM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHITTAR",
+      "person": {
+        "id": "2015003000901",
+        "name": "OMANA SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VADASSERIKKARA",
+      "person": {
+        "id": "2015003001001",
+        "name": "ADV.CHINCHU PRASAD"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALIYAKULAM",
+      "person": {
+        "id": "2015003001101",
+        "name": "LATHA SURESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "RANNI",
+      "person": {
+        "id": "2015003001201",
+        "name": "BINOY KURIAKOSE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ANGADI",
+      "person": {
+        "id": "2015003001301",
+        "name": "MERCY PANDIYATHU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

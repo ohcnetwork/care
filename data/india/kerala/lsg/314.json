@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346005372,
+  "date": "2019-08-21",
+  "name": "Poruvazhy  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Sasthamcotta",
+  "area": "19.35km",
+  "localbody_code": "G020204",
+  "no_of_wards": 18,
+  "population": 25491,
+  "male": 12663,
+  "female": 12828,
+  "population_density": 1317,
+  "sex_ratio": 1013,
+  "literacy_rate": 88.61,
+  "literacy_rate_male": 92.41,
+  "literacy_rate_female": 84.92,
+  "president": "SHEEJA.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHATHAKULAM",
+      "person": {
+        "id": "2015031400101",
+        "name": "T.MANI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALANADA",
+      "person": {
+        "id": "2015031400201",
+        "name": "RADHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MOOVAKKOD",
+      "person": {
+        "id": "2015031400301",
+        "name": "AJITHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANNAROAD",
+      "person": {
+        "id": "2015031400401",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAKKAD",
+      "person": {
+        "id": "2015031400501",
+        "name": "JAYA PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "COLLEGE WARD",
+      "person": {
+        "id": "2015031400601",
+        "name": "NAMPOORATHU THULASEEDHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAYANASALA WARD",
+      "person": {
+        "id": "2015031400701",
+        "name": "BINEESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMBALATHUM BHAGOM",
+      "person": {
+        "id": "2015031400801",
+        "name": "ADV.REMYA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANGAYIL KAVU",
+      "person": {
+        "id": "2015031400901",
+        "name": "GEETHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "BLOCK OFFICE WARD",
+      "person": {
+        "id": "2015031401001",
+        "name": "ANITHA KUMARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SASTHAMNADA",
+      "person": {
+        "id": "2015031401101",
+        "name": "SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KAMPALADI",
+      "person": {
+        "id": "2015031401201",
+        "name": "SHAMSUDEEN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MAYILADUM KUNNU",
+      "person": {
+        "id": "2015031401301",
+        "name": "SHIBU"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAMPALADI VADAKKU",
+      "person": {
+        "id": "2015031401401",
+        "name": "FIROS KHAN (FIROS K.P)"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MAYYATHUM KARA",
+      "person": {
+        "id": "2015031401501",
+        "name": "P.K.RAVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PALLIMURI",
+      "person": {
+        "id": "2015031401601",
+        "name": "VINODKUMAR.E.V"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NADUVILE MURI",
+      "person": {
+        "id": "2015031401701",
+        "name": "SAHADEVAN PILLAI.V(MADHU)"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VADAKKEMURI",
+      "person": {
+        "id": "2015031401801",
+        "name": "SHEEJA.S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

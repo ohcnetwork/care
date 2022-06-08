@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346506064,
+  "date": "2019-08-21",
+  "name": "Champakulam  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Champakkulam",
+  "area": "22.97km",
+  "localbody_code": "G040605",
+  "no_of_wards": 13,
+  "population": 17369,
+  "male": 8556,
+  "female": 8813,
+  "population_density": 756,
+  "sex_ratio": 1030,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "GEORGEMATHEWPANJIMARAM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHIRAKKUPURAM",
+      "person": {
+        "id": "2015045600101",
+        "name": "JANARDANAN P"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MONCOMPU THEKKEKARA",
+      "person": {
+        "id": "2015045600201",
+        "name": "MOLLY ALEX"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "PUNNAKUNNAM",
+      "person": {
+        "id": "2015045600301",
+        "name": "MINI JAMES"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THEKKEKARA",
+      "person": {
+        "id": "2015045600401",
+        "name": "MARIAMMA FRANCIS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ONNAKARA",
+      "person": {
+        "id": "2015045600501",
+        "name": "SANTHOSHKUMARI BABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANDAKARY",
+      "person": {
+        "id": "2015045600601",
+        "name": "JALAJAKUMARY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PULLANGADY",
+      "person": {
+        "id": "2015045600701",
+        "name": "R DINEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAMPAKULAM",
+      "person": {
+        "id": "2015045600801",
+        "name": "GEORGE MATHEW PANJIMARAM"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAMPAKULAM EAST",
+      "person": {
+        "id": "2015045600901",
+        "name": "SATHIYAMMA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GOVENDA",
+      "person": {
+        "id": "2015045601001",
+        "name": "ANNAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NATTAYAM",
+      "person": {
+        "id": "2015045601101",
+        "name": "PAULOSE C. KUNJUMON KAITHAKALAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "AMICHAKARY",
+      "person": {
+        "id": "2015045601201",
+        "name": "MATHEW K.M."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOYIKARY",
+      "person": {
+        "id": "2015045601301",
+        "name": "RAJANI AJITHKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

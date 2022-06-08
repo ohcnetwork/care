@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348697787,
+  "date": "2019-08-21",
+  "name": "Mankada  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Mankada",
+  "area": "31.33km",
+  "localbody_code": "G100802",
+  "no_of_wards": 18,
+  "population": 23921,
+  "male": 11658,
+  "female": 12263,
+  "population_density": 764,
+  "sex_ratio": 1051,
+  "literacy_rate": 92.6,
+  "literacy_rate_male": 94.77,
+  "literacy_rate_female": 90.44,
+  "president": "RAMANI.M.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLILA UK PADI",
+      "person": {
+        "id": "2015094300101",
+        "name": "MUHAMMED MARAKKAR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLILA NIRAVU",
+      "person": {
+        "id": "2015094300201",
+        "name": "SAKEENA MAMBRA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOZHIKKOTTUPARAMB",
+      "person": {
+        "id": "2015094300301",
+        "name": "JASMIN ALANGADAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADANNAMANNA",
+      "person": {
+        "id": "2015094300401",
+        "name": "SHAMLEENA JASMIN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VERUMPULAKKAL",
+      "person": {
+        "id": "2015094300501",
+        "name": "MUHAMED MANSOOR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHERIYAM WEST",
+      "person": {
+        "id": "2015094300601",
+        "name": "NOUSHAD P K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERIYAM EAST",
+      "person": {
+        "id": "2015094300701",
+        "name": "SUBAIDA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOOTTIL WEST",
+      "person": {
+        "id": "2015094300801",
+        "name": "NOUSHAD U P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOOTTIL EAST",
+      "person": {
+        "id": "2015094300901",
+        "name": "SUBAIDA C K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PULIKKALPARAMBA",
+      "person": {
+        "id": "2015094301001",
+        "name": "ABBAS ALI. P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NJARAKKAD",
+      "person": {
+        "id": "2015094301101",
+        "name": "RATHNAKUMAR. M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANKADA TOWN",
+      "person": {
+        "id": "2015094301201",
+        "name": "JALAJA. K. K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANKADA",
+      "person": {
+        "id": "2015094301301",
+        "name": "RAMANI. M.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARKKIDAKAM",
+      "person": {
+        "id": "2015094301401",
+        "name": "HASNA. P"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KARIMBANAKKUND",
+      "person": {
+        "id": "2015094301501",
+        "name": "KRISHNAN KUTTY"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MANJERITHODE",
+      "person": {
+        "id": "2015094301601",
+        "name": "RASIYA. P"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VELLILA PUTHANVEEDU",
+      "person": {
+        "id": "2015094301701",
+        "name": "ANILKUMAR K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VELLILA THACHOTH",
+      "person": {
+        "id": "2015094301801",
+        "name": "SHASHIKUMAR K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

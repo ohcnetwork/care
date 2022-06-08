@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566346388039,
+  "date": "2019-08-21",
+  "name": "Pallickal  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Parakkode",
+  "area": "41.72km",
+  "localbody_code": "G030807",
+  "no_of_wards": 23,
+  "population": 38027,
+  "male": 18348,
+  "female": 19679,
+  "population_density": 911,
+  "sex_ratio": 1073,
+  "literacy_rate": 91.46,
+  "literacy_rate_male": 94.13,
+  "literacy_rate_female": 89.01,
+  "president": "PRASANNAKUMARI.G",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALLICKAL",
+      "person": {
+        "id": "2015042200101",
+        "name": "S.SREELATHA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MEKKUNNU",
+      "person": {
+        "id": "2015042200201",
+        "name": "AMJITH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAMPALLIL",
+      "person": {
+        "id": "2015042200301",
+        "name": "V.SULEKHA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "THENGINAL",
+      "person": {
+        "id": "2015042200401",
+        "name": "P.K.GEETHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULLIPPARA",
+      "person": {
+        "id": "2015042200501",
+        "name": "V.MANOJ KUMAR"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALUMMOODE",
+      "person": {
+        "id": "2015042200601",
+        "name": "K.BIJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PAZHAKULAM",
+      "person": {
+        "id": "2015042200701",
+        "name": "SHAJI.S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THENGUMTHARA",
+      "person": {
+        "id": "2015042200801",
+        "name": "AKHIL.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MELOOD",
+      "person": {
+        "id": "2015042200901",
+        "name": "A.P.SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AMMAKANDAKARA",
+      "person": {
+        "id": "2015042201001",
+        "name": "SHEEJA PRAKASH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHENNAMPALLIL",
+      "person": {
+        "id": "2015042201101",
+        "name": "KUNJUMOL KOCHUPAPPY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MALAMEKKARA",
+      "person": {
+        "id": "2015042201201",
+        "name": "ROHINI GOPINATH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POTHADI",
+      "person": {
+        "id": "2015042201301",
+        "name": "LATHIKA MOHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERINGANAD",
+      "person": {
+        "id": "2015042201401",
+        "name": "SHELLEY BABY"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHALA",
+      "person": {
+        "id": "2015042201501",
+        "name": "A.T.RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PARAKKOOTTAM",
+      "person": {
+        "id": "2015042201601",
+        "name": "RAJAMMA.E.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MULAMUKKU",
+      "person": {
+        "id": "2015042201701",
+        "name": "JOLLY SENAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUNDAPPALLY",
+      "person": {
+        "id": "2015042201801",
+        "name": "PRASANNAKUMARI.G"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "THOTTAMUKKU",
+      "person": {
+        "id": "2015042201901",
+        "name": "SHEEJA ROBY"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOLLAICKAL",
+      "person": {
+        "id": "2015042202001",
+        "name": "ARYA DINRAJ"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "THENGAMAM",
+      "person": {
+        "id": "2015042202101",
+        "name": "SADASIVANPILLAI.K"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "THOTTUVA",
+      "person": {
+        "id": "2015042202201",
+        "name": "M.SIVADASAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KAITHACKAL",
+      "person": {
+        "id": "2015042202301",
+        "name": "C.SANTHOSH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

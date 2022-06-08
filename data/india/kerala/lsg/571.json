@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566346922421,
+  "date": "2019-08-21",
+  "name": "Mundakayam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Kanjirappally",
+  "area": "82.67km",
+  "localbody_code": "G051105",
+  "no_of_wards": 21,
+  "population": 47987,
+  "male": 23872,
+  "female": 24115,
+  "population_density": 580,
+  "sex_ratio": 1010,
+  "literacy_rate": 94,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 92,
+  "president": "K.S.RAJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELANILAM",
+      "person": {
+        "id": "2015057100101",
+        "name": "VALSAMMA THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUNDAKAYAM TOWN EAST",
+      "person": {
+        "id": "2015057100201",
+        "name": "NASEEMA HARIS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUNDAKAYAM TOWN SOUTH",
+      "person": {
+        "id": "2015057100301",
+        "name": "GIGI NICHOLAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHENCHANDA",
+      "person": {
+        "id": "2015057100401",
+        "name": "K.S.RAJU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MICOLOGY",
+      "person": {
+        "id": "2015057100501",
+        "name": "SHEEBA DIPHAYIN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VARICKANI",
+      "person": {
+        "id": "2015057100601",
+        "name": "FLORY ANTONY"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARINILAM",
+      "person": {
+        "id": "2015057100701",
+        "name": "BENNY MATHEW"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VANDANPATHAL",
+      "person": {
+        "id": "2015057100801",
+        "name": "RAJANI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MURIKKUMVAYAL",
+      "person": {
+        "id": "2015057100901",
+        "name": "B.JAYACHANDRAN (JAYAN)"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PUCHAVAYAL",
+      "person": {
+        "id": "2015057101001",
+        "name": "PRADEESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KULAMACKAL",
+      "person": {
+        "id": "2015057101101",
+        "name": "JESSY BABU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ANIKKUNNU",
+      "person": {
+        "id": "2015057101201",
+        "name": "MARIAMMA ANTONY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AMARAVATHY",
+      "person": {
+        "id": "2015057101301",
+        "name": "K.C.SURESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PULIKKUNNU",
+      "person": {
+        "id": "2015057101401",
+        "name": "ASHA ANEESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANNIMALA",
+      "person": {
+        "id": "2015057101501",
+        "name": "MATHEW ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THANNIKAPATHAL",
+      "person": {
+        "id": "2015057101601",
+        "name": "SATHYAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VATTAKAVU",
+      "person": {
+        "id": "2015057101701",
+        "name": "REKHADAS K M"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ICHIYANI",
+      "person": {
+        "id": "2015057101801",
+        "name": "JESSY JACOB"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PAINGANA",
+      "person": {
+        "id": "2015057101901",
+        "name": "MANJU SHANU"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MYLATHADI",
+      "person": {
+        "id": "2015057102001",
+        "name": "SUSAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "NENMENI",
+      "person": {
+        "id": "2015057102101",
+        "name": "SANIL M B"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,206 @@
+{
+  "timeStamp": 1566345924277,
+  "date": "2019-08-21",
+  "name": "Vellarada  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Perumkadavila",
+  "area": "31.6km",
+  "localbody_code": "G010907",
+  "no_of_wards": 23,
+  "population": 37092,
+  "male": 18699,
+  "female": 18393,
+  "population_density": 1174,
+  "sex_ratio": 984,
+  "literacy_rate": 82.94,
+  "literacy_rate_male": 87.04,
+  "literacy_rate_female": 78.79,
+  "president": "SHOBHAKUMARIM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MEETHY",
+      "person": {
+        "id": "2015028900101",
+        "name": "RAJ MOHAN M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AMBALAM",
+      "person": {
+        "id": "2015028900201",
+        "name": "THANKAPPAN NAIR K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ANAPARA",
+      "person": {
+        "id": "2015028900301",
+        "name": "BINU RANI D.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "COVILLOOR",
+      "person": {
+        "id": "2015028900401",
+        "name": "ALPHONSAL G"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOOTHALI",
+      "person": {
+        "id": "2015028900501",
+        "name": "SHOBHAKUMARI M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAKKATHOOKY",
+      "person": {
+        "id": "2015028900601",
+        "name": "JOHNSON M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PANNIMALA",
+      "person": {
+        "id": "2015028900701",
+        "name": "SASIDHARAN C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ARATTUKUZHY",
+      "person": {
+        "id": "2015028900801",
+        "name": "PRADEEP S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "VELLARADA",
+      "person": {
+        "id": "2015028900901",
+        "name": "SUSHAMAKUMARI AMMA E"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ANCHUMARANKALA",
+      "person": {
+        "id": "2015028901001",
+        "name": "SUGANDHI C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KILIYOOR",
+      "person": {
+        "id": "2015028901101",
+        "name": "SAJITHA KUMARI S T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANOOR",
+      "person": {
+        "id": "2015028901201",
+        "name": "LIJU P S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PONNAMBI",
+      "person": {
+        "id": "2015028901301",
+        "name": "SHEEJA VINCENT"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANATHOTTAM",
+      "person": {
+        "id": "2015028901401",
+        "name": "VIJAYA S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANACHAMOODU",
+      "person": {
+        "id": "2015028901501",
+        "name": "UMAYRTH J"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KRISHNAPURAM",
+      "person": {
+        "id": "2015028901601",
+        "name": "PRIYA K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VENCODE",
+      "person": {
+        "id": "2015028901701",
+        "name": "SHAJI KUMAR T"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PANCHAKUZHY",
+      "person": {
+        "id": "2015028901801",
+        "name": "SATHESH BABU C"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KARIKKAMANCODE",
+      "person": {
+        "id": "2015028901901",
+        "name": "ANILKUMR B"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MUNDANAD",
+      "person": {
+        "id": "2015028902001",
+        "name": "SIVAKUMAR S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "DALUMMUGAM",
+      "person": {
+        "id": "2015028902101",
+        "name": "GNANADAS C"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PATTAMTHALAIKKAL",
+      "person": {
+        "id": "2015028902201",
+        "name": "SUDHA V"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KALLIMOODU",
+      "person": {
+        "id": "2015028902301",
+        "name": "SHEEBA S"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

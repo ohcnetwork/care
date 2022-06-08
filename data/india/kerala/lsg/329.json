@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566346054973,
+  "date": "2019-08-21",
+  "name": "Kulathupuzha  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "424.06km",
+  "localbody_code": "G020501",
+  "no_of_wards": 20,
+  "population": 33271,
+  "male": 16431,
+  "female": 16840,
+  "population_density": 78,
+  "sex_ratio": 1025,
+  "literacy_rate": 86.62,
+  "literacy_rate_male": 90.56,
+  "literacy_rate_female": 82.82,
+  "president": "LAILABEEVIP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ESTATE",
+      "person": {
+        "id": "2015032900101",
+        "name": "SINDHU G"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MADATHIKONAM",
+      "person": {
+        "id": "2015032900201",
+        "name": "SUNIL KUMAR B"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "TOWN",
+      "person": {
+        "id": "2015032900301",
+        "name": "LAILABEEVI P"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "E.S.M.COLONY",
+      "person": {
+        "id": "2015032900401",
+        "name": "REJI OOMMEN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ROSEMALA",
+      "person": {
+        "id": "2015032900501",
+        "name": "VARADA PRASANNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AMBATHEKAR",
+      "person": {
+        "id": "2015032900601",
+        "name": "BABU T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AMPALAM",
+      "person": {
+        "id": "2015032900701",
+        "name": "NALINIYAMMA S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHOZHIYAKODU",
+      "person": {
+        "id": "2015032900801",
+        "name": "PANKAJAKSHAN J"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALLUVETTAMKUZHI",
+      "person": {
+        "id": "2015032900901",
+        "name": "ANILKUMAR P"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "DALLY",
+      "person": {
+        "id": "2015032901001",
+        "name": "AMBILI ASOKAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MYLAMOODU",
+      "person": {
+        "id": "2015032901101",
+        "name": "LALI THOMAS"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KADAMANKODU",
+      "person": {
+        "id": "2015032901201",
+        "name": "SREELATHA S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "SAMNAGAR",
+      "person": {
+        "id": "2015032901301",
+        "name": "NAZARUDHEEN U"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KULATHUPUZHA",
+      "person": {
+        "id": "2015032901401",
+        "name": "VISHNU B.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "NELLIMOODU",
+      "person": {
+        "id": "2015032901501",
+        "name": "SAINABA BEEVI M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THINKALKARIKKOM",
+      "person": {
+        "id": "2015032901601",
+        "name": "SUBHILASH KUMAR C"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EZHAMKULAM",
+      "person": {
+        "id": "2015032901701",
+        "name": "SISELY JOB"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PATHINONNAMMILE",
+      "person": {
+        "id": "2015032901801",
+        "name": "ANILA DEVI S"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHANDANACAVU",
+      "person": {
+        "id": "2015032901901",
+        "name": "SABU ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "CHERUKARA",
+      "person": {
+        "id": "2015032902001",
+        "name": "DIVYA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

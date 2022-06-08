@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347156984,
+  "date": "2019-08-21",
+  "name": "Mudakuzha  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Koovappady",
+  "area": "21.97km",
+  "localbody_code": "G070402",
+  "no_of_wards": 13,
+  "population": 15346,
+  "male": 7727,
+  "female": 7619,
+  "population_density": 698,
+  "sex_ratio": 986,
+  "literacy_rate": 89.17,
+  "literacy_rate_male": 93.36,
+  "literacy_rate_female": 84.94,
+  "president": "GISHASOJAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELAMBAKAPPILLY NORTH",
+      "person": {
+        "id": "2015064400101",
+        "name": "BINDU UNNI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AKANAD NORTH",
+      "person": {
+        "id": "2015064400201",
+        "name": "SINU SASI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VANIYAPPILLY",
+      "person": {
+        "id": "2015064400301",
+        "name": "RAJU P.K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MEEMBARA",
+      "person": {
+        "id": "2015064400401",
+        "name": "LISSY MATHAI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANDIKKAD",
+      "person": {
+        "id": "2015064400501",
+        "name": "SHOJA ROY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THURUTHY",
+      "person": {
+        "id": "2015064400601",
+        "name": "SHAIMY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PRALAYAKKAD SOUTH",
+      "person": {
+        "id": "2015064400701",
+        "name": "BIBIN PUNATHIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PRALAYAKKAD NORTH",
+      "person": {
+        "id": "2015064400801",
+        "name": "GISHA SOJAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PETTAMALA",
+      "person": {
+        "id": "2015064400901",
+        "name": "MINI SHAJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUDAKUZHA EAST",
+      "person": {
+        "id": "2015064401001",
+        "name": "ELSY PAULOSE"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AKANAD SOUTH",
+      "person": {
+        "id": "2015064401101",
+        "name": "S. NARAYANAN (BALU)"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUDAKUZHA WEST",
+      "person": {
+        "id": "2015064401201",
+        "name": "AJITHKUMAR A.T"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ELAMBAKAPPILLY SOUTH",
+      "person": {
+        "id": "2015064401301",
+        "name": "P.K SIVADAS"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

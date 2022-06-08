@@ -1,0 +1,317 @@
+{
+  "timeStamp": 1566345537937,
+  "date": "2019-08-21",
+  "name": "Changanassery  Municipality, Kottayam District",
+  "district": "Kottayam",
+  "area": "13.5km",
+  "localbody_code": "M050300",
+  "no_of_wards": 37,
+  "population": 51960,
+  "male": 25156,
+  "female": 26804,
+  "population_density": 3885,
+  "sex_ratio": 1016,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "chairman": "LALICHANANTONY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANNAMPEROOR",
+      "person": {
+        "id": "2015018800101",
+        "name": "G SURESH BABU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ANNAPOORNESWARI TEMPLE",
+      "person": {
+        "id": "2015018800201",
+        "name": "LATHA RAJENDRAPRASAD"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOVAKKATTUCHIRA",
+      "person": {
+        "id": "2015018800301",
+        "name": "SEBASTIAN MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARAMANA",
+      "person": {
+        "id": "2015018800401",
+        "name": "SIBY THOMAS"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "GATHSAMANI PALLY",
+      "person": {
+        "id": "2015018800501",
+        "name": "ELSAMMA JOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MORKULANGARA",
+      "person": {
+        "id": "2015018800601",
+        "name": "BOBBINA SHAJI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "S B HIGH SCHOOL",
+      "person": {
+        "id": "2015018800701",
+        "name": "SHINY SHAJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ANANDASRAMAM",
+      "person": {
+        "id": "2015018800801",
+        "name": "ADV. MARTIN SCARIA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KURISUMMOODU",
+      "person": {
+        "id": "2015018800901",
+        "name": "SAJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAREL PALLY",
+      "person": {
+        "id": "2015018801001",
+        "name": "THRESIAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015018801101",
+        "name": "G SUGATHAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "S H SCHOOL",
+      "person": {
+        "id": "2015018801201",
+        "name": "SHAMNA SIYAD"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHOOR PALLY",
+      "person": {
+        "id": "2015018801301",
+        "name": "ADV. P A NAZEER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NSS COLLEGE",
+      "person": {
+        "id": "2015018801401",
+        "name": "T P ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THIRUMALA TEMPLE",
+      "person": {
+        "id": "2015018801501",
+        "name": "SANDHYA MANOJ"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "FATHIMAPURAM NORTH",
+      "person": {
+        "id": "2015018801601",
+        "name": "LALICHAN ANTONY"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "FATHIMAPURAM SOUTH",
+      "person": {
+        "id": "2015018801701",
+        "name": "ANNAMMA RAJU CHACKO"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "EROOPPA",
+      "person": {
+        "id": "2015018801801",
+        "name": "NAZEEMA MAJEED"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PERUNNA EAST",
+      "person": {
+        "id": "2015018801901",
+        "name": "PRASANNA KUMARI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MANNAM NAGAR",
+      "person": {
+        "id": "2015018802001",
+        "name": "ADV. P S MANOJ"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PERUNNA TEMPLE",
+      "person": {
+        "id": "2015018802101",
+        "name": "N P KRISHNAKUMAR"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "PANACHIKKAVU TEMPLE",
+      "person": {
+        "id": "2015018802201",
+        "name": "KRISHNAKUMARI RAJASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "PERUNNA WEST (NEW)",
+      "person": {
+        "id": "2015018802301",
+        "name": "SATHEESH AIKKARA"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "MANACKACHIRA",
+      "person": {
+        "id": "2015018802401",
+        "name": "ATHIRA PRASAD"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "VETTADI",
+      "person": {
+        "id": "2015018802501",
+        "name": "KUNJUMOL SABU"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "LAKSHMIPURAM PALACE",
+      "person": {
+        "id": "2015018802601",
+        "name": "ADV. E A SAJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KOTTARAM TEMPLE",
+      "person": {
+        "id": "2015018802701",
+        "name": "SUMA SHINE"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "ANANDAPURAM",
+      "person": {
+        "id": "2015018802801",
+        "name": "AMBIKA VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "FIRE STATION",
+      "person": {
+        "id": "2015018802901",
+        "name": "AMINA HANEEFA"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "VALIYA PALLY",
+      "person": {
+        "id": "2015018803001",
+        "name": "SAJAN FRANCIS"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "BOAT JETTY",
+      "person": {
+        "id": "2015018803101",
+        "name": "DANI THOMAS"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "MANJADIKKARA",
+      "person": {
+        "id": "2015018803201",
+        "name": "REMADEVI J"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "MARKET",
+      "person": {
+        "id": "2015018803301",
+        "name": "JESSY VARGHESE"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "YMCA",
+      "person": {
+        "id": "2015018803401",
+        "name": "ANILA RAJESH KUMAR"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "KANDATHILPARAMPU",
+      "person": {
+        "id": "2015018803501",
+        "name": "T P AJIKUMAR"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "VAZHAPPALLY TEMPLE",
+      "person": {
+        "id": "2015018803601",
+        "name": "REKHA SIVAKUMAR"
+      }
+    },
+    {
+      "ward_number": "37",
+      "name": "KUTTISSERIKKADAVU",
+      "person": {
+        "id": "2015018803701",
+        "name": "BINDU VIJAYAKUMAR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

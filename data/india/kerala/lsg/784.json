@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348090780,
+  "date": "2019-08-21",
+  "name": "Velukara  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vellangallur",
+  "area": "26.67km",
+  "localbody_code": "G081305",
+  "no_of_wards": 18,
+  "population": 25571,
+  "male": 12100,
+  "female": 13471,
+  "population_density": 959,
+  "sex_ratio": 1113,
+  "literacy_rate": 91.75,
+  "literacy_rate_male": 94.69,
+  "literacy_rate_female": 89.19,
+  "president": "INDIRATHILAKAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "IKKARAKUNNU",
+      "person": {
+        "id": "2015078400101",
+        "name": "V.H VIJEESH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOLOTHUMPADI",
+      "person": {
+        "id": "2015078400201",
+        "name": "RAJANI SATHEESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NADAVARAMBA",
+      "person": {
+        "id": "2015078400301",
+        "name": "SUNIL T.R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALLAMKUNNU",
+      "person": {
+        "id": "2015078400401",
+        "name": "INDIRA THILAKAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AVITTATHUR",
+      "person": {
+        "id": "2015078400501",
+        "name": "K.K.VINAYAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AVITTATHUR SOUTH",
+      "person": {
+        "id": "2015078400601",
+        "name": "MARY LAZAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AVITTATHUR NORTH",
+      "person": {
+        "id": "2015078400701",
+        "name": "JAYASREE ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOMMANA",
+      "person": {
+        "id": "2015078400801",
+        "name": "K.A.PRAKASAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KADUPPASSERY",
+      "person": {
+        "id": "2015078400901",
+        "name": "PETER.K.T"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AYYAPPANKAVU",
+      "person": {
+        "id": "2015078401001",
+        "name": "SHEEJA UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THUMBOOR",
+      "person": {
+        "id": "2015078401101",
+        "name": "MANOJ.K.S"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUMBOOR WEST",
+      "person": {
+        "id": "2015078401201",
+        "name": "SHATTO KURIAN.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATTEPADAM",
+      "person": {
+        "id": "2015078401301",
+        "name": "AMINA ABDULKADER"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POOMTHOPE",
+      "person": {
+        "id": "2015078401401",
+        "name": "T.S.SURESH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "SIVAGIRI",
+      "person": {
+        "id": "2015078401501",
+        "name": "SUSEELA.M.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOTTANELOOR",
+      "person": {
+        "id": "2015078401601",
+        "name": "LALU VATTAPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUKUNDAPURAM",
+      "person": {
+        "id": "2015078401701",
+        "name": "DAISY JOSE"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VAIKKARA",
+      "person": {
+        "id": "2015078401801",
+        "name": "UJITHA SURESH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

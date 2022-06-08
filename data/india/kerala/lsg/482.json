@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346595090,
+  "date": "2019-08-21",
+  "name": "Mavelikara Thekkekara  Grama Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Mavelikkara",
+  "area": "19.82km",
+  "localbody_code": "G041001",
+  "no_of_wards": 19,
+  "population": 29824,
+  "male": 14191,
+  "female": 15633,
+  "population_density": 1505,
+  "sex_ratio": 1102,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 92,
+  "president": "SHYLALEKSHMANAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "UMBERNADU WEST",
+      "person": {
+        "id": "2015048200101",
+        "name": "VIJI K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "UMBERNADU EAST",
+      "person": {
+        "id": "2015048200201",
+        "name": "M.K SUDHEER"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERUKUNNAM",
+      "person": {
+        "id": "2015048200301",
+        "name": "R.UNNIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VADAKKEMANKUZHI",
+      "person": {
+        "id": "2015048200401",
+        "name": "SUDHA PRABHULAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANCHAYATH OFFICE WARD",
+      "person": {
+        "id": "2015048200501",
+        "name": "BIJI MOHAN DAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THADATHILAL",
+      "person": {
+        "id": "2015048200601",
+        "name": "T.VISWANATHAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VARENICKAL",
+      "person": {
+        "id": "2015048200701",
+        "name": "DEEPTHI SREEJITH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHOORALLOOR",
+      "person": {
+        "id": "2015048200801",
+        "name": "GIRIJA RAMACHANDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLIYAVATTOM",
+      "person": {
+        "id": "2015048200901",
+        "name": "SUJA RAJU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PALLICKAL EAST",
+      "person": {
+        "id": "2015048201001",
+        "name": "ASHA SURESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KURATHIKAD",
+      "person": {
+        "id": "2015048201101",
+        "name": "GIGI GEORGE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PONNEZHA",
+      "person": {
+        "id": "2015048201201",
+        "name": "BIJI HARIKUMAR"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VATHIKULAM",
+      "person": {
+        "id": "2015048201301",
+        "name": "MOHANAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "OLAKETTIAMBALAM SOUTH",
+      "person": {
+        "id": "2015048201401",
+        "name": "SHYLA LEKSHMANAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "OLAKETTIAMBALAM NORTH",
+      "person": {
+        "id": "2015048201501",
+        "name": "SUJITHA BINOJ"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PUTHENKULANGARA",
+      "person": {
+        "id": "2015048201601",
+        "name": "BEENA PRAKASH"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PONAKAM",
+      "person": {
+        "id": "2015048201701",
+        "name": "VASANTH RAJASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PALLARIMANGALAM",
+      "person": {
+        "id": "2015048201801",
+        "name": "V.HARI KUMAR"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MULLIKULANGARA",
+      "person": {
+        "id": "2015048201901",
+        "name": "SREELEKHA GIRISH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

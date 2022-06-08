@@ -1,0 +1,189 @@
+{
+  "timeStamp": 1566349056304,
+  "date": "2019-08-21",
+  "name": "Puduppady  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Koduvaliy",
+  "area": "64.75km",
+  "localbody_code": "G111006",
+  "no_of_wards": 21,
+  "population": 31620,
+  "male": 15775,
+  "female": 15845,
+  "population_density": 488,
+  "sex_ratio": 1004,
+  "literacy_rate": 90.74,
+  "literacy_rate_male": 94.54,
+  "literacy_rate_female": 86.98,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANNAPPANKUND",
+      "person": {
+        "id": "2015105200101",
+        "name": "BEENA THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MATTIKKUNNU",
+      "person": {
+        "id": "2015105200201",
+        "name": "USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VALLIYAD",
+      "person": {
+        "id": "2015105200301",
+        "name": "FATHIMA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUPPATHEKRA",
+      "person": {
+        "id": "2015105200401",
+        "name": "IBY REJI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KANALAD",
+      "person": {
+        "id": "2015105200501",
+        "name": "MURALIDHARAN P.V"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ADIVARAM",
+      "person": {
+        "id": "2015105200601",
+        "name": "ABDUL SALAM T"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELIKKAD",
+      "person": {
+        "id": "2015105200701",
+        "name": "MUJEEB KHAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAITHAPPOYIL",
+      "person": {
+        "id": "2015105200801",
+        "name": "SHIHABUDHEEN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "WEST KAITHAPPOYIL",
+      "person": {
+        "id": "2015105200902",
+        "name": "RAKESH.P.R"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ODUNGAKKAD",
+      "person": {
+        "id": "2015105201001",
+        "name": "R.M ABDUL RASAK"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUPPAYAKKODE",
+      "person": {
+        "id": "2015105201101",
+        "name": "AMBICA MANGALATH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MAMMUNNIPPADI",
+      "person": {
+        "id": "2015105201201",
+        "name": "M.E JALEEL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTTARAKOTH",
+      "person": {
+        "id": "2015105201301",
+        "name": "GEETHA K.G"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAVUMPURAM",
+      "person": {
+        "id": "2015105201401",
+        "name": "MUHAMMED SHAFI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PERUMBALLY",
+      "person": {
+        "id": "2015105201501",
+        "name": "KUTTYAMMA MANI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MALAPURAM",
+      "person": {
+        "id": "2015105201601",
+        "name": "NANDAKUMAR K.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ELOKKARA",
+      "person": {
+        "id": "2015105201701",
+        "name": "ABDUL JALEEL KOYA THANGAL"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ENGAPPUZHA",
+      "person": {
+        "id": "2015105201801",
+        "name": "REENA BASHEER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VANIKKARA",
+      "person": {
+        "id": "2015105201901",
+        "name": "SOUDA BASHEER"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KARIKULAM",
+      "person": {
+        "id": "2015105202001",
+        "name": "JAYASREE"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "KAKKAVAYAL",
+      "person": {
+        "id": "2015105202101",
+        "name": "SALOMY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

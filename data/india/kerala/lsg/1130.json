@@ -1,0 +1,181 @@
+{
+  "timeStamp": 1566349348380,
+  "date": "2019-08-21",
+  "name": "Ulikkal  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": null,
+  "localbody_code": "G130409",
+  "no_of_wards": 20,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANIKKADAVU NORTH",
+      "person": {
+        "id": "2015113000101",
+        "name": "SHAJU O . V"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MATTARA",
+      "person": {
+        "id": "2015113000201",
+        "name": "SIGI MANGALATHUKAROTTU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALANKI",
+      "person": {
+        "id": "2015113000301",
+        "name": "MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOLITHATTU",
+      "person": {
+        "id": "2015113000401",
+        "name": "SUNU KINATHY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOTTIPPALAM",
+      "person": {
+        "id": "2015113000501",
+        "name": "SHAREEFA ASHRAF"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PERATTA",
+      "person": {
+        "id": "2015113000601",
+        "name": "BEENA PALAYADAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARABI",
+      "person": {
+        "id": "2015113000701",
+        "name": "SHERLY ALEXANDER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VATTIYAMTHODE",
+      "person": {
+        "id": "2015113000801",
+        "name": "BINDU BINOY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KATHUVAPARAMBA",
+      "person": {
+        "id": "2015113000902",
+        "name": "JESSY JAMES NADACKAL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VAYATHUR",
+      "person": {
+        "id": "2015113001001",
+        "name": "MADHU LAKSHMIVILASAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ULIKKAL WEST",
+      "person": {
+        "id": "2015113001101",
+        "name": "AHAMMADU KUTTY A"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ULIKKAL EAST",
+      "person": {
+        "id": "2015113001201",
+        "name": "PANNA CHEMMARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NELLICAMPOYIL",
+      "person": {
+        "id": "2015113001301",
+        "name": "LISSY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "EZHOOR",
+      "person": {
+        "id": "2015113001401",
+        "name": "K G DILEEP"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THERMALA",
+      "person": {
+        "id": "2015113001501",
+        "name": "USHA PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "MUNDANOOR",
+      "person": {
+        "id": "2015113001601",
+        "name": "ROY N K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NUCHIYAD",
+      "person": {
+        "id": "2015113001701",
+        "name": "KABEER P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MANIPARA",
+      "person": {
+        "id": "2015113001801",
+        "name": "PUSHPA MATHEW"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PERUMPALLY",
+      "person": {
+        "id": "2015113001901",
+        "name": "LISSY JOSEPH NELLUVELIL"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "MANIKKADAVU SOUTH",
+      "person": {
+        "id": "2015113002001",
+        "name": "DAISY JOSEPH KANAYANATTE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

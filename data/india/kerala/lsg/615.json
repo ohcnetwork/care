@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347060594,
+  "date": "2019-08-21",
+  "name": "Karimkunnam  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Thodupuzha",
+  "area": "22.67km",
+  "localbody_code": "G060704",
+  "no_of_wards": 13,
+  "population": 12094,
+  "male": 6234,
+  "female": 5860,
+  "population_density": 533,
+  "sex_ratio": 940,
+  "literacy_rate": 94,
+  "literacy_rate_male": 96,
+  "literacy_rate_female": 93,
+  "president": "BINDHUBINU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANCHAPRA",
+      "person": {
+        "id": "2015061500101",
+        "name": "ELSAMMA BABYCHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "THATTARATHATTA",
+      "person": {
+        "id": "2015061500201",
+        "name": "JOY P.J."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MRALA",
+      "person": {
+        "id": "2015061500301",
+        "name": "BINDHU BINU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALANKARA",
+      "person": {
+        "id": "2015061500401",
+        "name": "ELSAMMA SEBASTIAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AZHAKUMPARA",
+      "person": {
+        "id": "2015061500501",
+        "name": "DILEEP KUMAR M.S."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ILLYCHARRY",
+      "person": {
+        "id": "2015061500601",
+        "name": "JOSEPH CHACKO (T.C.JOSEPH )"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "NEDIAKADU",
+      "person": {
+        "id": "2015061500701",
+        "name": "LILLY BABY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "OTTALLOOR",
+      "person": {
+        "id": "2015061500801",
+        "name": "JOGI THOMAS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MATTATHIPPARA",
+      "person": {
+        "id": "2015061500901",
+        "name": "BENNY THOMAS"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PARATHANAM",
+      "person": {
+        "id": "2015061501001",
+        "name": "THOMASKUTTY KURIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NELLAPPARA",
+      "person": {
+        "id": "2015061501101",
+        "name": "JASMINE ROSE BINOY"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARIMKUNNAM",
+      "person": {
+        "id": "2015061501201",
+        "name": "BEENA BIJU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VADAKKUMMURY",
+      "person": {
+        "id": "2015061501301",
+        "name": "GEETHA VIJAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

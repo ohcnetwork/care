@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347266688,
+  "date": "2019-08-21",
+  "name": "Aikaranad  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Vadavucode",
+  "area": "25.65km",
+  "localbody_code": "G071005",
+  "no_of_wards": 14,
+  "population": 18533,
+  "male": 9288,
+  "female": 9245,
+  "population_density": 723,
+  "sex_ratio": 995,
+  "literacy_rate": 91.38,
+  "literacy_rate_male": 94.89,
+  "literacy_rate_female": 87.92,
+  "president": "KKRAJU",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAZHAMTHOTTAM",
+      "person": {
+        "id": "2015067900101",
+        "name": "SHEEJA ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VALAMBOOR",
+      "person": {
+        "id": "2015067900201",
+        "name": "M A PAULOSE"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EZHIPRAM",
+      "person": {
+        "id": "2015067900301",
+        "name": "K K RAJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KADAYIRUPPU",
+      "person": {
+        "id": "2015067900401",
+        "name": "KURIAN KUZHIVELIL (KUNJUMON)"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANGATTOOR",
+      "person": {
+        "id": "2015067900501",
+        "name": "JOSE V JACOB"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THONNIKKA",
+      "person": {
+        "id": "2015067900601",
+        "name": "SHINY BIJU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KADAMATTOM",
+      "person": {
+        "id": "2015067900701",
+        "name": "SAJEE POOTHOTTIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERINGOLE",
+      "person": {
+        "id": "2015067900801",
+        "name": "ELSY BABU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THONDIPEEDIKA",
+      "person": {
+        "id": "2015067900901",
+        "name": "JISHA AJI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PAREPEEDIKA",
+      "person": {
+        "id": "2015067901001",
+        "name": "VALSA SABU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PULINCHOD",
+      "person": {
+        "id": "2015067901101",
+        "name": "PADMAVATHI TEACHER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANCODE EAST",
+      "person": {
+        "id": "2015067901201",
+        "name": "USHA KUNJUMON"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PANCODE WEST",
+      "person": {
+        "id": "2015067901301",
+        "name": "N K VARGHESE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANAYATHUPEEDIKA",
+      "person": {
+        "id": "2015067901401",
+        "name": "MINI SUNNY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

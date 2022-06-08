@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346939627,
+  "date": "2019-08-21",
+  "name": "BysonValley  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Adimaly",
+  "area": "44.03km",
+  "localbody_code": "G060103",
+  "no_of_wards": 13,
+  "population": 13255,
+  "male": 6761,
+  "female": 6494,
+  "population_density": 301,
+  "sex_ratio": 961,
+  "literacy_rate": 89,
+  "literacy_rate_male": 92,
+  "literacy_rate_female": 86,
+  "president": "MERCYTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "DESEEYAM",
+      "person": {
+        "id": "2015057500101",
+        "name": "BAIJU KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "IRUTTALA",
+      "person": {
+        "id": "2015057500201",
+        "name": "SHAILA SHAMSUDEEN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POTTANKADU",
+      "person": {
+        "id": "2015057500301",
+        "name": "RAJU SUBHASHAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "BISONVALLEY",
+      "person": {
+        "id": "2015057500401",
+        "name": "PREETHI PREMKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHOKRAMUDY",
+      "person": {
+        "id": "2015057500501",
+        "name": "ANILA PRASAD"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MUTTUKADU",
+      "person": {
+        "id": "2015057500601",
+        "name": "LALI GEORGE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "HIGH SCHOOL WARD",
+      "person": {
+        "id": "2015057500701",
+        "name": "SANTHOSH BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "TEA COMPANY",
+      "person": {
+        "id": "2015057500801",
+        "name": "MANJU JINCE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOCHUPPU",
+      "person": {
+        "id": "2015057500901",
+        "name": "ROYCHAN GEORGE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "JOSEGIRI",
+      "person": {
+        "id": "2015057501001",
+        "name": "STEPHAN KURIAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THEKKINKANAM",
+      "person": {
+        "id": "2015057501101",
+        "name": "SHAINY GEORGE"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "UPPAR",
+      "person": {
+        "id": "2015057501201",
+        "name": "MERCY THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "20 ACRE",
+      "person": {
+        "id": "2015057501301",
+        "name": "MOHANAN N"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

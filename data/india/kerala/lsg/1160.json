@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566349442509,
+  "date": "2019-08-21",
+  "name": "Mangattidam  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "33.31km",
+  "localbody_code": "G130904",
+  "no_of_wards": 19,
+  "population": 29766,
+  "male": 14492,
+  "female": 15274,
+  "population_density": 894,
+  "sex_ratio": 1054,
+  "literacy_rate": 92.79,
+  "literacy_rate_male": 96.94,
+  "literacy_rate_female": 88.88,
+  "president": "PRASEETHAK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VATTIPROM",
+      "person": {
+        "id": "2015116000101",
+        "name": "C. SADANANDAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANDERI",
+      "person": {
+        "id": "2015116000201",
+        "name": "BASHEER P.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MERUVAMBAYI",
+      "person": {
+        "id": "2015116000301",
+        "name": "K. SANDHYALAKSHMI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KANDAMKUNNU",
+      "person": {
+        "id": "2015116000401",
+        "name": "SUNITHA. P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NEERVELI",
+      "person": {
+        "id": "2015116000501",
+        "name": "THANKAMANI N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AYITHARA",
+      "person": {
+        "id": "2015116000601",
+        "name": "K SHIBU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAMBARAM",
+      "person": {
+        "id": "2015116000701",
+        "name": "THALAKKADAN BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KAITHERI 12 TH MILE",
+      "person": {
+        "id": "2015116000802",
+        "name": "KANHAN BALAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHERI 11 TH MILE",
+      "person": {
+        "id": "2015116000901",
+        "name": "SHEENA .M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "RAMAPURAM",
+      "person": {
+        "id": "2015116001001",
+        "name": "M K KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARIYIL",
+      "person": {
+        "id": "2015116001101",
+        "name": "SATHYABHAMA K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KURUMBUKKAL",
+      "person": {
+        "id": "2015116001201",
+        "name": "PRASEETHA K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AYYAPPANTHODE",
+      "person": {
+        "id": "2015116001301",
+        "name": "ROJA  V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AMBILAD",
+      "person": {
+        "id": "2015116001401",
+        "name": "AJISHNA N"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANGATTIDAM",
+      "person": {
+        "id": "2015116001501",
+        "name": "UMAVATHI P V"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VELLAPPANTHAL",
+      "person": {
+        "id": "2015116001601",
+        "name": "CHERUVATH KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "SANKARANELLUR",
+      "person": {
+        "id": "2015116001701",
+        "name": "PUTHUKKUDI VINODAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOYILODE",
+      "person": {
+        "id": "2015116001801",
+        "name": "SREEJA N V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KIRACHI",
+      "person": {
+        "id": "2015116001901",
+        "name": "C P DAMODARAN MASTER"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566348402631,
+  "date": "2019-08-21",
+  "name": "Alathur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Alathur",
+  "area": "19.62km",
+  "localbody_code": "G091201",
+  "no_of_wards": 16,
+  "population": 23498,
+  "male": 11261,
+  "female": 12237,
+  "population_density": 1198,
+  "sex_ratio": 1087,
+  "literacy_rate": 85.07,
+  "literacy_rate_male": 91.62,
+  "literacy_rate_female": 79.09,
+  "president": "T.G.GANGADHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENGANNUR",
+      "person": {
+        "id": "2015087700101",
+        "name": "MUNEERA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PARAKKUNNAM",
+      "person": {
+        "id": "2015087700201",
+        "name": "K.REMA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "BANK ROAD",
+      "person": {
+        "id": "2015087700301",
+        "name": "KUMARI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUMBALAKKODE",
+      "person": {
+        "id": "2015087700401",
+        "name": "P.V.KRISHNAN MASTER"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THRIPPALUR",
+      "person": {
+        "id": "2015087700501",
+        "name": "RAJANI BABU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "GANDHI JUNCTION",
+      "person": {
+        "id": "2015087700601",
+        "name": "JYOTHISHA.M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHIYANGAM",
+      "person": {
+        "id": "2015087700701",
+        "name": "P.VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUNGULAM",
+      "person": {
+        "id": "2015087700801",
+        "name": "PRIYA.T.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THEKKUMURI",
+      "person": {
+        "id": "2015087700901",
+        "name": "VANAJA.A"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KATTUSSERY",
+      "person": {
+        "id": "2015087701001",
+        "name": "T.G.GANGADHARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KUNNAKKAD",
+      "person": {
+        "id": "2015087701101",
+        "name": "M.A.NAZAR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MARUTHANGADE",
+      "person": {
+        "id": "2015087701201",
+        "name": "SURESH KUMAR.R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ERATTAKULAM",
+      "person": {
+        "id": "2015087701301",
+        "name": "VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KEEZHPADAM",
+      "person": {
+        "id": "2015087701401",
+        "name": "SURESH BABU.K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "CHANDHAPURA",
+      "person": {
+        "id": "2015087701501",
+        "name": "BUSHARA NOUSHAD"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ALATHUR TOWN",
+      "person": {
+        "id": "2015087701601",
+        "name": "RAMLA USMAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348313282,
+  "date": "2019-08-21",
+  "name": "Mundur  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Palakkad",
+  "area": "33.04km",
+  "localbody_code": "G090705",
+  "no_of_wards": 18,
+  "population": 25996,
+  "male": 12512,
+  "female": 13484,
+  "population_density": 787,
+  "sex_ratio": 1078,
+  "literacy_rate": 80.09,
+  "literacy_rate_male": 87.42,
+  "literacy_rate_female": 73.34,
+  "president": "MKKUTTIKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANJIKKULAM",
+      "person": {
+        "id": "2015085000101",
+        "name": "AYYAPPAN M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELIKKAD",
+      "person": {
+        "id": "2015085000201",
+        "name": "ANIL V A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHALIRKKAD",
+      "person": {
+        "id": "2015085000301",
+        "name": "GOPALAKRISHANAN M R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VALIYAPARAMB",
+      "person": {
+        "id": "2015085000401",
+        "name": "MANJU C"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ODUVANGAD",
+      "person": {
+        "id": "2015085000501",
+        "name": "PRASHANTH O P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAYARAMKODAM",
+      "person": {
+        "id": "2015085000601",
+        "name": "M K KUTTIKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "OTTATHEKK",
+      "person": {
+        "id": "2015085000701",
+        "name": "RAMACHANDRAN K E"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PALAKKEZH",
+      "person": {
+        "id": "2015085000801",
+        "name": "BINDHU P R"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PORIYANI",
+      "person": {
+        "id": "2015085000901",
+        "name": "SARASWATHI M K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTTUPATHA",
+      "person": {
+        "id": "2015085001001",
+        "name": "SUCHITHA T M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOOTHEDAM",
+      "person": {
+        "id": "2015085001101",
+        "name": "AJITHA K T"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KEEZHPPADAM",
+      "person": {
+        "id": "2015085001201",
+        "name": "VIMALA C V"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NAMPULLIPPURA",
+      "person": {
+        "id": "2015085001301",
+        "name": "GIRIJA P K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PUNATHIL",
+      "person": {
+        "id": "2015085001401",
+        "name": "VINOOB P V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHANUR",
+      "person": {
+        "id": "2015085001501",
+        "name": "KANAKALATHA.E"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VADAKKEKKARA",
+      "person": {
+        "id": "2015085001601",
+        "name": "PRAKAS V B"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EZHAKKAD",
+      "person": {
+        "id": "2015085001701",
+        "name": "SUKUMARAN C K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "THEKKUMKARA",
+      "person": {
+        "id": "2015085001801",
+        "name": "SHIBI T R"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566344977647,
+  "date": "2019-08-21",
+  "name": "Aryad  Block Panchayat, Alappuzha District",
+  "district": "Alappuzha",
+  "block": "Aryad",
+  "area": "60.46km",
+  "localbody_code": "B040400",
+  "no_of_wards": 13,
+  "population": 110761,
+  "male": 54490,
+  "female": 56271,
+  "population_density": 1832,
+  "sex_ratio": 1033,
+  "literacy_rate": 94,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 91,
+  "president": "ADV.SHEENASANALKUMAR",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VALAVANADU",
+      "person": {
+        "id": "2015003800101",
+        "name": "SREEDEVI.K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "BLOCK OFFICE  WARD",
+      "person": {
+        "id": "2015003800201",
+        "name": "JAYATHILAKAN G"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUHAMMA",
+      "person": {
+        "id": "2015003800301",
+        "name": "KOCHUTHRESIA JAMES"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PUTHANANGADI",
+      "person": {
+        "id": "2015003800401",
+        "name": "V M SUGANDHI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MANNANCHERRY",
+      "person": {
+        "id": "2015003800501",
+        "name": "MANOHARAN NANDIKADU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KALAVOOR",
+      "person": {
+        "id": "2015003800601",
+        "name": "T SREEHARI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOMTHOPPU",
+      "person": {
+        "id": "2015003800701",
+        "name": "VILANJITHA SHANAVAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHARAMPARAMPU",
+      "person": {
+        "id": "2015003800801",
+        "name": "SUMA SASIDHARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAITHATHIL",
+      "person": {
+        "id": "2015003800901",
+        "name": "ADV.SHEENA SANALKUMAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "IKYABHARATHAM",
+      "person": {
+        "id": "2015003801001",
+        "name": "SINIMOL JOJI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATHIRAPPALLY",
+      "person": {
+        "id": "2015003801101",
+        "name": "N P SNEHAJAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "SARVODAYAPURAM",
+      "person": {
+        "id": "2015003801201",
+        "name": "JAYAN THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTOOR",
+      "person": {
+        "id": "2015003801301",
+        "name": "LEELAMMA JACOB"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346335825,
+  "date": "2019-08-21",
+  "name": "Mylapra  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Konni",
+  "area": "10.38km",
+  "localbody_code": "G030604",
+  "no_of_wards": 13,
+  "population": 10192,
+  "male": 4944,
+  "female": 5248,
+  "population_density": 982,
+  "sex_ratio": 1061,
+  "literacy_rate": 96.41,
+  "literacy_rate_male": 97.46,
+  "literacy_rate_female": 95.41,
+  "president": "THOMASMATHEW",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PEZHUMKADU",
+      "person": {
+        "id": "2015040900101",
+        "name": "C.V VARUGHESE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MEKKOZHOOR",
+      "person": {
+        "id": "2015040900201",
+        "name": "ELSY EASOW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTTAMALA",
+      "person": {
+        "id": "2015040900301",
+        "name": "SMITHA ELIZABETH ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANNARAKULANJI",
+      "person": {
+        "id": "2015040900401",
+        "name": "P.C JOHN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANCHAYAT WARD",
+      "person": {
+        "id": "2015040900501",
+        "name": "CHANDRIKA SUNIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KATTADI VALIYATHARA",
+      "person": {
+        "id": "2015040900601",
+        "name": "P.K GOPI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MYLAPRA CENTRAL",
+      "person": {
+        "id": "2015040900701",
+        "name": "RATHESH KUMAR K.V"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "I.T.C  WARD",
+      "person": {
+        "id": "2015040900801",
+        "name": "SOSAMMA JOHNSON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "SHANTHINAGAR",
+      "person": {
+        "id": "2015040900901",
+        "name": "SHYJI RAMESH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KAKKAMTHUNDU",
+      "person": {
+        "id": "2015040901001",
+        "name": "RUBY THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "EDAKKARA",
+      "person": {
+        "id": "2015040901101",
+        "name": "SARAMMA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "P.H.C SUBCENTRE WARD",
+      "person": {
+        "id": "2015040901201",
+        "name": "PREMA SURAJ"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MULLANKALLU",
+      "person": {
+        "id": "2015040901301",
+        "name": "THOMAS MATHEW"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566346894380,
+  "date": "2019-08-21",
+  "name": "Kangazha  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Vazhoor",
+  "area": "31.19km",
+  "localbody_code": "G051002",
+  "no_of_wards": 15,
+  "population": 18644,
+  "male": 9197,
+  "female": 9447,
+  "population_density": 598,
+  "sex_ratio": 1027,
+  "literacy_rate": 96,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "president": "B.PRADEEP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHEERAMATTOM",
+      "person": {
+        "id": "2015056300101",
+        "name": "MINI NARAYANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHETTEDAM",
+      "person": {
+        "id": "2015056300201",
+        "name": "SREELATHA DEVI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KANAM",
+      "person": {
+        "id": "2015056300301",
+        "name": "CHANDRIKA CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PATHIPPALAM",
+      "person": {
+        "id": "2015056300401",
+        "name": "SREEKALA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANCHANI",
+      "person": {
+        "id": "2015056300501",
+        "name": "K M JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "EDAYARICKAPPUZHA",
+      "person": {
+        "id": "2015056300601",
+        "name": "FIZAL MON V M"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "പ്ലാക്കല്‍പ്പടി",
+      "person": {
+        "id": "2015056300701",
+        "name": "JASMIN K S"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ELAVUNKAL",
+      "person": {
+        "id": "2015056300801",
+        "name": "B. PRADEEP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "EDAYAPPARA",
+      "person": {
+        "id": "2015056300901",
+        "name": "SURESH K PILLAI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUNDATHANAM",
+      "person": {
+        "id": "2015056301001",
+        "name": "MARIAMMA MATHAI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MULLANKUZHY",
+      "person": {
+        "id": "2015056301101",
+        "name": "SHEEBAMOL M M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THANNIPPARA",
+      "person": {
+        "id": "2015056301201",
+        "name": "ALICE THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOVOOR",
+      "person": {
+        "id": "2015056301301",
+        "name": "SARADA K N"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PADANILAM",
+      "person": {
+        "id": "2015056301401",
+        "name": "T.M NAZEER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PATHANADU",
+      "person": {
+        "id": "2015056301501",
+        "name": "MUKESH K MANI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

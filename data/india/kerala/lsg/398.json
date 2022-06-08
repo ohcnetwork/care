@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346298572,
+  "date": "2019-08-21",
+  "name": "Ranni  Grama Panchayat, Pathanamthitta District",
+  "district": "Pathanamthitta",
+  "block": "Ranni",
+  "area": "15.64km",
+  "localbody_code": "G030502",
+  "no_of_wards": 13,
+  "population": 14192,
+  "male": 6926,
+  "female": 7266,
+  "population_density": 907,
+  "sex_ratio": 1049,
+  "literacy_rate": 95.54,
+  "literacy_rate_male": 96.42,
+  "literacy_rate_female": 94.72,
+  "president": "SASIKALARAJASEKHARAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THOTTAMON",
+      "person": {
+        "id": "2015039800101",
+        "name": "SASIKALA RAJASEKHARAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUNDAPUZHA",
+      "person": {
+        "id": "2015039800201",
+        "name": "C.G.VENUGOPAL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAIKOM",
+      "person": {
+        "id": "2015039800301",
+        "name": "ANCY JOHN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANDIRAM",
+      "person": {
+        "id": "2015039800401",
+        "name": "SUMA VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PALACHUVADU",
+      "person": {
+        "id": "2015039800501",
+        "name": "A.N.SOMAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHUSSERIMALA WEST",
+      "person": {
+        "id": "2015039800602",
+        "name": "SUDHAKUMARI R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHUSSERIMALA EAST",
+      "person": {
+        "id": "2015039800701",
+        "name": "SABITHA.J"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARIMKUTTICKAL",
+      "person": {
+        "id": "2015039800801",
+        "name": "RANJITH"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "INCHOLIL",
+      "person": {
+        "id": "2015039800901",
+        "name": "C.N.GOPINADHAN NAIR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "UTHIMOODU",
+      "person": {
+        "id": "2015039801001",
+        "name": "SONY ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VALIYA KALUNKU",
+      "person": {
+        "id": "2015039801101",
+        "name": "AJI.T.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THEKKEPURAM",
+      "person": {
+        "id": "2015039801201",
+        "name": "JOJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "BLOCKPADI",
+      "person": {
+        "id": "2015039801301",
+        "name": "SINDHU SANJAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

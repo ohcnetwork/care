@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348729996,
+  "date": "2019-08-21",
+  "name": "Edayur  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Kuttipuram",
+  "area": "30.43km",
+  "localbody_code": "G100902",
+  "no_of_wards": 19,
+  "population": 24399,
+  "male": 11809,
+  "female": 12590,
+  "population_density": 797,
+  "sex_ratio": 1066,
+  "literacy_rate": 85.9,
+  "literacy_rate_male": 90.08,
+  "literacy_rate_female": 81.73,
+  "president": "RAJEEV.K.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VADAKKUMPURAM",
+      "person": {
+        "id": "2015095200101",
+        "name": "YOOSAF"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHENKUNDANPADI",
+      "person": {
+        "id": "2015095200201",
+        "name": "SOBHANA.K.K"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEMMALAKKUNNU",
+      "person": {
+        "id": "2015095200301",
+        "name": "PRAMEELA"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MANNATHPARAMB",
+      "person": {
+        "id": "2015095200401",
+        "name": "VISWANATHAN.K.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "EDAYUR",
+      "person": {
+        "id": "2015095200501",
+        "name": "RAJEEV.K.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ATHIPPATTA",
+      "person": {
+        "id": "2015095200601",
+        "name": "C. KUNHALI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUNNAMCHOLA",
+      "person": {
+        "id": "2015095200701",
+        "name": "MOHAMMED MUSTHAFA CHITTAKATH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AMBALACITY",
+      "person": {
+        "id": "2015095200801",
+        "name": "BINDU.K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "POOKKATTIRI",
+      "person": {
+        "id": "2015095200901",
+        "name": "V.P.A SHUKOOR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VATTAPPARAMB",
+      "person": {
+        "id": "2015095201001",
+        "name": "SALEENA.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVATHUMTHARA",
+      "person": {
+        "id": "2015095201101",
+        "name": "SABIRA V.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ADHIKARIPPADI",
+      "person": {
+        "id": "2015095201201",
+        "name": "ABDULLAKUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHEENICHODE",
+      "person": {
+        "id": "2015095201301",
+        "name": "SUBRAMANIYAN.R K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MAVANDIYUR",
+      "person": {
+        "id": "2015095201401",
+        "name": "SUBAIDA.O K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MOONNAKKAL",
+      "person": {
+        "id": "2015095201501",
+        "name": "ZEENATH.K.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "THINDALAM",
+      "person": {
+        "id": "2015095201602",
+        "name": "MOHANA KRISHNAN K.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VALARTHAPPADI",
+      "person": {
+        "id": "2015095201701",
+        "name": "UMMATHAKUTTY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "C.K PARA",
+      "person": {
+        "id": "2015095201801",
+        "name": "SHAMEERA. A"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "MUKKILAPPEEDIKA",
+      "person": {
+        "id": "2015095201901",
+        "name": "NASEERABANU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

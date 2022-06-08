@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566345324856,
+  "date": "2019-08-21",
+  "name": "Irikkur  Block Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "433.62km",
+  "localbody_code": "B130400",
+  "no_of_wards": 14,
+  "population": 212553,
+  "male": 106413,
+  "female": 106140,
+  "population_density": 490,
+  "sex_ratio": 997,
+  "literacy_rate": 89.86,
+  "literacy_rate_male": 94.45,
+  "literacy_rate_female": 86.28,
+  "president": "TVASANTHAKUMARI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUDIANMALA",
+      "person": {
+        "id": "2015014200101",
+        "name": "DAISY MYLADOOR"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHANDANAKAMPARA",
+      "person": {
+        "id": "2015014200201",
+        "name": "JOLY KATTUVILA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NUCHIYAD",
+      "person": {
+        "id": "2015014200301",
+        "name": "MERCY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VATTIYAMTHODU",
+      "person": {
+        "id": "2015014200401",
+        "name": "LISAMMA BABU"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ULIKKAL",
+      "person": {
+        "id": "2015014200501",
+        "name": "SHANMUGHAN M G"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PADIYOOR",
+      "person": {
+        "id": "2015014200601",
+        "name": "ANIL KUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "IRIKKUR",
+      "person": {
+        "id": "2015014200701",
+        "name": "VALAPINAKATH ABDULKADER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUVALATHUPARAMBU",
+      "person": {
+        "id": "2015014200801",
+        "name": "C RAJEEVAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MALAPATTAM",
+      "person": {
+        "id": "2015014200901",
+        "name": "C SYLAJA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUTTIATTUR",
+      "person": {
+        "id": "2015014201001",
+        "name": "BALAKRISHNAN V V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHATTUKAARA",
+      "person": {
+        "id": "2015014201101",
+        "name": "T VASANTHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MAYYIL",
+      "person": {
+        "id": "2015014201201",
+        "name": "NASAR C P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAYARALAM",
+      "person": {
+        "id": "2015014201301",
+        "name": "DIVAKARAN P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PAYYAVOOR",
+      "person": {
+        "id": "2015014201401",
+        "name": "VALSALA SAJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

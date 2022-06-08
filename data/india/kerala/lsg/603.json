@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566347020558,
+  "date": "2019-08-21",
+  "name": "Vazhathope  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Idukki",
+  "area": "199.84km",
+  "localbody_code": "G060505",
+  "no_of_wards": 14,
+  "population": 17483,
+  "male": 8919,
+  "female": 8564,
+  "population_density": 87,
+  "sex_ratio": 960,
+  "literacy_rate": 91,
+  "literacy_rate_male": 93,
+  "literacy_rate_female": 86,
+  "president": "ANCYTHOMAS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MANIYARANKUDY",
+      "person": {
+        "id": "2015060300101",
+        "name": "TOMY GEORGE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MULAKUVALLY",
+      "person": {
+        "id": "2015060300201",
+        "name": "RINCY SIBI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANJAPPARA",
+      "person": {
+        "id": "2015060300301",
+        "name": "ANCY THOMAS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KARIMBAN",
+      "person": {
+        "id": "2015060300401",
+        "name": "BABU GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THADIYAMPADU",
+      "person": {
+        "id": "2015060300501",
+        "name": "AMAL S. JOSE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KESAMUNI",
+      "person": {
+        "id": "2015060300601",
+        "name": "ALICE JOSE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VAZHATHOPE",
+      "person": {
+        "id": "2015060300701",
+        "name": "SHIJO JOSE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PEPPARA",
+      "person": {
+        "id": "2015060300801",
+        "name": "CELIN V.M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THANNIKKANDAM",
+      "person": {
+        "id": "2015060300901",
+        "name": "ROY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHERUTHONY",
+      "person": {
+        "id": "2015060301001",
+        "name": "SURESH P.S"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "GANDHINAGAR",
+      "person": {
+        "id": "2015060301101",
+        "name": "JALALUDEEN K.M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PAINAVU",
+      "person": {
+        "id": "2015060301201",
+        "name": "PRABHA THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUKKANNANKUDY",
+      "person": {
+        "id": "2015060301301",
+        "name": "AMMINI JOSE"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "PERUMKALA",
+      "person": {
+        "id": "2015060301401",
+        "name": "REETHA SYMON"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345269653,
+  "date": "2019-08-21",
+  "name": "Vadakara  Block Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Vadakara",
+  "area": "50.96km",
+  "localbody_code": "B110100",
+  "no_of_wards": 13,
+  "population": 113553,
+  "male": 54232,
+  "female": 59321,
+  "population_density": 2228,
+  "sex_ratio": 1094,
+  "literacy_rate": 91.63,
+  "literacy_rate_male": 95.62,
+  "literacy_rate_female": 88.03,
+  "president": "KOTTAYILRADHAKRISHNAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHOMBAL",
+      "person": {
+        "id": "2015012500101",
+        "name": "NISHA PARAMBATH"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AZHIYUR",
+      "person": {
+        "id": "2015012500201",
+        "name": "PRAMOD K.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KALLAMALA",
+      "person": {
+        "id": "2015012500301",
+        "name": "T.N PANKAJAKSHI TEACHER"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNNUMMAKKARA",
+      "person": {
+        "id": "2015012500401",
+        "name": "AYISHA ALOLLATHIL"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NELLACHERI",
+      "person": {
+        "id": "2015012500501",
+        "name": "M.M KUMARAN MASTER"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ORKKATTERI",
+      "person": {
+        "id": "2015012500601",
+        "name": "BABY BALAMBRATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KARTHIKAPPALLI",
+      "person": {
+        "id": "2015012500701",
+        "name": "SYAMALA KRISHNARPITHAM"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VAIKKILASSERY",
+      "person": {
+        "id": "2015012500801",
+        "name": "KOTTAYIL RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHORODE",
+      "person": {
+        "id": "2015012500901",
+        "name": "N.NIDHIN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MUTTUNGAL",
+      "person": {
+        "id": "2015012501001",
+        "name": "AYISHA C"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLIKULANGARA",
+      "person": {
+        "id": "2015012501101",
+        "name": "KIZHAKKAYIL GOPALAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MADAPPALLI",
+      "person": {
+        "id": "2015012501201",
+        "name": "ANITHA PILAKKANDI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNUKKARA",
+      "person": {
+        "id": "2015012501301",
+        "name": "JALAJA VINOD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

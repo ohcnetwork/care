@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566345215001,
+  "date": "2019-08-21",
+  "name": "Alathur  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Alathur",
+  "area": "371.17km",
+  "localbody_code": "B091200",
+  "no_of_wards": 15,
+  "population": 237679,
+  "male": 115368,
+  "female": 122311,
+  "population_density": 640,
+  "sex_ratio": 1060,
+  "literacy_rate": 79.69,
+  "literacy_rate_male": 87.08,
+  "literacy_rate_female": 72.68,
+  "president": "CKCHAMUNNI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PAZHAMBALACODE",
+      "person": {
+        "id": "2015010900101",
+        "name": "T VASU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "TARUR",
+      "person": {
+        "id": "2015010900201",
+        "name": "SANTHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERIMAYUR",
+      "person": {
+        "id": "2015010900301",
+        "name": "RASEENA U"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KUNISSERY",
+      "person": {
+        "id": "2015010900401",
+        "name": "HEMALATHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "TRIPPALUR",
+      "person": {
+        "id": "2015010900501",
+        "name": "C V ANJALI MENON"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALATHUR",
+      "person": {
+        "id": "2015010900601",
+        "name": "THULASI K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAVASSERY",
+      "person": {
+        "id": "2015010900701",
+        "name": "VAHEEDHA UMMER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANGALAM",
+      "person": {
+        "id": "2015010900801",
+        "name": "M.KRISHNKUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KIZHAKKENCHERY",
+      "person": {
+        "id": "2015010900901",
+        "name": "A. CHAMIYAR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THEKKINKALLA",
+      "person": {
+        "id": "2015010901001",
+        "name": "ABRAHAM SCARIYA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOOLAMKODE",
+      "person": {
+        "id": "2015010901101",
+        "name": "C. VASUDHEVAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VADAKKENCHERY",
+      "person": {
+        "id": "2015010901201",
+        "name": "C PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANNAMBRA",
+      "person": {
+        "id": "2015010901301",
+        "name": "C K CHAMUNNI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KARAPPOTTA",
+      "person": {
+        "id": "2015010901401",
+        "name": "SULOCHANA K"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PUTHUCODE",
+      "person": {
+        "id": "2015010901501",
+        "name": "REJITHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

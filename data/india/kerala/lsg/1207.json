@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349600833,
+  "date": "2019-08-21",
+  "name": "Kayyur Cheemeni  Grama Panchayat, Kasargode District",
+  "district": "Kasargode",
+  "block": "Neeleswaram",
+  "area": "72.46km",
+  "localbody_code": "G140602",
+  "no_of_wards": 16,
+  "population": 24615,
+  "male": 11903,
+  "female": 12712,
+  "population_density": 340,
+  "sex_ratio": 1068,
+  "literacy_rate": 79.78,
+  "literacy_rate_male": 4391,
+  "literacy_rate_female": 6897,
+  "president": "SAKUNTHALAK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KLAYIKKODE",
+      "person": {
+        "id": "2015120700101",
+        "name": "PRAMITHA K"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MUZHAKKOM",
+      "person": {
+        "id": "2015120700201",
+        "name": "GANGADHARAN K.V"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUKKOTTU",
+      "person": {
+        "id": "2015120700301",
+        "name": "SHEENA K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KAYYUR",
+      "person": {
+        "id": "2015120700401",
+        "name": "MOHANAN P.P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERIYAKKARA",
+      "person": {
+        "id": "2015120700502",
+        "name": "P INDIRA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PODAVUR",
+      "person": {
+        "id": "2015120700601",
+        "name": "BHASKARAN K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PALLIPPARA",
+      "person": {
+        "id": "2015120700701",
+        "name": "SAKUNTHALA K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNDYAM",
+      "person": {
+        "id": "2015120700801",
+        "name": "SUKUMARAN P"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHANADUKKAM",
+      "person": {
+        "id": "2015120700901",
+        "name": "SUBHASH C"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PATTOLI",
+      "person": {
+        "id": "2015120701001",
+        "name": "GEETHA M.V"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHEEMENI",
+      "person": {
+        "id": "2015120701101",
+        "name": "RATHEESAN K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHALLUVAKODE",
+      "person": {
+        "id": "2015120701201",
+        "name": "KUNHIKANNAN K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MUNDA",
+      "person": {
+        "id": "2015120701301",
+        "name": "RAJANI K.P"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHEBRAKANAM",
+      "person": {
+        "id": "2015120701401",
+        "name": "SREEJA K.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THIMIRI",
+      "person": {
+        "id": "2015120701501",
+        "name": "KUNHIKRISHNAN T.V"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "NALILAMKANDHAM",
+      "person": {
+        "id": "2015120701601",
+        "name": "GEETHA K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

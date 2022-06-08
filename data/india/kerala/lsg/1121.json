@@ -1,0 +1,134 @@
+{
+  "timeStamp": 1566349283417,
+  "date": "2019-08-21",
+  "name": "Eruvessy  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "54.06km",
+  "localbody_code": "G130401",
+  "no_of_wards": 14,
+  "population": 19393,
+  "male": 9767,
+  "female": 9626,
+  "population_density": 359,
+  "sex_ratio": 981,
+  "literacy_rate": 93.09,
+  "literacy_rate_male": 95.16,
+  "literacy_rate_female": 91,
+  "president": "ADV.JOSEPHISAC",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KUDIYANMALA",
+      "person": {
+        "id": "2015112100101",
+        "name": "ADV. JOSEPH ISAC"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AREEKAMALA",
+      "person": {
+        "id": "2015112100201",
+        "name": "MINI SUBHASH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHERIYA AREEKAMALA",
+      "person": {
+        "id": "2015112100301",
+        "name": "SELINE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "NELLIKUTTY",
+      "person": {
+        "id": "2015112100401",
+        "name": "SOJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "VEMBUVA",
+      "person": {
+        "id": "2015112100501",
+        "name": "JOSEPH P M"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOPARAMBA",
+      "person": {
+        "id": "2015112100601",
+        "name": "SUDHEESH K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUYIPRA",
+      "person": {
+        "id": "2015112100701",
+        "name": "KUMARAN K P"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "ERUVESSY",
+      "person": {
+        "id": "2015112100801",
+        "name": "RADHAMANI M D"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHEMPERI",
+      "person": {
+        "id": "2015112100901",
+        "name": "DAISY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "EDAMANA",
+      "person": {
+        "id": "2015112101001",
+        "name": "PAULINE THOMAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHELIMPARAMBA",
+      "person": {
+        "id": "2015112101101",
+        "name": "SONIYA SHAJI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THARACHEETHA",
+      "person": {
+        "id": "2015112101201",
+        "name": "NARAYANAN M K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "RATHNAGIRI",
+      "person": {
+        "id": "2015112101301",
+        "name": "SWAPNA T T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KOKKAMULLU",
+      "person": {
+        "id": "2015112101401",
+        "name": "SHYLA JOY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348359467,
+  "date": "2019-08-21",
+  "name": "Vadakarapathy  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Chittur",
+  "area": "49.51km",
+  "localbody_code": "G090905",
+  "no_of_wards": 17,
+  "population": 23834,
+  "male": 11934,
+  "female": 11900,
+  "population_density": 481,
+  "sex_ratio": 997,
+  "literacy_rate": 66.27,
+  "literacy_rate_male": 75.92,
+  "literacy_rate_female": 56.67,
+  "president": "KOLANDAITHERESA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NEELIPARA",
+      "person": {
+        "id": "2015086500101",
+        "name": "VELANKANNI AROKIYAMARY.A"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "SORAPPARA",
+      "person": {
+        "id": "2015086500201",
+        "name": "SADAYAPPAN.P"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELANTHAVALAM",
+      "person": {
+        "id": "2015086500301",
+        "name": "J LAKSHMI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUNSIFFCHALLA",
+      "person": {
+        "id": "2015086500401",
+        "name": "Y.FELIX SUNDARA RAJ"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ATTAYAMPATHY",
+      "person": {
+        "id": "2015086500501",
+        "name": "NADHIYA.S"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "OZHALAPATHY",
+      "person": {
+        "id": "2015086500601",
+        "name": "P.SWAMIAPPAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUPPANDAKOUNDANOOR",
+      "person": {
+        "id": "2015086500701",
+        "name": "S.SELVAKUMARASWAMY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KERAMPARA",
+      "person": {
+        "id": "2015086500801",
+        "name": "JISHA SEBASTIAN.J"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KINARPALLAM",
+      "person": {
+        "id": "2015086500901",
+        "name": "BHANUMATHI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VALIYAKALLIYAMPARA",
+      "person": {
+        "id": "2015086501001",
+        "name": "R.PETER AMALRAJ"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "SATHRAM",
+      "person": {
+        "id": "2015086501101",
+        "name": "SANDY ANNES.P"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANIYAKARANCHALLA",
+      "person": {
+        "id": "2015086501201",
+        "name": "KOLANDAI THERESA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MENONPARA",
+      "person": {
+        "id": "2015086501301",
+        "name": "R.BABY"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "BAGAVATHIPARA",
+      "person": {
+        "id": "2015086501401",
+        "name": "MARTIN.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KANAKKANKALAM",
+      "person": {
+        "id": "2015086501501",
+        "name": "MERCY MARGRAT.A"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOZHIPPARA",
+      "person": {
+        "id": "2015086501601",
+        "name": "ANILKUMAR.A"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "ERUMAKARANOOR",
+      "person": {
+        "id": "2015086501701",
+        "name": "JOICY ELISABATH.A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

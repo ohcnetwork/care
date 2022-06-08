@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349500380,
+  "date": "2019-08-21",
+  "name": "Malur  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Peravoor",
+  "area": "41.38km",
+  "localbody_code": "G131106",
+  "no_of_wards": 15,
+  "population": 19853,
+  "male": 9712,
+  "female": 10141,
+  "population_density": 480,
+  "sex_ratio": 1044,
+  "literacy_rate": 88.79,
+  "literacy_rate_male": 94.33,
+  "literacy_rate_female": 83.56,
+  "president": "PASHOKAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "SIVAPURAM",
+      "person": {
+        "id": "2015117500101",
+        "name": "PUTHIYANDI JAMEELA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VELLILODE",
+      "person": {
+        "id": "2015117500201",
+        "name": "K REEJA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ERATTENGAL",
+      "person": {
+        "id": "2015117500301",
+        "name": "SANTHA MAVILODAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALUR",
+      "person": {
+        "id": "2015117500401",
+        "name": "GEORGE P.V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KURUMBOLI",
+      "person": {
+        "id": "2015117500501",
+        "name": "SUMATHI KARIYADAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PANAMBATTA",
+      "person": {
+        "id": "2015117500601",
+        "name": "PARALI SIVAPRASAD"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUZHARI",
+      "person": {
+        "id": "2015117500701",
+        "name": "MANAPPATTI SHAJI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THOLAMBRA",
+      "person": {
+        "id": "2015117500801",
+        "name": "P MAYITHILI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THATTIAD",
+      "person": {
+        "id": "2015117500901",
+        "name": "MAMBRON PRABHAKARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUNDERIPOYIL",
+      "person": {
+        "id": "2015117501001",
+        "name": "MANOJ KUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PATTARI",
+      "person": {
+        "id": "2015117501101",
+        "name": "CHENGARA RAJANI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOVVAMPOYIL",
+      "person": {
+        "id": "2015117501201",
+        "name": "P ASHOKAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KANHILERI",
+      "person": {
+        "id": "2015117501301",
+        "name": "SUDHEESAN K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KAKKATTUPARAMBA",
+      "person": {
+        "id": "2015117501401",
+        "name": "A JAYARAJAN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MARUVANCHERI",
+      "person": {
+        "id": "2015117501501",
+        "name": "SUJATHA V"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

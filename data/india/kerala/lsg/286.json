@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566345911942,
+  "date": "2019-08-21",
+  "name": "Aryancode  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Perumkadavila",
+  "area": "21.78km",
+  "localbody_code": "G010904",
+  "no_of_wards": 16,
+  "population": 22212,
+  "male": 11099,
+  "female": 11113,
+  "population_density": 1020,
+  "sex_ratio": 1001,
+  "literacy_rate": 86.82,
+  "literacy_rate_male": 90.19,
+  "literacy_rate_female": 83.51,
+  "president": "ANILK",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KEEZHAROOR",
+      "person": {
+        "id": "2015028600101",
+        "name": "M P ANJANA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARYANCODE",
+      "person": {
+        "id": "2015028600201",
+        "name": "R S AKHIL"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLANGAL",
+      "person": {
+        "id": "2015028600301",
+        "name": "SIMI R"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDAVAL",
+      "person": {
+        "id": "2015028600401",
+        "name": "ANITHA STANLY V"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KALAYIL",
+      "person": {
+        "id": "2015028600501",
+        "name": "GEETHA D"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHILAMPARA",
+      "person": {
+        "id": "2015028600601",
+        "name": "LEELA A"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANCHAMCODE",
+      "person": {
+        "id": "2015028600701",
+        "name": "ANEESH C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEMBOOR",
+      "person": {
+        "id": "2015028600801",
+        "name": "V J WILFREDSON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARIKKOTTUKUZHI",
+      "person": {
+        "id": "2015028600901",
+        "name": "LEELA K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANNAMKONAM",
+      "person": {
+        "id": "2015028601001",
+        "name": "SAJIKUMAR G"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THUDALI",
+      "person": {
+        "id": "2015028601101",
+        "name": "ANIL K"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUKKOLAVILA",
+      "person": {
+        "id": "2015028601201",
+        "name": "SUNILA S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MYLACHAL",
+      "person": {
+        "id": "2015028601302",
+        "name": "VEERENDRAKUMAR V"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KUTTIYAYANIKKADU",
+      "person": {
+        "id": "2015028601401",
+        "name": "PRABHAKARAN S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAVALLOOR",
+      "person": {
+        "id": "2015028601501",
+        "name": "MOLY O"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PASUVANNARA",
+      "person": {
+        "id": "2015028601601",
+        "name": "P KRISHNANKUTTY NAIR"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

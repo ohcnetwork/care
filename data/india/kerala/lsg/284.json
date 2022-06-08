@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566345907532,
+  "date": "2019-08-21",
+  "name": "Kollayil  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Perumkadavila",
+  "area": "13.73km",
+  "localbody_code": "G010902",
+  "no_of_wards": 16,
+  "population": 21491,
+  "male": 10601,
+  "female": 10890,
+  "population_density": 1565,
+  "sex_ratio": 1027,
+  "literacy_rate": 91.08,
+  "literacy_rate_male": 93.85,
+  "literacy_rate_female": 88.39,
+  "president": "YLEKHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "NADOORKOLLA",
+      "person": {
+        "id": "2015028400101",
+        "name": "ANCY H"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUMBOTTUKONAM",
+      "person": {
+        "id": "2015028400201",
+        "name": "SINDHU G"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANKOTTUKONAM",
+      "person": {
+        "id": "2015028400301",
+        "name": "G S BINU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALAYILKADA",
+      "person": {
+        "id": "2015028400401",
+        "name": "Y LEKHA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANKOTTUKONAM",
+      "person": {
+        "id": "2015028400501",
+        "name": "V.S BINU"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANCHAVILAKOM",
+      "person": {
+        "id": "2015028400601",
+        "name": "G RAMESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOVATHOOR",
+      "person": {
+        "id": "2015028400701",
+        "name": "ANITHASHALI M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHARUVILAKOM",
+      "person": {
+        "id": "2015028400801",
+        "name": "S SASIKALA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "MEKOLLA",
+      "person": {
+        "id": "2015028400901",
+        "name": "AJESH B . L"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "DHANUVACHAPURAM",
+      "person": {
+        "id": "2015028401001",
+        "name": "SOUMYA V . T"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTAMAM",
+      "person": {
+        "id": "2015028401101",
+        "name": "T KRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PUTHUSSERIMADAM",
+      "person": {
+        "id": "2015028401201",
+        "name": "BINDU L R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "EAITHUKONDAKANI",
+      "person": {
+        "id": "2015028401301",
+        "name": "A VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "UDIYANKULANGARA",
+      "person": {
+        "id": "2015028401401",
+        "name": "DOLLY R"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "DEVESWARAM",
+      "person": {
+        "id": "2015028401501",
+        "name": "MOHANKUMAR(UNNI)"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANAYAMMOOLA",
+      "person": {
+        "id": "2015028401601",
+        "name": "SHEENA SUBASH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

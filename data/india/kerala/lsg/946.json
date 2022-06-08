@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566348710067,
+  "date": "2019-08-21",
+  "name": "Moorkkanad  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Mankada",
+  "area": "30.55km",
+  "localbody_code": "G100804",
+  "no_of_wards": 19,
+  "population": 26960,
+  "male": 12990,
+  "female": 13970,
+  "population_density": 840,
+  "sex_ratio": 1075,
+  "literacy_rate": 87.91,
+  "literacy_rate_male": 91.47,
+  "literacy_rate_female": 84.36,
+  "president": "KRAJAGOPALAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOLATHUR-PALAKAPARAMBA",
+      "person": {
+        "id": "2015094600102",
+        "name": "K.P HAMSA"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KOLATHUR KURUPPATHAL",
+      "person": {
+        "id": "2015094600201",
+        "name": "RAJAMOHANAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOLATHUR VADEKKEKULAMB",
+      "person": {
+        "id": "2015094600301",
+        "name": "MURALEEDHRAN T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KOLATHUR CHANDAPPADI",
+      "person": {
+        "id": "2015094600401",
+        "name": "SEENATH CHEROOLATHODI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOLATHUR ONAPPUDA",
+      "person": {
+        "id": "2015094600501",
+        "name": "RAMLA K T"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KOLATHUR STATIONPADI",
+      "person": {
+        "id": "2015094600601",
+        "name": "SAMEERA KALLINGATHODI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOLATHUR AMBALAPPADI",
+      "person": {
+        "id": "2015094600701",
+        "name": "MUHAMMAD MARAKKAR"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KOLATHUR ALINKOOTTAM",
+      "person": {
+        "id": "2015094600801",
+        "name": "SHAHINA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUNNAKKAD",
+      "person": {
+        "id": "2015094600901",
+        "name": "SHAHINA PK"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MOORKKANAD KIZHAKKUMPURAM",
+      "person": {
+        "id": "2015094601001",
+        "name": "JASMI KALAPPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MOORKKANAD KALLUVETTUKUZHI",
+      "person": {
+        "id": "2015094601101",
+        "name": "VADISSEERI SUNDARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MOORKKANAD PADINCHATUMPURAM",
+      "person": {
+        "id": "2015094601201",
+        "name": "LAKSHMI DEVI"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VENGAD KIZHEKKEKARA",
+      "person": {
+        "id": "2015094601301",
+        "name": "K RAJAGOPALAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VENGAD KIZHMURI",
+      "person": {
+        "id": "2015094601401",
+        "name": "MUTHALAMKUNNATH KARTHYAYANI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VENGAD TOWN",
+      "person": {
+        "id": "2015094601501",
+        "name": "PARAKKAL SAINUDHEEN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VENGAD PALLIPPADI",
+      "person": {
+        "id": "2015094601601",
+        "name": "SATHYABHAMA KARUMATHIL"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "VENGAD MELMURI",
+      "person": {
+        "id": "2015094601701",
+        "name": "KUNNATH KRISHNANKUTTY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOLATHUR THEKKEKARA",
+      "person": {
+        "id": "2015094601801",
+        "name": "SUDHEER PP"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KOLATHUR PADINCHARE KULAMB",
+      "person": {
+        "id": "2015094601901",
+        "name": "K.V SHEEJA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

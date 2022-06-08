@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566348232456,
+  "date": "2019-08-21",
+  "name": "Vaniamkulam  Grama Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Ottappalam",
+  "area": "35.52km",
+  "localbody_code": "G090305",
+  "no_of_wards": 18,
+  "population": 26153,
+  "male": 12483,
+  "female": 13670,
+  "population_density": 736,
+  "sex_ratio": 1095,
+  "literacy_rate": 87.83,
+  "literacy_rate_male": 92.17,
+  "literacy_rate_female": 84.04,
+  "president": "PRIYA.M",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PANAYOR",
+      "person": {
+        "id": "2015082500101",
+        "name": "ABDULSALAM N.M"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "EDAKODE",
+      "person": {
+        "id": "2015082500201",
+        "name": "SOORAJ.C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOTHAYOOR",
+      "person": {
+        "id": "2015082500301",
+        "name": "SINDHUMOL.A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VANIYAMKULAM",
+      "person": {
+        "id": "2015082500401",
+        "name": "K. BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PULACHITHARA",
+      "person": {
+        "id": "2015082500501",
+        "name": "JAYARAJAN P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "MANISSERI",
+      "person": {
+        "id": "2015082500601",
+        "name": "P.KANAKARAJAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARAMKULAM",
+      "person": {
+        "id": "2015082500701",
+        "name": "A.C.SUBRAMANIAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MANISSERI  EAST",
+      "person": {
+        "id": "2015082500801",
+        "name": "AMBIKA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THRIKKANGODE",
+      "person": {
+        "id": "2015082500901",
+        "name": "USHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHOROTTUR",
+      "person": {
+        "id": "2015082501001",
+        "name": "PRAJEESH.K.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VELLIYAD",
+      "person": {
+        "id": "2015082501101",
+        "name": "PRIYA.M"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERUKATTUPULAM",
+      "person": {
+        "id": "2015082501201",
+        "name": "K.P. PREMAKUMARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANNANNUR",
+      "person": {
+        "id": "2015082501301",
+        "name": "KRISHNAKUMAR.K"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THRANGALI",
+      "person": {
+        "id": "2015082501401",
+        "name": "PREMA.S"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PATHIPPARA",
+      "person": {
+        "id": "2015082501501",
+        "name": "MALLIKA.K.P"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KOONATHARA",
+      "person": {
+        "id": "2015082501601",
+        "name": "RAJASREE.K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KOONATHARA WEST",
+      "person": {
+        "id": "2015082501701",
+        "name": "ANITHA.K"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PANAYOOR WEST VAYANASALA",
+      "person": {
+        "id": "2015082501801",
+        "name": "JAYAPRABHA.O"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

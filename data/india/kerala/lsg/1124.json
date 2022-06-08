@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566349326795,
+  "date": "2019-08-21",
+  "name": "Payyavoor  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Irikkur",
+  "area": "67.34km",
+  "localbody_code": "G130404",
+  "no_of_wards": 16,
+  "population": 22102,
+  "male": 11207,
+  "female": 10895,
+  "population_density": 328,
+  "sex_ratio": 972,
+  "literacy_rate": 92.5,
+  "literacy_rate_male": 94.61,
+  "literacy_rate_female": 90.33,
+  "president": "DAISYKURIANCHITTUPARAMBIL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ADAMPARA",
+      "person": {
+        "id": "2015112400101",
+        "name": "SAJAN VETTUKATIL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KANHIRAKOLLY",
+      "person": {
+        "id": "2015112400201",
+        "name": "SHAJI MATHEW"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SANTHINAGAR",
+      "person": {
+        "id": "2015112400301",
+        "name": "SIJIMOL P.T"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHANDANAKAMPARA",
+      "person": {
+        "id": "2015112400401",
+        "name": "BALAKRISHNAN P.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHATHURAMPUZHA",
+      "person": {
+        "id": "2015112400501",
+        "name": "DAISY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PAISAKARI",
+      "person": {
+        "id": "2015112400601",
+        "name": "BINOY JOSE"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNHIPARAMBU",
+      "person": {
+        "id": "2015112400701",
+        "name": "SINDHU RAVEENDRAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHAMAKKAL",
+      "person": {
+        "id": "2015112400801",
+        "name": "ANILKUMAR K.T"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHAMATHACHAL",
+      "person": {
+        "id": "2015112400902",
+        "name": "JAYAN MALLISSERY"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KANDAKASSERI",
+      "person": {
+        "id": "2015112401001",
+        "name": "SUSHA BENNY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PONNUMPARAMBU",
+      "person": {
+        "id": "2015112401101",
+        "name": "JOY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PAYYAVOOR",
+      "person": {
+        "id": "2015112401201",
+        "name": "ASHRAF T.P"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VEMBUVA",
+      "person": {
+        "id": "2015112401301",
+        "name": "DAISY KURIAN CHITTUPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "VANNAYIKADAVU",
+      "person": {
+        "id": "2015112401401",
+        "name": "AGNAS VAZHAPPALLI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "EATTUPARA",
+      "person": {
+        "id": "2015112401501",
+        "name": "AGNES KOVATTU"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VANCHIYAM",
+      "person": {
+        "id": "2015112401601",
+        "name": "VIJAYAMMA A.M"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

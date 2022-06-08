@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566349435272,
+  "date": "2019-08-21",
+  "name": "Chittariparamba  Grama Panchayat, Kannur District",
+  "district": "Kannur",
+  "block": "Koothuparamba",
+  "area": "33.81km",
+  "localbody_code": "G130902",
+  "no_of_wards": 15,
+  "population": 20974,
+  "male": 10234,
+  "female": 10740,
+  "population_density": 620,
+  "sex_ratio": 1049,
+  "literacy_rate": 89.44,
+  "literacy_rate_male": 93.95,
+  "literacy_rate_female": 85.21,
+  "president": "U.PSHOBHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MUDAPPATHUR",
+      "person": {
+        "id": "2015115800101",
+        "name": "V.K BALARAMAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VATTOLI",
+      "person": {
+        "id": "2015115800201",
+        "name": "RAJITHA C"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "EDUMBA",
+      "person": {
+        "id": "2015115800301",
+        "name": "SAJEEVAN A"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MODOLI",
+      "person": {
+        "id": "2015115800401",
+        "name": "ANILKUMAR P"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THODEEKKALAM",
+      "person": {
+        "id": "2015115800501",
+        "name": "BEENA K. K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "POOZHIYODE",
+      "person": {
+        "id": "2015115800601",
+        "name": "AJITHA RAVINDRAN"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KANNAVAM",
+      "person": {
+        "id": "2015115800701",
+        "name": "KALATHILEVALAPPIL PAROLI SREE ALIAS K.V .SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVATHINKEEZHIL",
+      "person": {
+        "id": "2015115800801",
+        "name": "C.K PUSHPA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHITTARIPARAMBA",
+      "person": {
+        "id": "2015115800901",
+        "name": "V PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANNANTHARA",
+      "person": {
+        "id": "2015115801001",
+        "name": "JISHA P.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "AREEKKARA",
+      "person": {
+        "id": "2015115801101",
+        "name": "U.P SHOBHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NHALIL",
+      "person": {
+        "id": "2015115801201",
+        "name": "INDIRA K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VANNATHIMOOLA",
+      "person": {
+        "id": "2015115801301",
+        "name": "PAVINA KARAYI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANANTHERI",
+      "person": {
+        "id": "2015115801401",
+        "name": "BEENA N"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AMBAYAKADU",
+      "person": {
+        "id": "2015115801501",
+        "name": "NARIKKODAN VIJAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

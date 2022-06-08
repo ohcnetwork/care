@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566347605600,
+  "date": "2019-08-21",
+  "name": "Cherpu  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Cherpu",
+  "area": "20.88km",
+  "localbody_code": "G081002",
+  "no_of_wards": 21,
+  "population": 33807,
+  "male": 16171,
+  "female": 17636,
+  "population_density": 1619,
+  "sex_ratio": 1090,
+  "literacy_rate": 90.05,
+  "literacy_rate_male": 93.82,
+  "literacy_rate_female": 86.67,
+  "president": "C.K.VINOD",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "POOTHARAKKAL",
+      "person": {
+        "id": "2015076500101",
+        "name": "LOVELY.A.V."
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERUMBILLYSSERY",
+      "person": {
+        "id": "2015076500201",
+        "name": "GEETHA SUDHEENDRAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEVOOR",
+      "person": {
+        "id": "2015076500301",
+        "name": "GEORGE ANTO"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHEVOOR EAST",
+      "person": {
+        "id": "2015076500401",
+        "name": "SHELY RAJAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THIRUVULLAKKAVU",
+      "person": {
+        "id": "2015076500501",
+        "name": "V.A.HARIDAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VALLUKUNNATHUSSERY",
+      "person": {
+        "id": "2015076500601",
+        "name": "SUJISHA KALLIYATH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POOCHUNNIPADAM",
+      "person": {
+        "id": "2015076500701",
+        "name": "SYAMALA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHERPU",
+      "person": {
+        "id": "2015076500801",
+        "name": "P.SANDEEP"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PERUVANAM",
+      "person": {
+        "id": "2015076500901",
+        "name": "SIBIN.T.CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "URAKAM NORTH",
+      "person": {
+        "id": "2015076501001",
+        "name": "AMBUJAM GOPI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "URAKAM EAST",
+      "person": {
+        "id": "2015076501101",
+        "name": "BINDU RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PANAMKULAM",
+      "person": {
+        "id": "2015076501201",
+        "name": "P.V.ASOKAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ETTUMANA",
+      "person": {
+        "id": "2015076501301",
+        "name": "K.R.SIDHARTHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "URAKAM",
+      "person": {
+        "id": "2015076501401",
+        "name": "HASEENA AKBAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015076501501",
+        "name": "SAJITHA ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ETTUMANA WEST",
+      "person": {
+        "id": "2015076501601",
+        "name": "ANITHA ANILAN"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHERPU WEST",
+      "person": {
+        "id": "2015076501701",
+        "name": "UMMER.P.H"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "MUTHULLIYAL",
+      "person": {
+        "id": "2015076501801",
+        "name": "C.K.VINOD"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "CHERPU EAST",
+      "person": {
+        "id": "2015076501901",
+        "name": "M.SUJITHKUMAR"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THAYAMKULANGARA",
+      "person": {
+        "id": "2015076502001",
+        "name": "SUJITH P.G."
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PERUMBILLYSSERY WEST",
+      "person": {
+        "id": "2015076502101",
+        "name": "PRIYALATHA PRASAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

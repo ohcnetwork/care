@@ -1,0 +1,158 @@
+{
+  "timeStamp": 1566348963409,
+  "date": "2019-08-21",
+  "name": "Meppayur  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Melady",
+  "area": "23.41km",
+  "localbody_code": "G110505",
+  "no_of_wards": 17,
+  "population": 24645,
+  "male": 12247,
+  "female": 12398,
+  "population_density": 1053,
+  "sex_ratio": 1012,
+  "literacy_rate": 90.71,
+  "literacy_rate_male": 96.02,
+  "literacy_rate_female": 85.5,
+  "president": "REENA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KEEZHPPAYUR",
+      "person": {
+        "id": "2015102000101",
+        "name": "PAVITHRAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "JANAKEEYAMUKKU",
+      "person": {
+        "id": "2015102000201",
+        "name": "RATHEESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MEPPAYYUR",
+      "person": {
+        "id": "2015102000301",
+        "name": "RAJAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "EDATHILMUKKU",
+      "person": {
+        "id": "2015102000401",
+        "name": "REMA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MADATHUMBHAGAM",
+      "person": {
+        "id": "2015102000501",
+        "name": "KAMALAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHANGARAMVELLI",
+      "person": {
+        "id": "2015102000601",
+        "name": "YOOSUF"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KAYALAD",
+      "person": {
+        "id": "2015102000701",
+        "name": "REENA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MEPPAYUR TOWN",
+      "person": {
+        "id": "2015102000801",
+        "name": "SHARMINA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOZHUKKALLUR",
+      "person": {
+        "id": "2015102000901",
+        "name": "BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHAVATTU",
+      "person": {
+        "id": "2015102001001",
+        "name": "USHA"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "NIDUMBOYIL",
+      "person": {
+        "id": "2015102001101",
+        "name": "PUSHPALATHA"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NARAKKODE",
+      "person": {
+        "id": "2015102001201",
+        "name": "DAMODARAN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MARUTHERIPARAMB",
+      "person": {
+        "id": "2015102001301",
+        "name": "KUNHIMOIDI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANHAKULAM",
+      "person": {
+        "id": "2015102001401",
+        "name": "SREEJA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PAVATTUKANDYMUKKU",
+      "person": {
+        "id": "2015102001501",
+        "name": "SELVI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VILAYATTOOR",
+      "person": {
+        "id": "2015102001601",
+        "name": "SOBHA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "NARIKKUNI",
+      "person": {
+        "id": "2015102001701",
+        "name": "SAREENA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347392541,
+  "date": "2019-08-21",
+  "name": "Kalloorkad  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Muvattupuzha",
+  "area": "23.95km",
+  "localbody_code": "G071405",
+  "no_of_wards": 13,
+  "population": 12665,
+  "male": 6329,
+  "female": 6336,
+  "population_density": 529,
+  "sex_ratio": 1001,
+  "literacy_rate": 92.81,
+  "literacy_rate_male": 94.2,
+  "literacy_rate_female": 90.45,
+  "president": "SHEENASUNNY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MARUTHOOR",
+      "person": {
+        "id": "2015070800101",
+        "name": "JIJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MALANIRAPPU",
+      "person": {
+        "id": "2015070800201",
+        "name": "ASHA JIFI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VELLARAMKALLU",
+      "person": {
+        "id": "2015070800301",
+        "name": "GEORGE JOHN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KALOOR",
+      "person": {
+        "id": "2015070800401",
+        "name": "SUJITH BABY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PERUMAMKANDAM",
+      "person": {
+        "id": "2015070800501",
+        "name": "SUSAMMA PAUL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THAZHUVAMKUNNU",
+      "person": {
+        "id": "2015070800601",
+        "name": "ANIES CLETUS"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PATHAKUTHI",
+      "person": {
+        "id": "2015070800701",
+        "name": "REJI VINCENT"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NAGAPUZHA",
+      "person": {
+        "id": "2015070800801",
+        "name": "JERISH JOSE"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHATTUPARA",
+      "person": {
+        "id": "2015070800901",
+        "name": "BIJI GENTLE"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MANIYANTHRAM",
+      "person": {
+        "id": "2015070801001",
+        "name": "SHINI SUNNY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VAZHIYANCHIRA",
+      "person": {
+        "id": "2015070801101",
+        "name": "TONY VINCENT"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KALLOORKAD",
+      "person": {
+        "id": "2015070801201",
+        "name": "SHEENA SUNNY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "NEERAMPUZHA",
+      "person": {
+        "id": "2015070801301",
+        "name": "BINU M.V."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,65 @@
+version: '3.4'
+
+services:
+  db:
+    container_name: care_db
+    image: postgis/postgis:latest
+    restart: always
+    env_file:
+      - ./docker/.local.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    container_name: care
+    build:
+      context: .
+      dockerfile: docker/DevDockerfile
+    env_file:
+      - ./docker/.local.env
+    command: python manage.py runserver 0.0.0.0:9000
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+  redis:
+    container_name: care_redis
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  celery:
+    container_name: care_celery
+    build:
+      context: .
+      dockerfile: docker/DevDockerfile
+    env_file:
+      - ./docker/.local.env
+    entrypoint: [ "bash", "devCelery.sh" ]
+    depends_on:
+      - db
+      - backend
+      - redis
+    volumes:
+      - .:/app
+
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - AWS_DEFAULT_REGION=ap-south-1
+      - EDGE_PORT=4566
+      - SERVICES=s3
+    ports:
+      - '4566:4566'
+    volumes:
+      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "./docker/awslocal:/docker-entrypoint-initaws.d"
+
+volumes:
+  postgres-data:

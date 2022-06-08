@@ -1,0 +1,190 @@
+{
+  "timeStamp": 1566345916632,
+  "date": "2019-08-21",
+  "name": "Kunnathukal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Perumkadavila",
+  "area": "26.85km",
+  "localbody_code": "G010906",
+  "no_of_wards": 21,
+  "population": 33648,
+  "male": 16602,
+  "female": 17046,
+  "population_density": 1253,
+  "sex_ratio": 1027,
+  "literacy_rate": 87.02,
+  "literacy_rate_male": 89.91,
+  "literacy_rate_female": 84.23,
+  "president": "ARUNH.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANAVOOR",
+      "person": {
+        "id": "2015028800101",
+        "name": "LAILA D"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANAVARI",
+      "person": {
+        "id": "2015028800201",
+        "name": "BINUKUMAR.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KORANAMCODE",
+      "person": {
+        "id": "2015028800301",
+        "name": "ARUN H.S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ARUVIYODU",
+      "person": {
+        "id": "2015028800401",
+        "name": "KUMARI L"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "NARANI",
+      "person": {
+        "id": "2015028800501",
+        "name": "SAJITHA.N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAIVANKALA",
+      "person": {
+        "id": "2015028800601",
+        "name": "LATHA. K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ELLUVILA",
+      "person": {
+        "id": "2015028800701",
+        "name": "NIRMALA.G"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUDAYAL",
+      "person": {
+        "id": "2015028800801",
+        "name": "SUJITHA V.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERIYAKOLLA",
+      "person": {
+        "id": "2015028800901",
+        "name": "N.BEENA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NILAMAMOODU",
+      "person": {
+        "id": "2015028801001",
+        "name": "N.G.VINUKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTUKONAM",
+      "person": {
+        "id": "2015028801102",
+        "name": "SREEKALA L"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KARAKONAM",
+      "person": {
+        "id": "2015028801201",
+        "name": "R.SUJEER"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KUNNATHUKAL",
+      "person": {
+        "id": "2015028801301",
+        "name": "ANITHA.R"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHAVADI",
+      "person": {
+        "id": "2015028801401",
+        "name": "ANILKUMAR.G"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MANINADU",
+      "person": {
+        "id": "2015028801501",
+        "name": "PREETHA .S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VANDITHADAM",
+      "person": {
+        "id": "2015028801601",
+        "name": "R.SAJI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MOOVERIKARA",
+      "person": {
+        "id": "2015028801701",
+        "name": "SEENA.L"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KALAYIL",
+      "person": {
+        "id": "2015028801801",
+        "name": "MOHANAKUMARAN NAIR G"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KURUVADU",
+      "person": {
+        "id": "2015028801901",
+        "name": "SHIJU KUMAR. K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KOTTAIKAL",
+      "person": {
+        "id": "2015028802001",
+        "name": "O.VASANTHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "PALIYODU",
+      "person": {
+        "id": "2015028802101",
+        "name": "ANANDHAVALLY .K"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

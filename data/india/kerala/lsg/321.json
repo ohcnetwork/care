@@ -1,0 +1,174 @@
+{
+  "timeStamp": 1566346031673,
+  "date": "2019-08-21",
+  "name": "Kulakkada  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Vettikkavala",
+  "area": "29.18km",
+  "localbody_code": "G020305",
+  "no_of_wards": 19,
+  "population": 30440,
+  "male": 14738,
+  "female": 15702,
+  "population_density": 1043,
+  "sex_ratio": 1065,
+  "literacy_rate": 93.46,
+  "literacy_rate_male": 96.64,
+  "literacy_rate_female": 90.51,
+  "president": "G.SARASWATHY",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THAZHATHU KULAKKADA",
+      "person": {
+        "id": "2015032100101",
+        "name": "BINDHU"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KULAKKADA EAST",
+      "person": {
+        "id": "2015032100201",
+        "name": "G.SARASWATHY"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KUTTARA",
+      "person": {
+        "id": "2015032100301",
+        "name": "R.ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MALAPPARA",
+      "person": {
+        "id": "2015032100401",
+        "name": "P.R GOPI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KULAKKADA",
+      "person": {
+        "id": "2015032100501",
+        "name": "R.RAJESH"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ERATHU KULAKKADA",
+      "person": {
+        "id": "2015032100601",
+        "name": "RENJITHKUMAR.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "COLONY",
+      "person": {
+        "id": "2015032100701",
+        "name": "ABU P.R"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "POOVATTOOR EAST",
+      "person": {
+        "id": "2015032100801",
+        "name": "POOVATTOOR SURENDRAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KALAYAPURAM",
+      "person": {
+        "id": "2015032100901",
+        "name": "MARIAMMA.D"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUMKULAM",
+      "person": {
+        "id": "2015032101001",
+        "name": "S.GEETHA DEVI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "PONGANPARA",
+      "person": {
+        "id": "2015032101101",
+        "name": "R.BINDU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENDAR",
+      "person": {
+        "id": "2015032101201",
+        "name": "SREEKALA R.S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PATHALA",
+      "person": {
+        "id": "2015032101301",
+        "name": "VINODKUMAR"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POOVATTOOR",
+      "person": {
+        "id": "2015032101401",
+        "name": "SREEJA"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "MAVADY",
+      "person": {
+        "id": "2015032101501",
+        "name": "LEELAVATHY AMMA.J"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "ATTUVASSERY EAST",
+      "person": {
+        "id": "2015032101601",
+        "name": "SINDHU .B"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MYLAMKULAM",
+      "person": {
+        "id": "2015032101701",
+        "name": "G.RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PUTHOOR",
+      "person": {
+        "id": "2015032101801",
+        "name": "ARDRA.V"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ATTUVASSERY",
+      "person": {
+        "id": "2015032101901",
+        "name": "JAYAKUMARI AMMA.P"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

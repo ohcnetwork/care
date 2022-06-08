@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566345752041,
+  "date": "2019-08-21",
+  "name": "Azhoor  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Chirayinkeezhu",
+  "area": "152.46km",
+  "localbody_code": "G010705",
+  "no_of_wards": 18,
+  "population": 26829,
+  "male": 12525,
+  "female": 14304,
+  "population_density": 2153,
+  "sex_ratio": 1142,
+  "literacy_rate": 81.95,
+  "literacy_rate_male": 89.28,
+  "literacy_rate_female": 75.8,
+  "president": "T.INDIRA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "MADANVILA",
+      "person": {
+        "id": "2015024000101",
+        "name": "M.RAFI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "AZHOOR TEMPLE",
+      "person": {
+        "id": "2015024000201",
+        "name": "C.SURA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "GANAPATHIYAM KOVIL",
+      "person": {
+        "id": "2015024000301",
+        "name": "AZHOOR VIJAYAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MAVINTE MOODU",
+      "person": {
+        "id": "2015024000401",
+        "name": "MANOJ M"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KOLICHIRA",
+      "person": {
+        "id": "2015024000501",
+        "name": "BEENA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AZHOOR  L.P.S",
+      "person": {
+        "id": "2015024000601",
+        "name": "ANILKUMAR R"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KRISHNAPURAM",
+      "person": {
+        "id": "2015024000701",
+        "name": "OMANA K"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MUTTAPPALAM",
+      "person": {
+        "id": "2015024000801",
+        "name": "JITHA J.S"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THETTICHIRA",
+      "person": {
+        "id": "2015024000901",
+        "name": "B.SOBHA"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "GANDHISMARAKOM",
+      "person": {
+        "id": "2015024001001",
+        "name": "SUDHARMA B"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KANNUKALIVANAM",
+      "person": {
+        "id": "2015024001101",
+        "name": "R.REGHUNATHAN NAIR"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "NALUMUKKU",
+      "person": {
+        "id": "2015024001201",
+        "name": "SREEJA S"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "CHILAMPIL",
+      "person": {
+        "id": "2015024001301",
+        "name": "T.INDIRA"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "AKKARAVILA",
+      "person": {
+        "id": "2015024001401",
+        "name": "MANOHARAN B"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PERUNGUZHI JUNCTION",
+      "person": {
+        "id": "2015024001501",
+        "name": "THULASI M"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PANCHAYAT OFFICE",
+      "person": {
+        "id": "2015024001601",
+        "name": "AJITHKUMAR R"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "REYILVESTATION",
+      "person": {
+        "id": "2015024001701",
+        "name": "SIJINCY S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KOTTARAMTHURUTHU",
+      "person": {
+        "id": "2015024001801",
+        "name": "SHAIJA A"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

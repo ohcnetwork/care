@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{facility.name}}{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap mb-3">
+  <div class="w-full lg:w-2/3 mb-3">
+    <span class="hospital-title block text-4xl mb-3">{{facility.name}}</span>
+    <h1 class="text-gray-700">Address : {{facility.address}}</h1>
+    <h1 class="text-gray-700">Phone : {{facility.phone_number}}</h1>
+    <h1 class="text-gray-700">District : {{facility.district.name}}</h1>
+    <h1 class="text-gray-700">Oxygen Capacity : {{facility.oxygen_capacity}} Litres</h1>
+  </div>
+  <div class="w-full lg:w-1/3 flex flex-col items-center pl-2">
+    <a class="btn btn-primary m-2" href="{% url 'facility:facility-update' pk=facility.id %}"> Update Hospital Info</a>
+    <a class="btn btn-primary m-2" href="{% url 'facility:facility-capacity-create' pk=facility.id %}"> Add More Bed
+      Types</a>
+    <a class="btn btn-primary m-2" href="{% url 'facility:facility-doctor-count-create' pk=facility.id %}"> Add More
+      Doctor Types</a>
+  </div>
+</div>
+
+<br>
+<h2 class="pb-2"><strong>Bed Types</strong></h2>
+<hr />
+<div id="facilities" class="flex flex-wrap mt-3 justify-between">
+  {% for i in capacities  %}
+  <div id="facilityCard" class="shadow-lg rounded overflow-hidden w-full cardwidth md:w-1/2 sm:w-full mr-4 mb-5">
+    <span class="room_type text-xl block p-3">{{i.get_room_type_display}}</span>
+    <span class="capacity-qty block text-4xl text-center">{{i.current_capacity}}</span>
+    <span class="label block text-center text-gray-600">Currently Occupied</span>
+    <button class="careblock mx-auto">
+      <a class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" href="{% url 'facility:facility-capacity-update' fpk=facility.id cpk=i.id %}"> EDIT </a> </button>
+    <div class="footer bg-gray-900 px-3 py-3 text-center">
+      <span class="text-white ">Total Capacity: {{i.total_capacity}}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<br><br>
+<h2 class="pb-2 mt-5"><strong>Doctor Counts</strong></h2>
+<hr />
+<div id="doctors" class="flex flex-wrap mt-3 justify-between">
+  {% for i in doctor_counts  %}
+  <div id="doctorCard" class="shadow-lg rounded overflow-hidden w-full cardwidth md:w-1/2 sm:w-full mr-4 mb-5">
+    <span class="qty p-4 block text-4xl text-center">{{i.count}}</span>
+    <span class="label block text-center text-gray-600">{{i.get_area_display}} Doctors</span>
+    <button
+      class="careblock mx-auto">
+      <a class="careblock mx-auto my-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" href="{% url 'facility:facility-doctor-count-update' fpk=facility.id cpk=i.id %}"> EDIT </a>
+    </button>
+
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

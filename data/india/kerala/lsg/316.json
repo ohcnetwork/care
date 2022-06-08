@@ -1,0 +1,166 @@
+{
+  "timeStamp": 1566346009472,
+  "date": "2019-08-21",
+  "name": "Sooranad North  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Sasthamcotta",
+  "area": "22.67km",
+  "localbody_code": "G020206",
+  "no_of_wards": 18,
+  "population": 25470,
+  "male": 12375,
+  "female": 13095,
+  "population_density": 1124,
+  "sex_ratio": 1058,
+  "literacy_rate": 87.77,
+  "literacy_rate_male": 91.95,
+  "literacy_rate_female": 83.89,
+  "president": "SASIKALA.S",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PULIKKULAM",
+      "person": {
+        "id": "2015031600101",
+        "name": "B.REMADEVI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "SANGAMAM",
+      "person": {
+        "id": "2015031600201",
+        "name": "P.REMYA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "VAYYANKARA",
+      "person": {
+        "id": "2015031600301",
+        "name": "GANGADEVI"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ANAYADI",
+      "person": {
+        "id": "2015031600401",
+        "name": "AKHIL.K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PATHIRICKAL",
+      "person": {
+        "id": "2015031600501",
+        "name": "SHEELA.N"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KANNAMAM",
+      "person": {
+        "id": "2015031600601",
+        "name": "SASIKALA.S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KUNNIRADAM",
+      "person": {
+        "id": "2015031600701",
+        "name": "ALICE"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NADUVILEMURI",
+      "person": {
+        "id": "2015031600801",
+        "name": "HARIS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PULIMOOD",
+      "person": {
+        "id": "2015031600901",
+        "name": "MANSOOR"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THEKKEMURI",
+      "person": {
+        "id": "2015031601001",
+        "name": "SHEEJA BEGAM"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "CHAKKUVALLY",
+      "person": {
+        "id": "2015031601101",
+        "name": "LATHEEF"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PADINJATTAKIZHAKKU",
+      "person": {
+        "id": "2015031601201",
+        "name": "REJANI SANTHOSH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PALLICHANTHA",
+      "person": {
+        "id": "2015031601301",
+        "name": "ANITHAPRASAD"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "HIGHSCHOOL WARD",
+      "person": {
+        "id": "2015031601401",
+        "name": "K.V.ABHILASH"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PANCHAYATH OFFICE WARD",
+      "person": {
+        "id": "2015031601501",
+        "name": "V.GIREESH"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "AZHAKIYAKAVU LPS WARD",
+      "person": {
+        "id": "2015031601601",
+        "name": "E.VIJAYALEKSHMI"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "PADINJATTAMMURI",
+      "person": {
+        "id": "2015031601701",
+        "name": "SHEEJA .S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PARAKKADAVU",
+      "person": {
+        "id": "2015031601801",
+        "name": "N.KRISHNAPILLAI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

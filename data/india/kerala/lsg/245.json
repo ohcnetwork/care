@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566345772909,
+  "date": "2019-08-21",
+  "name": "Mudakkal  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Chirayinkeezhu",
+  "area": "27.46km",
+  "localbody_code": "G010305",
+  "no_of_wards": 20,
+  "population": 30474,
+  "male": 14599,
+  "female": 15875,
+  "population_density": 1120,
+  "sex_ratio": 1087,
+  "literacy_rate": 89.85,
+  "literacy_rate_male": 93.78,
+  "literacy_rate_female": 86.31,
+  "president": "VIJAYAKUMARIRS",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KAIPATTIMUKKU",
+      "person": {
+        "id": "2015024500101",
+        "name": "MOHANAN S"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLINMOODU",
+      "person": {
+        "id": "2015024500201",
+        "name": "SINI A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NELLIMOODU",
+      "person": {
+        "id": "2015024500301",
+        "name": "MINI S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VASUDEVAPURAM",
+      "person": {
+        "id": "2015024500401",
+        "name": "GEETHA G"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "AYILAM",
+      "person": {
+        "id": "2015024500501",
+        "name": "N MURALI"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PALLIYARA",
+      "person": {
+        "id": "2015024500601",
+        "name": "VIJAYAKUMARI R S"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "VALAKKADU",
+      "person": {
+        "id": "2015024500701",
+        "name": "JAYASREE P C"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PIRAPPANKOTTUKONAM",
+      "person": {
+        "id": "2015024500801",
+        "name": "SANTHOSH M"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PARAYADI",
+      "person": {
+        "id": "2015024500901",
+        "name": "SUJATHAN S"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POIKAMUKKU",
+      "person": {
+        "id": "2015024501001",
+        "name": "POIKAMUKKU HARI"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MUDAKKAL",
+      "person": {
+        "id": "2015024501101",
+        "name": "K MAHESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHEMPOOR",
+      "person": {
+        "id": "2015024501201",
+        "name": "ANITHA RAJANBABU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KATTIYADU",
+      "person": {
+        "id": "2015024501301",
+        "name": "KARTHIKA P T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "KURIKKAKAM",
+      "person": {
+        "id": "2015024501401",
+        "name": "SIMI.V"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KAIPPALLIKONAM",
+      "person": {
+        "id": "2015024501501",
+        "name": "SHEEBA.T.L"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "OORUPOIKA",
+      "person": {
+        "id": "2015024501601",
+        "name": "K.ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "EDAKKODU",
+      "person": {
+        "id": "2015024501701",
+        "name": "S.GEETHA"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KORANI",
+      "person": {
+        "id": "2015024501801",
+        "name": "J.MANILAL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "KATTAIKONAM",
+      "person": {
+        "id": "2015024501901",
+        "name": "V T SUSHAMADEVI"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PAUTHI",
+      "person": {
+        "id": "2015024502001",
+        "name": "K.R.ABHAYAN"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

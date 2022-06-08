@@ -1,0 +1,269 @@
+{
+  "timeStamp": 1566345455444,
+  "date": "2019-08-21",
+  "name": "Attingal  Municipality, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "area": "14.18km",
+  "localbody_code": "M010200",
+  "no_of_wards": 31,
+  "population": 35648,
+  "male": 16684,
+  "female": 18964,
+  "population_density": 2301,
+  "sex_ratio": 1093,
+  "literacy_rate": 93.23,
+  "literacy_rate_male": 96.16,
+  "literacy_rate_female": 90.63,
+  "chairman": "PRADEEPM",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOCHUVILA",
+      "person": {
+        "id": "2015017300101",
+        "name": "D IMAMUDEEN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ALAMCODE",
+      "person": {
+        "id": "2015017300201",
+        "name": "RUKHAINATH A"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POOVANPARA",
+      "person": {
+        "id": "2015017300301",
+        "name": "REJI S"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "L M S",
+      "person": {
+        "id": "2015017300401",
+        "name": "K S SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARICHIYIL",
+      "person": {
+        "id": "2015017300501",
+        "name": "P SYAMALA AMMA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "THACHOORKUNNU",
+      "person": {
+        "id": "2015017300601",
+        "name": "M K SURESH"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARATTUKADAVU",
+      "person": {
+        "id": "2015017300701",
+        "name": "GEETHAKUMARI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "AVANAVANCHERI",
+      "person": {
+        "id": "2015017300801",
+        "name": "SOBHANAKUMARI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "GRAMAM",
+      "person": {
+        "id": "2015017300901",
+        "name": "GAYATHRIDEVI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VELAMKONAM",
+      "person": {
+        "id": "2015017301001",
+        "name": "PRADEEP M"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KACHERI",
+      "person": {
+        "id": "2015017301101",
+        "name": "C PRADEEP"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MANOMOHANAVILASAM",
+      "person": {
+        "id": "2015017301201",
+        "name": "AVANAVANCHERY RAJU"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "AMBALAMMUKKU",
+      "person": {
+        "id": "2015017301301",
+        "name": "T R  KOMALAKUMARI"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "CHITTATTINKARA",
+      "person": {
+        "id": "2015017301401",
+        "name": "THAHIR M"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "VALIYAKUNNU",
+      "person": {
+        "id": "2015017301501",
+        "name": "SOBHANA  K"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "SEEVELIKONAM",
+      "person": {
+        "id": "2015017301601",
+        "name": "PRINCE RAJ S K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "MUNNUMUKKU",
+      "person": {
+        "id": "2015017301701",
+        "name": "M ANILKUMAR"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "ATTAKKULAM",
+      "person": {
+        "id": "2015017301801",
+        "name": "S SREELATHA"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "PARVATHYPURAM",
+      "person": {
+        "id": "2015017301901",
+        "name": "SREEDEVI  K"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "KANJIRAMKONAM",
+      "person": {
+        "id": "2015017302001",
+        "name": "MINI  O  S"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "RAMACHAMVILA",
+      "person": {
+        "id": "2015017302101",
+        "name": "REKHA R S"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "CHERUVALLIMUKKU",
+      "person": {
+        "id": "2015017302201",
+        "name": "G THULASEEDHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "KODUMON",
+      "person": {
+        "id": "2015017302301",
+        "name": "M S MANJU"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "PALACE",
+      "person": {
+        "id": "2015017302401",
+        "name": "R S PRASANTH"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "KUNNATHU",
+      "person": {
+        "id": "2015017302501",
+        "name": "S SHEEJA"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "TOWN",
+      "person": {
+        "id": "2015017302601",
+        "name": "SANTHOSH  S"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "PACHAMKULAM",
+      "person": {
+        "id": "2015017302701",
+        "name": "N PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "THOTTAVARAM",
+      "person": {
+        "id": "2015017302801",
+        "name": "ADV.  C  J RAJESHKUMAR"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KOTTIYODE",
+      "person": {
+        "id": "2015017302901",
+        "name": "P S VEENA"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "TOWNHALL",
+      "person": {
+        "id": "2015017303001",
+        "name": "S JAMEELA"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "MELATTINGAL",
+      "person": {
+        "id": "2015017303101",
+        "name": "R RAJU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566348088010,
+  "date": "2019-08-21",
+  "name": "Puthenchira  Grama Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Vellangallur",
+  "area": "22.29km",
+  "localbody_code": "G081303",
+  "no_of_wards": 15,
+  "population": 19804,
+  "male": 9127,
+  "female": 10677,
+  "population_density": 888,
+  "sex_ratio": 1170,
+  "literacy_rate": 90.23,
+  "literacy_rate_male": 93.45,
+  "literacy_rate_female": 87.51,
+  "president": "V.A.NADEER",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KANNIKULANGARA",
+      "person": {
+        "id": "2015078200101",
+        "name": "SHYLA PRAKASHAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PAKARAPPILLY",
+      "person": {
+        "id": "2015078200201",
+        "name": "MANOJ I.S"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "SANTHINAGAR",
+      "person": {
+        "id": "2015078200301",
+        "name": "V.N RAJESH"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KIZHAKKUMMURI",
+      "person": {
+        "id": "2015078200401",
+        "name": "ROMY BABY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "SADANAM",
+      "person": {
+        "id": "2015078200501",
+        "name": "M.P SONY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "AASUPATHRI",
+      "person": {
+        "id": "2015078200601",
+        "name": "P.SOUDAMINI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTHENCHIRA",
+      "person": {
+        "id": "2015078200701",
+        "name": "V.A.NADEER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KARINGACHIRA",
+      "person": {
+        "id": "2015078200801",
+        "name": "P.I NISAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PINDANI",
+      "person": {
+        "id": "2015078200902",
+        "name": "MAHESH P.M"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KUPPANBAZAR",
+      "person": {
+        "id": "2015078201001",
+        "name": "SANGEETHA ANEESH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "ANAPPARA",
+      "person": {
+        "id": "2015078201101",
+        "name": "VASANTHY SUBRAHMANYAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KOMBATHUKADAVU",
+      "person": {
+        "id": "2015078201201",
+        "name": "K.V SUJITHLAL"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "VELLOOR",
+      "person": {
+        "id": "2015078201301",
+        "name": "BEENA SUDHAKARAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MANIYAMKAVU",
+      "person": {
+        "id": "2015078201401",
+        "name": "RIFAYA AKTHER"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PULIYILAKKUNNU",
+      "person": {
+        "id": "2015078201501",
+        "name": "M.K KANCHANA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

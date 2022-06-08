@@ -1,0 +1,142 @@
+{
+  "timeStamp": 1566344903295,
+  "date": "2019-08-21",
+  "name": "Anchal  Block Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Anchal",
+  "area": "95076km",
+  "localbody_code": "B020500",
+  "no_of_wards": 15,
+  "population": 210648,
+  "male": 103795,
+  "female": 106853,
+  "population_density": 222,
+  "sex_ratio": 1029,
+  "literacy_rate": 89.11,
+  "literacy_rate_male": 92.76,
+  "literacy_rate_female": 85.6,
+  "president": "RENJUSURESH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "EDAMON",
+      "person": {
+        "id": "2015001800101",
+        "name": "THAHIRA SHEREEF"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARYANKAVU",
+      "person": {
+        "id": "2015001800201",
+        "name": "SUNITHA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THENMALA",
+      "person": {
+        "id": "2015001800301",
+        "name": "DHANYA RAJU"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "KULATHUPUZHA",
+      "person": {
+        "id": "2015001800401",
+        "name": "RAVEENDRAN PILLAI. G"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THINKALKARIKKOM",
+      "person": {
+        "id": "2015001800501",
+        "name": "MINI ROY"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "ALAYAMON",
+      "person": {
+        "id": "2015001800601",
+        "name": "SAJEENA SHIBU"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ANCHAL",
+      "person": {
+        "id": "2015001800701",
+        "name": "GIRIJA MURALI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "EDAMULACKAL",
+      "person": {
+        "id": "2015001800801",
+        "name": "G.S.AJAYA KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ARACKAL",
+      "person": {
+        "id": "2015001800901",
+        "name": "SHIBU.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KURUVIKKONAM",
+      "person": {
+        "id": "2015001801001",
+        "name": "P.V.PRASANTH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "MATHRA",
+      "person": {
+        "id": "2015001801101",
+        "name": "SREELEKSHMI.C"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VENCHEMBU",
+      "person": {
+        "id": "2015001801201",
+        "name": "R. SHYLAJA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KARAVALOOR",
+      "person": {
+        "id": "2015001801301",
+        "name": "RENJU SURESH"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "YEROOR",
+      "person": {
+        "id": "2015001801401",
+        "name": "G. SREEDHARAN PILLAI"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "AYIRANALLOOR",
+      "person": {
+        "id": "2015001801501",
+        "name": "BALACHANDRAN.P.R."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

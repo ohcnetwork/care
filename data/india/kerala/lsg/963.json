@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566348761598,
+  "date": "2019-08-21",
+  "name": "Kannamangalam  Grama Panchayat, Malappuram District",
+  "district": "Malappuram",
+  "block": "Vengara",
+  "area": null,
+  "localbody_code": "G101006",
+  "no_of_wards": 20,
+  "population": null,
+  "male": null,
+  "female": null,
+  "population_density": null,
+  "sex_ratio": null,
+  "literacy_rate": null,
+  "literacy_rate_male": null,
+  "literacy_rate_female": null,
+  "president": "SAROJINI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "CHENGANI",
+      "person": {
+        "id": "2015096300102",
+        "name": "ABIDA PALLIYALI"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "CHEREKKADU",
+      "person": {
+        "id": "2015096300201",
+        "name": "ABDURAHIMAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MEMATTUPARA",
+      "person": {
+        "id": "2015096300301",
+        "name": "NOUSHAD KAMBRAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MUTHUVILKUNDU",
+      "person": {
+        "id": "2015096300401",
+        "name": "MUJEEB POOKKUTH"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KILINAKKODU",
+      "person": {
+        "id": "2015096300501",
+        "name": "HAMZA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KAPPIL",
+      "person": {
+        "id": "2015096300601",
+        "name": "YASODA THELAPURATH PADIKKAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "V.K MADU",
+      "person": {
+        "id": "2015096300701",
+        "name": "JANAKI TEACHER"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "CHEROOR",
+      "person": {
+        "id": "2015096300801",
+        "name": "SAKEENA"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOVILAPARA",
+      "person": {
+        "id": "2015096300901",
+        "name": "K NAHEEM"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "CHANNAYIL",
+      "person": {
+        "id": "2015096301001",
+        "name": "SUNITHA. K"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOTTAMADU",
+      "person": {
+        "id": "2015096301101",
+        "name": "SAROJINI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "POOCHOLAMADU",
+      "person": {
+        "id": "2015096301201",
+        "name": "TK ABDUTTY"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ACHANAMBALAM",
+      "person": {
+        "id": "2015096301301",
+        "name": "AMINAKUTTY C.M"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THONNIPPURAYA",
+      "person": {
+        "id": "2015096301401",
+        "name": "SHAMEER PULLAT"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADAPPARAMBU",
+      "person": {
+        "id": "2015096301501",
+        "name": "SAIDALAVI NEDUMPALLI"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "EDAKKAPPARAMBU",
+      "person": {
+        "id": "2015096301602",
+        "name": "ABDUSALIM PULLAT"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AMBEDKAR GRAMAM",
+      "person": {
+        "id": "2015096301701",
+        "name": "SOFIYA P.P"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "E. K PADI",
+      "person": {
+        "id": "2015096301801",
+        "name": "BABY CHALIL"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VALAKKUDA",
+      "person": {
+        "id": "2015096301901",
+        "name": "BABY SHREE. P"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "THOTTASSERIYARA",
+      "person": {
+        "id": "2015096302001",
+        "name": "SHAREEFA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

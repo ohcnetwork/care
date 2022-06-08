@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346956351,
+  "date": "2019-08-21",
+  "name": "Santhanpara  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Devikulam",
+  "area": "78.71km",
+  "localbody_code": "G060205",
+  "no_of_wards": 13,
+  "population": 13889,
+  "male": 7113,
+  "female": 6776,
+  "population_density": 176,
+  "sex_ratio": 953,
+  "literacy_rate": 63,
+  "literacy_rate_male": 73,
+  "literacy_rate_female": 52,
+  "president": "JISHACHNDRANJISHADILEEP",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ANAYIRANKAL",
+      "person": {
+        "id": "2015058200101",
+        "name": "SARASWATHY SELVAM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PANNIYAR",
+      "person": {
+        "id": "2015058200201",
+        "name": "MURUKAN THIRUMALAI CHETTIYAR(P T MURUKAN)"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "THONDIMALA",
+      "person": {
+        "id": "2015058200301",
+        "name": "HARICHANDRAN MARIYAPPAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POOPARA EAST",
+      "person": {
+        "id": "2015058200401",
+        "name": "SIVASANKARI CHANDRAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PETHOTTY",
+      "person": {
+        "id": "2015058200501",
+        "name": "CHANDRAKUMAR P"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SANTHANPARA",
+      "person": {
+        "id": "2015058200601",
+        "name": "PANEER SELVAM VEDHANAYAKAM( V RAJAYYA)"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHERIYAR",
+      "person": {
+        "id": "2015058200701",
+        "name": "GEETHA VARADARAJAN"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PUTHADY",
+      "person": {
+        "id": "2015058200801",
+        "name": "JISHA CHNDRAN (JISHA DILEEP)"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PALLIKKUNNU",
+      "person": {
+        "id": "2015058200901",
+        "name": "SASIDHARAN NAIR(SENAPATHY SASI)"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THOTTIKKANAM",
+      "person": {
+        "id": "2015058201001",
+        "name": "REJANI MADHAVADAS"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOPARA WEST",
+      "person": {
+        "id": "2015058201101",
+        "name": "MALA JAYARAJ"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ESTATE POOPARA",
+      "person": {
+        "id": "2015058201201",
+        "name": "THILAKA RANI R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MULLANTHANDU",
+      "person": {
+        "id": "2015058201301",
+        "name": "LIJU VARGHESE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

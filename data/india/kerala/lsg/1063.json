@@ -1,0 +1,198 @@
+{
+  "timeStamp": 1566349089911,
+  "date": "2019-08-21",
+  "name": "Peruvayal  Grama Panchayat, Kozhikode District",
+  "district": "Kozhikode",
+  "block": "Kunnamangalam",
+  "area": "39.83km",
+  "localbody_code": "G111108",
+  "no_of_wards": 22,
+  "population": 53190,
+  "male": 26585,
+  "female": 26605,
+  "population_density": 1335,
+  "sex_ratio": 1001,
+  "literacy_rate": 90.25,
+  "literacy_rate_male": 94.6,
+  "literacy_rate_female": 85.95,
+  "president": "Y.V.SANTHA",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PERINGOLAM NORTH",
+      "person": {
+        "id": "2015106300101",
+        "name": "GOPALAN NAIR MANDOTHINGAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERINGOLAM",
+      "person": {
+        "id": "2015106300201",
+        "name": "JAFER.R.V."
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUNDAKKAL",
+      "person": {
+        "id": "2015106300301",
+        "name": "MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHERUKULATHOOR",
+      "person": {
+        "id": "2015106300401",
+        "name": "CHANDRASEKHARAN.T.M."
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PARIYANGAD",
+      "person": {
+        "id": "2015106300501",
+        "name": "AMSUMATHI.K."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PARIYANGAD WEST",
+      "person": {
+        "id": "2015106300601",
+        "name": "SAFIYA.K.P."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PERUVAYAL NORTH",
+      "person": {
+        "id": "2015106300701",
+        "name": "PRASEETHA"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PERUVAYAL",
+      "person": {
+        "id": "2015106300801",
+        "name": "SUBITHA THOTTANCHERY"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAYALAM",
+      "person": {
+        "id": "2015106300901",
+        "name": "K.P.APPU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "PERUVAYAL WEST",
+      "person": {
+        "id": "2015106301001",
+        "name": "C.T.SUKUMARAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "POOVATTUPARAMBA EAST",
+      "person": {
+        "id": "2015106301101",
+        "name": "N.K.MUNEER"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "ALUVINPILAKKIL",
+      "person": {
+        "id": "2015106301201",
+        "name": "P.K.SHARAFUDHEEN"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOVATTUPARAMBA WEST",
+      "person": {
+        "id": "2015106301301",
+        "name": "JUMAILA KUNNUMMAL"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "THADAPARAMBA",
+      "person": {
+        "id": "2015106301401",
+        "name": "MINI SREEKUMAR"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "KUTTIKKATTOOR SOUTH",
+      "person": {
+        "id": "2015106301501",
+        "name": "SAFIYA MAKKINIYATT"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PERYA",
+      "person": {
+        "id": "2015106301601",
+        "name": "ABDULLA ASHIK.A.M"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "KEEZHMADU",
+      "person": {
+        "id": "2015106301701",
+        "name": "SUSMITHA VITHARATH"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "VELLIPARAMBA",
+      "person": {
+        "id": "2015106301801",
+        "name": "KRISHNANKUTTY.V.P."
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VELLIPARAMBA NORTH",
+      "person": {
+        "id": "2015106301901",
+        "name": "SAIRABI.C.P."
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "VELLIPARAMBA EAST",
+      "person": {
+        "id": "2015106302001",
+        "name": "MAHIJAKAUMARI.N.V."
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "GOSALIKKUNNU",
+      "person": {
+        "id": "2015106302101",
+        "name": "PRASEETH KUMAR"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KUTTIKKATTOOR",
+      "person": {
+        "id": "2015106302201",
+        "name": "Y.V.SANTHA"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

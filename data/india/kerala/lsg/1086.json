@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566349166739,
+  "date": "2019-08-21",
+  "name": "Kottathara  Grama Panchayat, Wayanad District",
+  "district": "Wayanad",
+  "block": "Kalpetta",
+  "area": "31.75km",
+  "localbody_code": "G120401",
+  "no_of_wards": 13,
+  "population": 14494,
+  "male": 7248,
+  "female": 7246,
+  "population_density": 457,
+  "sex_ratio": 1000,
+  "literacy_rate": 82.08,
+  "literacy_rate_male": 88.26,
+  "literacy_rate_female": 75.88,
+  "president": "LEELAMMAJOSEPH",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VENNIYODE",
+      "person": {
+        "id": "2015108600101",
+        "name": "UNNIKRISHNAN V N"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MAILADY",
+      "person": {
+        "id": "2015108600201",
+        "name": "GEORGE V J"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHEERAKATH",
+      "person": {
+        "id": "2015108600301",
+        "name": "SAROJINI P K"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VANDIYAMBETTA",
+      "person": {
+        "id": "2015108600401",
+        "name": "BINU KUMAR P B"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANERI",
+      "person": {
+        "id": "2015108600501",
+        "name": "SARADA MANIYAM"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARIMKUTTY",
+      "person": {
+        "id": "2015108600601",
+        "name": "RESHMI PRADEEP"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KOTTATHARA",
+      "person": {
+        "id": "2015108600701",
+        "name": "PREETHA MANOJ"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "KUNNATHAIKUNNU",
+      "person": {
+        "id": "2015108600801",
+        "name": "K K SAROJINI"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KARINJAKUNNU",
+      "person": {
+        "id": "2015108600901",
+        "name": "ABDUL NAZER V  VALLIYIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "MADAKKUNNU",
+      "person": {
+        "id": "2015108601001",
+        "name": "LEELAMMA JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VYPPADI",
+      "person": {
+        "id": "2015108601101",
+        "name": "SOBHA SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "KUZHIVAYAL",
+      "person": {
+        "id": "2015108601201",
+        "name": "V ABDULLA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MECHANA",
+      "person": {
+        "id": "2015108601301",
+        "name": "SALI"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347070771,
+  "date": "2019-08-21",
+  "name": "Manakkad  Grama Panchayat, Idukki District",
+  "district": "Idukki",
+  "block": "Thodupuzha",
+  "area": "19.85km",
+  "localbody_code": "G060705",
+  "no_of_wards": 13,
+  "population": 13464,
+  "male": 6858,
+  "female": 6606,
+  "population_density": 678,
+  "sex_ratio": 963,
+  "literacy_rate": 95,
+  "literacy_rate_male": 97,
+  "literacy_rate_female": 93,
+  "president": "VALSAJOHN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PARAKKADAV",
+      "person": {
+        "id": "2015061600101",
+        "name": "SOBHANA RAMANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "ARIKUZHA",
+      "person": {
+        "id": "2015061600201",
+        "name": "REJI DIVAKARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MANNATHAMCHERY",
+      "person": {
+        "id": "2015061600301",
+        "name": "JIJO GEORGE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALPARA",
+      "person": {
+        "id": "2015061600401",
+        "name": "VALSA JOHN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHITTOOR",
+      "person": {
+        "id": "2015061600501",
+        "name": "SUJATHA RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KUNNATHUPARA",
+      "person": {
+        "id": "2015061600601",
+        "name": "HARI B"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MANAKKAD",
+      "person": {
+        "id": "2015061600701",
+        "name": "BINOY B"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "MYLADUMPARA",
+      "person": {
+        "id": "2015061600801",
+        "name": "USHA KUMARI SANTHOSH KUMAR"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PUTHUPPARIYARAM",
+      "person": {
+        "id": "2015061600901",
+        "name": "JINCY JOMON"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "NEDIYASALA",
+      "person": {
+        "id": "2015061601001",
+        "name": "SANTHOSH PADMANABHAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLADY",
+      "person": {
+        "id": "2015061601101",
+        "name": "CLEMENT EMMANUEL"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VAZHITHALA",
+      "person": {
+        "id": "2015061601201",
+        "name": "TISSY JOB"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "ERUMELIKARA",
+      "person": {
+        "id": "2015061601301",
+        "name": "JOY JOSEPH"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

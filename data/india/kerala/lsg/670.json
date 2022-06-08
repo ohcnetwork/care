@@ -1,0 +1,150 @@
+{
+  "timeStamp": 1566347240060,
+  "date": "2019-08-21",
+  "name": "Mulanthuruthy  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Mullamthuruthy",
+  "area": "21.47km",
+  "localbody_code": "G070902",
+  "no_of_wards": 16,
+  "population": 21417,
+  "male": 10638,
+  "female": 10779,
+  "population_density": 998,
+  "sex_ratio": 1013,
+  "literacy_rate": 93.53,
+  "literacy_rate_male": 96.53,
+  "literacy_rate_female": 90.73,
+  "president": "RENJIKURIANKOLLINAL",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VEZHAPARAMBU",
+      "person": {
+        "id": "2015067000101",
+        "name": "RENJI KURIAN KOLLINAL"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "INCHIMALA",
+      "person": {
+        "id": "2015067000201",
+        "name": "BENOY HARIDAS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KARIKODE",
+      "person": {
+        "id": "2015067000301",
+        "name": "SALOMY SIMON"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "POLLEMUGAL",
+      "person": {
+        "id": "2015067000401",
+        "name": "LEELA JOY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THUPPAMPADY",
+      "person": {
+        "id": "2015067000501",
+        "name": "RATHEEH K DIVAKARAN(MUTHU)"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VETTICKAL",
+      "person": {
+        "id": "2015067000601",
+        "name": "O A MANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "ARAKKUNNAM",
+      "person": {
+        "id": "2015067000701",
+        "name": "SHEEJA SUBI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PULIKAMALY",
+      "person": {
+        "id": "2015067000801",
+        "name": "VENU V K"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PAINGARAPILLY",
+      "person": {
+        "id": "2015067000901",
+        "name": "BALAKRISHNAN A K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THURUTHIKARA",
+      "person": {
+        "id": "2015067001001",
+        "name": "NIJI BIJU"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KAVUMMUGAL",
+      "person": {
+        "id": "2015067001101",
+        "name": "SANTHA MOHANAN"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "RAILWAY STATION",
+      "person": {
+        "id": "2015067001201",
+        "name": "MARIAN VARGHESE"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PERUMPILLY",
+      "person": {
+        "id": "2015067001301",
+        "name": "SHIBY THANKACHAN"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "MOOLEKURIZ",
+      "person": {
+        "id": "2015067001401",
+        "name": "GEORGE MANI PATTACHERIL"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "PADATHUKAVU",
+      "person": {
+        "id": "2015067001501",
+        "name": "SANI GEORGE"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "KARAVATTEKURIZU",
+      "person": {
+        "id": "2015067001601",
+        "name": "CHERIYAN(JAMES) THAZHOORATHU"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,181 @@
+{
+  "timeStamp": 1566346843441,
+  "date": "2019-08-21",
+  "name": "Ayarkunnam  Grama Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Pallom",
+  "area": "30.7km",
+  "localbody_code": "G050801",
+  "no_of_wards": 20,
+  "population": 31818,
+  "male": 16010,
+  "female": 15808,
+  "population_density": 1036,
+  "sex_ratio": 987,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 95,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ARUMANOOR NORTH",
+      "person": {
+        "id": "2015054700101",
+        "name": "GEETHA RADHAKRISHNAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PUNNATHURA",
+      "person": {
+        "id": "2015054700201",
+        "name": "ALICE RAJU"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "KOCHUKONGANDOOR",
+      "person": {
+        "id": "2015054700301",
+        "name": "LALCI P MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "AYARKUNNAM WEST",
+      "person": {
+        "id": "2015054700401",
+        "name": "JOSEPH CHAMAKKALA"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KONGANDOOR",
+      "person": {
+        "id": "2015054700501",
+        "name": "MOLLY THOMAS"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "NARIVELI",
+      "person": {
+        "id": "2015054700601",
+        "name": "ANNIE JAMES"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "AYARKUNNAM EAST",
+      "person": {
+        "id": "2015054700701",
+        "name": "AJITH KUNNAPPALLY"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THYKKOOTTAM",
+      "person": {
+        "id": "2015054700801",
+        "name": "BIJU K.N"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "METHRANCHERI",
+      "person": {
+        "id": "2015054700901",
+        "name": "BIJU K PHILIP"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOTHIRI",
+      "person": {
+        "id": "2015054701001",
+        "name": "CHANDRIKA SOMAN"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VADAKKANMANNOOR",
+      "person": {
+        "id": "2015054701101",
+        "name": "SUJATHA BIJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THUTHOOTTY",
+      "person": {
+        "id": "2015054701201",
+        "name": "MONIMOL K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "PUTHUPALLYKUNNU",
+      "person": {
+        "id": "2015054701301",
+        "name": "P.V THOMAS"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "NIRAVUPADIKUNNU",
+      "person": {
+        "id": "2015054701401",
+        "name": "JOLLY GEORGE"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "THIRUVANCHOOR",
+      "person": {
+        "id": "2015054701501",
+        "name": "PRAKASH N.S"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VANNALLOORKARA",
+      "person": {
+        "id": "2015054701601",
+        "name": "NISA JOSE K"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "AYYANKOYICKAL",
+      "person": {
+        "id": "2015054701701",
+        "name": "ALICE SIBY"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "KANDANCHIRA",
+      "person": {
+        "id": "2015054701801",
+        "name": "T.K ANISH"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "NEERIKADU",
+      "person": {
+        "id": "2015054701901",
+        "name": "BINOY MATHEW"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "ARUMANNOOR SOUTH",
+      "person": {
+        "id": "2015054702001",
+        "name": "JOSEPH (JOSE KOTTATHIL)"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

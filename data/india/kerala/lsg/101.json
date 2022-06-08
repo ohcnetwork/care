@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345190110,
+  "date": "2019-08-21",
+  "name": "Sreekrishnapuram  Block Panchayat, Palakkad District",
+  "district": "Palakkad",
+  "block": "Sreekrishnapuram",
+  "area": "219.41km",
+  "localbody_code": "B090400",
+  "no_of_wards": 13,
+  "population": 144928,
+  "male": 68606,
+  "female": 76322,
+  "population_density": 661,
+  "sex_ratio": 1112,
+  "literacy_rate": 87.78,
+  "literacy_rate_male": 91.38,
+  "literacy_rate_female": 84.6,
+  "president": "ARAVINDAKSHAN",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "KOTTAPPURAM",
+      "person": {
+        "id": "2015010100101",
+        "name": "P.MOHANAN"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KARIMPUZHA",
+      "person": {
+        "id": "2015010100201",
+        "name": "P.KUNHAHAMMED"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ELAMBULASSERY",
+      "person": {
+        "id": "2015010100301",
+        "name": "P.M.NARAYANAN ."
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PALLIKURUP",
+      "person": {
+        "id": "2015010100401",
+        "name": "PREETHA K"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "KARAKURSSI",
+      "person": {
+        "id": "2015010100501",
+        "name": "T.RAMACHANDRAN ."
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PULAPPATTA",
+      "person": {
+        "id": "2015010100601",
+        "name": "C.RAJAN ."
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "KATAMPAZHIPURAM",
+      "person": {
+        "id": "2015010100701",
+        "name": "USHA NARAYANAN ."
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "SREEKRISHNAPURAM",
+      "person": {
+        "id": "2015010100801",
+        "name": "ARAVINDAKSHAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ESWARAMANGALAM",
+      "person": {
+        "id": "2015010100901",
+        "name": "JYOTHI K ."
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "POOKKOTTUKAVU",
+      "person": {
+        "id": "2015010101001",
+        "name": "OMANA K ."
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KALLUVAZHI",
+      "person": {
+        "id": "2015010101101",
+        "name": "P.AMBUJAKSHI ."
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VELLINEZHI",
+      "person": {
+        "id": "2015010101201",
+        "name": "SANTHAKUMARI ."
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THIRUVAZHIYODE",
+      "person": {
+        "id": "2015010101301",
+        "name": "KOMALAM P N ."
+      }
+    }
+  ],
+  "state": "Kerala"
+}

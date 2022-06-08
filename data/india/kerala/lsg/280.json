@@ -1,0 +1,182 @@
+{
+  "timeStamp": 1566345899660,
+  "date": "2019-08-21",
+  "name": "Vilappil  Grama Panchayat, Thiruvananthapuram District",
+  "district": "Thiruvananthapuram",
+  "block": "Nemom",
+  "area": "19.42km",
+  "localbody_code": "G010805",
+  "no_of_wards": 20,
+  "population": 28306,
+  "male": 14144,
+  "female": 14162,
+  "population_density": 1458,
+  "sex_ratio": 1001,
+  "literacy_rate": 90.16,
+  "literacy_rate_male": 93.16,
+  "literacy_rate_female": 86.68,
+  "president": "ANILKUMAR.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "VELLAIKADAVU",
+      "person": {
+        "id": "2015028000101",
+        "name": "L VIJAYA RAJ"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MYLADI",
+      "person": {
+        "id": "2015028000201",
+        "name": "B.SHOBHANA"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "CHOWALLOR",
+      "person": {
+        "id": "2015028000301",
+        "name": "SUNITHA.J"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "PADAVANCODE",
+      "person": {
+        "id": "2015028000401",
+        "name": "BUSHRABEEVI"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "CHERUCODE",
+      "person": {
+        "id": "2015028000501",
+        "name": "MANIYAN.C"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KARODE",
+      "person": {
+        "id": "2015028000601",
+        "name": "CHANDRIKA .K"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "PUTTUMELKONAM",
+      "person": {
+        "id": "2015028000701",
+        "name": "JAGADAMMA. M"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NOOLIYODE",
+      "person": {
+        "id": "2015028000803",
+        "name": "AJITHA KUMARI RS"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KAVINPURAM",
+      "person": {
+        "id": "2015028000901",
+        "name": "ANIL KUMAR.K"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "VILAPPILSALA",
+      "person": {
+        "id": "2015028001001",
+        "name": "SHEELA.P"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KARUVILANCHI",
+      "person": {
+        "id": "2015028001102",
+        "name": "R.S. RATHEESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MINNAMCODE",
+      "person": {
+        "id": "2015028001201",
+        "name": "AZEEZ.A"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "THURUTHUMOOLA",
+      "person": {
+        "id": "2015028001301",
+        "name": "SUSHAMA .T"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "ALAKUNNAM",
+      "person": {
+        "id": "2015028001401",
+        "name": "C S VIJAYAKUMAR (C S ANIL)"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "HIGH SCHOOL",
+      "person": {
+        "id": "2015028001501",
+        "name": "R B BIJU DAS"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "PIRAYIL",
+      "person": {
+        "id": "2015028001601",
+        "name": "EDWIN GEORGE"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "OFFICE WARD",
+      "person": {
+        "id": "2015028001701",
+        "name": "KARTHIKEYAN.S"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "PEYAD",
+      "person": {
+        "id": "2015028001801",
+        "name": "SHYLAJA.C"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "VITTIYAM",
+      "person": {
+        "id": "2015028001901",
+        "name": "JALAJAMBIKA S"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "PULIYARAKONAM",
+      "person": {
+        "id": "2015028002001",
+        "name": "AJITH KUMAR.C (ANOOS)"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

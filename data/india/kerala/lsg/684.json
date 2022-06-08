@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566347277137,
+  "date": "2019-08-21",
+  "name": "Kottappady  Grama Panchayat, Ernakulam District",
+  "district": "Ernakulam",
+  "block": "Kothamangalam",
+  "area": "31.94km",
+  "localbody_code": "G071104",
+  "no_of_wards": 13,
+  "population": 17078,
+  "male": 8578,
+  "female": 8500,
+  "population_density": 480,
+  "sex_ratio": 991,
+  "literacy_rate": 86.94,
+  "literacy_rate_male": 91.99,
+  "literacy_rate_female": 81.88,
+  "president": "VENUM.K",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PLAMUDY",
+      "person": {
+        "id": "2015068400102",
+        "name": "BINCY ELDHOSE"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "KALLUMALA",
+      "person": {
+        "id": "2015068400201",
+        "name": "BINOY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "MUTTATHUPARA",
+      "person": {
+        "id": "2015068400301",
+        "name": "SHANTY ELDHOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "CHELACKAPPILLY",
+      "person": {
+        "id": "2015068400401",
+        "name": "SHYMOLE BABY"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "UPPUKANDAM",
+      "person": {
+        "id": "2015068400501",
+        "name": "ELDHOSE M.K"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "VADASSERY",
+      "person": {
+        "id": "2015068400601",
+        "name": "AMBILY MANI"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MUNTHOOR",
+      "person": {
+        "id": "2015068400701",
+        "name": "ABHIJITH M. RAJU"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "NAGANCHERY",
+      "person": {
+        "id": "2015068400801",
+        "name": "AJITHA WILSON"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "PANIPRA",
+      "person": {
+        "id": "2015068400901",
+        "name": "PAREEKKUTTY K. V"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "THURANGAM",
+      "person": {
+        "id": "2015068401001",
+        "name": "RAMLA MUHAMMED"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOLLIPARAMBU",
+      "person": {
+        "id": "2015068401101",
+        "name": "JOY ABRAHAM"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "CHERANGANAL TOWN",
+      "person": {
+        "id": "2015068401201",
+        "name": "VENU M.K"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KOTTAPPADY",
+      "person": {
+        "id": "2015068401301",
+        "name": "BISSY JOSE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

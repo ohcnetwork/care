@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566346205566,
+  "date": "2019-08-21",
+  "name": "Nilamel  Grama Panchayat, Kollam District",
+  "district": "Kollam",
+  "block": "Chadayamanagalam",
+  "area": "22.02km",
+  "localbody_code": "G021107",
+  "no_of_wards": 13,
+  "population": 14208,
+  "male": 6802,
+  "female": 7406,
+  "population_density": 645,
+  "sex_ratio": 1089,
+  "literacy_rate": 88.78,
+  "literacy_rate_male": 93.24,
+  "literacy_rate_female": 84.24,
+  "president": "AMRAFI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "ELIKKUNNAMUKAL",
+      "person": {
+        "id": "2015037100101",
+        "name": "S. ABDUL HAKEEM"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VALIYAVAZHY",
+      "person": {
+        "id": "2015037100201",
+        "name": "SHIJI"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "NEDUMPACHA",
+      "person": {
+        "id": "2015037100301",
+        "name": "JALEELA SHAMS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "MULAYAKKONAM",
+      "person": {
+        "id": "2015037100402",
+        "name": "SMITHA GOPAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "MURUKKUMON",
+      "person": {
+        "id": "2015037100501",
+        "name": "AKKARAVILA SAJEEV"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "PUTHUSSERY",
+      "person": {
+        "id": "2015037100601",
+        "name": "SUJITH .S.L"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "COLLEGE",
+      "person": {
+        "id": "2015037100701",
+        "name": "B KERALA KUMARI"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "VELLAMPARA",
+      "person": {
+        "id": "2015037100802",
+        "name": "BINU SABU"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "CHERATTUKUZHY",
+      "person": {
+        "id": "2015037100902",
+        "name": "A M RAFI"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "TOWN",
+      "person": {
+        "id": "2015037101001",
+        "name": "SHEMEENA PARAMPIL"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "BENGLAMKUNNU",
+      "person": {
+        "id": "2015037101102",
+        "name": "MOHAMMED KUNJU"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "VEYKAL",
+      "person": {
+        "id": "2015037101201",
+        "name": "SUDARSANAN .R"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "KAITHODU",
+      "person": {
+        "id": "2015037101301",
+        "name": "BINDHU .B"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345023076,
+  "date": "2019-08-21",
+  "name": "Madappally  Block Panchayat, Kottayam District",
+  "district": "Kottayam",
+  "block": "Madappally",
+  "area": "145km",
+  "localbody_code": "B050900",
+  "no_of_wards": 13,
+  "population": 193481,
+  "male": 96158,
+  "female": 97323,
+  "population_density": 1334,
+  "sex_ratio": 1012,
+  "literacy_rate": 97,
+  "literacy_rate_male": 98,
+  "literacy_rate_female": 96,
+  "president": "ACHAMMAMATHEW",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THURUTHY",
+      "person": {
+        "id": "2015005500101",
+        "name": "JOHNSON ALEXANDER"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "VEROORCHIRA",
+      "person": {
+        "id": "2015005500201",
+        "name": "RAKHI KALESH"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "INDUSTRIAL NAGAR",
+      "person": {
+        "id": "2015005500301",
+        "name": "ACHAMMA MATHEW"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VAKATHANAM",
+      "person": {
+        "id": "2015005500401",
+        "name": "LAISAMMA GEORGE"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "THOTTAKKADU",
+      "person": {
+        "id": "2015005500501",
+        "name": "SAJI.K. GEORGE"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "KURUMBANADOM",
+      "person": {
+        "id": "2015005500601",
+        "name": "ALEXANDER"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "MAMMOODU",
+      "person": {
+        "id": "2015005500701",
+        "name": "SAINA THOMAS"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "THENGANA",
+      "person": {
+        "id": "2015005500801",
+        "name": "MANIYAMMA RAJAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "KOTTAMURY",
+      "person": {
+        "id": "2015005500901",
+        "name": "RAJANI SABU"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "AYERKKATTUVAYAL",
+      "person": {
+        "id": "2015005501001",
+        "name": "BINOY JOSEPH"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "THRICKODITHANAM",
+      "person": {
+        "id": "2015005501101",
+        "name": "SUNITHA SURESH"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "PAIPPAD",
+      "person": {
+        "id": "2015005501201",
+        "name": "RANI JOSEPH"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "POOVAM",
+      "person": {
+        "id": "2015005501301",
+        "name": "ABY VARGHESE"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

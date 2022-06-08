@@ -1,0 +1,308 @@
+{
+  "timeStamp": 1566345604150,
+  "date": "2019-08-21",
+  "name": "Chalakudy  Municipality, Thrissur District",
+  "district": "Thrissur",
+  "area": "25.23km",
+  "localbody_code": "M080400",
+  "no_of_wards": 36,
+  "population": 28873,
+  "male": 13850,
+  "female": 15023,
+  "population_density": 1786,
+  "sex_ratio": 1020,
+  "literacy_rate": 92.91,
+  "literacy_rate_male": 95.6,
+  "literacy_rate_female": 90.31,
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "THANIPPARA",
+      "person": {
+        "id": "2015020200101",
+        "name": "JOJU V J"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "PERIACHIRA",
+      "person": {
+        "id": "2015020200201",
+        "name": "REENA DAVIS"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "POTTA SCHOOL",
+      "person": {
+        "id": "2015020200301",
+        "name": "BEENA DAVIS"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "ALAVI CENTER",
+      "person": {
+        "id": "2015020200401",
+        "name": "SULEKHA SANKARAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "PANAMBILLY COLLEGE",
+      "person": {
+        "id": "2015020200501",
+        "name": "JOY CHAMAVALAPIL CHAMAVALAPIL"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "SITHARA NAGAR",
+      "person": {
+        "id": "2015020200601",
+        "name": "MOLLY PAULSON"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "POTTACHIRA",
+      "person": {
+        "id": "2015020200701",
+        "name": "SARALA NEELENKATTIL"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PARAKOTTIKKAL TEMPLE",
+      "person": {
+        "id": "2015020200801",
+        "name": "V O PAILAPPAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "ST JOSEPH CHURCH",
+      "person": {
+        "id": "2015020200901",
+        "name": "WILSON PANATTUPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "ST JAMES HOSPITAL",
+      "person": {
+        "id": "2015020201001",
+        "name": "SUSAMMA ANTONY"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "KOODAPUZHA CHURCH",
+      "person": {
+        "id": "2015020201101",
+        "name": "SASI   K KOTTAI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "THIRUMANTHAMKUNNU TEMPLE",
+      "person": {
+        "id": "2015020201201",
+        "name": "GIJAN MATHAYEES"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "GANDHI NAGAR",
+      "person": {
+        "id": "2015020201301",
+        "name": "GANESHAN V C"
+      }
+    },
+    {
+      "ward_number": "14",
+      "name": "POWER HOUSE",
+      "person": {
+        "id": "2015020201401",
+        "name": "USHA STALIN"
+      }
+    },
+    {
+      "ward_number": "15",
+      "name": "ARATTUKADAVU",
+      "person": {
+        "id": "2015020201501",
+        "name": "USHA PARAMESWARAN"
+      }
+    },
+    {
+      "ward_number": "16",
+      "name": "VETTUKADAVU",
+      "person": {
+        "id": "2015020201601",
+        "name": "GEO KIZHAKUMTHALA"
+      }
+    },
+    {
+      "ward_number": "17",
+      "name": "CHENATHUNADU",
+      "person": {
+        "id": "2015020201701",
+        "name": "MARY NALAN"
+      }
+    },
+    {
+      "ward_number": "18",
+      "name": "GAYATHRI ASHRAMAM",
+      "person": {
+        "id": "2015020201801",
+        "name": "GEETHA TEACHER"
+      }
+    },
+    {
+      "ward_number": "19",
+      "name": "ST MARYS CHURCH",
+      "person": {
+        "id": "2015020201901",
+        "name": "SEEMA JOJO"
+      }
+    },
+    {
+      "ward_number": "20",
+      "name": "HOUSING BOARD",
+      "person": {
+        "id": "2015020202001",
+        "name": "V J JOJI"
+      }
+    },
+    {
+      "ward_number": "21",
+      "name": "MUNICIPAL QUARTERS",
+      "person": {
+        "id": "2015020202101",
+        "name": "ADV. U V MARTIN"
+      }
+    },
+    {
+      "ward_number": "22",
+      "name": "KANNAMPUZHA TEMPLE",
+      "person": {
+        "id": "2015020202201",
+        "name": "K M HARINARAYANAN"
+      }
+    },
+    {
+      "ward_number": "23",
+      "name": "I T I",
+      "person": {
+        "id": "2015020202301",
+        "name": "BINDHU SASIKUMAR"
+      }
+    },
+    {
+      "ward_number": "24",
+      "name": "I R M L P SCHOOL",
+      "person": {
+        "id": "2015020202401",
+        "name": "M P BHASKARAN"
+      }
+    },
+    {
+      "ward_number": "25",
+      "name": "F C I",
+      "person": {
+        "id": "2015020202501",
+        "name": "LAIJI THOMAS"
+      }
+    },
+    {
+      "ward_number": "26",
+      "name": "MOONJEL",
+      "person": {
+        "id": "2015020202601",
+        "name": "K V PAUL"
+      }
+    },
+    {
+      "ward_number": "27",
+      "name": "KOTTATT",
+      "person": {
+        "id": "2015020202701",
+        "name": "ANNIE PAUL"
+      }
+    },
+    {
+      "ward_number": "28",
+      "name": "MAITHRI NAGAR",
+      "person": {
+        "id": "2015020202801",
+        "name": "M A JOSE"
+      }
+    },
+    {
+      "ward_number": "29",
+      "name": "KARAKULATHUNADU",
+      "person": {
+        "id": "2015020202901",
+        "name": "SUMA BAIJU BAIJU"
+      }
+    },
+    {
+      "ward_number": "30",
+      "name": "MUNICIPAL OFFICE",
+      "person": {
+        "id": "2015020203001",
+        "name": "ADV. BIJU S CHIRAYATH"
+      }
+    },
+    {
+      "ward_number": "31",
+      "name": "ARYANKALA MASJID",
+      "person": {
+        "id": "2015020203101",
+        "name": "BIJI SADANDHAN"
+      }
+    },
+    {
+      "ward_number": "32",
+      "name": "THACHUDAPARAMBU",
+      "person": {
+        "id": "2015020203201",
+        "name": "SHIBU VALAPPAN"
+      }
+    },
+    {
+      "ward_number": "33",
+      "name": "V R PURAM",
+      "person": {
+        "id": "2015020203301",
+        "name": "ALICE SHIBU"
+      }
+    },
+    {
+      "ward_number": "34",
+      "name": "URUMBANKUNNU",
+      "person": {
+        "id": "2015020203401",
+        "name": "JAYANTHY PRAVEENKUMAR MADATHIPARAMBIL"
+      }
+    },
+    {
+      "ward_number": "35",
+      "name": "PRASANTHI HOSPITAL",
+      "person": {
+        "id": "2015020203501",
+        "name": "P M SREEDHARAN"
+      }
+    },
+    {
+      "ward_number": "36",
+      "name": "KARUNALAYAM",
+      "person": {
+        "id": "2015020203601",
+        "name": "VARGHESE VAROCKY"
+      }
+    }
+  ],
+  "state": "Kerala"
+}

@@ -1,0 +1,126 @@
+{
+  "timeStamp": 1566345139095,
+  "date": "2019-08-21",
+  "name": "Anthikad  Block Panchayat, Thrissur District",
+  "district": "Thrissur",
+  "block": "Anthikkad",
+  "area": "74.28km",
+  "localbody_code": "B080900",
+  "no_of_wards": 13,
+  "population": 105531,
+  "male": 49701,
+  "female": 55830,
+  "population_density": 1420,
+  "sex_ratio": 1123,
+  "literacy_rate": 92.52,
+  "literacy_rate_male": 95.94,
+  "literacy_rate_female": 89.54,
+  "president": "PCSREEDEVI",
+  "wards": [
+    {
+      "ward_number": "1",
+      "name": "PALAZHY",
+      "person": {
+        "id": "2015008900101",
+        "name": "HARIDASAN P B"
+      }
+    },
+    {
+      "ward_number": "2",
+      "name": "MANALUR",
+      "person": {
+        "id": "2015008900201",
+        "name": "SHEEBA MANOHARAN"
+      }
+    },
+    {
+      "ward_number": "3",
+      "name": "ARIMPUR",
+      "person": {
+        "id": "2015008900301",
+        "name": "K L JOSE"
+      }
+    },
+    {
+      "ward_number": "4",
+      "name": "VELUTHUR",
+      "person": {
+        "id": "2015008900401",
+        "name": "OMANA ASOKAN"
+      }
+    },
+    {
+      "ward_number": "5",
+      "name": "ANTHIKAD",
+      "person": {
+        "id": "2015008900501",
+        "name": "MENUJA"
+      }
+    },
+    {
+      "ward_number": "6",
+      "name": "CHAZHUR",
+      "person": {
+        "id": "2015008900601",
+        "name": "P V SIJULAL"
+      }
+    },
+    {
+      "ward_number": "7",
+      "name": "CHIRAKKAL",
+      "person": {
+        "id": "2015008900701",
+        "name": "ADV. REENA SURESH"
+      }
+    },
+    {
+      "ward_number": "8",
+      "name": "PAZHUVIL",
+      "person": {
+        "id": "2015008900801",
+        "name": "SUJA PUSHKARAN"
+      }
+    },
+    {
+      "ward_number": "9",
+      "name": "THANNIYAM",
+      "person": {
+        "id": "2015008900901",
+        "name": "T K PARAMESHWARAN"
+      }
+    },
+    {
+      "ward_number": "10",
+      "name": "KIZHAKKUMMURY",
+      "person": {
+        "id": "2015008901001",
+        "name": "V V BABU VIJAYAKUMAR"
+      }
+    },
+    {
+      "ward_number": "11",
+      "name": "VADAKKUMMURY",
+      "person": {
+        "id": "2015008901101",
+        "name": "P C SREEDEVI"
+      }
+    },
+    {
+      "ward_number": "12",
+      "name": "MUTTICHUR",
+      "person": {
+        "id": "2015008901201",
+        "name": "SOBHANA"
+      }
+    },
+    {
+      "ward_number": "13",
+      "name": "MANGATTUKARA",
+      "person": {
+        "id": "2015008901301",
+        "name": "SABITHA PRASAD"
+      }
+    }
+  ],
+  "state": "Kerala"
+}
