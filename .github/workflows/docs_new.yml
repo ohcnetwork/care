@@ -25,7 +25,7 @@ jobs:
       uses: sphinx-notes/pages@v2
       with:
         requirements_path: "./requirements/docs.txt"
-        target_path: "./rendered_docs"
+        target_path: "./docs"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
