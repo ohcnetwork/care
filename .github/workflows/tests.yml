@@ -37,24 +37,39 @@ jobs:
           - 4566:4566
     steps:
       - uses: actions/checkout@v2
+      
       - name: Set up Python 3.x
         uses: actions/setup-python@v3
         with:
           python-version: '3.8'
           cache: 'pip'
+
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/local.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
       - name: Install system packages
         run: |
           sudo apt-get update
           sudo apt-get install binutils libproj-dev gdal-bin -y
+
       - name: Install CI dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements/local.txt
+
       - name: Run celery worker for tests
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
+
       - name: Run Tests with coverage
         run: coverage run manage.py test --settings=config.settings.test
-      - name: Generate coverage report -m
-        run: coverage report
+
+      - name: Generate coverage report
+        run: coverage report -m
       - name: Upload coverage report
         uses: codecov/codecov-action@v2
