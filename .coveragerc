@@ -1,0 +1,4 @@
+[run]
+source = .
+omit = *migrations*, *tests*, *__pycache__*, *venv*, docs/*, **/*.html
+plugins = django_coverage_plugin

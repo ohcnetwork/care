@@ -42,4 +42,4 @@ test: up
 
 test_coverage: up
 	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb"
-	docker exec care bash -c "coverage report -m"
+	docker exec care bash -c "coverage report"
