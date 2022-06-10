@@ -19,10 +19,11 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 
 FERNET_KEYS = env.list(
-    "FERNET_SECRET_KEY", default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"],
+    "FERNET_SECRET_KEY",
+    default=["76d7e8e551f23cc5b648ec88d01b6d2b26d72b148e2b2a3b02bf77037f236a8b"],
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))
+ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))  # noqa F405
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -60,11 +61,15 @@ CSRF_COOKIE_SECURE = True
 # TODO: set this to 60 seconds first and then to 518400 once you prove the former works
 SECURE_HSTS_SECONDS = 60
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-preload
 SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
 # https://docs.djangoproject.com/en/dev/ref/middleware/#x-content-type-options-nosniff
-SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+    "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
+)
 
 # MEDIA
 # ------------------------------------------------------------------------------
@@ -75,7 +80,10 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
     (
         "django.template.loaders.cached.Loader",
-        ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader",],
+        [
+            "django.template.loaders.filesystem.Loader",
+            "django.template.loaders.app_directories.Loader",
+        ],
     )
 ]
 
@@ -93,7 +101,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
-SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 
@@ -127,15 +135,32 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
     "formatters": {
-        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
     },
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
-        "django.db.backends": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
         # Errors logged by the SDK itself
         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        "django.security.DisallowedHost": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
+        "django.security.DisallowedHost": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
     },
 }
 
@@ -149,7 +174,14 @@ sentry_logging = LoggingIntegration(
     event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
 )
 sentry_sdk.init(
-    dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
+    dsn=SENTRY_DSN,
+    environment=env("SENTRY_ENVIRONMENT", default="production-unknown"),
+    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.4),
+    integrations=[
+        sentry_logging,
+        DjangoIntegration(),
+        CeleryIntegration(),
+    ],
 )
 # Your stuff...
 # ------------------------------------------------------------------------------
