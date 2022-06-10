@@ -54,7 +54,7 @@ jobs:
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
       - name: Run Tests with coverage
         run: coverage run manage.py test --settings=config.settings.test
-      - name: Generate coverage report
+      - name: Generate coverage report -m
         run: coverage report
       - name: Upload coverage report
         uses: codecov/codecov-action@v2
