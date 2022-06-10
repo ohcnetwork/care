@@ -3,7 +3,7 @@ import logging
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from .base import *  # noqa
@@ -184,6 +184,8 @@ sentry_sdk.init(
         RedisIntegration(),
     ],
 )
+ignore_logger("django.security.DisallowedHost")
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 
