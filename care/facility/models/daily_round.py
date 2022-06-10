@@ -406,8 +406,7 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        endpoint = request.get_full_path().split("/")[-2]
-        if(endpoint != "analyse"):
+        if("/analyse" not in request.get_full_path()):
             if (
                 request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
                 or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
