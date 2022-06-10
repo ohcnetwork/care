@@ -3,7 +3,6 @@ from rest_framework import status
 from care.facility.models import FacilityUser
 from care.users.models import User
 from care.utils.tests.test_base import TestBase
-from config.tests.helper import mock_equal
 
 
 class TestFacilityUserApi(TestBase):
@@ -50,54 +49,6 @@ class TestFacilityUserApi(TestBase):
             "verified": True,
             "facilities": [self.facility.external_id],
         }
-
-    def test_create_facility_user__should_succeed__when_same_level(self):
-        data = self.get_new_user_data().copy()
-
-        response = self.client.post(self.get_url(), data=data, format="json")
-        # Test Creation
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        user_id = response.json()["id"]
-        user = User.objects.filter(id=user_id).first()
-        self.assertIsNotNone(user)
-
-        resp = response.json()
-        password = resp["password"]
-        del resp["password"]
-
-        self.assertDictEqual(resp, self.get_detail_representation(user))
-
-        # Test for login
-        self.client.login(username=data["username"], password=password)
-
-        # Test if user is added to the facility
-        self.assertIn(user, self.facility.users.all())
-        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-
-        self.assertEquals(
-            FacilityUser.objects.filter(facility=self.facility, user=user, created_by=self.user).count(), 1
-        )
-
-    def test_create_facility_user__should_succeed__when_lower_level(self):
-        data = self.get_new_user_data().copy()
-        data.update({"user_type": "Doctor"})
-
-        response = self.client.post(self.get_url(), data=data, format="json")
-        # Test Creation
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        user_id = response.json()["id"]
-        user = User.objects.filter(id=user_id).first()
-        self.assertIsNotNone(user)
-
-        # Test for login
-        password = response.json()["password"]
-        self.client.login(username=data["username"], password=password)
-
-        # Test if user is added to the facility
-        self.assertIn(user, self.facility.users.all())
-        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_create_facility_user__should_fail__when_higher_level(self):
         data = self.get_new_user_data().copy()
