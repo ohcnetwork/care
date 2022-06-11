@@ -1,6 +1,6 @@
 .PHONY: build, re-build, up, down, list, logs, test, makemigrations
 
- 
+
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
 DOCKER_COMPOSE_VERSION := $(shell docker-compose --version 2>/dev/null)
 
@@ -22,7 +22,7 @@ build:
 
 up:
 	docker network inspect care >/dev/null 2>&1 || \
-		docker network create care 
+		docker network create care
 	docker-compose -f $(docker_config_file) up -d
 
 down:
@@ -38,8 +38,8 @@ makemigrations: up
 	docker exec care bash -c "python manage.py makemigrations"
 
 test: up
-	docker exec care bash -c "python manage.py test --keepdb"
+	docker exec care bash -c "python manage.py test --keepdb --parallel=$(nproc)"
 
 test_coverage: up
-	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb"
-	docker exec care bash -c "coverage report"
+	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel=$(nproc)"
+	docker exec care bash -c "coverage combine && coverage report"
