@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
     if command == "test":
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.test")
+        #TODO: remove in django 4.1+
         # patched for darwin
         # https://adamj.eu/tech/2020/07/21/how-to-use-djangos-parallel-testing-on-macos-with-python-3.8-plus/
         if sys.platform == "darwin":  # pragma: no cover
