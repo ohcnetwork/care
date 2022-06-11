@@ -2,14 +2,9 @@ name: Test
 
 on:
   pull_request:
-    branches:
-      - '**'
-  push:
-    branches:
-      - '**'
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
