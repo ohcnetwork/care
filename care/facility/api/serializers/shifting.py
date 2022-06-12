@@ -1,4 +1,5 @@
 from django.db.models import Q
+from care.utils.validation.not_empty import notEmptyValidator
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -235,22 +236,16 @@ class ShiftingDetailSerializer(ShiftingSerializer):
 
 
 class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
-
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
-    def validate_empty_values(self, data):
-        if not data.get("comment", "").strip():
-            raise serializers.ValidationError({"comment": ["Comment cannot be empty"]})
-        return super().validate_empty_values(data)
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
-
         return super().create(validated_data)
 
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
         read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
+        validators = [notEmptyValidator(field='comment')]

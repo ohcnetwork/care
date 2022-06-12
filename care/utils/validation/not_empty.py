@@ -10,7 +10,7 @@ class notEmptyValidator:
 
     def __init__(self, field, message=None):
         self.field = field
-        self.message = message
+        self.message = message or self.message
 
     def __call__(self, attrs):
         if not attrs[self.field].strip():

@@ -31,6 +31,7 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
+from care.utils.validation.not_empty import notEmptyValidator
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
@@ -351,12 +352,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
-    def validate_empty_values(self, data):
-        if not data.get("note", "").strip():
-            raise serializers.ValidationError({"note": ["Note cannot be empty"]})
-        return super().validate_empty_values(data)
-
     class Meta:
         model = PatientNotes
         fields = ("note", "facility", "created_by_object", "created_date")
         read_only_fields = ("created_date",)
+        validators = [notEmptyValidator(field='note')]
