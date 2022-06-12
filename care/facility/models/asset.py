@@ -51,7 +51,7 @@ class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(choices=AssetTypeChoices, default=AssetType.INTERNAL.value)
-    asset_class = models.IntegerField(choices=AssetClassChoices, default=None, null=True, blank=True)
+    asset_class = models.CharField(choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20)
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
     is_working = models.BooleanField(default=None, null=True, blank=True)
