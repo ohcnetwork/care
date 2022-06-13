@@ -13,8 +13,8 @@ from care.facility.models import (
     Facility,
     PatientRegistration,
     ShiftingRequest,
-    User,
     ShiftingRequestComment,
+    User,
 )
 from care.facility.models.notification import Notification
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -239,6 +239,11 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def validate_empty_values(self, data):
+        if not data.get("comment", "").strip():
+            raise serializers.ValidationError({"comment": ["Comment cannot be empty"]})
+        return super().validate_empty_values(data)
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
