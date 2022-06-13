@@ -119,7 +119,7 @@ class FacilityViewSet(
         facility = Facility.objects.filter(external_id=external_id).first()
         if not facility:
             return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        users = facility.users.all()
+        users = facility.users.filter(is_active=True)
         if user_type_filter:
             users = users.filter(user_type=user_type_filter)
         users = users.order_by("-last_login")
