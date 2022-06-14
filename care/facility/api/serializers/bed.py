@@ -126,14 +126,19 @@ class ConsultationBedSerializer(ModelSerializer):
         consultation = validated_data["consultation"]
         bed = validated_data["bed"]
 
+        if not consultation.patient.is_active:
+            raise ValidationError(
+                {"patient:": ["Patient is already discharged from CARE"]})
+
         existing_beds = ConsultationBed.objects.filter(
             consultation=consultation, end_date__isnull=True)
+
         if existing_beds.filter(bed=bed).exists():
-            raise ValidationError({"Bed:": ["Bed already in use by patient"]})
+            raise ValidationError({"bed:": ["Bed already in use by patient"]})
         existing_beds.update(end_date=validated_data["start_date"])
 
-        obj = super().create(validated_data)
         # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
+        obj = super().create(validated_data)
         consultation.current_bed = obj
         consultation.save(update_fields=["current_bed"])
         return obj
