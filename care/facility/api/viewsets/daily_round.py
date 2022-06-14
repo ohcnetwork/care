@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
+from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -20,7 +21,7 @@ DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 
 class DailyRoundsViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+    AssetUserAccessMixin, mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
 ):
     serializer_class = DailyRoundSerializer
     permission_classes = (

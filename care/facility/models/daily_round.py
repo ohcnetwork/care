@@ -462,3 +462,14 @@ class DailyRound(PatientBaseModel):
         ):
             return False
         return self.has_object_read_permission(request)
+
+    def has_object_asset_read_permission(self, request):
+        return False
+
+    def has_object_asset_write_permission(self, request):
+        consultation = PatientConsultation.objects.get(
+            external_id=request.parser_context["kwargs"]["consultation_external_id"]
+        )
+        return consultation.current_bed.bed.bed_set.filter(
+            pk=request.user.asset.pk
+        ).exists()
