@@ -1,12 +1,11 @@
 import json
-from uuid import UUID
 
 import jwt
 import requests
+from django.core.exceptions import ValidationError
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from django.core.exceptions import ValidationError
 
 from care.facility.models import Facility
 from care.facility.models.asset import Asset
@@ -106,7 +105,9 @@ class MiddlewareAuthentication(JWTAuthentication):
                 external_id=validated_token["asset_id"]
             )
         except (Asset.DoesNotExist, ValidationError) as e:
-            raise InvalidToken({"detail": "Invalid Asset ID", "messages": [str(e)]}) from e
+            raise InvalidToken(
+                {"detail": "Invalid Asset ID", "messages": [str(e)]}
+            ) from e
 
         if asset_obj.current_location.facility != facility:
             raise InvalidToken({"detail": "Facility not connected to Asset"})

@@ -15,7 +15,9 @@ class UserAccessMixin:
                 if hasattr(instance, "district"):
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility"):
-                    queryset = queryset.filter(facility__district=self.request.user.district)
+                    queryset = queryset.filter(
+                        facility__district=self.request.user.district
+                    )
             else:
                 if hasattr(instance, "created_by"):
                     queryset = queryset.filter(created_by=self.request.user)
@@ -30,7 +32,9 @@ class UserAccessMixin:
                 if hasattr(instance, "district_id"):
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility_id"):
-                    queryset = queryset.filter(facility__district=self.request.user.district)
+                    queryset = queryset.filter(
+                        facility__district=self.request.user.district
+                    )
             else:
                 if hasattr(instance, "created_by"):
                     queryset = queryset.filter(created_by=self.request.user)

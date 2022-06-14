@@ -65,7 +65,9 @@ class BasePermissionMixin:
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return request.user.is_superuser or (hasattr(self, "created_by") and request.user == self.created_by)
+        return request.user.is_superuser or (
+            hasattr(self, "created_by") and request.user == self.created_by
+        )
 
 
 class DRYAssetPermissions(DRYPermissions):
