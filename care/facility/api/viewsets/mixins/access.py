@@ -1,5 +1,3 @@
-from rest_framework.permissions import IsAuthenticated
-
 from care.facility.models.mixins.permissions.base import DRYAssetPermissions
 from care.users.models import User
 
@@ -53,12 +51,16 @@ class AssetUserAccessMixin:
     Class to override default permissions for a view if the user has an asset attached to it
     """
 
-    asset_permissions = (IsAuthenticated, DRYAssetPermissions)
+    asset_permissions = (DRYAssetPermissions,)
 
     def get_permissions(self):
         """
         Skips DRYPermissions check for asset users
         """
-        if bool(self.request.user.asset):
+        if bool(
+            self.request.user
+            and self.request.user.is_authenticated
+            and self.request.user.asset
+        ):
             return tuple(permission() for permission in self.asset_permissions)
         return super().get_permissions()
