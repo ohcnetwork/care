@@ -6,7 +6,7 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
-from care.facility.models.bed import Bed
+from care.facility.models.bed import AssetBed, Bed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
     FEED,
@@ -520,9 +520,9 @@ class DailyRound(PatientBaseModel):
         return False
 
     def has_object_asset_write_permission(self, request):
-        consultation = PatientConsultation.objects.get(
-            external_id=request.parser_context["kwargs"]["consultation_external_id"]
-        )
-        return consultation.current_bed.bed.bed_set.filter(
-            pk=request.user.asset.pk
+        consultation = PatientConsultation.objects.select_related(
+            "current_bed__bed"
+        ).get(external_id=request.parser_context["kwargs"]["consultation_external_id"])
+        return AssetBed.objects.filter(
+            asset=request.user.asset, bed=consultation.current_bed.bed
         ).exists()
