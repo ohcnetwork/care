@@ -1,4 +1,4 @@
-from care.facility.models.mixins.permissions.base import DRYAssetPermissions
+from care.facility.models.mixins.permissions.asset import DRYAssetPermissions
 from care.users.models import User
 
 
