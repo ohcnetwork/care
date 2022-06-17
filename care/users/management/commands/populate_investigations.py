@@ -62,7 +62,7 @@ Fibrinogen	mg/dl	200-400 mg/dl	200	400	Float		2
 GCT	mg/dl	< 140 mg/dl	0	140	Float		2
 GTT	mg/dl	140-200 mg/dl	140	200	Float		2
 GGT	U/L	11-50 U/L	11	50	Float		2
-HbA1C	%	4-5.6 %	4	5.6	Float		2
+HbA1C	%	4-5.6 %	0	10	Float		1
 Serum Copper	mcg/dl	85-180 mcg/dl	85	180	Float		2
 Serum Lead	mcg/dl	upto 10 mcg/dl	0	10	Float		2
 Iron	mcg/dl	60-170 mcg/dl	60	170	Float		2
@@ -179,9 +179,7 @@ class Command(BaseCommand):
                 "investigation_type": current_investigation[5],
                 "choices": current_investigation[6],
             }
-            current_obj = PatientInvestigation.objects.filter(**data).first()
-            if not current_obj:
-                current_obj = PatientInvestigation(**data)
-                current_obj.save()
+            current_qs = PatientInvestigation.objects.filter(name=data["name"])
+            current_obj, _ = current_qs.update_or_create(**data)
             current_obj.groups.add(investigation_group_dict[current_investigation[7]])
             current_obj.save()
