@@ -1,0 +1,4 @@
+# Documentation
+# ------------------------------------------------------------------------------
+sphinx==5.0.1 # https://github.com/sphinx-doc/sphinx
+furo==2022.06.04.1  # https://github.com/pradyunsg/furo
