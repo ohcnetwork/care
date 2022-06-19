@@ -31,7 +31,7 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
-from care.utils.validation.not_empty import notEmptyValidator
+from care.utils.validation.not_empty import NotEmptyValidator
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
@@ -356,4 +356,4 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         model = PatientNotes
         fields = ("note", "facility", "created_by_object", "created_date")
         read_only_fields = ("created_date",)
-        validators = [notEmptyValidator(field='note')]
+        validators = [NotEmptyValidator(field='note')]

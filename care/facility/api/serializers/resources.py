@@ -14,7 +14,7 @@ from care.facility.models import (
 from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
-from care.utils.validation.not_empty import notEmptyValidator
+from care.utils.validation.not_empty import NotEmptyValidator
 
 def inverse_choices(choices):
     output = {}
@@ -162,4 +162,4 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
         model = ResourceRequestComment
         exclude = ("deleted", "request")
         read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
-        validators = [notEmptyValidator(field='comment')]
+        validators = [NotEmptyValidator(field='comment')]

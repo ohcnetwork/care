@@ -1,8 +1,8 @@
 from django.utils.translation import gettext as _
 from rest_framework.utils.representation import smart_repr
-from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-class notEmptyValidator:
+class NotEmptyValidator:
     """
     Validator for checking whether the field has empty value or not
     """
@@ -15,7 +15,7 @@ class notEmptyValidator:
     def __call__(self, attrs):
         if not attrs[self.field].strip():
             message = self.message.format(field=self.field)
-            raise serializers.ValidationError({self.field:message})
+            raise ValidationError({self.field:message})
 
     def __repr__(self):
         return '<%s(field=%s)>' % (self.__class__.__name__, smart_repr(self.field))

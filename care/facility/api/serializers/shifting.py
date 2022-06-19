@@ -1,5 +1,5 @@
 from django.db.models import Q
-from care.utils.validation.not_empty import notEmptyValidator
+from care.utils.validation.not_empty import NotEmptyValidator
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -248,4 +248,4 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
         read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
-        validators = [notEmptyValidator(field='comment')]
+        validators = [NotEmptyValidator(field='comment')]
