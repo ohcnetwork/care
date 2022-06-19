@@ -13,7 +13,9 @@ class NotEmptyValidator:
         self.message = message or self.message
 
     def __call__(self, attrs):
-        if not attrs[self.field].strip():
+        if self.field not in attrs:
+            pass
+        elif not attrs[self.field].strip():
             message = self.message.format(field=self.field)
             raise ValidationError({self.field:message})
 
