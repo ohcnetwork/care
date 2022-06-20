@@ -14,7 +14,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     Serializer for password change endpoint.
     """
     old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(required=True)
 
 class ChangePasswordView(UpdateAPIView):
         """
@@ -29,7 +29,7 @@ class ChangePasswordView(UpdateAPIView):
             return obj
 
         def update(self, request, *args, **kwargs):
-            self.object = self.get_object()
+            self.object = self.request.user
             serializer = self.get_serializer(data=request.data)
 
             if serializer.is_valid():
