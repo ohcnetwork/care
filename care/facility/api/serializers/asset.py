@@ -30,7 +30,7 @@ class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
-    is_working = NullBooleanField()
+    is_working = NullBooleanField() 
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
 
     location = UUIDField(write_only=True, required=True)
