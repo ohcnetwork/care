@@ -46,8 +46,6 @@ class Asset(BaseModel):
         ACTIVE = 50
         TRANSFER_IN_PROGRESS = 100
 
-    AssetWorkingChoices = [("WORKING", "WORKING"), ("NOTWORKING", "NOTWORKING")]
-
     StatusChoices = [(e.value, e.name) for e in Status]
 
     name = models.CharField(max_length=1024, blank=False, null=False)
@@ -56,7 +54,7 @@ class Asset(BaseModel):
     asset_class = models.CharField(choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20)
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
-    is_working = models.CharField(choices=AssetWorkingChoices, default=None, null=True, blank=True, max_length=11)
+    is_working = models.BooleanField(default=None, null=True, blank=True)
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")

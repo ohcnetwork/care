@@ -2,7 +2,7 @@ from re import L
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, UUIDField
+from rest_framework.serializers import ModelSerializer, UUIDField, NullBooleanField
 from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -30,7 +30,7 @@ class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
-    is_working = ChoiceField(choices=Asset.AssetWorkingChoices)
+    is_working = NullBooleanField()
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
 
     location = UUIDField(write_only=True, required=True)
