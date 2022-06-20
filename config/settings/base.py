@@ -464,6 +464,21 @@ DISABLE_RATELIMIT = False
 
 ENABLE_ADMIN_REPORTS = env.bool("ENABLE_ADMIN_REPORTS", default=False)
 
+# ICD
+DEFAULT_ICD_CLIENT_ID = "690266dd-0d2e-4de0-a9f1-c409c8ea67be_587101eb-80a4-452d-b442-ddb87f8afe62"
+DEFAULT_ICD_CLIENT_SECRET = "/Wl5NYZt9kgCsK1tDa/56ndGZFTcGv0B7Sx8yq/WkFM="
+
+ICD_CLIENT_ID = env("ICD_CLIENT_ID", default=DEFAULT_ICD_CLIENT_ID)
+ICD_CLIENT_SECRET = env("ICD_CLIENT_SECRET", default=DEFAULT_ICD_CLIENT_SECRET)
+
+ICD_AUTH_ENDPOINT = 'https://icdaccessmanagement.who.int/connect/token'
+ICD_AUTH_SCOPE = 'icdapi_access'
+ICD_AUTH_GRANT_TYPE = 'client_credentials'
+
+ICD_SEARCH_ENDPOINT = 'https://id.who.int/icd/release/11/2022-02/mms/search'
+ICD_SEARCH_LANGUAGE = 'en'
+ICD_SEARCH_VERSION = 'v2'
+
 # Health Check Config
 
 default_configuration = [

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
@@ -51,6 +52,7 @@ from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, State
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
+from care.facility.api.viewsets.icd import ICDView
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -162,6 +164,7 @@ consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
+    path("icd", ICDView.as_view(), name="icd_view"),
     url(r"^", include(user_nested_rotuer.urls)),
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
