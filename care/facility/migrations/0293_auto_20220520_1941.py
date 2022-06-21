@@ -4,12 +4,12 @@ from django.db import migrations, transaction
 
 
 def update_json_field_names(apps, schema_editor):
-    Asset = apps.get_model('facility', 'Asset')
+    Asset = apps.get_model("facility", "Asset")
 
-    with transaction.atomic:
+    with transaction.atomic():
         for asset in Asset.objects.all():
             meta = asset.meta
-            camera_address = meta.pop('camera_address', None)
+            camera_address = meta.pop("camera_address", None)
             if camera_address:
                 meta["local_ip_address"] = camera_address
             asset.meta = meta
@@ -19,10 +19,8 @@ def update_json_field_names(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0292_auto_20220430_1748'),
+        ("facility", "0292_auto_20220430_1748"),
     ]
 
-    operations = [
-        migrations.RunPython(update_json_field_names, migrations.RunPython.noop)
-    ]
+    operations = [migrations.RunPython(update_json_field_names, migrations.RunPython.noop)]
 

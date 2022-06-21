@@ -82,3 +82,6 @@ class PatientExternalTest(FacilityBaseModel):
         # "result_date": "",
     }
 
+    def __str__(self):
+        return self.name + " on " + self.created_date.strftime("%d-%m-%Y")
+

@@ -1,4 +1,4 @@
-Docker Remote Debugging
+Debugging with Pycharm
 =======================
 
 To connect to python remote interpreter inside docker, you have to make sure first, that Pycharm is aware of your docker.
