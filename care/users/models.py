@@ -96,13 +96,11 @@ class LocalBody(models.Model):
             "body_type",
             "name",
         )
+        verbose_name = "Local Body"
+        verbose_name_plural = "Local Bodies"
 
     def __str__(self):
         return f"{self.name} ({self.body_type})"
-
-    class Meta:
-        verbose_name = "Local Body"
-        verbose_name_plural = "Local Bodies"
 
 
 class Ward(models.Model):
