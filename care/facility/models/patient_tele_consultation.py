@@ -12,3 +12,6 @@ class PatientTeleConsultation(models.Model):
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.patient.name + " on " + self.created_date.strftime("%d-%m-%Y")

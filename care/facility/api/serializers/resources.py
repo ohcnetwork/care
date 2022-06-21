@@ -1,4 +1,3 @@
-from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -9,9 +8,10 @@ from care.facility.models import (
     RESOURCE_STATUS_CHOICES,
     Facility,
     ResourceRequest,
-    User,
     ResourceRequestComment,
+    User,
 )
+from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
 
@@ -47,18 +47,14 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
 
     orgin_facility_object = FacilityBasicInfoSerializer(source="orgin_facility", read_only=True, required=False)
-    approving_facility_object = FacilityBasicInfoSerializer(
-        source="approving_facility", read_only=True, required=False
-    )
+    approving_facility_object = FacilityBasicInfoSerializer(source="approving_facility", read_only=True, required=False)
     assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
     sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
     orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
-    approving_facility = serializers.UUIDField(
-        source="approving_facility.external_id", allow_null=False, required=True
-    )
+    approving_facility = serializers.UUIDField(source="approving_facility.external_id", allow_null=False, required=True)
     assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
@@ -158,6 +154,11 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def validate_empty_values(self, data):
+        if not data.get("comment", "").strip():
+            raise serializers.ValidationError({"comment": ["Comment cannot be empty"]})
+        return super().validate_empty_values(data)
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user

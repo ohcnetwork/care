@@ -31,7 +31,7 @@ Using Docker
 Running the server
 ``````````````````
 
-- The easiest way to setup everything and run the server is ``docker-compse up`` (This might take some time for the first time, depending upon your internet connection, processing power of your machine, etc,).
+- The easiest way to setup everything and run the server is ``docker compose -f "docker-compose.local.yaml" up`` (This might take some time for the first time, depending upon your internet connection, processing power of your machine, etc,).
 
 Working with the setup
 ```````````````````````

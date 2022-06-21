@@ -17,7 +17,7 @@ class OnvifAsset(BaseAssetIntegration):
             self.meta = json.loads(meta)
             self.meta = meta
             self.name = meta["camera_type"]
-            self.host = meta["camera_address"]
+            self.host = meta["local_ip_address"]
             self.port = meta["camera_port"] or 80
             self.username = meta["camera_access_key"].split(":")[0]
             self.password = meta["access_credentials"].split(":")[1]
