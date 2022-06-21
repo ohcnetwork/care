@@ -1,4 +1,4 @@
-from deployment import *  # noqa
+from .deployment import *  # noqa
 
 # Your stuff...
 # ------------------------------------------------------------------------------
