@@ -100,6 +100,10 @@ class LocalBody(models.Model):
     def __str__(self):
         return f"{self.name} ({self.body_type})"
 
+    class Meta:
+        verbose_name = "Local Body"
+        verbose_name_plural = "Local Bodies"
+
 
 class Ward(models.Model):
     local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT)
