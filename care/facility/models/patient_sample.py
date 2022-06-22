@@ -143,7 +143,7 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["StaffReadOnly"]
 
     def has_object_read_permission(self, request):
         if self.testing_facility:
