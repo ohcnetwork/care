@@ -31,13 +31,9 @@ class FileUploadViewSet(
             return FileUploadCreateSerializer
         elif self.action == "list":
             return FileUploadListSerializer
-        elif self.action == "retrieve":
+        elif self.action == "retrieve" or self.action == "destroy":
             return FileUploadRetrieveSerializer
-        elif self.action == "destroy":
-            print("destroy")
-            return None
         else:
-            print(self.action + " not implemented")
             raise Exception()
 
     def get_queryset(self):
@@ -49,4 +45,4 @@ class FileUploadViewSet(
             raise ValidationError("Bad Request")
         file_type = FileUpload.FileType[file_type].value
         associating_internal_id = check_permissions(file_type, associating_id, self.request.user)
-        return self.queryset.filter(file_type=file_type, associating_id=associating_internal_id)
+        return self.queryset.filter(file_type=file_type, associating_id=associating_internal_id, deleted=False)
