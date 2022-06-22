@@ -138,7 +138,7 @@ class FacilityViewSet(
             if serialized_data.is_valid():
                 serialized_data.save()
                 return Response(serialized_data.data)
-            print(serialized_data.errors, "Error: Cover Image")
+            
             return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == "DELETE":
