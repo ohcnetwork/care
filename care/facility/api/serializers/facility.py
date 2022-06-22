@@ -1,5 +1,5 @@
+from distutils import extension
 import boto3
-import time
 
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -42,6 +42,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
+    read_cover_image_url = serializers.CharField(read_only=True)
 
     def get_facility_type(self, facility):
         return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
@@ -59,7 +60,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "facility_type",
-            "cover_image_url",
+            "read_cover_image_url",
         )
 
 
@@ -71,6 +72,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     #     "latitude": 49.8782482189424,
     #     "longitude": 24.452545489
     # }
+    read_cover_image_url = serializers.CharField(read_only=True)
     location = PointField(required=False)
 
     class Meta:
@@ -102,7 +104,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "expected_type_b_cylinders",
             "expected_type_c_cylinders",
             "expected_type_d_cylinders",
-            "cover_image_url",
+            "read_cover_image_url",
         ]
         read_only_fields = ("modified_date", "created_date")
 
@@ -121,15 +123,17 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
+        image_extension = image.name.split(".")[-1]
         s3 = boto3.client(
             "s3",
             **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
         )
         upload_response = s3.put_object(
             Bucket=settings.FACILITY_S3_BUCKET,
-            Key=f"cover_images/{image.name}",
+            Key=f"cover_images/{facility.external_id}_cover.{image_extension}",
             Body=image.file,
         )
-        facility.cover_image_url = f"{upload_response['ResponseMetadata']['HTTPHeaders']['location']}cover_images/{image.name}"
+        print(upload_response['ResponseMetadata']['HTTPHeaders']['location'])
+        facility.cover_image_url = f"cover_images/{facility.external_id}_cover.{image_extension}"
         facility.save()
         return facility
