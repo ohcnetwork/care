@@ -70,14 +70,13 @@ class PatientConsultationViewSet(
     )
     @action(detail=False, methods=["GET"])
     def patient_from_asset(self, request):
-        try:
-            consultation = (
-                PatientConsultation.objects.select_related("patient")
-                .order_by("-id")
-                .filter(current_bed__bed__in=request.user.asset.bed_set.all())
-                .only("external_id", "patient__external_id")
-                .first()
-            )
-        except PatientConsultation.DoesNotExist as e:
-            raise NotFound({"detail": "No consultation found for this asset"}) from e
+        consultation = (
+            PatientConsultation.objects.select_related("patient")
+            .order_by("-id")
+            .filter(current_bed__bed__in=request.user.asset.bed_set.all())
+            .only("external_id", "patient__external_id")
+            .first()
+        )
+        if not consultation:
+            raise NotFound({"detail": "No consultation found for this asset"})
         return Response(PatientConsultationIDSerializer(consultation).data)
