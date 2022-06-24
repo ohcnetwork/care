@@ -10,17 +10,15 @@ class HL7MonitorAsset(BaseAssetIntegration):
         GET_VITALS = "get_vitals"
 
     def __init__(self, meta):
-        try:
-            super().__init__(meta)
-        except KeyError:
-            print("Error: Invalid HL7Monitor Asset; Missing required fields")
+        super().__init__(meta)
 
     def handle_action(self, action):
-        if action.type == self.HL7MonitorActions.GET_VITALS.value:
+        if action["type"] == self.HL7MonitorActions.GET_VITALS.value:
             request_params = {
                 "device_id": self.host
             }
             return self.api_get(self.get_url("vitals"), data=request_params)
         else:
+            print("also here")
             raise Exception("Invalid action")
 
