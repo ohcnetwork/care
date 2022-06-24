@@ -59,13 +59,16 @@ DISEASE_CHOICES_MAP = {
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
-CATEGORY_CHOICES = [
+# Deprecated
+COVID_CATEGORY_CHOICES = [
     ("ASYM", "ASYMPTOMATIC"),
     ("Mild", "Category-A"),
     ("Moderate", "Category-B"),
     ("Severe", "Category-C"),
     (None, "UNCLASSIFIED"),
 ]
+
+# TODO: @rithviknishad add patient category choices
 
 
 class DiseaseStatusEnum(enum.IntEnum):
@@ -97,5 +100,6 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)
+# TODO: @rithviknishad add patient category reverse
 REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)

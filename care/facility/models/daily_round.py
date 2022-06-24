@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.bed import Bed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -120,7 +120,10 @@ class DailyRound(PatientBaseModel):
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
-    patient_category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    deprecated_covid_category = models.CharField(
+        choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+    )  # Deprecated
+    # TODO: @rithviknishad add patient category
     current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
     recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)
@@ -406,7 +409,7 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if("/analyse" not in request.get_full_path()):
+        if "/analyse" not in request.get_full_path():
             if (
                 request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
                 or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]

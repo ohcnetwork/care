@@ -8,7 +8,7 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
+from care.facility.models import COVID_CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import SYMPTOM_CHOICES, SuggestionChoices
@@ -24,10 +24,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
-    suggestion_text = ChoiceField(choices=PatientConsultation.SUGGESTION_CHOICES, read_only=True, source="suggestion",)
+    suggestion_text = ChoiceField(
+        choices=PatientConsultation.SUGGESTION_CHOICES,
+        read_only=True,
+        source="suggestion",
+    )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    deprecated_covid_category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)  # Deprecated
+    # TODO: @rithviknishad add patient category
 
     referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
     referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
@@ -109,7 +114,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     caused_by=self.context["request"].user,
                     caused_object=instance,
                     facility=instance.patient.facility,
-                    notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP,],
+                    notification_mediums=[
+                        Notification.Medium.SYSTEM,
+                        Notification.Medium.WHATSAPP,
+                    ],
                 ).generate()
 
         NotificationGenerator(
@@ -188,7 +196,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 caused_by=self.context["request"].user,
                 caused_object=consultation,
                 facility=consultation.patient.facility,
-                notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.WHATSAPP,],
+                notification_mediums=[
+                    Notification.Medium.SYSTEM,
+                    Notification.Medium.WHATSAPP,
+                ],
             ).generate()
 
         return consultation

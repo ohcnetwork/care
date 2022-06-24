@@ -14,7 +14,7 @@ from django.utils.timezone import localtime, now
 from hardcopy import bytestring_to_pdf
 
 from care.facility.models.patient import PatientRegistration
-from care.facility.models.patient_base import CATEGORY_CHOICES
+from care.facility.models.patient_base import COVID_CATEGORY_CHOICES
 from care.facility.models.shifting import SHIFTING_STATUS_CHOICES, ShiftingRequest
 from care.users.models import District, State, User
 from care.utils.whatsapp.send_media_message import generate_whatsapp_message
@@ -138,7 +138,7 @@ class AdminReports:
     def caluclate_patient_category_summary(self, base_filters):
         return_list = []
         base_queryset = PatientRegistration.objects.filter(**base_filters)
-        for category in CATEGORY_CHOICES:
+        for category in COVID_CATEGORY_CHOICES:  # TODO: @rithviknishad change to patient category
             count = base_queryset.filter(
                 is_active=True,
                 created_date__gte=self.start_date,

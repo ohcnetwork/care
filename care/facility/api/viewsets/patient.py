@@ -33,7 +33,7 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
-    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
     FACILITY_TYPES,
     Facility,
     FacilityPatientStatsHistory,
@@ -70,7 +70,10 @@ class PatientFilterSet(filters.FilterSet):
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
-    category = filters.ChoiceFilter(field_name="last_consultation__category", choices=CATEGORY_CHOICES)
+    covid_category = filters.ChoiceFilter(
+        field_name="last_consultation__category", choices=COVID_CATEGORY_CHOICES
+    )  # Deprecated
+    # TODO: @rithviknishad add patient category
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
@@ -109,10 +112,12 @@ class PatientFilterSet(filters.FilterSet):
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
-    has_bed = filters.BooleanFilter(field_name="has_bed", method='filter_bed_not_null')
+    has_bed = filters.BooleanFilter(field_name="has_bed", method="filter_bed_not_null")
 
     def filter_bed_not_null(self, queryset, name, value):
-        return queryset.filter(last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True)
+        return queryset.filter(
+            last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True
+        )
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

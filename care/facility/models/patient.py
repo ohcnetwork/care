@@ -27,7 +27,7 @@ from care.facility.models.patient_base import (
     REVERSE_ADMIT_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User, phone_number_regex
@@ -492,7 +492,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "is_declared_positive": pretty_boolean,
         "is_vaccinated": pretty_boolean,
         # Consultation Data
-        "last_consultation__category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "last_consultation__category": (lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")),
+        # TODO: @rithviknishad use patient category instead
         "last_consultation__suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
         "last_consultation__admitted": pretty_boolean,
         "last_consultation__admitted_to": (lambda x: REVERSE_ADMIT_CHOICES.get(x, "-")),

@@ -11,7 +11,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
     Disease,
@@ -51,7 +50,11 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_super_user(cls, district: District, username: str = "superuser"):
-        user = cls.create_user(district=district, username=username, user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],)
+        user = cls.create_user(
+            district=district,
+            username=username,
+            user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],
+        )
         user.is_superuser = True
         user.save()
         return user
@@ -298,7 +301,11 @@ class TestBase(APITestCase):
             return {"district": None, "district_object": None}
         return {
             "district": district.id,
-            "district_object": {"id": district.id, "name": district.name, "state": district.state.id,},
+            "district_object": {
+                "id": district.id,
+                "name": district.name,
+                "state": district.state.id,
+            },
         }
 
     def get_state_representation(self, state: State):
@@ -322,7 +329,13 @@ class TestBase(APITestCase):
                 return [to_matching_type("", v) for v in value]
             elif "date" in name and not isinstance(value, (type(None), EverythingEquals)):
                 return_value = value
-                if isinstance(value, (str, unicode,)):
+                if isinstance(
+                    value,
+                    (
+                        str,
+                        unicode,
+                    ),
+                ):
                     return_value = dateparser.parse(value)
                 return (
                     return_value.astimezone(tz=datetime.timezone.utc)
@@ -359,7 +372,7 @@ class TestBase(APITestCase):
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
-            "category": CATEGORY_CHOICES[0][0],
+            # TODO: @rithviknishad, add patient category
             "examination_details": "examination_details",
             "existing_medication": "existing_medication",
             "prescribed_medication": "prescribed_medication",

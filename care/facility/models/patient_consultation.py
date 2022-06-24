@@ -3,11 +3,11 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     ADMIT_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
@@ -34,7 +34,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True)
+    deprecated_covid_category = models.CharField(
+        choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+    )  # Deprecated
+    # TODO: @rithviknishad add patient category
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -44,7 +47,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
-        "Facility", null=True, blank=True, on_delete=models.PROTECT, related_name="referred_patients",
+        "Facility",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="referred_patients",
     )  # Deprecated
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
@@ -74,10 +81,16 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     # Physical Information
 
     height = models.FloatField(
-        default=None, null=True, verbose_name="Patient's Height in CM", validators=[MinValueValidator(0)],
+        default=None,
+        null=True,
+        verbose_name="Patient's Height in CM",
+        validators=[MinValueValidator(0)],
     )
     weight = models.FloatField(
-        default=None, null=True, verbose_name="Patient's Weight in KG", validators=[MinValueValidator(0)],
+        default=None,
+        null=True,
+        verbose_name="Patient's Weight in KG",
+        validators=[MinValueValidator(0)],
     )
     HBA1C = models.FloatField(
         default=None,
@@ -106,7 +119,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "category": (lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")),
+        # TODO: @rithviknishad use patient category instead
         "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
     }
 
@@ -140,6 +154,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=~models.Q(suggestion=SuggestionChoices.R) | models.Q(referred_to__isnull=False),
             ),
             models.CheckConstraint(
-                name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+                name="if_admitted",
+                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
