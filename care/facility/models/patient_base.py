@@ -68,7 +68,12 @@ COVID_CATEGORY_CHOICES = [
     (None, "UNCLASSIFIED"),
 ]
 
-# TODO: @rithviknishad add patient category choices
+PATIENT_CATEGORY_CHOICES = [
+    ("Comfort", "Comfort Care"),
+    ("Stable", "Stable"),
+    ("Moderate", "Slightly Abnormal"),
+    ("Critical", "Critical"),
+]
 
 
 class DiseaseStatusEnum(enum.IntEnum):
@@ -101,5 +106,5 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)
-# TODO: @rithviknishad add patient category reverse
+REVERSE_PATIENT_CATEGORY_CHOICES = reverse_choices(PATIENT_CATEGORY_CHOICES)
 REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)

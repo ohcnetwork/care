@@ -17,7 +17,11 @@ from care.facility.models.json_schema.daily_round import (
     OUTPUT,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import (
+    CURRENT_HEALTH_CHOICES,
+    PATIENT_CATEGORY_CHOICES,
+    SYMPTOM_CHOICES,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -123,7 +127,7 @@ class DailyRound(PatientBaseModel):
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
     )  # Deprecated
-    # TODO: @rithviknishad add patient category
+    patient_category = models.CharField(choices=PATIENT_CATEGORY_CHOICES, max_length=8, null=True)
     current_health = models.IntegerField(default=0, choices=CURRENT_HEALTH_CHOICES, blank=True)
     recommend_discharge = models.BooleanField(default=False, verbose_name="Recommend Discharging Patient")
     other_details = models.TextField(null=True, blank=True)

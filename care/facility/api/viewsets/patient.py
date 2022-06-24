@@ -33,7 +33,6 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
-    COVID_CATEGORY_CHOICES,
     FACILITY_TYPES,
     Facility,
     FacilityPatientStatsHistory,
@@ -45,7 +44,7 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed, ConsultationBed
-from care.facility.models.patient_base import DISEASE_STATUS_DICT
+from care.facility.models.patient_base import DISEASE_STATUS_DICT, PATIENT_CATEGORY_CHOICES
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -70,10 +69,7 @@ class PatientFilterSet(filters.FilterSet):
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
-    covid_category = filters.ChoiceFilter(
-        field_name="last_consultation__category", choices=COVID_CATEGORY_CHOICES
-    )  # Deprecated
-    # TODO: @rithviknishad add patient category
+    patient_category = filters.ChoiceFilter(field_name="last_consultation__category", choices=PATIENT_CATEGORY_CHOICES)
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")

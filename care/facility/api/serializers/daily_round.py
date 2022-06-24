@@ -11,7 +11,12 @@ from care.facility.models import COVID_CATEGORY_CHOICES, PatientRegistration
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import (
+    ADMIT_CHOICES,
+    CURRENT_HEALTH_CHOICES,
+    PATIENT_CATEGORY_CHOICES,
+    SYMPTOM_CHOICES,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -23,7 +28,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     additional_symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES, required=False)
     deprecated_covid_category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)  # Deprecated
-    # TODO: @rithviknishad add patient category
+    patient_category = ChoiceField(choices=PATIENT_CATEGORY_CHOICES, required=True)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)

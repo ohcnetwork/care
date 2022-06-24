@@ -11,7 +11,7 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import COVID_CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import PATIENT_CATEGORY_CHOICES, SYMPTOM_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserAssignedSerializer, UserBaseMinimumSerializer
 from care.users.models import User
@@ -32,7 +32,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     deprecated_covid_category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)  # Deprecated
-    # TODO: @rithviknishad add patient category
+    category = ChoiceField(choices=PATIENT_CATEGORY_CHOICES, required=True)
 
     referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
     referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)

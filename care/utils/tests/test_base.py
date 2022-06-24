@@ -21,6 +21,7 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
+from care.facility.models.patient_base import PATIENT_CATEGORY_CHOICES
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
 
@@ -372,7 +373,7 @@ class TestBase(APITestCase):
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
-            # TODO: @rithviknishad, add patient category
+            "category": PATIENT_CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "existing_medication": "existing_medication",
             "prescribed_medication": "prescribed_medication",

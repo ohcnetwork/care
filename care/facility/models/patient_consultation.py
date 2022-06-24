@@ -6,8 +6,8 @@ from multiselectfield import MultiSelectField
 from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
-    ADMIT_CHOICES,
-    REVERSE_COVID_CATEGORY_CHOICES,
+    PATIENT_CATEGORY_CHOICES,
+    REVERSE_PATIENT_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
@@ -37,7 +37,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
     )  # Deprecated
-    # TODO: @rithviknishad add patient category
+    category = models.CharField(choices=PATIENT_CATEGORY_CHOICES, max_length=8, null=True)
     examination_details = models.TextField(null=True, blank=True)
     existing_medication = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -119,8 +119,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")),
-        # TODO: @rithviknishad use patient category instead
+        "category": (lambda x: REVERSE_PATIENT_CATEGORY_CHOICES.get(x, "-")),
         "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
     }
 
