@@ -41,7 +41,7 @@ class TestPatientConsultationApi(TestBase):
             "symptoms_onset_date": obj.symptoms_onset_date,
             "category": obj.get_category_display(),
             "examination_details": obj.examination_details,
-            "existing_medication": obj.existing_medication,
+            "history_of_present_illness": obj.history_of_present_illness,
             "prescribed_medication": obj.prescribed_medication,
             "suggestion": obj.suggestion,
             "suggestion_text": obj.get_suggestion_display(),

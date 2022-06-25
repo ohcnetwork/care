@@ -361,7 +361,7 @@ class TestBase(APITestCase):
             "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
-            "existing_medication": "existing_medication",
+            "history_of_present_illness": "history_of_present_illness",
             "prescribed_medication": "prescribed_medication",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
