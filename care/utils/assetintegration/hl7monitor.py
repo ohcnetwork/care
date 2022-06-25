@@ -1,5 +1,7 @@
 import enum
 
+from rest_framework.exceptions import ValidationError
+
 from care.utils.assetintegration.base import BaseAssetIntegration
 
 
@@ -14,11 +16,8 @@ class HL7MonitorAsset(BaseAssetIntegration):
 
     def handle_action(self, action):
         if action["type"] == self.HL7MonitorActions.GET_VITALS.value:
-            request_params = {
-                "device_id": self.host
-            }
+            request_params = { "device_id": self.host }
             return self.api_get(self.get_url("vitals"), data=request_params)
         else:
-            print("also here")
-            raise Exception("Invalid action")
+            raise ValidationError({"action": "invalid action type"})
 

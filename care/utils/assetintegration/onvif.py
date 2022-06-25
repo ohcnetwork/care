@@ -1,5 +1,7 @@
 import enum
 
+from rest_framework.exceptions import ValidationError
+
 from care.utils.assetintegration.base import BaseAssetIntegration
 
 
@@ -40,4 +42,4 @@ class OnvifAsset(BaseAssetIntegration):
             # Make API Call for action
             return self.api_get(self.get_url("status"), data={})
         else:
-            raise Exception("Invalid action")
+            raise ValidationError({"action": "invalid action type"})
