@@ -99,7 +99,7 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          coverage combine
+          coverage combine || true
           coverage xml
           coverage report -m
 
