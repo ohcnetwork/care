@@ -40,4 +40,4 @@ test: up
 
 test_coverage: up
 	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel=$(nproc)"
-	docker exec care bash -c "coverage combine && coverage report"
+	docker exec care bash -c "coverage combine || true; coverage report"

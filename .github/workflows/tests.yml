@@ -32,7 +32,7 @@ jobs:
           - 4566:4566
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python 3.x
         uses: actions/setup-python@v3
         with:
@@ -62,11 +62,11 @@ jobs:
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
 
       - name: Run Tests with coverage
-        run: coverage run manage.py test --settings=config.settings.test
+        run: coverage run manage.py test --settings=config.settings.test --parallel=$(nproc)
 
       - name: Generate coverage report
         run: |
-          coverage combine
+          coverage combine || true
           coverage xml
           coverage report -m
 
