@@ -3,7 +3,6 @@ import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
     try:
         command = sys.argv[1]
     except IndexError:
@@ -11,7 +10,7 @@ if __name__ == "__main__":
 
     if command == "test":
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.test")
-        #TODO: remove in django 4.1+
+        # TODO: remove in django 4.1+
         # patched for darwin
         # https://adamj.eu/tech/2020/07/21/how-to-use-djangos-parallel-testing-on-macos-with-python-3.8-plus/
         if sys.platform == "darwin":  # pragma: no cover
@@ -28,6 +27,8 @@ if __name__ == "__main__":
                 )
                 sys.exit(1)
             multiprocessing.set_start_method("fork")
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
     try:
         from django.core.management import execute_from_command_line

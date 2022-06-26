@@ -64,3 +64,29 @@ DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 
 # https://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 WHITENOISE_AUTOREFRESH = True
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"}
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "ERROR",
+    },
+}
