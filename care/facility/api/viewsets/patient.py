@@ -530,6 +530,7 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 class PatientNotesViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     queryset = PatientNotes.objects.all().select_related("facility", "patient", "created_by").order_by("-created_date")
     serializer_class = PatientNotesSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         user = self.request.user

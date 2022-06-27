@@ -4,10 +4,17 @@ from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters as drf_filters
+from dry_rest_permissions.generics import DRYPermissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.response import Response
 from rest_framework.serializers import CharField, JSONField, Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
@@ -18,7 +25,12 @@ from care.facility.api.serializers.asset import (
     AssetTransactionSerializer,
     UserDefaultAssetLocationSerializer,
 )
-from care.facility.models.asset import Asset, AssetLocation, AssetTransaction, UserDefaultAssetLocation
+from care.facility.models.asset import (
+    Asset,
+    AssetLocation,
+    AssetTransaction,
+    UserDefaultAssetLocation,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -37,7 +49,13 @@ class AssetLocationViewSet(
     UpdateModelMixin,
     GenericViewSet,
 ):
-    queryset = AssetLocation.objects.all().select_related("facility").order_by("-created_date")
+    queryset = (
+        AssetLocation.objects.all().select_related("facility").order_by("-created_date")
+    )
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     serializer_class = AssetLocationSerializer
     lookup_field = "external_id"
     filter_backends = (drf_filters.SearchFilter,)
@@ -56,11 +74,15 @@ class AssetLocationViewSet(
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(facility__id__in=allowed_facilities)
 
-        return queryset.filter(facility__external_id=self.kwargs["facility_external_id"])
+        return queryset.filter(
+            facility__external_id=self.kwargs["facility_external_id"]
+        )
 
     def get_facility(self):
         facilities = get_facility_queryset(self.request.user)
-        return get_object_or_404(facilities.filter(external_id=self.kwargs["facility_external_id"]))
+        return get_object_or_404(
+            facilities.filter(external_id=self.kwargs["facility_external_id"])
+        )
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
@@ -82,7 +104,9 @@ class AssetViewSet(
     GenericViewSet,
 ):
     queryset = (
-        Asset.objects.all().select_related("current_location", "current_location__facility").order_by("-created_date")
+        Asset.objects.all()
+        .select_related("current_location", "current_location__facility")
+        .order_by("-created_date")
     )
     serializer_class = AssetSerializer
     lookup_field = "external_id"
@@ -98,16 +122,22 @@ class AssetViewSet(
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(current_location__facility__state=user.state)
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(current_location__facility__district=user.district)
+            queryset = queryset.filter(
+                current_location__facility__district=user.district
+            )
         else:
             allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(current_location__facility__id__in=allowed_facilities)
+            queryset = queryset.filter(
+                current_location__facility__id__in=allowed_facilities
+            )
         return queryset
 
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
     def get_default_user_location(self, request, *args, **kwargs):
-        obj = get_object_or_404(UserDefaultAssetLocation.objects.filter(user=request.user))
+        obj = get_object_or_404(
+            UserDefaultAssetLocation.objects.filter(user=request.user)
+        )
         return Response(UserDefaultAssetLocationSerializer(obj).data)
 
     class DummyAssetSerializer(Serializer):  # Dummy for Spec
@@ -200,11 +230,13 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
             pass
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
-                Q(from_location__facility__state=user.state) | Q(to_location__facility__state=user.state)
+                Q(from_location__facility__state=user.state)
+                | Q(to_location__facility__state=user.state)
             )
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
-                Q(from_location__facility__district=user.district) | Q(to_location__facility__district=user.district)
+                Q(from_location__facility__district=user.district)
+                | Q(to_location__facility__district=user.district)
             )
         else:
             allowed_facilities = get_accessible_facilities(user)
