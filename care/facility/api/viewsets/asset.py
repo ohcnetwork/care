@@ -3,9 +3,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import filters as drf_filters
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -15,6 +14,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import CharField, JSONField, Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
@@ -33,6 +33,7 @@ from care.facility.models.asset import (
 )
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
+from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
@@ -167,7 +168,6 @@ class AssetViewSet(
 
     # Dummy Serializer for Operate Asset
     class DummyAssetOperateSerializer(Serializer):
-        asset_id = UUIDField(required=True)
         action = JSONField(required=True)
 
     class DummyAssetOperateResponseSerializer(Serializer):
@@ -185,18 +185,19 @@ class AssetViewSet(
         This API is used to operate assets. API accepts the asset_id and action as parameters.
         """
         try:
-            if "asset_id" not in request.data:
-                raise ValidationError({"asset_id": "is required"})
             if "action" not in request.data:
                 raise ValidationError({"action": "is required"})
-            asset_id = request.data["asset_id"]
             action = request.data["action"]
+            if "type" not in action:
+                raise ValidationError({"type": "missing action type"})
             asset: Asset = self.get_object()
-            result = AssetClasses(asset.asset_class).handle_action(action)
+            asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(asset.meta)
+            result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print(f"error: {e}")
             return Response(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
