@@ -158,9 +158,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         daily_round_obj.created_by = self.context["request"].user
         daily_round_obj.last_edited_by = self.context["request"].user
         daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
-        daily_round_obj.save(
+        daily_round_obj.consultation.save(
             update_fields=[
-                "consultation__last_updated_by_telemedicine",
+                "last_updated_by_telemedicine",
                 "created_by",
                 "last_edited_by",
             ]
