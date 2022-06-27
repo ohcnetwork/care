@@ -169,7 +169,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 "last_edited_by",
             ]
         )
-
+        
         self.update_last_daily_round(daily_round_obj)
         return daily_round_obj
 
