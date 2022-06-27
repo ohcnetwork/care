@@ -1,6 +1,6 @@
 from rest_framework import status
 
-from care.users.models import User
+from care.users.models import User, GENDER_CHOICES
 from care.utils.tests.test_base import TestBase
 
 
@@ -10,53 +10,30 @@ class TestSuperUser(TestBase):
         Run once before every test
             - login the super user
         """
-        self.client.force_login(self.super_user)
+        self.client.force_authenticate(self.super_user)
 
     def get_detail_representation(self, obj=None) -> dict:
         return {
             "username": obj.username,
-            "user_type": obj.get_user_type_display(),
-            "is_superuser": obj.is_superuser,
-            "verified": obj.verified,
-            "gender": obj.get_gender_display(),
-            "email": obj.email,
-            "phone_number": obj.phone_number,
             "first_name": obj.first_name,
             "last_name": obj.last_name,
+            "email": obj.email,
+            "user_type": obj.get_user_type_display(),
+            "created_by": obj.created_by,
+            "phone_number": obj.phone_number,
+            "alt_phone_number": obj.alt_phone_number,
             "age": obj.age,
+            "gender": GENDER_CHOICES[obj.gender - 1][1],
+            "is_superuser": obj.is_superuser,
+            "verified": obj.verified,
+            "pf_endpoint": obj.pf_endpoint,
+            "pf_p256dh": obj.pf_p256dh,
+            "pf_auth": obj.pf_auth,
             **self.get_local_body_district_state_representation(obj),
         }
 
-    # def test_user_creation(self):
-    #     """
-    #     For a superuser account, test
-    #         - for a POST request
-    #             - users can added, status from the response is 201
-    #         - for a GET request
-    #             - object count is 2(1 was created in setUpTestData)
-    #             - username is present in the response
-    #     """
-    #     url = "/api/v1/users/"
-
-    #     data = self.user_data.copy()
-    #     data["district"] = data["district"].id
-    #     data["state"] = data["state"].id
-    #     data["username"] = "test"
-    #     response = self.client.post(url, data)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # should create
-
-    #     response = self.client.get(url)
-    #     res_data_json = response.json()
-    #     self.assertEqual(res_data_json["count"], 3)  # should list this and 2 users already existing
-
-    #     response = self.client.get(url)
-    #     res_data_json = response.json()
-    #     results = res_data_json["results"]
-    #     # Test presence of username
-    #     self.assertIn(data["username"], {r["username"] for r in results})
-
-    def test_superuser_can_acess_url_by_location(self):
-        """Test super user can acess the url by location"""
+    def test_superuser_can_access_url_by_location(self):
+        """Test super user can access the url by location"""
         response = self.client.get(f"/api/v1/users/{self.user.username}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -81,7 +58,7 @@ class TestSuperUser(TestBase):
         data["district"] = data["district"].id
         data["state"] = data["state"].id
 
-        response = self.client.put(f"/api/v1/users/{username}/", {**data, "age": 31, "password": password},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31},)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
@@ -96,7 +73,7 @@ class TestSuperUser(TestBase):
         self.assertEqual(response.status_code, 204)
         # test backend response
         with self.assertRaises(expected_exception=User.DoesNotExist):
-            User.objects.get(username=self.user_data["username"])
+            User.objects.get(username=self.user_data["username"], is_active=True, deleted=False)
 
 
 class TestUser(TestBase):
@@ -147,7 +124,7 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
         # test total user count
-        self.assertEqual(res_data_json["count"], 3)  # 2 existing, plus the new one
+        self.assertEqual(res_data_json["count"], 2)  # 2 existing, plus the new one
         results = res_data_json["results"]
         # test presence of usernames
         self.assertIn(self.user.id, {r["id"] for r in results})
@@ -157,7 +134,7 @@ class TestUser(TestBase):
         """Test user can modify the attributes for themselves"""
         password = "new_password"
         username = self.user.username
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -174,7 +151,7 @@ class TestUser(TestBase):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password,},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_delete_others(self):

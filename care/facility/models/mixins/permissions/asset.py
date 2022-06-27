@@ -13,9 +13,8 @@ class AssetsPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        
-        return True
 
+        return True
 
     def has_object_update_permission(self, request):
         return self.has_object_write_permission(request)
