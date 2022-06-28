@@ -1,5 +1,7 @@
 import json
+
 import requests
+from rest_framework.exceptions import APIException
 
 
 class BaseAssetIntegration:
@@ -17,14 +19,19 @@ class BaseAssetIntegration:
     def api_post(self, url, data=None):
         req = requests.post(url, json=data)
         try:
-            return req.json()
-        except json.decoder.JSONDecodeError:
+            response = req.json()
+            if req.status_code >= 400:
+                raise APIException(response, req.status_code)
+            return response
+        except json.decoder.JSONDecodeError as e:
             return {"error": "Invalid Response"}
 
     def api_get(self, url, data=None):
         req = requests.get(url, params=data)
         try:
-            return req.json()
-        except Exception as e:
+            response = req.json()
+            if req.status_code >= 400:
+                raise APIException(response, req.status_code)
+            return response
+        except json.decoder.JSONDecodeError as e:
             return {"error": "Invalid Response"}
-

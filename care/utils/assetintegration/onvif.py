@@ -13,11 +13,15 @@ class OnvifAsset(BaseAssetIntegration):
         GOTO_PRESET = "goto_preset"
 
     def __init__(self, meta):
-        super().__init__(meta)
-        self.name = self.meta["camera_type"]
-        self.port = self.meta["camera_port"] or 80
-        self.username = self.meta["camera_access_key"].split(":")[0]
-        self.password = self.meta["access_credentials"].split(":")[1]
+        try:
+            super().__init__(meta)
+            self.name = self.meta["camera_type"]
+            self.port = self.meta["camera_port"] or 80
+            self.username = self.meta["camera_access_key"].split(":")[0]
+            self.password = self.meta["access_credentials"].split(":")[1]
+        except KeyError as e:
+            raise ValidationError(
+                dict((key, f"{key} not found in asset metadata") for key in e.args))
 
     def handle_action(self, action):
         if action["type"] == self.OnvifActions.MOVE_ABSOLUTE.value:

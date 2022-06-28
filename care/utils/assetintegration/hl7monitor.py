@@ -17,14 +17,18 @@ class HL7MonitorAsset(BaseAssetIntegration):
         RELATIVE_MOVE = "relative_move"
 
     def __init__(self, meta):
-        super().__init__(meta)
-        self.port = self.meta["port"]
-        self.username = self.meta["username"]
-        self.password = self.meta["password"]
+        try:
+            super().__init__(meta)
+            self.port = self.meta["port"]
+            self.username = self.meta["username"]
+            self.password = self.meta["password"]
+        except KeyError as e:
+            raise ValidationError(
+                dict((key, f"{key} not found in asset metadata") for key in e.args))
 
-    def handle_action(self, action: dict[str, any]):
-        action_type: str = action["type"]
-        action_data: dict[str, any] = action.get("data", {})
+    def handle_action(self, action):
+        action_type = action["type"]
+        action_data = action.get("data", {})
 
         request_body = {
             "hostname": self.host,
