@@ -110,10 +110,16 @@ class PatientFilterSet(filters.FilterSet):
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
     has_bed = filters.BooleanFilter(field_name="has_bed", method='filter_bed_not_null')
+    admit_date = filters.DateFilter(field_name="admit_date",method='filter_date_admitted_to_discharged')
 
     def filter_bed_not_null(self, queryset, name, value):
         return queryset.filter(last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True)
-
+    
+    def filter_date_admitted_to_discharged(self, queryset, name, value):
+        min_dt = datetime.datetime.combine(value, datetime.time.min)
+        max_dt = datetime.datetime.combine(value, datetime.time.max)
+        return queryset.filter(Q(last_consultation__admission_date__lte=max_dt) 
+            & Q(last_consultation__discharge_date__gte=min_dt))
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
