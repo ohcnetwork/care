@@ -343,9 +343,17 @@ class PatientViewSet(
         last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         current_time = localtime(now())
         if last_consultation:
+            reason = request.data.get("discharge_reason")
+            notes = request.data.get("discharge_notes", "")
+            if not reason:
+                raise serializers.ValidationError(
+                    {"discharge_reason": "discharge reason is mandatory"}
+                )
+            last_consultation.discharge_reason = reason
+            last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
-                last_consultation.save()
+            last_consultation.save()
             ConsultationBed.objects.filter(consultation=last_consultation, end_date__isnull=True).update(
                 end_date=current_time
             )

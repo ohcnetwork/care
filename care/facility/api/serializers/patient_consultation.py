@@ -11,7 +11,7 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import SYMPTOM_CHOICES, DISCHARGE_REASON_CHOICES, SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserAssignedSerializer, UserBaseMinimumSerializer
 from care.users.models import User
@@ -37,6 +37,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
 
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+
+    discharge_reason = serializers.ChoiceField(
+        choices=DISCHARGE_REASON_CHOICES, required=False)
 
     action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
