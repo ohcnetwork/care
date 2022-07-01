@@ -57,6 +57,16 @@ class UserFilterSet(filters.FilterSet):
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
 
+    def get_facility_user(
+        self, queryset, field_name, value,
+    ):
+        if value:
+            facility = Facility.objects.filter(external_id=value).first()
+            return facility.users.all()
+        return queryset
+
+    facility = filters.UUIDFilter(method="get_facility_user", field_name="facility__external_id")
+
 
 class UserViewSet(
     mixins.RetrieveModelMixin,
@@ -71,7 +81,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "facility")
         .order_by(F("last_login").desc(nulls_last=True)).annotate(
             created_by_user=F("created_by__username"),
         )
