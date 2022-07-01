@@ -65,7 +65,7 @@ class UserFilterSet(filters.FilterSet):
             return facility.users.all()
         return queryset
 
-    facility = filters.UUIDFilter(method="get_facility_user", field_name="facility__external_id")
+    facility = filters.UUIDFilter(method="get_facility_user", field_name="facility")
 
 
 class UserViewSet(
