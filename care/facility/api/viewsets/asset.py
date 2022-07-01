@@ -7,7 +7,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.mixins import (
     CreateModelMixin,
     ListModelMixin,
@@ -185,17 +185,24 @@ class AssetViewSet(
         This API is used to operate assets. API accepts the asset_id and action as parameters.
         """
         try:
-            if "action" not in request.data:
-                raise ValidationError({"action": "is required"})
             action = request.data["action"]
-            if "type" not in action:
-                raise ValidationError({"type": "missing action type"})
             asset: Asset = self.get_object()
-            asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(asset.meta)
+            asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
+                asset.meta)
             result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)
+
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+        except KeyError as e:
+            return Response({
+                "message": dict((key, "is required") for key in e.args)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        except APIException as e:
+            return Response(e.detail, e.status_code)
+
         except Exception as e:
             print(f"error: {e}")
             return Response(
