@@ -14,7 +14,7 @@ class BaseAssetIntegration:
         pass
 
     def get_url(self, endpoint):
-        return "http://{}/{}".format(self.middleware_hostname, endpoint)
+        return "https://{}/{}".format(self.middleware_hostname, endpoint)
 
     def api_post(self, url, data=None):
         req = requests.post(url, json=data)

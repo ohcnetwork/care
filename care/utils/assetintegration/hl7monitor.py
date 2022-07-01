@@ -20,8 +20,9 @@ class HL7MonitorAsset(BaseAssetIntegration):
         try:
             super().__init__(meta)
             self.port = self.meta["port"]
-            self.username = self.meta["username"]
-            self.password = self.meta["password"]
+            self.username = self.meta["camera_access_key"].split(":")[0]
+            self.password = self.meta["camera_access_key"].split(":")[1]
+            self.access_key = self.meta["camera_access_key"].split(":")[2]
         except KeyError as e:
             raise ValidationError(
                 dict((key, f"{key} not found in asset metadata") for key in e.args))
@@ -35,6 +36,7 @@ class HL7MonitorAsset(BaseAssetIntegration):
             "port": self.port,
             "username": self.username,
             "password": self.password,
+            "accessKey": self.access_key,
             **action_data
         }
 
