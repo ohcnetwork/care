@@ -71,7 +71,7 @@ class MiddlewareAuthentication(JWTAuthentication):
                 return None
             raise InvalidToken(
                 {
-                    "detail": "Token not valid, Please relogin to continue.",
+                    "detail": "Given token not valid for any token type",
                     "messages": [],
                 }
             ) from e
