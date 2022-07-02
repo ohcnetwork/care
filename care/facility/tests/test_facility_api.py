@@ -1,24 +1,26 @@
 from django.test import TestCase
-from rest_framework.test import force_authenticate
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from rest_framework import status
 
 from care.facility.tests.mixins import TestClassMixin
 
-class CreateFacilityTests(TestClassMixin, TestCase):
+class FacilityTests(TestClassMixin, TestCase):
 
     def test_all_listing(self):
-        request = self.factory.get('/api/v1/getallfacilitiess/')
-        view = AllFacilityViewSet.as_view({'get': 'list'})
-        response = view(request)
+        response = self.new_request(
+            ('/api/v1/getallfacilitiess/',), 
+            {'get' : 'list'}, 
+            AllFacilityViewSet
+        )
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
     def test_listing(self):
-        request = self.factory.get('/api/v1/facility/')
-        view = FacilityViewSet.as_view({'get': 'list'})
-        force_authenticate(request, user=self.users[0])
-        response = view(request)
-        print(response.data)
+        response = self.new_request(
+            ('/api/v1/facility/',), 
+            {'get' : 'list'}, 
+            FacilityViewSet,
+            self.users[0]
+        )
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
@@ -33,8 +35,37 @@ class CreateFacilityTests(TestClassMixin, TestCase):
             "address": "Nearby",
             "pincode": 390024,
         }
-        request = self.factory.post('/api/v1/facility/', sample_data, format='json')
-        view = FacilityViewSet.as_view({'post': 'create'})
-        force_authenticate(request, user=self.users[0])
-        response = view(request)
+        response = self.new_request(
+            ('/api/v1/facility/', sample_data, 'json'), 
+            {'post': 'create'},
+            FacilityViewSet,
+            user
+        )
+        fac_id = response.data['id']
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
+
+        retrieve_response = self.new_request(
+            (f'/api/v1/facility/{fac_id}',), 
+            {'get': 'retrieve'},
+            FacilityViewSet,
+            user,
+            {'external_id' : fac_id}
+        )
+
+        self.assertIs(retrieve_response.status_code, status.HTTP_200_OK)
+
+    def test_no_auth(self):
+        response = self.new_request(
+            ('/api/v1/facility/',), 
+            {'get' : 'list'}, 
+            FacilityViewSet,
+        )
+        self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        sample_data = {}
+        create_response = self.new_request(
+            ('/api/v1/facility/', sample_data, 'json'), 
+            {'post': 'create'},
+            FacilityViewSet,
+        )
+        self.assertIs(create_response.status_code, status.HTTP_403_FORBIDDEN)

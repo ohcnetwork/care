@@ -1,6 +1,5 @@
 from django.test import TestCase
-
-
+from rest_framework.test import force_authenticate
 from rest_framework.test import APIRequestFactory
 from care.users.models import District, LocalBody, State, User, Ward
 
@@ -35,6 +34,23 @@ class TestClassMixin(TestCase):
                 ward = ward,
                 district = district,
                 local_body = local_body,
-                state = state
+                state = state,
+                verified = True
             ),
         ]
+
+    def new_request(self, params, method, viewset, authenticate = False, pk = {}):
+        
+        request_methods = {
+            "get" :  self.factory.get,
+            "post" : self.factory.post,
+            "patch" : self.factory.patch,
+            "put" : self.factory.put,
+            "delete" : self.factory.delete
+        }
+
+        method_type = list(method.keys())[0]
+        request = request_methods[method_type](*params)
+        view = viewset.as_view(method)
+        authenticate != False and force_authenticate(request, user=authenticate) 
+        return view(request, **pk)
