@@ -16,6 +16,18 @@ class CustomJWTAuthentication(JWTAuthentication):
     def authenticate_header(self, request):
         return ""
 
+    def get_validated_token(self, raw_token):
+        try:
+            return super().get_validated_token()
+        except Exception as e:
+            print(e)
+        raise InvalidToken(
+            {
+                "detail": "Invalid Token, please relogin to continue",
+                "messages": [],
+            }
+        )
+
 
 class CustomBasicAuthentication(BasicAuthentication):
     def authenticate_header(self, request):

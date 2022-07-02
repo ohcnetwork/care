@@ -48,7 +48,7 @@ class CustomJWTAuthentication(JWTAuthentication):
             )
 
         raise InvalidToken(
-            {"detail": _("Token not valid, Please relogin to continue."), "messages": messages,}
+            {"detail": _("Given token not valid for any token type"), "messages": messages,}
         )
 
 
