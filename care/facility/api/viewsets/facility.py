@@ -4,7 +4,6 @@ from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -19,7 +18,6 @@ from care.facility.models import (
     HospitalDoctors,
     PatientRegistration,
 )
-from care.users.api.serializers.user import UserAssignedSerializer
 from care.users.models import User
 
 
@@ -127,24 +125,6 @@ class FacilityViewSet(
             )
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
-
-    @action(methods=["GET"], detail=True)
-    def get_users(self, request, external_id):
-        user_type_filter = None
-        if "user_type" in request.GET:
-            if request.GET["user_type"] in User.TYPE_VALUE_MAP:
-                user_type_filter = User.TYPE_VALUE_MAP[request.GET["user_type"]]
-        facility = Facility.objects.filter(external_id=external_id).first()
-        if not facility:
-            return Response(
-                {"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND
-            )
-        users = facility.users.filter(is_active=True)
-        if user_type_filter:
-            users = users.filter(user_type=user_type_filter)
-        users = users.order_by("-last_login")
-        data = UserAssignedSerializer(users, many=True)
-        return Response(data.data)
 
 
 class AllFacilityViewSet(

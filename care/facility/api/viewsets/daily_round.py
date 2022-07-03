@@ -1,7 +1,3 @@
-import math
-from datetime import datetime, timedelta
-from uuid import uuid4
-
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -12,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
+from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -20,7 +17,12 @@ DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 
 class DailyRoundsViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+    AssetUserAccessMixin,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
 ):
     serializer_class = DailyRoundSerializer
     permission_classes = (
@@ -35,8 +37,9 @@ class DailyRoundsViewSet(
     PAGE_SIZE = 36  # One Round Per Hour
 
     def get_queryset(self):
-        queryset = self.queryset.filter(consultation__external_id=self.kwargs["consultation_external_id"])
-        return queryset
+        return self.queryset.filter(
+            consultation__external_id=self.kwargs["consultation_external_id"]
+        )
 
     def get_serializer(self, *args, **kwargs):
         if "data" in kwargs:
@@ -55,7 +58,7 @@ class DailyRoundsViewSet(
         if not isinstance(request.data[self.FIELDS_KEY], list):
             raise ValidationError({"fields": "Must be an List"})
         if len(request.data[self.FIELDS_KEY]) >= self.MAX_FIELDS:
-            raise ValidationError({"fields": "Must be smaller than {}".format(self.MAX_FIELDS)})
+            raise ValidationError({"fields": f"Must be smaller than {self.MAX_FIELDS}"})
 
         # Request Data Validations
 
@@ -78,11 +81,17 @@ class DailyRoundsViewSet(
         # from_time = to_time - timedelta(days=self.DEFAULT_LOOKUP_DAYS)
 
         consultation = get_object_or_404(
-            get_consultation_queryset(request.user).filter(external_id=self.kwargs["consultation_external_id"])
+            get_consultation_queryset(request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
         )
-        daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("-taken_at")
+        daily_round_objects = DailyRound.objects.filter(
+            consultation=consultation
+        ).order_by("-taken_at")
         total_count = daily_round_objects.count()
-        daily_round_objects = daily_round_objects[((page - 1) * self.PAGE_SIZE) : ((page * self.PAGE_SIZE) + 1)]
+        daily_round_objects = daily_round_objects[
+            ((page - 1) * self.PAGE_SIZE) : ((page * self.PAGE_SIZE) + 1)
+        ]
         final_data_rows = daily_round_objects.values("taken_at", *base_fields)
         final_analytics = {}
 
@@ -95,6 +104,9 @@ class DailyRoundsViewSet(
             row_data["id"] = row["external_id"]
             del row_data["external_id"]
             final_analytics[str(row["taken_at"])] = row_data
-        final_data = {"results": final_analytics, "count": total_count, "page_size": self.PAGE_SIZE}
+        final_data = {
+            "results": final_analytics,
+            "count": total_count,
+            "page_size": self.PAGE_SIZE,
+        }
         return Response(final_data)
-
