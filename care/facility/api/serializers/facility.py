@@ -4,6 +4,8 @@ from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.patient_base import reverse_choices
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
 
@@ -37,6 +39,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     def get_facility_type(self, facility):
         return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
@@ -55,6 +58,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "state_object",
             "facility_type",
             "cover_image_url",
+            "features",
         )
 
 
@@ -67,6 +71,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     #     "longitude": 24.452545489
     # }
     location = PointField(required=False)
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     class Meta:
         model = Facility
@@ -80,6 +85,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "facility_type",
             "address",
             "location",
+            "features",
             "pincode",
             "oxygen_capacity",
             "phone_number",
