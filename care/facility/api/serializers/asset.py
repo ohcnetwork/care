@@ -3,6 +3,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, UUIDField
+from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
@@ -39,6 +40,14 @@ class AssetSerializer(ModelSerializer):
         exclude = ("deleted", "external_id", "current_location")
         read_only_fields = TIMESTAMP_FIELDS
 
+    def validate_qr_code_id(self, value):
+        value = value or None # treat empty string as null
+        UniqueValidator(
+            queryset=Asset.objects.filter(qr_code_id__isnull=False),
+            message="QR code already assigned"
+        )(value, self.fields.get("qr_code_id"))
+        return value
+
     def validate(self, attrs):
 
         user = self.context["request"].user
@@ -56,16 +65,15 @@ class AssetSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context["request"].user
         with transaction.atomic():
-            if "current_location" in validated_data:
-                if instance.current_location != validated_data["current_location"]:
-                    if instance.current_location.facility.id != validated_data["current_location"].facility.id:
-                        raise ValidationError({"location": "Interfacility transfer is not allowed here"})
-                    AssetTransaction(
-                        from_location=instance.current_location,
-                        to_location=validated_data["current_location"],
-                        asset=instance,
-                        performed_by=user,
-                    ).save()
+            if "current_location" in validated_data and instance.current_location != validated_data["current_location"]:
+                if instance.current_location.facility.id != validated_data["current_location"].facility.id:
+                    raise ValidationError({"location": "Interfacility transfer is not allowed here"})
+                AssetTransaction(
+                    from_location=instance.current_location,
+                    to_location=validated_data["current_location"],
+                    asset=instance,
+                    performed_by=user,
+                ).save()
             updated_instance = super().update(instance, validated_data)
         return updated_instance
 

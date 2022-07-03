@@ -20,7 +20,7 @@ from care.facility.models import (
     pretty_boolean,
 )
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
-from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
+from care.facility.models.mixins.permissions.patient import PatientPermissionMixin, PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -285,7 +285,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # Vaccination Fields
     is_vaccinated = models.BooleanField(default=False, verbose_name="Is the Patient Vaccinated Against COVID-19")
     number_of_doses = models.PositiveIntegerField(
-        default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(2)]
+        default=0, null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(3)]
     )
     vaccine_name = models.CharField(choices=vaccineChoices, default=None, null=True, blank=False, max_length=15)
 
@@ -617,6 +617,12 @@ class Disease(models.Model):
     class Meta:
         indexes = [PartialIndex(fields=["patient", "disease"], unique=True, where=PQ(deleted=False))]
 
+    def __str__(self):
+        return self.patient.name + " - " + self.get_disease_display()
+
+    def get_disease_display(self):
+        return DISEASE_CHOICES[self.disease - 1][1]
+
 
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
@@ -651,7 +657,7 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
-class PatientNotes(FacilityBaseModel):
+class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, null=False, blank=False)
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)
     created_by = models.ForeignKey(

@@ -12,6 +12,8 @@ from care.facility.models.mixins.permissions.facility import (
 )
 from care.users.models import District, LocalBody, State, Ward
 
+from multiselectfield import MultiSelectField
+
 
 User = get_user_model()
 
@@ -35,6 +37,14 @@ ROOM_TYPES = [
     (50, "KASP ICU beds"),
     (60, "KASP Oxygen beds"),
     (70, "KASP Ventilator beds"),
+]
+
+FEATURE_CHOICES = [
+    (1, "CT Scan Facility"),
+    (2, "Maternity Care"),
+    (3, "X-Ray facility"),
+    (4, "Neonatal care"),
+    (5, "Operation theater")
 ]
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
@@ -95,6 +105,7 @@ DOCTOR_TYPES = [
 
 REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
@@ -102,6 +113,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
+    features = MultiSelectField(choices=FEATURE_CHOICES, null=True, blank=True)
 
     location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
     pincode = models.IntegerField(default=None, null=True)
@@ -130,6 +142,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
 
     cover_image_url = models.URLField(blank=True, null=True, default=None)
+    middleware_address = models.CharField(unique=True, null=True, default=None, max_length=200)
 
     class Meta:
         verbose_name_plural = "Facilities"
@@ -240,6 +253,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
     class Meta:
         indexes = [PartialIndex(fields=["facility", "room_type"], unique=True, where=PQ(deleted=False))]
+        verbose_name_plural = "Facility Capacities"
 
     CSV_RELATED_MAPPING = {
         "facilitycapacity__room_type": "Room Type",
@@ -249,6 +263,9 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
+
+    def __str__(self):
+        return str(self.facility) + " " + REVERSE_ROOM_TYPES[self.room_type] + " " + str(self.total_capacity)
 
 
 class FacilityStaff(FacilityBaseModel):
@@ -369,6 +386,9 @@ class FacilityUser(models.Model):
             "facility",
             "user",
         )
+
+    def __str__(self):
+        return str(self.user) + " under " + str(self.facility)
 
     CSV_MAPPING = {
         "facility__name": "Facility Name",

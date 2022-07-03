@@ -119,7 +119,10 @@ class PatientDetailSerializer(PatientListSerializer):
     #     source="nearest_facility", read_only=True
     # )
 
-    source = ChoiceField(choices=PatientRegistration.SourceChoices, default=PatientRegistration.SourceEnum.CARE.value,)
+    source = ChoiceField(
+        choices=PatientRegistration.SourceChoices,
+        default=PatientRegistration.SourceEnum.CARE.value,
+    )
     disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -215,9 +218,7 @@ class PatientDetailSerializer(PatientListSerializer):
                 patient.save()
 
             if contacted_patients:
-                contacted_patient_objs = [
-                    PatientContactDetails(**data, patient=patient) for data in contacted_patients
-                ]
+                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
             patient.last_edited = self.context["request"].user
@@ -264,9 +265,7 @@ class PatientDetailSerializer(PatientListSerializer):
                 patient.contacted_patients.all().delete()
 
             if contacted_patients:
-                contacted_patient_objs = [
-                    PatientContactDetails(**data, patient=patient) for data in contacted_patients
-                ]
+                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
             patient.last_edited = self.context["request"].user
@@ -315,7 +314,12 @@ class PatientSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientSearch
-        exclude = ("date_of_birth", "year_of_birth", "external_id", "id",) + TIMESTAMP_FIELDS
+        exclude = (
+            "date_of_birth",
+            "year_of_birth",
+            "external_id",
+            "id",
+        ) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
@@ -346,6 +350,11 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def validate_empty_values(self, data):
+        if not data.get("note", "").strip():
+            raise serializers.ValidationError({"note": ["Note cannot be empty"]})
+        return super().validate_empty_values(data)
 
     class Meta:
         model = PatientNotes

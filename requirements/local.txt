@@ -1,26 +1,26 @@
 -r ./base.txt
+-r ./docs.txt
 Werkzeug==1.0.0 # https://github.com/pallets/werkzeug
 ipdb==0.13.2  # https://github.com/gotcha/ipdb
-Sphinx==2.4.4  # https://github.com/sphinx-doc/sphinx
 psycopg2-binary==2.8.4  # https://github.com/psycopg/psycopg2
 # Code quality
 # ------------------------------------------------------------------------------
-flake8==3.7.9  # https://github.com/PyCQA/flake8
-flake8-isort==2.9.0  # https://github.com/gforcada/flake8-isort
-coverage==5.0.4  # https://github.com/nedbat/coveragepy
-black==19.10b0  # https://github.com/ambv/black
-pylint-django==2.0.14  # https://github.com/PyCQA/pylint-django
-pre-commit==2.2.0  # https://github.com/pre-commit/pre-commit
+isort==5.10.1  # https://github.com/PyCQA/isort
+flake8==4.0.1  # https://github.com/PyCQA/flake8
+flake8-isort==4.1.1  # https://github.com/gforcada/flake8-isort
+black==22.3.0  # https://github.com/ambv/black
+pre-commit==2.19.0  # https://github.com/pre-commit/pre-commit
 # Django
 # ------------------------------------------------------------------------------
-factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
 django-debug-toolbar==2.2  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==2.2.8  # https://github.com/django-extensions/django-extensions
-django-coverage-plugin==1.8.0  # https://github.com/nedbat/django_coverage_plugin
 # Test
 # -------------------------------
-django-test-without-migrations==0.6
-freezegun==0.3.15
+factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
+freezegun==0.3.15  # https://github.com/spulec/freezegun
+coverage==6.4.1  # https://github.com/nedbat/coveragepy
+django-coverage-plugin==2.0.3
+tblib==1.7.0  # https://github.com/ionelmc/python-tblib
 # WatchDog
 # -------------------------------
 watchdog==0.10.2

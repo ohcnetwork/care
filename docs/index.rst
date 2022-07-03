@@ -7,10 +7,15 @@ Welcome to Care's documentation!
 ======================================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
+   local-setup/configuration
    pycharm/configuration
+   working-components/configuration
+   django-commands/configuration
+   github-repo/configuration
+   others/configuration
 
 
 

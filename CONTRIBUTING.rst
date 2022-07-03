@@ -17,7 +17,7 @@ Set up Local environment
 ------------------------
 
 * `Using Docker`_.(This should potentially be less time-taking)
-* `Local Setup`_. 
+* `Local Setup`_.
 
 Using Docker
 ~~~~~~~~~~~~
@@ -31,11 +31,11 @@ Using Docker
 Running the server
 ``````````````````
 
-- The easiest way to setup everything and run the server is ``docker-compse up`` (This might take some time for the first time, depending upon your internet connection, processing power of your machine, etc,).
+- The easiest way to setup everything and run the server is ``docker compose -f "docker-compose.local.yaml" up`` (This might take some time for the first time, depending upon your internet connection, processing power of your machine, etc,).
 
 Working with the setup
 ```````````````````````
-     
+
 - The Docker setup comes with pre-built client modules and requirements. To start all required services to run backend server locally, run
 
 .. code:: sh
@@ -45,7 +45,7 @@ Working with the setup
 - For running tests
 
 .. code:: sh
-    
+
     make test
 
 - For viewing logs
@@ -64,13 +64,13 @@ Working with the setup
 
 - To use ``pre-commit`` hooks, view `Setting up Pre-Commit`_.
 
-.. _Makefile: ./Makefile 
+.. _Makefile: ./Makefile
 
 
 Local Setup
 -----------
 
-- Install 
+- Install
 Install PostgreSQL.
 If you are installing PostgreSQL for the first time, follow the steps given in this answer_ to setup password based authentication.
 
@@ -92,7 +92,7 @@ Do the following steps to set up password authentication.
 
     sudo -u postgres psql
 
-In the `postgres#` shell type:: 
+In the `postgres#` shell type::
 
 \password postgres
 
@@ -136,7 +136,7 @@ You also might have to install PostGIS scripts.
 
 * Windows users can install
     - PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
-    - OSGeo4W from this site_. 
+    - OSGeo4W from this site_.
 
 Then follow the steps listed here_.
 
@@ -191,7 +191,7 @@ Setting Up Your Users
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
 If the command prompts for username only and after entering if it goes to error
-do make sure that you have done the following 
+do make sure that you have done the following
 
 Note: Make sure that you have created a database named `care` (replace thisw with your database name)  with privileges set for the user `postgres`
 

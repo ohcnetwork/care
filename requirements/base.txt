@@ -2,10 +2,9 @@ pytz==2019.3  # https://github.com/stub42/pytz
 python-slugify==4.0.0  # https://github.com/un33k/python-slugify
 Pillow==8.0.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==19.2.0  # https://github.com/hynek/argon2_cffi
-whitenoise==5.0.1  # https://github.com/evansd/whitenoise
+whitenoise==6.0.0  # https://github.com/evansd/whitenoise
 redis==3.4.1 # https://github.com/andymccurdy/redis-py
 boto3==1.12.23 # For AWS interactions
-collectfast==2.1.0 # For Caching Static Files Hashes
 # Django
 # ------------------------------------------------------------------------------
 django==2.2.11  # pyup: < 3.0  # https://www.djangoproject.com/
@@ -18,7 +17,7 @@ django-storages==1.9.1 # For Storing Static Files in AWS
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 djangorestframework-simplejwt==4.5.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
 drf-yasg==1.17.1 # For Api Docs
-django-filter==2.2.0
+django-filter==2.4.0
 django-extra-fields==2.0.3 # https://github.com/Hipo/drf-extra-fields
 django-location-field==2.1.0 # https://django-location-field.readthedocs.io/en/latest/
 drf-nested-routers==0.91
