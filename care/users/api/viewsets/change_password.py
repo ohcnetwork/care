@@ -16,6 +16,11 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
+    def check_old_password(self, instance, validated_data):
+        if instance.check_password(validated_data.get("old_password")):
+            return False
+        return True
+
 class ChangePasswordView(UpdateAPIView):
         """
         An endpoint for changing password.
@@ -25,27 +30,18 @@ class ChangePasswordView(UpdateAPIView):
         permission_classes = (IsAuthenticated,)
 
         def get_object(self):
-            obj = self.request.user
-            return obj
+            return self.request.user
 
         def update(self, request, *args, **kwargs):
             self.object = self.request.user
             serializer = self.get_serializer(data=request.data)
 
             if serializer.is_valid():
-                # Check old password
-                if not self.object.check_password(serializer.data.get("old_password")):
+                check = serializer.check_old_password(instance=self.object, validated_data=request.data)
+                if not check:
                     return Response({"old_password": ["Wrong password entered. Please check your password."]}, status=status.HTTP_400_BAD_REQUEST)
-                # set_password also hashes the password that the user will get
                 self.object.set_password(serializer.data.get("new_password"))
                 self.object.save()
-                response = {
-                    'status': 'success',
-                    'code': status.HTTP_200_OK,
-                    'message': 'Password updated successfully',
-                    'data': []
-                }
-
-                return Response(response)
+                return Response({"message": "Password updated successfully"})
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
