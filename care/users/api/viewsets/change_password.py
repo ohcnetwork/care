@@ -40,6 +40,7 @@ class ChangePasswordView(UpdateAPIView):
                 check = serializer.check_old_password(instance=self.object, validated_data=request.data)
                 if not check:
                     return Response({"old_password": ["Wrong password entered. Please check your password."]}, status=status.HTTP_400_BAD_REQUEST)
+                    
                 self.object.set_password(serializer.data.get("new_password"))
                 self.object.save()
                 return Response({"message": "Password updated successfully"})
