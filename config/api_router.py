@@ -1,3 +1,4 @@
+from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from django.conf import settings
 from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
@@ -137,6 +138,7 @@ router.register("investigation", PatientInvestigationViewSet)
 
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
+facility_nested_router.register(r"get_users", FacilityUserViewSet)
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
 facility_nested_router.register(r"capacity", FacilityCapacityViewSet)
 facility_nested_router.register(r"patient_stats", FacilityPatientStatsHistoryViewSet)
