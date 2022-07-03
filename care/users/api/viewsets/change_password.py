@@ -25,8 +25,7 @@ class ChangePasswordView(UpdateAPIView):
         permission_classes = (IsAuthenticated,)
 
         def get_object(self):
-            obj = self.request.user
-            return obj
+            return self.request.user
 
         def update(self, request, *args, **kwargs):
             self.object = self.request.user
