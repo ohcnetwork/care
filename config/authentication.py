@@ -18,15 +18,12 @@ class CustomJWTAuthentication(JWTAuthentication):
 
     def get_validated_token(self, raw_token):
         try:
-            return super().get_validated_token()
-        except Exception as e:
-            print(e)
-        raise InvalidToken(
-            {
+            return super().get_validated_token(raw_token)
+        except InvalidToken as e:
+            raise InvalidToken({
                 "detail": "Invalid Token, please relogin to continue",
-                "messages": [],
-            }
-        )
+                "messages" : e.detail.get("messages", [])
+            }) from e
 
 
 class CustomBasicAuthentication(BasicAuthentication):
