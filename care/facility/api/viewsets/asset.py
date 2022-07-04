@@ -94,6 +94,7 @@ class AssetFilter(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     asset_type = CareChoiceFilter(choice_dict=inverse_asset_type)
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
+    is_working = filters.BooleanFilter() 
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
 
 
