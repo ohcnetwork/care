@@ -35,6 +35,7 @@ from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
     FACILITY_TYPES,
+    DISCHARGE_REASON_CHOICES,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -345,9 +346,9 @@ class PatientViewSet(
         if last_consultation:
             reason = request.data.get("discharge_reason")
             notes = request.data.get("discharge_notes", "")
-            if not reason:
+            if not reason or reason not in [choice[0] for choice in DISCHARGE_REASON_CHOICES]:
                 raise serializers.ValidationError(
-                    {"discharge_reason": "discharge reason is mandatory"}
+                    {"discharge_reason": "discharge reason is not valid"}
                 )
             last_consultation.discharge_reason = reason
             last_consultation.discharge_notes = notes
