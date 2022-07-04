@@ -52,12 +52,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     discharge_reason = serializers.ChoiceField(
-        choices=DISCHARGE_REASON_CHOICES, required=False)
+        choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
+    )
+    discharge_notes = serializers.CharField(read_only=True)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
     )
-    
+
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
