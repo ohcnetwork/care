@@ -1,6 +1,7 @@
 import json
 
 import requests
+from django.conf import settings
 from rest_framework.exceptions import APIException
 
 
@@ -9,12 +10,16 @@ class BaseAssetIntegration:
         self.meta = meta
         self.host = self.meta["local_ip_address"]
         self.middleware_hostname = self.meta["middleware_hostname"]
+        self.insecure_connection = self.meta.get("insecure_connection", False)
 
     def handle_action(self, action):
         pass
 
     def get_url(self, endpoint):
-        return "https://{}/{}".format(self.middleware_hostname, endpoint)
+        protocol = "http"
+        if not self.insecure_connection or settings.IS_PRODUCTION:
+            protocol += "s"
+        return f"{protocol}://{self.middleware_hostname}/{endpoint}"
 
     def api_post(self, url, data=None):
         req = requests.post(url, json=data)
