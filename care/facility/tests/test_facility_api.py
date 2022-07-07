@@ -34,6 +34,7 @@ class FacilityTests(TestClassMixin, TestCase):
             "facility_type": "Educational Inst",
             "address": "Nearby",
             "pincode": 390024,
+            "features" : []
         }
         response = self.new_request(
             ('/api/v1/facility/', sample_data, 'json'), 
