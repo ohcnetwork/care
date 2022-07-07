@@ -123,7 +123,7 @@ class PatientExternalTestViewSet(
             raise ValidationError({"sample_tests": "No Data was provided"})
         if type(request.data["sample_tests"]) != type([]):
             raise ValidationError({"sample_tests": "Data should be provided as a list"})
-        errors = {}
+        errors = []
         counter = 0
         ser_objects = []
         invalid = False
@@ -133,7 +133,7 @@ class PatientExternalTestViewSet(
             valid = serialiser_obj.is_valid()
             current_error = prettyerrors(serialiser_obj._errors)
             if current_error and (not valid):
-                errors[counter] = current_error
+                errors.append(current_error)
                 invalid = True
             ser_objects.append(serialiser_obj)
         if invalid:

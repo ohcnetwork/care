@@ -17,7 +17,7 @@ from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
 from config.serializers import ChoiceField
-
+from django.db import transaction
 
 class DailyRoundSerializer(serializers.ModelSerializer):
 
@@ -113,61 +113,65 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
+        with transaction.atomic():
+            if "clone_last" in validated_data:
+                should_clone = validated_data.pop("clone_last")
+                if should_clone:
+                    consultation = get_object_or_404(
+                        get_consultation_queryset(self.context["request"].user).filter(id=validated_data["consultation"].id)
+                    )
+                    last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
+                    if not last_objects.exists():
+                        raise ValidationError({"daily_round": "No Daily Round record available to copy"})
+                    cloned_daily_round_obj = last_objects[0]
+                    cloned_daily_round_obj.pk = None
+                    cloned_daily_round_obj.created_by = self.context["request"].user
+                    cloned_daily_round_obj.last_edited_by = self.context["request"].user
+                    cloned_daily_round_obj.created_date = timezone.now()
+                    cloned_daily_round_obj.modified_date = timezone.now()
+                    cloned_daily_round_obj.external_id = uuid4()
+                    cloned_daily_round_obj.save()
+                    self.update_last_daily_round(cloned_daily_round_obj)
+                    return self.update(cloned_daily_round_obj, validated_data)
 
-        if "clone_last" in validated_data:
-            should_clone = validated_data.pop("clone_last")
-            if should_clone:
-                consultation = get_object_or_404(
-                    get_consultation_queryset(self.context["request"].user).filter(id=validated_data["consultation"].id)
-                )
-                last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
-                if not last_objects.exists():
-                    raise ValidationError({"daily_round": "No Daily Round record available to copy"})
-                cloned_daily_round_obj = last_objects[0]
-                cloned_daily_round_obj.pk = None
-                cloned_daily_round_obj.created_by = self.context["request"].user
-                cloned_daily_round_obj.last_edited_by = self.context["request"].user
-                cloned_daily_round_obj.created_date = timezone.now()
-                cloned_daily_round_obj.modified_date = timezone.now()
-                cloned_daily_round_obj.external_id = uuid4()
-                cloned_daily_round_obj.save()
-                self.update_last_daily_round(cloned_daily_round_obj)
-                return self.update(cloned_daily_round_obj, validated_data)
+            if "action" in validated_data or "review_time" in validated_data:
+                patient = validated_data["consultation"].patient
 
-        if "action" in validated_data or "review_time" in validated_data:
-            patient = validated_data["consultation"].patient
+                if "action" in validated_data:
+                    action = validated_data.pop("action")
+                    patient.action = action
 
-            if "action" in validated_data:
-                action = validated_data.pop("action")
-                patient.action = action
+                if "review_time" in validated_data:
+                    review_time = validated_data.pop("review_time")
+                    if review_time >= 0:
+                        patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+                patient.save()
 
-            if "review_time" in validated_data:
-                review_time = validated_data.pop("review_time")
-                if review_time >= 0:
-                    patient.review_time = localtime(now()) + timedelta(minutes=review_time)
-            patient.save()
+            validated_data["created_by_telemedicine"] = False
+            validated_data["last_updated_by_telemedicine"] = False
 
-        validated_data["created_by_telemedicine"] = False
-        validated_data["last_updated_by_telemedicine"] = False
+            if self.context["request"].user == validated_data["consultation"].assigned_to:
+                validated_data["created_by_telemedicine"] = True
+                validated_data["last_updated_by_telemedicine"] = True
 
-        if self.context["request"].user == validated_data["consultation"].assigned_to:
-            validated_data["created_by_telemedicine"] = True
-            validated_data["last_updated_by_telemedicine"] = True
-
-        daily_round_obj = super().create(validated_data)
-        daily_round_obj.created_by = self.context["request"].user
-        daily_round_obj.last_edited_by = self.context["request"].user
-        daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
-        daily_round_obj.consultation.save(
-            update_fields=[
-                "last_updated_by_telemedicine",
-                "created_by",
-                "last_edited_by",
-            ]
-        )
-
-        self.update_last_daily_round(daily_round_obj)
-        return daily_round_obj
+            daily_round_obj = super().create(validated_data)
+            daily_round_obj.created_by = self.context["request"].user
+            daily_round_obj.last_edited_by = self.context["request"].user
+            daily_round_obj.consultation.last_updated_by_telemedicine = validated_data["last_updated_by_telemedicine"]
+            daily_round_obj.consultation.save(
+                update_fields=[
+                    "last_updated_by_telemedicine"
+                ]
+            )
+            daily_round_obj.save(
+                update_fields=[
+                    "created_by",
+                    "last_edited_by",
+                ]
+            )
+            
+            self.update_last_daily_round(daily_round_obj)
+            return daily_round_obj
 
     def validate(self, obj):
         validated = super().validate(obj)

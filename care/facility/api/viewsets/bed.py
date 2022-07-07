@@ -1,14 +1,13 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
+from rest_framework.exceptions import ValidationError as DRFValidationError
+from rest_framework.fields import get_error_detail
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.exceptions import PermissionDenied
 
 from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer, ConsultationBedSerializer
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
@@ -25,7 +24,7 @@ class BedFilter(filters.FilterSet):
     bed_type = CareChoiceFilter(choice_dict=inverse_bed_type)
 
 
-class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Bed.objects.all().select_related("facility", "location").order_by("-created_date")
     serializer_class = BedSerializer
     lookup_field = "external_id"
@@ -47,6 +46,16 @@ class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateMod
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(facility__id__in=allowed_facilities)
         return queryset
+    
+    def destroy(self, request, *args, **kwargs):
+        if request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            raise PermissionDenied()
+        return super().destroy(request, *args, **kwargs)
+
+    def handle_exception(self, exc):
+        if isinstance(exc, DjangoValidationError):
+            exc = DRFValidationError(detail=get_error_detail(exc))
+        return super().handle_exception(exc)
 
 
 class AssetBedFilter(filters.FilterSet):

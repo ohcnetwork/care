@@ -2,14 +2,12 @@ name: Deploy Care
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - master
-      - production
   push:
     branches:
       - master
       - production
+    paths-ignore:
+      - 'docs/**'
 
 env:
   IMAGE_NAME: care
@@ -22,7 +20,31 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
     name: Test
+    services:
+      db:
+        image: postgis/postgis:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: care
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          AWS_DEFAULT_REGION: ap-south-1
+          EDGE_PORT: 4566
+          SERVICES: s3
+        ports:
+          - 4566:4566
     steps:
 
       - uses: actions/checkout@v3
@@ -47,9 +69,36 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: Run tests
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
         run: |
-          echo "running tests..."
+          sudo apt-get update
+          sudo apt-get install binutils libproj-dev gdal-bin -y
+          pip install --upgrade pip
+          pip install -r requirements/local.txt
+
+      - name: Run celery worker for tests
+        run: celery -A config.celery_app worker -B --loglevel=INFO --detach
+
+      - name: Run Tests with coverage
+        run: coverage run manage.py test --settings=config.settings.test
+
+      - name: Generate coverage report
+        run: |
+          coverage combine || true
+          coverage xml
+          coverage report -m
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
 
       - name: Move cache
         run: |
@@ -200,13 +249,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -243,13 +292,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -286,13 +335,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -329,7 +378,7 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-      
+
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
         with:
@@ -342,7 +391,7 @@ jobs:
           cluster_name: ${{ secrets.GKE_CLUSTER }}
           location: ${{ secrets.GKE_ZONE }}
           credentials: ${{ secrets.GKE_SA_KEY }}
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:

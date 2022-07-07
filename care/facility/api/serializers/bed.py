@@ -105,6 +105,16 @@ class ConsultationBedSerializer(ModelSerializer):
                 raise ValidationError({"consultation": "Should be in the same facility as the bed"})
             start_date = attrs["start_date"]
             end_date = attrs.get("end_date", None)
+            existing_qs = ConsultationBed.objects.filter(consultation=consultation, bed=bed)
+            latest_qs = ConsultationBed.objects.filter(consultation=consultation).latest("id")
+            # Validations based of the latest entry
+            if latest_qs.exists():
+                if latest_qs.bed == bed:
+                        raise ValidationError({"bed": "Bed is already in use"})
+                if start_date < latest_qs.start_date:
+                    raise ValidationError({"start_date": "Start date cannot be before the latest start date"})
+                if end_date and end_date < latest_qs.start_date:
+                    raise ValidationError({"end_date": "End date cannot be before the latest start date"})
             existing_qs = ConsultationBed.objects.filter(consultation=consultation)
             # Conflict checking logic
             if existing_qs.filter(start_date__gt=start_date).exists():
@@ -125,14 +135,20 @@ class ConsultationBedSerializer(ModelSerializer):
     def create(self, validated_data):
         consultation = validated_data["consultation"]
         bed = validated_data["bed"]
-        current_bed = consultation.current_bed.bed if consultation.current_bed else None
-        existing_beds = ConsultationBed.objects.filter(
-            consultation=consultation,
-            bed=current_bed,
-            end_date__isnull=True,
-        )
-        existing_beds.update(end_date=validated_data["start_date"])
+
+        if not consultation.patient.is_active:
+            raise ValidationError(
+                {"patient:": ["Patient is already discharged from CARE"]})
+
+        occupied_beds = ConsultationBed.objects.filter(end_date__isnull=True)
+
+        if occupied_beds.filter(bed=bed).exists():
+            raise ValidationError({"bed:": ["Bed already in use by patient"]})
+
+        occupied_beds.filter(consultation=consultation).update(end_date=validated_data["start_date"])
+
+        # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
         obj = super().create(validated_data)
-        consultation.current_bed = obj  # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
+        consultation.current_bed = obj
         consultation.save(update_fields=["current_bed"])
         return obj
