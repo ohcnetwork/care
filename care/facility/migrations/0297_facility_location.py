@@ -2,16 +2,16 @@
 
 from django.db import migrations, models
 
-def populate_location(apps, schema_editor):
-    Facility = apps.get_model('facility', 'Facility')
-    facilities = Facility.objects.all()
+# def populate_location(apps, schema_editor):
+#     Facility = apps.get_model('facility', 'Facility')
+#     facilities = Facility.objects.all()
 
-    for facility in facilities:
-        if facility.location is not None:
-            facility.longitude = facility.location.tuple[0]
-            facility.latitude = facility.location.tuple[1]
-        facility.save()
-
+#     for facility in facilities:
+#         if facility.location is not None:
+#             facility.longitude = facility.location.tuple[0]
+#             facility.latitude = facility.location.tuple[1]
+#         facility.save()
+#     raise Exception()
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='longitude',
             field=models.DecimalField(blank=True, decimal_places=16, max_digits=22, null=True),
         ),
-        migrations.RunPython(populate_location, migrations.RunPython.noop),
+        # migrations.RunPython(populate_location, migrations.RunPython.noop),
         migrations.RemoveField(
             model_name='facility',
             name='location',
