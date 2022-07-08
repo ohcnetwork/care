@@ -40,7 +40,7 @@ class Bed(BaseModel):
         return self.name
 
     def validate(self) -> None:
-        if Bed.objects.filter(location=self.location, name=self.name).exists():
+        if Bed.objects.filter(location=self.location, name=self.name).exclude(pk=self.pk).exists():
             raise ValidationError({"name": "Bed with same name already exists in location."})
 
     def save(self, *args, **kwargs) -> None:
