@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Other Details" href="../others/configuration.html" /><link rel="prev" title="Django Commands" href="../django-commands/configuration.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Other Details" href="../others/configuration.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
-        <title>GitHub Repository - Care documentation</title>
+        <title>Glossary - Care documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -160,9 +160,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../pycharm/configuration.html">Debugging with Pycharm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../working-components/configuration.html">Working Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../django-commands/configuration.html">Django Commands</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../github-repo/configuration.html">GitHub Repository</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others/configuration.html">Other Details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary/configuration.html">Glossary</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Glossary</a></li>
 </ul>
 
 </div>
@@ -190,20 +190,97 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="github-repository">
-<h1>GitHub Repository<a class="headerlink" href="#github-repository" title="Permalink to this heading">#</a></h1>
-<p>The Github Repo available <a class="reference external" href="https://github.com/coronasafe/care">here</a> contains the source code for the care project, Apart from the secrets configured at runtime, the exact copy is deployed in production.</p>
-<p>The <code class="code docutils literal notranslate"><span class="pre">master</span></code> branch auto deploys to the Development instance and is regarded as the Beta version of the application.</p>
-<p>The <code class="code docutils literal notranslate"><span class="pre">production</span></code> branch auto deploys to Production instance and is regarded as the Stable version of the application.</p>
-<p>All Stable Releases are tagged in Github.</p>
-<p>All PR’s and issues are monitored by the code reviewers team and merged after a security review.</p>
-<p>Any other forks for deployments <strong>MUST</strong> follow the same Github structure so as to remain in sync and to keep getting updates.</p>
+          <section id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">#</a></h1>
+<p><strong>CARE</strong> is a comprehensive capacity and patient management tool, built specifically for the COVID Pandemic Management. It is a web-based application hosted at  <a class="reference external" href="https://care.coronasafe.network/">https://care.coronasafe.network/</a></p>
+<p>This document gives an overview of the Care System for the developers who are willing to contribute to it.</p>
+<section id="hierarchy">
+<h2>Hierarchy<a class="headerlink" href="#hierarchy" title="Permalink to this heading">#</a></h2>
+<p>Care Systems maintain and process data up to <strong>Ward</strong> Level right from State. This means the each record of a model will be associated up to Ward Level.</p>
+<img alt="../_images/Hierarchy.png" src="../_images/Hierarchy.png" />
+</section>
+<section id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this heading">#</a></h2>
+<section id="facility">
+<h3>Facility<a class="headerlink" href="#facility" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Facilities represent <strong>Hospitals</strong> associated with the Ward.</p></li>
+<li><p>There are 15+ Facility <strong>Types</strong> in the Care System with its <a class="reference external" href="https://github.com/coronasafe/care/blob/6b39d0c8c2cd65c5f86db3fc667456f2d28db70c/care/facility/models/facility.py#L44">ID Number Conventions</a></p></li>
+<li><p>Each Facility record has its Basic information, Bed Capacity, Oxygen Cylinder Capacity and Doctor Capacity.</p></li>
+<li><p>Reference: Karunya Arogya Suraksha Padhathi <a class="reference external" href="https://sha.kerala.gov.in/karunya-arogya-suraksha-padhathi/">(KASP)</a> - Health Care Scheme</p></li>
+</ul>
+<img alt="../_images/Facility.png" src="../_images/Facility.png" />
+</section>
+<section id="inventory">
+<h3>Inventory<a class="headerlink" href="#inventory" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Inventory refers to all the items, goods, merchandise, and materials held by a Facility.</p></li>
+<li><p>Inventory Management helps us keep track of stocks of the items.</p></li>
+<li><p>Examples of Inventories could be PPE Kits, Rice, Masks etc.</p></li>
+<li><p>We can also set minimum quantities to each inventories. We will be notified when we run out of stock.</p></li>
+</ul>
+<img alt="../_images/Inventory.png" src="../_images/Inventory.png" />
+</section>
+<section id="capacity">
+<h3>Capacity<a class="headerlink" href="#capacity" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Each facility can hold the details of <strong>Bed Capacity and Doctor Count.</strong></p></li>
+<li><p>Bed Capacity details would include Type of Beds, Occupied Beds and Total Beds.</p></li>
+<li><p>Doctor Count details would include Type of Doctor and their count.</p></li>
+</ul>
+<img alt="../_images/Capacity.png" src="../_images/Capacity.png" />
+</section>
+<section id="location">
+<h3>Location<a class="headerlink" href="#location" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Facilities can have multiple locations. These locations has name and description which gives flexibility to customize according to Facility’s need.</p></li>
+<li><p>Bed Details can be added to each locations if need.</p></li>
+<li><p><em>Examples</em>: Different Departments and Wards</p></li>
+</ul>
+<img alt="../_images/Location.png" src="../_images/Location.png" />
+</section>
+<section id="assets">
+<h3>Assets<a class="headerlink" href="#assets" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Assets refers to things such as instrument, equipment and other properties.</p></li>
+<li><p>Assets are different from Inventory. Inventories are based on the stocks and quantities.</p></li>
+<li><p>Assets are <strong>linked with a specific location</strong> of a Facility.</p></li>
+<li><p>Assets can be moved from one location to another location within a Facility.</p></li>
+</ul>
+<img alt="../_images/Assets.png" src="../_images/Assets.png" />
+</section>
+<section id="external-results">
+<h3>External Results<a class="headerlink" href="#external-results" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>External Results hold the data of test results that comes from External Sources.</p></li>
+<li><p>Examples would include RT-PCR / ANTIGEN test from a private lab.</p></li>
+<li><p>These Result can be used to create Patient if they are found to be COVID suspect.</p></li>
+</ul>
+<img alt="../_images/External.png" src="../_images/External.png" />
+</section>
+<section id="patient">
+<h3>Patient<a class="headerlink" href="#patient" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Patients should be created under a Facility.</p></li>
+<li><p>Patients can be created manually or directly by pulling the data from a External Result.</p></li>
+<li><p>Patient has three main sections namely <strong>Personal Details</strong>, <strong>Health Details</strong> and <strong>Medical History.</strong></p></li>
+<li><p>Each patient in the system is uniquely identifiable by the Phone Number and Date of Birth.</p></li>
+</ul>
+</section>
+<section id="resources">
+<h3>Resources<a class="headerlink" href="#resources" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Overall Concept Diagram - <a class="reference download internal" download="" href="../_downloads/3427a335e95adb52c53547255dc87318/CareConceptDiagram.png"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p></li>
+<li><p>Excalidraw Diagram file - <a class="reference download internal" download="" href="../_downloads/3055e9088590a745593b28fc5c3cc04f/CareConceptDiagram.excalidraw"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p></li>
+</ul>
+</section>
+</section>
 </section>
 
         </article>
@@ -211,23 +288,15 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../others/configuration.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Other Details</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="../django-commands/configuration.html">
+          
+          <a class="prev-page" href="../others/configuration.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Django Commands</div>
+                <div class="title">Other Details</div>
                 
               </div>
             </a>
@@ -251,8 +320,38 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Glossary</a><ul>
+<li><a class="reference internal" href="#hierarchy">Hierarchy</a></li>
+<li><a class="reference internal" href="#models">Models</a><ul>
+<li><a class="reference internal" href="#facility">Facility</a></li>
+<li><a class="reference internal" href="#inventory">Inventory</a></li>
+<li><a class="reference internal" href="#capacity">Capacity</a></li>
+<li><a class="reference internal" href="#location">Location</a></li>
+<li><a class="reference internal" href="#assets">Assets</a></li>
+<li><a class="reference internal" href="#external-results">External Results</a></li>
+<li><a class="reference internal" href="#patient">Patient</a></li>
+<li><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
