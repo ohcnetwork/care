@@ -16,6 +16,7 @@ Welcome to Care's documentation!
    django-commands/configuration
    github-repo/configuration
    others/configuration
+   glossary/configuration
 
 
 
