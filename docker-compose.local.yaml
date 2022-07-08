@@ -7,7 +7,7 @@ networks:
 services:
   db:
     container_name: care_db
-    image: postgis/postgis:latest
+    image: postgres
     restart: always
     env_file:
       - ./docker/.local.env
