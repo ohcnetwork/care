@@ -82,9 +82,15 @@ External Results
 
 
 Patient
---------------------
+--------
 
 - Patients should be created under a Facility.
 - Patients can be created manually or directly by pulling the data from a External Result.
 - Patient has three main sections namely **Personal Details**, **Health Details** and **Medical History.**
 - Each patient in the system is uniquely identifiable by the Phone Number and Date of Birth.
+
+Resources
+---------
+
+- Overall Concept Diagram - :download:`Download <contents/CareConceptDiagram.png>`
+- Excalidraw Diagram file - :download:`Download <contents/CareConceptDiagram.excalidraw>`
