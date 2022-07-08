@@ -118,8 +118,12 @@ class PatientFilterSet(filters.FilterSet):
     def filter_date_admitted_to_discharged(self, queryset, name, value):
         min_dt = datetime.datetime.combine(value, datetime.time.min)
         max_dt = datetime.datetime.combine(value, datetime.time.max)
-        return queryset.filter(Q(last_consultation__admission_date__lte=max_dt) 
+        return queryset.filter(
+            Q(Q(last_consultation__admission_date__lte=max_dt) 
+            & Q(last_consultation__discharge_date__isnull=True)) |
+            Q(Q(last_consultation__admission_date__lte=max_dt) 
             & Q(last_consultation__discharge_date__gte=min_dt))
+            )
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
