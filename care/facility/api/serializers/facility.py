@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
@@ -70,7 +69,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     #     "latitude": 49.8782482189424,
     #     "longitude": 24.452545489
     # }
-    location = PointField(required=False)
+    # location = PointField(required=False)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     class Meta:
@@ -84,7 +83,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "state",
             "facility_type",
             "address",
-            "location",
+            "longitude",
+            "latitude",
             "features",
             "pincode",
             "oxygen_capacity",

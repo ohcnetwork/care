@@ -10,6 +10,7 @@ from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from care.users.reset_password_views import ResetPasswordConfirm, ResetPasswordRequestToken
+from care.users.api.viewsets.change_password import ChangePasswordView
 from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
 
@@ -43,6 +44,7 @@ urlpatterns = [
     path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("api/v1/password_reset/", ResetPasswordRequestToken.as_view(), name="password_reset_request"),
     path("api/v1/password_reset/confirm/", ResetPasswordConfirm.as_view(), name="password_reset_confirm"),
+    path("api/v1/password_change/", ChangePasswordView.as_view(), name="change_password_view"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

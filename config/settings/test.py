@@ -58,9 +58,9 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care-test")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+# DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 
 # https://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 WHITENOISE_AUTOREFRESH = True

@@ -4,7 +4,6 @@ from collections import OrderedDict
 from uuid import uuid4
 
 import dateparser
-from django.contrib.gis.geos import Point
 from django.utils.timezone import make_aware
 from pytz import unicode
 from rest_framework import status
@@ -78,7 +77,6 @@ class TestBase(APITestCase):
             "district": district,
             "facility_type": 1,
             "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-            "location": Point(24.452545, 49.878248),
             "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
