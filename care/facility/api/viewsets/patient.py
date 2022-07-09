@@ -55,6 +55,7 @@ from care.utils.queryset.patient import get_patient_queryset
 from config.authentication import CustomBasicAuthentication, CustomJWTAuthentication, MiddlewareAuthentication
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -346,7 +347,7 @@ class PatientViewSet(
         if last_consultation:
             reason = request.data.get("discharge_reason")
             notes = request.data.get("discharge_notes", "")
-            if not reason or reason not in [choice[0] for choice in DISCHARGE_REASON_CHOICES]:
+            if reason not in DISCHARGE_REASONS:
                 raise serializers.ValidationError(
                     {"discharge_reason": "discharge reason is not valid"}
                 )
