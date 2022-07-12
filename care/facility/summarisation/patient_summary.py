@@ -71,8 +71,8 @@ def PatientSummary():
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
-                filter = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
-                count = patients.filter(**filter).count()
+                patient_filters = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
+                count = patients.filter(**patient_filters).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count
 
@@ -97,8 +97,8 @@ def PatientSummary():
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
-                filter = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
-                count = patients_today.filter(**filter).count()
+                patient_filters = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
+                count = patients_today.filter(**patient_filters).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count
 
