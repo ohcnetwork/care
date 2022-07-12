@@ -6,7 +6,7 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
-from care.facility.models.bed import AssetBed, Bed
+from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
     FEED,

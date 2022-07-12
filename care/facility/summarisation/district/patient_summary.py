@@ -10,12 +10,7 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import (
-    ADMIT_CHOICES,
-    DistrictScopedSummary,
-    PatientRegistration,
-)
-
+from care.facility.models import DistrictScopedSummary, PatientRegistration
 from care.users.models import District, LocalBody
 
 
@@ -77,7 +72,8 @@ def DistrictPatientSummary():
                 "name": local_body_object.name,
                 "code": local_body_object.localbody_code,
                 "total_inactive": PatientRegistration.objects.filter(
-                    is_active=False, local_body_id=local_body_object.id,
+                    is_active=False,
+                    local_body_id=local_body_object.id,
                 ).count(),
             }
             patients = PatientRegistration.objects.filter(
@@ -85,16 +81,6 @@ def DistrictPatientSummary():
                 last_consultation__discharge_date__isnull=True,
                 local_body_id=local_body_object.id,
             )
-
-            # Get Total Counts
-
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
-                count = patients.filter(**filter).count()
-                clean_name = "total_patients_" + "_".join(text.lower().split())
-                district_summary[local_body_object.id][clean_name] = count
 
             home_quarantine = Q(last_consultation__suggestion="HI")
 
@@ -114,14 +100,6 @@ def DistrictPatientSummary():
             today_patients_home_quarantine = patients_today.filter(
                 home_quarantine
             ).count()
-
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
-                count = patients_today.filter(**filter).count()
-                clean_name = "today_patients_" + "_".join(text.lower().split())
-                district_summary[local_body_object.id][clean_name] = count
 
             # Update Anything Extra
             district_summary[local_body_object.id][

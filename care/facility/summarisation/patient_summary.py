@@ -1,8 +1,6 @@
-from care.facility.models import patient
-from care.facility.models.patient_base import BedTypeChoices
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.db.models import Q, Subquery
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -11,11 +9,8 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import (
-    PatientRegistration,
-    Facility,
-    FacilityRelatedSummary,
-)
+from care.facility.models import Facility, FacilityRelatedSummary, PatientRegistration
+from care.facility.models.patient_base import BedTypeChoices
 from care.facility.summarisation.facility_capacity import (
     FacilitySummaryFilter,
     FacilitySummarySerializer,
@@ -71,7 +66,9 @@ def PatientSummary():
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
-                patient_filters = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
                 count = patients.filter(**patient_filters).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count
@@ -97,7 +94,9 @@ def PatientSummary():
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
-                patient_filters = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
                 count = patients_today.filter(**patient_filters).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count

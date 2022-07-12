@@ -16,18 +16,7 @@ CURRENT_HEALTH_CHOICES = [
     (3, "STATUS QUO"),
     (4, "BETTER"),
 ]
-ADMIT_CHOICES = [
-    (None, "Not admitted"),
-    (1, "Isolation Room"),
-    (2, "ICU"),
-    (3, "ICU with Non Invasive Ventilator"),
-    (4, "ICU with Oxygen Support"),
-    (5, "ICU with Invasive Ventilator"),
-    (6, "Bed with Oxygen Support"),
-    (20, "Home Isolation"),
-    (30, "Gynaecology Ward"),
-    (40, "Paediatric Ward"),
-]
+
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
     (2, "FEVER"),
@@ -72,6 +61,8 @@ DISCHARGE_REASON_CHOICES = [
     ("REF", "Referred"),
     ("EXP", "Expired"),
 ]
+
+
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2
@@ -99,6 +90,7 @@ BLOOD_GROUP_CHOICES = [
 ]
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
+
 class BedType(enum.Enum):
     ISOLATION = 1
     ICU = 2
@@ -108,10 +100,10 @@ class BedType(enum.Enum):
     BED_WITH_OXYGEN_SUPPORT = 6
     REGULAR = 7
 
+
 BedTypeChoices = [(e.value, e.name) for e in BedType]
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
