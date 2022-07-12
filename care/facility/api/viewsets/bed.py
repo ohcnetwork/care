@@ -11,11 +11,12 @@ from rest_framework.exceptions import PermissionDenied
 
 from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer, ConsultationBedSerializer
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
+from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 
-inverse_bed_type = inverse_choices(Bed.BedTypeChoices)
+inverse_bed_type = inverse_choices(BedTypeChoices)
 
 
 class BedFilter(filters.FilterSet):

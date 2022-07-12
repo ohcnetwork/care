@@ -7,6 +7,7 @@ from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSe
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import Facility
+from care.facility.models.patient_base import BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
@@ -16,7 +17,7 @@ from config.serializers import ChoiceField
 
 class BedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    bed_type = ChoiceField(choices=Bed.BedTypeChoices)
+    bed_type = ChoiceField(choices=BedTypeChoices)
 
     location_object = AssetLocationSerializer(source="location", read_only=True)
 

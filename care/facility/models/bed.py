@@ -12,22 +12,12 @@ from django.db import models
 
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
+from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 
 
 class Bed(BaseModel):
-    class BedType(enum.Enum):
-        ISOLATION = 1
-        ICU = 2
-        ICU_WITH_NON_INVASIVE_VENTILATOR = 3
-        ICU_WITH_OXYGEN_SUPPORT = 4
-        ICU_WITH_INVASIVE_VENTILATOR = 5
-        BED_WITH_OXYGEN_SUPPORT = 6
-        REGULAR = 7
-
-    BedTypeChoices = [(e.value, e.name) for e in BedType]
-
     name = models.CharField(max_length=1024)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(choices=BedTypeChoices, default=BedType.REGULAR.value)

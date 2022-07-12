@@ -6,7 +6,6 @@ from multiselectfield import MultiSelectField
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
-    ADMIT_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     DISCHARGE_REASON_CHOICES,

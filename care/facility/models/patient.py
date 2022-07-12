@@ -24,7 +24,7 @@ from care.facility.models.mixins.permissions.patient import PatientPermissionMix
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
-    REVERSE_ADMIT_CHOICES,
+    REVERSE_BED_TYPE_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
