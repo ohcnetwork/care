@@ -13,6 +13,7 @@ from care.facility.api.serializers.patient_consultation import (
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
 )
+from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
@@ -25,6 +26,7 @@ class PatientConsultationFilter(filters.FilterSet):
 
 
 class PatientConsultationViewSet(
+    AssetUserAccessMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,

@@ -20,10 +20,12 @@ class CustomJWTAuthentication(JWTAuthentication):
         try:
             return super().get_validated_token(raw_token)
         except InvalidToken as e:
-            raise InvalidToken({
-                "detail": "Invalid Token, please relogin to continue",
-                "messages" : e.detail.get("messages", [])
-            }) from e
+            raise InvalidToken(
+                {
+                    "detail": "Invalid Token, please relogin to continue",
+                    "messages": e.detail.get("messages", []),
+                }
+            ) from e
 
 
 class CustomBasicAuthentication(BasicAuthentication):
@@ -68,14 +70,14 @@ class MiddlewareAuthentication(JWTAuthentication):
 
     def get_raw_token(self, header):
         """
-        Extracts an invalidated JSON web token from the given "Authorization"
+        Extracts an un-validated JSON web token from the given "Authorization"
         header value.
         """
         parts = []
         try:
             parts = header.split()
             return parts[1]
-        except (IndexError, TypeError) as e:
+        except Exception as e:
             if not parts or parts[0] not in (b"Middleware_Bearer",):
                 return None
             raise InvalidToken(
@@ -106,7 +108,7 @@ class MiddlewareAuthentication(JWTAuthentication):
         """
         Attempts to find and return a user using the given validated token.
         """
-        if "asset_id" not in validated_token:
+        if not validated_token and "asset_id" not in validated_token:
             raise TokenError()
 
         try:
