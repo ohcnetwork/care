@@ -1,4 +1,5 @@
 from care.facility.models import patient
+from care.facility.models.patient_base import BedTypeChoices
 from celery.decorators import periodic_task
 from celery.schedules import crontab
 from django.db.models import Q, Subquery
@@ -14,8 +15,6 @@ from care.facility.models import (
     PatientRegistration,
     Facility,
     FacilityRelatedSummary,
-    PatientConsultation,
-    ADMIT_CHOICES,
 )
 from care.facility.summarisation.facility_capacity import (
     FacilitySummaryFilter,
@@ -70,10 +69,9 @@ def PatientSummary():
 
             # Get Total Counts
 
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                filter = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
                 count = patients.filter(**filter).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count
@@ -97,10 +95,9 @@ def PatientSummary():
                 home_quarantine
             ).count()
 
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                filter = {"last_consultation__" + "current_bed__bed__bed_type": db_value}
                 count = patients_today.filter(**filter).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
                 patient_summary[facility_id][clean_name] = count

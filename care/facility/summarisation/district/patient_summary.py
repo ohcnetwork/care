@@ -1,6 +1,6 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.db.models import Q, Subquery
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -13,11 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.models import (
     ADMIT_CHOICES,
     DistrictScopedSummary,
-    Facility,
-    FacilityRelatedSummary,
-    PatientConsultation,
     PatientRegistration,
-    patient,
 )
 
 from care.users.models import District, LocalBody
