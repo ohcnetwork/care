@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import DistrictScopedSummary, PatientRegistration
+from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import District, LocalBody
 
 
@@ -82,6 +83,17 @@ def DistrictPatientSummary():
                 local_body_id=local_body_object.id,
             )
 
+            # Get Total Counts
+
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
+                count = patients.filter(**patient_filters).count()
+                clean_name = "total_patients_" + "_".join(text.lower().split())
+                district_summary[local_body_object.id][clean_name] = count
+
             home_quarantine = Q(last_consultation__suggestion="HI")
 
             total_patients_home_quarantine = patients.filter(home_quarantine).count()
@@ -100,6 +112,15 @@ def DistrictPatientSummary():
             today_patients_home_quarantine = patients_today.filter(
                 home_quarantine
             ).count()
+
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
+                count = patients_today.filter(**patient_filters).count()
+                clean_name = "today_patients_" + "_".join(text.lower().split())
+                district_summary[local_body_object.id][clean_name] = count
 
             # Update Anything Extra
             district_summary[local_body_object.id][
