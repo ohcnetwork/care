@@ -224,6 +224,7 @@ class User(AbstractUser):
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skills = models.ManyToManyField("Skill", through=UserSkill)
+    home_facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
