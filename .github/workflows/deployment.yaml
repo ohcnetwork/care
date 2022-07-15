@@ -242,7 +242,7 @@ jobs:
 
   deploy-staging-egov-api:
     needs: build-staging
-    name: Deploy to EKS Egov
+    name: Deploy to ECS API Egov
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
@@ -282,7 +282,7 @@ jobs:
 
   deploy-staging-egov-celery:
     needs: build-staging
-    name: Deploy to Egov ECS
+    name: Deploy to Egov CELERY ECS
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
