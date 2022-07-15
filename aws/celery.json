@@ -12,7 +12,7 @@
       },
       "portMappings": [],
       "command": [
-        "/app/celery_beat.sh"
+        "/app/celery_beat-ecs.sh"
       ],
       "cpu": 128,
       "environment": [
@@ -201,7 +201,7 @@
         }
       },
       "command": [
-        "/app/celery_worker.sh"
+        "/app/celery_worker-ecs.sh"
       ],
       "cpu": 384,
       "memory": 768,
