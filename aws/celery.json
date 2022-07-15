@@ -189,7 +189,6 @@
           "name": "VAPID_PRIVATE_KEY"
         }
       ],
-      "image": "ghcr.io/coronasafe/care:latest-04",
       "name": "care-celery-beat"
     },
     {
@@ -379,7 +378,6 @@
           "name": "VAPID_PRIVATE_KEY"
         }
       ],
-      "image": "ghcr.io/coronasafe/care:latest-04",
       "name": "care-celery-worker"
     }
   ],

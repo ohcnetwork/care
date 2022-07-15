@@ -2,29 +2,6 @@
   "executionRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "nginx",
-      "image": "ghcr.io/coronasafe/care:nginx-latest",
-      "essential": true,
-      "repositoryCredentials": {
-        "credentialsParameter": "arn:aws:secretsmanager:ap-south-1:299650323339:secret:/github/pat-UHmr0B"
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/care-nginx",
-          "awslogs-region": "ap-south-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      },
-      "portMappings": [
-        {
-          "containerPort": 80,
-          "hostPort": 80,
-          "protocol": "tcp"
-        }
-      ]
-    },
-    {
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -215,7 +192,6 @@
           "name": "VAPID_PRIVATE_KEY"
         }
       ],
-      "image": "ghcr.io/coronasafe/care:latest-04",
       "name": "care-backend"
     }
   ],
@@ -229,3 +205,4 @@
   "cpu": "256",
   "volumes": []
 }
+
