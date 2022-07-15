@@ -130,7 +130,7 @@ jobs:
             ghcr.io/${{ github.repository }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
-            type=raw,value=latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=raw,value=latest-${{ github.run_number }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
           flavor: |
@@ -261,7 +261,7 @@ jobs:
       - name: IMAGE Tagging
         env:
           ECR_REGISTRY: ghcr.io/${{ github.repository }}
-          IMAGE_TAG: latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+          IMAGE_TAG: latest-${{ github.run_number }}
         run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
 
       - name: Fill Backend Api definition
@@ -300,7 +300,7 @@ jobs:
 
       - name: IMAGE Tagging
         env:
-          IMAGE_TAG: latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+          IMAGE_TAG: latest-${{ github.run_number }}
         run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
 
       - name: Fill Celery Cron definition
