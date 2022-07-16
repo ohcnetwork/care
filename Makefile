@@ -41,3 +41,7 @@ test: up
 test_coverage: up
 	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel=$(nproc)"
 	docker exec care bash -c "coverage combine || true; coverage report"
+
+seed: up
+	docker exec care bash -c "python manage.py load_data kerala"
+	docker exec care bash -c "python manage.py seed_data"
