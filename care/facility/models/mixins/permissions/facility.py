@@ -11,21 +11,13 @@ class FacilityPermissionMixin(BasePermissionMixin):
     def has_write_permission(request):
         from care.users.models import State, District, LocalBody
         state = False
-        if "state" in request.data:
-            state = State.objects.get(id=request.data["state"])
-        else:
-            return False
-        
         district = False
-        if "district" in request.data:
-            district = District.objects.get(id=request.data["district"]) 
-        else:
-            return False
-
         local_body = False
-        if "local_body" in request.data:
+        try:
+            state = State.objects.get(id=request.data["state"])
+            district = District.objects.get(id=request.data["district"]) 
             local_body = LocalBody.objects.get(id=request.data["local_body"])
-        else:
+        except KeyError:
             return False
 
         return (
