@@ -75,7 +75,10 @@ class PatientConsultationViewSet(
         consultation = (
             PatientConsultation.objects.select_related("patient")
             .order_by("-id")
-            .filter(current_bed__bed__in=request.user.asset.bed_set.all())
+            .filter(
+                current_bed__bed__in=request.user.asset.bed_set.all(),
+                patient__is_active=True,
+            )
             .only("external_id", "patient__external_id")
             .first()
         )
