@@ -1,0 +1,208 @@
+{
+  "executionRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/care-backend",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "hostPort": 9000,
+          "protocol": "tcp"
+        }
+      ],
+      "command": [
+        "/app/start-ecs.sh"
+      ],
+      "environment": [
+        {
+          "name": "AUDIT_LOG_ENABLED",
+          "value": "1"
+        },
+        {
+          "name": "AWS_STORAGE_BUCKET_NAME",
+          "value": "egov-s3-assets-10bedicu"
+        },
+        {
+          "name": "CSRF_TRUSTED_ORIGINS",
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+        },
+        {
+          "name": "CURRENT_DOMAIN",
+          "value": "https://care.coronasafe.in"
+        },
+        {
+          "name": "DJANGO_ADMIN_URL",
+          "value": "w8BYTTYRkxqAsbS2iU9Yd2ZgQy6D3uws"
+        },
+        {
+          "name": "DJANGO_ALLOWED_HOSTS",
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+        },
+        {
+          "name": "DJANGO_SECURE_SSL_REDIRECT",
+          "value": "False"
+        },
+        {
+          "name": "DJANGO_SETTINGS_MODULE",
+          "value": "config.settings.staging"
+        },
+        {
+          "name": "EMAIL_FROM",
+          "value": "Coronasafe network <care@ops.coronasafe.in>"
+        },
+        {
+          "name": "EMAIL_HOST",
+          "value": "email-smtp.ap-south-1.amazonaws.com"
+        },
+        {
+          "name": "FACILITY_S3_BUCKET",
+          "value": "egov-s3-facility-10bedicu"
+        },
+        {
+          "name": "FACILITY_S3_BUCKET_ENDPOINT",
+          "value": "https://egov-s3-facility-10bedicu.s3.amazonaws.com"
+        },
+        {
+          "name": "FILE_UPLOAD_BUCKET",
+          "value": "egov-s3-patient-data-10bedicu"
+        },
+        {
+          "name": "FILE_UPLOAD_BUCKET_ENDPOINT",
+          "value": "https://egov-s3-patient-data-10bedicu.s3.amazonaws.com"
+        },
+        {
+          "name": "MAINTENANCE_MODE",
+          "value": "0"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "care_staging"
+        },
+        {
+          "name": "POSTGRES_USER",
+          "value": "postgres"
+        },
+        {
+          "name": "RATE_LIMIT",
+          "value": "5/10m"
+        },
+        {
+          "name": "USE_S3",
+          "value": "True"
+        }
+      ],
+      "repositoryCredentials": {
+        "credentialsParameter": "arn:aws:secretsmanager:ap-south-1:299650323339:secret:/github/pat-UHmr0B"
+      },
+      "workingDirectory": "/app",
+      "secrets": [
+        {
+          "valueFrom": "/care/backend/POSTGRES_PORT",
+          "name": "POSTGRES_PORT"
+        },
+        {
+          "valueFrom": "/care/backend/POSTGRES_HOST",
+          "name": "POSTGRES_HOST"
+        },
+        {
+          "valueFrom": "/care/backend/POSTGRES_PASSWORD",
+          "name": "POSTGRES_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/SENTRY_DSN",
+          "name": "SENTRY_DSN"
+        },
+        {
+          "valueFrom": "/care/backend/DJANGO_SECRET_KEY",
+          "name": "DJANGO_SECRET_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/AWS_ACCESS_KEY_ID",
+          "name": "AWS_ACCESS_KEY_ID"
+        },
+        {
+          "valueFrom": "/care/backend/AWS_SECRET_ACCESS_KEY",
+          "name": "AWS_SECRET_ACCESS_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/CELERY_BROKER_URL",
+          "name": "CELERY_BROKER_URL"
+        },
+        {
+          "valueFrom": "/care/backend/CELERY_BROKER_URL",
+          "name": "REDIS_URL"
+        },
+        {
+          "valueFrom": "/care/backend/POSTGIS_URL",
+          "name": "POSTGIS_URL"
+        },
+        {
+          "valueFrom": "/care/backend/EMAIL_USER",
+          "name": "EMAIL_USER"
+        },
+        {
+          "valueFrom": "/care/backend/EMAIL_PASSWORD",
+          "name": "EMAIL_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/SNS_ACCESS_KEY",
+          "name": "SNS_ACCESS_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/SNS_SECRET_KEY",
+          "name": "SNS_SECRET_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/FILE_UPLOAD_KEY",
+          "name": "FILE_UPLOAD_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/FILE_UPLOAD_SECRET",
+          "name": "FILE_UPLOAD_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/GOOGLE_RECAPTCHA_SITE_KEY",
+          "name": "GOOGLE_RECAPTCHA_SITE_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/GOOGLE_RECAPTCHA_SECRET_KEY",
+          "name": "GOOGLE_RECAPTCHA_SECRET_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/FACILITY_S3_KEY",
+          "name": "FACILITY_S3_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/FACILITY_S3_SECRET",
+          "name": "FACILITY_S3_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/VAPID_PUBLIC_KEY",
+          "name": "VAPID_PUBLIC_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/VAPID_PRIVATE_KEY",
+          "name": "VAPID_PRIVATE_KEY"
+        }
+      ],
+      "name": "care-backend"
+    }
+  ],
+  "memory": "512",
+  "taskRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
+  "family": "care",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "volumes": []
+}
+

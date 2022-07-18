@@ -9,6 +9,7 @@ from care.facility.models.patient_base import (
     ADMIT_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
+    DISCHARGE_REASON_CHOICES,
     SuggestionChoices,
     reverse_choices,
 )
@@ -49,6 +50,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     discharge_date = models.DateTimeField(null=True, blank=True)
+    discharge_reason = models.CharField(
+        choices=DISCHARGE_REASON_CHOICES, max_length=4, default=None, blank=True, null=True
+    )
+    discharge_notes = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
 
     is_kasp = models.BooleanField(default=False)
