@@ -45,3 +45,5 @@ test_coverage: up
 seed: up
 	docker exec care bash -c "python manage.py load_data kerala"
 	docker exec care bash -c "python manage.py seed_data"
+	docker exec care bash -c "python manage.py load_lsg_data kerala"
+	docker exec care bash -c "python manage.py load_ward_data kerala"

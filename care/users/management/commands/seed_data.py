@@ -1,17 +1,19 @@
 from care.facility.models import facility
 from django.core.management import BaseCommand
 from care.facility.models.inventory import FacilityInventoryUnit, FacilityInventoryItem
+from care.facility.models.facility import FACILITY_TYPES, Facility
+from care.users.models import User
 
 
 class Command(BaseCommand):
     """
     """
 
-    help = "Seed Data for Inventory"
+    help = "Seed Data"
 
     def handle(self, *args, **options):
 
-        print("Creating Units for Inventory")
+        print("Creating Dummy Data")
 
         kilo_litre, _ = FacilityInventoryUnit.objects.get_or_create(name="Kilo Litre")
         cylinders, _ = FacilityInventoryUnit.objects.get_or_create(name="Cylinders")
@@ -36,3 +38,23 @@ class Command(BaseCommand):
             name="C Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
         )
         type_c.allowed_units.add(cylinders)
+
+        if not User.objects.filter(username="superadmin").exists():
+            user = User.objects.create_superuser(
+                username="superadmin",
+                email="admin@coronasafe.network",
+                password="superadmin",
+                first_name="Admin",
+                last_name="Admin",
+            )
+        else:
+            user = User.objects.get(username="superadmin")
+
+        Facility.objects.get_or_create(
+            name="Test Facility",
+            facility_type=2,
+            address="Test Address",
+            features=[1],
+            created_by=user,
+        )
+
