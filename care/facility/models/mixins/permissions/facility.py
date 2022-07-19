@@ -7,6 +7,33 @@ class FacilityPermissionMixin(BasePermissionMixin):
     def has_bulk_upsert_permission(request):
         return request.user.is_superuser
 
+    @staticmethod
+    def has_write_permission(request):
+        from care.users.models import State, District, LocalBody
+        try:
+            state = State.objects.get(id=request.data["state"])
+            district = District.objects.get(id=request.data["district"]) 
+            local_body = LocalBody.objects.get(id=request.data["local_body"])
+            return (
+                request.user.is_superuser or (
+                    request.user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    and state == request.user.state
+                    and district == request.user.district
+                    and local_body == request.user.local_body
+                ) or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    and request.user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    and state == request.user.state
+                    and district == request.user.district
+                ) or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    and request.user.user_type <= User.TYPE_VALUE_MAP["StateAdmin"]
+                    and state == request.user.state
+                )
+            )
+        except Exception:
+            return False
+
     def has_object_read_permission(self, request):
         return (
             (request.user.is_superuser)
