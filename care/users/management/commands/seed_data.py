@@ -61,7 +61,7 @@ class Command(BaseCommand):
         # Conversion Rates
 
         _, _ = FacilityInventoryUnitConverter.objects.get_or_create(
-            from_unit=gram, to_unit=kg, multiplier=0.001
+            from_unit=kg, to_unit=gram, multiplier=1000
         )
 
         _, _ = FacilityInventoryUnitConverter.objects.get_or_create(
