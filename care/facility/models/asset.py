@@ -91,6 +91,10 @@ class Asset(BaseModel):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs) -> None:
+        self.clean_fields()
+        return super().save(*args, **kwargs)
+
 
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)
