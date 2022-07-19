@@ -38,23 +38,3 @@ class Command(BaseCommand):
             name="C Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
         )
         type_c.allowed_units.add(cylinders)
-
-        if not User.objects.filter(username="superadmin").exists():
-            user = User.objects.create_superuser(
-                username="superadmin",
-                email="admin@coronasafe.network",
-                password="superadmin",
-                first_name="Admin",
-                last_name="Admin",
-            )
-        else:
-            user = User.objects.get(username="superadmin")
-
-        Facility.objects.get_or_create(
-            name="Test Facility",
-            facility_type=2,
-            address="Test Address",
-            features=[1],
-            created_by=user,
-        )
-

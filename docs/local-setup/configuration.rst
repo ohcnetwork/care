@@ -43,6 +43,22 @@ first time, it might take a while depending upon your internet speed and machine
 
         $ make test
 
+- To seed database after migrations are successfully applied:
+    .. code-block:: bash
+
+        $ make seed
+
+    Credential to admin user:
+
+    - username: admin
+    - password: admin
+
+
+    Credential to State Admin:
+    
+    - username: stateadmin
+    - password: State@dmin22
+
 
 Manual setup
 ------------
@@ -199,6 +215,7 @@ Running type checks with mypy:
 ::
 
   $ mypy care
+
 
 Run Tests
 ~~~~~~~~~
