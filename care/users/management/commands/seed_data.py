@@ -40,12 +40,6 @@ class Command(BaseCommand):
         ppe.tags.add(safety, medical)
         ppe.allowed_units.add(items, dozen)
 
-        rice, _ = FacilityInventoryItem.objects.get_or_create(
-            name="Rice", default_unit=kg, min_quantity=2
-        )
-        rice.tags.add(food)
-        rice.allowed_units.add(kg, gram)
-
         fluid, _ = FacilityInventoryItem.objects.get_or_create(
             name="IV Fluid 500 ml", default_unit=items, min_quantity=2
         )
