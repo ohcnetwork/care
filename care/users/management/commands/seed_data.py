@@ -22,6 +22,8 @@ class Command(BaseCommand):
 
         items, _ = FacilityInventoryUnit.objects.get_or_create(name="Items")
         dozen, _ = FacilityInventoryUnit.objects.get_or_create(name="Dozen")
+        kilo_litre, _ = FacilityInventoryUnit.objects.get_or_create(name="Kilo Litre")
+        cylinders, _ = FacilityInventoryUnit.objects.get_or_create(name="Cylinders")
         kg, _ = FacilityInventoryUnit.objects.get_or_create(name="kg")
         gram, _ = FacilityInventoryUnit.objects.get_or_create(name="gram")
         cubic_meter, _ = FacilityInventoryUnit.objects.get_or_create(name="Cubic Meter")
@@ -51,6 +53,23 @@ class Command(BaseCommand):
         )
         liquid_oxygen.tags.add(medical)
         liquid_oxygen.allowed_units.add(cubic_meter)
+
+        jumbo_d, _ = FacilityInventoryItem.objects.get_or_create(
+            name="Jumbo D Type Oxygen Cylinder",
+            default_unit=cylinders,
+            min_quantity=100,
+        )
+        jumbo_d.allowed_units.add(cylinders)
+
+        type_b, _ = FacilityInventoryItem.objects.get_or_create(
+            name="B Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+        )
+        type_b.allowed_units.add(cylinders)
+
+        type_c, _ = FacilityInventoryItem.objects.get_or_create(
+            name="C Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+        )
+        type_c.allowed_units.add(cylinders)
 
         gaseous_oxygen, _ = FacilityInventoryItem.objects.get_or_create(
             name="Gaseous Oxygen", default_unit=cubic_meter, min_quantity=10
