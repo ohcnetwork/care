@@ -121,7 +121,10 @@ class FacilityViewSet(
                 )
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+                queryset,
+                field_header_map=mapping,
+                field_serializer_map=pretty_mapping,
+                escapechar=",",
             )
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
