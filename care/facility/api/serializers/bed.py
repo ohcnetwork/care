@@ -12,6 +12,7 @@ from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from django.db import transaction
 
 
 class BedSerializer(ModelSerializer):
@@ -164,25 +165,30 @@ class ConsultationBedSerializer(ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        consultation = validated_data["consultation"]
-        bed = validated_data["bed"]
+        with transaction.atomic():
+            consultation = validated_data["consultation"]
+            old_bed = validated_data["consultation"].current_bed.bed
+            bed = validated_data["bed"]
 
-        if not consultation.patient.is_active:
-            raise ValidationError(
-                {"patient:": ["Patient is already discharged from CARE"]}
+            if not consultation.patient.is_active:
+                raise ValidationError(
+                    {"patient:": ["Patient is already discharged from CARE"]}
+                )
+
+            occupied_beds = ConsultationBed.objects.filter(end_date__isnull=True)
+
+            if occupied_beds.filter(bed=bed).exists():
+                raise ValidationError({"bed:": ["Bed already in use by patient"]})
+
+            occupied_beds.filter(consultation=consultation).update(
+                end_date=validated_data["start_date"]
             )
 
-        occupied_beds = ConsultationBed.objects.filter(end_date__isnull=True)
+            Bed.objects.filter(id=old_bed.id).update(in_use=False)
 
-        if occupied_beds.filter(bed=bed).exists():
-            raise ValidationError({"bed:": ["Bed already in use by patient"]})
-
-        occupied_beds.filter(consultation=consultation).update(
-            end_date=validated_data["start_date"]
-        )
-
-        # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
-        obj = super().create(validated_data)
-        consultation.current_bed = obj
-        consultation.save(update_fields=["current_bed"])
+            # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
+            obj = super().create(validated_data)
+            consultation.current_bed = obj
+            consultation.save(update_fields=["current_bed"])
+            Bed.objects.filter(id=obj.bed.id).update(in_use=True)
         return obj
