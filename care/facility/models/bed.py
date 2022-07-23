@@ -30,18 +30,30 @@ class Bed(BaseModel):
 
     name = models.CharField(max_length=1024)
     description = models.TextField(default="", blank=True)
-    bed_type = models.IntegerField(choices=BedTypeChoices, default=BedType.REGULAR.value)
-    facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)  # Deprecated
+    bed_type = models.IntegerField(
+        choices=BedTypeChoices, default=BedType.REGULAR.value
+    )
+    facility = models.ForeignKey(
+        Facility, on_delete=models.PROTECT, null=False, blank=False
+    )  # Deprecated
     meta = JSONField(default=dict, blank=True)
     assets = models.ManyToManyField(Asset, through="AssetBed")
-    location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
+    location = models.ForeignKey(
+        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+    )
 
     def __str__(self):
         return self.name
 
     def validate(self) -> None:
-        if Bed.objects.filter(location=self.location, name=self.name).exclude(pk=self.pk).exists():
-            raise ValidationError({"name": "Bed with same name already exists in location."})
+        if (
+            Bed.objects.filter(location=self.location, name=self.name)
+            .exclude(pk=self.pk)
+            .exists()
+        ):
+            raise ValidationError(
+                {"name": "Bed with same name already exists in location."}
+            )
 
     def save(self, *args, **kwargs) -> None:
         self.validate()
@@ -58,7 +70,9 @@ class AssetBed(BaseModel):
 
 
 class ConsultationBed(BaseModel):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.PROTECT, null=False, blank=False)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=False, blank=False
+    )
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
