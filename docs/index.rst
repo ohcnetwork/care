@@ -17,6 +17,7 @@ Welcome to Care's documentation!
    github-repo/configuration
    others/configuration
    glossary/configuration
+   middleware/configuration
 
 
 
