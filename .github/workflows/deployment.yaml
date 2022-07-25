@@ -2,14 +2,12 @@ name: Deploy Care
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - master
-      - production
   push:
     branches:
       - master
       - production
+    paths-ignore:
+      - 'docs/**'
 
 env:
   IMAGE_NAME: care
@@ -18,11 +16,42 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
-
+  ECS_SERVICE_BACKEND: 'care'
+  ECS_SERVICE_CELERY: 'care-celery'
+  ECS_CLUSTER: 'egov'
+  ECS_TASK_DEFINITION_BACKEND: './aws/backend.json'
+  ECS_TASK_DEFINITION_CELERY: './aws/celery.json'
+  CONTAINER_NAME_BACKEND: 'care-backend'
+  CONTAINER_NAME_WORKER: 'care-celery-worker'
+  CONTAINER_NAME_CRON: 'care-celery-beat'
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
     name: Test
+    services:
+      db:
+        image: postgis/postgis:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: care
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          AWS_DEFAULT_REGION: ap-south-1
+          EDGE_PORT: 4566
+          SERVICES: s3
+        ports:
+          - 4566:4566
     steps:
 
       - uses: actions/checkout@v3
@@ -47,9 +76,36 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: Run tests
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
         run: |
-          echo "running tests..."
+          sudo apt-get update
+          sudo apt-get install binutils libproj-dev gdal-bin -y
+          pip install --upgrade pip
+          pip install -r requirements/local.txt
+
+      - name: Run celery worker for tests
+        run: celery -A config.celery_app worker -B --loglevel=INFO --detach
+
+      - name: Run Tests with coverage
+        run: coverage run manage.py test --settings=config.settings.test
+
+      - name: Generate coverage report
+        run: |
+          coverage combine || true
+          coverage xml
+          coverage report -m
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
 
       - name: Move cache
         run: |
@@ -74,7 +130,7 @@ jobs:
             ghcr.io/${{ github.repository }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
-            type=raw,value=latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}}
+            type=raw,value=latest-${{ github.run_number }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
           flavor: |
@@ -184,48 +240,92 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
 
-  deploy-staging-egov:
+  deploy-staging-egov-api:
     needs: build-staging
-    name: Deploy to EKS Egov
+    name: Deploy to ECS API Egov
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
       url: https://careapi.coronasafe.in
     steps:
-
-      - name: Checkout Kube Config
+      - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: coronasafe/infra
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          path: kube
-          ref: main
-          
-      - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
-        with:
-          version: 'v1.23.6'
-        id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Deploy Care Staging Egov
-        run: |
-          mkdir -p $HOME/.kube/
-          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
-          cd kube/deployments/
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
-          kubectl apply -f care-backend.yaml
-          kubectl apply -f care-celery-beat.yaml
-          kubectl apply -f care-celery-worker.yaml
+      - name: IMAGE Tagging
+        env:
+          ECR_REGISTRY: ghcr.io/${{ github.repository }}
+          IMAGE_TAG: latest-${{ github.run_number }}
+        run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
 
+      - name: Fill Backend Api definition
+        id: task-def-api
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION_BACKEND }}
+          container-name: ${{ env.CONTAINER_NAME_BACKEND }}
+          image: ${{env.IMAGE_VALUE}}
+
+      - name: Deploy Backend Api
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-api.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_BACKEND }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+  deploy-staging-egov-celery:
+    needs: build-staging
+    name: Deploy to Egov CELERY ECS
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging-egov
+      url: https://careapi.coronasafe.in
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: IMAGE Tagging
+        env:
+          IMAGE_TAG: latest-${{ github.run_number }}
+        run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
+
+      - name: Fill Celery Cron definition
+        id: task-def-celery-cron
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION_CELERY }}
+          container-name: ${{ env.CONTAINER_NAME_CRON }}
+          image: ${{env.IMAGE_VALUE}}
+
+      - name: Fill Celery Worker definition
+        id: task-def-celery-worker
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-celery-cron.outputs.task-definition }}
+          container-name: ${{ env.CONTAINER_NAME_WORKER }}
+          image: ${{env.IMAGE_VALUE}}
+
+      - name: Deploy Backend Celery
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-celery-worker.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_CELERY }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
 
   deploy-production-gdc:
     needs: build-production
@@ -243,13 +343,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -286,13 +386,13 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
           version: 'v1.23.6'
         id: install
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -329,7 +429,7 @@ jobs:
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
           path: kube
           ref: main
-      
+
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
         with:
@@ -342,7 +442,7 @@ jobs:
           cluster_name: ${{ secrets.GKE_CLUSTER }}
           location: ${{ secrets.GKE_ZONE }}
           credentials: ${{ secrets.GKE_SA_KEY }}
-          
+
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:

@@ -1,5 +1,20 @@
 [run]
-include = care/*
-omit = *migrations*, *tests*
-plugins =
-    django_coverage_plugin
+source = .
+omit = 
+    *migrations*, 
+    *tests*, 
+    *__pycache__*, 
+    *venv*, 
+    docs/*,
+    **/*.html, 
+    **/*.txt, 
+    **/*.yml, 
+    **/*.yaml,
+    **/*.md,
+    **/*.rst,
+    **/*.json,
+    **/*.ini,
+    **/*.conf,
+    **/*.sh,
+    **/*.bat
+plugins = django_coverage_plugin

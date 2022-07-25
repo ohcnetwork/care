@@ -35,6 +35,7 @@ from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
     FACILITY_TYPES,
+    DISCHARGE_REASON_CHOICES,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -54,6 +55,7 @@ from care.utils.queryset.patient import get_patient_queryset
 from config.authentication import CustomBasicAuthentication, CustomJWTAuthentication, MiddlewareAuthentication
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -79,6 +81,7 @@ class PatientFilterSet(filters.FilterSet):
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
     last_vaccinated_date = filters.DateFromToRangeFilter(field_name="last_vaccinated_date")
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    is_active = filters.BooleanFilter(field_name="is_active")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
@@ -107,6 +110,11 @@ class PatientFilterSet(filters.FilterSet):
     number_of_doses = filters.NumberFilter(field_name="number_of_doses")
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
+    # Other Filters
+    has_bed = filters.BooleanFilter(field_name="has_bed", method='filter_bed_not_null')
+
+    def filter_bed_not_null(self, queryset, name, value):
+        return queryset.filter(last_consultation__bed_number__isnull=value, last_consultation__discharge_date__isnull=True)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
@@ -212,8 +220,8 @@ class PatientViewSet(
         #     disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
         #     return queryset.filter(disease_status=disease_status)
 
-        if self.action == "list":
-            queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
+        # if self.action == "list":
+        #     queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
         return queryset
 
     def get_serializer_class(self):
@@ -337,9 +345,17 @@ class PatientViewSet(
         last_consultation = PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         current_time = localtime(now())
         if last_consultation:
+            reason = request.data.get("discharge_reason")
+            notes = request.data.get("discharge_notes", "")
+            if reason not in DISCHARGE_REASONS:
+                raise serializers.ValidationError(
+                    {"discharge_reason": "discharge reason is not valid"}
+                )
+            last_consultation.discharge_reason = reason
+            last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
-                last_consultation.save()
+            last_consultation.save()
             ConsultationBed.objects.filter(consultation=last_consultation, end_date__isnull=True).update(
                 end_date=current_time
             )
@@ -524,6 +540,7 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 class PatientNotesViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     queryset = PatientNotes.objects.all().select_related("facility", "patient", "created_by").order_by("-created_date")
     serializer_class = PatientNotesSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         user = self.request.user

@@ -82,6 +82,7 @@ def FacilityCapacitySummary():
             "state", "district", "local_body"
         )
         capacity_summary[facility_obj.id] = FacilitySerializer(facility_obj).data
+        capacity_summary[facility_obj.id]["features"] = list(capacity_summary[facility_obj.id]["features"])
         capacity_summary[facility_obj.id]["actual_live_patients"] = patients_in_facility.filter(is_active=True).count()
         discharge_patients = patients_in_facility.filter(is_active=False)
         capacity_summary[facility_obj.id]["actual_discharged_patients"] = discharge_patients.count()

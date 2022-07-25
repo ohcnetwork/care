@@ -10,8 +10,6 @@ RUN : \
     --no-install-recommends \
     python3-dev \
     build-essential \
-    libgdal-dev \
-    libsqlite3-mod-spatialite \
   && rm -rf /var/lib/apt/lists/* \
   &&:
 

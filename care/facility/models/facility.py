@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from location_field.models.spatial import LocationField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
@@ -15,6 +14,8 @@ from care.facility.models.mixins.permissions.facility import (
 )
 from care.users.models import District, LocalBody, State, Ward
 from utils.csp import config as cs_provider
+
+from multiselectfield import MultiSelectField
 
 
 User = get_user_model()
@@ -39,6 +40,14 @@ ROOM_TYPES = [
     (50, "KASP ICU beds"),
     (60, "KASP Oxygen beds"),
     (70, "KASP Ventilator beds"),
+]
+
+FEATURE_CHOICES = [
+    (1, "CT Scan Facility"),
+    (2, "Maternity Care"),
+    (3, "X-Ray facility"),
+    (4, "Neonatal care"),
+    (5, "Operation theater")
 ]
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
@@ -99,6 +108,7 @@ DOCTOR_TYPES = [
 
 REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
@@ -106,8 +116,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
+    features = MultiSelectField(choices=FEATURE_CHOICES, null=True, blank=True)
 
-    location = LocationField(based_fields=["address"], zoom=7, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=True, blank=True)
     pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)

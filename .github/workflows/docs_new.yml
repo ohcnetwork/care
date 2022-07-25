@@ -1,0 +1,33 @@
+# name: Pages
+
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - "docs/**"
+#   pull_request:
+#     branches:
+#       - master
+#     paths:
+#       - "docs/**"
+#   workflow_dispatch:
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/setup-python@v2
+#     - uses: actions/checkout@master
+#       with:
+#         fetch-depth: 0
+#     - name: Build and Commit
+#       uses: sphinx-notes/pages@v2
+#       with:
+#         requirements_path: "./requirements/docs.txt"
+#         target_path: "./docs"
+#     - name: Push changes
+#       uses: ad-m/github-push-action@master
+#       with:
+#         github_token: ${{ secrets.GITHUB_TOKEN }}
+#         branch: gh-pages

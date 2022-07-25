@@ -49,9 +49,9 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+# DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
@@ -72,7 +72,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    "django.contrib.gis",
+    # "django.contrib.gis",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
@@ -88,7 +88,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "drf_extra_fields",
-    "location_field.apps.DefaultConfig",
     "django_filters",
     "simple_history",
     "ratelimit",
@@ -324,11 +323,11 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-LOCATION_FIELD = {
-    "search.provider": "google",
-    "map.provider": "openstreetmap",
-    "provider.openstreetmap.max_zoom": 18,
-}
+# LOCATION_FIELD = {
+#     "search.provider": "google",
+#     "map.provider": "openstreetmap",
+#     "provider.openstreetmap.max_zoom": 18,
+# }
 
 
 def GETKEY(group, request):
@@ -399,16 +398,9 @@ OTP_LENGTH = 5
 # SMS
 USE_SMS = False
 
-DEFAULT_VAPID_PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3OtP02wfkEojpP7tvyA64CAnVZeb
-bxFda+u+X3ZgMsBoAQK6Jul0Efxz8nGE2SlFr2CZPRqz0rPZQGAiiYugeg==
------END PUBLIC KEY-----"""
+DEFAULT_VAPID_PUBLIC_KEY = "BKNxrOpAeB_OBfXI-GlRAlw_vUVCc3mD_AkpE74iZj97twMOHXEFUeJqA7bDqGY10O-RmkvG30NaMf5ZWihnT3k"
 
-DEFAULT_VAPID_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgJT2TwOHtFu/HZ1T5
-2MofEr/yxu3ULqVTcjH9Sno6ML2hRANCAATc60/TbB+QSiOk/u2/IDrgICdVl5tv
-EV1r675fdmAywGgBArom6XQR/HPycYTZKUWvYJk9GrPSs9lAYCKJi6B6
------END PRIVATE KEY-----"""
+DEFAULT_VAPID_PRIVATE_KEY = "7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
 
 VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
 VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)

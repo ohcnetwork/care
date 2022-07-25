@@ -3,11 +3,12 @@ import boto3
 
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from drf_extra_fields.geo_fields import PointField
 from rest_framework import serializers
 
 from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.patient_base import reverse_choices
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
 from config.serializers import ChoiceField
 from care.utils.csp import config as cs_provider
@@ -43,6 +44,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     def get_facility_type(self, facility):
         return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
@@ -61,6 +63,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "state_object",
             "facility_type",
             "read_cover_image_url",
+            "features",
         )
 
 
@@ -73,7 +76,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     #     "longitude": 24.452545489
     # }
     read_cover_image_url = serializers.CharField(read_only=True)
-    location = PointField(required=False)
+    # location = PointField(required=False)
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     class Meta:
         model = Facility
@@ -86,7 +90,9 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "state",
             "facility_type",
             "address",
-            "location",
+            "longitude",
+            "latitude",
+            "features",
             "pincode",
             "oxygen_capacity",
             "phone_number",

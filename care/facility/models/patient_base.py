@@ -67,7 +67,11 @@ CATEGORY_CHOICES = [
     (None, "UNCLASSIFIED"),
 ]
 
-
+DISCHARGE_REASON_CHOICES = [
+    ("REC", "Recovered"),
+    ("REF", "Referred"),
+    ("EXP", "Expired"),
+]
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2
