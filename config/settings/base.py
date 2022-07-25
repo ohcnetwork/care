@@ -418,7 +418,7 @@ FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
 FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
 FACILITY_S3_BUCKET_ENDPOINT = env("FACILITY_S3_BUCKET_ENDPOINT", default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com")
-
+FACILITY_S3_STATIC_PREFIX  = env("FACILITY_S3_STATIC_PREFIX", default=f"http://s3.amazonaws.com/{FACILITY_S3_BUCKET}/")
 
 # Audit logs
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
