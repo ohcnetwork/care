@@ -4,20 +4,21 @@ from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
+    FacilityImageUploadSerializer,
     FacilitySerializer,
-    FacilityImageUploadSerializer
 )
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration
+    PatientRegistration,
 )
 from care.users.models import User
 
