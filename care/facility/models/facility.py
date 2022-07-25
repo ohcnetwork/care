@@ -1,3 +1,6 @@
+import boto3
+from django.conf import settings
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -10,6 +13,7 @@ from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from utils.csp import config as cs_provider
 
 from multiselectfield import MultiSelectField
 
@@ -146,6 +150,20 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
 
     class Meta:
         verbose_name_plural = "Facilities"
+
+    def read_cover_image_url(self):
+        s3Client = boto3.client("s3", **cs_provider.get_client_config(
+            cs_provider.BucketType.FACILITY.value
+        ))
+        signed_url = s3Client.generate_presigned_url(
+            "get_object",
+            Params={
+                "Bucket": settings.FACILITY_S3_BUCKET,
+                "Key": self.cover_image_url,
+            },
+            ExpiresIn=60 * 60,  # One Hour
+        )
+        return signed_url
 
     def __str__(self):
         return f"{self.name}"
