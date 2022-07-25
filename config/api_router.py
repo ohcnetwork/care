@@ -1,17 +1,31 @@
-from care.facility.api.viewsets.facility_users import FacilityUserViewSet
+import care.facility.reports.admin_reports
 from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.facility.api.viewsets.ambulance import AmbulanceCreateViewSet, AmbulanceViewSet
-from care.facility.api.viewsets.asset import AssetLocationViewSet, AssetTransactionViewSet, AssetViewSet
-from care.facility.api.viewsets.bed import AssetBedViewSet, BedViewSet, ConsultationBedViewSet
+from care.facility.api.viewsets.ambulance import (
+    AmbulanceCreateViewSet,
+    AmbulanceViewSet,
+)
+from care.facility.api.viewsets.asset import (
+    AssetLocationViewSet,
+    AssetTransactionViewSet,
+    AssetViewSet,
+)
+from care.facility.api.viewsets.bed import (
+    AssetBedViewSet,
+    BedViewSet,
+    ConsultationBedViewSet,
+)
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
+from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
+from care.facility.api.viewsets.icd import ICDScrapeView, ICDViewSet
 from care.facility.api.viewsets.inventory import (
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
@@ -41,14 +55,27 @@ from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
 )
-from care.facility.api.viewsets.resources import ResourceRequestCommentViewSet, ResourceRequestViewSet
-from care.facility.api.viewsets.shifting import ShifitngRequestCommentViewSet, ShiftingViewSet
-from care.facility.summarisation.district.patient_summary import DistrictPatientSummaryViewSet
+from care.facility.api.viewsets.resources import (
+    ResourceRequestCommentViewSet,
+    ResourceRequestViewSet,
+)
+from care.facility.api.viewsets.shifting import (
+    ShifitngRequestCommentViewSet,
+    ShiftingViewSet,
+)
+from care.facility.summarisation.district.patient_summary import (
+    DistrictPatientSummaryViewSet,
+)
 from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
-from care.users.api.viewsets.lsg import DistrictViewSet, LocalBodyViewSet, StateViewSet, WardViewSet
+from care.users.api.viewsets.lsg import (
+    DistrictViewSet,
+    LocalBodyViewSet,
+    StateViewSet,
+    WardViewSet,
+)
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
@@ -71,6 +98,8 @@ router.register("files", FileUploadViewSet)
 
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
+
+router.register("icd", ICDViewSet)
 
 router.register("patient/search", PatientSearchViewSet)
 
@@ -106,7 +135,8 @@ router.register("test_sample", PatientSampleViewSet)
 router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
-router.register("facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility")
+router.register("facility_summary", FacilityCapacitySummaryViewSet,
+                basename="summary-facility")
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
@@ -157,13 +187,15 @@ patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 patient_nested_router.register(r"notes", PatientNotesViewSet)
 
-consultation_nested_router = NestedSimpleRouter(router, r"consultation", lookup="consultation")
+consultation_nested_router = NestedSimpleRouter(
+    router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
+    path("icd/scrape", ICDScrapeView.as_view(), name="icd_scrape_view"),
     url(r"^", include(user_nested_rotuer.urls)),
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
@@ -173,6 +205,4 @@ urlpatterns = [
 ]
 
 
-## Importing Celery Tasks
-
-import care.facility.reports.admin_reports
+# Importing Celery Tasks
