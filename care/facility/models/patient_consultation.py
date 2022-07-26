@@ -142,4 +142,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
             models.CheckConstraint(
                 name="if_admitted", check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
+            models.UniqueConstraint(
+                name='unique_patient_bed', fields=['patient', 'current_bed'], condition=models.Q(admitted=True)
+            )
         ]
