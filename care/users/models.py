@@ -96,6 +96,8 @@ class LocalBody(models.Model):
             "body_type",
             "name",
         )
+        verbose_name = "Local Body"
+        verbose_name_plural = "Local Bodies"
 
     def __str__(self):
         return f"{self.name} ({self.body_type})"
@@ -120,7 +122,9 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False).select_related("local_body", "district", "state")
+        return qs.filter(deleted=False, is_active=True).select_related(
+            "local_body", "district", "state"
+        )
 
     def create_superuser(self, username, email, password, **extra_fields):
         district = District.objects.all()[0]
@@ -142,7 +146,9 @@ class Skill(BaseModel):
 
 class UsernameValidator(UnicodeUsernameValidator):
     regex = r"^[\w.@+-]+[^.@+_-]$"
-    message = _("Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _")
+    message = _(
+        "Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _"
+    )
 
 
 class UserSkill(BaseModel):
@@ -150,7 +156,9 @@ class UserSkill(BaseModel):
     skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        indexes = [PartialIndex(fields=["skill", "user"], unique=True, where=PQ(deleted=False))]
+        indexes = [
+            PartialIndex(fields=["skill", "user"], unique=True, where=PQ(deleted=False))
+        ]
 
 
 class User(AbstractUser):
@@ -187,21 +195,36 @@ class User(AbstractUser):
     REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)
 
     user_type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
-    created_by = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="users_created")
+    created_by = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="users_created",
+    )
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
-    local_body = models.ForeignKey(LocalBody, on_delete=models.PROTECT, null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.PROTECT, null=True, blank=True)
+    local_body = models.ForeignKey(
+        LocalBody, on_delete=models.PROTECT, null=True, blank=True
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.PROTECT, null=True, blank=True
+    )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
     alt_phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default=None, blank=True, null=True
+        max_length=14,
+        validators=[phone_number_regex],
+        default=None,
+        blank=True,
+        null=True,
     )
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skills = models.ManyToManyField("Skill", through=UserSkill)
+    home_facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT, null=True, blank=True)
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -213,7 +236,12 @@ class User(AbstractUser):
     # Asset Fields
 
     asset = models.ForeignKey(
-        "facility.Asset", default=None, null=True, blank=True, on_delete=models.PROTECT, unique=True
+        "facility.Asset",
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        unique=True,
     )
 
     objects = CustomUserManager()
@@ -250,7 +278,10 @@ class User(AbstractUser):
         try:
             return int(request.data["user_type"]) <= User.TYPE_VALUE_MAP["Volunteer"]
         except TypeError:
-            return User.TYPE_VALUE_MAP[request.data["user_type"]] <= User.TYPE_VALUE_MAP["Volunteer"]
+            return (
+                User.TYPE_VALUE_MAP[request.data["user_type"]]
+                <= User.TYPE_VALUE_MAP["Volunteer"]
+            )
         except KeyError:
             # No user_type passed, the view shall raise a 400
             return True
@@ -263,9 +294,9 @@ class User(AbstractUser):
             return True
         if not self == request.user:
             return False
-        if (request.data.get("district") or request.data.get("state")) and self.user_type >= User.TYPE_VALUE_MAP[
-            "DistrictLabAdmin"
-        ]:
+        if (
+            request.data.get("district") or request.data.get("state")
+        ) and self.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False

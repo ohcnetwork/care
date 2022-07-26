@@ -8,8 +8,6 @@ Auto Deployed to https://careapi.coronasafe.in for master Branch.
 
 Documentation is available at https://care-be-docs.coronasafe.network
 
-A Glossary of entities used in Care are Discussed in https://shrihari689.notion.site/Care-Frontend-Glossary-5ceae4381e9f406196e0280693a5caae
-
 .. image:: https://circleci.com/gh/coronasafe/care.svg?style=svg
    :alt: CircleCI Badge
    :target: https://circleci.com/gh/coronasafe/care_fe

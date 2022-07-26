@@ -49,9 +49,9 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+# DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
@@ -72,7 +72,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    "django.contrib.gis",
+    # "django.contrib.gis",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
@@ -88,7 +88,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "drf_extra_fields",
-    "location_field.apps.DefaultConfig",
     "django_filters",
     "simple_history",
     "ratelimit",
@@ -324,11 +323,11 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-LOCATION_FIELD = {
-    "search.provider": "google",
-    "map.provider": "openstreetmap",
-    "provider.openstreetmap.max_zoom": 18,
-}
+# LOCATION_FIELD = {
+#     "search.provider": "google",
+#     "map.provider": "openstreetmap",
+#     "provider.openstreetmap.max_zoom": 18,
+# }
 
 
 def GETKEY(group, request):
@@ -413,7 +412,13 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 # FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_BUCKET_ENDPOINT = env("FILE_UPLOAD_BUCKET_ENDPOINT", default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com")
 
+FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_BUCKET_ENDPOINT = env("FACILITY_S3_BUCKET_ENDPOINT", default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com")
+FACILITY_S3_STATIC_PREFIX  = env("FACILITY_S3_STATIC_PREFIX", default=f"http://s3.amazonaws.com/{FACILITY_S3_BUCKET}/")
 
 # Audit logs
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
