@@ -193,4 +193,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 fields=['patient', 'current_bed'],
                 condition=models.Q(admitted=True)
             ),
+            models.UniqueConstraint(
+                name='unique_patient_bed', fields=['patient', 'current_bed'], condition=models.Q(admitted=True)
+            )
         ]

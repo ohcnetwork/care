@@ -72,3 +72,4 @@ class ConsultationBed(BaseModel):
                 condition=models.Q(consultation__admitted=True)
             )
         ]
+
