@@ -13,7 +13,7 @@ from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
-from utils.csp import config as cs_provider
+from care.utils.csp import config as cs_provider
 
 from multiselectfield import MultiSelectField
 
