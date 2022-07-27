@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
+    FacilityImageUploadSerializer,
     FacilitySerializer,
     FacilityImageUploadSerializer
 )

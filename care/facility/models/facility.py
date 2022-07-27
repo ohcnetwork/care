@@ -152,18 +152,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         verbose_name_plural = "Facilities"
 
     def read_cover_image_url(self):
-        s3Client = boto3.client("s3", **cs_provider.get_client_config(
-            cs_provider.BucketType.FACILITY.value
-        ))
-        signed_url = s3Client.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": settings.FACILITY_S3_BUCKET,
-                "Key": self.cover_image_url,
-            },
-            ExpiresIn=60 * 60,  # One Hour
-        )
-        return signed_url
+        return settings.FACILITY_S3_STATIC_PREFIX + ( self.cover_image_url or "" )
 
     def __str__(self):
         return f"{self.name}"
