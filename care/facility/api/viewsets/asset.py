@@ -137,11 +137,6 @@ class AssetViewSet(
             )
         return queryset
 
-    def handle_exception(self, exc):
-        if isinstance(exc, ModelValidationError):
-            exc = ValidationError(detail=get_error_detail(exc))
-        return super().handle_exception(exc)
-
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
     def get_default_user_location(self, request, *args, **kwargs):
