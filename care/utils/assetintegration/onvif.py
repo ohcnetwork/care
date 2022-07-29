@@ -14,6 +14,7 @@ class OnvifAsset(BaseAssetIntegration):
         GOTO_PRESET = "goto_preset"
         ABSOLUTE_MOVE = "absolute_move"
         RELATIVE_MOVE = "relative_move"
+        GET_STREAM_TOKEN = "get_streaming_token"
 
     def __init__(self, meta):
         try:
@@ -26,7 +27,7 @@ class OnvifAsset(BaseAssetIntegration):
             raise ValidationError(
                 dict((key, f"{key} not found in asset metadata") for key in e.args))
 
-    def handle_action(self, action):
+    def handle_action(self, action, client_headers={}):
         action_type = action["type"]
         action_data = action.get("data", {})
 
@@ -53,5 +54,8 @@ class OnvifAsset(BaseAssetIntegration):
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             return self.api_post(self.get_url("relativeMove"), request_body)
+
+        if action_type == self.OnvifActions.GET_STREAM_TOKEN.value:
+            return self.api_post(self.get_url("get_streaming_token"), request_body, client_headers)
 
         raise ValidationError({"action": "invalid action type"})

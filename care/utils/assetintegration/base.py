@@ -21,8 +21,8 @@ class BaseAssetIntegration:
             protocol += "s"
         return f"{protocol}://{self.middleware_hostname}/{endpoint}"
 
-    def api_post(self, url, data=None):
-        req = requests.post(url, json=data)
+    def api_post(self, url, data=None, headers={}):
+        req = requests.post(url, json=data, headers=headers)
         try:
             response = req.json()
             if req.status_code >= 400:
@@ -31,8 +31,8 @@ class BaseAssetIntegration:
         except json.decoder.JSONDecodeError as e:
             return {"error": "Invalid Response"}
 
-    def api_get(self, url, data=None):
-        req = requests.get(url, params=data)
+    def api_get(self, url, data=None, headers={}):
+        req = requests.get(url, params=data, headers=headers)
         try:
             response = req.json()
             if req.status_code >= 400:
