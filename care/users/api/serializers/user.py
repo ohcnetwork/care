@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
+from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 
 from care.facility.models import READ_ONLY_USER_TYPES, Facility, FacilityUser
 from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
@@ -191,6 +192,7 @@ class UserSerializer(SignUpSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
+    home_facility_object = FacilityBareMinimumSerializer(source="home_facility", read_only=True)
 
     class Meta:
         model = User
@@ -202,6 +204,7 @@ class UserSerializer(SignUpSerializer):
             "email",
             "user_type",
             "created_by",
+            "home_facility",
             "local_body",
             "district",
             "state",
@@ -211,6 +214,7 @@ class UserSerializer(SignUpSerializer):
             "age",
             "is_superuser",
             "verified",
+            "home_facility_object",
             "local_body_object",
             "district_object",
             "state_object",
