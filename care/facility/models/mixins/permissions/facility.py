@@ -57,12 +57,9 @@ class FacilityPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        if (
-            request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["Staff"]
-        ):
-            return self.has_object_read_permission(request)
-        return request.user.home_facility == self
+        if request.user.user_type < User.TYPE_VALUE_MAP["Staff"]:
+            return request.user.home_facility == self
+        return self.has_object_read_permission(request)
 
     def has_object_update_permission(self, request):
         return super().has_object_update_permission(request) or self.has_object_write_permission(request)
