@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError as ModelValidationError
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -9,7 +8,6 @@ from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
-from rest_framework.fields import get_error_detail
 from rest_framework.mixins import (
     CreateModelMixin,
     ListModelMixin,
