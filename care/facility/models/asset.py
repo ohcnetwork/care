@@ -6,10 +6,12 @@ from django.db import models
 from django.db.models import Q
 
 from care.facility.models.facility import Facility
+from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
 from care.users.models import User, phone_number_regex
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 def get_random_asset_id():
@@ -67,7 +69,7 @@ class Asset(BaseModel):
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")
-    meta = JSONField(default=dict, blank=True)
+    meta = JSONField(default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)])
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
@@ -88,7 +90,6 @@ class Asset(BaseModel):
 
     def __str__(self):
         return self.name
-
 
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)
