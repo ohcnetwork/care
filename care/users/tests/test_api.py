@@ -24,6 +24,8 @@ class TestSuperUser(TestBase):
             "alt_phone_number": obj.alt_phone_number,
             "age": obj.age,
             "gender": GENDER_CHOICES[obj.gender - 1][1],
+            'home_facility': None,
+            'home_facility_object': None,
             "is_superuser": obj.is_superuser,
             "verified": obj.verified,
             "pf_endpoint": obj.pf_endpoint,
