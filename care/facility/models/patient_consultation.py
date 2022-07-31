@@ -51,7 +51,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
     discharge_advice = JSONField(default=dict)
+    prn_prescription = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
+    procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility",

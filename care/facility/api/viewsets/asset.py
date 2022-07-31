@@ -7,7 +7,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError, APIException
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     ListModelMixin,
