@@ -125,8 +125,7 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             return False
         return (
             request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
         )
 
     def has_object_read_permission(self, request):
@@ -148,12 +147,7 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
+            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return (
-            self.has_object_read_permission(request)
-            and (
-                request.user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
-            )
-        )
+        return  self.has_object_read_permission(request)
