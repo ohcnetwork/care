@@ -125,6 +125,7 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             return False
         return (
             request.user.is_superuser
+            or request.user.verified
             and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
         )
 
@@ -150,4 +151,4 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return  self.has_object_read_permission(request)
+        return self.has_object_read_permission(request)
