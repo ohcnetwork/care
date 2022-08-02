@@ -9,6 +9,7 @@ from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializ
 from care.users.models import GENDER_CHOICES
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 
 User = get_user_model()
 
@@ -50,6 +51,7 @@ class UserCreateSerializer(SignUpSerializer):
     facilities = serializers.ListSerializer(
         child=serializers.UUIDField(), required=False, allow_empty=True, write_only=True
     )
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
     class Meta:
         model = User
@@ -96,7 +98,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different local body")
+            raise serializers.ValidationError(
+                "Cannot create for a different local body")
         return value
 
     def validate_district(self, value):
@@ -123,7 +126,8 @@ class UserCreateSerializer(SignUpSerializer):
         if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
             if validated["user_type"] not in READ_ONLY_USER_TYPES:
                 raise exceptions.ValidationError(
-                    {"user_type": ["Read only users can create other read only users only"]}
+                    {"user_type": [
+                        "Read only users can create other read only users only"]}
                 )
         if (
             self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
@@ -134,7 +138,8 @@ class UserCreateSerializer(SignUpSerializer):
             validated["user_type"] > self.context["created_by"].user_type
             and not self.context["created_by"].is_superuser
         ):
-            raise exceptions.ValidationError({"user_type": ["User cannot create another user with higher permissions"]})
+            raise exceptions.ValidationError(
+                {"user_type": ["User cannot create another user with higher permissions"]})
 
         if (
             not validated.get("ward")
@@ -142,7 +147,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not validated.get("district")
             and not validated.get("state")
         ):
-            raise exceptions.ValidationError({"__all__": ["One of ward, local body, district or state is required"]})
+            raise exceptions.ValidationError(
+                {"__all__": ["One of ward, local body, district or state is required"]})
 
         return validated
 
@@ -192,7 +198,10 @@ class UserSerializer(SignUpSerializer):
     district_object = DistrictSerializer(source="district", read_only=True)
     state_object = StateSerializer(source="state", read_only=True)
     alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
-    home_facility_object = FacilityBareMinimumSerializer(source="home_facility", read_only=True)
+    home_facility_object = FacilityBareMinimumSerializer(
+        source="home_facility", read_only=True)
+
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
     class Meta:
         model = User
@@ -277,6 +286,9 @@ class UserListSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
     created_by = serializers.CharField(source="created_by_user", read_only=True)
+    home_facility_object = FacilityBareMinimumSerializer(
+        source="home_facility", read_only=True)
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
     class Meta:
         model = User
@@ -291,4 +303,6 @@ class UserListSerializer(serializers.ModelSerializer):
             "user_type",
             "created_by",
             "last_login",
+            "home_facility_object",
+            "home_facility",
         )

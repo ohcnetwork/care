@@ -51,7 +51,7 @@ from care.facility.tasks.patient.discharge_report import generate_discharge_repo
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter, MultiSelectFilter
-from care.utils.queryset.patient import get_patient_queryset
+from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
@@ -644,7 +644,7 @@ class PatientNotesViewSet(
 
     def perform_create(self, serializer):
         patient = get_object_or_404(
-            get_patient_queryset(self.request.user).filter(
+            get_patient_notes_queryset(self.request.user).filter(
                 external_id=self.kwargs.get("patient_external_id")
             )
         )
