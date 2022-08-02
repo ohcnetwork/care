@@ -11,7 +11,11 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import SYMPTOM_CHOICES, DISCHARGE_REASON_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import (
+    DISCHARGE_REASON_CHOICES,
+    SYMPTOM_CHOICES,
+    SuggestionChoices,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
@@ -19,12 +23,12 @@ from care.users.api.serializers.user import (
 )
 from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
+from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
-
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
     suggestion_text = ChoiceField(
@@ -159,6 +163,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             action = validated_data.pop("action")
         if "review_time" in validated_data:
             review_time = validated_data.pop("review_time")
+
+        # Authorisation Check
+
+        allowed_facilities = get_home_facility_queryset(self.context["request"].user)
+        if not allowed_facilities.filter(
+            id=self.validated_data["facility"].id
+        ).exists() or (
+            not self.validated_data["patient"].facility
+            == self.context["request"].user.home_facility
+        ):
+            raise ValidationError(
+                {"facility": "Consultation creates are only allowed in home facility"}
+            )
+
+        # End Authorisation Checks
 
         if validated_data["patient"].last_consultation:
             if (
