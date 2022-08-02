@@ -47,7 +47,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         queryset=Facility.objects.all(), required=False
     )
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    facility = ExternalIdSerializerField(read_only=True)
 
     assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
 
@@ -168,11 +168,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         allowed_facilities = get_home_facility_queryset(self.context["request"].user)
         if not allowed_facilities.filter(
-            id=self.validated_data["facility"].id
-        ).exists() or (
-            not self.validated_data["patient"].facility
-            == self.context["request"].user.home_facility
-        ):
+            id=self.validated_data["patient"].facility.id
+        ).exists():
             raise ValidationError(
                 {"facility": "Consultation creates are only allowed in home facility"}
             )

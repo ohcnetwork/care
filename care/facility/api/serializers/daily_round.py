@@ -1,6 +1,7 @@
 from datetime import timedelta
 from uuid import uuid4
 
+from django.db import transaction
 from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
@@ -12,15 +13,15 @@ from care.facility.models import CATEGORY_CHOICES, PatientRegistration
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import ADMIT_CHOICES, CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
+from care.utils.queryset.facility import get_home_facility_queryset
 from config.serializers import ChoiceField
-from django.db import transaction
+
 
 class DailyRoundSerializer(serializers.ModelSerializer):
-
     id = serializers.CharField(source="external_id", read_only=True)
     additional_symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES, required=False)
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
@@ -113,12 +114,26 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
+
+        # Authorisation Checks
+
+        allowed_facilities = get_home_facility_queryset(self.context["request"].user)
+        if not allowed_facilities.filter(
+            id=self.validated_data["consultation"].facility.id
+        ).exists():
+            raise ValidationError(
+                {"facility": "Daily Round creates are only allowed in home facility"}
+            )
+
+        # Authorisation Checks End
+
         with transaction.atomic():
             if "clone_last" in validated_data:
                 should_clone = validated_data.pop("clone_last")
                 if should_clone:
                     consultation = get_object_or_404(
-                        get_consultation_queryset(self.context["request"].user).filter(id=validated_data["consultation"].id)
+                        get_consultation_queryset(self.context["request"].user).filter(
+                            id=validated_data["consultation"].id)
                     )
                     last_objects = DailyRound.objects.filter(consultation=consultation).order_by("-created_date")
                     if not last_objects.exists():
@@ -169,7 +184,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     "last_edited_by",
                 ]
             )
-            
+
             self.update_last_daily_round(daily_round_obj)
             return daily_round_obj
 
@@ -194,7 +209,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 # TODO add authorisation checks
                 bed_object = Bed.objects.filter(external_id=external_id).first()
                 if not bed_object:
-                    raise ValidationError({"bed": [f"Obeject not found."]})
+                    raise ValidationError({"bed": [f"Object not found."]})
                 validated["bed_id"] = bed_object.id
 
         return validated
