@@ -63,6 +63,8 @@ class BasePermissionMixin:
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
+        if self.facility != request.user.home_facility:
+            return False
         return request.user.is_superuser or (
             hasattr(self, "created_by") and request.user == self.created_by
         )
