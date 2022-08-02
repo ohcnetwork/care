@@ -55,7 +55,7 @@ class PatientPermissionMixin(BasePermissionMixin):
             (hasattr(self, "created_by") and request.user == self.created_by)
             or (doctor_allowed)
             # or (self.facility and request.user in self.facility.users.all())
-            or (self.facility == request.user.home_facility)
+            or (self.facility and self.facility == request.user.home_facility)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
@@ -84,7 +84,7 @@ class PatientPermissionMixin(BasePermissionMixin):
         return (
             request.user.is_superuser
             or (hasattr(self, "created_by") and request.user == self.created_by)
-            or (self.facility and request.user in self.facility.users.all())
+            or (self.facility and self.facility == request.user.home_facility)
             or (doctor_allowed)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
