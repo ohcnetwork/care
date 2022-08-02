@@ -9,6 +9,7 @@ from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializ
 from care.users.models import GENDER_CHOICES
 from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
 from config.serializers import ChoiceField
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 
 User = get_user_model()
 
@@ -50,7 +51,7 @@ class UserCreateSerializer(SignUpSerializer):
     facilities = serializers.ListSerializer(
         child=serializers.UUIDField(), required=False, allow_empty=True, write_only=True
     )
-
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
     class Meta:
         model = User
         include = ("facilities",)
@@ -194,6 +195,7 @@ class UserSerializer(SignUpSerializer):
     alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
     home_facility_object = FacilityBareMinimumSerializer(source="home_facility", read_only=True)
 
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
     class Meta:
         model = User
         fields = (
