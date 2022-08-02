@@ -132,7 +132,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=True)
+    facility = ExternalIdSerializerField(queryset=Facility.objects.all())
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -237,6 +237,11 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
+
+            if "facility" not in validated_data:
+                raise serializers.ValidationError(
+                    {"facility": "Facility is required to register a patient"}
+                )
 
             # Authorization checks
 
