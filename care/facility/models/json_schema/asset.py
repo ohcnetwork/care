@@ -15,12 +15,14 @@ ONVIF_META = {
         "local_ip_address",
         "middleware_hostname",
         "camera_access_key",
+        "camera_type",
         "port",
     ],
     "properties": {
         "local_ip_address": {"type": "string"},
         "middleware_hostname": {"type": "string"},
         "camera_access_key": {"type": "string"},
+        "camera_type": {"type": "string"},
         "port": {"type": "number"},
         "insecure_connection": {"type": "boolean"},
     },
@@ -38,4 +40,3 @@ ASSET_META = {
     ],
     "definitions": {"onvif": ONVIF_META, "hl7monitor": HL7_META, "empty": EMPTY_META},
 }
-
