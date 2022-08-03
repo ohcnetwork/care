@@ -2,14 +2,21 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
-from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 
+from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models import READ_ONLY_USER_TYPES, Facility, FacilityUser
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer
+from care.users.api.serializers.lsg import (
+    DistrictSerializer,
+    LocalBodySerializer,
+    StateSerializer,
+)
 from care.users.models import GENDER_CHOICES
-from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
-from config.serializers import ChoiceField
+from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from care.utils.serializer.phonenumber_ispossible_field import (
+    PhoneNumberIsPossibleField,
+)
+from config.serializers import ChoiceField
 
 User = get_user_model()
 
@@ -51,7 +58,9 @@ class UserCreateSerializer(SignUpSerializer):
     facilities = serializers.ListSerializer(
         child=serializers.UUIDField(), required=False, allow_empty=True, write_only=True
     )
-    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    home_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
 
     class Meta:
         model = User
@@ -66,15 +75,18 @@ class UserCreateSerializer(SignUpSerializer):
             "deleted",
             "groups",
             "user_permissions",
-            "created_by"
+            "created_by",
         )
 
     def validate_facilities(self, facility_ids):
         if facility_ids:
-            if len(facility_ids) != Facility.objects.filter(external_id__in=facility_ids).count():
-                available_facility_ids = Facility.objects.filter(external_id__in=facility_ids).values_list(
-                    "external_id", flat=True
-                )
+            if (
+                len(facility_ids)
+                != Facility.objects.filter(external_id__in=facility_ids).count()
+            ):
+                available_facility_ids = Facility.objects.filter(
+                    external_id__in=facility_ids
+                ).values_list("external_id", flat=True)
                 not_found_ids = list(set(facility_ids) - set(available_facility_ids))
                 raise serializers.ValidationError(
                     f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}"
@@ -86,7 +98,8 @@ class UserCreateSerializer(SignUpSerializer):
             value is not None
             and value != self.context["created_by"].ward
             and not self.context["created_by"].is_superuser
-            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            and not self.context["created_by"].user_type
+            >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different Ward")
         return value
@@ -96,10 +109,12 @@ class UserCreateSerializer(SignUpSerializer):
             value is not None
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
-            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and not self.context["created_by"].user_type
+            >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError(
-                "Cannot create for a different local body")
+                "Cannot create for a different local body"
+            )
         return value
 
     def validate_district(self, value):
@@ -107,7 +122,8 @@ class UserCreateSerializer(SignUpSerializer):
             value is not None
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
-            and not self.context["created_by"].user_type >= User.TYPE_VALUE_MAP["StateAdmin"]
+            and not self.context["created_by"].user_type
+            >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different state")
         return value
@@ -123,11 +139,25 @@ class UserCreateSerializer(SignUpSerializer):
 
     def validate(self, attrs):
         validated = super(UserCreateSerializer, self).validate(attrs)
+        if "home_facility" in validated:
+            allowed_facilities = get_home_facility_queryset(
+                self.context["request"].user
+            )
+            if not allowed_facilities.filter(id=validated["home_facility"].id).exists():
+                raise exceptions.ValidationError(
+                    {
+                        "home_facility": "Cannot create users with different Home Facility"
+                    }
+                )
+
         if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
             if validated["user_type"] not in READ_ONLY_USER_TYPES:
                 raise exceptions.ValidationError(
-                    {"user_type": [
-                        "Read only users can create other read only users only"]}
+                    {
+                        "user_type": [
+                            "Read only users can create other read only users only"
+                        ]
+                    }
                 )
         if (
             self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
@@ -139,7 +169,12 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].is_superuser
         ):
             raise exceptions.ValidationError(
-                {"user_type": ["User cannot create another user with higher permissions"]})
+                {
+                    "user_type": [
+                        "User cannot create another user with higher permissions"
+                    ]
+                }
+            )
 
         if (
             not validated.get("ward")
@@ -148,7 +183,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not validated.get("state")
         ):
             raise exceptions.ValidationError(
-                {"__all__": ["One of ward, local body, district or state is required"]})
+                {"__all__": ["One of ward, local body, district or state is required"]}
+            )
 
         return validated
 
@@ -170,9 +206,7 @@ class UserCreateSerializer(SignUpSerializer):
         with transaction.atomic():
             facilities = validated_data.pop("facilities", [])
             user = User.objects.create_user(
-                created_by=self.context["created_by"],
-                verified=True,
-                **validated_data
+                created_by=self.context["created_by"], verified=True, **validated_data
             )
             facility_query = self.facility_query(self.context["created_by"])
             if facilities:
@@ -199,7 +233,8 @@ class UserSerializer(SignUpSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     alt_phone_number = PhoneNumberIsPossibleField(required=False, allow_blank=True)
     home_facility_object = FacilityBareMinimumSerializer(
-        source="home_facility", read_only=True)
+        source="home_facility", read_only=True
+    )
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
@@ -246,6 +281,20 @@ class UserSerializer(SignUpSerializer):
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
+    def validate(self, attrs):
+        validated = super(UserSerializer, self).validate(attrs)
+        if "home_facility" in validated:
+            allowed_facilities = get_home_facility_queryset(
+                self.context["request"].user
+            )
+            if not allowed_facilities.filter(id=validated["home_facility"].id).exists():
+                raise exceptions.ValidationError(
+                    {
+                        "home_facility": "Cannot create users with different Home Facility"
+                    }
+                )
+        return validated
+
 
 class UserBaseMinimumSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
@@ -287,7 +336,8 @@ class UserListSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
     created_by = serializers.CharField(source="created_by_user", read_only=True)
     home_facility_object = FacilityBareMinimumSerializer(
-        source="home_facility", read_only=True)
+        source="home_facility", read_only=True
+    )
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
     class Meta:
