@@ -17,10 +17,7 @@ from care.facility.models.json_schema.daily_round import (
     OUTPUT,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import (
-    CURRENT_HEALTH_CHOICES,
-    SYMPTOM_CHOICES,
-)
+from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -31,6 +28,7 @@ class DailyRound(PatientBaseModel):
         NORMAL = 0
         VENTILATOR = 100
         ICU = 200
+        AUTOMATED = 300
 
     RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
 
