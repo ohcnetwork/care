@@ -141,7 +141,7 @@ class UserCreateSerializer(SignUpSerializer):
         validated = super(UserCreateSerializer, self).validate(attrs)
         if "home_facility" in validated:
             allowed_facilities = get_home_facility_queryset(
-                self.context["request"].user
+                self.context["created_by"]
             )
             if not allowed_facilities.filter(id=validated["home_facility"].id).exists():
                 raise exceptions.ValidationError(
