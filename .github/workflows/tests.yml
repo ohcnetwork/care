@@ -1,0 +1,74 @@
+name: Test
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
+    services:
+      db:
+        image: postgis/postgis:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: care
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          AWS_DEFAULT_REGION: ap-south-1
+          EDGE_PORT: 4566
+          SERVICES: s3
+        ports:
+          - 4566:4566
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install binutils libproj-dev gdal-bin -y
+
+      - name: Install CI dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements/local.txt
+
+      - name: Run celery worker for tests
+        run: celery -A config.celery_app worker -B --loglevel=INFO --detach
+
+      - name: Run Tests with coverage
+        run: coverage run manage.py test --settings=config.settings.test --parallel=$(nproc)
+
+      - name: Generate coverage report
+        run: |
+          coverage combine || true
+          coverage xml
+          coverage report -m
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
