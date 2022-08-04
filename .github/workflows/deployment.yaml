@@ -26,6 +26,7 @@ env:
   CONTAINER_NAME_CRON: 'care-celery-beat'
 jobs:
   test:
+    if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
@@ -114,7 +115,7 @@ jobs:
 
 
   build-staging:
-    needs: test
+    #needs: test
     name: Build & Push Staging to container registries
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
