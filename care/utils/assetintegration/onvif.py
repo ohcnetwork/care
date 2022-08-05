@@ -18,7 +18,6 @@ class OnvifAsset(BaseAssetIntegration):
     def __init__(self, meta):
         try:
             super().__init__(meta)
-            self.port = self.meta["port"]
             self.username = self.meta["camera_access_key"].split(":")[0]
             self.password = self.meta["camera_access_key"].split(":")[1]
             self.access_key = self.meta["camera_access_key"].split(":")[2]
@@ -32,7 +31,7 @@ class OnvifAsset(BaseAssetIntegration):
 
         request_body = {
             "hostname": self.host,
-            "port": self.port,
+            "port": 80,
             "username": self.username,
             "password": self.password,
             "accessKey": self.access_key,
