@@ -4,6 +4,7 @@ HL7_META = {
     "properties": {
         "local_ip_address": {"type": "string"},
         "middleware_hostname": {"type": "string"},
+        "asset_type": {"type": "string"},
         "insecure_connection": {"type": "boolean"},
     },
     "additionalProperties": False,
@@ -22,6 +23,7 @@ ONVIF_META = {
         "middleware_hostname": {"type": "string"},
         "camera_access_key": {"type": "string"},
         "camera_type": {"type": "string"},
+        "asset_type": {"type": "string"},
         "insecure_connection": {"type": "boolean"},
     },
     "additionalProperties": False,
