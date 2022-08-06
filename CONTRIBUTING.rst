@@ -27,6 +27,25 @@ Using Docker
 .. _`docker`: https://docs.docker.get-started/
 .. _`docker-compose`: https://docs.docker.com/compose
 
+Local Setup
+~~~~~~~~~~~~
+Make sure that Postgres is Installed.
+
+Run `pip install -r local/requirements.txt`
+
+Troubleshooting Local Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're on Mac and you have installed Postgres.app Run:
+`export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/14/bin`
+
+If you're pip install is failing on Pillow Consider installing 
+
+`brew install libjpeg libtiff little-cms2 openjpeg webp`
+
+and then:
+
+`brew install freetype harfbuzz fribidi`
 
 Running the server
 ``````````````````
