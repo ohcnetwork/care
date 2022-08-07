@@ -9,13 +9,6 @@ def reverse_choices(choices):
     return output
 
 
-CURRENT_HEALTH_CHOICES = [
-    (0, "NO DATA"),
-    (1, "REQUIRES VENTILATOR"),
-    (2, "WORSE"),
-    (3, "STATUS QUO"),
-    (4, "BETTER"),
-]
 ADMIT_CHOICES = [
     (None, "Not admitted"),
     (1, "Isolation Room"),
