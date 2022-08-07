@@ -17,7 +17,7 @@ from care.facility.models.json_schema.daily_round import (
     OUTPUT,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -134,9 +134,7 @@ class DailyRound(PatientBaseModel):
     patient_category = models.CharField(
         choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
     )
-    current_health = models.IntegerField(
-        default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
-    )
+
     recommend_discharge = models.BooleanField(
         default=False, verbose_name="Recommend Discharging Patient"
     )
