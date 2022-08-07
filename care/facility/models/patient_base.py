@@ -66,6 +66,8 @@ DISCHARGE_REASON_CHOICES = [
     ("EXP", "Expired"),
     ("LAMA", "LAMA"),
 ]
+
+
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2
