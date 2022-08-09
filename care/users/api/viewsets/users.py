@@ -223,18 +223,14 @@ class UserViewSet(
 
     @action(detail=True, methods=["PATCH"], permission_classes=[IsAuthenticated])
     def update_role(self, request, *args, **kwargs):
-        queryset = self.queryset
-        username = kwargs["username"]
-        user = get_object_or_404(queryset.filter(username=username))
+        user = self.get_object()
         new_user_type = int(request.data["user_type"])
         if (
-            self.has_user_type_permission_elevation(request.user, user)
-            and new_user_type <= request.user.user_type
+            not self.has_user_type_permission_elevation(request.user, user)
+            or new_user_type > request.user.user_type
         ):
-            pass
-        else:
             return Response(
-                status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"}
+                status=status.HTTP_403_FORBIDDEN, data={"detail": "You don't have permission to perform this action"}
             )
         user.user_type = new_user_type
         user.save(update_fields=["user_type"])
