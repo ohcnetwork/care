@@ -139,12 +139,12 @@ class UserViewSet(
             pass
         elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
-                state=request.user.state, user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
+                state=request.user.state, user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
             )
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
                 district=request.user.district,
-                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
