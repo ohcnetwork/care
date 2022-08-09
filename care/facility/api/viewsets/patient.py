@@ -358,6 +358,7 @@ class PatientViewSet(
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
+            last_consultation.current_bed = None
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
