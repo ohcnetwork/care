@@ -34,6 +34,30 @@ class FacilityPermissionMixin(BasePermissionMixin):
         except Exception:
             return False
 
+    @staticmethod
+    def has_destroy_permission(request):
+        from care.facility.models import Facility
+
+        try:
+            facility = Facility.objects.get(
+                external_id=request.parser_context["kwargs"]["external_id"]
+            )
+            return (
+                request.user.is_superuser
+                or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    and facility.state == request.user.state
+                )
+                or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    and facility.state == request.user.state
+                    and facility.district == request.user.district
+                )
+            )
+        except Exception as e:
+            print(e)
+            return False
+
     def has_object_read_permission(self, request):
         return (
             (request.user.is_superuser)
