@@ -223,18 +223,30 @@ class UserViewSet(
 
     @action(detail=True, methods=["PATCH"], permission_classes=[IsAuthenticated])
     def update_role(self, request, *args, **kwargs):
-        user = self.get_object()
-        new_user_type = int(request.data["user_type"])
-        if (
-            not self.has_user_type_permission_elevation(request.user, user)
-            or new_user_type > request.user.user_type
+        queryset = self.queryset
+        username = kwargs["username"]
+        user = get_object_or_404(queryset.filter(username=username))
+        new_user_type = request.data["user_type"]
+        if new_user_type:
+            if new_user_type in INVERSE_USER_TYPE:
+                new_user_type = INVERSE_USER_TYPE[new_user_type]
+            else:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"detail": "No such user role exist"},
+                )
+        if not (
+            self.has_user_type_permission_elevation(request.user, user)
+            and new_user_type <= request.user.user_type
+            and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             return Response(
-                status=status.HTTP_403_FORBIDDEN, data={"detail": "You don't have permission to perform this action"}
+                status=status.HTTP_403_FORBIDDEN,
+                data={"detail": "You don't have permission to perform this action"},
             )
         user.user_type = new_user_type
         user.save(update_fields=["user_type"])
-        return Response([request.data], status=status.HTTP_200_OK)
+        return Response([request.data], status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
     def add_facility(self, request, *args, **kwargs):
