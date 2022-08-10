@@ -12,14 +12,14 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
-    FacilityImageUploadSerializer
+    FacilityImageUploadSerializer,
 )
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration
+    PatientRegistration,
 )
 from care.users.models import User
 
@@ -129,18 +129,24 @@ class FacilityViewSet(
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
-    @action(methods=["POST", "DELETE"], detail=True, permission_classes=[IsAuthenticated, DRYPermissions])
+    @action(
+        methods=["POST", "DELETE"],
+        detail=True,
+        permission_classes=[IsAuthenticated, DRYPermissions],
+    )
     def cover_image(self, request, external_id):
         facility = self.get_object()
         if not facility:
-            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if request.method == "POST":
             serialized_data = FacilityImageUploadSerializer(facility, data=request.data)
             if serialized_data.is_valid():
                 serialized_data.save()
                 return Response(serialized_data.data)
-            
+
             return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == "DELETE":
