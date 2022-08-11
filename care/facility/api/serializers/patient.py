@@ -26,7 +26,6 @@ from care.facility.models import (
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
 )
@@ -71,7 +70,6 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     last_consultation = PatientConsultationSerializer(read_only=True)
 
-    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(
         choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
     )
