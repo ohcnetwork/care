@@ -135,11 +135,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         medical_history = validated_data.pop("medical_history", [])
 
-        Disease.objects.filter(patient=patient).update(deleted=True)
+        Disease.objects.filter(patient=instance.patient).update(deleted=True)
         diseases = []
 
         for disease in medical_history:
-            diseases.append(Disease(patient=patient, **disease))
+            diseases.append(Disease(patient=instance.patient, **disease))
         if diseases:
             Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
@@ -223,7 +223,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         diseases = []
 
         for disease in medical_history:
-            diseases.append(Disease(patient=patient, **disease))
+            diseases.append(Disease(patient=validated_data["patient"], **disease))
         if diseases:
             Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
