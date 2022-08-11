@@ -89,7 +89,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
-            "allergies",
             "external_id",
         )
         read_only = TIMESTAMP_FIELDS
@@ -132,7 +131,9 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -386,11 +387,11 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         exclude = (
-                      "date_of_birth",
-                      "year_of_birth",
-                      "external_id",
-                      "id",
-                  ) + TIMESTAMP_FIELDS
+            "date_of_birth",
+            "year_of_birth",
+            "external_id",
+            "id",
+        ) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
