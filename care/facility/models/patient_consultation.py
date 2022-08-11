@@ -109,6 +109,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         default=None,
     )
 
+    family_details = models.TextField(
+        default="", blank=True, verbose_name="Patient's Family Details"
+    )
+
     # Physical Information
 
     height = models.FloatField(
