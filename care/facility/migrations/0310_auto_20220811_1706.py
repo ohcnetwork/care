@@ -3,6 +3,17 @@
 from django.db import migrations, models
 
 
+def populate_data(apps, schema_editor):
+    PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    patient_consultations = PatientConsultation.objects.all()
+
+    for patient_cons in patient_consultations:
+        if patient_cons.patient.blood_group is not None:
+            patient_cons.blood_group = patient_cons.patient.blood_group
+
+        patient_cons.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -30,6 +41,7 @@ class Migration(migrations.Migration):
                 verbose_name="Blood Group of Patient",
             ),
         ),
+        migrations.RunPython(populate_data, migrations.RunPython.noop),
         migrations.RemoveField(
             model_name="historicalpatientregistration",
             name="blood_group",
