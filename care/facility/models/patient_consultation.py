@@ -159,6 +159,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     CSV_MAPPING = {
+        "blood_group": "Blood Group",
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
