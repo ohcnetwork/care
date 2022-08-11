@@ -8,7 +8,9 @@ from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
+    BLOOD_GROUP_CHOICES,
     DISCHARGE_REASON_CHOICES,
+    REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
@@ -144,6 +146,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         default="", blank=True, verbose_name="Patient's Known Allergies"
     )
 
+    blood_group = models.CharField(
+        choices=BLOOD_GROUP_CHOICES,
+        null=True,
+        blank=False,
+        max_length=4,
+        verbose_name="Blood Group of Patient",
+    )
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
@@ -155,6 +165,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
+        "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
         "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
