@@ -174,6 +174,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "category": "Category",
         "examination_details": "Examination Details",
         "suggestion": "Suggestion",
+        "present_health": "Patient's Current Health Details",
+        "ongoing_medication": "Already pescribed medication if any",
     }
 
     CSV_MAKE_PRETTY = {

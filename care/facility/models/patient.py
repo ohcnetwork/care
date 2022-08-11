@@ -429,8 +429,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "countries_travelled": "Countries Patient has Travelled to",
         "date_of_return": "Return Date from the Last Country if Travelled",
         "is_migrant_worker": "Is the Patient a Migrant Worker",
-        "present_health": "Patient's Current Health Details",
-        "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
         "will_donate_blood": "Will Patient Donate Blood?",
