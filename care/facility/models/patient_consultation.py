@@ -137,6 +137,13 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     intubation_history = JSONField(default=list)
 
+    # Health Details
+
+    has_allergy = models.BooleanField(default=False)
+    allergies = models.TextField(
+        default="", blank=True, verbose_name="Patient's Known Allergies"
+    )
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
