@@ -231,6 +231,8 @@ class UserViewSet(
             raise ValidationError({"facility": "Facility Access not Present"})
         if not self.has_facility_permission(user, facility):
             raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
+        if user.home_facility == facility:
+            raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
