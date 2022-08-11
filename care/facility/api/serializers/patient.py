@@ -80,7 +80,6 @@ class PatientListSerializer(serializers.ModelSerializer):
         exclude = (
             "created_by",
             "deleted",
-            "ongoing_medication",
             "patient_search_id",
             "year_of_birth",
             "meta_info",
