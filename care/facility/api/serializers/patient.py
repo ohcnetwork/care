@@ -13,9 +13,7 @@ from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
 from care.facility.models import (
-    DISEASE_CHOICES,
     GENDER_CHOICES,
-    Disease,
     Facility,
     FacilityPatientStatsHistory,
     PatientContactDetails,
@@ -118,10 +116,6 @@ class PatientContactDetailsSerializer(serializers.ModelSerializer):
 
 
 class PatientDetailSerializer(PatientListSerializer):
-    class MedicalHistorySerializer(serializers.Serializer):
-        disease = ChoiceField(choices=DISEASE_CHOICES)
-        details = serializers.CharField(required=False, allow_blank=True)
-
     class PatientTeleConsultationSerializer(serializers.ModelSerializer):
         class Meta:
             model = PatientTeleConsultation
@@ -131,9 +125,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
-    )
-    medical_history = serializers.ListSerializer(
-        child=MedicalHistorySerializer(), required=False
     )
 
     tele_consultation_history = serializers.ListSerializer(
