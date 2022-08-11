@@ -12,6 +12,7 @@ from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
+    BLOOD_GROUP_CHOICES,
     DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
@@ -59,6 +60,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
+
+    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
