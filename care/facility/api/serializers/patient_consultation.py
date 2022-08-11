@@ -203,7 +203,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         bed = validated_data.pop("bed", None)
 
         validated_data["facility_id"] = validated_data[
-            "patient"].facility_id  # Coercing facility as the patient's facility
+            "patient"
+        ].facility_id  # Coercing facility as the patient's facility
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
