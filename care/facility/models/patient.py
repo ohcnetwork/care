@@ -146,8 +146,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         verbose_name="Return Date from the Last Country if Travelled",
     )
 
-    present_health = models.TextField(default="", blank=True, verbose_name="Patient's Current Health Details")
-    ongoing_medication = models.TextField(default="", blank=True, verbose_name="Already pescribed medication if any")
     has_SARI = models.BooleanField(default=False, verbose_name="Does the Patient Suffer from SARI")
 
     is_antenatal = models.BooleanField(default=None, verbose_name="Does the patient require Prenatal Care ?")
