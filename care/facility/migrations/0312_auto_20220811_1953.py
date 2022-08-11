@@ -3,6 +3,20 @@
 from django.db import migrations, models
 
 
+def populate_data(apps, schema_editor):
+    PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    patient_consultations = PatientConsultation.objects.all()
+
+    for patient_cons in patient_consultations:
+        if patient_cons.patient.present_health is not None:
+            patient_cons.present_health = patient_cons.patient.present_health
+
+        if patient_cons.patient.ongoing_medication is not None:
+            patient_cons.ongoing_medication = patient_cons.patient.ongoing_medication
+
+        patient_cons.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -26,6 +40,7 @@ class Migration(migrations.Migration):
                 blank=True, default="", verbose_name="Patient's Current Health Details"
             ),
         ),
+        migrations.RunPython(populate_data, migrations.RunPython.noop),
         migrations.RemoveField(
             model_name="historicalpatientregistration",
             name="ongoing_medication",
