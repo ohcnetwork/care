@@ -224,7 +224,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
 
@@ -253,12 +252,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
-            diseases = []
-
-            for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
-            if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
@@ -286,7 +279,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def update(self, instance, validated_data):
         with transaction.atomic():
-            medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
 
@@ -302,12 +294,6 @@ class PatientDetailSerializer(PatientListSerializer):
                     self.check_external_entry(validated_data["srf_id"])
 
             patient = super().update(instance, validated_data)
-            Disease.objects.filter(patient=patient).update(deleted=True)
-            diseases = []
-            for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
-            if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 for key, value in meta_info.items():

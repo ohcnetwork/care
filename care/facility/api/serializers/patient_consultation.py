@@ -133,6 +133,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
             patient.save()
 
+        medical_history = validated_data.pop("medical_history", [])
+
+        Disease.objects.filter(patient=patient).update(deleted=True)
+        diseases = []
+
+        for disease in medical_history:
+            diseases.append(Disease(patient=patient, **disease))
+        if diseases:
+            Disease.objects.bulk_create(diseases, ignore_conflicts=True)
+
         validated_data["last_updated_by_telemedicine"] = (
             self.context["request"].user == instance.assigned_to
         )
@@ -208,6 +218,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"]:
                 validated_data["kasp_enabled_date"] = localtime(now())
+
+        medical_history = validated_data.pop("medical_history", [])
+        diseases = []
+
+        for disease in medical_history:
+            diseases.append(Disease(patient=patient, **disease))
+        if diseases:
+            Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
         bed = validated_data.pop("bed", None)
 
