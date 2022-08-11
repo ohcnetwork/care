@@ -11,9 +11,11 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient import Disease
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISCHARGE_REASON_CHOICES,
+    DISEASE_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
 )
@@ -30,6 +32,10 @@ from config.serializers import ChoiceField
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
+    class MedicalHistorySerializer(serializers.Serializer):
+        disease = ChoiceField(choices=DISEASE_CHOICES)
+        details = serializers.CharField(required=False, allow_blank=True)
+
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
     suggestion_text = ChoiceField(
@@ -38,6 +44,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="suggestion",
     )
 
+    medical_history = serializers.ListSerializer(
+        child=MedicalHistorySerializer(), required=False
+    )
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
 
