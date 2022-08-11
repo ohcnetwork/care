@@ -158,6 +158,13 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Blood Group of Patient",
     )
 
+    present_health = models.TextField(
+        default="", blank=True, verbose_name="Patient's Current Health Details"
+    )
+    ongoing_medication = models.TextField(
+        default="", blank=True, verbose_name="Already pescribed medication if any"
+    )
+
     CSV_MAPPING = {
         "blood_group": "Blood Group",
         "consultation_created_date": "Date of Consultation",
