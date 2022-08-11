@@ -22,10 +22,8 @@ from care.facility.models import (
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
 from care.facility.models.mixins.permissions.patient import PatientPermissionMixin, PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_ADMIT_CHOICES,
-    REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
     REVERSE_SYMPTOM_CATEGORY_CHOICES,
 )
@@ -122,13 +120,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_medical_worker = models.BooleanField(default=False, verbose_name="Is the Patient a Medical Worker")
 
-    blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES,
-        null=True,
-        blank=False,
-        max_length=4,
-        verbose_name="Blood Group of Patient",
-    )
 
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
@@ -479,7 +470,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
-        "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
         "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
         "is_medical_worker": pretty_boolean,
         "will_donate_blood": pretty_boolean,
