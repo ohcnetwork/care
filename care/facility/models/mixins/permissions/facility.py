@@ -26,12 +26,6 @@ class FacilityPermissionMixin(BasePermissionMixin):
                     and state == request.user.state
                     and district == request.user.district
                 )
-                or (
-                    request.user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-                    and state == request.user.state
-                    and district == request.user.district
-                    and local_body == request.user.local_body
-                )
             )
         except Exception as e:
             print(e)
