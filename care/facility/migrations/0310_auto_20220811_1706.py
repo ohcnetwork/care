@@ -4,8 +4,8 @@ from django.db import migrations, models
 
 
 def populate_data(apps, schema_editor):
-    PatientConsultation = apps.get_model("facility", "PatientConsultation")
-    patient_consultations = PatientConsultation.objects.all()
+    Consultation = apps.get_model("facility", "PatientConsultation")
+    patient_consultations = Consultation.objects.all()
 
     for patient_cons in patient_consultations:
         if patient_cons.patient.blood_group is not None:
