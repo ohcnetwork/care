@@ -14,7 +14,6 @@ class FacilityPermissionMixin(BasePermissionMixin):
         try:
             state = State.objects.get(id=request.data["state"])
             district = District.objects.get(id=request.data["district"])
-            local_body = LocalBody.objects.get(id=request.data["local_body"])
             return (
                 request.user.is_superuser
                 or (
