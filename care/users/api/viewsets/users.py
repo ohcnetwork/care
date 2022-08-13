@@ -139,12 +139,12 @@ class UserViewSet(
             pass
         elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
-                state=request.user.state, user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
+                state=request.user.state, user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
             )
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
                 district=request.user.district,
-                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
@@ -231,6 +231,8 @@ class UserViewSet(
             raise ValidationError({"facility": "Facility Access not Present"})
         if not self.has_facility_permission(user, facility):
             raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
+        if user.home_facility == facility:
+            raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

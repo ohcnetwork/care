@@ -342,7 +342,8 @@ class PatientViewSet(
         patient = self.get_object()
         patient.is_active = discharged
         patient.allow_transfer = not discharged
-        patient.save(update_fields=["allow_transfer", "is_active"])
+        patient.assigned_to = None
+        patient.save(update_fields=["allow_transfer", "is_active", "assigned_to"])
         last_consultation = (
             PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         )
@@ -358,6 +359,7 @@ class PatientViewSet(
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
+            last_consultation.current_bed = None
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
