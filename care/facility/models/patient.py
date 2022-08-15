@@ -766,3 +766,29 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+
+class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
+    patient = models.ForeignKey(
+        PatientRegistration, on_delete=models.CASCADE, related_name="health_details"
+    )
+    facility = models.ForeignKey(
+        Facility, on_delete=models.CASCADE, related_name="health_details"
+    )
+
+    family_details = models.TextField(
+        default="", blank=True, verbose_name="Patient's Family Details"
+    )
+
+    has_allergy = models.BooleanField(default=False)
+    allergies = models.TextField(
+        default="", blank=True, verbose_name="Patient's Known Allergies"
+    )
+
+    blood_group = models.CharField(
+        choices=BLOOD_GROUP_CHOICES,
+        null=True,
+        blank=False,
+        max_length=4,
+        verbose_name="Blood Group of Patient",
+    )
