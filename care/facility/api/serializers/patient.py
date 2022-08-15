@@ -25,6 +25,7 @@ from care.facility.models import (
     PatientSearch,
 )
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientHealthDetails
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -71,7 +72,6 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     last_consultation = PatientConsultationSerializer(read_only=True)
 
-    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(
         choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
     )
@@ -89,7 +89,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
-            "allergies",
             "external_id",
         )
         read_only = TIMESTAMP_FIELDS
@@ -433,3 +432,14 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         model = PatientNotes
         fields = ("note", "facility", "created_by_object", "created_date")
         read_only_fields = ("created_date",)
+
+
+class PatientHealthDetailsSerializer(serializers.ModelSerializer):
+    patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
+    facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
+    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
+
+    class Meta:
+        model = PatientHealthDetails
+        exclude = ("deleted", "external_id")
