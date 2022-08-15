@@ -15,7 +15,12 @@ from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -24,6 +29,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
+    PatientHealthDetailsSerializer,
     PatientListSerializer,
     PatientNotesSerializer,
     PatientSearchSerializer,
@@ -44,6 +50,7 @@ from care.facility.models import (
     PatientRegistration,
     PatientSearch,
     ShiftingRequest,
+    PatientHealthDetails,
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed, ConsultationBed
@@ -609,3 +616,15 @@ class PatientNotesViewSet(
         return serializer.save(
             facility=patient.facility, patient=patient, created_by=self.request.user
         )
+
+
+class PatientHealthDetailsViewSet(
+    RetrieveModelMixin,
+    CreateModelMixin,
+    ListModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = PatientHealthDetails.objects.all().select_related("facility", "patient")
+    serializer_class = PatientHealthDetailsSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
