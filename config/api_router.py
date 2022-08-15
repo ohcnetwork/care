@@ -34,6 +34,7 @@ from care.facility.api.viewsets.inventory import (
 from care.facility.api.viewsets.notification import NotificationViewSet
 from care.facility.api.viewsets.patient import (
     FacilityPatientStatsHistoryViewSet,
+    PatientHealthDetailsViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
     PatientViewSet,
@@ -110,6 +111,7 @@ router.register("notification", NotificationViewSet)
 
 router.register("patient", PatientViewSet)
 router.register("consultation", PatientConsultationViewSet)
+router.register("health_details", PatientHealthDetailsViewSet)
 
 router.register("external_result", PatientExternalTestViewSet)
 
