@@ -4,7 +4,7 @@
 - Change 2
 - More?
 
-@coronasafe/reviewers
+@coronasafe/code-reviewers
 
 ## Merge Checklist
 
