@@ -47,12 +47,13 @@ class FileUpload(FacilityBaseModel):
     )
 
     def save(self, *args, **kwargs):
-        internal_name = str(uuid4()) + str(int(time.time()))
-        if self.internal_name:
-            parts = self.internal_name.split(".")
-            if len(parts) > 1:
-                internal_name = internal_name + "." + parts[-1]
-        self.internal_name = internal_name
+        if "force_insert" in kwargs or (not self.internal_name):
+            internal_name = str(uuid4()) + str(int(time.time()))
+            if self.internal_name:
+                parts = self.internal_name.split(".")
+                if len(parts) > 1:
+                    internal_name = internal_name + "." + parts[-1]
+            self.internal_name = internal_name
         return super().save(*args, **kwargs)
 
     def signed_url(self):

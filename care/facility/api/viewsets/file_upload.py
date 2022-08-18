@@ -14,6 +14,7 @@ from care.facility.api.serializers.file_upload import (
     FileUploadCreateSerializer,
     FileUploadListSerializer,
     FileUploadRetrieveSerializer,
+    FileUploadUpdateSerializer,
     check_permissions,
 )
 from care.facility.models.file_upload import FileUpload
@@ -37,8 +38,10 @@ class FileUploadViewSet(
             return FileUploadRetrieveSerializer
         elif self.action == "list":
             return FileUploadListSerializer
-        else:
+        elif self.action =="create":
             return FileUploadCreateSerializer
+        else:
+            return FileUploadUpdateSerializer
 
     def get_queryset(self):
         if "file_type" not in self.request.GET:
