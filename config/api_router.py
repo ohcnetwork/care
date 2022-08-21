@@ -1,7 +1,5 @@
-import care.facility.reports.admin_reports
 from django.conf import settings
 from django.conf.urls import include, url
-from django.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
@@ -25,7 +23,7 @@ from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
 from care.facility.api.viewsets.hospital_doctor import HospitalDoctorViewSet
-from care.facility.api.viewsets.icd import ICDScrapeView, ICDViewSet
+from care.facility.api.viewsets.icd import ICDViewSet
 from care.facility.api.viewsets.inventory import (
     FacilityInventoryItemViewSet,
     FacilityInventoryLogViewSet,
@@ -99,7 +97,7 @@ router.register("files", FileUploadViewSet)
 router.register("ambulance/create", AmbulanceCreateViewSet)
 router.register("ambulance", AmbulanceViewSet)
 
-router.register("icd", ICDViewSet)
+router.register("icd", ICDViewSet, basename="icd")
 
 router.register("patient/search", PatientSearchViewSet)
 
@@ -117,7 +115,6 @@ router.register("external_result", PatientExternalTestViewSet)
 router.register("bed", BedViewSet)
 router.register("assetbed", AssetBedViewSet)
 router.register("consultationbed", ConsultationBedViewSet)
-
 
 router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
 router.register("pharmacy/prescription", PrescriptionSupplierViewSet)
@@ -148,7 +145,6 @@ router.register(
     DistrictPatientSummaryViewSet,
     basename="district-summary-patient",
 )
-
 
 router.register("items", FacilityInventoryItemViewSet)
 # router.register("burn_rate", FacilityInventoryBurnRateViewSet)
@@ -181,7 +177,6 @@ facility_nested_router.register(r"asset_location", AssetLocationViewSet)
 router.register("asset", AssetViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
 
-
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
@@ -195,7 +190,6 @@ consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 app_name = "api"
 urlpatterns = [
     url(r"^", include(router.urls)),
-    path("icd/scrape", ICDScrapeView.as_view(), name="icd_scrape_view"),
     url(r"^", include(user_nested_rotuer.urls)),
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
@@ -203,6 +197,5 @@ urlpatterns = [
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
 ]
-
 
 # Importing Celery Tasks
