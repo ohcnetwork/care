@@ -92,6 +92,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "glasgow_total_calculated",
             "total_intake_calculated",
             "total_output_calculated",
+            "push_score,"
         )
         exclude = ("deleted",)
 

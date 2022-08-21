@@ -111,6 +111,27 @@ class DailyRound(PatientBaseModel):
         (e.value, e.name) for e in InsulinIntakeFrequencyType
     ]
 
+    class ExudateAmountType(enum.Enum):
+        NONE = 0
+        LIGHT = 1
+        MODERATE = 2
+        HIGH = 3
+
+    ExudateAmountChoice = [
+        (e.value, e.name) for e in ExudateAmountType
+    ]
+
+    class TissueType(enum.Enum):
+        CLOSED = 0
+        EPITHELIAL = 1
+        GRANULATION = 2
+        SLOUGH = 3
+        NECROTIC = 4
+
+    TissueChoice = [
+        (e.value, e.name) for e in TissueType
+    ]
+
     consultation = models.ForeignKey(
         PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds"
     )
@@ -418,6 +439,15 @@ class DailyRound(PatientBaseModel):
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
     )
 
+    length = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+    width = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+    exudate_amount = models.IntegerField(
+        choices=ExudateAmountChoice, default=ExudateAmountType.NONE.value)
+    tissue_type = models.IntegerField(
+        choices=TissueChoice, default=TissueType.CLOSED.value)
+    description = models.TextField(default="", blank=True)
+    push_score = models.IntegerField(default=0, blank=True)
+
     meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
 
     def cztn(self, value):
@@ -427,6 +457,19 @@ class DailyRound(PatientBaseModel):
         if not value:
             return 0
         return value
+
+    def cal_push_score(self):
+        push_score = 0
+        push_score += self.exudate_amount
+        push_score += self.tissue_type
+        area = self.length * self.width
+        area_score = 0
+        area_interval_points = [0.1, 0.3, 0.7, 1.1, 2.1, 3.1, 4.1, 8.1, 12.1, 25]
+        for point in area_interval_points:
+            if area >= point:
+                area_score += 1
+        push_score += area_score
+        return push_score
 
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
@@ -440,6 +483,8 @@ class DailyRound(PatientBaseModel):
         self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
 
         self.total_output_calculated = sum([x["quantity"] for x in self.output])
+
+        self.push_score = self.cal_push_score()
 
         super(DailyRound, self).save(*args, **kwargs)
 
