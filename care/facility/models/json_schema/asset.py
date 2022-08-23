@@ -16,7 +16,6 @@ ONVIF_META = {
         "local_ip_address",
         "middleware_hostname",
         "camera_access_key",
-        "camera_type",
     ],
     "properties": {
         "local_ip_address": {"type": "string"},
