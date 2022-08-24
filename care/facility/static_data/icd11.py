@@ -38,4 +38,4 @@ for icd11_object in icd11_objects:
         ICDDiseases.insert(icd11_object)
 
 ICDDiseases.create_search_index("label")
-# ICDDiseases.create_index("ID", unique=True) ## Duplicates are found so indexing is not possible
+ICDDiseases.create_index("ID", unique=True)

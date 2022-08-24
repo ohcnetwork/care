@@ -10,12 +10,18 @@ class ICDScraper:
         self.root_concept_url = settings.ICD_SCRAPER_ROOT_CONCEPTS_URL
         self.child_concept_url = settings.ICD_SCRAPER_CHILD_CONCEPTS_URL
         self.scraped_concepts = []
+        self.scraped_concept_dict = {}
 
     def add_query(self, url, query={}):
         return url + "?" + "&".join(map(lambda k: str(k) + "=" + str(query[k]), query.keys()))
 
-    def get_child_concepts(self, p_concept, p_id):
-        self.scraped_concepts.append({**p_concept, 'parentId': p_id})
+    def get_child_concepts(self, p_concept, p_parent_id):
+        if p_concept['ID'] in self.scraped_concept_dict:
+            print(f"[-] Skipped duplicate, {p_concept['label']}")
+            return
+            
+        self.scraped_concepts.append({**p_concept, 'parentId': p_parent_id})
+        self.scraped_concept_dict[p_concept['ID']] = True
 
         print(f"[+] Added {p_concept['label']}")
 
@@ -44,13 +50,11 @@ class ICDScraper:
 
     def scrape(self):
         self.scraped_concepts = []
+        self.scraped_concept_dict = {}
         root_concepts = requests.get(self.add_query(
             self.root_concept_url, {'useHtml': 'false'})).json()
 
         skip = [
-            "24 Factors influencing health status or contact with health services",
-            "25 Codes for special purposes",
-            "26 Supplementary Chapter Traditional Medicine Conditions - Module I",
             "V Supplementary section for functioning assessment",
             "X Extension Codes"
         ]
