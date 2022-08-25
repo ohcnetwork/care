@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -12,8 +13,7 @@ def serailize_data(icd11_object):
 
 
 class ICDViewSet(ViewSet):
-    # permission_classes = (IsAuthenticated,)
-    permission_classes = ()
+    permission_classes = (IsAuthenticated,)
 
     def list(self, request):
         from care.facility.static_data.icd11 import ICDDiseases
