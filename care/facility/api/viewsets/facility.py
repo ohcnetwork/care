@@ -4,19 +4,22 @@ from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
+    FacilityImageUploadSerializer,
     FacilitySerializer,
+    FacilityImageUploadSerializer
 )
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration,
+    PatientRegistration
 )
 from care.users.models import User
 
@@ -125,6 +128,25 @@ class FacilityViewSet(
             )
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
+
+    @action(methods=["POST", "DELETE"], detail=True, permission_classes=[IsAuthenticated, DRYPermissions])
+    def cover_image(self, request, external_id):
+        facility = self.get_object()
+        if not facility:
+            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == "POST":
+            serialized_data = FacilityImageUploadSerializer(facility, data=request.data)
+            if serialized_data.is_valid():
+                serialized_data.save()
+                return Response(serialized_data.data)
+            
+            return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.method == "DELETE":
+            facility.cover_image_url = None
+            facility.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AllFacilityViewSet(
