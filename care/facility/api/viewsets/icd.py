@@ -20,5 +20,7 @@ class ICDViewSet(ViewSet):
 
         queryset = ICDDiseases
         if request.GET.get("query", False):
-            queryset = queryset.search.label(request.GET["query"], limit=100)
+            query = request.GET.get("query")
+            queryset = queryset.where(
+                label=queryset.re_match(r".*" + query + r".*"))  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))
