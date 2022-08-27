@@ -52,6 +52,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     course_in_facility = models.TextField(null=True, blank=True)
     discharge_advice = JSONField(default=dict)
     prn_prescription = JSONField(default=dict)
+    investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
