@@ -12,13 +12,14 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
+    FacilityImageUploadSerializer
 )
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration,
+    PatientRegistration
 )
 from care.users.models import User
 

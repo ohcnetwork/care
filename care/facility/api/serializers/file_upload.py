@@ -106,6 +106,15 @@ class FileUploadListSerializer(serializers.ModelSerializer):
         read_only_fields = ("associating_id", "name", "created_date")
 
 
+class FileUploadUpdateSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = FileUpload
+        fields = ("id", "name")
+
+
 class FileUploadRetrieveSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
