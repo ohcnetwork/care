@@ -126,20 +126,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         default=None,
     )
 
+    last_health_details = models.ForeignKey(
+        "PatientHealthDetails", on_delete=models.SET_NULL, null=True, default=None
+    )
     # Physical Information
 
-    height = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="Patient's Height in CM",
-        validators=[MinValueValidator(0)],
-    )
-    weight = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="Patient's Weight in KG",
-        validators=[MinValueValidator(0)],
-    )
     HBA1C = models.FloatField(
         default=None,
         null=True,

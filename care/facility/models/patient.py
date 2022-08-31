@@ -792,3 +792,23 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         max_length=4,
         verbose_name="Blood Group of Patient",
     )
+
+    created_in_consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    height = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Height in CM",
+        validators=[MinValueValidator(0)],
+    )
+
+    weight = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Weight in KG",
+        validators=[MinValueValidator(0)],
+    )
