@@ -29,11 +29,13 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
-    PatientHealthDetailsSerializer,
     PatientListSerializer,
     PatientNotesSerializer,
     PatientSearchSerializer,
     PatientTransferSerializer,
+)
+from care.facility.api.serializers.patient_health_details import (
+    PatientHealthDetailsSerializer,
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
@@ -628,3 +630,4 @@ class PatientHealthDetailsViewSet(
     queryset = PatientHealthDetails.objects.all().select_related("facility", "patient")
     serializer_class = PatientHealthDetailsSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
