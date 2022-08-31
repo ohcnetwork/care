@@ -1,6 +1,11 @@
 from datetime import timedelta
 
 from django.utils.timezone import localtime, now
+from care.facility.api.serializers.patient_health_details import (
+    PatientHealthDetailsSerializer,
+)
+
+from care.facility.models.patient import PatientHealthDetails
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -77,6 +82,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     last_daily_round = DailyRoundSerializer(read_only=True)
+    last_health_details = PatientHealthDetailsSerializer(read_only=True)
 
     current_bed = ConsultationBedSerializer(read_only=True)
 
@@ -238,6 +244,24 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
+
+        # Check if health details has been created
+        try:
+            health_details = PatientHealthDetails.objects.get(
+                id=self.validated_data["patient"].id
+            )
+            health_details.created_in_consultation = consultation
+            health_details.save()
+            consultation.last_health_details = health_details
+            consultation.save(update_fields=["last_health_details"])
+        except PatientHealthDetails.DoesNotExist:
+            raise ValidationError(
+                {
+                    "last_health_details": [
+                        "Patient heatlh details has not been registered"
+                    ]
+                }
+            )
 
         if bed:
             consultation_bed = ConsultationBed(
