@@ -432,14 +432,3 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         model = PatientNotes
         fields = ("note", "facility", "created_by_object", "created_date")
         read_only_fields = ("created_date",)
-
-
-class PatientHealthDetailsSerializer(serializers.ModelSerializer):
-    patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all())
-    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
-    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
-
-    class Meta:
-        model = PatientHealthDetails
-        exclude = ("deleted", "external_id")
