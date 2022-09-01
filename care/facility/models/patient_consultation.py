@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
@@ -36,7 +36,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)
+    diagnosis = ArrayField(models.TextField(default=""),
+                           default=[], blank=True, null=True)
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
     )
