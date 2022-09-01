@@ -2,12 +2,12 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 
-from care.facility.models.patient import PatientHealthDetails
+from care.facility.models.patient import PatientHealthDetails, PatientConsultation
 
 
 def populate_data(apps, schema_editor):
-    PatientConsultation = apps.get_model("facility", "PatientConsultation")
-    patients_cons = PatientConsultation.objects.all()
+    PatientConsultationModel = apps.get_model("facility", "PatientConsultation")
+    patients_cons = PatientConsultationModel.objects.all()
 
     for patient_cons in patients_cons:
         try:
@@ -19,6 +19,10 @@ def populate_data(apps, schema_editor):
 
             if patient_cons.height:
                 health_details.height = patient_cons.height
+
+            health_details.created_in_consultation = PatientConsultation.objects.get(
+                id=patient_cons.id
+            )
 
             health_details.save()
         except PatientHealthDetails.DoesNotExist:
