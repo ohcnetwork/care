@@ -43,6 +43,7 @@ FEATURE_CHOICES = [
     (3, "X-Ray facility"),
     (4, "Neonatal care"),
     (5, "Operation theater"),
+    (6, "Blood Bank"),
 ]
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
