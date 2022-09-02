@@ -74,6 +74,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
 
+    icd11_diagnoses_object = serializers.SerializerMethodField(read_only=True)
+
+    def get_icd11_diagnoses_object(self, consultation):
+        from care.facility.static_data.icd11 import ICDDiseases
+
+        diagnosis_objects = []
+        for diagnosis in consultation.icd11_diagnoses:
+            try:
+                diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
+                diagnosis_objects.append(diagnosis_object)
+            except BaseException:
+                pass
+        return diagnosis_objects
+
     class Meta:
         model = PatientConsultation
         read_only_fields = TIMESTAMP_FIELDS + (
@@ -200,7 +214,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         bed = validated_data.pop("bed", None)
 
         validated_data["facility_id"] = validated_data[
-            "patient"].facility_id  # Coercing facility as the patient's facility
+            "patient"
+        ].facility_id  # Coercing facility as the patient's facility
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
@@ -293,6 +308,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {"review_time": ["This field value is must be greater than 0."]}
                     )
+        from care.facility.static_data.icd11 import ICDDiseases
+
+        if "icd11_diagnoses" in validated:
+            for diagnosis in validated["icd11_diagnoses"]:
+                try:
+                    ICDDiseases.by.id[diagnosis]
+                except BaseException:
+                    raise ValidationError(
+                        {
+                            "icd11_diagnoses": [
+                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
+                            ]
+                        }
+                    )
+
         return validated
 
 
