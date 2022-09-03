@@ -171,6 +171,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         consultation = super().update(instance, validated_data)
 
+        try:
+            PatientHealthDetails.objects.filter(
+                id=consultation.last_health_details.id
+            ).update(**self.context["request"].data["new_health_details"])
+            consultation.last_health_details = PatientHealthDetails.objects.get(
+                id=consultation.last_health_details.id
+            )
+            consultation.save(update_fields=["last_health_details"])
+        except KeyError:
+            pass
+
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
                 NotificationGenerator(
