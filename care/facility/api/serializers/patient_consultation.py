@@ -247,29 +247,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         try:
             health_details = PatientHealthDetails(
-                patient=consultation.patient,
-                facility=consultation.facility,
-                family_details=self.context["request"].data["family_details"],
-                has_allergy=self.context["request"].data["has_allergy"],
-                allergies=self.context["request"].data["allergies"],
-                blood_group=self.context["request"].data["blood_group"],
-                weight=self.context["request"].data["weight"],
-                height=self.context["request"].data["height"],
-                created_in_consultation=consultation,
+                **self.context["request"].data["new_health_details"]
             )
+            health_details.created_in_consultation = consultation
+            health_details.facility = consultation.facility
+            health_details.patient = consultation.patient
             health_details.save()
             consultation.last_health_details = health_details
             consultation.save(update_fields=["last_health_details"])
-        except KeyError as error:
-            raise ValidationError(
-                {
-                    "last_health_details": [
-                        "Please provide the {} detail regarding patient health".format(
-                            error
-                        )
-                    ]
-                }
-            )
+        except KeyError:
+            if consultation.patient.last_consultation is None:
+                raise ValidationError(
+                    {
+                        "last_health_details": [
+                            "Please provide the health details of the patient"
+                        ]
+                    }
+                )
 
         if bed:
             consultation_bed = ConsultationBed(
