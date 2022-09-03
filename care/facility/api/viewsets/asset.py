@@ -102,7 +102,6 @@ class AssetPublicViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     lookup_field = "external_id"
-    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     permission_classes = [IsAuthenticatedOrReadOnly]
     
 class AssetViewSet(
