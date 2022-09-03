@@ -11,6 +11,7 @@ from care.facility.api.viewsets.asset import (
     AssetLocationViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
+    AssetPublicViewSet
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
@@ -186,6 +187,9 @@ consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation")
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
+
+# Public endpoints
+router.register("public/asset", AssetPublicViewSet)
 
 app_name = "api"
 urlpatterns = [

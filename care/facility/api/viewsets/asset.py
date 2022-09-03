@@ -14,7 +14,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.serializers import CharField, JSONField, Serializer, UUIDField
 from rest_framework.viewsets import GenericViewSet
@@ -98,6 +98,13 @@ class AssetFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
 
 
+class AssetPublicViewSet(RetrieveModelMixin, GenericViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+    lookup_field = "external_id"
+    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
 class AssetViewSet(
     ListModelMixin,
     RetrieveModelMixin,
