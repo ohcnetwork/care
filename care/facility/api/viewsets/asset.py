@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -98,11 +99,21 @@ class AssetFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
 
 
-class AssetPublicViewSet(RetrieveModelMixin, GenericViewSet):
+class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     lookup_field = "external_id"
-    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def retrieve(self, request, *args, **kwargs):
+        key = "asset:" + kwargs["external_id"]
+        hit = cache.get(key)
+        if not hit:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            cache.set(key, serializer.data, 60 * 60 * 24) # Cache the asset details for 24 hours
+            return Response(serializer.data)
+        return Response(hit)
+       
     
 class AssetViewSet(
     ListModelMixin,
