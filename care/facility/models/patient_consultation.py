@@ -15,6 +15,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.base import BaseModel
 
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
@@ -193,3 +194,28 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+
+# Define Interaction Types
+INTERACTION_TYPES = (("WhatsappCall", "WhatsappCall"),)
+
+
+class PatientTeleInteraction(BaseModel):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        related_name="tele_interactions",
+        null=True,
+        blank=True,
+    )
+    interaction_type = models.CharField(
+        choices=INTERACTION_TYPES, max_length=20, null=True, blank=True
+    )
+    # NOTE: interaction_by will be created_by
+    interaction_with = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    # NOTE: interaction_date will be created_date
+
+    def __str__(self):
+        return f"{self.user.name} - {self.interaction_type}"

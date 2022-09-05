@@ -12,10 +12,14 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.patient_consultation import (
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
+    PatientTeleInteractionSerializer,
 )
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.mixins.permissions.asset import IsAssetUser
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsultation,
+    PatientTeleInteraction,
+)
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
@@ -85,3 +89,35 @@ class PatientConsultationViewSet(
         if not consultation:
             raise NotFound({"detail": "No consultation found for this asset"})
         return Response(PatientConsultationIDSerializer(consultation).data)
+
+
+class PatientTeleInteractionViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet,
+):
+    lookup_field = "external_id"
+    serializer_class = PatientTeleInteractionSerializer
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+    queryset = PatientTeleInteraction.objects.all().order_by("-id")
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return self.queryset
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return self.queryset.filter(
+                consultation__patient__facility__state=self.request.user.state
+            )
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.queryset.filter(
+                consultation__patient__facility__district=self.request.user.district
+            )
+        allowed_facilities = get_accessible_facilities(self.request.user)
+        applied_filters = Q(consultation__patient__facility__id__in=allowed_facilities)
+        applied_filters |= Q(consultation__assigned_to=self.request.user)
+        applied_filters |= Q(consultation__patient__assigned_to=self.request.user)
+        return self.queryset.filter(applied_filters)

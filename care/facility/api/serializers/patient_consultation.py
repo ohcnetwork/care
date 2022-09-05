@@ -16,7 +16,10 @@ from care.facility.models.patient_base import (
     SYMPTOM_CHOICES,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsultation,
+    PatientTeleInteraction,
+)
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -333,3 +336,18 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = ("consultation_id", "patient_id")
+
+
+class PatientTeleInteractionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientTeleInteraction
+        exclude = "consultation"
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+        validated_data["last_edited_by"] = self.context["request"].user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data["last_edited_by"] = self.context["request"].user
+        return super().update(instance, validated_data)

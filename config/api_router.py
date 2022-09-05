@@ -37,7 +37,10 @@ from care.facility.api.viewsets.patient import (
     PatientSearchViewSet,
     PatientViewSet,
 )
-from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.api.viewsets.patient_consultation import (
+    PatientConsultationViewSet,
+    PatientTeleInteractionViewSet,
+)
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,
@@ -132,8 +135,9 @@ router.register("test_sample", PatientSampleViewSet)
 router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
-router.register("facility_summary", FacilityCapacitySummaryViewSet,
-                basename="summary-facility")
+router.register(
+    "facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility"
+)
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
@@ -183,9 +187,11 @@ patient_nested_router.register(r"investigation", PatientInvestigationSummaryView
 patient_nested_router.register(r"notes", PatientNotesViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
-    router, r"consultation", lookup="consultation")
+    router, r"consultation", lookup="consultation"
+)
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
+consultation_nested_router.register(r"tele_interaction", PatientTeleInteractionViewSet)
 
 app_name = "api"
 urlpatterns = [
