@@ -8,11 +8,10 @@ def fetch_data():
         return json.load(json_file)
 
 
-def parse_int(str_val):
-    try:
-        return int(str_val)
-    except BaseException:
-        return -1
+def is_numeric(val):
+    if str(val).isnumeric():
+        return val
+    return -1
 
 
 ICDDiseases = Table("ICD11")
@@ -30,12 +29,13 @@ IGNORE_FIELDS = [
 for icd11_object in icd11_objects:
     for field in IGNORE_FIELDS:
         icd11_object.pop(field, "")
-    entity_id = icd11_object["ID"].split("/")[-1]
-    icd11_object["ID"] = parse_int(entity_id)
-    if icd11_object["ID"] == -1:
+    icd11_object["id"] = icd11_object.pop("ID")
+    entity_id = icd11_object["id"].split("/")[-1]
+    icd11_object["id"] = is_numeric(entity_id)
+    if icd11_object["id"] == -1:
         continue
-    if icd11_object["ID"]:
+    if icd11_object["id"]:
         ICDDiseases.insert(icd11_object)
 
 ICDDiseases.create_search_index("label")
-ICDDiseases.create_index("ID", unique=True)
+ICDDiseases.create_index("id", unique=True)

@@ -6,6 +6,7 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -31,6 +32,7 @@ class DailyRound(PatientBaseModel):
         AUTOMATED = 300
 
     RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
+    RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
 
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
