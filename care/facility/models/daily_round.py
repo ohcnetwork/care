@@ -17,6 +17,7 @@ from care.facility.models.json_schema.daily_round import (
     NURSING_PROCEDURE,
     OUTPUT,
     PRESSURE_SORE,
+    PRESSURE_SORE_ENHANCED,
 )
 from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -416,6 +417,9 @@ class DailyRound(PatientBaseModel):
     pressure_sore = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)]
     )
+    pressure_sore_enhanced = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE_ENHANCED)]
+    )
     nursing = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
     )
@@ -430,6 +434,29 @@ class DailyRound(PatientBaseModel):
             return 0
         return value
 
+    def update_pressure_sore(self):
+        area_interval_points = [0.1, 0.3, 0.7, 1.1, 2.1, 3.1, 4.1, 8.1, 12.1, 25]
+        exudate_amounts = ["None", "Light", "Moderate", "Heavy"]
+        tissue_types = ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]
+
+        def cal_push_score(item):
+            push_score = 0
+            area_score = 0
+            area = item["length"] * item["width"]
+            push_score += exudate_amounts.index(item["exudate_amount"])
+            push_score += tissue_types.index(item["tissue_type"])
+            for point in area_interval_points:
+                if area >= point:
+                    area_score += 1
+            push_score += area_score
+            return push_score
+
+        def set_push_score(item):
+            item["push_score"] = cal_push_score(item)
+            return item
+
+        return list(map(set_push_score, self.pressure_sore_enhanced))
+
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
         self.glasgow_total_calculated = (
@@ -442,6 +469,8 @@ class DailyRound(PatientBaseModel):
         self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
 
         self.total_output_calculated = sum([x["quantity"] for x in self.output])
+
+        self.pressure_sore_enhanced = self.update_pressure_sore()
 
         super(DailyRound, self).save(*args, **kwargs)
 

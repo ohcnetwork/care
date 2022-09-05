@@ -92,6 +92,25 @@ PRESSURE_SORE = {
     ],
 }
 
+PRESSURE_SORE_ENHANCED = {
+    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": [
+        {
+            "type": "object",
+            "properties": {
+                "length": {"type": "number"},
+                "width": {"type": "number"},
+                "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
+                "tissue_type": {"enum": ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]},
+                "description": {"type": "string"},
+                "push_score": {"type": "number"},
+            },
+            "additionalProperties": False,
+            "required": ["length", "width", "exudate_amount", "tissue_type", "description"],
+        }
+    ],
+}
 
 NURSING_PROCEDURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
