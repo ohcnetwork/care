@@ -193,3 +193,31 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+
+class CallMetrics(PatientBaseModel):
+    call_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+        related_name="call_metrics_to_user",
+    )
+
+    initiated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+        related_name="call_metrics_from_user",
+    )
+
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=False,
+        related_name="consultation_external_id",
+    )
+
+    called_at = models.DateTimeField(auto_now=True, null=True, blank=True)

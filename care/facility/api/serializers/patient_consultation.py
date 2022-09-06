@@ -16,7 +16,7 @@ from care.facility.models.patient_base import (
     SYMPTOM_CHOICES,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import CallMetrics, PatientConsultation
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -333,3 +333,13 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = ("consultation_id", "patient_id")
+
+
+class CallMetricsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CallMetrics
+        exclude = ("deleted",)
+
+    def create(self, validated_data):
+        validated_data["initiated_by"] = self.context["request"].user
+        return super().create(validated_data)

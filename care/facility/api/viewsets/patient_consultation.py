@@ -10,12 +10,13 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_consultation import (
+    CallMetricsSerializer,
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
 )
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.mixins.permissions.asset import IsAssetUser
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import CallMetrics, PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
@@ -85,3 +86,19 @@ class PatientConsultationViewSet(
         if not consultation:
             raise NotFound({"detail": "No consultation found for this asset"})
         return Response(PatientConsultationIDSerializer(consultation).data)
+
+
+class CallMetricsViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet,
+):
+    permission_classes = (IsAuthenticated,)
+    queryset = CallMetrics.objects.all()
+    serializer_class = CallMetricsSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            consultation__external_id=self.kwargs["consultation_external_id"]
+        )
