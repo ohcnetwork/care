@@ -76,11 +76,27 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     icd11_diagnoses_object = serializers.SerializerMethodField(read_only=True)
 
+    icd11_provisional_diagnoses_object = serializers.SerializerMethodField(
+        read_only=True
+    )
+
     def get_icd11_diagnoses_object(self, consultation):
         from care.facility.static_data.icd11 import ICDDiseases
 
         diagnosis_objects = []
         for diagnosis in consultation.icd11_diagnoses:
+            try:
+                diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
+                diagnosis_objects.append(diagnosis_object)
+            except BaseException:
+                pass
+        return diagnosis_objects
+
+    def get_icd11_provisional_diagnoses_object(self, consultation):
+        from care.facility.static_data.icd11 import ICDDiseases
+
+        diagnosis_objects = []
+        for diagnosis in consultation.icd11_provisional_diagnoses:
             try:
                 diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
                 diagnosis_objects.append(diagnosis_object)
@@ -318,6 +334,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "icd11_diagnoses": [
+                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
+                            ]
+                        }
+                    )
+
+        if "icd11_provisional_diagnoses" in validated:
+            for diagnosis in validated["icd11_provisional_diagnoses"]:
+                try:
+                    ICDDiseases.by.id[diagnosis]
+                except BaseException:
+                    raise ValidationError(
+                        {
+                            "icd11_provisional_diagnoses": [
                                 f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
                             ]
                         }
