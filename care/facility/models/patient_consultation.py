@@ -29,18 +29,30 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     ]
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
-    patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="consultations")
+    patient = models.ForeignKey(
+        "PatientRegistration", on_delete=models.CASCADE, related_name="consultations"
+    )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
 
-    facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
+    facility = models.ForeignKey(
+        "Facility", on_delete=models.CASCADE, related_name="consultations"
+    )
     diagnosis = models.TextField(default="", null=True, blank=True)
-    icd11_diagnoses = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
-    symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
+    icd11_diagnoses = ArrayField(
+        models.CharField(max_length=100), default=[], blank=True, null=True
+    )
+    symptoms = MultiSelectField(
+        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+    )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
-        choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
     )  # Deprecated
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -79,15 +91,23 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     is_telemedicine = models.BooleanField(default=False)  # Deprecated
     last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to")
+    assigned_to = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to"
+    )
 
     verified_by = models.TextField(default="", null=True, blank=True)
 
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_user")
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="created_user"
+    )
 
-    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user")
+    last_edited_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user"
+    )
 
-    last_daily_round = models.ForeignKey("facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None)
+    last_daily_round = models.ForeignKey(
+        "facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None
+    )
 
     current_bed = models.ForeignKey(
         "facility.ConsultationBed",
@@ -139,7 +159,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     CSV_MAKE_PRETTY = {
         "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
-        "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
+        "suggestion": (
+            lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
+        ),
     }
 
     # CSV_DATATYPE_DEFAULT_MAPPING = {
@@ -169,7 +191,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         constraints = [
             models.CheckConstraint(
                 name="if_referral_suggested",
-                check=~models.Q(suggestion=SuggestionChoices.R) | models.Q(referred_to__isnull=False),
+                check=~models.Q(suggestion=SuggestionChoices.R)
+                | models.Q(referred_to__isnull=False),
             ),
             models.CheckConstraint(
                 name="if_admitted",

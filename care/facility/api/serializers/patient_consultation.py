@@ -39,22 +39,34 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    deprecated_covid_category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)  # Deprecated
+    deprecated_covid_category = ChoiceField(
+        choices=COVID_CATEGORY_CHOICES, required=False
+    )  # Deprecated
     category = ChoiceField(choices=PATIENT_CATEGORY_CHOICES, required=True)
 
-    referred_to_object = FacilityBasicInfoSerializer(source="referred_to", read_only=True)
-    referred_to = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    referred_to_object = FacilityBasicInfoSerializer(
+        source="referred_to", read_only=True
+    )
+    referred_to = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(read_only=True)
 
     assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
 
-    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    assigned_to = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=False, allow_null=True
+    )
 
-    discharge_reason = serializers.ChoiceField(choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False)
+    discharge_reason = serializers.ChoiceField(
+        choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
+    )
     discharge_notes = serializers.CharField(read_only=True)
 
-    action = ChoiceField(choices=PatientRegistration.ActionChoices, write_only=True, required=False)
+    action = ChoiceField(
+        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+    )
 
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
 
@@ -104,7 +116,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
-            raise ValidationError({"consultation": ["Discharged Consultation data cannot be updated"]})
+            raise ValidationError(
+                {"consultation": ["Discharged Consultation data cannot be updated"]}
+            )
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())
@@ -120,10 +134,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if "review_time" in validated_data:
                 review_time = validated_data.pop("review_time")
                 if review_time >= 0:
-                    patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+                    patient.review_time = localtime(now()) + timedelta(
+                        minutes=review_time
+                    )
             patient.save()
 
-        validated_data["last_updated_by_telemedicine"] = self.context["request"].user == instance.assigned_to
+        validated_data["last_updated_by_telemedicine"] = (
+            self.context["request"].user == instance.assigned_to
+        )
 
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"] and (not instance.is_kasp):
@@ -167,20 +185,31 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # Authorisation Check
 
         allowed_facilities = get_home_facility_queryset(self.context["request"].user)
-        if not allowed_facilities.filter(id=self.validated_data["patient"].facility.id).exists():
-            raise ValidationError({"facility": "Consultation creates are only allowed in home facility"})
+        if not allowed_facilities.filter(
+            id=self.validated_data["patient"].facility.id
+        ).exists():
+            raise ValidationError(
+                {"facility": "Consultation creates are only allowed in home facility"}
+            )
 
         # End Authorisation Checks
 
         if validated_data["patient"].last_consultation:
-            if self.context["request"].user == validated_data["patient"].last_consultation.assigned_to:
+            if (
+                self.context["request"].user
+                == validated_data["patient"].last_consultation.assigned_to
+            ):
                 raise ValidationError(
-                    {"Permission Denied": "Only Facility Staff can create consultation for a Patient"},
+                    {
+                        "Permission Denied": "Only Facility Staff can create consultation for a Patient"
+                    },
                 )
 
         if validated_data["patient"].last_consultation:
             if not validated_data["patient"].last_consultation.discharge_date:
-                raise ValidationError({"consultation": "Exists please Edit Existing Consultation"})
+                raise ValidationError(
+                    {"consultation": "Exists please Edit Existing Consultation"}
+                )
 
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"]:
@@ -246,25 +275,43 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R and not validated.get("referred_to"):
+            if validated["suggestion"] is SuggestionChoices.R and not validated.get(
+                "referred_to"
+            ):
                 raise ValidationError(
-                    {"referred_to": [f"This field is required as the suggestion is {SuggestionChoices.R}."]}
+                    {
+                        "referred_to": [
+                            f"This field is required as the suggestion is {SuggestionChoices.R}."
+                        ]
+                    }
                 )
             if (
                 validated["suggestion"] is SuggestionChoices.A
                 and validated.get("admitted")
                 and not validated.get("admission_date")
             ):
-                raise ValidationError({"admission_date": ["This field is required as the patient has been admitted."]})
+                raise ValidationError(
+                    {
+                        "admission_date": [
+                            "This field is required as the patient has been admitted."
+                        ]
+                    }
+                )
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
                 if "review_time" not in validated:
                     raise ValidationError(
-                        {"review_time": ["This field is required as the patient has been requested Review."]}
+                        {
+                            "review_time": [
+                                "This field is required as the patient has been requested Review."
+                            ]
+                        }
                     )
                 if validated["review_time"] <= 0:
-                    raise ValidationError({"review_time": ["This field value is must be greater than 0."]})
+                    raise ValidationError(
+                        {"review_time": ["This field value is must be greater than 0."]}
+                    )
         from care.facility.static_data.icd11 import ICDDiseases
 
         if "icd11_diagnoses" in validated:
@@ -272,7 +319,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 try:
                     ICDDiseases.by.id[diagnosis]
                 except BaseException:
-                    raise ValidationError({"icd11_diagnoses": [f"{diagnosis} is not a valid ICD 11 Diagnosis ID"]})
+                    raise ValidationError(
+                        {
+                            "icd11_diagnoses": [
+                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
+                            ]
+                        }
+                    )
 
         return validated
 

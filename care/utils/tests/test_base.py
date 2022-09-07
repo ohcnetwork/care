@@ -61,7 +61,9 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_district(cls, state: State):
-        return District.objects.create(state=state, name=f"District{datetime.datetime.now().timestamp()}")
+        return District.objects.create(
+            state=state, name=f"District{datetime.datetime.now().timestamp()}"
+        )
 
     @classmethod
     def create_state(cls):
@@ -98,7 +100,9 @@ class TestBase(APITestCase):
             {
                 "district_id": district_id,
                 "state_id": state_id,
-                "disease_status": getattr(DiseaseStatusEnum, patient_data["disease_status"]).value,
+                "disease_status": getattr(
+                    DiseaseStatusEnum, patient_data["disease_status"]
+                ).value,
             }
         )
 
@@ -199,7 +203,9 @@ class TestBase(APITestCase):
             "number_of_aged_dependents": 2,
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
-            "date_of_receipt_of_information": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_receipt_of_information": make_aware(
+                datetime.datetime(2020, 4, 1, 15, 30, 00)
+            ),
         }
 
     @classmethod
@@ -281,8 +287,12 @@ class TestBase(APITestCase):
         :return:
         """
         response = {}
-        response.update(self.get_local_body_representation(getattr(obj, "local_body", None)))
-        response.update(self.get_district_representation(getattr(obj, "district", None)))
+        response.update(
+            self.get_local_body_representation(getattr(obj, "local_body", None))
+        )
+        response.update(
+            self.get_district_representation(getattr(obj, "district", None))
+        )
         response.update(self.get_state_representation(getattr(obj, "state", None)))
         return response
 
@@ -325,7 +335,9 @@ class TestBase(APITestCase):
                 return dict_to_matching_type(dict(value))
             elif isinstance(value, list):
                 return [to_matching_type("", v) for v in value]
-            elif "date" in name and not isinstance(value, (type(None), EverythingEquals)):
+            elif "date" in name and not isinstance(
+                value, (type(None), EverythingEquals)
+            ):
                 return_value = value
                 if isinstance(
                     value,
@@ -392,7 +404,9 @@ class TestBase(APITestCase):
         }
 
     @classmethod
-    def create_consultation(cls, patient=None, facility=None, referred_to=None, **kwargs) -> PatientConsultation:
+    def create_consultation(
+        cls, patient=None, facility=None, referred_to=None, **kwargs
+    ) -> PatientConsultation:
         data = cls.get_consultation_data()
         kwargs.update(
             {
