@@ -61,6 +61,9 @@ class Asset(BaseModel):
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")
+    """
+    Deprecated as fields that are more specific related to warranty are present.
+    """
     meta = JSONField(default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)])
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
