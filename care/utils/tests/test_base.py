@@ -384,7 +384,7 @@ class TestBase(APITestCase):
             "facility": cls.facility,
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
-            "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
+            "symptoms_onset_date": make_aware(datetime.datetime(2020, 4, 7, 15, 30)),
             "category": PATIENT_CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
