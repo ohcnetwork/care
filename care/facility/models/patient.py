@@ -20,7 +20,7 @@ from care.facility.models import (
     pretty_boolean,
 )
 from care.facility.models.mixins.permissions.facility import FacilityRelatedPermissionMixin
-from care.facility.models.mixins.permissions.patient import PatientPermissionMixin
+from care.facility.models.mixins.permissions.patient import PatientPermissionMixin, PatientRelatedPermissionMixin
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -430,8 +430,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "nationality": "Nationality",
         "disease_status": "Disease Status",
         # "state_test_id": "State Test ID",
-        "last_consultation__admitted": "Admission Status",
-        "last_consultation__admitted_to": "Admission Room Type",
         # Reffered or transferred
         # remarks
         "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
@@ -657,7 +655,7 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
-class PatientNotes(FacilityBaseModel):
+class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT, null=False, blank=False)
     facility = models.ForeignKey(Facility, on_delete=models.PROTECT, null=False, blank=False)
     created_by = models.ForeignKey(

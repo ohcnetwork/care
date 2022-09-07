@@ -54,7 +54,8 @@ class PatientPermissionMixin(BasePermissionMixin):
         return request.user.is_superuser or (
             (hasattr(self, "created_by") and request.user == self.created_by)
             or (doctor_allowed)
-            or (self.facility and request.user in self.facility.users.all())
+            # or (self.facility and request.user in self.facility.users.all())
+            or (self.facility and self.facility == request.user.home_facility)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
@@ -83,7 +84,7 @@ class PatientPermissionMixin(BasePermissionMixin):
         return (
             request.user.is_superuser
             or (hasattr(self, "created_by") and request.user == self.created_by)
-            or (self.facility and request.user in self.facility.users.all())
+            or (self.facility and self.facility == request.user.home_facility)
             or (doctor_allowed)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -151,4 +152,16 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return self.has_object_read_permission(request)
+        return (
+            request.user.is_superuser
+            or (self.patient.facility and self.patient.facility == request.user.home_facility)
+            or (self.assigned_to == request.user or request.user == self.patient.assigned_to)
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (self.patient.facility and request.user.district == self.patient.facility.district)
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (self.patient.facility and request.user.state == self.patient.facility.state)
+            )
+        )

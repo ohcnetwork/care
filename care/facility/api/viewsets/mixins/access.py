@@ -1,4 +1,6 @@
+from care.facility.models.mixins.permissions.asset import DRYAssetPermissions
 from care.users.models import User
+from config.authentication import MiddlewareAuthentication
 
 
 class UserAccessMixin:
@@ -12,7 +14,9 @@ class UserAccessMixin:
                 if hasattr(instance, "district"):
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility"):
-                    queryset = queryset.filter(facility__district=self.request.user.district)
+                    queryset = queryset.filter(
+                        facility__district=self.request.user.district
+                    )
             else:
                 if hasattr(instance, "created_by"):
                     queryset = queryset.filter(created_by=self.request.user)
@@ -27,7 +31,9 @@ class UserAccessMixin:
                 if hasattr(instance, "district_id"):
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility_id"):
-                    queryset = queryset.filter(facility__district=self.request.user.district)
+                    queryset = queryset.filter(
+                        facility__district=self.request.user.district
+                    )
             else:
                 if hasattr(instance, "created_by"):
                     queryset = queryset.filter(created_by=self.request.user)
@@ -39,3 +45,26 @@ class UserAccessMixin:
         if hasattr(model(), "created_by"):
             kwargs["created_by"] = self.request.user
         serializer.save(**kwargs)
+
+
+class AssetUserAccessMixin:
+    """
+    Class to override default permissions for a view if the user has an asset attached to it
+    """
+
+    asset_permissions = (DRYAssetPermissions,)
+
+    def get_authenticators(self):
+        return [MiddlewareAuthentication()] + super().get_authenticators()
+
+    def get_permissions(self):
+        """
+        Skips DRYPermissions check for asset users
+        """
+        if bool(
+            self.request.user
+            and self.request.user.is_authenticated
+            and self.request.user.asset
+        ):
+            return tuple(permission() for permission in self.asset_permissions)
+        return super().get_permissions()

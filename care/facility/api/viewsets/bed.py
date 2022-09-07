@@ -1,12 +1,10 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
+from rest_framework.exceptions import ValidationError as DRFValidationError
+from rest_framework.fields import get_error_detail
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.exceptions import PermissionDenied
@@ -53,6 +51,11 @@ class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateMod
         if request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             raise PermissionDenied()
         return super().destroy(request, *args, **kwargs)
+
+    def handle_exception(self, exc):
+        if isinstance(exc, DjangoValidationError):
+            exc = DRFValidationError(detail=get_error_detail(exc))
+        return super().handle_exception(exc)
 
 
 class AssetBedFilter(filters.FilterSet):

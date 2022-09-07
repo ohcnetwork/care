@@ -6,7 +6,9 @@ import json
 from datetime import timedelta
 
 import environ
-from healthy_django.healthcheck.celery_queue_length import DjangoCeleryQueueLengthHealthCheck
+from healthy_django.healthcheck.celery_queue_length import (
+    DjangoCeleryQueueLengthHealthCheck,
+)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -49,9 +51,9 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgis:///care")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
+# DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
@@ -72,7 +74,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    "django.contrib.gis",
+    # "django.contrib.gis",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
@@ -88,7 +90,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "drf_extra_fields",
-    "location_field.apps.DefaultConfig",
     "django_filters",
     "simple_history",
     "ratelimit",
@@ -103,7 +104,11 @@ THIRD_PARTY_APPS = [
     "healthy_django",
 ]
 
-LOCAL_APPS = ["care.users.apps.UsersConfig", "care.facility", "care.audit_log.apps.AuditLogConfig"]
+LOCAL_APPS = [
+    "care.users.apps.UsersConfig",
+    "care.facility",
+    "care.audit_log.apps.AuditLogConfig",
+]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -141,7 +146,9 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -249,7 +256,9 @@ CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_BACKEND = env(
+    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+)
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
@@ -271,9 +280,18 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"}
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
     },
-    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose",}},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
@@ -319,16 +337,21 @@ STAFF_ACCOUNT_TYPE = 10
 
 # Simple JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)),
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)
+    ),
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-LOCATION_FIELD = {
-    "search.provider": "google",
-    "map.provider": "openstreetmap",
-    "provider.openstreetmap.max_zoom": 18,
-}
+
+# LOCATION_FIELD = {
+#     "search.provider": "google",
+#     "map.provider": "openstreetmap",
+#     "provider.openstreetmap.max_zoom": 18,
+# }
 
 
 def GETKEY(group, request):
@@ -374,7 +397,9 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 
 CSV_REQUEST_PARAMETER = "csv"
 
-DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>")
+DEFAULT_FROM_EMAIL = env(
+    "EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>"
+)
 
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 
@@ -392,9 +417,15 @@ IS_PRODUCTION = False
 
 OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
 
-OTP_MAX_REPEATS_WINDOW = 10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
+OTP_MAX_REPEATS_WINDOW = (
+    10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
+)
 
 OTP_LENGTH = 5
+
+# ICD
+ICD_SCRAPER_ROOT_CONCEPTS_URL = "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
+ICD_SCRAPER_CHILD_CONCEPTS_URL = "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
 
 # SMS
 USE_SMS = False
@@ -413,7 +444,22 @@ FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 # FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
 FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_BUCKET_ENDPOINT = env(
+    "FILE_UPLOAD_BUCKET_ENDPOINT",
+    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+)
 
+FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_BUCKET_ENDPOINT = env(
+    "FACILITY_S3_BUCKET_ENDPOINT",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com",
+)
+FACILITY_S3_STATIC_PREFIX = env(
+    "FACILITY_S3_STATIC_PREFIX",
+    default=f"http://s3.amazonaws.com/{FACILITY_S3_BUCKET}/",
+)
 
 # Audit logs
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
@@ -436,7 +482,12 @@ AUDIT_LOG = {
             "applications": [],
             "models": ["plain:facility.HistoricalPatientRegistration"],
             "fields": {
-                "facility.PatientRegistration": ["name", "phone_number", "emergency_phone_number", "address"],
+                "facility.PatientRegistration": [
+                    "name",
+                    "phone_number",
+                    "emergency_phone_number",
+                    "address",
+                ],
                 "facility.PatientExternalTest": ["name", "address", "mobile_number"],
             },
         }
@@ -460,20 +511,22 @@ ENABLE_ADMIN_REPORTS = env.bool("ENABLE_ADMIN_REPORTS", default=False)
 # Health Check Config
 
 default_configuration = [
-    DjangoDatabaseHealthCheck("Database", slug="main_database", connection_name="default"),
-    DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
-    DjangoCeleryQueueLengthHealthCheck(
-        "Celery Queue Length",
-        slug="celery_queue",
-        broker=CELERY_BROKER_URL,
-        queue_name="celery",
-        info_length=10,
-        warning_length=20,
-        alert_length=30,
+    DjangoDatabaseHealthCheck(
+        "Database", slug="main_database", connection_name="default"
     ),
+    DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
 ]
-HEALTHY_DJANGO = default_configuration
+# DjangoCeleryQueueLengthHealthCheck(
+#     "Celery Queue Length",
+#     slug="celery_queue",
+#     broker=CELERY_BROKER_URL,
+#     queue_name="celery",
+#     info_length=10,
+#     warning_length=20,
+#     alert_length=30,
+# ),
 
+HEALTHY_DJANGO = default_configuration
 
 CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
 

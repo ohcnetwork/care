@@ -1,16 +1,20 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
-from care.facility.models.mixins.permissions.patient import PatientRelatedPermissionMixin
+from care.facility.models.mixins.permissions.patient import (
+    PatientRelatedPermissionMixin,
+)
 from care.facility.models.patient_base import (
+    DISCHARGE_REASON_CHOICES,
     PATIENT_CATEGORY_CHOICES,
-    REVERSE_PATIENT_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
+    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_PATIENT_CATEGORY_CHOICES,
 )
 from care.users.models import User
 
@@ -31,20 +35,23 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     facility = models.ForeignKey("Facility", on_delete=models.CASCADE, related_name="consultations")
     diagnosis = models.TextField(default="", null=True, blank=True)
+    icd11_diagnoses = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
     symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, default=1, null=True, blank=True)
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
     )  # Deprecated
-    category = models.CharField(choices=PATIENT_CATEGORY_CHOICES, max_length=8, null=True)
     examination_details = models.TextField(null=True, blank=True)
-    existing_medication = models.TextField(null=True, blank=True)
+    history_of_present_illness = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
     discharge_advice = JSONField(default=dict)
+    prn_prescription = JSONField(default=dict)
+    investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
+    procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     referred_to = models.ForeignKey(
         "Facility",
@@ -56,6 +63,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     discharge_date = models.DateTimeField(null=True, blank=True)
+    discharge_reason = models.CharField(
+        choices=DISCHARGE_REASON_CHOICES,
+        max_length=4,
+        default=None,
+        blank=True,
+        null=True,
+    )
+    discharge_notes = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
 
     is_kasp = models.BooleanField(default=False)
@@ -75,7 +90,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     last_daily_round = models.ForeignKey("facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None)
 
     current_bed = models.ForeignKey(
-        "facility.ConsultationBed", on_delete=models.PROTECT, null=True, blank=True, default=None
+        "facility.ConsultationBed",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
     )
 
     # Physical Information
@@ -119,7 +138,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_PATIENT_CATEGORY_CHOICES.get(x, "-")),
+        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
         "suggestion": (lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")),
     }
 

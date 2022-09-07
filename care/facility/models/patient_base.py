@@ -76,6 +76,14 @@ PATIENT_CATEGORY_CHOICES = [
 ]
 
 
+DISCHARGE_REASON_CHOICES = [
+    ("REC", "Recovered"),
+    ("REF", "Referred"),
+    ("EXP", "Expired"),
+    ("LAMA", "LAMA"),
+]
+
+
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2

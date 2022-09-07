@@ -1,11 +1,10 @@
 import abc
 import datetime
 from collections import OrderedDict
-from typing import Any, Dict
 from uuid import uuid4
 
 import dateparser
-from django.contrib.gis.geos import Point
+from django.utils.timezone import make_aware
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -54,7 +53,7 @@ class TestBase(APITestCase):
         user = cls.create_user(
             district=district,
             username=username,
-            user_type=User.TYPE_VALUE_MAP["DistrictAdmin"],
+            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
         )
         user.is_superuser = True
         user.save()
@@ -76,7 +75,6 @@ class TestBase(APITestCase):
             "district": district,
             "facility_type": 1,
             "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-            "location": Point(24.452545, 49.878248),
             "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
@@ -106,7 +104,11 @@ class TestBase(APITestCase):
 
         patient = PatientRegistration.objects.create(**patient_data)
         diseases = [
-            Disease.objects.create(patient=patient, disease=DISEASE_CHOICES_MAP[mh["disease"]], details=mh["details"])
+            Disease.objects.create(
+                patient=patient,
+                disease=DISEASE_CHOICES_MAP[mh["disease"]],
+                details=mh["details"],
+            )
             for mh in medical_history
         ]
         patient.medical_history.set(diseases)
@@ -179,7 +181,7 @@ class TestBase(APITestCase):
             "allow_transfer": True,
             "blood_group": "O+",
             "ongoing_medication": "",
-            "date_of_return": datetime.datetime(2020, 4, 1, 15, 30, 00),
+            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
             "disease_status": "SUSPECTED",
             "phone_number": "+918888888888",
             "address": "Global citizen",
@@ -197,7 +199,7 @@ class TestBase(APITestCase):
             "number_of_aged_dependents": 2,
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
-            "date_of_receipt_of_information": datetime.datetime(2020, 4, 1, 15, 30, 00),
+            "date_of_receipt_of_information": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         }
 
     @classmethod
@@ -314,11 +316,6 @@ class TestBase(APITestCase):
             return {"state": None, "state_object": None}
         return {"state": state.id, "state_object": {"id": state.id, "name": state.name}}
 
-    def assertDictEqual(self, first: Dict[Any, Any], second: Dict[Any, Any], msg: Any = ...) -> None:
-        first_dict = self._convert_to_matchable_types(first.copy())
-        second_dict = self._convert_to_matchable_types(second.copy())
-        return super(TestBase, self).assertDictEqual(first_dict, second_dict, msg)
-
     def _convert_to_matchable_types(self, d):
         def dict_to_matching_type(d: dict):
             return {k: to_matching_type(k, v) for k, v in d.items()}
@@ -361,7 +358,10 @@ class TestBase(APITestCase):
             return {
                 "id": str(facility.external_id),
                 "name": facility.name,
-                "facility_type": {"id": facility.facility_type, "name": facility.get_facility_type_display()},
+                "facility_type": {
+                    "id": facility.facility_type,
+                    "name": facility.get_facility_type_display(),
+                },
                 **self.get_local_body_district_state_representation(facility),
             }
 
@@ -375,7 +375,7 @@ class TestBase(APITestCase):
             "symptoms_onset_date": datetime.datetime(2020, 4, 7, 15, 30),
             "category": PATIENT_CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
-            "existing_medication": "existing_medication",
+            "history_of_present_illness": "history_of_present_illness",
             "prescribed_medication": "prescribed_medication",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
@@ -395,7 +395,11 @@ class TestBase(APITestCase):
     def create_consultation(cls, patient=None, facility=None, referred_to=None, **kwargs) -> PatientConsultation:
         data = cls.get_consultation_data()
         kwargs.update(
-            {"patient": patient or cls.patient, "facility": facility or cls.facility, "referred_to": referred_to}
+            {
+                "patient": patient or cls.patient,
+                "facility": facility or cls.facility,
+                "referred_to": referred_to,
+            }
         )
         data.update(kwargs)
         return PatientConsultation.objects.create(**data)

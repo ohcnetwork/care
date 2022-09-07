@@ -1,14 +1,16 @@
 version: '3.4'
 
+networks:
+  default:
+    name: care
+
 services:
   db:
     container_name: care_db
-    image: postgis/postgis:latest
+    image: postgres
     restart: always
     env_file:
       - ./docker/.local.env
-    ports:
-      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -31,8 +33,6 @@ services:
     container_name: care_redis
     image: redis:alpine
     restart: always
-    ports:
-      - "6379:6379"
 
   celery:
     container_name: care_celery
@@ -55,8 +55,6 @@ services:
       - AWS_DEFAULT_REGION=ap-south-1
       - EDGE_PORT=4566
       - SERVICES=s3
-    ports:
-      - '4566:4566'
     volumes:
       - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "./docker/awslocal:/docker-entrypoint-initaws.d"

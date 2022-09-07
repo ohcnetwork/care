@@ -1,4 +1,5 @@
 from re import L
+from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
@@ -30,9 +31,7 @@ class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
-
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
-
     location = UUIDField(write_only=True, required=True)
 
     class Meta:
@@ -76,6 +75,11 @@ class AssetSerializer(ModelSerializer):
                 ).save()
             updated_instance = super().update(instance, validated_data)
         return updated_instance
+
+    def save(self, **kwargs):
+        cache_key = "asset:" + str(self.instance.external_id)
+        cache.delete(cache_key)
+        return super().save(**kwargs)
 
 
 class AssetBareMinimumSerializer(ModelSerializer):
