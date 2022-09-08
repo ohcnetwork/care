@@ -67,6 +67,13 @@ COVID_CATEGORY_CHOICES = [
     (None, "UNCLASSIFIED"),
 ]  # Deprecated
 
+CATEGORY_CHOICES = [
+    ("Comfort", "Comfort Care"),
+    ("Stable", "Stable"),
+    ("Moderate", "Slightly Abnormal"),
+    ("Critical", "Critical"),
+]
+
 DISCHARGE_REASON_CHOICES = [
     ("REC", "Recovered"),
     ("REF", "Referred"),
@@ -105,4 +112,5 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
+REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
