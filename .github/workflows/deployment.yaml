@@ -29,11 +29,11 @@ jobs:
     if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
     name: Test
     services:
       db:
-        image: postgis/postgis:latest
+        image: postgres:latest
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -89,7 +89,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install binutils libproj-dev gdal-bin -y
+          sudo apt-get install binutils libproj-dev libjpeg-dev zlib1g-dev -y
           pip install --upgrade pip
           pip install -r requirements/local.txt
 

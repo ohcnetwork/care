@@ -6,9 +6,6 @@ import json
 from datetime import timedelta
 
 import environ
-from healthy_django.healthcheck.celery_queue_length import (
-    DjangoCeleryQueueLengthHealthCheck,
-)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -53,7 +50,6 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 
 DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-# DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
 DATABASES["default"]["CONN_MAX_AGE"] = 300
 
 # URLS
@@ -424,8 +420,12 @@ OTP_MAX_REPEATS_WINDOW = (
 OTP_LENGTH = 5
 
 # ICD
-ICD_SCRAPER_ROOT_CONCEPTS_URL = "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
-ICD_SCRAPER_CHILD_CONCEPTS_URL = "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
+ICD_SCRAPER_ROOT_CONCEPTS_URL = (
+    "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
+)
+ICD_SCRAPER_CHILD_CONCEPTS_URL = (
+    "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
+)
 
 # SMS
 USE_SMS = False

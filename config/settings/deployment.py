@@ -27,6 +27,7 @@ ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))  # noqa
 
 # DATABASES
 # ------------------------------------------------------------------------------
+# TODO: rename POSTGIS_URL to DATABASE_URL
 DATABASES["default"] = env.db("POSTGIS_URL")  # noqa F405
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
