@@ -31,6 +31,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_CHOICES,
     REVERSE_ADMIT_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
+    REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
 )
@@ -567,7 +568,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__deprecated_covid_category": (
             lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
         ),
-        # TODO: @rithviknishad add category.
+        "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

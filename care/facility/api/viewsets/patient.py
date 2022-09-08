@@ -33,6 +33,7 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
+    CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
@@ -84,7 +85,9 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
     )
-    # TODO: @rithviknishad add "category" after making migrations
+    category = filters.ChoiceFilter(
+        field_name="last_consultation__category", choices=CATEGORY_CHOICES
+    )
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")

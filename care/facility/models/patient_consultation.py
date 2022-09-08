@@ -3,12 +3,17 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    PatientBaseModel,
+)
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
+    REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
@@ -52,7 +57,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         blank=True,
         null=True,
     )  # Deprecated
-    # TODO: @rithviknishad: add >> "category" << after making migrations
+    category = models.CharField(
+        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+    )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -152,7 +159,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
-        # TODO: @rithviknishad add "category"
+        "category": "Category",
         "examination_details": "Examination Details",
         "suggestion": "Suggestion",
     }
@@ -161,7 +168,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "deprecated_covid_category": (
             lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
         ),
-        # TODO: @rithviknishad add "category"
+        "category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

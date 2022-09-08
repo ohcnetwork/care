@@ -9,7 +9,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 
 # from care.facility.api.serializers.bed import BedSerializer
-from care.facility.models import COVID_CATEGORY_CHOICES, PatientRegistration
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    PatientRegistration,
+)
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
@@ -29,7 +33,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
-    # TODO: @rithviknishad: add "patient_category" after making migrations
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
