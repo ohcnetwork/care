@@ -45,13 +45,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
-    category = models.CharField(
+    deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
         default=None,
         blank=True,
         null=True,
-    )
+    )  # Deprecated
+    # TODO: @rithviknishad: add >> "category" << after making migrations
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
     prescribed_medication = models.TextField(null=True, blank=True)
@@ -150,13 +151,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "admission_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
-        "category": "Category",
+        "deprecated_covid_category": "Covid Category",
+        # TODO: @rithviknishad add "category"
         "examination_details": "Examination Details",
         "suggestion": "Suggestion",
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")),
+        "deprecated_covid_category": (
+            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
+        ),
+        # TODO: @rithviknishad add "category"
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

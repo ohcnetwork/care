@@ -149,6 +149,7 @@ class AdminReports:
         return_list = []
         base_queryset = PatientRegistration.objects.filter(**base_filters)
         for category in COVID_CATEGORY_CHOICES:
+            # TODO: @rithviknishad use new category instead.
             count = base_queryset.filter(
                 is_active=True,
                 created_date__gte=self.start_date,

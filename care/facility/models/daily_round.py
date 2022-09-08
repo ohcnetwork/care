@@ -133,13 +133,14 @@ class DailyRound(PatientBaseModel):
         choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
     )
     other_symptoms = models.TextField(default="", blank=True)
-    patient_category = models.CharField(
+    deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
         default=None,
         blank=True,
         null=True,
-    )
+    )  # Deprecated
+    # TODO: @rithviknishad: add "patient_category" after making migrations
     current_health = models.IntegerField(
         default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
     )

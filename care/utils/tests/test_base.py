@@ -385,7 +385,8 @@ class TestBase(APITestCase):
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": make_aware(datetime.datetime(2020, 4, 7, 15, 30)),
-            "category": COVID_CATEGORY_CHOICES[0][0],
+            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
+            # TODO: @rithviknishad: add category
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "prescribed_medication": "prescribed_medication",

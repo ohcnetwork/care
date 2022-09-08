@@ -564,9 +564,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "is_declared_positive": pretty_boolean,
         "is_vaccinated": pretty_boolean,
         # Consultation Data
-        "last_consultation__category": (
+        "last_consultation__deprecated_covid_category": (
             lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
         ),
+        # TODO: @rithviknishad add category.
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

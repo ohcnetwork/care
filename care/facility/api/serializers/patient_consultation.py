@@ -38,7 +38,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)
+    deprecated_covid_category = ChoiceField(
+        choices=COVID_CATEGORY_CHOICES, required=False
+    )
+    # TODO: @rithviknishad add "category" after making migrations
 
     referred_to_object = FacilityBasicInfoSerializer(
         source="referred_to", read_only=True

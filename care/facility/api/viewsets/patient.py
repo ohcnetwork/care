@@ -80,9 +80,11 @@ class PatientFilterSet(filters.FilterSet):
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
-    category = filters.ChoiceFilter(
-        field_name="last_consultation__category", choices=COVID_CATEGORY_CHOICES
+    deprecated_covid_category = filters.ChoiceFilter(
+        field_name="last_consultation__deprecated_covid_category",
+        choices=COVID_CATEGORY_CHOICES,
     )
+    # TODO: @rithviknishad add "category" after making migrations
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")

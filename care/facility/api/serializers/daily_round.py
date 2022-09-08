@@ -26,7 +26,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     additional_symptoms = serializers.MultipleChoiceField(
         choices=SYMPTOM_CHOICES, required=False
     )
-    patient_category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)
+    deprecated_covid_category = ChoiceField(
+        choices=COVID_CATEGORY_CHOICES, required=False
+    )  # Deprecated
+    # TODO: @rithviknishad: add "patient_category" after making migrations
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
