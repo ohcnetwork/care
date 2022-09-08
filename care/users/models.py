@@ -224,6 +224,9 @@ class User(AbstractUser):
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skills = models.ManyToManyField("Skill", through=UserSkill)
+    home_facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
+    )
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -291,15 +294,17 @@ class User(AbstractUser):
     def has_object_update_permission(self, request):
         if request.user.is_superuser:
             return True
-        if not self == request.user:
-            return False
         if (
             request.data.get("district") or request.data.get("state")
         ) and self.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             # District/state admins shouldn't be able to edit their district/state, that'll practically give them
             # access to everything
             return False
-        return True
+        if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return self.state == request.user.state
+        if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.district == request.user.district
+        return self == request.user
 
     @staticmethod
     def has_add_user_permission(request):

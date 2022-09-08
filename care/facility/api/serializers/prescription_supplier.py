@@ -24,7 +24,7 @@ class PrescriptionSupplierConsultationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        fields = ("id", "prescriptions", "discharge_advice", "patient")
+        fields = ("id", "prescriptions", "discharge_advice", "prn_prescription",  "patient")
 
 
 class PrescriptionSupplierSerializer(serializers.ModelSerializer):

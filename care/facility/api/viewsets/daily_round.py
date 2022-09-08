@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -16,6 +17,20 @@ from care.utils.queryset.consultation import get_consultation_queryset
 DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 
+class DailyRoundFilterSet(filters.FilterSet):
+    rounds_type = filters.CharFilter(method="filter_rounds_type")
+
+    def filter_rounds_type(self, queryset, name, value):
+        rounds_type = set()
+        values = value.split(",")
+        for v in values:
+            try:
+                rounds_type.add(DailyRound.RoundsTypeDict[v])
+            except KeyError:
+                pass
+        return queryset.filter(rounds_type__in=list(rounds_type))
+
+
 class DailyRoundsViewSet(
     AssetUserAccessMixin,
     mixins.CreateModelMixin,
@@ -31,6 +46,9 @@ class DailyRoundsViewSet(
     )
     queryset = DailyRound.objects.all().order_by("-id")
     lookup_field = "external_id"
+    filterset_class = DailyRoundFilterSet
+
+    filter_backends = (filters.DjangoFilterBackend,)
 
     FIELDS_KEY = "fields"
     MAX_FIELDS = 20

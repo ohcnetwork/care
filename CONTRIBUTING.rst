@@ -27,6 +27,25 @@ Using Docker
 .. _`docker`: https://docs.docker.get-started/
 .. _`docker-compose`: https://docs.docker.com/compose
 
+Local Setup
+~~~~~~~~~~~~
+Make sure that Postgres is Installed.
+
+Run `pip install -r local/requirements.txt`
+
+Troubleshooting Local Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're on Mac and you have installed Postgres.app Run:
+`export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/14/bin`
+
+If you're pip install is failing on Pillow Consider installing
+
+`brew install libjpeg libtiff little-cms2 openjpeg webp`
+
+and then:
+
+`brew install freetype harfbuzz fribidi`
 
 Running the server
 ``````````````````
@@ -128,16 +147,6 @@ Login to the postgres shell and run:
 
 You may replace `care` with the database name of your preference
 
-You also might have to install PostGIS scripts.
-
-* Linux users can install PostGIS scripts by running ::
-
-    $ sudo apt install postgresql-<version>-postgis-scripts
-
-* Windows users can install
-    - PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
-    - OSGeo4W from this site_.
-
 Then follow the steps listed here_.
 
 Setting up Pre-Commit
@@ -198,8 +207,6 @@ Note: Make sure that you have created a database named `care` (replace thisw wit
 In the virtualenv shell type the following commands also::
 
  export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/care
-
- export TEST_POSTGIS_URL="postgis://postgres:<password>@127.0.0.1:5432/care"
 
 You may replace 'care' with the database you have created before.
 

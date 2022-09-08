@@ -50,8 +50,8 @@ from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter
-from care.utils.queryset.patient import get_patient_queryset
+from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
@@ -120,6 +120,12 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__symptoms_onset_date"
+    )
+    last_consultation_admitted_to_list = MultiSelectFilter(
+        field_name="last_consultation__admitted_to"
+    )
+    last_consultation_admitted_to = filters.NumberFilter(
+        field_name="last_consultation__admitted_to"
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
@@ -328,57 +334,6 @@ class PatientViewSet(
                 field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
             )
 
-            # csv_mapping = {
-            #     **{f"patient__{key}": value for key, value in PatientRegistration.CSV_MAPPING.items()},
-            #     **PatientConsultation.CSV_MAPPING,
-            # }
-            # csv_make_pretty = {
-            #     **{f"patient__{key}": value for key, value in PatientRegistration.CSV_MAKE_PRETTY.items()},
-            #     **PatientConsultation.CSV_MAKE_PRETTY,
-            # }
-            # consultation_qs = PatientConsultation.objects.all()
-            # if not request.user.is_superuser:
-            #     if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            #         consultation_qs = consultation_qs.filter(patient__facility__state=request.user.state)
-            #     elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            #         consultation_qs = consultation_qs.filter(patient__facility__district=request.user.district)
-            #     consultation_qs = consultation_qs.filter(
-            #         Q(patient__created_by=request.user) | Q(patient__facility__users__id__exact=request.user.id)
-            #     ).distinct("id")
-            # consultation_qs = (
-            #     consultation_qs.order_by("patient__external_id", "-id")
-            #     .distinct("patient__external_id")
-            #     .select_related(
-            #         "patient",
-            #         "patient__facility",
-            #         "patient__nearest_facility",
-            #         "patient__local_body",
-            #         "patient__district",
-            #         "patient__state",
-            #     )
-            #     .annotate(consultation_created_date=F("created_date"))
-            #     .values(*csv_mapping)
-            # )
-
-            # patient_without_consultation_qs = (
-            #     self.get_queryset()
-            #     .filter(consultations__isnull=True)
-            #     .annotate(
-            #         **{f"patient__{key}": F(key) for key in PatientRegistration.CSV_MAPPING.keys()},
-            #         **{
-            #             key: Value(*defaults)
-            #             for key, defaults in PatientConsultation.CSV_DATATYPE_DEFAULT_MAPPING.items()
-            #         },
-            #     )
-            #     .annotate(consultation_created_date=Value(None, DateTimeField()))
-            #     .select_related(
-            #         "facility", "nearest_facility", "facility__local_body", "facility__district", "facility__state",
-            #     )
-            #     .values(*csv_mapping)
-            # )
-            # queryset = consultation_qs.union(patient_without_consultation_qs)
-            # return render_to_csv_response(queryset, field_header_map=csv_mapping, field_serializer_map=csv_make_pretty,)
-
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
     @action(detail=True, methods=["POST"])
@@ -403,6 +358,7 @@ class PatientViewSet(
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
+            last_consultation.current_bed = None
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
@@ -637,7 +593,7 @@ class PatientNotesViewSet(
 
     def perform_create(self, serializer):
         patient = get_object_or_404(
-            get_patient_queryset(self.request.user).filter(
+            get_patient_notes_queryset(self.request.user).filter(
                 external_id=self.kwargs.get("patient_external_id")
             )
         )

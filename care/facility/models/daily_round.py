@@ -6,6 +6,7 @@ from django.db import models
 from multiselectfield import MultiSelectField
 
 from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -28,8 +29,10 @@ class DailyRound(PatientBaseModel):
         NORMAL = 0
         VENTILATOR = 100
         ICU = 200
+        AUTOMATED = 300
 
     RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
+    RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
 
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
@@ -510,7 +513,33 @@ class DailyRound(PatientBaseModel):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return self.has_object_read_permission(request)
+        return (
+            request.user.is_superuser
+            or (
+                self.consultation.patient.facility
+                and self.consultation.patient.facility == request.user.home_facility
+            )
+            or (
+                self.consultation.assigned_to == request.user
+                or request.user == self.consultation.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.district
+                    == self.consultation.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.state
+                    == self.consultation.patient.facility.district
+                )
+            )
+        )
 
     def has_object_asset_read_permission(self, request):
         return False

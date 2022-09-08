@@ -54,7 +54,7 @@ class FileUpload(FacilityBaseModel):
                 if len(parts) > 1:
                     internal_name = internal_name + "." + parts[-1]
             self.internal_name = internal_name
-            return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def signed_url(self):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())

@@ -17,7 +17,7 @@ The celery worker is used to asynchronously execute code, The summary jobs are a
 
 Database (PostgreSQL)
 ---------------------
-Care uses a Postgresql database with the PostGIS plugin enabled, PostGIS is used in different contexts to store location information, it was used so that in a later context the application could intelligently suggest nearby locations to shift patients or do geo queries really quickly. 
+Care uses a Postgresql database.
 
 Cache (Redis)
 -------------
