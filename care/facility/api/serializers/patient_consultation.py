@@ -8,7 +8,7 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
+from care.facility.models import COVID_CATEGORY_CHOICES, Facility, PatientRegistration
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -38,7 +38,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    category = ChoiceField(choices=COVID_CATEGORY_CHOICES, required=False)
 
     referred_to_object = FacilityBasicInfoSerializer(
         source="referred_to", read_only=True

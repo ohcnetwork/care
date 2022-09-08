@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
@@ -134,7 +134,11 @@ class DailyRound(PatientBaseModel):
     )
     other_symptoms = models.TextField(default="", blank=True)
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
     )
     current_health = models.IntegerField(
         default=0, choices=CURRENT_HEALTH_CHOICES, blank=True

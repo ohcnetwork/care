@@ -3,13 +3,13 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import COVID_CATEGORY_CHOICES, PatientBaseModel
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
@@ -46,7 +46,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -152,7 +156,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "category": (lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")),
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

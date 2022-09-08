@@ -59,7 +59,7 @@ DISEASE_CHOICES_MAP = {
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
-CATEGORY_CHOICES = [
+COVID_CATEGORY_CHOICES = [
     ("ASYM", "ASYMPTOMATIC"),
     ("Mild", "Category-A"),
     ("Moderate", "Category-B"),
@@ -73,6 +73,8 @@ DISCHARGE_REASON_CHOICES = [
     ("EXP", "Expired"),
     ("LAMA", "LAMA"),
 ]
+
+
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2
@@ -102,5 +104,5 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)
 REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
