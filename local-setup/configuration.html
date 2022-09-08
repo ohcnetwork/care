@@ -211,7 +211,7 @@
 <blockquote>
 <div><p>This setup will run 5 Docker containers:</p>
 <ul class="simple">
-<li><p>PostGIS</p></li>
+<li><p>postgres (database)</p></li>
 <li><p>care (main repo)</p></li>
 <li><p>redis (in-memory cache)</p></li>
 <li><p>celery (task queue)</p></li>
@@ -298,22 +298,6 @@ first time, it might take a while depending upon your internet speed and machine
 </pre></div>
 </div>
 <p>You may replace <cite>care</cite> with the database name of your preference</p>
-<p>You also might have to install PostGIS scripts.</p>
-<ul>
-<li><p>Linux users can install PostGIS scripts by running</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install postgresql-&lt;version&gt;-postgis-scripts
-</pre></div>
-</div>
-</li>
-<li><dl class="simple">
-<dt>Windows users can install</dt><dd><ul class="simple">
-<li><p>PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.</p></li>
-<li><p>OSGeo4W from this <a class="reference external" href="https://trac.osgeo.org/osgeo4w/">site</a>.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
 <p>Then follow the steps listed <a class="reference external" href="https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html">here</a>.</p>
 </section>
 <section id="setting-up-pre-commit">
@@ -371,8 +355,6 @@ do make sure that you have done the following</p>
 <p>Note: Make sure that you have created a database named <cite>care</cite> (replace thisw with your database name)  with privileges set for the user <cite>postgres</cite></p>
 <p>In the virtualenv shell type the following commands also:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">DATABASE_URL</span><span class="o">=</span><span class="n">postgres</span><span class="p">:</span><span class="o">//</span><span class="n">postgres</span><span class="p">:</span><span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;@</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5432</span><span class="o">/</span><span class="n">care</span>
-
-<span class="n">export</span> <span class="n">TEST_POSTGIS_URL</span><span class="o">=</span><span class="s2">&quot;postgis://postgres:&lt;password&gt;@127.0.0.1:5432/care&quot;</span>
 </pre></div>
 </div>
 <p>You may replace <strong>care</strong> with the database you have created before.</p>
