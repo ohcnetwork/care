@@ -25,3 +25,4 @@ tblib==1.7.0  # https://github.com/ionelmc/python-tblib
 # -------------------------------
 watchdog==0.10.2
 argh==0.26.2
+debugpy==1.6.3
