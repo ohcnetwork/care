@@ -8,5 +8,4 @@ key = key.as_dict(key.dumps_private_key(), alg="RS256")
 
 keys = {"keys": [key]}
 keys_json = json.dumps(keys)
-print(f"{keys_json=}\n\n")
 print(base64.b64encode(keys_json.encode()).decode())
