@@ -83,22 +83,7 @@ PRESSURE_SORE = {
         {
             "type": "object",
             "properties": {
-                "region": {"type": "string"},
-                "scale": {"type": "number", "minimum": 1, "maximum": 5},
-            },
-            "additionalProperties": False,
-            "required": ["region", "scale"],
-        }
-    ],
-}
-
-PRESSURE_SORE_ENHANCED = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
-    "type": "array",
-    "items": [
-        {
-            "type": "object",
-            "properties": {
+                "base_score": {"type": "number"},
                 "length": {"type": "number"},
                 "width": {"type": "number"},
                 "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
