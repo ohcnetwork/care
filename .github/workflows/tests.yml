@@ -36,8 +36,8 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v3
         with:
-          python-version: '3.10'
-          cache: 'pip'
+          python-version: "3.10"
+          cache: "pip"
 
       - name: Cache pip
         uses: actions/cache@v2
@@ -57,6 +57,10 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements/local.txt
+
+      - name: Configure environment
+        run: |
+          "JWKS_BASE64=$(python generate_jwk.py)" >> $GITHUB_ENV
 
       - name: Run celery worker for tests
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
