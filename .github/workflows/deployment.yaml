@@ -26,7 +26,7 @@ env:
   CONTAINER_NAME_CRON: 'care-celery-beat'
 jobs:
   test:
-    if: github.ref == 'refs/heads/production'
+    if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
