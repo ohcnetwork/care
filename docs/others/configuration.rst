@@ -8,4 +8,13 @@ VAPID Keys
 ----------
 VAPID (Voluntary Application Server Identity) Keys are used mainly to send and receive website push notifications.
 
-To generate a VAPID keypair: :code:`npx web-push generate-vapid-keys`  
+To generate a VAPID keypair: :code:`npx web-push generate-vapid-keys`
+
+
+JWKs
+----
+JWKs (Json Web keys) are used to perform open-id verification
+
+To generate JWKs run :code:`python generate_jwk.py` in virtual environment,
+
+the obtained base64 string needs to be exported to environment as :code:`JWKS_BASE64`
