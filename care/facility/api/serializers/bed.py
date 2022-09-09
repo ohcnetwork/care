@@ -82,6 +82,23 @@ class AssetBedSerializer(ModelSerializer):
                 raise ValidationError(
                     {"asset": "Should be in the same facility as the bed"}
                 )
+
+            if asset.asset_class == "HL7MONITOR" and asset.bed_set.all().count() > 1:
+                raise ValidationError(
+                    {
+                        "asset": "HL7Monitor Assets can have only 1 Bed Associated with them"
+                    }
+                )
+            elif (
+                asset.asset_class != "HL7MONITOR"
+                and asset.asset_class != "ONVIF"
+                and asset.bed_set.all().count() > 0
+            ):
+                raise ValidationError(
+                    {
+                        "asset": "Assets that are neither HL7Monitor nor ONVIFCamera should not have Bed Relations"
+                    }
+                )
         else:
             raise ValidationError(
                 {"asset": "Field is Required", "bed": "Field is Required"}
