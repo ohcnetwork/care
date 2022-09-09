@@ -14,4 +14,4 @@ def generate_jwt(claims=None, exp=60):
         "exp": time + exp,
         **claims,
     }
-    return jwt.encode(header, payload, settings.JWKS)
+    return jwt.encode(header, payload, settings.JWKS).decode("utf-8")
