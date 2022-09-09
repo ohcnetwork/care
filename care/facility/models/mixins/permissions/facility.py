@@ -26,8 +26,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
                     and district == request.user.district
                 )
             )
-        except Exception as e:
-            print(e)
+        except Exception:
             return False
 
     @staticmethod
@@ -50,8 +49,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
                     and facility.district == request.user.district
                 )
             )
-        except Exception as e:
-            print(e)
+        except Exception:
             return False
 
     def has_object_read_permission(self, request):
