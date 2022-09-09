@@ -1,4 +1,5 @@
 from re import L
+
 from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -77,8 +78,9 @@ class AssetSerializer(ModelSerializer):
         return updated_instance
 
     def save(self, **kwargs):
-        cache_key = "asset:" + str(self.instance.external_id)
-        cache.delete(cache_key)
+        if self.instance:
+            cache_key = "asset:" + str(self.instance.external_id)
+            cache.delete(cache_key)
         return super().save(**kwargs)
 
 
