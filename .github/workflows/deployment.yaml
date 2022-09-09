@@ -94,7 +94,7 @@ jobs:
 
       - name: Configure environment
         run: |
-          "JWKS_BASE64=$(python generate_jwk.py)" >> $GITHUB_ENV
+          echo "JWKS_BASE64=$(python generate_jwk.py)" >> $GITHUB_ENV
 
       - name: Run celery worker for tests
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
