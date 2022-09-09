@@ -15,6 +15,6 @@ JWKs
 ----
 JWKs (Json Web keys) are used to perform open-id verification
 
-To generate JWKs run :code:`python generate_jwk.py` in virtual environment,
+To generate JWKs run :code:`python manage.py generate_jwks` in virtual environment,
 
 the obtained base64 string needs to be exported to environment as :code:`JWKS_BASE64`

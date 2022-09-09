@@ -12,6 +12,9 @@ from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
+from care.utils.jwks.generate_jwk import generate_encoded_jwks
+
+SILENCED_SYSTEM_CHECKS = ["postgres.E003", "fields.W342"]
 
 ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
 APPS_DIR = ROOT_DIR.path("care")
@@ -537,5 +540,6 @@ CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
 if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")
 
-
-JWKS = JsonWebKey.import_key_set(json.loads(base64.b64decode(env("JWKS_BASE64"))))
+JWKS = JsonWebKey.import_key_set(
+    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
+)
