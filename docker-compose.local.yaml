@@ -7,12 +7,17 @@ networks:
 services:
   db:
     container_name: care_db
-    image: postgres
+    image: postgres:latest
     restart: always
     env_file:
       - ./docker/.local.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    container_name: care_redis
+    image: redis:alpine
+    restart: always
 
   backend:
     container_name: care
@@ -21,18 +26,14 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
-    command: python manage.py runserver 0.0.0.0:9000
+    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
     ports:
       - "9000:9000"
+      - "9876:9876" #debugpy
     depends_on:
       - db
     volumes:
       - .:/app
-
-  redis:
-    container_name: care_redis
-    image: redis:alpine
-    restart: always
 
   celery:
     container_name: care_celery

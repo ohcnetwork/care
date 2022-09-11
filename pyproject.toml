@@ -1,0 +1,62 @@
+[tool.coverage.run]
+branch = true
+source = ["care", "config"]
+parallel = true
+concurrency = ["multiprocessing"]
+
+
+[tool.coverage.report]
+omit = [
+  "*/tests/*",
+  "*/migrations/*",
+  "*/asgi.py",
+  "*/wsgi.py",
+  "manage.py",
+  ".venv/*"
+]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError"
+]
+ignore_errors = true
+
+
+[tool.isort]
+profile = "black"
+known_third_party = [
+  "allauth",
+  "boto3",
+  "celery",
+  "crispy_forms",
+  "dateparser",
+  "dateutil",
+  "django",
+  "django_filters",
+  "django_rest_passwordreset",
+  "djangoql",
+  "djqscsv",
+  "drf_extra_fields",
+  "drf_yasg",
+  "dry_rest_permissions",
+  "environ",
+  "fernet_fields",
+  "freezegun",
+  "hardcopy",
+  "healthy_django",
+  "jsonschema",
+  "jwt",
+  "location_field",
+  "multiselectfield",
+  "partial_index",
+  "phonenumber_field",
+  "phonenumbers",
+  "pytz",
+  "pywebpush",
+  "ratelimit",
+  "requests",
+  "rest_framework",
+  "rest_framework_nested",
+  "rest_framework_simplejwt",
+  "sentry_sdk",
+  "simple_history"
+]

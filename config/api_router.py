@@ -9,9 +9,9 @@ from care.facility.api.viewsets.ambulance import (
 )
 from care.facility.api.viewsets.asset import (
     AssetLocationViewSet,
+    AssetPublicViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
-    AssetPublicViewSet
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
@@ -133,8 +133,9 @@ router.register("test_sample", PatientSampleViewSet)
 router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
-router.register("facility_summary", FacilityCapacitySummaryViewSet,
-                basename="summary-facility")
+router.register(
+    "facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility"
+)
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
 router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
@@ -184,7 +185,8 @@ patient_nested_router.register(r"investigation", PatientInvestigationSummaryView
 patient_nested_router.register(r"notes", PatientNotesViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
-    router, r"consultation", lookup="consultation")
+    router, r"consultation", lookup="consultation"
+)
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 
@@ -201,5 +203,3 @@ urlpatterns = [
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
 ]
-
-# Importing Celery Tasks
