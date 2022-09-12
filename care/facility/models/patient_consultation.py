@@ -200,7 +200,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 INTERACTION_TYPES = (("WhatsappCall", "WhatsappCall"),)
 
 
-class PatientTeleInteraction(BaseModel):
+class PatientTeleInteraction(BaseModel, PatientRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,

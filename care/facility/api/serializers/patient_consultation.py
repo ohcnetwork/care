@@ -341,7 +341,7 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
 class PatientTeleInteractionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientTeleInteraction
-        exclude = "consultation"
+        exclude = ("consultation", "deleted", "external_id")
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
