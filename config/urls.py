@@ -37,7 +37,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", home_view, name="home"),
-    # path("ksdma/", TemplateView.as_view(template_name="pages/ksdma.html"), name="ksdma"),
     # API Docs
     url(
         r"^swagger(?P<format>\.json|\.yaml)$",
@@ -52,6 +51,8 @@ urlpatterns = [
     url(
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
+    # Django Admin, use {% url 'admin:index' %}
+    path(settings.ADMIN_URL, admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
@@ -73,14 +74,8 @@ urlpatterns = [
         ChangePasswordView.as_view(),
         name="change_password_view",
     ),
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    # path("users/", include("care.users.urls", namespace="users")),
-    # path("accounts/", include("allauth.urls")),
-    # path("facility/", include("care.facility.urls", namespace="facility")),
-    # RESTful APIs
     path("api/v1/", include(api_router.urlpatterns)),
+    # Health check urls
     url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
     path(

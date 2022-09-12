@@ -335,7 +335,7 @@ pip-selfcheck.json
 
 MailHog
 care/media/*
-!care/media/needthisfolder
+!care/media/.gitkeep
 
 .pytest_cache/
 
@@ -347,7 +347,5 @@ care/media/*
 test_db
 
 celerybeat-schedule
-
-config/settings/local.py
 
 secrets.sh

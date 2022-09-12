@@ -75,17 +75,11 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    # "django.contrib.gis",
     "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "crispy_forms",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "storages",
     "rest_framework",
     "rest_framework.authtoken",
@@ -121,19 +115,14 @@ MIGRATION_MODULES = {"sites": "care.contrib.sites.migrations"}
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
-
-ACCOUNT_FORMS = {"signup": "users.forms.CustomSignupForm"}
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "/users/signin"
+LOGIN_URL = "/"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -224,7 +213,6 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "care.utils.context_processors.settings_context",
             ],
         },
     }
@@ -232,9 +220,6 @@ TEMPLATES = [
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
-
-# http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # FIXTURES
 # ------------------------------------------------------------------------------
@@ -296,20 +281,6 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
-# django-allauth
-# ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "care.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "care.users.adapters.SocialAccountAdapter"
-
 # Django Rest Framework
 # ------------------------------------------------------------------------------
 
@@ -346,13 +317,6 @@ SIMPLE_JWT = {
     ),
     "ROTATE_REFRESH_TOKENS": True,
 }
-
-
-# LOCATION_FIELD = {
-#     "search.provider": "google",
-#     "map.provider": "openstreetmap",
-#     "provider.openstreetmap.max_zoom": 18,
-# }
 
 
 def GETKEY(group, request):
@@ -393,7 +357,7 @@ CELERY_TASK_TIME_LIMIT = 1800 * 5
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
-# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSc:wqheduler"
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TIMEZONE = "Asia/Kolkata"
 
 CSV_REQUEST_PARAMETER = "csv"
@@ -416,7 +380,7 @@ CHROME_PATH = "/usr/bin/google-chrome-stable"
 
 IS_PRODUCTION = False
 
-OTP_REPEAT_WINDOW = 6  # Otps will only be valid for 6 hours to login
+OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
 
 OTP_MAX_REPEATS_WINDOW = (
     10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
