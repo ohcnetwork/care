@@ -64,17 +64,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    class vaccineEnum(enum.Enum):
-        COVISHIELD = "CoviShield"
-        COVAXIN = "Covaxin"
-        SPUTNIK = "Sputnik"
-        MODERNA = "Moderna"
-        PFIZER = "Pfizer"
-        JANSSEN = "Janssen"
-        SINOVAC = "Sinovac"
-
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
-
     class ActionEnum(enum.Enum):
         PENDING = 10
         SPECIALIST_REQUIRED = 30

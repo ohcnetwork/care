@@ -113,7 +113,22 @@ BedTypeChoices = [(e.value, e.name) for e in BedType]
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
+REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(
+    COVID_CATEGORY_CHOICES
+)  # Deprecated
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 # REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
+
+
+class VaccineEnum(enum.Enum):
+    COVISHIELD = "CoviShield"
+    COVAXIN = "Covaxin"
+    SPUTNIK = "Sputnik"
+    MODERNA = "Moderna"
+    PFIZER = "Pfizer"
+    JANSSEN = "Janssen"
+    SINOVAC = "Sinovac"
+
+
+VACCINE_CHOICES = [(e.value, e.name) for e in VaccineEnum]
