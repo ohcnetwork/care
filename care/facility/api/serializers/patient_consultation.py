@@ -180,7 +180,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.last_health_details = PatientHealthDetails.objects.get(
                 id=consultation.last_health_details.id
             )
-            consultation.save(update_fields=["last_health_details"])
             vaccines = []
             for vaccine in vaccination_history:
                 vaccines.append(
@@ -188,6 +187,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 )
             if vaccines:
                 Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
+            consultation.save(update_fields=["last_health_details"])
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_HEALTH_DETAILS_UPDATED,
+                caused_by=self.context["request"].user,
+                caused_object=consultation.last_health_details,
+                facility=consultation.patient.facility,
+            ).generate()
         except KeyError:
             pass
 
@@ -284,6 +290,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
             consultation.last_health_details = health_details
             consultation.save(update_fields=["last_health_details"])
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_HEALTH_DETAILS_CREATED,
+                caused_by=self.context["request"].user,
+                caused_object=health_details,
+                facility=consultation.patient.facility,
+            ).generate()
         except KeyError:
             if consultation.patient.last_consultation is None:
                 raise ValidationError(

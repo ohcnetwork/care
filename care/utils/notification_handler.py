@@ -8,7 +8,10 @@ from pywebpush import WebPushException, webpush
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient import (
+    PatientHealthDetails,
+    PatientRegistration,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import InvestigationSession, InvestigationValue
 from care.facility.models.shifting import ShiftingRequest
@@ -159,6 +162,27 @@ class NotificationGenerator:
             if self.event == Notification.Event.PATIENT_DELETED.value:
                 message = "Patient {} was deleted by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
+                )
+        elif isinstance(self.caused_object, PatientHealthDetails):
+            if (
+                self.event
+                == Notification.Event.PATIENT_HEALTH_DETAILS_CREATED.value
+            ):
+                message = (
+                    "Health Details for Patient {} was created by {}".format(
+                        self.caused_object.patient.name,
+                        self.caused_object.get_full_name(),
+                    )
+                )
+            if (
+                self.event
+                == Notification.Event.PATIENT_HEALTH_DETAILS_UPDATED.value
+            ):
+                message = (
+                    "Health Details for Patient {} was updated by {}".format(
+                        self.caused_object.patient.name,
+                        self.caused_object.get_full_name(),
+                    )
                 )
         elif isinstance(self.caused_object, PatientConsultation):
             if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
