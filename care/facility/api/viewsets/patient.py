@@ -105,9 +105,7 @@ class PatientFilterSet(filters.FilterSet):
         field_name="date_declared_positive"
     )
     date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
-    last_vaccinated_date = filters.DateFromToRangeFilter(
-        field_name="last_vaccinated_date"
-    )
+
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
     is_active = filters.BooleanFilter(field_name="is_active")
     # Location Based Filtering
@@ -151,7 +149,6 @@ class PatientFilterSet(filters.FilterSet):
     # Vaccination Filters
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
-    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
@@ -259,7 +256,6 @@ class PatientViewSet(
         "modified_date",
         "date_declared_positive",
         "date_of_result",
-        "last_vaccinated_date",
         "last_consultation_admission_date",
         "last_consultation_discharge_date",
         "last_consultation_symptoms_onset_date",
