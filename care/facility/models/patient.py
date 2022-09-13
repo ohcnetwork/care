@@ -538,7 +538,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # remarks
         "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
         "number_of_chronic_diseased_dependents": "Number of people who have chronic diseases living with the patient",
-        "blood_group": "Blood Group",
+        "last_consultation__last_health_details__blood_group": "Blood Group",
         "is_medical_worker": "Is the Patient a Medical Worker",
         "contact_with_confirmed_carrier": "Confirmed Contact with a Covid19 Carrier",
         "contact_with_suspected_carrier": "Suspected Contact with a Covid19 Carrier",
