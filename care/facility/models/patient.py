@@ -34,6 +34,7 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
+    VACCINE_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import (
@@ -351,19 +352,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default=False,
         verbose_name="Is the Patient Vaccinated Against COVID-19",
     )
-    number_of_doses = models.PositiveIntegerField(
-        default=0,
-        null=False,
-        blank=False,
-        validators=[MinValueValidator(0), MaxValueValidator(3)],
-    )
-    vaccine_name = models.CharField(
-        choices=vaccineChoices,
-        default=None,
-        null=True,
-        blank=False,
-        max_length=15,
-    )
 
     covin_id = models.CharField(
         max_length=15,
@@ -371,9 +359,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True,
         blank=True,
         verbose_name="COVID-19 Vaccination ID",
-    )
-    last_vaccinated_date = models.DateTimeField(
-        null=True, blank=True, verbose_name="Date Last Vaccinated"
     )
 
     # Extras
@@ -558,9 +543,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "date_declared_positive": "Date Patient is Declared Positive",
         # Vaccination Data
         "is_vaccinated": "Is Patient Vaccinated",
-        "number_of_doses": "Number of Vaccine Doses Recieved",
-        "vaccine_name": "Vaccine Name",
-        "last_vaccinated_date": "Last Vaccinated Date",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
         "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
@@ -853,3 +835,42 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
     )
+
+
+class Vaccine(models.Model):
+    health_details = models.ForeignKey(
+        PatientHealthDetails,
+        on_delete=models.CASCADE,
+        related_name="vaccination_history",
+    )
+    vaccine = models.CharField(
+        choices=VACCINE_CHOICES,
+        default=None,
+        null=True,
+        blank=False,
+        max_length=20,
+    )
+    doses = models.PositiveIntegerField(
+        default=0,
+        null=False,
+        blank=False,
+        validators=[MinValueValidator(0), MaxValueValidator(3)],
+    )
+    last_vaccinated_date = models.DateField(
+        null=True, blank=True, verbose_name="Date Last Vaccinated"
+    )
+
+    deleted = models.BooleanField(default=False)
+    objects = BaseManager()
+
+    class Meta:
+        indexes = [
+            PartialIndex(
+                fields=["health_details", "vaccine"],
+                unique=True,
+                where=PQ(deleted=False),
+            )
+        ]
+
+        def __str__(self):
+            return self.patient.name + " - " + self.vaccine
