@@ -556,7 +556,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
-        "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
+        "last_consultation__last_health_details__blood_group": (
+            lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]
+        ),
         "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
         "is_medical_worker": pretty_boolean,
         "will_donate_blood": pretty_boolean,
