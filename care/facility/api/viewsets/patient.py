@@ -9,7 +9,10 @@ from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
-from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
+from dry_rest_permissions.generics import (
+    DRYPermissionFiltersBase,
+    DRYPermissions,
+)
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
@@ -57,7 +60,9 @@ from care.facility.models import (
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
-from care.facility.tasks.patient.discharge_report import generate_discharge_report
+from care.facility.tasks.patient.discharge_report import (
+    generate_discharge_report,
+)
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters import CareChoiceFilter, MultiSelectFilter
@@ -77,10 +82,13 @@ class PatientFilterSet(filters.FilterSet):
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     facility_type = CareChoiceFilter(
-        field_name="facility__facility_type", choice_dict=REVERSE_FACILITY_TYPES
+        field_name="facility__facility_type",
+        choice_dict=REVERSE_FACILITY_TYPES,
     )
     phone_number = filters.CharFilter(field_name="phone_number")
-    emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
+    emergency_phone_number = filters.CharFilter(
+        field_name="emergency_phone_number"
+    )
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     ip_no = filters.CharFilter(
@@ -100,7 +108,9 @@ class PatientFilterSet(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
-    is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
+    is_declared_positive = filters.BooleanFilter(
+        field_name="is_declared_positive"
+    )
     date_declared_positive = filters.DateFromToRangeFilter(
         field_name="date_declared_positive"
     )
@@ -118,7 +128,9 @@ class PatientFilterSet(filters.FilterSet):
         field_name="local_body__name", lookup_expr="icontains"
     )
     state = filters.NumberFilter(field_name="state__id")
-    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    state_name = filters.CharFilter(
+        field_name="state__name", lookup_expr="icontains"
+    )
     # Consultation Fields
     is_kasp = filters.BooleanFilter(field_name="last_consultation__is_kasp")
     last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
@@ -152,7 +164,9 @@ class PatientFilterSet(filters.FilterSet):
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
-    has_bed = filters.BooleanFilter(field_name="has_bed", method="filter_bed_not_null")
+    has_bed = filters.BooleanFilter(
+        field_name="has_bed", method="filter_bed_not_null"
+    )
 
     def filter_bed_not_null(self, queryset, name, value):
         return queryset.filter(
@@ -169,14 +183,21 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             return queryset.filter(
                 last_consultation__last_daily_round__bed_id__in=AssetBed.objects.filter(
                     asset=request.user.asset
-                ).values("id"),
+                ).values(
+                    "id"
+                ),
                 last_consultation__last_daily_round__bed__isnull=False,
             )
         if not request.user.is_superuser:
             if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 queryset = queryset.filter(facility__state=request.user.state)
-            elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                queryset = queryset.filter(facility__district=request.user.district)
+            elif (
+                request.user.user_type
+                >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+            ):
+                queryset = queryset.filter(
+                    facility__district=request.user.district
+                )
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
@@ -354,7 +375,9 @@ class PatientViewSet(
         patient.allow_transfer = not discharged
         patient.save(update_fields=["allow_transfer", "is_active"])
         last_consultation = (
-            PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+            PatientConsultation.objects.filter(patient=patient)
+            .order_by("-id")
+            .first()
         )
         current_time = localtime(now())
         if last_consultation:
@@ -390,12 +413,16 @@ class PatientViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
+            id=PatientSearch.objects.get(
+                external_id=kwargs["external_id"]
+            ).patient_id
         )
 
         if patient.allow_transfer is False:
             return Response(
-                {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
+                {
+                    "Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"
+                },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
         patient.is_active = True
@@ -405,7 +432,9 @@ class PatientViewSet(
         serializer.save()
 
         patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
+            id=PatientSearch.objects.get(
+                external_id=kwargs["external_id"]
+            ).patient_id
         )
         response_serializer = self.get_serializer_class()(patient)
         # Update all Active Shifting Request to Rejected
@@ -419,7 +448,9 @@ class PatientViewSet(
                 + f"\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
             )
             shifting_request.save(update_fields=["status", "comments"])
-        return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            data=response_serializer.data, status=status.HTTP_200_OK
+        )
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
@@ -447,9 +478,14 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        elif (
+            self.request.user.user_type
+            >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        ):
             return queryset.filter(facility__district=user.district)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        elif (
+            self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+        ):
             return queryset.filter(facility__state=user.state)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -502,7 +538,10 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                 data=self.request.query_params, partial=True
             )
             serializer.is_valid(raise_exception=True)
-            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            if (
+                self.request.user.user_type
+                >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+            ):
                 search_keys = [
                     "date_of_birth",
                     "year_of_birth",
@@ -511,7 +550,12 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                     "age",
                 ]
             else:
-                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "age"]
+                search_keys = [
+                    "date_of_birth",
+                    "year_of_birth",
+                    "phone_number",
+                    "age",
+                ]
             search_fields = {
                 key: serializer.validated_data[key]
                 for key in search_keys
@@ -541,7 +585,9 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
             if name:
                 queryset = (
-                    queryset.annotate(similarity=TrigramSimilarity("name", name))
+                    queryset.annotate(
+                        similarity=TrigramSimilarity("name", name)
+                    )
                     .filter(similarity__gt=0.2)
                     .order_by("-similarity")
                 )
@@ -592,7 +638,9 @@ class PatientNotesViewSet(
         if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(patient__facility__state=user.state)
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(patient__facility__district=user.district)
+            queryset = queryset.filter(
+                patient__facility__district=user.district
+            )
         else:
             allowed_facilities = get_accessible_facilities(user)
             q_filters = Q(patient__facility__id__in=allowed_facilities)
@@ -612,7 +660,9 @@ class PatientNotesViewSet(
                 {"patient": "Only active patients data can be updated"}
             )
         return serializer.save(
-            facility=patient.facility, patient=patient, created_by=self.request.user
+            facility=patient.facility,
+            patient=patient,
+            created_by=self.request.user,
         )
 
 
@@ -623,7 +673,9 @@ class PatientHealthDetailsViewSet(
     UpdateModelMixin,
     GenericViewSet,
 ):
-    queryset = PatientHealthDetails.objects.all().select_related("facility", "patient")
+    queryset = PatientHealthDetails.objects.all().select_related(
+        "facility", "patient"
+    )
     serializer_class = PatientHealthDetailsSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
