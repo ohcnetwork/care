@@ -25,9 +25,7 @@ from care.facility.models import (
     PatientSearch,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientHealthDetails
 from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
 )
@@ -168,9 +166,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
-    vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
-    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
