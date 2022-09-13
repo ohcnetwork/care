@@ -13,7 +13,10 @@ from care.facility.models.patient import (
     PatientRegistration,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.models.patient_investigation import InvestigationSession, InvestigationValue
+from care.facility.models.patient_investigation import (
+    InvestigationSession,
+    InvestigationValue,
+)
 from care.facility.models.shifting import ShiftingRequest
 from care.users.models import User
 from care.utils.sms.sendSMS import sendSMS
@@ -64,15 +67,21 @@ class NotificationGenerator:
             if not isinstance(event, Notification.Event):
                 raise NotificationCreationException("Event Invalid")
             if not isinstance(caused_by, User):
-                raise NotificationCreationException("edited_by must be an instance of a user")
+                raise NotificationCreationException(
+                    "edited_by must be an instance of a user"
+                )
             if facility:
                 if not isinstance(facility, Facility):
-                    raise NotificationCreationException("facility must be an instance of Facility")
+                    raise NotificationCreationException(
+                        "facility must be an instance of Facility"
+                    )
             mediums = []
             if notification_mediums:
                 for medium in notification_mediums:
                     if not isinstance(medium, Notification.Medium):
-                        raise NotificationCreationException("Medium Type Invalid")
+                        raise NotificationCreationException(
+                            "Medium Type Invalid"
+                        )
                     mediums.append(medium.value)
             data = {
                 "event_type": event_type.value,
@@ -118,16 +127,19 @@ class NotificationGenerator:
         if not extra_data:
             return None
         for key in extra_data:
-            extra_data[key] = {"model_name": extra_data[key].__class__.__name__, "model_id": extra_data[key].id}
+            extra_data[key] = {
+                "model_name": extra_data[key].__class__.__name__,
+                "model_id": extra_data[key].id,
+            }
         return extra_data
 
     def deserialize_extra_data(self, extra_data):
         if not extra_data:
             return None
         for key in extra_data:
-            extra_data[key] = apps.get_model("facility.{}".format(extra_data[key]["model_name"])).objects.get(
-                id=extra_data[key]["model_id"]
-            )
+            extra_data[key] = apps.get_model(
+                "facility.{}".format(extra_data[key]["model_name"])
+            ).objects.get(id=extra_data[key]["model_id"])
         return extra_data
 
     def generate_extra_users(self):
@@ -137,16 +149,24 @@ class NotificationGenerator:
         if isinstance(self.caused_object, PatientRegistration):
             if self.caused_object.last_consultation:
                 if self.caused_object.last_consultation.assigned_to:
-                    self.extra_users.append(self.caused_object.last_consultation.assigned_to.id)
+                    self.extra_users.append(
+                        self.caused_object.last_consultation.assigned_to.id
+                    )
         if isinstance(self.caused_object, InvestigationSession):
             if self.extra_data["consultation"].assigned_to:
-                self.extra_users.append(self.extra_data["consultation"].assigned_to.id)
+                self.extra_users.append(
+                    self.extra_data["consultation"].assigned_to.id
+                )
         if isinstance(self.caused_object, InvestigationValue):
             if self.caused_object.consultation.assigned_to:
-                self.extra_users.append(self.caused_object.consultation.assigned_to.id)
+                self.extra_users.append(
+                    self.caused_object.consultation.assigned_to.id
+                )
         if isinstance(self.caused_object, DailyRound):
             if self.caused_object.consultation.assigned_to:
-                self.extra_users.append(self.caused_object.consultation.assigned_to.id)
+                self.extra_users.append(
+                    self.caused_object.consultation.assigned_to.id
+                )
 
     def generate_system_message(self):
         message = ""
@@ -185,22 +205,44 @@ class NotificationGenerator:
                     )
                 )
         elif isinstance(self.caused_object, PatientConsultation):
-            if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
-                message = "Consultation for Patient {} was created by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
+            if (
+                self.event
+                == Notification.Event.PATIENT_CONSULTATION_CREATED.value
+            ):
+                message = (
+                    "Consultation for Patient {} was created by {}".format(
+                        self.caused_object.patient.name,
+                        self.caused_by.get_full_name(),
+                    )
                 )
-            elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATED.value:
-                message = "Consultation for Patient {} was updated by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
+            elif (
+                self.event
+                == Notification.Event.PATIENT_CONSULTATION_UPDATED.value
+            ):
+                message = (
+                    "Consultation for Patient {} was updated by {}".format(
+                        self.caused_object.patient.name,
+                        self.caused_by.get_full_name(),
+                    )
                 )
-            if self.event == Notification.Event.PATIENT_CONSULTATION_DELETED.value:
-                message = "Consultation for Patient {} was deleted by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
+            if (
+                self.event
+                == Notification.Event.PATIENT_CONSULTATION_DELETED.value
+            ):
+                message = (
+                    "Consultation for Patient {} was deleted by {}".format(
+                        self.caused_object.patient.name,
+                        self.caused_by.get_full_name(),
+                    )
                 )
         elif isinstance(self.caused_object, InvestigationSession):
-            if self.event == Notification.Event.INVESTIGATION_SESSION_CREATED.value:
+            if (
+                self.event
+                == Notification.Event.INVESTIGATION_SESSION_CREATED.value
+            ):
                 message = "Investigation Session for Patient {} was created by {}".format(
-                    self.extra_data["consultation"].patient.name, self.caused_by.get_full_name()
+                    self.extra_data["consultation"].patient.name,
+                    self.caused_by.get_full_name(),
                 )
         elif isinstance(self.caused_object, InvestigationValue):
             if self.event == Notification.Event.INVESTIGATION_UPDATED.value:
@@ -210,13 +252,19 @@ class NotificationGenerator:
                     self.caused_by.get_full_name(),
                 )
         elif isinstance(self.caused_object, DailyRound):
-            if self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED.value:
+            if (
+                self.event
+                == Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED.value
+            ):
                 message = "Consultation for Patient {}  at facility {} was created by {}".format(
                     self.caused_object.consultation.patient.name,
                     self.caused_object.consultation.facility.name,
                     self.caused_by.get_full_name(),
                 )
-            elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED.value:
+            elif (
+                self.event
+                == Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED.value
+            ):
                 message = "Consultation for Patient {}  at facility {} was updated by {}".format(
                     self.caused_object.consultation.patient.name,
                     self.caused_object.consultation.facility.name,
@@ -225,7 +273,8 @@ class NotificationGenerator:
         elif isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
                 message = "Shifting for Patient {} was updated by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name(),
+                    self.caused_object.patient.name,
+                    self.caused_by.get_full_name(),
                 )
         return message
 
@@ -268,40 +317,81 @@ class NotificationGenerator:
 
     def generate_cause_objects(self):
         if isinstance(self.caused_object, PatientRegistration):
-            self.caused_objects["patient"] = str(self.caused_object.external_id)
+            self.caused_objects["patient"] = str(
+                self.caused_object.external_id
+            )
             if self.caused_object.facility:
-                self.caused_objects["facility"] = str(self.caused_object.facility.external_id)
+                self.caused_objects["facility"] = str(
+                    self.caused_object.facility.external_id
+                )
         if isinstance(self.caused_object, PatientConsultation):
-            self.caused_objects["consultation"] = str(self.caused_object.external_id)
-            self.caused_objects["patient"] = str(self.caused_object.patient.external_id)
+            self.caused_objects["consultation"] = str(
+                self.caused_object.external_id
+            )
+            self.caused_objects["patient"] = str(
+                self.caused_object.patient.external_id
+            )
             if self.caused_object.patient.facility:
-                self.caused_objects["facility"] = str(self.caused_object.patient.facility.external_id)
+                self.caused_objects["facility"] = str(
+                    self.caused_object.patient.facility.external_id
+                )
         if isinstance(self.caused_object, InvestigationSession):
-            self.caused_objects["consultation"] = str(self.extra_data["consultation"].external_id)
-            self.caused_objects["patient"] = str(self.extra_data["consultation"].patient.external_id)
+            self.caused_objects["consultation"] = str(
+                self.extra_data["consultation"].external_id
+            )
+            self.caused_objects["patient"] = str(
+                self.extra_data["consultation"].patient.external_id
+            )
             if self.extra_data["consultation"].patient.facility:
-                self.caused_objects["facility"] = str(self.extra_data["consultation"].patient.facility.external_id)
-            self.caused_objects["session"] = str(self.caused_object.external_id)
+                self.caused_objects["facility"] = str(
+                    self.extra_data[
+                        "consultation"
+                    ].patient.facility.external_id
+                )
+            self.caused_objects["session"] = str(
+                self.caused_object.external_id
+            )
         if isinstance(self.caused_object, InvestigationValue):
-            self.caused_objects["consultation"] = str(self.caused_object.consultation.external_id)
-            self.caused_objects["patient"] = str(self.caused_object.consultation.patient.external_id)
+            self.caused_objects["consultation"] = str(
+                self.caused_object.consultation.external_id
+            )
+            self.caused_objects["patient"] = str(
+                self.caused_object.consultation.patient.external_id
+            )
             if self.caused_object.consultation.patient.facility:
-                self.caused_objects["facility"] = str(self.caused_object.consultation.patient.facility.external_id)
-            self.caused_objects["session"] = str(self.caused_object.session.external_id)
-            self.caused_objects["investigation"] = str(self.caused_object.investigation.external_id)
+                self.caused_objects["facility"] = str(
+                    self.caused_object.consultation.patient.facility.external_id
+                )
+            self.caused_objects["session"] = str(
+                self.caused_object.session.external_id
+            )
+            self.caused_objects["investigation"] = str(
+                self.caused_object.investigation.external_id
+            )
         if isinstance(self.caused_object, DailyRound):
-            self.caused_objects["consultation"] = str(self.caused_object.consultation.external_id)
-            self.caused_objects["patient"] = str(self.caused_object.consultation.patient.external_id)
+            self.caused_objects["consultation"] = str(
+                self.caused_object.consultation.external_id
+            )
+            self.caused_objects["patient"] = str(
+                self.caused_object.consultation.patient.external_id
+            )
             self.caused_objects["daily_round"] = str(self.caused_object.id)
             if self.caused_object.consultation.patient.facility:
-                self.caused_objects["facility"] = str(self.caused_object.consultation.facility.external_id)
+                self.caused_objects["facility"] = str(
+                    self.caused_object.consultation.facility.external_id
+                )
         if isinstance(self.caused_object, ShiftingRequest):
-            self.caused_objects["shifting"] = str(self.caused_object.external_id)
+            self.caused_objects["shifting"] = str(
+                self.caused_object.external_id
+            )
 
         return True
 
     def generate_whatsapp_users(self):
-        if self.event == Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value:
+        if (
+            self.event
+            == Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value
+        ):
             return [self.caused_object.assigned_to]
         raise Exception("Action Does not have associated users")
 
@@ -309,7 +399,9 @@ class NotificationGenerator:
         users = []
         extra_users = self.extra_users
         caused_user = self.caused_by
-        facility_users = FacilityUser.objects.filter(facility_id=self.facility.id)
+        facility_users = FacilityUser.objects.filter(
+            facility_id=self.facility.id
+        )
         for facility_user in facility_users:
             if facility_user.user.id != caused_user.id:
                 users.append(facility_user.user)
@@ -337,18 +429,26 @@ class NotificationGenerator:
                 webpush(
                     subscription_info={
                         "endpoint": user.pf_endpoint,
-                        "keys": {"p256dh": user.pf_p256dh, "auth": user.pf_auth},
+                        "keys": {
+                            "p256dh": user.pf_p256dh,
+                            "auth": user.pf_auth,
+                        },
                     },
                     data=message,
                     vapid_private_key=settings.VAPID_PRIVATE_KEY,
-                    vapid_claims={"sub": "mailto:info@coronasafe.network",},
+                    vapid_claims={
+                        "sub": "mailto:info@coronasafe.network",
+                    },
                 )
         except WebPushException as ex:
             print("Web Push Failed with Exception: {}", repr(ex))
             if ex.response and ex.response.json():
                 extra = ex.response.json()
                 print(
-                    "Remote service replied with a {}:{}, {}", extra.code, extra.errno, extra.message,
+                    "Remote service replied with a {}:{}, {}",
+                    extra.code,
+                    extra.errno,
+                    extra.message,
                 )
         except Exception as e:
             print("Error When Doing WebPush", e)
@@ -357,8 +457,15 @@ class NotificationGenerator:
         if not self.worker_initiated:
             return
         for medium in self.notification_mediums:
-            if medium == Notification.Medium.SMS.value and settings.SEND_SMS_NOTIFICATION:
-                sendSMS(self.generate_sms_phone_numbers(), self.generate_sms_message(), many=True)
+            if (
+                medium == Notification.Medium.SMS.value
+                and settings.SEND_SMS_NOTIFICATION
+            ):
+                sendSMS(
+                    self.generate_sms_phone_numbers(),
+                    self.generate_sms_message(),
+                    many=True,
+                )
             elif medium == Notification.Medium.SYSTEM.value:
                 if not self.message:
                     self.message = self.generate_system_message()
@@ -368,14 +475,26 @@ class NotificationGenerator:
                     )
                     if not self.defer_notifications:
                         self.send_webpush_user(
-                            user, json.dumps({"external_id": str(notification_obj.external_id), "title": self.message})
+                            user,
+                            json.dumps(
+                                {
+                                    "external_id": str(
+                                        notification_obj.external_id
+                                    ),
+                                    "title": self.message,
+                                }
+                            ),
                         )
-            elif medium == Notification.Medium.WHATSAPP.value and settings.ENABLE_WHATSAPP:
+            elif (
+                medium == Notification.Medium.WHATSAPP.value
+                and settings.ENABLE_WHATSAPP
+            ):
                 for user in self.generate_whatsapp_users():
                     number = user.alt_phone_number
                     message = self.generate_whatsapp_message()
                     notification_obj = self.generate_message_for_user(
                         user, message, Notification.Medium.WHATSAPP.value
                     )
-                    sendWhatsappMessage(number, message, notification_obj.external_id)
-
+                    sendWhatsappMessage(
+                        number, message, notification_obj.external_id
+                    )
