@@ -5,7 +5,7 @@ from care.facility.api.serializers.patient_health_details import (
     PatientHealthDetailsSerializer,
 )
 
-from care.facility.models.patient import PatientHealthDetails
+from care.facility.models.patient import PatientHealthDetails, Vaccine
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -172,6 +172,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation = super().update(instance, validated_data)
 
         try:
+            health_details_data = self.context["request"].data["new_health_details"]
+            vaccination_history = health_details_data.pop("vaccination_history", [])
             PatientHealthDetails.objects.filter(
                 id=consultation.last_health_details.id
             ).update(**self.context["request"].data["new_health_details"])
@@ -179,6 +181,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 id=consultation.last_health_details.id
             )
             consultation.save(update_fields=["last_health_details"])
+            vaccines = []
+            for vaccine in vaccination_history:
+                vaccines.append(
+                    Vaccine(health_details=consultation.last_health_details, **vaccine)
+                )
+            if vaccines:
+                Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
         except KeyError:
             pass
 
@@ -256,14 +265,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
 
+        # Patient Health Details
         try:
+            health_details_data = self.context["request"].data["new_health_details"]
+            vaccination_history = health_details_data.pop("vaccination_history", [])
+
             health_details = PatientHealthDetails(
-                **self.context["request"].data["new_health_details"]
+                patient=consultation.patient,
+                facility=consultation.facility,
+                created_in_consultation=consultation,
+                **health_details_data,
             )
-            health_details.created_in_consultation = consultation
-            health_details.facility = consultation.facility
-            health_details.patient = consultation.patient
             health_details.save()
+            vaccines = []
+            for vaccine in vaccination_history:
+                vaccines.append(Vaccine(health_details=health_details, **vaccine))
+            if vaccines:
+                Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
             consultation.last_health_details = health_details
             consultation.save(update_fields=["last_health_details"])
         except KeyError:
