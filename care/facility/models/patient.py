@@ -31,8 +31,9 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_CHOICES,
     REVERSE_BED_TYPE_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
+    REVERSE_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
     REVERSE_DISEASE_STATUS_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import (
@@ -566,9 +567,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "is_declared_positive": pretty_boolean,
         "is_vaccinated": pretty_boolean,
         # Consultation Data
-        "last_consultation__category": (
-            lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")
+        "last_consultation__deprecated_covid_category": (
+            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
         ),
+        "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
