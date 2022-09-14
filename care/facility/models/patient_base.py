@@ -48,12 +48,19 @@ DISEASE_CHOICES_MAP = {
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
-CATEGORY_CHOICES = [
+COVID_CATEGORY_CHOICES = [
     ("ASYM", "ASYMPTOMATIC"),
     ("Mild", "Category-A"),
     ("Moderate", "Category-B"),
     ("Severe", "Category-C"),
     (None, "UNCLASSIFIED"),
+]  # Deprecated
+
+CATEGORY_CHOICES = [
+    ("Comfort", "Comfort Care"),
+    ("Stable", "Stable"),
+    ("Moderate", "Slightly Abnormal"),
+    ("Critical", "Critical"),
 ]
 
 DISCHARGE_REASON_CHOICES = [
@@ -106,5 +113,7 @@ BedTypeChoices = [(e.value, e.name) for e in BedType]
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
+REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
