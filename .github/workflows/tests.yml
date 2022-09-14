@@ -7,10 +7,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
     services:
       db:
-        image: postgis/postgis:latest
+        image: postgres:latest
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -51,7 +51,7 @@ jobs:
       - name: Install system packages
         run: |
           sudo apt-get update
-          sudo apt-get install binutils libproj-dev gdal-bin -y
+          sudo apt-get install binutils libproj-dev libjpeg-dev zlib1g-dev -y
 
       - name: Install CI dependencies
         run: |

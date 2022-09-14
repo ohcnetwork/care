@@ -347,8 +347,7 @@ class PatientViewSet(
         patient = self.get_object()
         patient.is_active = discharged
         patient.allow_transfer = not discharged
-        patient.assigned_to = None
-        patient.save(update_fields=["allow_transfer", "is_active", "assigned_to"])
+        patient.save(update_fields=["allow_transfer", "is_active"])
         last_consultation = (
             PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         )

@@ -394,7 +394,6 @@ class TestBase(APITestCase):
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
             "admitted": False,
-            "admitted_to": None,
             "admission_date": None,
             "discharge_date": None,
             "consultation_notes": "",

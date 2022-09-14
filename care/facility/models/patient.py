@@ -29,7 +29,7 @@ from care.facility.models.mixins.permissions.patient import (
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
-    REVERSE_ADMIT_CHOICES,
+    REVERSE_BED_TYPE_CHOICES,
     REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
@@ -505,6 +505,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "nationality": "Nationality",
         "disease_status": "Disease Status",
         # "state_test_id": "State Test ID",
+        "last_consultation__admitted": "Admission Status",
+        "last_consultation__current_bed__bed__bed_type": "Admission Bed Type",
         # Reffered or transferred
         # remarks
         "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
@@ -573,7 +575,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
         "last_consultation__admitted": pretty_boolean,
-        "last_consultation__admitted_to": (lambda x: REVERSE_ADMIT_CHOICES.get(x, "-")),
+        "last_consultation__current_bed__bed__bed_type": (
+            lambda x: REVERSE_BED_TYPE_CHOICES.get(x, "-")
+        ),
     }
 
 
