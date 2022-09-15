@@ -80,29 +80,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    def get_icd11_diagnoses_object(self, consultation):
+    def get_icd11_diagnoses_objects_by_ids(self, diagnoses_ids):
         from care.facility.static_data.icd11 import ICDDiseases
 
         diagnosis_objects = []
-        for diagnosis in consultation.icd11_diagnoses:
+        for diagnosis in diagnoses_ids:
             try:
                 diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
                 diagnosis_objects.append(diagnosis_object)
             except BaseException:
                 pass
         return diagnosis_objects
+
+    def get_icd11_diagnoses_object(self, consultation):
+        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
 
     def get_icd11_provisional_diagnoses_object(self, consultation):
-        from care.facility.static_data.icd11 import ICDDiseases
-
-        diagnosis_objects = []
-        for diagnosis in consultation.icd11_provisional_diagnoses:
-            try:
-                diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
-                diagnosis_objects.append(diagnosis_object)
-            except BaseException:
-                pass
-        return diagnosis_objects
+        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_provisional_diagnoses)
 
     class Meta:
         model = PatientConsultation
