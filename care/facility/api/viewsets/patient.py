@@ -34,6 +34,7 @@ from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
     Facility,
@@ -80,6 +81,10 @@ class PatientFilterSet(filters.FilterSet):
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
+    deprecated_covid_category = filters.ChoiceFilter(
+        field_name="last_consultation__deprecated_covid_category",
+        choices=COVID_CATEGORY_CHOICES,
+    )
     category = filters.ChoiceFilter(
         field_name="last_consultation__category", choices=CATEGORY_CHOICES
     )
@@ -358,6 +363,7 @@ class PatientViewSet(
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
+            last_consultation.current_bed = None
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True

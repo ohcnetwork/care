@@ -1,17 +1,26 @@
-FROM python:3.8.9-slim-buster
+FROM python:3.10-slim-bullseye
 
 # These two environment variables prevent __pycache__/ files.
 # since ipython is already present in required, you might as well use it
 ENV PYTHONUNBUFFERED 1 PYTHONDONTWRITEBYTECODE 1 PYTHONBREAKPOINT=ipython
 
-RUN : \
-  && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    --no-install-recommends \
-    python3-dev \
-    build-essential \
-  && rm -rf /var/lib/apt/lists/* \
-  &&:
+# Install required system dependencies
+RUN apt-get update && apt-get install --no-install-recommends -y \
+  # dependencies for building Python packages
+  build-essential libjpeg-dev zlib1g-dev \
+  # psycopg2 dependencies
+  libpq-dev \
+  # Translations dependencies
+  gettext \
+  # Msic
+  wget gnupg \
+  # Install Chrome
+  && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+  && apt-get update && apt-get -y install google-chrome-stable \
+  # cleaning up unused files
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements folder to ensure they are cached
 COPY requirements ./requirements
@@ -27,4 +36,4 @@ COPY . /app
 
 WORKDIR /app
 
-ENTRYPOINT ["bash", "docker/docker-entrypoint.sh"]
+# ENTRYPOINT ["bash", "docker/docker-entrypoint.sh"]

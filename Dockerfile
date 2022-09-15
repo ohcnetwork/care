@@ -12,7 +12,7 @@ ARG BUILD_ENVIRONMENT=production
 # Install apt packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
-  build-essential libgdal-dev \
+  build-essential libjpeg-dev zlib1g-dev \
   # psycopg2 dependencies
   libpq-dev
 
@@ -44,8 +44,6 @@ RUN addgroup --system django \
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
   libpq-dev \
-  # PostGIS dependencies
-  libgdal-dev \
   # Translations dependencies
   gettext \
   # Msic

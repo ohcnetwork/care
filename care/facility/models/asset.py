@@ -64,12 +64,16 @@ class Asset(BaseModel):
         choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
     )
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
-    current_location = models.ForeignKey(AssetLocation, on_delete=models.PROTECT, null=False, blank=False)
-    is_working = models.BooleanField(default=None, null=True, blank=True) 
+    current_location = models.ForeignKey(
+        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+    )
+    is_working = models.BooleanField(default=None, null=True, blank=True)
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
-    warranty_details = models.TextField(null=True, blank=True, default="")
-    meta = JSONField(default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)])
+    warranty_details = models.TextField(null=True, blank=True, default="")  # Deprecated
+    meta = JSONField(
+        default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)]
+    )
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
@@ -78,6 +82,10 @@ class Asset(BaseModel):
     )
     support_email = models.EmailField(blank=True, null=True)
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)
+    manufacturer = models.CharField(max_length=1024, blank=True, null=True)
+    warranty_amc_end_of_validity = models.DateField(default=None, null=True, blank=True)
+    last_serviced_on = models.DateField(default=None, null=True, blank=True)
+    notes = models.TextField(default="", null=True, blank=True)
 
     class Meta:
         constraints = [
@@ -90,6 +98,7 @@ class Asset(BaseModel):
 
     def __str__(self):
         return self.name
+
 
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)

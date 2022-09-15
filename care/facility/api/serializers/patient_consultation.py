@@ -8,7 +8,12 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    Facility,
+    PatientRegistration,
+)
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -38,7 +43,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    deprecated_covid_category = ChoiceField(
+        choices=COVID_CATEGORY_CHOICES, required=False
+    )
+    category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
 
     referred_to_object = FacilityBasicInfoSerializer(
         source="referred_to", read_only=True
@@ -73,6 +81,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     current_bed = ConsultationBedSerializer(read_only=True)
 
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
+
+    icd11_diagnoses_object = serializers.SerializerMethodField(read_only=True)
+
+    def get_icd11_diagnoses_object(self, consultation):
+        from care.facility.static_data.icd11 import ICDDiseases
+
+        diagnosis_objects = []
+        for diagnosis in consultation.icd11_diagnoses:
+            try:
+                diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
+                diagnosis_objects.append(diagnosis_object)
+            except BaseException:
+                pass
+        return diagnosis_objects
 
     class Meta:
         model = PatientConsultation
@@ -200,7 +222,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         bed = validated_data.pop("bed", None)
 
         validated_data["facility_id"] = validated_data[
-            "patient"].facility_id  # Coercing facility as the patient's facility
+            "patient"
+        ].facility_id  # Coercing facility as the patient's facility
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
@@ -293,6 +316,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {"review_time": ["This field value is must be greater than 0."]}
                     )
+        from care.facility.static_data.icd11 import ICDDiseases
+
+        if "icd11_diagnoses" in validated:
+            for diagnosis in validated["icd11_diagnoses"]:
+                try:
+                    ICDDiseases.by.id[diagnosis]
+                except BaseException:
+                    raise ValidationError(
+                        {
+                            "icd11_diagnoses": [
+                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
+                            ]
+                        }
+                    )
+
         return validated
 
 

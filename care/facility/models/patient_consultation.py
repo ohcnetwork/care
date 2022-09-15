@@ -1,15 +1,20 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    PatientBaseModel,
+)
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
@@ -37,13 +42,23 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
     diagnosis = models.TextField(default="", null=True, blank=True)
+    icd11_diagnoses = ArrayField(
+        models.CharField(max_length=100), default=[], blank=True, null=True
+    )
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    deprecated_covid_category = models.CharField(
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
+    )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -52,6 +67,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     course_in_facility = models.TextField(null=True, blank=True)
     discharge_advice = JSONField(default=dict)
     prn_prescription = JSONField(default=dict)
+    investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
@@ -142,13 +158,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "admission_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
+        "deprecated_covid_category": "Covid Category",
         "category": "Category",
         "examination_details": "Examination Details",
         "suggestion": "Suggestion",
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "deprecated_covid_category": (
+            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
+        ),
+        "category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

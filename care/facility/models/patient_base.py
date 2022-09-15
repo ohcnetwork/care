@@ -9,17 +9,12 @@ def reverse_choices(choices):
     return output
 
 
-ADMIT_CHOICES = [
-    (None, "Not admitted"),
-    (1, "Isolation Room"),
-    (2, "ICU"),
-    (3, "ICU with Non Invasive Ventilator"),
-    (4, "ICU with Oxygen Support"),
-    (5, "ICU with Invasive Ventilator"),
-    (6, "Bed with Oxygen Support"),
-    (20, "Home Isolation"),
-    (30, "Gynaecology Ward"),
-    (40, "Paediatric Ward"),
+CURRENT_HEALTH_CHOICES = [
+    (0, "NO DATA"),
+    (1, "REQUIRES VENTILATOR"),
+    (2, "WORSE"),
+    (3, "STATUS QUO"),
+    (4, "BETTER"),
 ]
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
@@ -52,12 +47,19 @@ DISEASE_CHOICES_MAP = {
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
-CATEGORY_CHOICES = [
+COVID_CATEGORY_CHOICES = [
     ("ASYM", "ASYMPTOMATIC"),
     ("Mild", "Category-A"),
     ("Moderate", "Category-B"),
     ("Severe", "Category-C"),
     (None, "UNCLASSIFIED"),
+]  # Deprecated
+
+CATEGORY_CHOICES = [
+    ("Comfort", "Comfort Care"),
+    ("Stable", "Stable"),
+    ("Moderate", "Slightly Abnormal"),
+    ("Critical", "Critical"),
 ]
 
 DISCHARGE_REASON_CHOICES = [
@@ -95,7 +97,22 @@ BLOOD_GROUP_CHOICES = [
 ]
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
 
+
+class BedType(enum.Enum):
+    ISOLATION = 1
+    ICU = 2
+    ICU_WITH_NON_INVASIVE_VENTILATOR = 3
+    ICU_WITH_OXYGEN_SUPPORT = 4
+    ICU_WITH_INVASIVE_VENTILATOR = 5
+    BED_WITH_OXYGEN_SUPPORT = 6
+    REGULAR = 7
+
+
+BedTypeChoices = [(e.value, e.name) for e in BedType]
+
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_SYMPTOM_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
+REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
+REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+# REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
+REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)

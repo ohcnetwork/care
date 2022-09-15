@@ -18,10 +18,11 @@ django-extensions==2.2.8  # https://github.com/django-extensions/django-extensio
 # -------------------------------
 factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
 freezegun==0.3.15  # https://github.com/spulec/freezegun
-coverage==6.4.1  # https://github.com/nedbat/coveragepy
+coverage[toml]==6.4.1  # https://github.com/nedbat/coveragepy
 django-coverage-plugin==2.0.3
 tblib==1.7.0  # https://github.com/ionelmc/python-tblib
 # WatchDog
 # -------------------------------
 watchdog==0.10.2
 argh==0.26.2
+debugpy==1.6.3
