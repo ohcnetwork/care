@@ -79,6 +79,7 @@ PRESSURE_SORE = {
             "properties": {
                 "region": {"type": "string"},
                 "scale": {"type": "number", "minimum": 1, "maximum": 5},
+                "description": {"type": "string"},
             },
             "additionalProperties": False,
             "required": ["region", "scale"],
