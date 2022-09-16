@@ -218,4 +218,10 @@ class PatientTeleInteraction(BaseModel, PatientRelatedPermissionMixin):
     # NOTE: interaction_date will be created_date
 
     def __str__(self):
-        return f"{self.user.name} - {self.interaction_type}"
+        return f"{self.interaction_with.username} - {self.interaction_type}"
+
+    def has_object_create_permission(self, request):
+        return self.has_object_update_permission(request)
+
+    def has_object_write_permission(self, request):
+        return self.has_object_update_permission(request)

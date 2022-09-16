@@ -106,6 +106,7 @@ class PatientTeleInteractionViewSet(
     queryset = PatientTeleInteraction.objects.all().order_by("-id")
 
     def get_queryset(self):
+        self.queryset = self.queryset.filter(Q(consultation__external_id = self.kwargs["consultation_external_id"]))
         if self.request.user.is_superuser:
             return self.queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:

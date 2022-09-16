@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
@@ -344,8 +345,9 @@ class PatientTeleInteractionSerializer(serializers.ModelSerializer):
         exclude = ("consultation", "deleted", "external_id")
 
     def create(self, validated_data):
-        validated_data["created_by"] = self.context["request"].user
-        validated_data["last_edited_by"] = self.context["request"].user
+        consultation_external_id = self.context["view"].kwargs["consultation_external_id"]
+        consultation = get_object_or_404(PatientConsultation, external_id=consultation_external_id)
+        validated_data["consultation"] = consultation
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
