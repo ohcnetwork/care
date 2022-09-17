@@ -17,7 +17,6 @@ from care.facility.models.json_schema.daily_round import (
     FEED,
     INFUSIONS,
     IV_FLUID,
-    MEDICINE_ADMINISTRATION,
     META,
     NURSING_PROCEDURE,
     OUTPUT,
