@@ -17,6 +17,7 @@ from care.facility.models.json_schema.daily_round import (
     FEED,
     INFUSIONS,
     IV_FLUID,
+    MEDICINE_ADMINISTRATION,
     META,
     NURSING_PROCEDURE,
     OUTPUT,
@@ -433,6 +434,10 @@ class DailyRound(PatientBaseModel):
     )
     nursing = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
+    )
+
+    medicine_administration = JSONField(
+        default=list,
     )
 
     meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
