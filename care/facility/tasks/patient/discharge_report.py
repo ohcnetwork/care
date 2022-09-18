@@ -1,4 +1,5 @@
 import datetime
+import logging
 import random
 import string
 import time
@@ -72,4 +73,5 @@ def generate_discharge_report(patient_id, email):
     msg.content_subtype = "html"  # Main content is now text/html
     msg.attach(patient.name + "-Discharge_Summary.pdf", file.read(), "application/pdf")
     msg.send()
+    logging.error(filename, html_string, msg)
     default_storage.delete(filename)
