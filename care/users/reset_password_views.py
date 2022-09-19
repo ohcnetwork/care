@@ -52,7 +52,7 @@ class ResetPasswordConfirm(GenericAPIView):
         reset_password_token = ResetPasswordToken.objects.filter(key=token).first()
 
         if reset_password_token is None:
-            return Response({"status": "notfound"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": "notfound", "detail": "The password reset link is invalid" }, status=status.HTTP_404_NOT_FOUND)
 
         # check expiry date
         expiry_date = reset_password_token.created_at + timedelta(hours=password_reset_token_validation_time)
@@ -60,7 +60,7 @@ class ResetPasswordConfirm(GenericAPIView):
         if timezone.now() > expiry_date:
             # delete expired token
             reset_password_token.delete()
-            return Response({"status": "expired"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": "expired", "detail": "The password reset link has expired" }, status=status.HTTP_404_NOT_FOUND)
 
         # change users password (if we got to this code it means that the user is_active)
         if reset_password_token.user.eligible_for_reset():
