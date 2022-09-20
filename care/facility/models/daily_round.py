@@ -435,6 +435,10 @@ class DailyRound(PatientBaseModel):
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
     )
 
+    medicine_administration = JSONField(
+        default=list,
+    )
+
     meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
 
     def cztn(self, value):

@@ -33,7 +33,7 @@ IV_FLUID = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -63,7 +63,7 @@ OUTPUT = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"},},
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
