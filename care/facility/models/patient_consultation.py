@@ -3,13 +3,18 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    PatientBaseModel,
+)
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
-    REVERSE_SYMPTOM_CATEGORY_CHOICES,
+    REVERSE_CATEGORY_CHOICES,
+    REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     SuggestionChoices,
     reverse_choices,
@@ -37,6 +42,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
     diagnosis = models.TextField(default="", null=True, blank=True)
+    icd11_provisional_diagnoses = ArrayField(
+        models.CharField(max_length=100), default=[], blank=True, null=True
+    )
     icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=[], blank=True, null=True
     )
@@ -45,8 +53,15 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    deprecated_covid_category = models.CharField(
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
+    )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -146,13 +161,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         "admission_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
+        "deprecated_covid_category": "Covid Category",
         "category": "Category",
         "examination_details": "Examination Details",
         "suggestion": "Suggestion",
     }
 
     CSV_MAKE_PRETTY = {
-        "category": (lambda x: REVERSE_SYMPTOM_CATEGORY_CHOICES.get(x, "-")),
+        "deprecated_covid_category": (
+            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
+        ),
+        "category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),

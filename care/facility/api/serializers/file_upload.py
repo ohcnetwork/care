@@ -49,7 +49,12 @@ def check_permissions(file_type, associating_id, user):
                     if user == sample.consultation.assigned_to:
                         return sample.id
             if sample.testing_facility:
-                if has_facility_permission(user, Facility.objects.get(external_id=sample.testing_facility.external_id)):
+                if has_facility_permission(
+                    user,
+                    Facility.objects.get(
+                        external_id=sample.testing_facility.external_id
+                    ),
+                ):
                     return sample.id
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
@@ -86,7 +91,9 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        internal_id = check_permissions(validated_data["file_type"], validated_data["associating_id"], user)
+        internal_id = check_permissions(
+            validated_data["file_type"], validated_data["associating_id"], user
+        )
         validated_data["associating_id"] = internal_id
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
@@ -97,12 +104,19 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
 class FileUploadListSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
-
     uploaded_by = UserBaseMinimumSerializer(read_only=True)
+    extension = serializers.CharField(source="get_extension", read_only=True)
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "uploaded_by", "created_date", "file_category")
+        fields = (
+            "id",
+            "name",
+            "uploaded_by",
+            "created_date",
+            "file_category",
+            "extension",
+        )
         read_only_fields = ("associating_id", "name", "created_date")
 
 
@@ -118,11 +132,19 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
 class FileUploadRetrieveSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
-
     uploaded_by = UserBaseMinimumSerializer(read_only=True)
     read_signed_url = serializers.CharField(read_only=True)
+    extension = serializers.CharField(source="get_extension", read_only=True)
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "uploaded_by", "created_date", "read_signed_url", "file_category")
+        fields = (
+            "id",
+            "name",
+            "uploaded_by",
+            "created_date",
+            "read_signed_url",
+            "file_category",
+            "extension",
+        )
         read_only_fields = ("associating_id", "name", "created_date")

@@ -16,7 +16,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
-  ECS_SERVICE_BACKEND: "care"
+  ECS_SERVICE_BACKEND: "care-backend"
   ECS_SERVICE_CELERY: "care-celery"
   ECS_CLUSTER: "egov"
   ECS_TASK_DEFINITION_BACKEND: "./aws/backend.json"

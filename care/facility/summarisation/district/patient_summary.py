@@ -1,6 +1,6 @@
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from django.db.models import Q, Subquery
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
@@ -10,16 +10,8 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import (
-    ADMIT_CHOICES,
-    DistrictScopedSummary,
-    Facility,
-    FacilityRelatedSummary,
-    PatientConsultation,
-    PatientRegistration,
-    patient,
-)
-
+from care.facility.models import DistrictScopedSummary, PatientRegistration
+from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import District, LocalBody
 
 
@@ -81,7 +73,8 @@ def DistrictPatientSummary():
                 "name": local_body_object.name,
                 "code": local_body_object.localbody_code,
                 "total_inactive": PatientRegistration.objects.filter(
-                    is_active=False, local_body_id=local_body_object.id,
+                    is_active=False,
+                    local_body_id=local_body_object.id,
                 ).count(),
             }
             patients = PatientRegistration.objects.filter(
@@ -92,11 +85,12 @@ def DistrictPatientSummary():
 
             # Get Total Counts
 
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
-                count = patients.filter(**filter).count()
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
+                count = patients.filter(**patient_filters).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
                 district_summary[local_body_object.id][clean_name] = count
 
@@ -119,11 +113,12 @@ def DistrictPatientSummary():
                 home_quarantine
             ).count()
 
-            for admitted_choice in ADMIT_CHOICES:
-                db_value = admitted_choice[0]
-                text = admitted_choice[1]
-                filter = {"last_consultation__" + "admitted_to": db_value}
-                count = patients_today.filter(**filter).count()
+            for bed_type_choice in BedTypeChoices:
+                db_value, text = bed_type_choice
+                patient_filters = {
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                }
+                count = patients_today.filter(**patient_filters).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
                 district_summary[local_body_object.id][clean_name] = count
 
