@@ -12,14 +12,12 @@ class Migration(migrations.Migration):
     # Forward Function
     def set_uploads_completed(apps, schema_editor):
         FileUpload = apps.get_model('facility', 'FileUpload')
-        db_alias = schema_editor.connection.alias
-        FileUpload.objects.using(db_alias).update(upload_completed=True)
+        FileUpload.objects.update(upload_completed=True)
 
     # Reverse Function
     def set_uploads_not_completed(apps, schema_editor):
         FileUpload = apps.get_model('facility', 'FileUpload')
-        db_alias = schema_editor.connection.alias
-        FileUpload.objects.using(db_alias).update(upload_completed=False)
+        FileUpload.objects.update(upload_completed=False)
 
     operations = [
         migrations.RunPython(set_uploads_completed, set_uploads_not_completed),
