@@ -226,7 +226,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 event=Notification.Event.PATIENT_HEALTH_DETAILS_UPDATED,
                 caused_by=self.context["request"].user,
                 caused_object=consultation.last_health_details,
-                facility=consultation.patient.facility,
+                facility=consultation.facility,
             ).generate()
         except KeyError:
             pass
@@ -325,7 +325,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             health_details = PatientHealthDetails(
                 patient=consultation.patient,
                 facility=consultation.facility,
-                created_in_consultation=consultation,
+                consultation=consultation,
                 **health_details_data,
             )
             health_details.save()
@@ -345,7 +345,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 event=Notification.Event.PATIENT_HEALTH_DETAILS_CREATED,
                 caused_by=self.context["request"].user,
                 caused_object=health_details,
-                facility=consultation.patient.facility,
+                facility=consultation.facility,
             ).generate()
         except KeyError as error:
             if consultation.patient.last_consultation is None:
