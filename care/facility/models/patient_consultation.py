@@ -33,7 +33,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey(
-        "PatientRegistration", on_delete=models.CASCADE, related_name="consultations"
+        "PatientRegistration",
+        on_delete=models.CASCADE,
+        related_name="consultations",
     )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
@@ -101,7 +103,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
     assigned_to = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_assigned_to",
     )
 
     verified_by = models.TextField(default="", null=True, blank=True)
@@ -111,11 +116,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="last_edited_user",
     )
 
     last_daily_round = models.ForeignKey(
-        "facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None
+        "facility.DailyRound",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
 
     current_bed = models.ForeignKey(
@@ -127,9 +138,26 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     last_health_details = models.ForeignKey(
-        "PatientHealthDetails", on_delete=models.SET_NULL, null=True, default=None
+        "PatientHealthDetails",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
     # Physical Information
+
+    height = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Height in CM",
+        validators=[MinValueValidator(0)],
+    )  # deprecated
+
+    weight = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Weight in KG",
+        validators=[MinValueValidator(0)],
+    )  # deprecated
 
     HBA1C = models.FloatField(
         default=None,
