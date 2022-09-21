@@ -1,11 +1,6 @@
 from datetime import timedelta
 
 from django.utils.timezone import localtime, now
-from care.facility.api.serializers.patient_health_details import (
-    PatientHealthDetailsSerializer,
-)
-
-from care.facility.models.patient import PatientHealthDetails, Vaccine
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -19,8 +14,17 @@ from care.facility.models import (
     Facility,
     PatientRegistration,
 )
+from care.facility.api.serializers.patient_health_details import (
+    PatientHealthDetailsSerializer,
+)
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    Facility,
+    PatientRegistration,
+)
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientHealthDetails, Vaccine
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
@@ -199,11 +203,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             PatientHealthDetails.objects.filter(
                 id=consultation.last_health_details.id
             ).update(**self.context["request"].data["new_health_details"])
+
             consultation.last_health_details = (
                 PatientHealthDetails.objects.get(
                     id=consultation.last_health_details.id
                 )
             )
+
             vaccines = []
             for vaccine in vaccination_history:
                 vaccines.append(
@@ -215,6 +221,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if vaccines:
                 Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
             consultation.save(update_fields=["last_health_details"])
+
             NotificationGenerator(
                 event=Notification.Event.PATIENT_HEALTH_DETAILS_UPDATED,
                 caused_by=self.context["request"].user,
@@ -322,6 +329,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 **health_details_data,
             )
             health_details.save()
+
             vaccines = []
             for vaccine in vaccination_history:
                 vaccines.append(
@@ -329,15 +337,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 )
             if vaccines:
                 Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
+
             consultation.last_health_details = health_details
             consultation.save(update_fields=["last_health_details"])
+
             NotificationGenerator(
                 event=Notification.Event.PATIENT_HEALTH_DETAILS_CREATED,
                 caused_by=self.context["request"].user,
                 caused_object=health_details,
                 facility=consultation.patient.facility,
             ).generate()
-        except KeyError:
+        except KeyError as error:
             if consultation.patient.last_consultation is None:
                 raise ValidationError(
                     {
@@ -345,7 +355,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             "Please provide the health details of the patient"
                         ]
                     }
-                )
+                ) from error
         if bed:
             consultation_bed = ConsultationBed(
                 bed=bed,
