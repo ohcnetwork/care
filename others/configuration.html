@@ -205,6 +205,12 @@
 <p>VAPID (Voluntary Application Server Identity) Keys are used mainly to send and receive website push notifications.</p>
 <p>To generate a VAPID keypair: <code class="code docutils literal notranslate"><span class="pre">npx</span> <span class="pre">web-push</span> <span class="pre">generate-vapid-keys</span></code></p>
 </section>
+<section id="jwks">
+<h2>JWKs<a class="headerlink" href="#jwks" title="Permalink to this heading">#</a></h2>
+<p>JWKs (Json Web keys) are used to perform open-id verification</p>
+<p>To generate JWKs run <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">generate_jwks</span></code> in virtual environment,</p>
+<p>the obtained base64 string needs to be exported to environment as <code class="code docutils literal notranslate"><span class="pre">JWKS_BASE64</span></code></p>
+</section>
 </section>
 
         </article>
@@ -266,6 +272,7 @@
             <ul>
 <li><a class="reference internal" href="#">Other Details</a><ul>
 <li><a class="reference internal" href="#vapid-keys">VAPID Keys</a></li>
+<li><a class="reference internal" href="#jwks">JWKs</a></li>
 </ul>
 </li>
 </ul>
