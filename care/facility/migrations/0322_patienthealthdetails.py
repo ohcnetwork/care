@@ -16,6 +16,7 @@ def populate_data(apps, schema_editor):
         allergies = ""
         blood_group = None
         consultation = None
+        facility = patient.facility
         weight = 0.0
         height = 0.0
 
@@ -27,6 +28,7 @@ def populate_data(apps, schema_editor):
             blood_group = patient.blood_group
 
         if patient.last_consultation is not None:
+            facility = patient.last_consultation.facility
             consultation = patient.last_consultation
 
             if patient.last_consultation.weight is not None:
@@ -36,7 +38,7 @@ def populate_data(apps, schema_editor):
 
         health_details_obj = health_details(
             patient=patient,
-            facility=patient.last_consultation.facility,
+            facility=facility,
             weight=weight,
             height=height,
             consultation=consultation,
@@ -45,18 +47,27 @@ def populate_data(apps, schema_editor):
             blood_group=blood_group,
         )
 
-        if patient.last_consultation is not None:
-            patient.last_consultation.last_health_details = health_details_obj
-
         health_details_objs.append(health_details_obj)
 
     health_details.objects.bulk_create(health_details_objs)
 
 
+def link_data(apps, schema_editor):
+    patient_consultation = apps.get_model("facility", "PatientConsultation")
+    health_details = apps.get_model("facility", "PatientHealthDetails")
+    patient_cons_objs = patient_consultation.objects.all()
+
+    for patient_cons in patient_cons_objs:
+        patient_cons.last_health_details = health_details.objects.get(
+            id=patient_cons.patient.id
+        )
+        patient_cons.save(update_fields=["last_health_details"])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0315_merge_20220912_1001"),
+        ("facility", "0321_merge_20220921_2255"),
     ]
 
     operations = [
@@ -196,4 +207,5 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(populate_data, migrations.RunPython.noop),
+        migrations.RunPython(link_data, migrations.RunPython.noop),
     ]

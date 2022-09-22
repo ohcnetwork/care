@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0317_auto_20220912_2244"),
+        ("facility", "0323_vaccine_model"),
     ]
 
     operations = [

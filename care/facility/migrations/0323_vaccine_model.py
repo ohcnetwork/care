@@ -26,7 +26,7 @@ def create_vaccination_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0315_merge_20220912_1001"),
+        ("facility", "0322_patienthealthdetails"),
     ]
 
     operations = [
