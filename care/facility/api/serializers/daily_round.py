@@ -33,7 +33,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
