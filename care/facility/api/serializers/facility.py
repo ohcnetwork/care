@@ -1,17 +1,18 @@
-from distutils import extension
 import boto3
-
-from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from care.facility.api.serializers.facility_capacity import FacilityCapacitySerializer
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
 from care.facility.models.facility import FEATURE_CHOICES
-from care.facility.models.patient_base import reverse_choices
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
-from config.serializers import ChoiceField
+from care.users.api.serializers.lsg import (
+    DistrictSerializer,
+    LocalBodySerializer,
+    StateSerializer,
+    WardSerializer,
+)
 from care.utils.csp import config as cs_provider
+from config.serializers import ChoiceField
 
 User = get_user_model()
 
@@ -47,7 +48,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
     def get_facility_type(self, facility):
-        return {"id": facility.facility_type, "name": facility.get_facility_type_display()}
+        return {
+            "id": facility.facility_type,
+            "name": facility.get_facility_type_display(),
+        }
 
     class Meta:
         model = Facility
@@ -75,7 +79,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     #     "latitude": 49.8782482189424,
     #     "longitude": 24.452545489
     # }
-    read_cover_image_url = serializers.CharField(read_only=True)
+    read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
 
@@ -121,25 +125,26 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
     cover_image = serializers.ImageField(required=True, write_only=True)
+    read_cover_image_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = Facility
-        fields = ("cover_image",)
+        # Check DRYpermissions before updating
+        fields = ("cover_image", "read_cover_image_url")
 
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
-        image_extension = image.name.split(".")[-1]
+        image_extension = image.name.rsplit(".", 1)[-1]
         s3 = boto3.client(
-            "s3",
-            **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
+            "s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
         )
-        upload_response = s3.put_object(
+        image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
+        s3.put_object(
             Bucket=settings.FACILITY_S3_BUCKET,
-            Key=f"cover_images/{facility.external_id}_cover.{image_extension}",
+            Key=image_location,
             Body=image.file,
         )
-        print(upload_response['ResponseMetadata']['HTTPHeaders']['location'])
-        facility.cover_image_url = f"cover_images/{facility.external_id}_cover.{image_extension}"
+        facility.cover_image_url = image_location
         facility.save()
         return facility
