@@ -21,6 +21,7 @@ from care.facility.models.json_schema.daily_round import (
     NURSING_PROCEDURE,
     OUTPUT,
     PRESSURE_SORE,
+    PAIN_SCALE_ENHANCED,
 )
 from care.facility.models.patient_base import SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -328,6 +329,9 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
+    pain_scale_enhanced = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)]
+    )
     ph = models.DecimalField(
         decimal_places=2,
         max_digits=4,
@@ -427,6 +431,10 @@ class DailyRound(PatientBaseModel):
     )
     nursing = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
+    )
+
+    medicine_administration = JSONField(
+        default=list,
     )
 
     meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
