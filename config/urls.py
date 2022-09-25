@@ -9,6 +9,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
+from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordConfirm,
@@ -77,6 +78,11 @@ urlpatterns = [
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
+    path(
+        ".well-known/openid-configuration",
+        OpenIdConfigView.as_view(),
+        name="openid-configuration",
+    ),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

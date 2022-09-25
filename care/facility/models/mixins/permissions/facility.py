@@ -9,23 +9,27 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     @staticmethod
     def has_write_permission(request):
-        from care.users.models import State, District, LocalBody
+        from care.users.models import District, LocalBody, State
+
         try:
             state = State.objects.get(id=request.data["state"])
-            district = District.objects.get(id=request.data["district"]) 
+            district = District.objects.get(id=request.data["district"])
             local_body = LocalBody.objects.get(id=request.data["local_body"])
             return (
-                request.user.is_superuser or (
+                request.user.is_superuser
+                or (
                     request.user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
                     and state == request.user.state
                     and district == request.user.district
                     and local_body == request.user.local_body
-                ) or (
+                )
+                or (
                     request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
                     and request.user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
                     and state == request.user.state
                     and district == request.user.district
-                ) or (
+                )
+                or (
                     request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
                     and request.user.user_type <= User.TYPE_VALUE_MAP["StateAdmin"]
                     and state == request.user.state
@@ -33,6 +37,11 @@ class FacilityPermissionMixin(BasePermissionMixin):
             )
         except Exception:
             return False
+
+    @staticmethod
+    def has_cover_image_permission(request):
+        # Returning true here as the permission is validated at object level for this action
+        return True
 
     def has_object_read_permission(self, request):
         return (
@@ -62,10 +71,15 @@ class FacilityPermissionMixin(BasePermissionMixin):
         return self.has_object_read_permission(request)
 
     def has_object_update_permission(self, request):
-        return super().has_object_update_permission(request) or self.has_object_write_permission(request)
+        return super().has_object_update_permission(
+            request
+        ) or self.has_object_write_permission(request)
 
     def has_object_destroy_permission(self, request):
         return self.has_object_read_permission(request)
+
+    def has_object_cover_image_permission(self, request):
+        return self.has_object_update_permission(request)
 
 
 class FacilityRelatedPermissionMixin(BasePermissionMixin):
@@ -82,7 +96,9 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
 
         facility = False
         try:
-            facility = Facility.objects.get(external_id=request.parser_context["kwargs"]["facility_external_id"])
+            facility = Facility.objects.get(
+                external_id=request.parser_context["kwargs"]["facility_external_id"]
+            )
         except Facility.DoesNotExist:
             return False
         return (request.user.is_superuser or request.user.verified) and (

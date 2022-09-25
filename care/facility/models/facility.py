@@ -168,7 +168,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         verbose_name_plural = "Facilities"
 
     def read_cover_image_url(self):
-        return settings.FACILITY_S3_STATIC_PREFIX + (self.cover_image_url or "")
+        if self.cover_image_url:
+            return settings.FACILITY_S3_STATIC_PREFIX + self.cover_image_url
+        return None
 
     def __str__(self):
         return f"{self.name}"
