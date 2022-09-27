@@ -215,19 +215,25 @@
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">createsuperuser</span></code></p>
 </td>
 </tr>
-<tr class="row-odd"><td><p>load_data</p></td>
+<tr class="row-odd"><td><p>load_dummy_data</p></td>
+<td><p>None</p></td>
+<td><p>This command is used to load dummy data for testing and development purposes only. User “devdistrictadmin” with password “<a class="reference external" href="mailto:Coronasafe&#37;&#52;&#48;123">Coronasafe<span>&#64;</span>123</a>” is populated, invokes <code class="code docutils literal notranslate"><span class="pre">load_data</span> <span class="pre">kerala</span></code> and <code class="code docutils literal notranslate"><span class="pre">seed_data</span></code>. This command will intentionally fail to run in staging or production environment.</p>
+<p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">load_dummy_data</span></code></p>
+</td>
+</tr>
+<tr class="row-even"><td><p>load_data</p></td>
 <td><p>state_name</p></td>
 <td><p>This command is used to load all the DIstrict/Lsg/Ward Level data for a given state, The data that is imported is scraped from various sources, The admin can change this data at any point through the admin panel, If the state name is given as “all” then all available data is imported into care.</p>
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">load_data</span> <span class="pre">kerala</span></code></p>
 </td>
 </tr>
-<tr class="row-even"><td><p>seed_data</p></td>
+<tr class="row-odd"><td><p>seed_data</p></td>
 <td><p>None</p></td>
 <td><p>This command loads all static data that the application needs to run, this includes inventory seed data for Oxygen, Medical Tests data, etc. All this data can be changed by the superuser from the admin panel.</p>
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">seed_data</span></code></p>
 </td>
 </tr>
-<tr class="row-odd"><td><p>summarize</p></td>
+<tr class="row-even"><td><p>summarize</p></td>
 <td><p>None</p></td>
 <td><p>The summary jobs are run by Celery every 10 mins, but we can force Django to summarize the current data and update the summary table with this command</p>
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">summarize</span></code></p>
