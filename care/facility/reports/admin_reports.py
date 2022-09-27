@@ -51,14 +51,18 @@ class AdminReports:
 
     def fetch_unique_districts(self) -> None:
         self.unique_object_ids = list(
-            User.objects.filter(user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], district__isnull=False)
+            User.objects.filter(
+                user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], district__isnull=False
+            )
             .values_list("district_id", flat=True)
             .distinct()
         )
 
     def fetch_unique_states(self) -> None:
         self.unique_object_ids = list(
-            User.objects.filter(user_type=User.TYPE_VALUE_MAP["StateAdmin"], state__isnull=False)
+            User.objects.filter(
+                user_type=User.TYPE_VALUE_MAP["StateAdmin"], state__isnull=False
+            )
             .values_list("state_id", flat=True)
             .distinct()
         )
@@ -73,7 +77,9 @@ class AdminReports:
             self.fetch_unique_states()
         else:
             raise InvalidModeException
-        self.start_date = (localtime(now()) - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        self.start_date = (localtime(now()) - timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         self.end_date = self.start_date + timedelta(days=1)
 
     def get_object_name(self, object_id):
@@ -111,7 +117,9 @@ class AdminReports:
         base_queryset = PatientRegistration.objects.filter(**base_filters)
         return_dict["current_active"] = base_queryset.filter(is_active=True).count()
         return_dict["created_today"] = base_queryset.filter(
-            is_active=True, created_date__gte=self.start_date, created_date__lte=self.end_date
+            is_active=True,
+            created_date__gte=self.start_date,
+            created_date__lte=self.end_date,
         ).count()
         return_dict["discharged_today"] = base_queryset.filter(
             is_active=False,
@@ -132,7 +140,9 @@ class AdminReports:
                 age__gte=braket[0],
                 age__lt=braket[1],
             ).count()
-            return_list.append({"total_count": count, "title": f"{braket[0]}-{braket[1]}"})
+            return_list.append(
+                {"total_count": count, "title": f"{braket[0]}-{braket[1]}"}
+            )
         return return_list
 
     def caluclate_patient_category_summary(self, base_filters):
@@ -151,7 +161,9 @@ class AdminReports:
     def calculate_shifting_summary(self, base_filters):
         return_dict = {}
         base_queryset = ShiftingRequest.objects.filter(**base_filters)
-        today_queryset = base_queryset.filter(created_date__gte=self.start_date, created_date__lte=self.end_date)
+        today_queryset = base_queryset.filter(
+            created_date__gte=self.start_date, created_date__lte=self.end_date
+        )
         return_dict["total_up"] = today_queryset.filter(is_up_shift=True).count()
         return_dict["total_down"] = today_queryset.filter(is_up_shift=False).count()
         return_dict["total_count"] = return_dict["total_up"] + return_dict["total_down"]
@@ -160,11 +172,19 @@ class AdminReports:
     def calculate_shifting_status_summary(self, base_filters):
         return_list = []
         base_queryset = ShiftingRequest.objects.filter(**base_filters)
-        today_queryset = base_queryset.filter(created_date__gte=self.start_date, created_date__lte=self.end_date)
+        today_queryset = base_queryset.filter(
+            created_date__gte=self.start_date, created_date__lte=self.end_date
+        )
         for status in SHIFTING_STATUS_CHOICES:
             total = today_queryset.filter(status=status[0]).count()
             emergency = today_queryset.filter(status=status[0], emergency=True).count()
-            return_list.append({"total_count": total, "emergency_count": emergency, "status": status[1]})
+            return_list.append(
+                {
+                    "total_count": total,
+                    "emergency_count": emergency,
+                    "status": status[1],
+                }
+            )
         return return_list
 
     def generate_report_data(self, object_id):
@@ -173,9 +193,15 @@ class AdminReports:
         shifting_base_filter = {"patient__" + self.filter_field: object_id}
         final_data["patients_summary"] = self.calculate_patient_summary(base_filters)
         final_data["patients_age"] = self.caluclate_patient_age_summary(base_filters)
-        final_data["patients_categories"] = self.caluclate_patient_category_summary(base_filters)
-        final_data["shifting_summary"] = self.calculate_shifting_summary(shifting_base_filter)
-        final_data["shifting_status"] = self.calculate_shifting_status_summary(shifting_base_filter)
+        final_data["patients_categories"] = self.caluclate_patient_category_summary(
+            base_filters
+        )
+        final_data["shifting_summary"] = self.calculate_shifting_summary(
+            shifting_base_filter
+        )
+        final_data["shifting_status"] = self.calculate_shifting_status_summary(
+            shifting_base_filter
+        )
         return final_data
 
     def generate_reports(self):
@@ -222,9 +248,13 @@ class AdminReports:
     def send_reports(self, object_name, base_filters, file_name):
         users = User.objects.all()
         if self.mode == AdminReportsMode.STATE:
-            users = users.filter(user_type=User.TYPE_VALUE_MAP["StateAdmin"], **base_filters)
+            users = users.filter(
+                user_type=User.TYPE_VALUE_MAP["StateAdmin"], **base_filters
+            )
         elif self.mode == AdminReportsMode.DISTRICT:
-            users = users.filter(user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], **base_filters)
+            users = users.filter(
+                user_type=User.TYPE_VALUE_MAP["DistrictAdmin"], **base_filters
+            )
         try:
             public_url = self.upload_file(file_name)
         except UploadNotSupported:

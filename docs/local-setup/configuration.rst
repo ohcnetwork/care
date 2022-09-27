@@ -10,22 +10,22 @@ There are two ways to run the development server:
 Using Docker Compose
 ---------------------
 
-    This setup will run 5 Docker containers:   
+    This setup will run 5 Docker containers:
 
-    - PostGIS
+    - postgres (database)
     - care (main repo)
     - redis (in-memory cache)
     - celery (task queue)
     - localstack (to mimic AWS services locally)
 
-This is the most recommended way of setting up care locally, 
-as it installs appropriate dependencies in containers so there 
-is no chance of conflicting dependencies. If you are running this 
+This is the most recommended way of setting up care locally,
+as it installs appropriate dependencies in containers so there
+is no chance of conflicting dependencies. If you are running this
 first time, it might take a while depending upon your internet speed and machine specs.
 
 - Steps to run the development server:
 
-    1. Run the following command to start the development environment:  
+    1. Run the following command to start the development environment:
         .. code-block:: bash
 
             $ make up
@@ -33,10 +33,10 @@ first time, it might take a while depending upon your internet speed and machine
     2. Open a browser and go to `http://localhost:9000`
 
 
-- To stop the development environment:  
+- To stop the development environment:
     .. code-block:: bash
 
-        $ make down  
+        $ make down
 
 - To run tests:
     .. code-block:: bash
@@ -66,7 +66,7 @@ Do the following steps to set up password authentication.
 
     sudo -u postgres psql
 
-In the `postgres#` shell type:: 
+In the `postgres#` shell type::
 
 \password postgres
 
@@ -101,16 +101,6 @@ Login to the postgres shell and run:
  \q
 
 You may replace `care` with the database name of your preference
-
-You also might have to install PostGIS scripts.
-
-* Linux users can install PostGIS scripts by running ::
-
-    $ sudo apt install postgresql-<version>-postgis-scripts
-
-* Windows users can install
-    - PostGIS through Application Stack Builder which is installed along PostgreSQL using standard PostgreSQL installer.
-    - OSGeo4W from this site_. 
 
 Then follow the steps listed here_.
 
@@ -153,15 +143,13 @@ Setting Up Your Users
     $ python manage.py createsuperuser
 
 If the command prompts for username only and after entering if it goes to error
-do make sure that you have done the following 
+do make sure that you have done the following
 
 Note: Make sure that you have created a database named `care` (replace thisw with your database name)  with privileges set for the user `postgres`
 
 In the virtualenv shell type the following commands also::
 
  export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/care
-
- export TEST_POSTGIS_URL="postgis://postgres:<password>@127.0.0.1:5432/care"
 
 You may replace **care** with the database you have created before.
 

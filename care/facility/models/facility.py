@@ -43,6 +43,7 @@ FEATURE_CHOICES = [
     (3, "X-Ray facility"),
     (4, "Neonatal care"),
     (5, "Operation theater"),
+    (6, "Blood Bank"),
 ]
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
@@ -167,7 +168,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         verbose_name_plural = "Facilities"
 
     def read_cover_image_url(self):
-        return settings.FACILITY_S3_STATIC_PREFIX + (self.cover_image_url or "")
+        if self.cover_image_url:
+            return settings.FACILITY_S3_STATIC_PREFIX + self.cover_image_url
+        return None
 
     def __str__(self):
         return f"{self.name}"

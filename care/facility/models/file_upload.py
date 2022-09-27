@@ -1,13 +1,13 @@
 import enum
 import time
-import boto3
 from uuid import uuid4
+
+import boto3
 from django.conf import settings
 from django.db import models
 
 from care.facility.models import FacilityBaseModel
 from care.users.models import User
-
 from care.utils.csp import config as cs_provider
 
 
@@ -40,11 +40,21 @@ class FileUpload(FacilityBaseModel):
     internal_name = models.CharField(max_length=2000)
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
-    uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
-    file_type = models.IntegerField(choices=FileTypeChoices, default=FileType.PATIENT.value)
-    file_category = models.CharField(
-        choices=FileCategoryChoices, default=FileCategory.UNSPECIFIED.value, max_length=100
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=True, blank=True
     )
+    file_type = models.IntegerField(
+        choices=FileTypeChoices, default=FileType.PATIENT.value
+    )
+    file_category = models.CharField(
+        choices=FileCategoryChoices,
+        default=FileCategory.UNSPECIFIED.value,
+        max_length=100,
+    )
+
+    def get_extension(self):
+        parts = self.internal_name.split(".")
+        return f".{parts[-1]}" if len(parts) > 1 else ""
 
     def save(self, *args, **kwargs):
         if "force_insert" in kwargs or (not self.internal_name):

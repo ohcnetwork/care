@@ -125,7 +125,7 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different state")
+            raise serializers.ValidationError("Cannot create for a different district")
         return value
 
     def validate_state(self, value):
@@ -140,9 +140,7 @@ class UserCreateSerializer(SignUpSerializer):
     def validate(self, attrs):
         validated = super(UserCreateSerializer, self).validate(attrs)
         if "home_facility" in validated:
-            allowed_facilities = get_home_facility_queryset(
-                self.context["created_by"]
-            )
+            allowed_facilities = get_home_facility_queryset(self.context["created_by"])
             if not allowed_facilities.filter(id=validated["home_facility"].id).exists():
                 raise exceptions.ValidationError(
                     {
