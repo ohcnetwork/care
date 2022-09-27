@@ -65,3 +65,10 @@ class ConsultationBed(BaseModel):
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
     meta = JSONField(default=dict, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_patient_bed', fields=['consultation', 'bed'], condition=models.Q(consultation__admitted=True)
+            )
+        ]
