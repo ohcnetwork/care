@@ -95,7 +95,7 @@ class AssetFilter(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     asset_type = CareChoiceFilter(choice_dict=inverse_asset_type)
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
-    is_working = filters.BooleanFilter() 
+    is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
 
 
@@ -110,11 +110,13 @@ class AssetPublicViewSet(GenericViewSet):
         if not hit:
             instance = self.get_object()
             serializer = self.get_serializer(instance)
-            cache.set(key, serializer.data, 60 * 60 * 24) # Cache the asset details for 24 hours
+            cache.set(
+                key, serializer.data, 60 * 60 * 24
+            )  # Cache the asset details for 24 hours
             return Response(serializer.data)
         return Response(hit)
-       
-    
+
+
 class AssetViewSet(
     ListModelMixin,
     RetrieveModelMixin,
@@ -181,8 +183,8 @@ class AssetViewSet(
             obj.location = location
             obj.save()
             return Response(UserDefaultAssetLocationSerializer(obj).data)
-        except:
-            raise Http404
+        except Exception as e:
+            raise Http404 from e
 
     # Dummy Serializer for Operate Asset
     class DummyAssetOperateSerializer(Serializer):
@@ -206,7 +208,8 @@ class AssetViewSet(
             action = request.data["action"]
             asset: Asset = self.get_object()
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
-                asset.meta)
+                asset.meta
+            )
             result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)
 
@@ -214,9 +217,10 @@ class AssetViewSet(
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         except KeyError as e:
-            return Response({
-                "message": dict((key, "is required") for key in e.args)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": dict((key, "is required") for key in e.args)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         except APIException as e:
             return Response(e.detail, e.status_code)

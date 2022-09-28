@@ -10,7 +10,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
     @staticmethod
     def has_write_permission(request):
         from care.users.models import State, District, LocalBody
-
+        
         try:
             state = State.objects.get(id=request.data["state"])
             district = District.objects.get(id=request.data["district"])
@@ -52,6 +52,11 @@ class FacilityPermissionMixin(BasePermissionMixin):
         except Exception:
             return False
 
+    @staticmethod
+    def has_cover_image_permission(request):
+        # Returning true here as the permission is validated at object level for this action
+        return True
+
     def has_object_read_permission(self, request):
         return (
             (request.user.is_superuser)
@@ -86,6 +91,9 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     def has_object_destroy_permission(self, request):
         return self.has_object_read_permission(request)
+
+    def has_object_cover_image_permission(self, request):
+        return self.has_object_update_permission(request)
 
 
 class FacilityRelatedPermissionMixin(BasePermissionMixin):

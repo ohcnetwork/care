@@ -5,7 +5,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from care.facility.models import CATEGORY_CHOICES, PatientBaseModel
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    PatientBaseModel,
+)
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
@@ -17,6 +21,7 @@ from care.facility.models.json_schema.daily_round import (
     NURSING_PROCEDURE,
     OUTPUT,
     PRESSURE_SORE,
+    PAIN_SCALE_ENHANCED,
 )
 from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -133,8 +138,15 @@ class DailyRound(PatientBaseModel):
         choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
     )
     other_symptoms = models.TextField(default="", blank=True)
+    deprecated_covid_category = models.CharField(
+        choices=COVID_CATEGORY_CHOICES,
+        max_length=8,
+        default=None,
+        blank=True,
+        null=True,
+    )  # Deprecated
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, default=None, blank=True, null=True
+        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
     )
     current_health = models.IntegerField(
         default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
@@ -319,6 +331,9 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
+    pain_scale_enhanced = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)]
+    )
     ph = models.DecimalField(
         decimal_places=2,
         max_digits=4,
@@ -418,6 +433,10 @@ class DailyRound(PatientBaseModel):
     )
     nursing = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
+    )
+
+    medicine_administration = JSONField(
+        default=list,
     )
 
     meta = JSONField(default=dict, validators=[JSONFieldSchemaValidator(META)])
