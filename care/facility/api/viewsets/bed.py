@@ -1,5 +1,9 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError as DRFValidationError
+from rest_framework.fields import get_error_detail
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -10,13 +14,18 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.bed import AssetBedSerializer, BedSerializer, ConsultationBedSerializer
+from care.facility.api.serializers.bed import (
+    AssetBedSerializer,
+    BedSerializer,
+    ConsultationBedSerializer,
+)
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
+from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 
-inverse_bed_type = inverse_choices(Bed.BedTypeChoices)
+inverse_bed_type = inverse_choices(BedTypeChoices)
 
 
 class BedFilter(filters.FilterSet):
@@ -25,8 +34,19 @@ class BedFilter(filters.FilterSet):
     bed_type = CareChoiceFilter(choice_dict=inverse_bed_type)
 
 
-class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Bed.objects.all().select_related("facility", "location").order_by("-created_date")
+class BedViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
+):
+    queryset = (
+        Bed.objects.all()
+        .select_related("facility", "location")
+        .order_by("-created_date")
+    )
     serializer_class = BedSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
@@ -48,6 +68,16 @@ class BedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateMod
             queryset = queryset.filter(facility__id__in=allowed_facilities)
         return queryset
 
+    def destroy(self, request, *args, **kwargs):
+        if request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            raise PermissionDenied()
+        return super().destroy(request, *args, **kwargs)
+
+    def handle_exception(self, exc):
+        if isinstance(exc, DjangoValidationError):
+            exc = DRFValidationError(detail=get_error_detail(exc))
+        return super().handle_exception(exc)
+
 
 class AssetBedFilter(filters.FilterSet):
     asset = filters.UUIDFilter(field_name="asset__external_id")
@@ -55,9 +85,16 @@ class AssetBedFilter(filters.FilterSet):
 
 
 class AssetBedViewSet(
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
 ):
-    queryset = AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
+    queryset = (
+        AssetBed.objects.all().select_related("asset", "bed").order_by("-created_date")
+    )
     serializer_class = AssetBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
@@ -83,8 +120,18 @@ class ConsultationBedFilter(filters.FilterSet):
     bed = filters.UUIDFilter(field_name="bed__external_id")
 
 
-class ConsultationBedViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = ConsultationBed.objects.all().select_related("consultation", "bed").order_by("-created_date")
+class ConsultationBedViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = (
+        ConsultationBed.objects.all()
+        .select_related("consultation", "bed")
+        .order_by("-created_date")
+    )
     serializer_class = ConsultationBedSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter

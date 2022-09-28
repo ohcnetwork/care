@@ -1,7 +1,7 @@
 from django.db import models
 
 from care.facility.models import (
-    FacilityBaseModel, 
+    FacilityBaseModel,
     PatientRegistration,
     reverse_choices,
 )
@@ -91,8 +91,8 @@ class PatientSample(FacilityBaseModel):
     date_of_result = models.DateTimeField(null=True, blank=True)
 
     testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
-    
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_by")
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="samples_created")
     last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by")
 
 
@@ -143,7 +143,7 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["StaffReadOnly"]
 
     def has_object_read_permission(self, request):
         if self.testing_facility:

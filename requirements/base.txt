@@ -10,14 +10,12 @@ boto3==1.12.23 # For AWS interactions
 django==2.2.11  # pyup: < 3.0  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth==0.41.0  # https://github.com/pennersr/django-allauth
-django-crispy-forms==1.9.0  # https://github.com/django-crispy-forms/django-crispy-forms
 django-redis==4.11.0  # https://github.com/niwinz/django-redis
 django-storages==1.9.1 # For Storing Static Files in AWS
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 djangorestframework-simplejwt==4.5.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
 drf-yasg==1.17.1 # For Api Docs
-django-filter==2.2.0
+django-filter==2.4.0
 django-extra-fields==2.0.3 # https://github.com/Hipo/drf-extra-fields
 django-location-field==2.1.0 # https://django-location-field.readthedocs.io/en/latest/
 drf-nested-routers==0.91
@@ -56,7 +54,11 @@ django-hardcopy==0.1.4
 # ------------------------------------------------------------------------------
 pywebpush==1.11.0
 ## Override Requirements
+Authlib==1.0.1
 PyJWT==v1.7.1
 # Json Schema
 jsonschema==3.2.0
 typed-ast==1.5.0
+# In Memory Database
+# ------------------------------------------------------------------------------
+littletable==2.0.7
