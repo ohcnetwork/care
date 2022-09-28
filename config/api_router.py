@@ -207,5 +207,3 @@ urlpatterns = [
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
 ]
-
-# Importing Celery Tasks

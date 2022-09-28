@@ -152,7 +152,7 @@ typings/
 
 ### VisualStudioCode template
 .vscode/*
-!.vscode/settings.json
+# !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -335,7 +335,7 @@ pip-selfcheck.json
 
 MailHog
 care/media/*
-!care/media/needthisfolder
+!care/media/.gitkeep
 
 .pytest_cache/
 
@@ -344,12 +344,16 @@ care/media/*
 .envs/*
 !.envs/.local/
 
-.vscode
-.idea/
 test_db
 
 celerybeat-schedule
 
-config/settings/local.py
-
 secrets.sh
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/.gitignore
+/.idea/aws.xml
+/.idea/backend.iml
+/.idea/git_toolbox_prj.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml

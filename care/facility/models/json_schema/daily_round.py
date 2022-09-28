@@ -33,10 +33,7 @@ IV_FLUID = {
     "items": [
         {
             "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
-            },
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -66,10 +63,7 @@ OUTPUT = {
     "items": [
         {
             "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
-            },
+            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -85,6 +79,7 @@ PRESSURE_SORE = {
             "properties": {
                 "region": {"type": "string"},
                 "scale": {"type": "number", "minimum": 1, "maximum": 5},
+                "description": {"type": "string"},
             },
             "additionalProperties": False,
             "required": ["region", "scale"],
@@ -92,6 +87,22 @@ PRESSURE_SORE = {
     ],
 }
 
+PAIN_SCALE_ENHANCED = {
+    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": [
+        {
+            "type": "object",
+            "properties": {
+                "region": {"type": "string"},
+                "scale": {"type": "number", "minimum": 1, "maximum": 5},
+                "description": {"type": "string"},
+            },
+            "additionalProperties": False,
+            "required": ["region", "scale"],
+        }
+    ],
+}
 
 NURSING_PROCEDURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
