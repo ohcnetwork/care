@@ -74,6 +74,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
+    review_interval = models.IntegerField(default=-1)
     referred_to = models.ForeignKey(
         "Facility",
         null=True,
