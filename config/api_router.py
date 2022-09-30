@@ -76,7 +76,7 @@ from care.users.api.viewsets.lsg import (
     WardViewSet,
 )
 from care.users.api.viewsets.skill import SkillViewSet
-from care.users.api.viewsets.users import UserViewSet
+from care.users.api.viewsets.users import UserViewSet, CheckUsernameAPIView
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
 if settings.DEBUG:
@@ -88,6 +88,7 @@ router.register("users", UserViewSet)
 user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
 user_nested_rotuer.register("skill", UserSkillViewSet)
 
+router.register("checkusername", CheckUsernameAPIView)
 router.register("skill", SkillViewSet)
 
 router.register("facility", FacilityViewSet)
