@@ -427,7 +427,7 @@ FACILITY_S3_BUCKET_ENDPOINT = env(
 )
 FACILITY_S3_STATIC_PREFIX = env(
     "FACILITY_S3_STATIC_PREFIX",
-    default=f"http://s3.amazonaws.com/{FACILITY_S3_BUCKET}/",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com",
 )
 
 # Audit logs
