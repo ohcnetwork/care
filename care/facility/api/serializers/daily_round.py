@@ -37,7 +37,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
 
@@ -129,7 +131,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         validated_data["last_updated_by_telemedicine"] = False
         if self.context["request"].user == instance.consultation.assigned_to:
             validated_data["last_updated_by_telemedicine"] = True
-        instance.consultation.save(update_fields=["last_updated_by_telemedicine"])
+        instance.consultation.category = validated_data["patient_category"]
+        instance.consultation.save(
+            update_fields=["last_updated_by_telemedicine", "category"]
+        )
 
         NotificationGenerator(
             event=Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED,
@@ -230,8 +235,12 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             daily_round_obj.consultation.last_updated_by_telemedicine = validated_data[
                 "last_updated_by_telemedicine"
             ]
+            daily_round_obj.consultation.category = validated_data["patient_category"]
             daily_round_obj.consultation.save(
-                update_fields=["last_updated_by_telemedicine"]
+                update_fields=[
+                    "last_updated_by_telemedicine",
+                    "category",
+                ]
             )
             daily_round_obj.save(
                 update_fields=[
