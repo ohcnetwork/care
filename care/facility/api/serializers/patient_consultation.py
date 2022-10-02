@@ -14,7 +14,7 @@ from care.facility.models import (
     Facility,
     PatientRegistration,
 )
-from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.bed import Bed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
@@ -69,7 +69,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     discharge_notes = serializers.CharField(read_only=True)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
 
     review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
@@ -104,7 +106,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
 
     def get_icd11_provisional_diagnoses_object(self, consultation):
-        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_provisional_diagnoses)
+        return self.get_icd11_diagnoses_objects_by_ids(
+            consultation.icd11_provisional_diagnoses
+        )
 
     class Meta:
         model = PatientConsultation
@@ -157,6 +161,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             self.context["request"].user == instance.assigned_to
         )
 
+        bed = validated_data.pop("bed", None)
+
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"] and (not instance.is_kasp):
                 validated_data["kasp_enabled_date"] = localtime(now())
@@ -164,6 +170,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         _temp = instance.assigned_to
 
         consultation = super().update(instance, validated_data)
+
+        if bed:
+            serializer = ConsultationBedSerializer(
+                data={
+                    "bed": bed.external_id.hex,
+                    "consultation": consultation.external_id.hex,
+                    "start_date": consultation.created_date,
+                },
+                context={
+                    "request": self.context["request"],
+                },
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
@@ -240,12 +260,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.save()
 
         if bed:
-            consultation_bed = ConsultationBed(
-                bed=bed, consultation=consultation, start_date=consultation.created_date
+            serializer = ConsultationBedSerializer(
+                data={
+                    "bed": bed.hex,
+                    "consultation": consultation.hex,
+                    "start_date": consultation.created_date,
+                }
             )
-            consultation_bed.save()
-            consultation.current_bed = consultation_bed
-            consultation.save(update_fields=["current_bed"])
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
         patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
