@@ -35,7 +35,9 @@ from config.serializers import ChoiceField
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    facility_name = serializers.CharField(source="facility.name", read_only=True)
+    facility_name = serializers.CharField(
+        source="facility.name", read_only=True
+    )
     suggestion_text = ChoiceField(
         choices=PatientConsultation.SUGGESTION_CHOICES,
         read_only=True,
@@ -54,10 +56,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     referred_to = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
     )
-    patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
+    patient = ExternalIdSerializerField(
+        queryset=PatientRegistration.objects.all()
+    )
     facility = ExternalIdSerializerField(read_only=True)
 
-    assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
+    assigned_to_object = UserAssignedSerializer(
+        source="assigned_to", read_only=True
+    )
 
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
@@ -74,7 +80,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         required=False,
     )
 
-    review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+    review_time = serializers.IntegerField(
+        default=-1, write_only=True, required=False
+    )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
@@ -103,7 +111,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return diagnosis_objects
 
     def get_icd11_diagnoses_object(self, consultation):
-        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
+        return self.get_icd11_diagnoses_objects_by_ids(
+            consultation.icd11_diagnoses
+        )
 
     def get_icd11_provisional_diagnoses_object(self, consultation):
         return self.get_icd11_diagnoses_objects_by_ids(
@@ -135,7 +145,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if instance.discharge_date:
             raise ValidationError(
-                {"consultation": ["Discharged Consultation data cannot be updated"]}
+                {
+                    "consultation": [
+                        "Discharged Consultation data cannot be updated"
+                    ]
+                }
             )
 
         if instance.suggestion == SuggestionChoices.OP:
@@ -176,7 +190,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 data={
                     "bed": bed.external_id.hex,
                     "consultation": consultation.external_id.hex,
-                    "start_date": consultation.created_date,
+                    "start_date": localtime(now()),
                 },
                 context={
                     "request": self.context["request"],
@@ -186,7 +200,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             serializer.save()
 
         if "assigned_to" in validated_data:
-            if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
+            if (
+                validated_data["assigned_to"] != _temp
+                and validated_data["assigned_to"]
+            ):
                 NotificationGenerator(
                     event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
                     caused_by=self.context["request"].user,
@@ -218,12 +235,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         # Authorisation Check
 
-        allowed_facilities = get_home_facility_queryset(self.context["request"].user)
+        allowed_facilities = get_home_facility_queryset(
+            self.context["request"].user
+        )
         if not allowed_facilities.filter(
             id=self.validated_data["patient"].facility.id
         ).exists():
             raise ValidationError(
-                {"facility": "Consultation creates are only allowed in home facility"}
+                {
+                    "facility": "Consultation creates are only allowed in home facility"
+                }
             )
 
         # End Authorisation Checks
@@ -242,7 +263,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if validated_data["patient"].last_consultation:
             if not validated_data["patient"].last_consultation.discharge_date:
                 raise ValidationError(
-                    {"consultation": "Exists please Edit Existing Consultation"}
+                    {
+                        "consultation": "Exists please Edit Existing Consultation"
+                    }
                 )
 
         if "is_kasp" in validated_data:
@@ -283,7 +306,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if action != -1:
             patient.action = action
         if review_time > 0:
-            patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+            patient.review_time = localtime(now()) + timedelta(
+                minutes=review_time
+            )
 
         patient.save()
         NotificationGenerator(
@@ -312,9 +337,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R and not validated.get(
-                "referred_to"
-            ):
+            if validated[
+                "suggestion"
+            ] is SuggestionChoices.R and not validated.get("referred_to"):
                 raise ValidationError(
                     {
                         "referred_to": [
@@ -347,7 +372,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
                 if validated["review_time"] <= 0:
                     raise ValidationError(
-                        {"review_time": ["This field value is must be greater than 0."]}
+                        {
+                            "review_time": [
+                                "This field value is must be greater than 0."
+                            ]
+                        }
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
@@ -381,8 +410,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
 
 class PatientConsultationIDSerializer(serializers.ModelSerializer):
-    consultation_id = serializers.UUIDField(source="external_id", read_only=True)
-    patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
+    consultation_id = serializers.UUIDField(
+        source="external_id", read_only=True
+    )
+    patient_id = serializers.UUIDField(
+        source="patient.external_id", read_only=True
+    )
 
     class Meta:
         model = PatientConsultation
