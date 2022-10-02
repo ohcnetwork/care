@@ -48,7 +48,10 @@ class BedSerializer(ModelSerializer):
             attrs["facility"] = facility
         else:
             raise ValidationError(
-                {"location": "Field is Required", "facility": "Field is Required"}
+                {
+                    "location": "Field is Required",
+                    "facility": "Field is Required",
+                }
             )
         return super().validate(attrs)
 
@@ -96,7 +99,9 @@ class ConsultationBedSerializer(ModelSerializer):
     bed_object = BedSerializer(source="bed", read_only=True)
 
     consultation = ExternalIdSerializerField(
-        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+        queryset=PatientConsultation.objects.all(),
+        write_only=True,
+        required=True,
     )
     bed = ExternalIdSerializerField(
         queryset=Bed.objects.all(), write_only=True, required=True
@@ -185,5 +190,15 @@ class ConsultationBedSerializer(ModelSerializer):
         # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
         obj = super().create(validated_data)
         consultation.current_bed = obj
-        consultation.save(update_fields=["current_bed"])
+        consultation.admitted = True
+        consultation.suggestion = "A"
+        consultation.admission_date = obj.start_date
+        consultation.save(
+            update_fields=[
+                "current_bed",
+                "admitted",
+                "suggestion",
+                "admission_date",
+            ]
+        )
         return obj
