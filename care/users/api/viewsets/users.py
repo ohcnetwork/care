@@ -8,10 +8,10 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404, GenericAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError, Serializer, CharField
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
@@ -287,22 +287,16 @@ class UserViewSet(
         user.save()
         return Response(status=status.HTTP_200_OK)
 
-class CheckUsernameSerializer(Serializer):
-    username = CharField()
-
 class CheckUsernameAPIView(GenericAPIView):
     """
-    Checks availability of username, returns 200 if available, and 400 otherwise.
+    Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
     """
 
     permission_classes = (AllowAny, )
-    serializer_class = CheckUsernameSerializer
 
     def get(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data['username']
+        username = request.query_params.get('username')
         user = User.objects.filter(username=username) # since users are soft deleted, there might be inactive/deleted users that had the same username
         if user.exists():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)   
