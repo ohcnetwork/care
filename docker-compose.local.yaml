@@ -11,6 +11,7 @@ services:
     restart: always
     env_file:
       - ./docker/.local.env
+      - ./.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -26,6 +27,7 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
+      - ./.env
     entrypoint: ["bash", "docker/docker-entrypoint.sh"]
     ports:
       - "9000:9000"
@@ -42,6 +44,7 @@ services:
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
+      - ./.env
     entrypoint: [ "bash", "devCelery.sh" ]
     depends_on:
       - db
