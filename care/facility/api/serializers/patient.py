@@ -25,10 +25,7 @@ from care.facility.models import (
     PatientSearch,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-)
+from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
@@ -71,7 +68,8 @@ class PatientListSerializer(serializers.ModelSerializer):
     last_consultation = PatientConsultationSerializer(read_only=True)
 
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
@@ -150,7 +148,8 @@ class PatientDetailSerializer(PatientListSerializer):
         default=PatientRegistration.SourceEnum.CARE.value,
     )
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -183,7 +182,11 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -213,12 +216,6 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError(
                 {"non_field_errors": ["Either age or date_of_birth should be passed"]}
             )
-
-        if validated.get("is_vaccinated"):
-            if validated.get("number_of_doses") == 0:
-                raise serializers.ValidationError("Number of doses cannot be 0")
-            if validated.get("vaccine_name") is None:
-                raise serializers.ValidationError("Vaccine name cannot be null")
 
         return validated
 

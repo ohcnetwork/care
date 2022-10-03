@@ -184,13 +184,13 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="",
         blank=True,
         verbose_name="Patient's Current Health Details",
-    )  # deprecated
+    )
 
     ongoing_medication = models.TextField(
         default="",
         blank=True,
         verbose_name="Already pescribed medication if any",
-    )  # deprecated
+    )
 
     has_SARI = models.BooleanField(
         default=False, verbose_name="Does the Patient Suffer from SARI"
@@ -546,8 +546,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "countries_travelled": "Countries Patient has Travelled to",
         "date_of_return": "Return Date from the Last Country if Travelled",
         "is_migrant_worker": "Is the Patient a Migrant Worker",
-        # "present_health": "Patient's Current Health Details",
-        # "ongoing_medication": "Already pescribed medication if any",
+        "present_health": "Patient's Current Health Details",
+        "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
         "will_donate_blood": "Will Patient Donate Blood?",
@@ -723,6 +723,34 @@ class PatientContactDetails(models.Model):
     objects = BaseManager()
 
 
+class Disease(models.Model):
+    patient = models.ForeignKey(
+        PatientRegistration,
+        on_delete=models.CASCADE,
+        related_name="medical_history",
+    )
+    disease = models.IntegerField(choices=DISEASE_CHOICES)
+    details = models.TextField(blank=True, null=True)
+    deleted = models.BooleanField(default=False)
+
+    objects = BaseManager()
+
+    class Meta:
+        indexes = [
+            PartialIndex(
+                fields=["patient", "disease"],
+                unique=True,
+                where=PQ(deleted=False),
+            )
+        ]
+
+    def __str__(self):
+        return self.patient.name + " - " + self.get_disease_display()
+
+    def get_disease_display(self):
+        return DISEASE_CHOICES[self.disease - 1][1]
+
+
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
     entry_date = models.DateField()
@@ -856,47 +884,3 @@ class Vaccine(models.Model):
 
     def __str__(self):
         return self.health_details.patient.name + " - " + self.vaccine
-
-
-class MedicalHistory(PatientBaseModel, PatientRelatedPermissionMixin):
-    patient = models.ForeignKey(
-        PatientRegistration,
-        on_delete=models.CASCADE,
-    )
-    present_health = models.TextField(
-        default="", blank=True, verbose_name="Patient's Current Health Details"
-    )
-    ongoing_medication = models.TextField(
-        default="",
-        blank=True,
-        verbose_name="Already pescribed medication if any",
-    )
-
-
-class Disease(models.Model):
-    medical_history = models.ForeignKey(
-        MedicalHistory,
-        on_delete=models.CASCADE,
-        related_name="medical_history",
-    )
-    disease_date = models.DateField(verbose_name="Disease Date")
-    disease = models.IntegerField(choices=DISEASE_CHOICES)
-    details = models.TextField(blank=True, null=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = BaseManager()
-
-    class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["medical_history", "disease"],
-                unique=True,
-                where=PQ(deleted=False),
-            )
-        ]
-
-    def __str__(self):
-        return self.medical_history.patient.name + " - " + self.get_disease_display()
-
-    def get_disease_display(self):
-        return DISEASE_CHOICES[self.disease - 1][1]
