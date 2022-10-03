@@ -66,4 +66,4 @@ Prebuilt docker images for server deployments are available on [ghcr](https://gi
 
 ## Contributing
 
-We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.rst) to get started.
+We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.
