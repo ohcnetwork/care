@@ -1,10 +1,10 @@
 import enum
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from care.facility.models import FacilityBaseModel
 from care.users.models import User
-from django.contrib.postgres.fields import JSONField
 
 
 class Notification(FacilityBaseModel):
@@ -26,8 +26,6 @@ class Notification(FacilityBaseModel):
         PATIENT_CREATED = 20
         PATIENT_UPDATED = 30
         PATIENT_DELETED = 40
-        PATIENT_HEALTH_DETAILS_CREATED = 42
-        PATIENT_HEALTH_DETAILS_UPDATED = 44
         PATIENT_CONSULTATION_CREATED = 50
         PATIENT_CONSULTATION_UPDATED = 60
         PATIENT_CONSULTATION_DELETED = 70
@@ -61,8 +59,6 @@ class Notification(FacilityBaseModel):
     event_type = models.IntegerField(
         choices=EventTypeChoices, default=EventType.SYSTEM_GENERATED.value
     )
-    event = models.IntegerField(
-        choices=EventChoices, default=Event.MESSAGE.value
-    )
+    event = models.IntegerField(choices=EventChoices, default=Event.MESSAGE.value)
     message = models.TextField(max_length=2000, null=True, default=None)
     caused_objects = JSONField(null=True, blank=True, default=dict)
