@@ -116,6 +116,7 @@ class FileUploadListSerializer(serializers.ModelSerializer):
             "name",
             "uploaded_by",
             "upload_completed",
+            "is_archived",
             "created_date",
             "file_category",
             "extension",
@@ -129,7 +130,7 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "upload_completed")
+        fields = ("id", "name", "upload_completed", "is_archived")
 
 
 class FileUploadRetrieveSerializer(serializers.ModelSerializer):
@@ -146,6 +147,7 @@ class FileUploadRetrieveSerializer(serializers.ModelSerializer):
             "name",
             "uploaded_by",
             "upload_completed",
+            "is_archived",
             "created_date",
             "read_signed_url",
             "file_category",
