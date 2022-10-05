@@ -3,6 +3,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.core.validators
 import care.facility.models.mixins.permissions.patient
+import django.contrib.postgres.fields.jsonb
+import care.utils.models.validators
 
 
 def populate_data(apps, schema_editor):
@@ -45,6 +47,13 @@ def populate_data(apps, schema_editor):
             has_allergy=has_allergy,
             allergies=allergies,
             blood_group=blood_group,
+            vaccination_history=[
+                {
+                    "vaccine": patient.vaccine_name,
+                    "doses": patient.number_of_doses,
+                    "last_vaccinated_date": patient.last_vaccinated_date,
+                }
+            ],
         )
 
         health_details_objs.append(health_details_obj)
@@ -185,6 +194,41 @@ class Migration(migrations.Migration):
                             django.core.validators.MinValueValidator(0)
                         ],
                         verbose_name="Patient's Height in CM",
+                    ),
+                ),
+                (
+                    "vaccination_history",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=list,
+                        validators=[
+                            care.utils.models.validators.JSONFieldSchemaValidator(
+                                {
+                                    "$schema": "http://json-schema.org/draft-07/schema#",
+                                    "items": [
+                                        {
+                                            "additionalProperties": False,
+                                            "properties": {
+                                                "doses": {
+                                                    "default": 0,
+                                                    "type": "number",
+                                                },
+                                                "last_vaccinated_date": {
+                                                    "type": "string"
+                                                },
+                                                "vaccine": {"type": "string"},
+                                            },
+                                            "required": [
+                                                "vaccine",
+                                                "doses",
+                                                "last_vaccinated_date",
+                                            ],
+                                            "type": "object",
+                                        }
+                                    ],
+                                    "type": "array",
+                                }
+                            )
+                        ],
                     ),
                 ),
             ],

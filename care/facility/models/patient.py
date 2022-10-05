@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from django.contrib.postgres.fields import JSONField as JsonField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField
@@ -19,6 +20,7 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
+from care.facility.models.json_schema.consultation import VACCINATION
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
@@ -45,6 +47,7 @@ from care.users.models import (
 )
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.jsonfield import JSONField
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -832,6 +835,10 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
 
+    vaccination_history = JsonField(
+        default=dict, validators=[JSONFieldSchemaValidator(VACCINATION)]
+    )
+
     height = models.FloatField(
         default=None,
         null=True,
@@ -845,42 +852,3 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
     )
-
-
-class Vaccine(models.Model):
-    health_details = models.ForeignKey(
-        PatientHealthDetails,
-        on_delete=models.CASCADE,
-        related_name="vaccination_history",
-    )
-    vaccine = models.CharField(
-        choices=VACCINE_CHOICES,
-        default=None,
-        null=True,
-        blank=False,
-        max_length=20,
-    )
-    doses = models.PositiveIntegerField(
-        default=0,
-        null=False,
-        blank=False,
-        validators=[MinValueValidator(0), MaxValueValidator(3)],
-    )
-    last_vaccinated_date = models.DateField(
-        null=True, blank=True, verbose_name="Date Last Vaccinated"
-    )
-
-    deleted = models.BooleanField(default=False)
-    objects = BaseManager()
-
-    class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["health_details", "vaccine"],
-                unique=True,
-                where=PQ(deleted=False),
-            )
-        ]
-
-    def __str__(self):
-        return self.health_details.patient.name + " - " + self.vaccine

@@ -19,7 +19,7 @@ from care.facility.models import (
 )
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientHealthDetails, Vaccine
+from care.facility.models.patient import PatientHealthDetails
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
@@ -84,7 +84,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     created_by = UserBaseMinimumSerializer(read_only=True)
     last_daily_round = DailyRoundSerializer(read_only=True)
     health_details = ExternalIdSerializerField(
-        queryset=PatientHealthDetails.objects.all(), required=False
+        queryset=PatientHealthDetails.objects.all(),
+        source="last_health_details",
+        required=False,
     )
 
     health_details_object = PatientHealthDetailsSerializer(
@@ -144,7 +146,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -185,9 +186,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation = super().update(instance, validated_data)
 
         try:
-            vaccination_history = health_details_data.pop("vaccination_history", [])
+            last_health_details_object = PatientHealthDetails.objects.get(
+                consultation=consultation
+            )
 
             serializer = PatientHealthDetailsSerializer(
+                last_health_details_object,
                 data={
                     "patient": consultation.patient.external_id.hex,
                     "facility": consultation.facility.external_id.hex,
@@ -200,18 +204,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-
-            health_details = PatientHealthDetails.objects.filter(
-                consultation=consultation
-            ).latest("external_id")
-
-            consultation.health_details = health_details
-
-            vaccines = []
-            for vaccine in vaccination_history:
-                vaccines.append(Vaccine(health_details=health_details, **vaccine))
-            if vaccines:
-                Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
 
         except KeyError:
             pass
@@ -292,8 +284,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.save()
 
         try:
-            vaccination_history = health_details_data.pop("vaccination_history", [])
-
             serializer = PatientHealthDetailsSerializer(
                 data={
                     "patient": consultation.patient.external_id.hex,
@@ -308,18 +298,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            health_details = PatientHealthDetails.objects.filter(
-                consultation=consultation
-            ).latest("external_id")
-
-            consultation.health_details = health_details
-
-            vaccines = []
-            for vaccine in vaccination_history:
-                vaccines.append(Vaccine(health_details=health_details, **vaccine))
-            if vaccines:
-                Vaccine.objects.bulk_create(vaccines, ignore_conflicts=True)
-
         except KeyError as error:
             if consultation.patient.last_consultation is None:
                 raise ValidationError(
@@ -330,11 +308,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     }
                 ) from error
 
-            else:
-                consultation.last_health_details = (
-                    consultation.patient.last_consultation.last_health_details
-                )
-                consultation.save(update_fields=["last_health_details"])
+            consultation.last_health_details = (
+                consultation.patient.last_consultation.last_health_details
+            )
+            consultation.save(update_fields=["last_health_details"])
 
         if bed:
             consultation_bed = ConsultationBed(
@@ -431,27 +408,27 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             for diagnosis in validated["icd11_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
-                except BaseException:
+                except BaseException as error:
                     raise ValidationError(
                         {
                             "icd11_diagnoses": [
                                 f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
                             ]
                         }
-                    )
+                    ) from error
 
         if "icd11_provisional_diagnoses" in validated:
             for diagnosis in validated["icd11_provisional_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
-                except BaseException:
+                except BaseException as error:
                     raise ValidationError(
                         {
                             "icd11_provisional_diagnoses": [
                                 f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
                             ]
                         }
-                    )
+                    ) from error
 
         return validated
 

@@ -7,24 +7,9 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.facility import Facility
-from care.facility.models.patient import Vaccine
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, VACCINE_CHOICES
+from care.facility.models.patient_base import BLOOD_GROUP_CHOICES
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-
-
-class VaccinationHistorySerializer(serializers.ModelSerializer):
-    vaccine = serializers.ChoiceField(choices=VACCINE_CHOICES)
-    doses = serializers.IntegerField(required=False, default=0)
-    last_vaccinated_date = serializers.DateField()
-
-    class Meta:
-        model = Vaccine
-        fields = (
-            "vaccine",
-            "doses",
-            "last_vaccinated_date",
-        )
 
 
 class PatientHealthDetailsSerializer(serializers.ModelSerializer):
@@ -41,10 +26,6 @@ class PatientHealthDetailsSerializer(serializers.ModelSerializer):
         queryset=PatientConsultation.objects.all(), required=False
     )
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
-
-    vaccination_history = serializers.ListSerializer(
-        child=VaccinationHistorySerializer(), required=False
-    )
 
     class Meta:
         model = PatientHealthDetails
