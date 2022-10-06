@@ -419,15 +419,16 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
 FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
 FACILITY_S3_BUCKET_ENDPOINT = env(
     "FACILITY_S3_BUCKET_ENDPOINT",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
 )
 FACILITY_S3_STATIC_PREFIX = env(
     "FACILITY_S3_STATIC_PREFIX",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
 )
 
 # Audit logs
