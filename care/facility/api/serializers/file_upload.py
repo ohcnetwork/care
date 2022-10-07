@@ -140,10 +140,15 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
             "archive_reason",
         )
 
+    def update(self, instance, validated_data):
+        if instance.is_archived:
+            raise ValidationError("Operation not permitted when archived.")
+        return super().update(instance, validated_data)
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         if validated.get("is_archived") and not validated.get("archive_reason"):
-            raise ValidationError("Archive reason must be specified")
+            raise ValidationError("Archive reason must be specified.")
         return validated
 
 
