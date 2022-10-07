@@ -118,7 +118,8 @@ class FileUploadListSerializer(serializers.ModelSerializer):
             "uploaded_by",
             "upload_completed",
             "is_archived",
-            "archive_reason" "created_date",
+            "archive_reason",
+            "created_date",
             "file_category",
             "extension",
         )
