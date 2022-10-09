@@ -40,6 +40,8 @@ class FileUpload(FacilityBaseModel):
     internal_name = models.CharField(max_length=2000)
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    archive_reason = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=True, blank=True
     )

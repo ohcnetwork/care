@@ -1,3 +1,4 @@
+from jsonschema import ValidationError
 from rest_framework import serializers
 
 from care.facility.api.serializers.shifting import has_facility_permission
@@ -116,6 +117,8 @@ class FileUploadListSerializer(serializers.ModelSerializer):
             "name",
             "uploaded_by",
             "upload_completed",
+            "is_archived",
+            "archive_reason",
             "created_date",
             "file_category",
             "extension",
@@ -129,7 +132,24 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "upload_completed")
+        fields = (
+            "id",
+            "name",
+            "upload_completed",
+            "is_archived",
+            "archive_reason",
+        )
+
+    def update(self, instance, validated_data):
+        if instance.is_archived:
+            raise ValidationError("Operation not permitted when archived.")
+        return super().update(instance, validated_data)
+
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        if validated.get("is_archived") and not validated.get("archive_reason"):
+            raise ValidationError("Archive reason must be specified.")
+        return validated
 
 
 class FileUploadRetrieveSerializer(serializers.ModelSerializer):
@@ -146,6 +166,8 @@ class FileUploadRetrieveSerializer(serializers.ModelSerializer):
             "name",
             "uploaded_by",
             "upload_completed",
+            "is_archived",
+            "archive_reason",
             "created_date",
             "read_signed_url",
             "file_category",
