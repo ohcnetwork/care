@@ -48,7 +48,10 @@ class BedSerializer(ModelSerializer):
             attrs["facility"] = facility
         else:
             raise ValidationError(
-                {"location": "Field is Required", "facility": "Field is Required"}
+                {
+                    "location": "Field is Required",
+                    "facility": "Field is Required",
+                }
             )
         return super().validate(attrs)
 
@@ -96,7 +99,9 @@ class ConsultationBedSerializer(ModelSerializer):
     bed_object = BedSerializer(source="bed", read_only=True)
 
     consultation = ExternalIdSerializerField(
-        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+        queryset=PatientConsultation.objects.all(),
+        write_only=True,
+        required=True,
     )
     bed = ExternalIdSerializerField(
         queryset=Bed.objects.all(), write_only=True, required=True
@@ -166,6 +171,7 @@ class ConsultationBedSerializer(ModelSerializer):
 
     def create(self, validated_data):
         consultation = validated_data["consultation"]
+        old_bed = validated_data["consultation"].current_bed.bed
         bed = validated_data["bed"]
 
         if not consultation.patient.is_active:
@@ -186,4 +192,7 @@ class ConsultationBedSerializer(ModelSerializer):
         obj = super().create(validated_data)
         consultation.current_bed = obj
         consultation.save(update_fields=["current_bed"])
+
+        Bed.objects.filter(id=old_bed.id).update(in_use=False)
+        Bed.objects.filter(id=obj.bed.id).update(in_use=True)
         return obj

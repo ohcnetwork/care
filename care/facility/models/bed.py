@@ -29,6 +29,7 @@ class Bed(BaseModel):
     location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
+    in_use = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
