@@ -72,7 +72,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
     )
 
-    review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+    review_interval = serializers.IntegerField(default=-1, required=False)
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
@@ -104,7 +104,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
 
     def get_icd11_provisional_diagnoses_object(self, consultation):
-        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_provisional_diagnoses)
+        return self.get_icd11_diagnoses_objects_by_ids(
+            consultation.icd11_provisional_diagnoses
+        )
 
     class Meta:
         model = PatientConsultation
@@ -138,18 +140,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             instance.discharge_date = localtime(now())
             instance.save()
 
-        if "action" in validated_data or "review_time" in validated_data:
+        if "action" in validated_data or "review_interval" in validated_data:
             patient = instance.patient
 
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
 
-            if "review_time" in validated_data:
-                review_time = validated_data.pop("review_time")
-                if review_time >= 0:
+            if "review_interval" in validated_data:
+                review_interval = validated_data.pop("review_interval")
+                if review_interval >= 0:
+                    instance.review_interval = review_interval
+                    instance.save()
                     patient.review_time = localtime(now()) + timedelta(
-                        minutes=review_time
+                        minutes=review_interval
                     )
             patient.save()
 
@@ -190,11 +194,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         action = -1
-        review_time = -1
+        review_interval = -1
         if "action" in validated_data:
             action = validated_data.pop("action")
-        if "review_time" in validated_data:
-            review_time = validated_data.pop("review_time")
+        if "review_interval" in validated_data:
+            review_interval = validated_data.pop("review_interval")
 
         # Authorisation Check
 
@@ -259,8 +263,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if action != -1:
             patient.action = action
-        if review_time > 0:
-            patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+        if review_interval > 0:
+            consultation.review_interval = review_interval
+            patient.review_time = localtime(now()) + timedelta(minutes=review_interval)
 
         patient.save()
         NotificationGenerator(
@@ -314,17 +319,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "review_time" not in validated:
+                if "review_interval" not in validated:
                     raise ValidationError(
                         {
-                            "review_time": [
+                            "review_interval": [
                                 "This field is required as the patient has been requested Review."
                             ]
                         }
                     )
-                if validated["review_time"] <= 0:
+                if validated["review_interval"] <= 0:
                     raise ValidationError(
-                        {"review_time": ["This field value is must be greater than 0."]}
+                        {
+                            "review_interval": [
+                                "This field value is must be greater than 0."
+                            ]
+                        }
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
