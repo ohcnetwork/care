@@ -21,7 +21,10 @@ from care.facility.models.patient_base import (
     SYMPTOM_CHOICES,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsultation,
+    PatientConsultationSymptom,
+)
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -33,6 +36,19 @@ from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
+class PatientConsultationSymptomSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(),
+        required=False,
+    )
+    symptom = ChoiceField(choices=SYMPTOM_CHOICES)
+
+    class Meta:
+        model = PatientConsultationSymptom
+        exclude = ("deleted",)
+
+
 class PatientConsultationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
@@ -42,7 +58,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="suggestion",
     )
 
-    symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
+    patient_symptoms = serializers.ListSerializer(
+        child=PatientConsultationSymptomSerializer(), required=False
+    )
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )
@@ -170,8 +188,22 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 validated_data["kasp_enabled_date"] = localtime(now())
 
         _temp = instance.assigned_to
-
+        symptoms = validated_data.pop("patient_symptoms", [])
         consultation = super().update(instance, validated_data)
+
+        PatientConsultationSymptom.objects.filter(consultation=consultation).update(
+            deleted=True
+        )
+        if consultation.is_asymptomatic is False:
+            symptoms_list = []
+            for symptom in symptoms:
+                symptoms_list.append(
+                    PatientConsultationSymptom(consultation=consultation, **symptom)
+                )
+            if symptoms_list:
+                PatientConsultationSymptom.objects.bulk_create(
+                    symptoms_list, ignore_conflicts=True
+                )
 
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
@@ -238,6 +270,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 validated_data["kasp_enabled_date"] = localtime(now())
 
         bed = validated_data.pop("bed", None)
+        symptoms = validated_data.pop("patient_symptoms", [])
 
         validated_data["facility_id"] = validated_data[
             "patient"
@@ -256,6 +289,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation_bed.save()
             consultation.current_bed = consultation_bed
             consultation.save(update_fields=["current_bed"])
+
+        if consultation.is_asymptomatic is False:
+            symptoms_list = []
+            for symptom in symptoms:
+                symptoms_list.append(
+                    PatientConsultationSymptom(consultation=consultation, **symptom)
+                )
+            if symptoms_list:
+                PatientConsultationSymptom.objects.bulk_create(
+                    symptoms_list, ignore_conflicts=True
+                )
 
         patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:

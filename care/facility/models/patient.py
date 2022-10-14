@@ -137,7 +137,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         max_length=255, default="", verbose_name="Nationality of Patient"
     )
     passport_no = models.CharField(
-        max_length=255, default="", verbose_name="Passport Number of Foreign Patients"
+        max_length=255,
+        default="",
+        verbose_name="Passport Number of Foreign Patients",
     )
     # aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
 
@@ -172,7 +174,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         editable=False,
     )
     countries_travelled = JSONField(
-        null=True, blank=True, verbose_name="Countries Patient has Travelled to"
+        null=True,
+        blank=True,
+        verbose_name="Countries Patient has Travelled to",
     )
     date_of_return = models.DateTimeField(
         blank=True,
@@ -188,7 +192,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="", blank=True, verbose_name="Patient's Current Health Details"
     )
     ongoing_medication = models.TextField(
-        default="", blank=True, verbose_name="Already pescribed medication if any"
+        default="",
+        blank=True,
+        verbose_name="Already pescribed medication if any",
     )
     has_SARI = models.BooleanField(
         default=False, verbose_name="Does the Patient Suffer from SARI"
@@ -249,7 +255,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_created_by"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_created_by",
     )
     is_active = models.BooleanField(
         default=True,
@@ -260,7 +269,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         help_text="FKey to PatientSearch", null=True
     )
     date_of_receipt_of_information = models.DateTimeField(
-        null=True, blank=True, verbose_name="Patient's information received date"
+        null=True,
+        blank=True,
+        verbose_name="Patient's information received date",
     )
 
     test_id = models.CharField(default="", max_length=100, null=True, blank=True)
@@ -329,19 +340,29 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         blank=True,
     )
     date_of_result = models.DateTimeField(
-        null=True, blank=True, default=None, verbose_name="Patient's result Date"
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name="Patient's result Date",
     )
     number_of_primary_contacts = models.IntegerField(
-        null=True, default=None, blank=True, verbose_name="Number of Primary Contacts"
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name="Number of Primary Contacts",
     )
     number_of_secondary_contacts = models.IntegerField(
-        null=True, default=None, blank=True, verbose_name="Number of Secondary Contacts"
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name="Number of Secondary Contacts",
     )
     # IDSP Requirements End
 
     # Vaccination Fields
     is_vaccinated = models.BooleanField(
-        default=False, verbose_name="Is the Patient Vaccinated Against COVID-19"
+        default=False,
+        verbose_name="Is the Patient Vaccinated Against COVID-19",
     )
     number_of_doses = models.PositiveIntegerField(
         default=0,
@@ -350,7 +371,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices, default=None, null=True, blank=False, max_length=15
+        choices=vaccineChoices,
+        default=None,
+        null=True,
+        blank=False,
+        max_length=15,
     )
 
     covin_id = models.CharField(
@@ -547,8 +572,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_vaccinated_date": "Last Vaccinated Date",
         # Consultation Data
         "last_consultation__admission_date": "Date of Admission",
-        "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
-        "last_consultation__symptoms": "Symptoms at time of consultation",
+        # "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
+        # "last_consultation__symptoms": "Symptoms at time of consultation",
         "last_consultation__category": "Category",
         "last_consultation__examination_details": "Examination Details",
         "last_consultation__suggestion": "Suggestion",
@@ -673,7 +698,9 @@ class PatientContactDetails(models.Model):
     ModeOfContactChoices = [(item.value, item.name) for item in ModeOfContactEnum]
 
     patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients"
+        PatientRegistration,
+        on_delete=models.PROTECT,
+        related_name="contacted_patients",
     )
     patient_in_contact = models.ForeignKey(
         PatientRegistration,
@@ -698,7 +725,9 @@ class PatientContactDetails(models.Model):
 
 class Disease(models.Model):
     patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.CASCADE, related_name="medical_history"
+        PatientRegistration,
+        on_delete=models.CASCADE,
+        related_name="medical_history",
     )
     disease = models.IntegerField(choices=DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
@@ -709,7 +738,9 @@ class Disease(models.Model):
     class Meta:
         indexes = [
             PartialIndex(
-                fields=["patient", "disease"], unique=True, where=PQ(deleted=False)
+                fields=["patient", "disease"],
+                unique=True,
+                where=PQ(deleted=False),
             )
         ]
 

@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
-from multiselectfield import MultiSelectField
+from partial_index import PQ, PartialIndex
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -20,6 +20,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.base import BaseManager
 
 
 class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
@@ -33,10 +34,13 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey(
-        "PatientRegistration", on_delete=models.CASCADE, related_name="consultations"
+        "PatientRegistration",
+        on_delete=models.CASCADE,
+        related_name="consultations",
     )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
+    is_asymptomatic = models.BooleanField(default=False)
 
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
@@ -48,11 +52,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=[], blank=True, null=True
     )
-    symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
-    )
-    other_symptoms = models.TextField(default="", blank=True)
-    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
@@ -102,7 +101,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
     assigned_to = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_assigned_to",
     )
 
     verified_by = models.TextField(default="", null=True, blank=True)
@@ -112,11 +114,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="last_edited_user",
     )
 
     last_daily_round = models.ForeignKey(
-        "facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None
+        "facility.DailyRound",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
 
     current_bed = models.ForeignKey(
@@ -160,8 +168,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
-        "symptoms_onset_date": "Date of Onset of Symptoms",
-        "symptoms": "Symptoms at time of consultation",
+        # "symptoms_onset_date": "Date of Onset of Symptoms",
+        # "symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
         "category": "Category",
         "examination_details": "Examination Details",
@@ -213,3 +221,34 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+
+class PatientConsultationSymptom(models.Model):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        related_name="patient_symptoms",
+    )
+    symptom = models.IntegerField(
+        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+    )
+    symptom_onset_date = models.DateField(null=True, blank=True)
+    deleted = models.BooleanField(default=False)
+    objects = BaseManager()
+
+    class Meta:
+        indexes = [
+            PartialIndex(
+                fields=["consultation", "symptom"],
+                unique=True,
+                where=PQ(deleted=False),
+            )
+        ]
+
+    def __str__(self):
+        return (
+            self.patient_consultation.patient.name + " - " + self.get_symptom_display()
+        )
+
+    def get_symptom_display(self):
+        return SYMPTOM_CHOICES[self.symptom - 1][1]
