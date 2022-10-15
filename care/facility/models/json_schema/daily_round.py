@@ -77,15 +77,23 @@ PRESSURE_SORE = {
         {
             "type": "object",
             "properties": {
+                "base_score": {"type": "number"},
+                "length": {"type": "number"},
+                "width": {"type": "number"},
+                "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
+                "tissue_type": {"enum": ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]},
+                "description": {"type": "string"},
+                "push_score": {"type": "number"},
                 "region": {"type": "string"},
                 "scale": {"type": "number", "minimum": 1, "maximum": 5},
                 "description": {"type": "string"},
             },
             "additionalProperties": False,
-            "required": ["region", "scale"],
+            "required": ["length", "width", "exudate_amount", "tissue_type", "description"],
         }
     ],
 }
+
 
 PAIN_SCALE_ENHANCED = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
@@ -103,6 +111,7 @@ PAIN_SCALE_ENHANCED = {
         }
     ],
 }
+
 
 NURSING_PROCEDURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
