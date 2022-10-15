@@ -8,7 +8,12 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import CATEGORY_CHOICES, Facility, PatientRegistration
+from care.facility.models import (
+    CATEGORY_CHOICES,
+    COVID_CATEGORY_CHOICES,
+    Facility,
+    PatientRegistration,
+)
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -38,7 +43,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
-    category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    deprecated_covid_category = ChoiceField(
+        choices=COVID_CATEGORY_CHOICES, required=False
+    )
+    category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
 
     referred_to_object = FacilityBasicInfoSerializer(
         source="referred_to", read_only=True
@@ -64,7 +72,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
     )
 
-    review_time = serializers.IntegerField(default=-1, write_only=True, required=False)
+    review_interval = serializers.IntegerField(default=-1, required=False)
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
@@ -76,17 +84,29 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     icd11_diagnoses_object = serializers.SerializerMethodField(read_only=True)
 
-    def get_icd11_diagnoses_object(self, consultation):
+    icd11_provisional_diagnoses_object = serializers.SerializerMethodField(
+        read_only=True
+    )
+
+    def get_icd11_diagnoses_objects_by_ids(self, diagnoses_ids):
         from care.facility.static_data.icd11 import ICDDiseases
 
         diagnosis_objects = []
-        for diagnosis in consultation.icd11_diagnoses:
+        for diagnosis in diagnoses_ids:
             try:
                 diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
                 diagnosis_objects.append(diagnosis_object)
             except BaseException:
                 pass
         return diagnosis_objects
+
+    def get_icd11_diagnoses_object(self, consultation):
+        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
+
+    def get_icd11_provisional_diagnoses_object(self, consultation):
+        return self.get_icd11_diagnoses_objects_by_ids(
+            consultation.icd11_provisional_diagnoses
+        )
 
     class Meta:
         model = PatientConsultation
@@ -120,18 +140,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             instance.discharge_date = localtime(now())
             instance.save()
 
-        if "action" in validated_data or "review_time" in validated_data:
+        if "action" in validated_data or "review_interval" in validated_data:
             patient = instance.patient
 
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
 
-            if "review_time" in validated_data:
-                review_time = validated_data.pop("review_time")
-                if review_time >= 0:
+            if "review_interval" in validated_data:
+                review_interval = validated_data.pop("review_interval")
+                if review_interval >= 0:
+                    instance.review_interval = review_interval
+                    instance.save()
                     patient.review_time = localtime(now()) + timedelta(
-                        minutes=review_time
+                        minutes=review_interval
                     )
             patient.save()
 
@@ -172,11 +194,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         action = -1
-        review_time = -1
+        review_interval = -1
         if "action" in validated_data:
             action = validated_data.pop("action")
-        if "review_time" in validated_data:
-            review_time = validated_data.pop("review_time")
+        if "review_interval" in validated_data:
+            review_interval = validated_data.pop("review_interval")
 
         # Authorisation Check
 
@@ -241,8 +263,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if action != -1:
             patient.action = action
-        if review_time > 0:
-            patient.review_time = localtime(now()) + timedelta(minutes=review_time)
+        if review_interval > 0:
+            consultation.review_interval = review_interval
+            patient.review_time = localtime(now()) + timedelta(minutes=review_interval)
 
         patient.save()
         NotificationGenerator(
@@ -296,17 +319,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "review_time" not in validated:
+                if "review_interval" not in validated:
                     raise ValidationError(
                         {
-                            "review_time": [
+                            "review_interval": [
                                 "This field is required as the patient has been requested Review."
                             ]
                         }
                     )
-                if validated["review_time"] <= 0:
+                if validated["review_interval"] <= 0:
                     raise ValidationError(
-                        {"review_time": ["This field value is must be greater than 0."]}
+                        {
+                            "review_interval": [
+                                "This field value is must be greater than 0."
+                            ]
+                        }
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
@@ -318,6 +345,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "icd11_diagnoses": [
+                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
+                            ]
+                        }
+                    )
+
+        if "icd11_provisional_diagnoses" in validated:
+            for diagnosis in validated["icd11_provisional_diagnoses"]:
+                try:
+                    ICDDiseases.by.id[diagnosis]
+                except BaseException:
+                    raise ValidationError(
+                        {
+                            "icd11_provisional_diagnoses": [
                                 f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
                             ]
                         }

@@ -7,7 +7,7 @@ on:
       - master
       - production
     paths-ignore:
-      - 'docs/**'
+      - "docs/**"
 
 env:
   IMAGE_NAME: care
@@ -16,24 +16,24 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
-  ECS_SERVICE_BACKEND: 'care'
-  ECS_SERVICE_CELERY: 'care-celery'
-  ECS_CLUSTER: 'egov'
-  ECS_TASK_DEFINITION_BACKEND: './aws/backend.json'
-  ECS_TASK_DEFINITION_CELERY: './aws/celery.json'
-  CONTAINER_NAME_BACKEND: 'care-backend'
-  CONTAINER_NAME_WORKER: 'care-celery-worker'
-  CONTAINER_NAME_CRON: 'care-celery-beat'
+  ECS_SERVICE_BACKEND: "care-backend"
+  ECS_SERVICE_CELERY: "care-celery"
+  ECS_CLUSTER: "egov"
+  ECS_TASK_DEFINITION_BACKEND: "./aws/backend.json"
+  ECS_TASK_DEFINITION_CELERY: "./aws/celery.json"
+  CONTAINER_NAME_BACKEND: "care-backend"
+  CONTAINER_NAME_WORKER: "care-celery-worker"
+  CONTAINER_NAME_CRON: "care-celery-beat"
 jobs:
   test:
-    if: github.ref == 'refs/heads/production'
+    if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgis://postgres:postgres@localhost:5432/care
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
     name: Test
     services:
       db:
-        image: postgis/postgis:latest
+        image: postgres:latest
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -54,7 +54,6 @@ jobs:
         ports:
           - 4566:4566
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
@@ -89,9 +88,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install binutils libproj-dev gdal-bin -y
+          sudo apt-get install binutils libproj-dev libjpeg-dev zlib1g-dev -y
           pip install --upgrade pip
           pip install -r requirements/local.txt
+
+      - name: Configure environment
+        run: |
+          echo "JWKS_BASE64=$(python manage.py generate_jwks)" >> $GITHUB_ENV
 
       - name: Run celery worker for tests
         run: celery -A config.celery_app worker -B --loglevel=INFO --detach
@@ -113,14 +116,12 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-
   build-staging:
     #needs: test
     name: Build & Push Staging to container registries
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Docker meta
@@ -176,14 +177,12 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-
   build-production:
     needs: test
     name: Build & Push Production to container registries
     if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Docker meta
@@ -239,7 +238,6 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
 
   deploy-staging-egov-api:
     needs: build-staging
@@ -336,7 +334,6 @@ jobs:
       name: Staging-gdc
       url: https://gdcapi.coronasafe.network
     steps:
-
       - name: Checkout Kube Config
         uses: actions/checkout@v3
         with:
@@ -348,7 +345,7 @@ jobs:
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
-          version: 'v1.23.6'
+          version: "v1.23.6"
         id: install
 
       - name: Configure AWS credentials
@@ -370,7 +367,6 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-
   deploy-production-manipur:
     needs: build-production
     name: Deploy to GKE Manipur
@@ -379,7 +375,6 @@ jobs:
       name: Production-Manipur
       url: https://careapi.mn.gov.in
     steps:
-
       - name: Checkout Kube Config
         uses: actions/checkout@v3
         with:
@@ -404,7 +399,7 @@ jobs:
       - name: install kubectl
         uses: azure/setup-kubectl@v2.0
         with:
-          version: 'v1.23.6'
+          version: "v1.23.6"
         id: install
 
       - name: Deploy Care Production Manipur

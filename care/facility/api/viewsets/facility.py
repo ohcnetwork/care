@@ -5,6 +5,7 @@ from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissio
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -12,14 +13,13 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
-    FacilityImageUploadSerializer
 )
 from care.facility.models import (
     Facility,
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration
+    PatientRegistration,
 )
 from care.users.models import User
 
@@ -85,9 +85,21 @@ class FacilityViewSet(
     FACILITY_DOCTORS_CSV_KEY = "doctors"
     FACILITY_TRIAGE_CSV_KEY = "triage"
 
+    def initialize_request(self, request, *args, **kwargs):
+        self.action = self.action_map.get(request.method.lower())
+        return super().initialize_request(request, *args, **kwargs)
+
+    def get_parsers(self):
+        if self.action == "cover_image":
+            return [MultiPartParser()]
+        return super().get_parsers()
+
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
+        if self.action == "cover_image":
+            # Check DRYpermissions before updating
+            return FacilityImageUploadSerializer
         else:
             return FacilitySerializer
 
@@ -129,24 +141,20 @@ class FacilityViewSet(
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
-    @action(methods=["POST", "DELETE"], detail=True, permission_classes=[IsAuthenticated, DRYPermissions])
+    @action(methods=["POST"], detail=True)
     def cover_image(self, request, external_id):
         facility = self.get_object()
-        if not facility:
-            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = FacilityImageUploadSerializer(facility, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-        if request.method == "POST":
-            serialized_data = FacilityImageUploadSerializer(facility, data=request.data)
-            if serialized_data.is_valid():
-                serialized_data.save()
-                return Response(serialized_data.data)
-            
-            return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        if request.method == "DELETE":
-            facility.cover_image_url = None
-            facility.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+    @cover_image.mapping.delete
+    def cover_image_delete(self, *args, **kwargs):
+        facility = self.get_object()
+        facility.cover_image_url = None
+        facility.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AllFacilityViewSet(
