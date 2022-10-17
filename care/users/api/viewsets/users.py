@@ -292,11 +292,11 @@ class CheckUsernameAPIView(GenericAPIView):
     Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
     """
 
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         username = request.query_params.get('username')
-        user = User.objects.filter(username=username) # since users are soft deleted, there might be inactive/deleted users that had the same username
+        user = User.objects.filter(username=username)
         if user.exists():
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)   
