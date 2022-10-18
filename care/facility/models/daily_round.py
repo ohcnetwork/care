@@ -470,7 +470,7 @@ class DailyRound(PatientBaseModel):
             item["push_score"] = cal_push_score(item)
             return item
 
-        return list(map(set_push_score, self.pressure_sore_enhanced))
+        return list(map(set_push_score, self.pressure_sore))
 
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
@@ -485,7 +485,7 @@ class DailyRound(PatientBaseModel):
 
         self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
-        self.pressure_sore_enhanced = self.update_pressure_sore()
+        self.pressure_sore = self.update_pressure_sore()
 
         super(DailyRound, self).save(*args, **kwargs)
 
