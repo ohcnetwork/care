@@ -89,11 +89,10 @@ PRESSURE_SORE = {
                 "description": {"type": "string"},
             },
             "additionalProperties": False,
-            "required": ["length", "width", "exudate_amount", "tissue_type", "description"],
+            "required": [],
         }
     ],
 }
-
 
 PAIN_SCALE_ENHANCED = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
@@ -111,7 +110,6 @@ PAIN_SCALE_ENHANCED = {
         }
     ],
 }
-
 
 NURSING_PROCEDURE = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
