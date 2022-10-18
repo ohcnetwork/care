@@ -1,5 +1,8 @@
+import enum
 from django.core.cache import cache
 from django.db.models import Q
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
+from config.serializers import ChoiceField
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -35,6 +38,7 @@ from care.facility.models.asset import (
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
+from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
@@ -188,7 +192,24 @@ class AssetViewSet(
 
     # Dummy Serializer for Operate Asset
     class DummyAssetOperateSerializer(Serializer):
-        action = JSONField(required=True)
+        class AssetActionSerializer(Serializer):
+            def actionChoices():
+                actions: list[enum.Enum] = [
+                    OnvifAsset.OnvifActions,
+                    HL7MonitorAsset.HL7MonitorActions,
+                ]
+                choices = []
+                for action in actions:
+                    choices += [(e.value, e.name) for e in action]
+                return choices
+
+            type = ChoiceField(
+                choices=actionChoices(),
+                required=True,
+            )
+            data = JSONField(required=False)
+
+        action = AssetActionSerializer(required=True)
 
     class DummyAssetOperateResponseSerializer(Serializer):
         message = CharField(required=True)
