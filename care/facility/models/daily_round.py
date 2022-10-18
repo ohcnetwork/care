@@ -485,7 +485,7 @@ class DailyRound(PatientBaseModel):
 
         self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
-        self.pressure_sore = self.update_pressure_sore()
+        # self.pressure_sore = self.update_pressure_sore()
 
         super(DailyRound, self).save(*args, **kwargs)
 
