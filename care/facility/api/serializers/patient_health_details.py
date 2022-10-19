@@ -9,7 +9,10 @@ from care.facility.models import (
 )
 from care.facility.models.facility import Facility
 from care.facility.models.patient import VaccinationHistory
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, VACCINE_CHOICES
+from care.facility.models.patient_base import (
+    BLOOD_GROUP_CHOICES,
+    VACCINE_CHOICES,
+)
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 
@@ -68,12 +71,14 @@ class PatientHealthDetailsSerializer(serializers.ModelSerializer):
             for vaccine in vaccination_history:
                 vaccines.append(
                     VaccinationHistory(
-                        health_details=consultation.last_health_details,
+                        health_details=health_details,
                         **vaccine,
                     )
                 )
             if vaccines:
-                VaccinationHistory.objects.bulk_create(vaccines, ignore_conflicts=True)
+                VaccinationHistory.objects.bulk_create(
+                    vaccines, ignore_conflicts=True
+                )
             consultation.last_health_details = health_details
             consultation.save(update_fields=["last_health_details"])
             return health_details
@@ -82,9 +87,9 @@ class PatientHealthDetailsSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             vaccination_history = validated_data.pop("vaccination_history", [])
             health_details = super().update(instance, validated_data)
-            VaccinationHistory.objects.filter(health_details=health_details).update(
-                deleted=True
-            )
+            VaccinationHistory.objects.filter(
+                health_details=health_details
+            ).update(deleted=True)
             vaccines = []
             for vaccine in vaccination_history:
                 vaccines.append(
@@ -94,5 +99,7 @@ class PatientHealthDetailsSerializer(serializers.ModelSerializer):
                     )
                 )
             if vaccines:
-                VaccinationHistory.objects.bulk_create(vaccines, ignore_conflicts=True)
+                VaccinationHistory.objects.bulk_create(
+                    vaccines, ignore_conflicts=True
+                )
             return health_details
