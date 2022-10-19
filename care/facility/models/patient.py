@@ -1,7 +1,6 @@
 import datetime
 import enum
 
-from django.contrib.postgres.fields import JSONField as JsonField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField
@@ -9,7 +8,6 @@ from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
-    DISEASE_CHOICES,
     DiseaseStatusEnum,
     District,
     Facility,
@@ -20,7 +18,6 @@ from care.facility.models import (
     Ward,
     pretty_boolean,
 )
-from care.facility.models.json_schema.consultation import VACCINATION
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
@@ -47,7 +44,6 @@ from care.users.models import (
 )
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.jsonfield import JSONField
-from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -187,13 +183,13 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="",
         blank=True,
         verbose_name="Patient's Current Health Details",
-    )
+    )  # deprecated
 
     ongoing_medication = models.TextField(
         default="",
         blank=True,
         verbose_name="Already pescribed medication if any",
-    )
+    )  # deprecated
 
     has_SARI = models.BooleanField(
         default=False, verbose_name="Does the Patient Suffer from SARI"
@@ -549,12 +545,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "countries_travelled": "Countries Patient has Travelled to",
         "date_of_return": "Return Date from the Last Country if Travelled",
         "is_migrant_worker": "Is the Patient a Migrant Worker",
-        "present_health": "Patient's Current Health Details",
-        "ongoing_medication": "Already pescribed medication if any",
         "has_SARI": "Does the Patient Suffer from SARI",
         "date_of_receipt_of_information": "Patient's information received date",
         "will_donate_blood": "Will Patient Donate Blood?",
         "fit_for_blood_donation": "Is Patient Fit for Blood Donation?",
+        # "present_health": "Patient's Current Health Details",
+        # "ongoing_medication": "Already pescribed medication if any",
         "date_of_test": "Date of Sample Test",
         "srf_id": "SRF Test Id",
         # IDSP Data
@@ -726,34 +722,6 @@ class PatientContactDetails(models.Model):
     objects = BaseManager()
 
 
-class Disease(models.Model):
-    patient = models.ForeignKey(
-        PatientRegistration,
-        on_delete=models.CASCADE,
-        related_name="medical_history",
-    )
-    disease = models.IntegerField(choices=DISEASE_CHOICES)
-    details = models.TextField(blank=True, null=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = BaseManager()
-
-    class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["patient", "disease"],
-                unique=True,
-                where=PQ(deleted=False),
-            )
-        ]
-
-    def __str__(self):
-        return self.patient.name + " - " + self.get_disease_display()
-
-    def get_disease_display(self):
-        return DISEASE_CHOICES[self.disease - 1][1]
-
-
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
     entry_date = models.DateField()
@@ -812,6 +780,12 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         Facility, on_delete=models.CASCADE, related_name="health_details"
     )
 
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
     family_details = models.TextField(
         default="", blank=True, verbose_name="Patient's Family Details"
     )
@@ -829,16 +803,6 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Blood Group of Patient",
     )
 
-    consultation = models.ForeignKey(
-        PatientConsultation,
-        on_delete=models.CASCADE,
-        null=True,
-    )
-
-    vaccination_history = JsonField(
-        default=dict, validators=[JSONFieldSchemaValidator(VACCINATION)]
-    )
-
     height = models.FloatField(
         default=None,
         null=True,
@@ -852,3 +816,82 @@ class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
     )
+
+
+class VaccinationHistory(models.Model):
+    health_details = models.ForeignKey(
+        PatientHealthDetails,
+        on_delete=models.CASCADE,
+        related_name="vaccination_history",
+    )
+    vaccine = models.CharField(max_length=100)
+    doses = models.IntegerField(default=0)
+    date = models.DateField(null=True, blank=True)
+    precision = models.IntegerField(default=0)
+
+    deleted = models.BooleanField(default=False)
+    objects = BaseManager()
+
+    class Meta:
+        indexes = [
+            PartialIndex(
+                fields=["health_details", "vaccine"],
+                unique=True,
+                where=PQ(deleted=False),
+            )
+        ]
+
+    def __str__(self):
+        return self.vaccine + " " + self.doses
+
+
+class MedicalHistory(PatientBaseModel, PatientRelatedPermissionMixin):
+    patient = models.ForeignKey(
+        PatientRegistration,
+        on_delete=models.CASCADE,
+    )
+
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    ongoing_medication = models.TextField(
+        default="",
+        blank=True,
+        verbose_name="Already pescribed medication if any",
+    )
+
+    present_health = models.TextField(
+        default="",
+        blank=True,
+        verbose_name="Patient's Current Health Details",
+    )
+
+
+class Diseases(models.Model):
+    medical_history = models.ForeignKey(
+        MedicalHistory,
+        on_delete=models.CASCADE,
+        related_name="patient_diseases",
+    )
+    disease = models.CharField(max_length=100)
+    details = models.TextField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    precision = models.IntegerField(default=0)
+
+    deleted = models.BooleanField(default=False)
+    objects = BaseManager()
+
+    class Meta:
+        indexes = [
+            PartialIndex(
+                fields=["medical_history", "disease"],
+                unique=True,
+                where=PQ(deleted=False),
+            )
+        ]
+
+    def __str__(self):
+        return self.patient.name + " " + self.disease

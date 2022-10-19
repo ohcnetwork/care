@@ -143,6 +143,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
         default=None,
     )
+
+    last_medical_history = models.ForeignKey(
+        "MedicalHistory",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+    )
+
     # Physical Information
 
     height = models.FloatField(

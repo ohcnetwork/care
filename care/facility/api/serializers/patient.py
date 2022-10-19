@@ -15,7 +15,7 @@ from care.facility.api.serializers.patient_consultation import (
 from care.facility.models import (
     DISEASE_CHOICES,
     GENDER_CHOICES,
-    Disease,
+    Diseases,
     Facility,
     FacilityPatientStatsHistory,
     PatientContactDetails,
@@ -259,9 +259,9 @@ class PatientDetailSerializer(PatientListSerializer):
             diseases = []
 
             for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
+                diseases.append(Diseases(patient=patient, **disease))
             if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
+                Diseases.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
@@ -305,12 +305,12 @@ class PatientDetailSerializer(PatientListSerializer):
                     self.check_external_entry(validated_data["srf_id"])
 
             patient = super().update(instance, validated_data)
-            Disease.objects.filter(patient=patient).update(deleted=True)
+            Diseases.objects.filter(patient=patient).update(deleted=True)
             diseases = []
             for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
+                diseases.append(Diseases(patient=patient, **disease))
             if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
+                Diseases.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 for key, value in meta_info.items():

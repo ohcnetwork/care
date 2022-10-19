@@ -2,12 +2,12 @@ import uuid
 from django.db import migrations, models
 import django.db.models.deletion
 import django.core.validators
+import partial_index
 import care.facility.models.mixins.permissions.patient
-import django.contrib.postgres.fields.jsonb
 import care.utils.models.validators
 
 
-def populate_data(apps, schema_editor):
+def create_health_details(apps, schema_editor):
     health_details = apps.get_model("facility", "PatientHealthDetails")
     patient_registration = apps.get_model("facility", "PatientRegistration")
     patients = patient_registration.objects.all()
@@ -47,13 +47,6 @@ def populate_data(apps, schema_editor):
             has_allergy=has_allergy,
             allergies=allergies,
             blood_group=blood_group,
-            vaccination_history=[
-                {
-                    "vaccine": patient.vaccine_name,
-                    "doses": patient.number_of_doses,
-                    "last_vaccinated_date": patient.last_vaccinated_date,
-                }
-            ],
         )
 
         health_details_objs.append(health_details_obj)
@@ -71,6 +64,30 @@ def link_data(apps, schema_editor):
             id=patient_cons.patient.id
         )
         patient_cons.save(update_fields=["last_health_details"])
+
+
+def create_vaccination_history(apps, schema_editor):
+    vaccination_history = apps.get_model("facility", "VaccinationHistory")
+    patient_registration = apps.get_model("facility", "PatientRegistration")
+    patients = patient_registration.objects.all()
+
+    vaccine_objs = []
+    for patient in patients:
+        if (
+            patient.vaccine_name
+            and patient.last_consultation.last_health_details
+        ):
+            vaccine_objs.append(
+                vaccination_history(
+                    health_details=patient.last_consultation.last_health_details,
+                    vaccine=patient.vaccine_name,
+                    doses=patient.number_of_doses,
+                    date=patient.last_vaccinated_date,
+                    precision=0,
+                )
+            )
+
+    vaccination_history.objects.bulk_create(vaccine_objs)
 
 
 class Migration(migrations.Migration):
@@ -196,41 +213,6 @@ class Migration(migrations.Migration):
                         verbose_name="Patient's Height in CM",
                     ),
                 ),
-                (
-                    "vaccination_history",
-                    django.contrib.postgres.fields.jsonb.JSONField(
-                        default=list,
-                        validators=[
-                            care.utils.models.validators.JSONFieldSchemaValidator(
-                                {
-                                    "$schema": "http://json-schema.org/draft-07/schema#",
-                                    "items": [
-                                        {
-                                            "additionalProperties": False,
-                                            "properties": {
-                                                "doses": {
-                                                    "default": 0,
-                                                    "type": "number",
-                                                },
-                                                "last_vaccinated_date": {
-                                                    "type": "string"
-                                                },
-                                                "vaccine": {"type": "string"},
-                                            },
-                                            "required": [
-                                                "vaccine",
-                                                "doses",
-                                                "last_vaccinated_date",
-                                            ],
-                                            "type": "object",
-                                        }
-                                    ],
-                                    "type": "array",
-                                }
-                            )
-                        ],
-                    ),
-                ),
             ],
             options={
                 "abstract": False,
@@ -239,6 +221,33 @@ class Migration(migrations.Migration):
                 models.Model,
                 care.facility.models.mixins.permissions.patient.PatientRelatedPermissionMixin,
             ),
+        ),
+        migrations.CreateModel(
+            name="VaccinationHistory",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("vaccine", models.CharField(max_length=100)),
+                ("doses", models.IntegerField(default=0)),
+                ("date", models.DateField(blank=True, null=True)),
+                ("precision", models.IntegerField(default=0)),
+                ("deleted", models.BooleanField(default=False)),
+                (
+                    "health_details",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="vaccination_history",
+                        to="facility.PatientHealthDetails",
+                    ),
+                ),
+            ],
         ),
         migrations.AddField(
             model_name="patientconsultation",
@@ -250,6 +259,18 @@ class Migration(migrations.Migration):
                 to="facility.PatientHealthDetails",
             ),
         ),
-        migrations.RunPython(populate_data, migrations.RunPython.noop),
+        migrations.AddIndex(
+            model_name="vaccinationhistory",
+            index=partial_index.PartialIndex(
+                fields=["health_details", "vaccine"],
+                name="facility_va_health__5bb62d_partial",
+                unique=True,
+                where=partial_index.PQ(deleted=False),
+            ),
+        ),
+        migrations.RunPython(create_health_details, migrations.RunPython.noop),
         migrations.RunPython(link_data, migrations.RunPython.noop),
+        migrations.RunPython(
+            create_vaccination_history, migrations.RunPython.noop
+        ),
     ]

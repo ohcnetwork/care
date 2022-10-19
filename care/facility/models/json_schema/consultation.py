@@ -17,24 +17,3 @@ LINES_CATHETERS = {
         }
     ],
 }
-
-VACCINATION = {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "array",
-    "items": [
-        {
-            "type": "object",
-            "properties": {
-                "vaccine": {"type": "string"},
-                "doses": {"type": "number", "default": 0},
-                "last_vaccinated_date": {"type": "string"},
-            },
-            "additionalProperties": False,
-            "required": [
-                "vaccine",
-                "doses",
-                "last_vaccinated_date",
-            ],
-        }
-    ],
-}

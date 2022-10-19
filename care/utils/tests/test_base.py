@@ -14,7 +14,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
-    Disease,
+    Diseases,
     DiseaseStatusEnum,
     Facility,
     LocalBody,
@@ -109,7 +109,7 @@ class TestBase(APITestCase):
 
         patient = PatientRegistration.objects.create(**patient_data)
         diseases = [
-            Disease.objects.create(
+            Diseases.objects.create(
                 patient=patient,
                 disease=DISEASE_CHOICES_MAP[mh["disease"]],
                 details=mh["details"],
@@ -325,7 +325,10 @@ class TestBase(APITestCase):
     def get_state_representation(self, state: State):
         if state is None:
             return {"state": None, "state_object": None}
-        return {"state": state.id, "state_object": {"id": state.id, "name": state.name}}
+        return {
+            "state": state.id,
+            "state_object": {"id": state.id, "name": state.name},
+        }
 
     def _convert_to_matchable_types(self, d):
         def dict_to_matching_type(d: dict):

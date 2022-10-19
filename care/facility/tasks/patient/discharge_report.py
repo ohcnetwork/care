@@ -1,5 +1,4 @@
 import datetime
-import logging
 import random
 import string
 import time
@@ -14,12 +13,12 @@ from hardcopy import bytestring_to_pdf
 
 from care.facility.models import (
     DailyRound,
+    Diseases,
+    DiseaseStatusEnum,
+    InvestigationValue,
     PatientConsultation,
     PatientRegistration,
     PatientSample,
-    Disease,
-    InvestigationValue,
-    DiseaseStatusEnum,
 )
 
 
@@ -34,7 +33,7 @@ def generate_discharge_report(patient_id, email):
     consultations = PatientConsultation.objects.filter(patient=patient).order_by(
         "-created_date"
     )
-    diseases = Disease.objects.filter(patient=patient)
+    diseases = Diseases.objects.filter(patient=patient)
     if consultations.exists():
         consultation = consultations.first()
         samples = PatientSample.objects.filter(

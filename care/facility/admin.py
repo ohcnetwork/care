@@ -11,7 +11,7 @@ from care.facility.models.patient_tele_consultation import PatientTeleConsultati
 
 from .models import (
     Building,
-    Disease,
+    Diseases,
     Facility,
     FacilityCapacity,
     FacilityInventoryItem,
@@ -201,7 +201,7 @@ admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration, PatientAdmin)
 admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample, PatientSampleAdmin)
-admin.site.register(Disease)
+admin.site.register(Diseases)
 admin.site.register(FacilityInventoryUnit)
 admin.site.register(FacilityInventoryUnitConverter)
 admin.site.register(FacilityInventoryItem)
