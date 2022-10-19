@@ -62,9 +62,6 @@ jobs:
         run: |
           echo "JWKS_BASE64=$(python manage.py generate_jwks)" >> $GITHUB_ENV
 
-      - name: Run celery worker for tests
-        run: celery -A config.celery_app worker -B --loglevel=INFO --detach
-
       - name: Run Tests with coverage
         run: coverage run manage.py test --settings=config.settings.test --parallel=$(nproc)
 
