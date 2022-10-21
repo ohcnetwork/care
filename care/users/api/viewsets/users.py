@@ -8,8 +8,8 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404, GenericAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
@@ -287,16 +287,12 @@ class UserViewSet(
         user.save()
         return Response(status=status.HTTP_200_OK)
 
-class CheckUsernameAPIView(GenericAPIView):
-    """
-    Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
-    """
-
-    permission_classes = (IsAuthenticated, )
-
-    def get(self, request):
-        username = request.query_params.get('username')
+    @action(methods=["GET"], detail=True)
+    def check_availability(self, request, username):
+        """
+        Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
+        """
         user = User.objects.filter(username=username)
         if user.exists():
             return Response(status=status.HTTP_409_CONFLICT)
-        return Response(status=status.HTTP_200_OK)   
+        return Response(status=status.HTTP_200_OK)
