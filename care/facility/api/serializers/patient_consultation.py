@@ -152,8 +152,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if "review_interval" in validated_data:
                 review_interval = validated_data.pop("review_interval")
                 instance.review_interval = review_interval
+                instance.save()
                 if review_interval >= 0:
-                    instance.save()
                     patient.review_time = localtime(now()) + timedelta(
                         minutes=review_interval
                     )
