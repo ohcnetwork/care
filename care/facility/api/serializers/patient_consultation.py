@@ -69,7 +69,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     discharge_notes = serializers.CharField(read_only=True)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
 
     review_interval = serializers.IntegerField(default=-1, required=False)
@@ -149,12 +151,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
             if "review_interval" in validated_data:
                 review_interval = validated_data.pop("review_interval")
+                instance.review_interval = review_interval
                 if review_interval >= 0:
-                    instance.review_interval = review_interval
                     instance.save()
                     patient.review_time = localtime(now()) + timedelta(
                         minutes=review_interval
                     )
+                else:
+                    patient.review_time = None
             patient.save()
 
         validated_data["last_updated_by_telemedicine"] = (
@@ -245,7 +249,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if bed:
             consultation_bed = ConsultationBed(
-                bed=bed, consultation=consultation, start_date=consultation.created_date
+                bed=bed,
+                consultation=consultation,
+                start_date=consultation.created_date,
             )
             consultation_bed.save()
             consultation.current_bed = consultation_bed
@@ -263,9 +269,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if action != -1:
             patient.action = action
+        consultation.review_interval = review_interval
         if review_interval > 0:
-            consultation.review_interval = review_interval
             patient.review_time = localtime(now()) + timedelta(minutes=review_interval)
+        else:
+            patient.review_time = None
 
         patient.save()
         NotificationGenerator(
