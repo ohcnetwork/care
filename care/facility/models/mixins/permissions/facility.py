@@ -43,6 +43,11 @@ class FacilityPermissionMixin(BasePermissionMixin):
         # Returning true here as the permission is validated at object level for this action
         return True
 
+    @staticmethod
+    def has_cover_image_delete_permission(request):
+        # Returning true here as the permission is validated at object level for this action
+        return True
+
     def has_object_read_permission(self, request):
         return (
             (request.user.is_superuser)

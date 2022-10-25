@@ -286,3 +286,13 @@ class UserViewSet(
                 setattr(user, field, request.data[field])
         user.save()
         return Response(status=status.HTTP_200_OK)
+
+    @action(methods=["GET"], detail=True)
+    def check_availability(self, request, username):
+        """
+        Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
+        """
+        user = User.objects.filter(username=username)
+        if user.exists():
+            return Response(status=status.HTTP_409_CONFLICT)
+        return Response(status=status.HTTP_200_OK)

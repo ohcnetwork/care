@@ -68,7 +68,8 @@ class PatientFilterSet(filters.FilterSet):
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     facility_type = CareChoiceFilter(
-        field_name="facility__facility_type", choice_dict=REVERSE_FACILITY_TYPES
+        field_name="facility__facility_type",
+        choice_dict=REVERSE_FACILITY_TYPES,
     )
     phone_number = filters.CharFilter(field_name="phone_number")
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
@@ -347,7 +348,8 @@ class PatientViewSet(
         patient = self.get_object()
         patient.is_active = discharged
         patient.allow_transfer = not discharged
-        patient.save(update_fields=["allow_transfer", "is_active"])
+        patient.review_time = None
+        patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
         last_consultation = (
             PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         )
@@ -506,7 +508,12 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                     "age",
                 ]
             else:
-                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "age"]
+                search_keys = [
+                    "date_of_birth",
+                    "year_of_birth",
+                    "phone_number",
+                    "age",
+                ]
             search_fields = {
                 key: serializer.validated_data[key]
                 for key in search_keys
@@ -607,5 +614,7 @@ class PatientNotesViewSet(
                 {"patient": "Only active patients data can be updated"}
             )
         return serializer.save(
-            facility=patient.facility, patient=patient, created_by=self.request.user
+            facility=patient.facility,
+            patient=patient,
+            created_by=self.request.user,
         )

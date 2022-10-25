@@ -53,6 +53,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 # install dependencies
 pip install -r requirements/local.txt
+# to read from .env file
+export DJANGO_READ_DOT_ENV_FILE=true
 # run migrations
 python manage.py migrate
 ```
