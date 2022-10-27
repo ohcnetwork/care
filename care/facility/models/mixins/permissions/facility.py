@@ -9,30 +9,28 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     @staticmethod
     def has_write_permission(request):
-        from care.users.models import District, LocalBody, State
-
         try:
+            from care.users.models import District, LocalBody, State
+
             state = State.objects.get(id=request.data["state"])
             district = District.objects.get(id=request.data["district"])
             local_body = LocalBody.objects.get(id=request.data["local_body"])
             return (
                 request.user.is_superuser
                 or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    and state == request.user.state
+                )
+                or (
+                    request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    and state == request.user.state
+                    and district == request.user.district
+                )
+                or (
                     request.user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
                     and state == request.user.state
                     and district == request.user.district
                     and local_body == request.user.local_body
-                )
-                or (
-                    request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-                    and request.user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
-                    and state == request.user.state
-                    and district == request.user.district
-                )
-                or (
-                    request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
-                    and request.user.user_type <= User.TYPE_VALUE_MAP["StateAdmin"]
-                    and state == request.user.state
                 )
             )
         except Exception:
@@ -45,6 +43,11 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     @staticmethod
     def has_cover_image_delete_permission(request):
+        # Returning true here as the permission is validated at object level for this action
+        return True
+
+    @staticmethod
+    def has_destroy_permission(request):
         # Returning true here as the permission is validated at object level for this action
         return True
 
@@ -81,7 +84,24 @@ class FacilityPermissionMixin(BasePermissionMixin):
         ) or self.has_object_write_permission(request)
 
     def has_object_destroy_permission(self, request):
-        return self.has_object_read_permission(request)
+        return (
+            request.user.is_superuser
+            or (
+                request.user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
+                and self.state == request.user.state
+            )
+            or (
+                request.user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                and self.state == request.user.state
+                and self.district == request.user.district
+            )
+            or (
+                request.user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                and self.state == request.user.state
+                and self.district == request.user.district
+                and self.local_body == request.user.local_body
+            )
+        )
 
     def has_object_cover_image_permission(self, request):
         return self.has_object_update_permission(request)
