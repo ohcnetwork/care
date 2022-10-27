@@ -46,7 +46,12 @@ class PatientConsultationSymptomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultationSymptom
-        exclude = ("deleted",)
+        fields = (
+            "id",
+            "symptom",
+            "symptom_onset_date",
+            "consultation",
+        )
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):

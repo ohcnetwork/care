@@ -223,7 +223,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         ]
 
 
-class PatientConsultationSymptom(models.Model):
+class PatientConsultationSymptom(PatientBaseModel, PatientRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.CASCADE,
