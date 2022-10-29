@@ -1,3 +1,5 @@
+from re import IGNORECASE
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -22,6 +24,6 @@ class ICDViewSet(ViewSet):
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
-                label=queryset.re_match(r".*" + query + r".*")
+                label=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))
