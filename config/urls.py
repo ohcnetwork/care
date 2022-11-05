@@ -12,6 +12,7 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
+    ResetPasswordCheck,
     ResetPasswordConfirm,
     ResetPasswordRequestToken,
 )
@@ -68,6 +69,11 @@ urlpatterns = [
         "api/v1/password_reset/confirm/",
         ResetPasswordConfirm.as_view(),
         name="password_reset_confirm",
+    ),
+    path(
+        "api/v1/password_reset/check/",
+        ResetPasswordCheck.as_view(),
+        name="password_reset_check",
     ),
     path(
         "api/v1/password_change/",
