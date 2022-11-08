@@ -256,6 +256,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation_bed.save()
             consultation.current_bed = consultation_bed
             consultation.save(update_fields=["current_bed"])
+            Bed.objects.filter(id=bed).update(is_occupied=True)
 
         patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:

@@ -29,10 +29,7 @@ class Bed(BaseModel):
     location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
-
-    @property
-    def is_occupied(self) -> bool:
-        return ConsultationBed.objects.filter(bed=self, end_date__isnull=True).exists()
+    is_occupied = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

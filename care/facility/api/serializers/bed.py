@@ -179,9 +179,17 @@ class ConsultationBedSerializer(ModelSerializer):
         if occupied_beds.filter(bed=bed).exists():
             raise ValidationError({"bed:": ["Bed already in use by patient"]})
 
+        Bed.objects.filter(
+            id__in=occupied_beds.filter(consultation=consultation).values_list(
+                "bed", flat=True
+            )
+        ).update(is_occupied=False)
+
         occupied_beds.filter(consultation=consultation).update(
             end_date=validated_data["start_date"]
         )
+
+        Bed.objects.filter(id=bed.id).update(is_occupied=True)
 
         # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
         obj = super().create(validated_data)
