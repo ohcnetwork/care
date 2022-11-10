@@ -248,6 +248,9 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
+    # includes all users, including deleted and inactive
+    _objects = UserManager()
+
     REQUIRED_FIELDS = [
         "email",
     ]
@@ -309,6 +312,10 @@ class User(AbstractUser):
     @staticmethod
     def has_add_user_permission(request):
         return request.user.is_superuser or request.user.verified
+
+    @staticmethod
+    def check_username_exists(username):
+        return User._objects.filter(username=username).exists()
 
     def delete(self, *args, **kwargs):
         self.deleted = True
