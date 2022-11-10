@@ -7,6 +7,8 @@ import requests
 
 def validatecaptcha(request):
     recaptcha_response = request.data.get(settings.GOOGLE_CAPTCHA_POST_KEY)
+    if not recaptcha_response:
+        return False
     values = {
         "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
         "response": recaptcha_response,
@@ -19,7 +21,7 @@ def validatecaptcha(request):
     return False
 
 
-def ratelimit(request, group="", keys=[None], increment=True):
+def ratelimit(request, group="", keys=[None], rate=settings.DJANGO_RATE_LIMIT, increment=True):
     if settings.DISABLE_RATELIMIT:
         return False
 
@@ -31,7 +33,7 @@ def ratelimit(request, group="", keys=[None], increment=True):
         else:
             group = group + "-{}".format(key)
             key = settings.GETKEY
-        if is_ratelimited(request, group=group, key=key, rate=settings.DJANGO_RATE_LIMIT, increment=True,):
+        if is_ratelimited(request, group=group, key=key, rate=rate, increment=increment,):
             checkcaptcha = True
 
     if checkcaptcha:

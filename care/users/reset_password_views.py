@@ -18,9 +18,9 @@ from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-User = get_user_model()
+from config.ratelimit import ratelimit
 
-# TODO Ratelimiting for both endpoints
+User = get_user_model()
 
 HTTP_USER_AGENT_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT")
 HTTP_IP_ADDRESS_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR")
@@ -34,12 +34,16 @@ class ResetPasswordCheck(GenericAPIView):
     """
     An Api View which provides a method to check if a password reset token is valid
     """
-
-    throttle_classes = ()
     permission_classes = ()
 
     def post(self, request, *args, **kwargs):
         token = request.data.get("token", None)
+
+        if ratelimit(request, "reset", [token], "20/h"):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
 
         # get token validation time
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
@@ -66,7 +70,6 @@ class ResetPasswordConfirm(GenericAPIView):
     An Api View which provides a method to reset a password based on a unique token
     """
 
-    throttle_classes = ()
     permission_classes = ()
     serializer_class = PasswordTokenSerializer
 
@@ -75,6 +78,12 @@ class ResetPasswordConfirm(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         password = serializer.validated_data["password"]
         token = serializer.validated_data["token"]
+
+        if ratelimit(request, "reset", [token], "20/h"):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
 
         # get token validation time
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
@@ -128,10 +137,16 @@ class ResetPasswordRequestToken(GenericAPIView):
     permission_classes = ()
     serializer_class = ResetPasswordUserSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):         
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data["username"]
+
+        if ratelimit(request, "reset", [username]):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
 
         # before we continue, delete all existing expired tokens
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
