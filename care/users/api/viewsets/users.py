@@ -292,7 +292,6 @@ class UserViewSet(
         """
         Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
         """
-        user = User.objects.filter(username=username)
-        if user.exists():
+        if User.check_username_exists(username):
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)

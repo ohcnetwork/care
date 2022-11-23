@@ -72,6 +72,10 @@ FACILITY_TYPES = [
     (850, "General hospitals"),  # TODO: same as 8, need to merge
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
+
+    (900, "Co-operative hospitals"),
+    (910, "Autonomous healthcare facility"),
+
     # Use 9xx for Labs
     (950, "Corona Testing Labs"),
     # Use 10xx for Corona Care Center
