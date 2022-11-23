@@ -213,6 +213,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {"facility": "Consultation creates are only allowed in home facility"}
             )
+        
+        # Patient is active Check
+
+        if validated_data["patient"].is_active == False:
+            raise serializers.ValidationError({"Patient": "Patient has been discharged from CARE"})
 
         # End Authorisation Checks
 
