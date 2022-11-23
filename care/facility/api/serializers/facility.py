@@ -1,6 +1,9 @@
+from io import BytesIO
+
 import boto3
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from PIL import Image
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
@@ -132,10 +135,33 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         # Check DRYpermissions before updating
         fields = ("cover_image", "read_cover_image_url")
 
+    def resize_image(self, image, image_extension="PNG"):
+        image_format = (
+            "JPEG" if image_extension.lower() == "jpg" else image_extension.upper()
+        )
+
+        img = Image.open(image)
+        img.thumbnail((720, 720))
+        img_io = BytesIO()
+        img.save(img_io, format=image_format)
+        img_size = img_io.tell()
+        img_io.seek(0)
+        return (img_io, img_size)
+
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
         image_extension = image.name.rsplit(".", 1)[-1]
+
+        resized_image, resized_image_size = self.resize_image(
+            image, image_extension=image_extension
+        )
+
+        if resized_image_size > settings.FACILITY_COVER_IMAGE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {"cover_image": "The image size is too large."}
+            )
+
         s3 = boto3.client(
             "s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
         )
@@ -143,7 +169,7 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         s3.put_object(
             Bucket=settings.FACILITY_S3_BUCKET,
             Key=image_location,
-            Body=image.file,
+            Body=resized_image,
         )
         facility.cover_image_url = image_location
         facility.save()

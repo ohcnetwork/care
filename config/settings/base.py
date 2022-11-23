@@ -417,6 +417,9 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_ENDPOINT",
     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
 )
+FACILITY_COVER_IMAGE_MAX_SIZE = env(
+    "FACILITY_COVER_IMAGE_MAX_SIZE", default=1024 * 1024
+)  # 1MB, in bytes
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
