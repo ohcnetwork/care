@@ -296,7 +296,6 @@ class UserSerializer(SignUpSerializer):
 
 class UserBaseMinimumSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-    home_facility = FacilityBareMinimumSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -308,12 +307,12 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
             "last_name",
             "user_type",
             "last_login",
-            "home_facility",
         )
 
 
 class UserAssignedSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    home_facility = FacilityBareMinimumSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -326,6 +325,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "alt_phone_number",
             "user_type",
             "last_login",
+            "home_facility",
         )
 
 
