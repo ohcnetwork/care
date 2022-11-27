@@ -126,6 +126,9 @@ class CustomUserManager(UserManager):
             "local_body", "district", "state"
         )
 
+    def get_entire_queryset(self):
+        return super().get_queryset().select_related("local_body", "district", "state")
+
     def create_superuser(self, username, email, password, **extra_fields):
         district = District.objects.all()[0]
         extra_fields["district"] = district
@@ -309,6 +312,10 @@ class User(AbstractUser):
     @staticmethod
     def has_add_user_permission(request):
         return request.user.is_superuser or request.user.verified
+
+    @staticmethod
+    def check_username_exists(username):
+        return User.objects.get_entire_queryset().filter(username=username).exists()
 
     def delete(self, *args, **kwargs):
         self.deleted = True

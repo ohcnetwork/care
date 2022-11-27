@@ -37,6 +37,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
+    BedTypeChoices,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -60,6 +61,7 @@ from config.authentication import (
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 
@@ -127,11 +129,12 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__symptoms_onset_date"
     )
-    last_consultation_admitted_to_list = MultiSelectFilter(
-        field_name="last_consultation__admitted_to"
+    last_consultation_admitted_bed_type_list = MultiSelectFilter(
+        field_name="last_consultation__current_bed__bed__bed_type"
     )
-    last_consultation_admitted_to = filters.NumberFilter(
-        field_name="last_consultation__admitted_to"
+    last_consultation_admitted_bed_type = CareChoiceFilter(
+        field_name="last_consultation__current_bed__bed__bed_type",
+        choice_dict=REVERSE_BED_TYPES,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
