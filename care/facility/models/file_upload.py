@@ -45,6 +45,10 @@ class FileUpload(FacilityBaseModel):
     uploaded_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=True, blank=True
     )
+    archived_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=True, blank=True
+    )
+    archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
         choices=FileTypeChoices, default=FileType.PATIENT.value
     )
@@ -70,6 +74,7 @@ class FileUpload(FacilityBaseModel):
 
     def signed_url(self):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
+        print("S3clinet", s3Client)
         signed_url = s3Client.generate_presigned_url(
             "put_object",
             Params={
