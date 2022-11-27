@@ -99,7 +99,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].ward
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different Ward")
         return value
@@ -110,7 +110,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError(
                 "Cannot create for a different local body"
@@ -123,7 +123,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["StateAdmin"]
+                    >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different district")
         return value
@@ -296,7 +296,7 @@ class UserSerializer(SignUpSerializer):
 
 class UserBaseMinimumSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-    home_facility = FacilityBareMinimumSerializer(source="home_facility", read_only=True)
+    home_facility = FacilityBareMinimumSerializer(read_only=True)
 
     class Meta:
         model = User
