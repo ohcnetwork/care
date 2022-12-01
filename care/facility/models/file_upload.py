@@ -74,7 +74,6 @@ class FileUpload(FacilityBaseModel):
 
     def signed_url(self):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
-        print("S3clinet", s3Client)
         signed_url = s3Client.generate_presigned_url(
             "put_object",
             Params={
