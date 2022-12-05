@@ -1,3 +1,4 @@
+from django.utils.timezone import localtime, now
 from jsonschema import ValidationError
 from rest_framework import serializers
 
@@ -8,6 +9,7 @@ from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from config.serializers import ChoiceField
 
 
@@ -108,6 +110,7 @@ class FileUploadListSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
     uploaded_by = UserBaseMinimumSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
     extension = serializers.CharField(source="get_extension", read_only=True)
 
     class Meta:
@@ -116,6 +119,8 @@ class FileUploadListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "uploaded_by",
+            "archived_by",
+            "archived_datetime",
             "upload_completed",
             "is_archived",
             "archive_reason",
@@ -129,6 +134,7 @@ class FileUploadListSerializer(serializers.ModelSerializer):
 class FileUploadUpdateSerializer(serializers.ModelSerializer):
 
     id = serializers.UUIDField(source="external_id", read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = FileUpload
@@ -138,12 +144,29 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
             "upload_completed",
             "is_archived",
             "archive_reason",
+            "archived_by",
+            "archived_datetime",
         )
 
     def update(self, instance, validated_data):
+        user = self.context["request"].user
         if instance.is_archived:
-            raise ValidationError("Operation not permitted when archived.")
-        return super().update(instance, validated_data)
+            raise serializers.ValidationError(
+                {"file": "Operation not permitted when archived."}
+            )
+        if user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
+            if instance.uploaded_by == user:
+                pass
+            else:
+                raise serializers.ValidationError(
+                    {"permission": "Don't have permission to archive"}
+                )
+        file = super().update(instance, validated_data)
+        if file.is_archived:
+            file.archived_by = user
+            file.archived_datetime = localtime(now())
+            file.save()
+        return file
 
     def validate(self, attrs):
         validated = super().validate(attrs)

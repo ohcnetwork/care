@@ -45,6 +45,10 @@ class FileUpload(FacilityBaseModel):
     uploaded_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=True, blank=True
     )
+    archived_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=True, blank=True
+    )
+    archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
         choices=FileTypeChoices, default=FileType.PATIENT.value
     )
