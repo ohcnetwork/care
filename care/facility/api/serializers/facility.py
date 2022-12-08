@@ -107,6 +107,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "modified_date",
             "created_date",
             "kasp_empanelled",
+            "middleware_address",
             "expected_oxygen_requirement",
             "type_b_cylinders",
             "type_c_cylinders",
@@ -137,7 +138,8 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         image = self.validated_data["cover_image"]
         image_extension = image.name.rsplit(".", 1)[-1]
         s3 = boto3.client(
-            "s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
+            "s3",
+            **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value),
         )
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
         s3.put_object(
