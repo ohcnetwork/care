@@ -43,10 +43,18 @@ class FileUpload(FacilityBaseModel):
     is_archived = models.BooleanField(default=False)
     archive_reason = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=True, blank=True
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="uploaded_by",
     )
     archived_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=True, blank=True
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="archived_by",
     )
     archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
