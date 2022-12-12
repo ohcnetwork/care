@@ -14,6 +14,8 @@ class OnvifAsset(BaseAssetIntegration):
         GOTO_PRESET = "goto_preset"
         ABSOLUTE_MOVE = "absolute_move"
         RELATIVE_MOVE = "relative_move"
+        # STEP 1 | Part 1
+        # GET_STREAMING_TOKEN = "getStreamingToken"
 
     def __init__(self, meta):
         try:
@@ -23,7 +25,8 @@ class OnvifAsset(BaseAssetIntegration):
             self.access_key = self.meta["camera_access_key"].split(":")[2]
         except KeyError as e:
             raise ValidationError(
-                dict((key, f"{key} not found in asset metadata") for key in e.args))
+                dict((key, f"{key} not found in asset metadata") for key in e.args)
+            )
 
     def handle_action(self, action):
         action_type = action["type"]
@@ -35,7 +38,7 @@ class OnvifAsset(BaseAssetIntegration):
             "username": self.username,
             "password": self.password,
             "accessKey": self.access_key,
-            **action_data
+            **action_data,
         }
 
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
@@ -52,5 +55,9 @@ class OnvifAsset(BaseAssetIntegration):
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             return self.api_post(self.get_url("relativeMove"), request_body)
+
+        # STEP 1 | Part 3
+        # if action_type == self.OnvifActions.GET_STREAMING_TOKEN.value:
+        #     return self.api_post(self.get_url("getStreamingToken"), request_body)
 
         raise ValidationError({"action": "invalid action type"})

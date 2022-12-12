@@ -391,6 +391,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         related_name="root_patient_assigned_to",
     )
 
+    # ABDM Health ID
+    abha_number = models.CharField(
+        max_length=255,
+        default=None,
+        verbose_name="ABHA Number",
+        null=True,
+        blank=True,
+    )
+
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
     objects = BaseManager()

@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
+from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
@@ -192,6 +193,9 @@ consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
+
+# ABDM endpoints
+router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
 
 app_name = "api"
 urlpatterns = [

@@ -103,6 +103,7 @@ LOCAL_APPS = [
     "care.users.apps.UsersConfig",
     "care.facility",
     "care.audit_log.apps.AuditLogConfig",
+    "care.abdm.apps.AbdmConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -508,3 +509,6 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
+ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
