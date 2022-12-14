@@ -9,7 +9,7 @@ from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
-from rest_framework import status
+from rest_framework import status, exceptions
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
@@ -17,6 +17,7 @@ from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
+    DestroyModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -127,6 +128,7 @@ class AssetViewSet(
     CreateModelMixin,
     UpdateModelMixin,
     GenericViewSet,
+    DestroyModelMixin
 ):
     queryset = (
         Asset.objects.all()
@@ -157,6 +159,13 @@ class AssetViewSet(
                 current_location__facility__id__in=allowed_facilities
             )
         return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.request.user
+        if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            return super().destroy(request, *args, **kwargs)
+        else:
+            raise exceptions.AuthenticationFailed("Only District Admin and above can delete assets")
 
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
