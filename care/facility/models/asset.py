@@ -8,7 +8,7 @@ from django.db.models import Q
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
-from care.users.models import User, phone_number_regex
+from care.users.models import User, phone_number_regex_11
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -78,7 +78,7 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14, validators=[phone_number_regex], default=""
+        max_length=14, validators=[phone_number_regex_11], default=""
     )
     support_email = models.EmailField(blank=True, null=True)
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)

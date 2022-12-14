@@ -25,6 +25,13 @@ phone_number_regex = RegexValidator(
     code="invalid_mobile",
 )
 
+phone_number_regex_11 = RegexValidator(
+    # allow 11 digit mobile numbers if the first 4 digits are 1800
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}|1800\d{7}$",
+    message="Please Enter 10/11 digit mobile/landline/tollfree number",
+    code="invalid_mobile",
+)
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
