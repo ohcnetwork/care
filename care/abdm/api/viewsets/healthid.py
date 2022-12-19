@@ -3,6 +3,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -13,12 +14,16 @@ from care.abdm.api.serializers.healthid import (
     GenerateMobileOtpRequestPayloadSerializer,
     VerifyOtpRequestPayloadSerializer,
 )
+from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import HealthIdGateway
 
 
 # API for Generating OTP for HealthID
-class ABDMHealthIDViewSet(GenericViewSet):
+class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     base_name = "healthid"
+    model = AbhaNumber
+    # Override Create method
+    # def create(self, request, *args, **kwargs):
 
     @swagger_auto_schema(
         operation_id="generate_aadhaar_otp",
@@ -107,6 +112,7 @@ class ABDMHealthIDViewSet(GenericViewSet):
         serializer = CreateHealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().create_health_id(data)
+        print(response.status_code)
         return Response(response, status=status.HTTP_200_OK)
 
     # HealthID V2 APIs

@@ -79,12 +79,14 @@ class APIGateway:
             "Accept-Language": "en-US",
         }
         headers = self.add_auth_header(headers)
-        headers_string = " ".join(
-            ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
-        )
+        # headers_string = " ".join(
+        #     ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
+        # )
         data_json = json.dumps(data)
-        print("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
+        # print("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
+        print("Posting Request to: {}".format(url))
         response = requests.post(url, headers=headers, data=data_json)
+        print("{} Response: {}".format(response.status_code, response.text))
         return response
 
 
