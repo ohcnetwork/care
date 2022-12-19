@@ -15,8 +15,8 @@ def check_permissions(file_type, associating_id, user):
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
-            if patient.is_active == False:
-                raise serializers.ValidationError({"Patient": "Patient has been discharged from CARE"})
+            if not patient.is_active:
+                raise serializers.ValidationError({"patient": "Cannot upload file for a discharged patient."})
             if patient.assigned_to:
                 if user == patient.assigned_to:
                     return patient.id
