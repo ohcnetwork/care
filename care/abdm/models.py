@@ -8,18 +8,17 @@ from care.utils.models.base import BaseModel
 
 
 class AbhaNumber(BaseModel):
-    abha_number = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    health_id = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    middle_name = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
-    profile_photo = models.CharField(max_length=50)
-    txn_id = models.CharField(max_length=50)
+    abha_number = models.TextField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    first_name = models.TextField(null=True, blank=True)
+    health_id = models.TextField(null=True, blank=True)
+    last_name = models.TextField(null=True, blank=True)
+    middle_name = models.TextField(null=True, blank=True)
+    profile_photo = models.TextField(null=True, blank=True)  # What is profile photo? how is it stored as?
+    txn_id = models.TextField(null=True, blank=True)  # 50?
 
-    access_token = models.CharField(max_length=50)
-    refresh_token = models.CharField(max_length=50)
+    access_token = models.TextField(null=True, blank=True)  # 50 seems a bit too low for access tokens
+    refresh_token = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.abha_number

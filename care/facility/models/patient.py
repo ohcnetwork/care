@@ -7,6 +7,7 @@ from fernet_fields import EncryptedCharField, EncryptedIntegerField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
+from care.abdm.models import AbhaNumber
 from care.facility.models import (
     DISEASE_CHOICES,
     DiseaseStatusEnum,
@@ -392,13 +393,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     # ABDM Health ID
-    abha_number = models.CharField(
-        max_length=255,
-        default=None,
-        verbose_name="ABHA Number",
-        null=True,
-        blank=True,
-    )
+
+    abha_number = models.OneToOneField(AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True)
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 

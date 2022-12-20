@@ -66,53 +66,11 @@ class VerifyOtpRequestPayloadSerializer(Serializer):
 #   "txnId": "a825f76b-0696-40f3-864c-5a3a5b389a83"
 # }
 class CreateHealthIdSerializer(Serializer):
-    email = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="Email",
-        validators=[],
-    )
-    firstName = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="First Name",
-        validators=[],
-    )
     healthId = CharField(
         max_length=64,
         min_length=1,
         required=False,
         help_text="Health ID",
-        validators=[],
-    )
-    lastName = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="Last Name",
-        validators=[],
-    )
-    middleName = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="Middle Name",
-        validators=[],
-    )
-    password = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="Password",
-        validators=[],
-    )
-    profilePhoto = CharField(
-        max_length=64,
-        min_length=1,
-        required=False,
-        help_text="Profile Photo",
         validators=[],
     )
     txnId = CharField(
@@ -122,3 +80,5 @@ class CreateHealthIdSerializer(Serializer):
         help_text="PreVerified Transaction ID",
         validators=[],
     )
+    patientId = CharField(required=True, help_text="Patient ID to be linked",
+                          validators=[])  # TODO: Add UUID Validation

@@ -3,6 +3,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -16,15 +17,15 @@ from care.abdm.api.serializers.healthid import (
 )
 from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import HealthIdGateway
+from care.utils.queryset.patient import get_patient_queryset
 
 
 # API for Generating OTP for HealthID
 class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     base_name = "healthid"
     model = AbhaNumber
-    # Override Create method
-    # def create(self, request, *args, **kwargs):
 
+    # TODO: Ratelimiting for all endpoints that generate OTP's / Critical API's
     @swagger_auto_schema(
         operation_id="generate_aadhaar_otp",
         request_body=AadharOtpGenerateRequestPayloadSerializer,
@@ -111,8 +112,33 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = CreateHealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
+        patient_id = data.pop("patientId")
+        allowed_patients = get_patient_queryset(request.user)
+        patient_obj = allowed_patients.filter(external_id=patient_id).first()
+        if not patient_obj:
+            raise ValidationError({"patient": "Not Found"})
         response = HealthIdGateway().create_health_id(data)
-        print(response.status_code)
+        abha_object = AbhaNumber.objects.filter(abha_number=response["healthIdNumber"]).first()
+        if abha_object:
+            # Flow when abha number exists in db somehow!
+            pass
+        else:
+            # Create abha number flow
+            abha_object = AbhaNumber()
+            abha_object.abha_number = response["healthIdNumber"]
+            abha_object.email = response["email"]
+            abha_object.first_name = response["firstName"]
+            abha_object.health_id = response["healthId"]
+            abha_object.last_name = response["lastName"]
+            abha_object.middle_name = response["middleName"]
+            abha_object.profile_photo = response["profilePhoto"]
+            abha_object.txn_id = response["healthIdNumber"]
+            abha_object.access_token = response["token"]
+            abha_object.refresh_token = data["txnId"]
+            abha_object.save()
+
+        patient_obj.abha_number = abha_object
+        patient_obj.save()
         return Response(response, status=status.HTTP_200_OK)
 
     # HealthID V2 APIs

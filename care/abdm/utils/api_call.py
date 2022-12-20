@@ -10,6 +10,8 @@ ABDM_TOKEN_URL = GATEWAY_API_URL + "gateway/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 
+# TODO: Exception handling for all api calls, need to gracefully handle known exceptions
+
 class APIGateway:
     def __init__(self, gateway, token):
         if gateway == "health":
