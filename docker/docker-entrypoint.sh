@@ -4,6 +4,9 @@ set -euxo pipefail
 echo "running migrations"
 python manage.py migrate
 
+echo "running collectstatic"
+python manage.py collectstatic
+
 echo "All migrations have been made successfully"
 
 if [[ "${DJANGO_DEBUG,,}" == "true" ]]; then

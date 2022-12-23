@@ -11,7 +11,7 @@ services:
     restart: always
     env_file:
       - ./docker/.local.env
-      - ./.env
+    #      - ./.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -24,26 +24,35 @@ services:
     container_name: care
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
-      - ./docker/.local.env
-      - ./.env
-    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
+      - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "docker/docker-entrypoint.sh" ]
     ports:
       - "9000:9000"
       - "9876:9876" #debugpy
     depends_on:
       - db
     volumes:
-      - /app
+      - .:/app
 
-  celery:
-    container_name: care_celery
-    build:
-      context: .
-      dockerfile: docker/DevDockerfile
+  celery-worker:
+    container_name: care_celery_worker
+    image: "ghcr.io/coronasafe/care:latest"
     env_file:
-      - ./docker/.local.env
-      - ./.env
-    entrypoint: [ "bash", "devCelery.sh" ]
+      - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "celery_worker.sh" ]
+    depends_on:
+      - db
+      - backend
+      - redis
+    volumes:
+      - .:/app
+
+  celery-beat:
+    container_name: care_celery_beat
+    image: "ghcr.io/coronasafe/care:latest"
+    env_file:
+      - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "celery_beat.sh" ]
     depends_on:
       - db
       - backend
