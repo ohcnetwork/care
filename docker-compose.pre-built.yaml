@@ -26,13 +26,14 @@ services:
     env_file:
       - ./docker/.local.env
       - ./.env
+    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
     ports:
       - "9000:9000"
       - "9876:9876" #debugpy
     depends_on:
       - db
     volumes:
-      - .:/app
+      - /app
 
   celery:
     container_name: care_celery
