@@ -4,7 +4,7 @@
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
 DOCKER_COMPOSE_VERSION := $(shell docker-compose --version 2>/dev/null)
 
-docker_config_file = 'docker-compose.local.yaml'
+docker_config_file := 'docker-compose.local.yaml'
 
 all:
 ifndef DOCKER_VERSION
