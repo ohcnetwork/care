@@ -31,8 +31,6 @@ services:
       - "9876:9876" #debugpy
     depends_on:
       - db
-    volumes:
-      - .:/app
 
   celery-worker:
     container_name: care_celery_worker
@@ -44,8 +42,6 @@ services:
       - db
       - backend
       - redis
-    volumes:
-      - .:/app
 
   celery-beat:
     container_name: care_celery_beat
@@ -57,8 +53,6 @@ services:
       - db
       - backend
       - redis
-    volumes:
-      - .:/app
 
   localstack:
     image: localstack/localstack:latest
