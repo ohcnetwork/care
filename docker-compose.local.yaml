@@ -1,39 +1,17 @@
 version: '3.4'
 
-networks:
-  default:
-    name: care
-
 services:
   db:
-    container_name: care_db
-    image: postgres:latest
-    restart: always
     env_file:
-      - ./docker/.local.env
       - ./.env
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
-  redis:
-    container_name: care_redis
-    image: redis:alpine
-    restart: always
 
   backend:
-    container_name: care
     build:
       context: .
       dockerfile: docker/DevDockerfile
     env_file:
       - ./docker/.local.env
       - ./.env
-    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
-    ports:
-      - "9000:9000"
-      - "9876:9876" #debugpy
-    depends_on:
-      - db
     volumes:
       - .:/app
 
@@ -52,16 +30,3 @@ services:
       - redis
     volumes:
       - .:/app
-
-  localstack:
-    image: localstack/localstack:latest
-    environment:
-      - AWS_DEFAULT_REGION=ap-south-1
-      - EDGE_PORT=4566
-      - SERVICES=s3
-    volumes:
-      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
-      - "./docker/awslocal:/docker-entrypoint-initaws.d"
-
-volumes:
-  postgres-data:
