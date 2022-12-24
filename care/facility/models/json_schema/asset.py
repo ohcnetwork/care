@@ -1,6 +1,6 @@
 HL7_META = {
     "type": "object",
-    "required": ["local_ip_address", "middleware_hostname"],
+    "required": ["local_ip_address"],
     "properties": {
         "local_ip_address": {"type": "string"},
         "middleware_hostname": {"type": "string"},
@@ -12,11 +12,7 @@ HL7_META = {
 
 ONVIF_META = {
     "type": "object",
-    "required": [
-        "local_ip_address",
-        "middleware_hostname",
-        "camera_access_key",
-    ],
+    "required": ["local_ip_address", "camera_access_key"],
     "properties": {
         "local_ip_address": {"type": "string"},
         "middleware_hostname": {"type": "string"},
@@ -31,7 +27,7 @@ ONVIF_META = {
 EMPTY_META = {"type": "object", "additionalProperties": False}
 
 ASSET_META = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "anyOf": [
         {"$ref": "#/definitions/onvif"},
         {"$ref": "#/definitions/hl7monitor"},
