@@ -1,23 +1,23 @@
 import enum
+
 from django.core.cache import cache
 from django.db.models import Q
-from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
-from config.serializers import ChoiceField
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import exceptions
 from rest_framework import filters as drf_filters
-from rest_framework import status, exceptions
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
+    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
-    DestroyModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -39,11 +39,13 @@ from care.facility.models.asset import (
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
+from config.serializers import ChoiceField
 
 inverse_asset_type = inverse_choices(Asset.AssetTypeChoices)
 inverse_asset_status = inverse_choices(Asset.StatusChoices)
@@ -128,7 +130,7 @@ class AssetViewSet(
     CreateModelMixin,
     UpdateModelMixin,
     GenericViewSet,
-    DestroyModelMixin
+    DestroyModelMixin,
 ):
     queryset = (
         Asset.objects.all()
@@ -165,7 +167,9 @@ class AssetViewSet(
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
         else:
-            raise exceptions.AuthenticationFailed("Only District Admin and above can delete assets")
+            raise exceptions.AuthenticationFailed(
+                "Only District Admin and above can delete assets"
+            )
 
     @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
@@ -238,7 +242,10 @@ class AssetViewSet(
             action = request.data["action"]
             asset: Asset = self.get_object()
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
-                asset.meta
+                {
+                    **asset.meta,
+                    "middleware_hostname": asset.current_location.facility.middleware_address,
+                }
             )
             result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)

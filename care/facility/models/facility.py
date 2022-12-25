@@ -72,10 +72,8 @@ FACILITY_TYPES = [
     (850, "General hospitals"),  # TODO: same as 8, need to merge
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
-
     (900, "Co-operative hospitals"),
     (910, "Autonomous healthcare facility"),
-
     # Use 9xx for Labs
     (950, "Corona Testing Labs"),
     # Use 10xx for Corona Care Center
@@ -164,9 +162,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     cover_image_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )
-    middleware_address = models.CharField(
-        unique=True, null=True, default=None, max_length=200
-    )
+    middleware_address = models.CharField(null=True, default=None, max_length=200)
 
     class Meta:
         verbose_name_plural = "Facilities"
