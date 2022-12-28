@@ -22,7 +22,7 @@ from care.facility.models.file_upload import FileUpload
 
 class FileUploadFilter(filters.FilterSet):
     file_category = filters.CharFilter(field_name="file_category")
-    archive = filters.BooleanFilter(field_name="is_archived")
+    is_archived = filters.BooleanFilter(field_name="is_archived")
 
 
 class FileUploadViewSet(
