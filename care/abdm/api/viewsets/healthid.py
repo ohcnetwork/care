@@ -16,7 +16,7 @@ from care.abdm.api.serializers.healthid import (
     VerifyOtpRequestPayloadSerializer,
 )
 from care.abdm.models import AbhaNumber
-from care.abdm.utils.api_call import HealthIdGateway
+from care.abdm.utils.api_call import HealthIdGateway, HealthIdGatewayV2
 from care.utils.queryset.patient import get_patient_queryset
 
 
@@ -37,7 +37,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = AadharOtpGenerateRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGateway().generate_aadhaar_otp(data)
+        response = HealthIdGatewayV2().generate_aadhaar_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
