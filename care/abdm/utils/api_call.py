@@ -11,16 +11,15 @@ ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
-from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from base64 import b64encode
 
 
 def encrypt_with_public_key(a_message):
     rsa_public_key = RSA.importKey(requests.get(HEALTH_SERVICE_API_URL + "/v2/auth/cert", verify=False).text.strip())
-    rsa_public_key = PKCS1_OAEP.new(rsa_public_key)
+    rsa_public_key = PKCS1_v1_5.new(rsa_public_key)
     encrypted_text = rsa_public_key.encrypt(a_message.encode())
-
     return b64encode(encrypted_text).decode()
 
 
@@ -154,9 +153,16 @@ class HealthIdGatewayV2:
         response = self.api.post(path, data)
         return response.json()
 
-    def generate_mobile_otp(self, data):
-        path = "/v2/registration/aadhaar/generateOtp"
-        data["aadhaar"] = encrypt_with_public_key(data["aadhaar"])
+    def generate_document_mobile_otp(self, data):
+        path = "/v2/document/generate/mobile/otp"
+        data["mobile"] = "ENTER MOBILE NUMBER HERE"  # Hard Coding for test
+        data.pop("cancelToken", {})
+        response = self.api.post(path, data)
+        return response.json()
+
+    def verify_document_mobile_otp(self, data):
+        path = "/v2/document/verify/mobile/otp"
+        data["otp"] = encrypt_with_public_key(data["otp"])
         data.pop("cancelToken", {})
         response = self.api.post(path, data)
         return response.json()

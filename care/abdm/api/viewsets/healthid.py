@@ -37,7 +37,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = AadharOtpGenerateRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGatewayV2().generate_aadhaar_otp(data)
+        response = HealthIdGatewayV2().generate_document_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
@@ -67,7 +67,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGateway().verify_aadhaar_otp(data)
+        response = HealthIdGatewayV2().verify_document_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
