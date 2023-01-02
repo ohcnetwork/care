@@ -12,6 +12,7 @@ ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
+
 class APIGateway:
     def __init__(self, gateway, token):
         if gateway == "health":
@@ -39,7 +40,10 @@ class APIGateway:
                 "Accept": "application/json",
             }
             resp = requests.post(
-                ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers
+                ABDM_TOKEN_URL,
+                data=json.dumps(data),
+                headers=auth_headers,
+                verify=False,
             )
             print("Token Response Status: {}".format(resp.status_code))
             if resp.status_code < 300:
@@ -70,7 +74,7 @@ class APIGateway:
         url = self.url + path
         headers = {}
         headers = self.add_auth_header(headers)
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=params, verify=False)
         return response
 
     def post(self, path, data=None):
@@ -87,7 +91,7 @@ class APIGateway:
         data_json = json.dumps(data)
         # print("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
         print("Posting Request to: {}".format(url))
-        response = requests.post(url, headers=headers, data=data_json)
+        response = requests.post(url, headers=headers, data=data_json, verify=False)
         print("{} Response: {}".format(response.status_code, response.text))
         return response
 
