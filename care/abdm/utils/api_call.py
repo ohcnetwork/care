@@ -130,6 +130,8 @@ class HealthIdGateway:
     # /v1/registration/aadhaar/createHealthIdWithPreVerified
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
+        print("Creating Health ID with data: {}".format(data))
+        data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
 
