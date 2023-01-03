@@ -4,6 +4,7 @@ from django.db import transaction
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -132,7 +133,9 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -176,6 +179,8 @@ class PatientDetailSerializer(PatientListSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
+
+    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -386,11 +391,11 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         exclude = (
-                      "date_of_birth",
-                      "year_of_birth",
-                      "external_id",
-                      "id",
-                  ) + TIMESTAMP_FIELDS
+            "date_of_birth",
+            "year_of_birth",
+            "external_id",
+            "id",
+        ) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):

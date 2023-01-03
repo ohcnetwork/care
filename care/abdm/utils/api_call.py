@@ -1,6 +1,9 @@
 import json
+from base64 import b64encode
 
 import requests
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.core.cache import cache
 
@@ -11,13 +14,13 @@ ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
-from Crypto.Cipher import PKCS1_v1_5
-from Crypto.PublicKey import RSA
-from base64 import b64encode
-
 
 def encrypt_with_public_key(a_message):
-    rsa_public_key = RSA.importKey(requests.get(HEALTH_SERVICE_API_URL + "/v2/auth/cert", verify=False).text.strip())
+    rsa_public_key = RSA.importKey(
+        requests.get(
+            HEALTH_SERVICE_API_URL + "/v2/auth/cert", verify=False
+        ).text.strip()
+    )
     rsa_public_key = PKCS1_v1_5.new(rsa_public_key)
     encrypted_text = rsa_public_key.encrypt(a_message.encode())
     return b64encode(encrypted_text).decode()
@@ -50,7 +53,10 @@ class APIGateway:
                 "Accept": "application/json",
             }
             resp = requests.post(
-                ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers, verify=False
+                ABDM_TOKEN_URL,
+                data=json.dumps(data),
+                headers=auth_headers,
+                verify=False,
             )
             print("Token Response Status: {}".format(resp.status_code))
             if resp.status_code < 300:
@@ -137,6 +143,8 @@ class HealthIdGateway:
     # /v1/registration/aadhaar/createHealthIdWithPreVerified
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
+        print("Creating Health ID with data: {}".format(data))
+        data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
 
