@@ -99,6 +99,17 @@ BLOOD_GROUP_CHOICES = [
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
+class ConsultationStatusEnum(enum.Enum):
+    BROUGHT_DEAD = 1
+    TRANSFERRED_FROM_WARD = 2
+    TRANSFERRED_FROM_ICU = 3
+    REFERRED_FROM_OTHER_HOSPITAL = 4
+    OUT_PATIENT = 5
+
+
+ConsultationStatusChoices = [(e.value, e.name) for e in ConsultationStatusEnum]
+
+
 class BedType(enum.Enum):
     ISOLATION = 1
     ICU = 2
@@ -117,3 +128,4 @@ REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Depr
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 # REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
+REVERSE_CONSULTATION_STATUS_CHOICES = reverse_choices(ConsultationStatusChoices)
