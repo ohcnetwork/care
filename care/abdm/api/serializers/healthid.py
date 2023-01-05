@@ -35,13 +35,13 @@ class HealthIdSerializer(Serializer):
 #   "healthid": "43-4221-5105-6749"
 # }
 class HealthIdAuthSerializer(Serializer):
-    auth_method = CharField(
+    authMethod = CharField(
         max_length=64,
         min_length=1,
         required=True,
         help_text="Auth Method",
     )
-    healthId = CharField(
+    healthid = CharField(
         max_length=64,
         min_length=1,
         required=True,
