@@ -198,6 +198,24 @@ class HealthIdGateway:
 
     # Auth APIs
 
+    # /v1/auth/init
+    def auth_init(self, data):
+        path = "/v1/auth/init"
+        response = self.api.post(path, data)
+        return response.json()
+
+    # /v1/auth/confirmWithAadhaarOtp
+    def confirm_with_aadhaar_otp(self, data):
+        path = "/v1/auth/confirmWithAadhaarOtp"
+        response = self.api.post(path, data)
+        return response.json()
+
+    # /v1/auth/confirmWithMobileOTP
+    def confirm_with_mobile_otp(self, data):
+        path = "/v1/auth/confirmWithMobileOTP"
+        response = self.api.post(path, data)
+        return response.json()
+
     # /v1/auth/generate/access-token
     def generate_access_token(self, data):
         path = "/v1/auth/generate/access-token"

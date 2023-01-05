@@ -30,6 +30,25 @@ class HealthIdSerializer(Serializer):
     )
 
 
+# {
+#   "authMethod": "AADHAAR_OTP",
+#   "healthid": "43-4221-5105-6749"
+# }
+class HealthIdAuthSerializer(Serializer):
+    auth_method = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Auth Method",
+    )
+    healthid = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Health ID",
+    )
+
+
 #   "gender": "M",
 #   "mobile": "9545812125",
 #   "name": "suraj singh karki",

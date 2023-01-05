@@ -13,6 +13,7 @@ from care.abdm.api.serializers.healthid import (
     AadharOtpResendRequestPayloadSerializer,
     CreateHealthIdSerializer,
     GenerateMobileOtpRequestPayloadSerializer,
+    HealthIdAuthSerializer,
     HealthIdSerializer,
     VerifyOtpRequestPayloadSerializer,
 )
@@ -159,6 +160,52 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = HealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().search_by_health_id(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+    # auth/init
+    @swagger_auto_schema(
+        # /v1/auth/init
+        operation_id="auth_init",
+        request_body=HealthIdAuthSerializer,
+        responses={"200": "{'txnId': 'string'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def auth_init(self, request):
+        data = request.data
+        serializer = HealthIdAuthSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response = HealthIdGateway().auth_init(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+    # /v1/auth/confirmWithAadhaarOtp
+    @swagger_auto_schema(
+        operation_id="confirm_with_aadhaar_otp",
+        request_body=VerifyOtpRequestPayloadSerializer,
+        responses={"200": "{'txnId': 'string'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def confirm_with_aadhaar_otp(self, request):
+        data = request.data
+        serializer = VerifyOtpRequestPayloadSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response = HealthIdGateway().confirm_with_aadhaar_otp(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+    # /v1/auth/confirmWithMobileOtp
+    @swagger_auto_schema(
+        operation_id="confirm_with_mobile_otp",
+        request_body=VerifyOtpRequestPayloadSerializer,
+        responses={"200": "{'txnId': 'string'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def confirm_with_mobile_otp(self, request):
+        data = request.data
+        serializer = VerifyOtpRequestPayloadSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response = HealthIdGateway().confirm_with_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     ############################################################################################################

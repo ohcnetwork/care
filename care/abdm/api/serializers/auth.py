@@ -11,3 +11,14 @@ class AbdmAuthResponseSerializer(Serializer):
     expiresIn = IntegerField()
     refreshExpiresIn = IntegerField()
     tokenType = CharField()
+
+
+class AbdmAuthInitResponseSerializer(Serializer):
+    """
+    Serializer for the response of the authentication API
+    """
+
+    token = CharField()
+    refreshToken = CharField()
+    expiresIn = IntegerField()
+    refreshExpiresIn = IntegerField()
