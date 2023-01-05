@@ -22,7 +22,7 @@ class AadharOtpResendRequestPayloadSerializer(Serializer):
 
 
 class HealthIdSerializer(Serializer):
-    health_id = CharField(
+    healthId = CharField(
         max_length=64,
         min_length=1,
         required=True,
@@ -41,7 +41,7 @@ class HealthIdAuthSerializer(Serializer):
         required=True,
         help_text="Auth Method",
     )
-    healthid = CharField(
+    healthId = CharField(
         max_length=64,
         min_length=1,
         required=True,
