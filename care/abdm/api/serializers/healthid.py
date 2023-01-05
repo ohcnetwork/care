@@ -98,6 +98,9 @@ class VerifyOtpRequestPayloadSerializer(Serializer):
         help_text="Transaction ID",
         validators=[],
     )
+    patientId = CharField(
+        required=True, help_text="Patient ID to be linked", validators=[]
+    )  # TODO: Add UUID Validation
 
 
 # {

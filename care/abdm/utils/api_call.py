@@ -45,7 +45,7 @@ class APIGateway:
     def add_user_header(self, headers, user_token):
         headers.update(
             {
-                "X-Token": user_token,
+                "X-Token": "Bearer " + user_token,
             }
         )
         return headers
@@ -218,10 +218,22 @@ class HealthIdGateway:
 
     # /v1/auth/generate/access-token
     def generate_access_token(self, data):
+        if "access_token" in data:
+            return data["access_token"]
+        elif "accessToken" in data:
+            return data["accessToken"]
+        elif "token" in data:
+            return data["token"]
+
+        if "refreshToken" in data:
+            refreshToken = data["refreshToken"]
+        elif "refresh_token" in data:
+            refreshToken = data["refresh_token"]
+        else:
+            return None
         path = "/v1/auth/generate/access-token"
-        print("Generating Access Token for: {}".format(data["abha_number"]))
-        response = self.api.post(path, {"refreshToken": data["refresh_token"]})
-        return response.json()
+        response = self.api.post(path, {"refreshToken": refreshToken})
+        return response.json()["accessToken"]
 
     # Account APIs
 

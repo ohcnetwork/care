@@ -102,6 +102,29 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().verify_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
+    def add_abha_details_to_patient(self, data, patient_obj):
+        abha_object = AbhaNumber.objects.filter(
+            abha_number=data["healthIdNumber"]
+        ).first()
+        if abha_object:
+            # Flow when abha number exists in db somehow!
+            return False
+        else:
+            # Create abha number flow
+            abha_object = AbhaNumber()
+            abha_object.abha_number = data["healthIdNumber"]
+            abha_object.email = data["email"]
+            abha_object.first_name = data["firstName"]
+            abha_object.health_id = data["healthId"]
+            abha_object.last_name = data["lastName"]
+            abha_object.middle_name = data["middleName"]
+            abha_object.profile_photo = data["profilePhoto"]
+            abha_object.save()
+
+        patient_obj.abha_number = abha_object
+        patient_obj.save()
+        return True
+
     @swagger_auto_schema(
         # /v1/registration/aadhaar/createHealthId
         operation_id="create_health_id",
@@ -191,7 +214,24 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_aadhaar_otp(data)
-        return Response(response, status=status.HTTP_200_OK)
+        abha_object = HealthIdGateway().get_profile(response)
+
+        patient_id = data.pop("patientId")
+        allowed_patients = get_patient_queryset(request.user)
+        patient_obj = allowed_patients.filter(external_id=patient_id).first()
+        if not patient_obj:
+            raise ValidationError({"patient": "Not Found"})
+
+        if self.add_abha_details_to_patient(
+            abha_object,
+            patient_obj,
+        ):
+            return Response(abha_object, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "ABHA NUmber / Health ID already Exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     # /v1/auth/confirmWithMobileOtp
     @swagger_auto_schema(
@@ -206,7 +246,24 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_mobile_otp(data)
-        return Response(response, status=status.HTTP_200_OK)
+        abha_object = HealthIdGateway().get_profile(response)
+
+        patient_id = data.pop("patientId")
+        allowed_patients = get_patient_queryset(request.user)
+        patient_obj = allowed_patients.filter(external_id=patient_id).first()
+        if not patient_obj:
+            raise ValidationError({"patient": "Not Found"})
+
+        if self.add_abha_details_to_patient(
+            abha_object,
+            patient_obj,
+        ):
+            return Response(abha_object, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "ABHA NUmber / Health ID already Exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     ############################################################################################################
     # HealthID V2 APIs
