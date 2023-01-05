@@ -5,6 +5,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.abha import AbhaSerializer
 from care.abdm.models import AbhaNumber
+from care.abdm.utils.api_call import HealthIdGateway
 from care.utils.queryset.patient import get_patient_queryset
 
 
@@ -15,12 +16,18 @@ class AbhaViewSet(GenericViewSet):
 
     def get_abha_object(self):
         queryset = get_patient_queryset(self.request.user)
-        patient_obj = get_object_or_404(queryset.filter.filter(
-            external_id=self.kwargs.get("patient_external_id")
-        ))
+        print(
+            "Finding patient with external_id: ", self.kwargs.get("patient_external_id")
+        )
+        patient_obj = get_object_or_404(
+            queryset.filter(external_id=self.kwargs.get("patient_external_id"))
+        )
         return patient_obj.abha_number
 
-    @action(detail=False, methods=["POST"])
-    def something_here(self, request, *args, **kwargs):
+    @action(detail=False, methods=["GET"])
+    def get_qr_code(self, request, *args, **kwargs):
         obj = self.get_abha_object()
-        return Response({})
+        gateway = HealthIdGateway()
+        # Empty Dict as data, obj.access_token as auth
+        response = gateway.get_qr_code(obj)
+        return Response(response)

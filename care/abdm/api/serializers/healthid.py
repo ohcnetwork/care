@@ -21,6 +21,32 @@ class AadharOtpResendRequestPayloadSerializer(Serializer):
     )
 
 
+class HealthIdSerializer(Serializer):
+    health_id = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Health ID",
+    )
+
+
+#   "gender": "M",
+#   "mobile": "9545812125",
+#   "name": "suraj singh karki",
+#   "yearOfBirth": "1994"
+
+
+class ABHASearchRequestSerializer:
+    name = CharField(max_length=64, min_length=1, required=False, help_text="Name")
+    mobile = CharField(
+        max_length=10, min_length=10, required=False, help_text="Mobile Number"
+    )
+    gender = CharField(max_length=1, min_length=1, required=False, help_text="Gender")
+    yearOfBirth = CharField(
+        max_length=4, min_length=4, required=False, help_text="Year of Birth"
+    )
+
+
 class GenerateMobileOtpRequestPayloadSerializer(Serializer):
     mobile = CharField(
         max_length=10,
@@ -80,5 +106,6 @@ class CreateHealthIdSerializer(Serializer):
         help_text="PreVerified Transaction ID",
         validators=[],
     )
-    patientId = CharField(required=True, help_text="Patient ID to be linked",
-                          validators=[])  # TODO: Add UUID Validation
+    patientId = CharField(
+        required=True, help_text="Patient ID to be linked", validators=[]
+    )  # TODO: Add UUID Validation

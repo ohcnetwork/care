@@ -13,6 +13,7 @@ from care.abdm.api.serializers.healthid import (
     AadharOtpResendRequestPayloadSerializer,
     CreateHealthIdSerializer,
     GenerateMobileOtpRequestPayloadSerializer,
+    HealthIdSerializer,
     VerifyOtpRequestPayloadSerializer,
 )
 from care.abdm.models import AbhaNumber
@@ -118,7 +119,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if not patient_obj:
             raise ValidationError({"patient": "Not Found"})
         response = HealthIdGateway().create_health_id(data)
-        abha_object = AbhaNumber.objects.filter(abha_number=response["healthIdNumber"]).first()
+        abha_object = AbhaNumber.objects.filter(
+            abha_number=response["healthIdNumber"]
+        ).first()
         if abha_object:
             # Flow when abha number exists in db somehow!
             pass
@@ -141,6 +144,24 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         patient_obj.save()
         return Response(response, status=status.HTTP_200_OK)
 
+    # APIs to Find & Link Existing HealthID
+    # searchByHealthId
+    @swagger_auto_schema(
+        # /v1/registration/aadhaar/searchByHealthId
+        operation_id="search_by_health_id",
+        request_body=HealthIdSerializer,
+        responses={"200": "{'status': 'boolean'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def search_by_health_id(self, request):
+        data = request.data
+        serializer = HealthIdSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response = HealthIdGateway().search_by_health_id(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+    ############################################################################################################
     # HealthID V2 APIs
     @swagger_auto_schema(
         # /v1/registration/aadhaar/checkAndGenerateMobileOTP

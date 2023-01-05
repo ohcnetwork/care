@@ -30,6 +30,8 @@ class APIGateway:
     def __init__(self, gateway, token):
         if gateway == "health":
             self.url = HEALTH_SERVICE_API_URL
+        elif gateway == "abdm":
+            self.url = GATEWAY_API_URL
         else:
             self.url = GATEWAY_API_URL
         self.token = token
@@ -40,10 +42,19 @@ class APIGateway:
     #         cert = requests.get(settings.ABDM_CERT_URL).text
     #         cache.set("abdm_cert", cert, 3600)
 
+    def add_user_header(self, headers, user_token):
+        headers.update(
+            {
+                "X-Token": user_token,
+            }
+        )
+        return headers
+
     def add_auth_header(self, headers):
         token = cache.get(ABDM_TOKEN_CACHE_KEY)
-        print("Cached Token: {}".format(token))
+        print("Using Cached Token")
         if not token:
+            print("No Token in Cache")
             data = {
                 "clientId": settings.ABDM_CLIENT_ID,
                 "clientSecret": settings.ABDM_CLIENT_SECRET,
@@ -79,18 +90,23 @@ class APIGateway:
             else:
                 print("Bad Response: {}".format(resp.text))
                 return None
-        print("Returning Authorization Header: Bearer {}".format(token))
+        # print("Returning Authorization Header: Bearer {}".format(token))
+        print("Adding Authorization Header")
         auth_header = {"Authorization": "Bearer {}".format(token)}
         return {**headers, **auth_header}
 
-    def get(self, path, params=None):
+    def get(self, path, params=None, auth=None):
         url = self.url + path
         headers = {}
         headers = self.add_auth_header(headers)
+        if auth:
+            headers = self.add_user_header(headers, auth)
+        print("Making GET Request to: {}".format(url))
         response = requests.get(url, headers=headers, params=params, verify=False)
+        print("{} Response: {}".format(response.status_code, response.text))
         return response
 
-    def post(self, path, data=None):
+    def post(self, path, data=None, auth=None):
         url = self.url + path
         headers = {
             "Content-Type": "application/json",
@@ -98,6 +114,8 @@ class APIGateway:
             "Accept-Language": "en-US",
         }
         headers = self.add_auth_header(headers)
+        if auth:
+            headers = self.add_user_header(headers, auth)
         # headers_string = " ".join(
         #     ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
         # )
@@ -148,6 +166,63 @@ class HealthIdGateway:
         response = self.api.post(path, data)
         return response.json()
 
+    # /v1/search/existsByHealthId
+    # API checks if ABHA Address/ABHA Number is reserved/used which includes permanently deleted ABHA Addresses
+    # Return { status: true }
+    def exists_by_health_id(self, data):
+        path = "/v1/search/existsByHealthId"
+        response = self.api.post(path, data)
+        return response.json()
+
+    # /v1/search/searchByHealthId
+    # API returns only Active or Deactive ABHA Number/ Address (Never returns Permanently Deleted ABHA Number/Address)
+    # Returns {
+    # "authMethods": [
+    #     "AADHAAR_OTP"
+    # ],
+    # "healthId": "deepakndhm",
+    # "healthIdNumber": "43-4221-5105-6749",
+    # "name": "kishan kumar singh",
+    # "status": "ACTIVE"
+    # }
+    def search_by_health_id(self, data):
+        path = "/v1/search/searchByHealthId"
+        response = self.api.post(path, data)
+        return response.json()
+
+    # /v1/search/searchByMobile
+    def search_by_mobile(self, data):
+        path = "/v1/search/searchByMobile"
+        response = self.api.post(path, data)
+        return response.json()
+
+    # Auth APIs
+
+    # /v1/auth/generate/access-token
+    def generate_access_token(self, data):
+        path = "/v1/auth/generate/access-token"
+        print("Generating Access Token for: {}".format(data["abha_number"]))
+        response = self.api.post(path, {"refreshToken": data["refresh_token"]})
+        return response.json()
+
+    # Account APIs
+
+    # /v1/account/profile
+    def get_profile(self, data):
+        path = "/v1/account/profile"
+        access_token = self.generate_access_token(data)
+        response = self.api.get(path, {}, access_token)
+        return response.json()
+
+    # /v1/account/qrCode
+    def get_qr_code(self, data, auth):
+        path = "/v1/account/qrCode"
+        access_token = self.generate_access_token(data)
+        print("Getting QR Code for: {}".format(data))
+        response = self.api.get(path, {}, access_token)
+        print("QR Code Response: {}".format(response.text))
+        return response.json()
+
 
 class HealthIdGatewayV2:
     def __init__(self):
@@ -172,5 +247,16 @@ class HealthIdGatewayV2:
         path = "/v2/document/verify/mobile/otp"
         data["otp"] = encrypt_with_public_key(data["otp"])
         data.pop("cancelToken", {})
+        response = self.api.post(path, data)
+        return response.json()
+
+
+class AbdmGateway:
+    def __init__(self):
+        self.api = APIGateway("abdm", None)
+
+    # /v0.5/users/auth/fetch-modes
+    def fetch_modes(self, data):
+        path = "/v0.5/users/auth/fetch-modes"
         response = self.api.post(path, data)
         return response.json()
