@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import exceptions
+from rest_framework import exceptions, pagination
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -138,6 +138,7 @@ class AssetViewSet(
         .order_by("-created_date")
     )
     serializer_class = AssetSerializer
+    pagination.PageNumberPagination.page_size = 15
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name"]

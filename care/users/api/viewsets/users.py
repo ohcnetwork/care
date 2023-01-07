@@ -7,7 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
-from rest_framework import mixins, status
+from rest_framework import mixins, status, pagination
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -90,6 +90,7 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    pagination.PageNumberPagination.page_size = 15
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
     permission_classes = (

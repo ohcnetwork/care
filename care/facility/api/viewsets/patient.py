@@ -11,7 +11,7 @@ from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
-from rest_framework import mixins, serializers, status, viewsets
+from rest_framework import mixins, serializers, status, viewsets, pagination
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -213,6 +213,7 @@ class PatientViewSet(
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
+    pagination.PageNumberPagination.page_size = 15 # custom pagination page size
     queryset = PatientRegistration.objects.all().select_related(
         "local_body",
         "district",
