@@ -31,3 +31,11 @@ class AbhaViewSet(GenericViewSet):
         # Empty Dict as data, obj.access_token as auth
         response = gateway.get_qr_code(obj)
         return Response(response)
+
+    @action(detail=False, methods=["GET"])
+    def get_profile(self, request, *args, **kwargs):
+        obj = self.get_abha_object()
+        gateway = HealthIdGateway()
+        # Empty Dict as data, obj.access_token as auth
+        response = gateway.get_profile(obj)
+        return Response(response)
