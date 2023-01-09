@@ -69,11 +69,13 @@ class MiddlewareAuthentication(JWTAuthentication):
             facility = Facility.objects.get(external_id=external_id)
         except (Facility.DoesNotExist, ValidationError) as e:
             raise InvalidToken({"detail": "Invalid Facility", "messages": []}) from e
+        
+        open_id_url = "http://localhost:8090"
+        
+        if facility.middleware_address:
+            open_id_url = f"https://{facility.middleware_address}"
 
-        open_id_url = (
-            facility.middleware_address
-            or "http://localhost:8090" + "/.well-known/openid-configuration/"
-        )
+        open_id_url += "/.well-known/openid-configuration/"
 
         validated_token = self.get_validated_token(open_id_url, raw_token)
 
