@@ -38,6 +38,9 @@ class SignUpSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "ward",
             "local_body",
             "district",
@@ -157,6 +160,7 @@ class UserCreateSerializer(SignUpSerializer):
                         ]
                     }
                 )
+
         if (
             self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
             and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
@@ -245,6 +249,9 @@ class UserSerializer(SignUpSerializer):
             "last_name",
             "email",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "created_by",
             "home_facility",
             "local_body",
@@ -353,6 +360,9 @@ class UserListSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "created_by",
             "last_login",
             "home_facility_object",
