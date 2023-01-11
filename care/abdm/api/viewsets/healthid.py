@@ -69,7 +69,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGatewayV2().verify_document_mobile_otp(data)
+        response = HealthIdGateway().verify_aadhaar_otp(
+            data
+        )  # HealthIdGatewayV2().verify_document_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
@@ -137,11 +139,11 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = CreateHealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        patient_id = data.pop("patientId")
-        allowed_patients = get_patient_queryset(request.user)
-        patient_obj = allowed_patients.filter(external_id=patient_id).first()
-        if not patient_obj:
-            raise ValidationError({"patient": "Not Found"})
+        # patient_id = data.pop("patientId")
+        # allowed_patients = get_patient_queryset(request.user)
+        # patient_obj = allowed_patients.filter(external_id=patient_id).first()
+        # if not patient_obj:
+        #     raise ValidationError({"patient": "Not Found"})
         response = HealthIdGateway().create_health_id(data)
         abha_object = AbhaNumber.objects.filter(
             abha_number=response["healthIdNumber"]
@@ -164,9 +166,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             abha_object.refresh_token = data["txnId"]
             abha_object.save()
 
-        patient_obj.abha_number = abha_object
-        patient_obj.save()
-        return Response(response, status=status.HTTP_200_OK)
+        # patient_obj.abha_number = abha_object
+        # patient_obj.save()
+        return Response({"abha": abha_object.external_id}, status=status.HTTP_200_OK)
 
     # APIs to Find & Link Existing HealthID
     # searchByHealthId
