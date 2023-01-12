@@ -1,0 +1,354 @@
+{
+    "name": "Hailakandi",
+    "lsg_code": 2587,
+    "district": "Hailakandi",
+    "state": "Assam",
+    "no_of_wards": 69,
+    "wards": [
+        {
+            "ward_no": 301019,
+            "ward_name": "Bahadurpur Pt I",
+            "ward_id": 301019
+        },
+        {
+            "ward_no": 301027,
+            "ward_name": "Bahadurpur Pt Ii",
+            "ward_id": 301027
+        },
+        {
+            "ward_no": 300989,
+            "ward_name": "Balikandi Grant",
+            "ward_id": 300989
+        },
+        {
+            "ward_no": 300979,
+            "ward_name": "Balikandi Pt I",
+            "ward_id": 300979
+        },
+        {
+            "ward_no": 300980,
+            "ward_name": "Balikandi Pt Ii",
+            "ward_id": 300980
+        },
+        {
+            "ward_no": 301035,
+            "ward_name": "Bandukmara Grant",
+            "ward_id": 301035
+        },
+        {
+            "ward_no": 907757,
+            "ward_name": "Bandukmara R.A",
+            "ward_id": 907757
+        },
+        {
+            "ward_no": 300986,
+            "ward_name": "Barjurai",
+            "ward_id": 300986
+        },
+        {
+            "ward_no": 907754,
+            "ward_name": "Bashbari Grant",
+            "ward_id": 907754
+        },
+        {
+            "ward_no": 907755,
+            "ward_name": "Bashbari Pt-I",
+            "ward_id": 907755
+        },
+        {
+            "ward_no": 301038,
+            "ward_name": "Bashdahar Pt I",
+            "ward_id": 301038
+        },
+        {
+            "ward_no": 301037,
+            "ward_name": "Bashdahar Pt Ii",
+            "ward_id": 301037
+        },
+        {
+            "ward_no": 301023,
+            "ward_name": "Bhajantipur Pt I",
+            "ward_id": 301023
+        },
+        {
+            "ward_no": 301021,
+            "ward_name": "Bhajantipur Pt Ii",
+            "ward_id": 301021
+        },
+        {
+            "ward_no": 300982,
+            "ward_name": "Bhatirkupa Pt Ii",
+            "ward_id": 300982
+        },
+        {
+            "ward_no": 300983,
+            "ward_name": "Bhatirkupa Pt Iii",
+            "ward_id": 300983
+        },
+        {
+            "ward_no": 301017,
+            "ward_name": "Bilpar Dhumkar",
+            "ward_id": 301017
+        },
+        {
+            "ward_no": 300998,
+            "ward_name": "Bisnughar",
+            "ward_id": 300998
+        },
+        {
+            "ward_no": 300984,
+            "ward_name": "Boalipar Pt I",
+            "ward_id": 300984
+        },
+        {
+            "ward_no": 300985,
+            "ward_name": "Boalipar Pt Ii",
+            "ward_id": 300985
+        },
+        {
+            "ward_no": 300996,
+            "ward_name": "Boalipar Pt Iii",
+            "ward_id": 300996
+        },
+        {
+            "ward_no": 301026,
+            "ward_name": "Bondukmara",
+            "ward_id": 301026
+        },
+        {
+            "ward_no": 301036,
+            "ward_name": "Borhailakandi Pt I",
+            "ward_id": 301036
+        },
+        {
+            "ward_no": 301033,
+            "ward_name": "Borhailakandi Pt Ii",
+            "ward_id": 301033
+        },
+        {
+            "ward_no": 301032,
+            "ward_name": "Borhailakandi Pt Iii",
+            "ward_id": 301032
+        },
+        {
+            "ward_no": 301029,
+            "ward_name": "Brojapur Pt I",
+            "ward_id": 301029
+        },
+        {
+            "ward_no": 301028,
+            "ward_name": "Brojapur Pt Ii",
+            "ward_id": 301028
+        },
+        {
+            "ward_no": 300990,
+            "ward_name": "Chakchandpur",
+            "ward_id": 300990
+        },
+        {
+            "ward_no": 300992,
+            "ward_name": "Chandpur",
+            "ward_id": 300992
+        },
+        {
+            "ward_no": 301018,
+            "ward_name": "Chepti Brojapur",
+            "ward_id": 301018
+        },
+        {
+            "ward_no": 301040,
+            "ward_name": "Dakhin Sonapur Pt I",
+            "ward_id": 301040
+        },
+        {
+            "ward_no": 301041,
+            "ward_name": "Dakhin Sonapur Pt Ii",
+            "ward_id": 301041
+        },
+        {
+            "ward_no": 300994,
+            "ward_name": "Gangpar Dhonkar Pt Iii",
+            "ward_id": 300994
+        },
+        {
+            "ward_no": 301000,
+            "ward_name": "Gangpar Dhonkar Pt Iv",
+            "ward_id": 301000
+        },
+        {
+            "ward_no": 301007,
+            "ward_name": "Itorkandi Grant",
+            "ward_id": 301007
+        },
+        {
+            "ward_no": 301002,
+            "ward_name": "Itorkandi Pt I",
+            "ward_id": 301002
+        },
+        {
+            "ward_no": 301006,
+            "ward_name": "Itorkandi Pt Ii",
+            "ward_id": 301006
+        },
+        {
+            "ward_no": 301008,
+            "ward_name": "Kanchanpur Grant",
+            "ward_id": 301008
+        },
+        {
+            "ward_no": 301011,
+            "ward_name": "Kanchanpur Pt I",
+            "ward_id": 301011
+        },
+        {
+            "ward_no": 301010,
+            "ward_name": "Kanchanpur Pt Ii",
+            "ward_id": 301010
+        },
+        {
+            "ward_no": 301009,
+            "ward_name": "Kanchanpur Pt Iii",
+            "ward_id": 301009
+        },
+        {
+            "ward_no": 300995,
+            "ward_name": "Lakhirbond Pt I",
+            "ward_id": 300995
+        },
+        {
+            "ward_no": 300999,
+            "ward_name": "Lakhirbond Pt Ii",
+            "ward_id": 300999
+        },
+        {
+            "ward_no": 301031,
+            "ward_name": "Matijuri",
+            "ward_id": 301031
+        },
+        {
+            "ward_no": 300993,
+            "ward_name": "Narainpur Pt I",
+            "ward_id": 300993
+        },
+        {
+            "ward_no": 301001,
+            "ward_name": "Narainpur Pt Ii",
+            "ward_id": 301001
+        },
+        {
+            "ward_no": 301003,
+            "ward_name": "Narainpur Pt Iii",
+            "ward_id": 301003
+        },
+        {
+            "ward_no": 301005,
+            "ward_name": "Narainpur Pt Iv",
+            "ward_id": 301005
+        },
+        {
+            "ward_no": 301004,
+            "ward_name": "Narainpur Pt V",
+            "ward_id": 301004
+        },
+        {
+            "ward_no": 300975,
+            "ward_name": "Nitainagar Pt I",
+            "ward_id": 300975
+        },
+        {
+            "ward_no": 907753,
+            "ward_name": "Nitainagar Pt-I",
+            "ward_id": 907753
+        },
+        {
+            "ward_no": 907756,
+            "ward_name": "Nitainagar Pt-Ii",
+            "ward_id": 907756
+        },
+        {
+            "ward_no": 300997,
+            "ward_name": "Nitainagar Pt Iii",
+            "ward_id": 300997
+        },
+        {
+            "ward_no": 301030,
+            "ward_name": "Paikan",
+            "ward_id": 301030
+        },
+        {
+            "ward_no": 301034,
+            "ward_name": "Purbagool",
+            "ward_id": 301034
+        },
+        {
+            "ward_no": 301020,
+            "ward_name": "Purba-Sonapur",
+            "ward_id": 301020
+        },
+        {
+            "ward_no": 301016,
+            "ward_name": "Rangauti Pt I",
+            "ward_id": 301016
+        },
+        {
+            "ward_no": 301014,
+            "ward_name": "Rangauti Pt Ii",
+            "ward_id": 301014
+        },
+        {
+            "ward_no": 301015,
+            "ward_name": "Rangauti Pt Iii",
+            "ward_id": 301015
+        },
+        {
+            "ward_no": 301025,
+            "ward_name": "Ratanpur Pt I",
+            "ward_id": 301025
+        },
+        {
+            "ward_no": 301024,
+            "ward_name": "Ratanpur Pt Ii",
+            "ward_id": 301024
+        },
+        {
+            "ward_no": 301039,
+            "ward_name": "Rongpur",
+            "ward_id": 301039
+        },
+        {
+            "ward_no": 300981,
+            "ward_name": "Sibuttar",
+            "ward_id": 300981
+        },
+        {
+            "ward_no": 301042,
+            "ward_name": "Sudorshonpur Pt I",
+            "ward_id": 301042
+        },
+        {
+            "ward_no": 301012,
+            "ward_name": "Tupkhana",
+            "ward_id": 301012
+        },
+        {
+            "ward_no": 300987,
+            "ward_name": "Ujankupa Pt I",
+            "ward_id": 300987
+        },
+        {
+            "ward_no": 300988,
+            "ward_name": "Ujankupa Pt Ii",
+            "ward_id": 300988
+        },
+        {
+            "ward_no": 300991,
+            "ward_name": "Ujankupa Pt Iii",
+            "ward_id": 300991
+        },
+        {
+            "ward_no": 301013,
+            "ward_name": "Vichingcha Pt Ii",
+            "ward_id": 301013
+        }
+    ]
+}

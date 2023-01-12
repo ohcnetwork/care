@@ -1,0 +1,234 @@
+{
+    "name": "Pakhimoria",
+    "lsg_code": 2672,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 45,
+    "wards": [
+        {
+            "ward_no": 284744,
+            "ward_name": "Afutoli Bil (Afutoli)",
+            "ward_id": 284744
+        },
+        {
+            "ward_no": 284758,
+            "ward_name": "Alapia Bebejia",
+            "ward_id": 284758
+        },
+        {
+            "ward_no": 284734,
+            "ward_name": "Auniati Satra (Auniati)",
+            "ward_id": 284734
+        },
+        {
+            "ward_no": 284741,
+            "ward_name": "Bali Choria Bil(Balinaria Bil)",
+            "ward_id": 284741
+        },
+        {
+            "ward_no": 284736,
+            "ward_name": "Barjoha",
+            "ward_id": 284736
+        },
+        {
+            "ward_no": 284727,
+            "ward_name": "Bar Pathari Sutar Gaon",
+            "ward_id": 284727
+        },
+        {
+            "ward_no": 284742,
+            "ward_name": "Bar Phakali Bil (Bar-Phakali)",
+            "ward_id": 284742
+        },
+        {
+            "ward_no": 284717,
+            "ward_name": "Bengena Ati",
+            "ward_id": 284717
+        },
+        {
+            "ward_no": 284760,
+            "ward_name": "Bhelai Gaon",
+            "ward_id": 284760
+        },
+        {
+            "ward_no": 284721,
+            "ward_name": "Bhutai Gaon",
+            "ward_id": 284721
+        },
+        {
+            "ward_no": 284750,
+            "ward_name": "Borkala",
+            "ward_id": 284750
+        },
+        {
+            "ward_no": 284749,
+            "ward_name": "Bura Gohai Than",
+            "ward_id": 284749
+        },
+        {
+            "ward_no": 284817,
+            "ward_name": "Chota Haibor (Ct)",
+            "ward_id": 284817
+        },
+        {
+            "ward_no": 284743,
+            "ward_name": "Dakhin Pat Satra(Dhakinpat Sat",
+            "ward_id": 284743
+        },
+        {
+            "ward_no": 284728,
+            "ward_name": "Dewdhar",
+            "ward_id": 284728
+        },
+        {
+            "ward_no": 284748,
+            "ward_name": "Dewri Gaon",
+            "ward_id": 284748
+        },
+        {
+            "ward_no": 284746,
+            "ward_name": "Dhantala Grant",
+            "ward_id": 284746
+        },
+        {
+            "ward_no": 284745,
+            "ward_name": "Hatigarh",
+            "ward_id": 284745
+        },
+        {
+            "ward_no": 284729,
+            "ward_name": "Hatipara",
+            "ward_id": 284729
+        },
+        {
+            "ward_no": 284740,
+            "ward_name": "Jalah Gaon",
+            "ward_id": 284740
+        },
+        {
+            "ward_no": 284732,
+            "ward_name": "Jarani",
+            "ward_id": 284732
+        },
+        {
+            "ward_no": 284819,
+            "ward_name": "Kachalukhowa (Og)",
+            "ward_id": 284819
+        },
+        {
+            "ward_no": 284747,
+            "ward_name": "Kasoi Guri",
+            "ward_id": 284747
+        },
+        {
+            "ward_no": 284731,
+            "ward_name": "Kumartup (Kamartup)",
+            "ward_id": 284731
+        },
+        {
+            "ward_no": 284757,
+            "ward_name": "Kurabahi Gaon",
+            "ward_id": 284757
+        },
+        {
+            "ward_no": 284730,
+            "ward_name": "Kutayani (Karayani)",
+            "ward_id": 284730
+        },
+        {
+            "ward_no": 284754,
+            "ward_name": "Low-Mati (Loan-Mati Jalah)",
+            "ward_id": 284754
+        },
+        {
+            "ward_no": 284722,
+            "ward_name": "Mahrul",
+            "ward_id": 284722
+        },
+        {
+            "ward_no": 284752,
+            "ward_name": "Marguri Jalah",
+            "ward_id": 284752
+        },
+        {
+            "ward_no": 284725,
+            "ward_name": "Maz Pathari",
+            "ward_id": 284725
+        },
+        {
+            "ward_no": 284735,
+            "ward_name": "Mohmara",
+            "ward_id": 284735
+        },
+        {
+            "ward_no": 284718,
+            "ward_name": "Mori Kalong",
+            "ward_id": 284718
+        },
+        {
+            "ward_no": 284818,
+            "ward_name": "Morongial (Ct)",
+            "ward_id": 284818
+        },
+        {
+            "ward_no": 284733,
+            "ward_name": "Na-Bebejia",
+            "ward_id": 284733
+        },
+        {
+            "ward_no": 284723,
+            "ward_name": "Nam Pathari",
+            "ward_id": 284723
+        },
+        {
+            "ward_no": 284739,
+            "ward_name": "Niz Pakhimoria",
+            "ward_id": 284739
+        },
+        {
+            "ward_no": 284726,
+            "ward_name": "Niz-Pathari",
+            "ward_id": 284726
+        },
+        {
+            "ward_no": 284759,
+            "ward_name": "Nonoi-Namkuri",
+            "ward_id": 284759
+        },
+        {
+            "ward_no": 284755,
+            "ward_name": "Rangolu Mukh",
+            "ward_id": 284755
+        },
+        {
+            "ward_no": 284737,
+            "ward_name": "Ranthali",
+            "ward_id": 284737
+        },
+        {
+            "ward_no": 284724,
+            "ward_name": "Siale Khowa",
+            "ward_id": 284724
+        },
+        {
+            "ward_no": 284751,
+            "ward_name": "Sing Gaon",
+            "ward_id": 284751
+        },
+        {
+            "ward_no": 284753,
+            "ward_name": "Sukati Puta",
+            "ward_id": 284753
+        },
+        {
+            "ward_no": 284756,
+            "ward_name": "Sukati Puta Bil",
+            "ward_id": 284756
+        },
+        {
+            "ward_no": 284738,
+            "ward_name": "Uzara Gaon (Uzra Gaon)",
+            "ward_id": 284738
+        }
+    ]
+}

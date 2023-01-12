@@ -1,0 +1,164 @@
+{
+    "name": "Mahamaya-Btc",
+    "lsg_code": 6568,
+    "district": "Kokrajhar",
+    "state": "Assam",
+    "no_of_wards": 31,
+    "wards": [
+        {
+            "ward_no": 280613,
+            "ward_name": "Angarkata Pt.-I",
+            "ward_id": 280613
+        },
+        {
+            "ward_no": 280614,
+            "ward_name": "Angarkata Pt.-Ii",
+            "ward_id": 280614
+        },
+        {
+            "ward_no": 280615,
+            "ward_name": "Angarkata Pt.-Iii",
+            "ward_id": 280615
+        },
+        {
+            "ward_no": 280620,
+            "ward_name": "Baniamari Pt.-Ii",
+            "ward_id": 280620
+        },
+        {
+            "ward_no": 280596,
+            "ward_name": "Borogaon",
+            "ward_id": 280596
+        },
+        {
+            "ward_no": 280609,
+            "ward_name": "Chataguri Pt.-I",
+            "ward_id": 280609
+        },
+        {
+            "ward_no": 280610,
+            "ward_name": "Chataguri Pt.-Ii",
+            "ward_id": 280610
+        },
+        {
+            "ward_no": 280599,
+            "ward_name": "Falakata Pt.-I",
+            "ward_id": 280599
+        },
+        {
+            "ward_no": 280594,
+            "ward_name": "Ghugujhora Pt.I",
+            "ward_id": 280594
+        },
+        {
+            "ward_no": 280623,
+            "ward_name": "Jalabila",
+            "ward_id": 280623
+        },
+        {
+            "ward_no": 280592,
+            "ward_name": "Jalopara",
+            "ward_id": 280592
+        },
+        {
+            "ward_no": 280608,
+            "ward_name": "Jangirkilla Pt.-I",
+            "ward_id": 280608
+        },
+        {
+            "ward_no": 280611,
+            "ward_name": "Jangirkilla Pt.-Ii",
+            "ward_id": 280611
+        },
+        {
+            "ward_no": 280600,
+            "ward_name": "Joypur Pt.-I",
+            "ward_id": 280600
+        },
+        {
+            "ward_no": 280601,
+            "ward_name": "Joypur Pt.-Ii",
+            "ward_id": 280601
+        },
+        {
+            "ward_no": 280618,
+            "ward_name": "Kathalbari",
+            "ward_id": 280618
+        },
+        {
+            "ward_no": 280603,
+            "ward_name": "Khamar",
+            "ward_id": 280603
+        },
+        {
+            "ward_no": 280616,
+            "ward_name": "Khanabari Ariani Pt.-I",
+            "ward_id": 280616
+        },
+        {
+            "ward_no": 280617,
+            "ward_name": "Khanabari Ariani Pt.-Ii",
+            "ward_id": 280617
+        },
+        {
+            "ward_no": 280602,
+            "ward_name": "Khoraghat",
+            "ward_id": 280602
+        },
+        {
+            "ward_no": 280622,
+            "ward_name": "Kuarpar",
+            "ward_id": 280622
+        },
+        {
+            "ward_no": 280598,
+            "ward_name": "Kutkutarvita",
+            "ward_id": 280598
+        },
+        {
+            "ward_no": 280595,
+            "ward_name": "Lalmati Pt.-I",
+            "ward_id": 280595
+        },
+        {
+            "ward_no": 280593,
+            "ward_name": "Lalmati Pt.-Ii",
+            "ward_id": 280593
+        },
+        {
+            "ward_no": 280604,
+            "ward_name": "Mahamayadham",
+            "ward_id": 280604
+        },
+        {
+            "ward_no": 280612,
+            "ward_name": "Monipur Pt.-I",
+            "ward_id": 280612
+        },
+        {
+            "ward_no": 280605,
+            "ward_name": "Rajapara Pt.-I",
+            "ward_id": 280605
+        },
+        {
+            "ward_no": 280606,
+            "ward_name": "Rajapara Pt.-Ii",
+            "ward_id": 280606
+        },
+        {
+            "ward_no": 280597,
+            "ward_name": "Silbari",
+            "ward_id": 280597
+        },
+        {
+            "ward_no": 280607,
+            "ward_name": "Singimari",
+            "ward_id": 280607
+        },
+        {
+            "ward_no": 280619,
+            "ward_name": "Tamukubari Pt.Ii",
+            "ward_id": 280619
+        }
+    ]
+}

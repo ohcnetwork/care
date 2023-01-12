@@ -1,0 +1,179 @@
+{
+    "name": "Kakodonga",
+    "lsg_code": 2584,
+    "district": "Golaghat",
+    "state": "Assam",
+    "no_of_wards": 34,
+    "wards": [
+        {
+            "ward_no": 294409,
+            "ward_name": "129 No. Nahardongia Grant",
+            "ward_id": 294409
+        },
+        {
+            "ward_no": 294405,
+            "ward_name": "215 No.Negheriting Grant",
+            "ward_id": 294405
+        },
+        {
+            "ward_no": 294416,
+            "ward_name": "Anaighoria Gaon",
+            "ward_id": 294416
+        },
+        {
+            "ward_no": 294396,
+            "ward_name": "Bahguri Miri",
+            "ward_id": 294396
+        },
+        {
+            "ward_no": 294413,
+            "ward_name": "Barua Bamun Gaon",
+            "ward_id": 294413
+        },
+        {
+            "ward_no": 294399,
+            "ward_name": "Bilotia Kaibartta",
+            "ward_id": 294399
+        },
+        {
+            "ward_no": 294419,
+            "ward_name": "Chabuk Dhora Gaon",
+            "ward_id": 294419
+        },
+        {
+            "ward_no": 294404,
+            "ward_name": "Dergaon",
+            "ward_id": 294404
+        },
+        {
+            "ward_no": 294398,
+            "ward_name": "Dhemaji Kaibartta",
+            "ward_id": 294398
+        },
+        {
+            "ward_no": 294424,
+            "ward_name": "Dhemaji Miri",
+            "ward_id": 294424
+        },
+        {
+            "ward_no": 294397,
+            "ward_name": "Dighali Pam",
+            "ward_id": 294397
+        },
+        {
+            "ward_no": 294415,
+            "ward_name": "Gohain Gaon",
+            "ward_id": 294415
+        },
+        {
+            "ward_no": 294410,
+            "ward_name": "Hanhpani Gaon",
+            "ward_id": 294410
+        },
+        {
+            "ward_no": 294406,
+            "ward_name": "Jelehuwa Gaon",
+            "ward_id": 294406
+        },
+        {
+            "ward_no": 294411,
+            "ward_name": "Khongia",
+            "ward_id": 294411
+        },
+        {
+            "ward_no": 294403,
+            "ward_name": "Komar Gaon",
+            "ward_id": 294403
+        },
+        {
+            "ward_no": 294418,
+            "ward_name": "Kukurapohia Gaon",
+            "ward_id": 294418
+        },
+        {
+            "ward_no": 294412,
+            "ward_name": "Kumar Gaon",
+            "ward_id": 294412
+        },
+        {
+            "ward_no": 294391,
+            "ward_name": "Lem Chapori",
+            "ward_id": 294391
+        },
+        {
+            "ward_no": 294417,
+            "ward_name": "Lukhurakhonia Gaon",
+            "ward_id": 294417
+        },
+        {
+            "ward_no": 294414,
+            "ward_name": "Majiukuri Gaon",
+            "ward_id": 294414
+        },
+        {
+            "ward_no": 294423,
+            "ward_name": "Mohimabari Gaon",
+            "ward_id": 294423
+        },
+        {
+            "ward_no": 294393,
+            "ward_name": "Natun Chapori",
+            "ward_id": 294393
+        },
+        {
+            "ward_no": 294400,
+            "ward_name": "Negheria Kaibartta",
+            "ward_id": 294400
+        },
+        {
+            "ward_no": 294402,
+            "ward_name": "No.1 Negheriting Grant",
+            "ward_id": 294402
+        },
+        {
+            "ward_no": 294407,
+            "ward_name": "No.7 Naharani Grant",
+            "ward_id": 294407
+        },
+        {
+            "ward_no": 294408,
+            "ward_name": "Peta Gaon",
+            "ward_id": 294408
+        },
+        {
+            "ward_no": 294421,
+            "ward_name": "Pohuchowa Gaon",
+            "ward_id": 294421
+        },
+        {
+            "ward_no": 294394,
+            "ward_name": "Sawguri Chapori",
+            "ward_id": 294394
+        },
+        {
+            "ward_no": 294395,
+            "ward_name": "Sawguri Miri",
+            "ward_id": 294395
+        },
+        {
+            "ward_no": 294392,
+            "ward_name": "Siristika",
+            "ward_id": 294392
+        },
+        {
+            "ward_no": 294401,
+            "ward_name": "Sital Pathar Gaon",
+            "ward_id": 294401
+        },
+        {
+            "ward_no": 294420,
+            "ward_name": "Sumoni Gaon",
+            "ward_id": 294420
+        },
+        {
+            "ward_no": 294422,
+            "ward_name": "Upar Khatowal Gaon",
+            "ward_id": 294422
+        }
+    ]
+}

@@ -1,0 +1,234 @@
+{
+    "name": "Moirabari",
+    "lsg_code": 2655,
+    "district": "Marigaon",
+    "state": "Assam",
+    "no_of_wards": 45,
+    "wards": [
+        {
+            "ward_no": 283835,
+            "ward_name": "Bahalamukh",
+            "ward_id": 283835
+        },
+        {
+            "ward_no": 283808,
+            "ward_name": "Barchapari",
+            "ward_id": 283808
+        },
+        {
+            "ward_no": 283836,
+            "ward_name": "Belabori",
+            "ward_id": 283836
+        },
+        {
+            "ward_no": 283805,
+            "ward_name": "Bhajakhaiti Gaon",
+            "ward_id": 283805
+        },
+        {
+            "ward_no": 283809,
+            "ward_name": "Bhajakhaiti Pathar",
+            "ward_id": 283809
+        },
+        {
+            "ward_no": 283806,
+            "ward_name": "Bhelouguri",
+            "ward_id": 283806
+        },
+        {
+            "ward_no": 283778,
+            "ward_name": "Borbori",
+            "ward_id": 283778
+        },
+        {
+            "ward_no": 283814,
+            "ward_name": "Borthal Dolaigaon",
+            "ward_id": 283814
+        },
+        {
+            "ward_no": 283815,
+            "ward_name": "Borthal Kachari Gaon",
+            "ward_id": 283815
+        },
+        {
+            "ward_no": 283824,
+            "ward_name": "Datialbori",
+            "ward_id": 283824
+        },
+        {
+            "ward_no": 283828,
+            "ward_name": "Dungarpar",
+            "ward_id": 283828
+        },
+        {
+            "ward_no": 283819,
+            "ward_name": "Dura Bandhi Bil",
+            "ward_id": 283819
+        },
+        {
+            "ward_no": 283831,
+            "ward_name": "Durabandhi Gaon",
+            "ward_id": 283831
+        },
+        {
+            "ward_no": 283802,
+            "ward_name": "Garaimari",
+            "ward_id": 283802
+        },
+        {
+            "ward_no": 283801,
+            "ward_name": "Garaimari Gaon",
+            "ward_id": 283801
+        },
+        {
+            "ward_no": 283800,
+            "ward_name": "Garaimari Pathar",
+            "ward_id": 283800
+        },
+        {
+            "ward_no": 283830,
+            "ward_name": "Gariabori Gaon",
+            "ward_id": 283830
+        },
+        {
+            "ward_no": 283820,
+            "ward_name": "Gariabori Pathar",
+            "ward_id": 283820
+        },
+        {
+            "ward_no": 283837,
+            "ward_name": "Gunaibori",
+            "ward_id": 283837
+        },
+        {
+            "ward_no": 283822,
+            "ward_name": "Hahcharabori",
+            "ward_id": 283822
+        },
+        {
+            "ward_no": 283821,
+            "ward_name": "Hahchara Gaon",
+            "ward_id": 283821
+        },
+        {
+            "ward_no": 283826,
+            "ward_name": "Haldhibari",
+            "ward_id": 283826
+        },
+        {
+            "ward_no": 283816,
+            "ward_name": "Hatimuria",
+            "ward_id": 283816
+        },
+        {
+            "ward_no": 283823,
+            "ward_name": "Hogaltoli",
+            "ward_id": 283823
+        },
+        {
+            "ward_no": 283829,
+            "ward_name": "Lalirpar",
+            "ward_id": 283829
+        },
+        {
+            "ward_no": 283833,
+            "ward_name": "Lengeribori",
+            "ward_id": 283833
+        },
+        {
+            "ward_no": 283799,
+            "ward_name": "Leruamukh",
+            "ward_id": 283799
+        },
+        {
+            "ward_no": 283834,
+            "ward_name": "Lochanabori",
+            "ward_id": 283834
+        },
+        {
+            "ward_no": 283810,
+            "ward_name": "Madarguri",
+            "ward_id": 283810
+        },
+        {
+            "ward_no": 283818,
+            "ward_name": "Mairabari Gaon",
+            "ward_id": 283818
+        },
+        {
+            "ward_no": 283840,
+            "ward_name": "Mairabari Town (Ct)",
+            "ward_id": 283840
+        },
+        {
+            "ward_no": 283797,
+            "ward_name": "No.1 Rangrai",
+            "ward_id": 283797
+        },
+        {
+            "ward_no": 283798,
+            "ward_name": "No.2 Rangrai",
+            "ward_id": 283798
+        },
+        {
+            "ward_no": 283803,
+            "ward_name": "No.3 Rangrai",
+            "ward_id": 283803
+        },
+        {
+            "ward_no": 283827,
+            "ward_name": "Norchingbori",
+            "ward_id": 283827
+        },
+        {
+            "ward_no": 283817,
+            "ward_name": "Sagunbahi",
+            "ward_id": 283817
+        },
+        {
+            "ward_no": 283832,
+            "ward_name": "Saharia Gaon",
+            "ward_id": 283832
+        },
+        {
+            "ward_no": 283839,
+            "ward_name": "Saharia Pam",
+            "ward_id": 283839
+        },
+        {
+            "ward_no": 283812,
+            "ward_name": "Saulmari",
+            "ward_id": 283812
+        },
+        {
+            "ward_no": 283796,
+            "ward_name": "Sitolimari Gaon",
+            "ward_id": 283796
+        },
+        {
+            "ward_no": 283804,
+            "ward_name": "Sitolmari Pathar",
+            "ward_id": 283804
+        },
+        {
+            "ward_no": 283811,
+            "ward_name": "Sunarigaon",
+            "ward_id": 283811
+        },
+        {
+            "ward_no": 283807,
+            "ward_name": "Tatikata Pathar",
+            "ward_id": 283807
+        },
+        {
+            "ward_no": 283813,
+            "ward_name": "Ulubari",
+            "ward_id": 283813
+        },
+        {
+            "ward_no": 283838,
+            "ward_name": "Uralkata Pathar",
+            "ward_id": 283838
+        }
+    ]
+}

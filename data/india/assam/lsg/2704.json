@@ -1,0 +1,589 @@
+{
+    "name": "Behali",
+    "lsg_code": 2704,
+    "district": "Biswanath",
+    "state": "Assam",
+    "no_of_wards": 116,
+    "wards": [
+        {
+            "ward_no": 286798,
+            "ward_name": "Bagari Suti",
+            "ward_id": 286798
+        },
+        {
+            "ward_no": 286920,
+            "ward_name": "Bagijuli",
+            "ward_id": 286920
+        },
+        {
+            "ward_no": 286879,
+            "ward_name": "Bagijuli Pathar",
+            "ward_id": 286879
+        },
+        {
+            "ward_no": 286846,
+            "ward_name": "Bahbari Gaon",
+            "ward_id": 286846
+        },
+        {
+            "ward_no": 286845,
+            "ward_name": "Bahbari Pathar",
+            "ward_id": 286845
+        },
+        {
+            "ward_no": 286912,
+            "ward_name": "Balamguri",
+            "ward_id": 286912
+        },
+        {
+            "ward_no": 286875,
+            "ward_name": "Barajuli Gaon",
+            "ward_id": 286875
+        },
+        {
+            "ward_no": 286876,
+            "ward_name": "Barajuli Nepali",
+            "ward_id": 286876
+        },
+        {
+            "ward_no": 286890,
+            "ward_name": "Barajuli Pathar",
+            "ward_id": 286890
+        },
+        {
+            "ward_no": 286886,
+            "ward_name": "Barajuli T.E. 223/343",
+            "ward_id": 286886
+        },
+        {
+            "ward_no": 286885,
+            "ward_name": "Barajuli T.E. 298/509",
+            "ward_id": 286885
+        },
+        {
+            "ward_no": 286873,
+            "ward_name": "Barajuli T.E. 3/51",
+            "ward_id": 286873
+        },
+        {
+            "ward_no": 286894,
+            "ward_name": "Barali Mara",
+            "ward_id": 286894
+        },
+        {
+            "ward_no": 286840,
+            "ward_name": "Barbil Kachari",
+            "ward_id": 286840
+        },
+        {
+            "ward_no": 286805,
+            "ward_name": "Barbil T.E. 211/387",
+            "ward_id": 286805
+        },
+        {
+            "ward_no": 286807,
+            "ward_name": "Barbil T.E. 215/372",
+            "ward_id": 286807
+        },
+        {
+            "ward_no": 286806,
+            "ward_name": "Barbil T.E. 242/415",
+            "ward_id": 286806
+        },
+        {
+            "ward_no": 286804,
+            "ward_name": "Barbil T.E. 297/483",
+            "ward_id": 286804
+        },
+        {
+            "ward_no": 286849,
+            "ward_name": "Bargang Chapari",
+            "ward_id": 286849
+        },
+        {
+            "ward_no": 286829,
+            "ward_name": "Bargang(Rangagara) T.E.184/329",
+            "ward_id": 286829
+        },
+        {
+            "ward_no": 286831,
+            "ward_name": "Bargang(Rangagara) T.E.206/366",
+            "ward_id": 286831
+        },
+        {
+            "ward_no": 286826,
+            "ward_name": "Bargang(Rangagara) T.E.21/114",
+            "ward_id": 286826
+        },
+        {
+            "ward_no": 286822,
+            "ward_name": "Bargang(Rangagara) T.E.227/342",
+            "ward_id": 286822
+        },
+        {
+            "ward_no": 286830,
+            "ward_name": "Bargang(Rangagara) T.E.254/421",
+            "ward_id": 286830
+        },
+        {
+            "ward_no": 286824,
+            "ward_name": "Bargang(Rangagara) T.E.376/647",
+            "ward_id": 286824
+        },
+        {
+            "ward_no": 286823,
+            "ward_name": "Bargang(Rangagara) T.E.377/648",
+            "ward_id": 286823
+        },
+        {
+            "ward_no": 286820,
+            "ward_name": "Bargang(Rangagara) T.E.484/296",
+            "ward_id": 286820
+        },
+        {
+            "ward_no": 286825,
+            "ward_name": "Bargang(Rangagara) T.E.573/346",
+            "ward_id": 286825
+        },
+        {
+            "ward_no": 286832,
+            "ward_name": "Bargang(Rangagara) T.E.575/348",
+            "ward_id": 286832
+        },
+        {
+            "ward_no": 286821,
+            "ward_name": "Bargang(Rangagara) T.E. 59/117",
+            "ward_id": 286821
+        },
+        {
+            "ward_no": 286827,
+            "ward_name": "Bargang(Rangara) T.E.347/574(1)",
+            "ward_id": 286827
+        },
+        {
+            "ward_no": 286828,
+            "ward_name": "Bargang(Rangara) T.E.347/574(2)",
+            "ward_id": 286828
+        },
+        {
+            "ward_no": 286817,
+            "ward_name": "Bargang T.E. (Ketela) 27/12",
+            "ward_id": 286817
+        },
+        {
+            "ward_no": 286837,
+            "ward_name": "Barkatia Bari",
+            "ward_id": 286837
+        },
+        {
+            "ward_no": 286855,
+            "ward_name": "Batia Mari",
+            "ward_id": 286855
+        },
+        {
+            "ward_no": 286878,
+            "ward_name": "Bedeti Guri",
+            "ward_id": 286878
+        },
+        {
+            "ward_no": 286905,
+            "ward_name": "Bedeti Pathar",
+            "ward_id": 286905
+        },
+        {
+            "ward_no": 286872,
+            "ward_name": "Bedeti T.E. 1/9",
+            "ward_id": 286872
+        },
+        {
+            "ward_no": 286884,
+            "ward_name": "Bedeti T.E. 318/494",
+            "ward_id": 286884
+        },
+        {
+            "ward_no": 286860,
+            "ward_name": "Behali Mikir",
+            "ward_id": 286860
+        },
+        {
+            "ward_no": 286895,
+            "ward_name": "Bengabari",
+            "ward_id": 286895
+        },
+        {
+            "ward_no": 286607,
+            "ward_name": "Bengenabari",
+            "ward_id": 286607
+        },
+        {
+            "ward_no": 286908,
+            "ward_name": "Bihmari F.V.",
+            "ward_id": 286908
+        },
+        {
+            "ward_no": 286888,
+            "ward_name": "Bihmari Gaon",
+            "ward_id": 286888
+        },
+        {
+            "ward_no": 286870,
+            "ward_name": "Bihmari Jarani",
+            "ward_id": 286870
+        },
+        {
+            "ward_no": 286858,
+            "ward_name": "Bijuli Jarani",
+            "ward_id": 286858
+        },
+        {
+            "ward_no": 286900,
+            "ward_name": "Bongali Gaon",
+            "ward_id": 286900
+        },
+        {
+            "ward_no": 286856,
+            "ward_name": "Chengelijan",
+            "ward_id": 286856
+        },
+        {
+            "ward_no": 286899,
+            "ward_name": "Cheni Mari",
+            "ward_id": 286899
+        },
+        {
+            "ward_no": 286848,
+            "ward_name": "Gang Dalani",
+            "ward_id": 286848
+        },
+        {
+            "ward_no": 286844,
+            "ward_name": "Gang Mouthan",
+            "ward_id": 286844
+        },
+        {
+            "ward_no": 286865,
+            "ward_name": "Hatimara Pathar",
+            "ward_id": 286865
+        },
+        {
+            "ward_no": 286843,
+            "ward_name": "Jaluk Bari",
+            "ward_id": 286843
+        },
+        {
+            "ward_no": 286896,
+            "ward_name": "Jamuani",
+            "ward_id": 286896
+        },
+        {
+            "ward_no": 286857,
+            "ward_name": "Kachamari",
+            "ward_id": 286857
+        },
+        {
+            "ward_no": 286852,
+            "ward_name": "Kamar Pukhuri",
+            "ward_id": 286852
+        },
+        {
+            "ward_no": 286815,
+            "ward_name": "Ketela T.E. 322/534",
+            "ward_id": 286815
+        },
+        {
+            "ward_no": 286814,
+            "ward_name": "Ketela T.E. 54/112",
+            "ward_id": 286814
+        },
+        {
+            "ward_no": 286816,
+            "ward_name": "Ketela T.E. 71/122",
+            "ward_id": 286816
+        },
+        {
+            "ward_no": 286835,
+            "ward_name": "Khelmati Gaon",
+            "ward_id": 286835
+        },
+        {
+            "ward_no": 286836,
+            "ward_name": "Khelmati Pathar",
+            "ward_id": 286836
+        },
+        {
+            "ward_no": 286907,
+            "ward_name": "Kulaguri F.V.",
+            "ward_id": 286907
+        },
+        {
+            "ward_no": 286904,
+            "ward_name": "Kulaguri Gaon",
+            "ward_id": 286904
+        },
+        {
+            "ward_no": 286867,
+            "ward_name": "Kulaguri Jarani",
+            "ward_id": 286867
+        },
+        {
+            "ward_no": 286871,
+            "ward_name": "Kulaguri Pathar",
+            "ward_id": 286871
+        },
+        {
+            "ward_no": 286887,
+            "ward_name": "Lal Pukhuri",
+            "ward_id": 286887
+        },
+        {
+            "ward_no": 286637,
+            "ward_name": "Madhupur",
+            "ward_id": 286637
+        },
+        {
+            "ward_no": 286863,
+            "ward_name": "Mahan Brahmaputra Chapori",
+            "ward_id": 286863
+        },
+        {
+            "ward_no": 286838,
+            "ward_name": "Maran Gaon",
+            "ward_id": 286838
+        },
+        {
+            "ward_no": 286914,
+            "ward_name": "Milanpur",
+            "ward_id": 286914
+        },
+        {
+            "ward_no": 286839,
+            "ward_name": "Nakania Pathar",
+            "ward_id": 286839
+        },
+        {
+            "ward_no": 286874,
+            "ward_name": "Nasbor Gaon",
+            "ward_id": 286874
+        },
+        {
+            "ward_no": 286869,
+            "ward_name": "Natun Bihmari",
+            "ward_id": 286869
+        },
+        {
+            "ward_no": 286864,
+            "ward_name": "Natun Serelia",
+            "ward_id": 286864
+        },
+        {
+            "ward_no": 286854,
+            "ward_name": "Nepali Bari",
+            "ward_id": 286854
+        },
+        {
+            "ward_no": 286803,
+            "ward_name": "Nil Bari",
+            "ward_id": 286803
+        },
+        {
+            "ward_no": 286851,
+            "ward_name": "Niz-Behali",
+            "ward_id": 286851
+        },
+        {
+            "ward_no": 286796,
+            "ward_name": "No.1 Bargang",
+            "ward_id": 286796
+        },
+        {
+            "ward_no": 286892,
+            "ward_name": "No.1 Batiamari N.C.",
+            "ward_id": 286892
+        },
+        {
+            "ward_no": 286861,
+            "ward_name": "No.1 Behali T.E.",
+            "ward_id": 286861
+        },
+        {
+            "ward_no": 286883,
+            "ward_name": "No.1 Bihmari Gaon",
+            "ward_id": 286883
+        },
+        {
+            "ward_no": 286603,
+            "ward_name": "No.1 B. Miadi",
+            "ward_id": 286603
+        },
+        {
+            "ward_no": 286813,
+            "ward_name": "No.1 Ketela",
+            "ward_id": 286813
+        },
+        {
+            "ward_no": 286809,
+            "ward_name": "No.1 Rangagarah",
+            "ward_id": 286809
+        },
+        {
+            "ward_no": 286812,
+            "ward_name": "No.2 Bargang",
+            "ward_id": 286812
+        },
+        {
+            "ward_no": 286880,
+            "ward_name": "No.2 Batiamari",
+            "ward_id": 286880
+        },
+        {
+            "ward_no": 286893,
+            "ward_name": "No.2 Bill Mari Nonke",
+            "ward_id": 286893
+        },
+        {
+            "ward_no": 286841,
+            "ward_name": "No.2 Ketela Gaon",
+            "ward_id": 286841
+        },
+        {
+            "ward_no": 286810,
+            "ward_name": "No.2 Rangagarah",
+            "ward_id": 286810
+        },
+        {
+            "ward_no": 286881,
+            "ward_name": "No.3 Batiamari",
+            "ward_id": 286881
+        },
+        {
+            "ward_no": 286891,
+            "ward_name": "No.3 Bihmari",
+            "ward_id": 286891
+        },
+        {
+            "ward_no": 286811,
+            "ward_name": "No.3 Rangagarah",
+            "ward_id": 286811
+        },
+        {
+            "ward_no": 286882,
+            "ward_name": "No.4 Batiamari",
+            "ward_id": 286882
+        },
+        {
+            "ward_no": 286834,
+            "ward_name": "No.4 Rangagora",
+            "ward_id": 286834
+        },
+        {
+            "ward_no": 286901,
+            "ward_name": "No.5 Batia Mari",
+            "ward_id": 286901
+        },
+        {
+            "ward_no": 286902,
+            "ward_name": "No.6 Batia Mari",
+            "ward_id": 286902
+        },
+        {
+            "ward_no": 286795,
+            "ward_name": "No.7 Bargang",
+            "ward_id": 286795
+        },
+        {
+            "ward_no": 286903,
+            "ward_name": "No.7 Batia Mari",
+            "ward_id": 286903
+        },
+        {
+            "ward_no": 286808,
+            "ward_name": "Nonke Bongali",
+            "ward_id": 286808
+        },
+        {
+            "ward_no": 286897,
+            "ward_name": "Padum Pukhuri",
+            "ward_id": 286897
+        },
+        {
+            "ward_no": 286847,
+            "ward_name": "Pithia Mari",
+            "ward_id": 286847
+        },
+        {
+            "ward_no": 286818,
+            "ward_name": "Rangagara T.E(Bargang)53/91(1)",
+            "ward_id": 286818
+        },
+        {
+            "ward_no": 286819,
+            "ward_name": "Rangagara T.E(Bargang)53/91(2)",
+            "ward_id": 286819
+        },
+        {
+            "ward_no": 286833,
+            "ward_name": "Rangagora 258/431",
+            "ward_id": 286833
+        },
+        {
+            "ward_no": 286853,
+            "ward_name": "Rangsali Dalani",
+            "ward_id": 286853
+        },
+        {
+            "ward_no": 286898,
+            "ward_name": "Rongsali Sonari",
+            "ward_id": 286898
+        },
+        {
+            "ward_no": 286877,
+            "ward_name": "Rowmari",
+            "ward_id": 286877
+        },
+        {
+            "ward_no": 286868,
+            "ward_name": "Serelia Bongali",
+            "ward_id": 286868
+        },
+        {
+            "ward_no": 286906,
+            "ward_name": "Serelia F.V.",
+            "ward_id": 286906
+        },
+        {
+            "ward_no": 286862,
+            "ward_name": "Serelia Kuhiar Bari",
+            "ward_id": 286862
+        },
+        {
+            "ward_no": 286859,
+            "ward_name": "Serelia Pathar",
+            "ward_id": 286859
+        },
+        {
+            "ward_no": 286866,
+            "ward_name": "Sial Mari",
+            "ward_id": 286866
+        },
+        {
+            "ward_no": 286799,
+            "ward_name": "Sukan Suti",
+            "ward_id": 286799
+        },
+        {
+            "ward_no": 286842,
+            "ward_name": "Telengania",
+            "ward_id": 286842
+        },
+        {
+            "ward_no": 286850,
+            "ward_name": "Than Behali",
+            "ward_id": 286850
+        },
+        {
+            "ward_no": 286909,
+            "ward_name": "Thandapani F.V.",
+            "ward_id": 286909
+        }
+    ]
+}

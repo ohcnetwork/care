@@ -1,0 +1,194 @@
+{
+    "name": "Chapor-Salkocha-Btc",
+    "lsg_code": 6566,
+    "district": "Kokrajhar",
+    "state": "Assam",
+    "no_of_wards": 37,
+    "wards": [
+        {
+            "ward_no": 280652,
+            "ward_name": "Abhayakuti",
+            "ward_id": 280652
+        },
+        {
+            "ward_no": 280661,
+            "ward_name": "Alubari",
+            "ward_id": 280661
+        },
+        {
+            "ward_no": 280659,
+            "ward_name": "Bamungaon Pt.-I",
+            "ward_id": 280659
+        },
+        {
+            "ward_no": 280646,
+            "ward_name": "Bamungaon Pt.-Ii",
+            "ward_id": 280646
+        },
+        {
+            "ward_no": 280645,
+            "ward_name": "Bamungaon Pt.-Iii",
+            "ward_id": 280645
+        },
+        {
+            "ward_no": 280639,
+            "ward_name": "Bamungaon Pt.-Iv",
+            "ward_id": 280639
+        },
+        {
+            "ward_no": 280651,
+            "ward_name": "Bandarpara",
+            "ward_id": 280651
+        },
+        {
+            "ward_no": 280628,
+            "ward_name": "Bandurmuri",
+            "ward_id": 280628
+        },
+        {
+            "ward_no": 280636,
+            "ward_name": "Bashbari Pt.-I",
+            "ward_id": 280636
+        },
+        {
+            "ward_no": 280640,
+            "ward_name": "Bashbari Pt.-Ii",
+            "ward_id": 280640
+        },
+        {
+            "ward_no": 280637,
+            "ward_name": "Bedlangmari",
+            "ward_id": 280637
+        },
+        {
+            "ward_no": 280644,
+            "ward_name": "Bethagaon",
+            "ward_id": 280644
+        },
+        {
+            "ward_no": 280643,
+            "ward_name": "Bethagaon Bamunpara",
+            "ward_id": 280643
+        },
+        {
+            "ward_no": 280642,
+            "ward_name": "Borghola",
+            "ward_id": 280642
+        },
+        {
+            "ward_no": 280629,
+            "ward_name": "Chakrasila Hill (Chakrasila Nc)",
+            "ward_id": 280629
+        },
+        {
+            "ward_no": 280663,
+            "ward_name": "Chakrasila Pt.I",
+            "ward_id": 280663
+        },
+        {
+            "ward_no": 280664,
+            "ward_name": "Chakrasila Pt.Ii",
+            "ward_id": 280664
+        },
+        {
+            "ward_no": 280647,
+            "ward_name": "Choto Malgaon Pt.-I",
+            "ward_id": 280647
+        },
+        {
+            "ward_no": 280648,
+            "ward_name": "Choto Malgaon Pt.-Ii",
+            "ward_id": 280648
+        },
+        {
+            "ward_no": 280632,
+            "ward_name": "Damodarpur Pt.-I",
+            "ward_id": 280632
+        },
+        {
+            "ward_no": 280631,
+            "ward_name": "Damodarpur Pt.-Ii",
+            "ward_id": 280631
+        },
+        {
+            "ward_no": 280630,
+            "ward_name": "Damodarpur Pt.-Iii",
+            "ward_id": 280630
+        },
+        {
+            "ward_no": 280633,
+            "ward_name": "Daukabari Pt.-I",
+            "ward_id": 280633
+        },
+        {
+            "ward_no": 280634,
+            "ward_name": "Daukabari Pt.-Ii",
+            "ward_id": 280634
+        },
+        {
+            "ward_no": 280650,
+            "ward_name": "Diplaibil",
+            "ward_id": 280650
+        },
+        {
+            "ward_no": 280635,
+            "ward_name": "Harikhola",
+            "ward_id": 280635
+        },
+        {
+            "ward_no": 280654,
+            "ward_name": "Jornagara Pt.-I",
+            "ward_id": 280654
+        },
+        {
+            "ward_no": 280655,
+            "ward_name": "Jornagara Pt.-Ii",
+            "ward_id": 280655
+        },
+        {
+            "ward_no": 280660,
+            "ward_name": "Jornagara Pt.-Iii",
+            "ward_id": 280660
+        },
+        {
+            "ward_no": 280656,
+            "ward_name": "Jornagara Pt.-Iv",
+            "ward_id": 280656
+        },
+        {
+            "ward_no": 280658,
+            "ward_name": "Malgaon",
+            "ward_id": 280658
+        },
+        {
+            "ward_no": 280641,
+            "ward_name": "Nalbari",
+            "ward_id": 280641
+        },
+        {
+            "ward_no": 280657,
+            "ward_name": "Pukhuripara Pt.Ii",
+            "ward_id": 280657
+        },
+        {
+            "ward_no": 280649,
+            "ward_name": "Pukhuripara Pt.-Iv",
+            "ward_id": 280649
+        },
+        {
+            "ward_no": 280653,
+            "ward_name": "Salbari",
+            "ward_id": 280653
+        },
+        {
+            "ward_no": 280638,
+            "ward_name": "Silbari",
+            "ward_id": 280638
+        },
+        {
+            "ward_no": 280662,
+            "ward_name": "Tintila",
+            "ward_id": 280662
+        }
+    ]
+}

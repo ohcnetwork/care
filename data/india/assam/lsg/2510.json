@@ -1,0 +1,304 @@
+{
+    "name": "Binnakandi",
+    "lsg_code": 2510,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 59,
+    "wards": [
+        {
+            "ward_no": 299740,
+            "ward_name": "Baramanda Grant",
+            "ward_id": 299740
+        },
+        {
+            "ward_no": 299931,
+            "ward_name": "Binnakandi Grant",
+            "ward_id": 299931
+        },
+        {
+            "ward_no": 299916,
+            "ward_name": "Binnakandi Pt I",
+            "ward_id": 299916
+        },
+        {
+            "ward_no": 299915,
+            "ward_name": "Binnakandi Pt Ii",
+            "ward_id": 299915
+        },
+        {
+            "ward_no": 299933,
+            "ward_name": "Boaligrant",
+            "ward_id": 299933
+        },
+        {
+            "ward_no": 905602,
+            "ward_name": "Chandikhal F.V.",
+            "ward_id": 905602
+        },
+        {
+            "ward_no": 299963,
+            "ward_name": "Chandikhal F.V. (Chandghat Fv)",
+            "ward_id": 299963
+        },
+        {
+            "ward_no": 299934,
+            "ward_name": "Chengsur Grant (Chenjur Grant)",
+            "ward_id": 299934
+        },
+        {
+            "ward_no": 299921,
+            "ward_name": "Chotomanda T.E.",
+            "ward_id": 299921
+        },
+        {
+            "ward_no": 905595,
+            "ward_name": "Didarkush Grant",
+            "ward_id": 905595
+        },
+        {
+            "ward_no": 299747,
+            "ward_name": "Didarkush Grant",
+            "ward_id": 299747
+        },
+        {
+            "ward_no": 299926,
+            "ward_name": "Dilkhosh Grant",
+            "ward_id": 299926
+        },
+        {
+            "ward_no": 299932,
+            "ward_name": "Hatiguri",
+            "ward_id": 299932
+        },
+        {
+            "ward_no": 299738,
+            "ward_name": "Kaptanpur Pt I",
+            "ward_id": 299738
+        },
+        {
+            "ward_no": 299739,
+            "ward_name": "Kaptanpur Pt Ii",
+            "ward_id": 299739
+        },
+        {
+            "ward_no": 299913,
+            "ward_name": "Kaptanpur Pt Iii",
+            "ward_id": 299913
+        },
+        {
+            "ward_no": 299914,
+            "ward_name": "Kaptanpur Pt Iv",
+            "ward_id": 299914
+        },
+        {
+            "ward_no": 299923,
+            "ward_name": "Kaptanpur Pt Ix",
+            "ward_id": 299923
+        },
+        {
+            "ward_no": 299920,
+            "ward_name": "Kaptanpur Pt V",
+            "ward_id": 299920
+        },
+        {
+            "ward_no": 299919,
+            "ward_name": "Kaptanpur Pt Vi",
+            "ward_id": 299919
+        },
+        {
+            "ward_no": 299918,
+            "ward_name": "Kaptanpur Pt Vii",
+            "ward_id": 299918
+        },
+        {
+            "ward_no": 299924,
+            "ward_name": "Kaptanpur Pt Viii",
+            "ward_id": 299924
+        },
+        {
+            "ward_no": 299922,
+            "ward_name": "Kaptanpur Pt X",
+            "ward_id": 299922
+        },
+        {
+            "ward_no": 299929,
+            "ward_name": "Kaptanpur Pt Xi",
+            "ward_id": 299929
+        },
+        {
+            "ward_no": 299930,
+            "ward_name": "Kaptanpur Pt Xii",
+            "ward_id": 299930
+        },
+        {
+            "ward_no": 299742,
+            "ward_name": "Kaptanpur Pt Xiii",
+            "ward_id": 299742
+        },
+        {
+            "ward_no": 299741,
+            "ward_name": "Kaptanpur Pt Xiv",
+            "ward_id": 299741
+        },
+        {
+            "ward_no": 299743,
+            "ward_name": "Kaptanpur Pt Xv",
+            "ward_id": 299743
+        },
+        {
+            "ward_no": 299744,
+            "ward_name": "Kaptanpur Pt Xvi",
+            "ward_id": 299744
+        },
+        {
+            "ward_no": 299746,
+            "ward_name": "Kaptanpur Pt Xvii",
+            "ward_id": 299746
+        },
+        {
+            "ward_no": 299745,
+            "ward_name": "Kaptanpur Pt Xviii",
+            "ward_id": 299745
+        },
+        {
+            "ward_no": 905598,
+            "ward_name": "Krishnanagar & Gossainagar",
+            "ward_id": 905598
+        },
+        {
+            "ward_no": 299917,
+            "ward_name": "Lakhipur Grant",
+            "ward_id": 299917
+        },
+        {
+            "ward_no": 299940,
+            "ward_name": "Lileanpur",
+            "ward_id": 299940
+        },
+        {
+            "ward_no": 299668,
+            "ward_name": "Machkhal F.V.",
+            "ward_id": 299668
+        },
+        {
+            "ward_no": 299944,
+            "ward_name": "Machkhal Pan Tangia Village",
+            "ward_id": 299944
+        },
+        {
+            "ward_no": 299935,
+            "ward_name": "Machkhal Pt I",
+            "ward_id": 299935
+        },
+        {
+            "ward_no": 299936,
+            "ward_name": "Machkhal Pt Ii",
+            "ward_id": 299936
+        },
+        {
+            "ward_no": 299937,
+            "ward_name": "Machkhal Pt Iii",
+            "ward_id": 299937
+        },
+        {
+            "ward_no": 299927,
+            "ward_name": "Monkhosh Grant",
+            "ward_id": 299927
+        },
+        {
+            "ward_no": 299943,
+            "ward_name": "Naraindhar P.T.V.",
+            "ward_id": 299943
+        },
+        {
+            "ward_no": 299942,
+            "ward_name": "Naraindhar T.E.",
+            "ward_id": 299942
+        },
+        {
+            "ward_no": 299735,
+            "ward_name": "Niz-Rupairbali",
+            "ward_id": 299735
+        },
+        {
+            "ward_no": 299925,
+            "ward_name": "Roberpur",
+            "ward_id": 299925
+        },
+        {
+            "ward_no": 905601,
+            "ward_name": "Robipur",
+            "ward_id": 905601
+        },
+        {
+            "ward_no": 299961,
+            "ward_name": "Robipur F.V.",
+            "ward_id": 299961
+        },
+        {
+            "ward_no": 299939,
+            "ward_name": "Robipur Grant",
+            "ward_id": 299939
+        },
+        {
+            "ward_no": 299941,
+            "ward_name": "Robipur Punji",
+            "ward_id": 299941
+        },
+        {
+            "ward_no": 299736,
+            "ward_name": "Sibpur Pt I",
+            "ward_id": 299736
+        },
+        {
+            "ward_no": 299737,
+            "ward_name": "Sibpur Pt Ii",
+            "ward_id": 299737
+        },
+        {
+            "ward_no": 299731,
+            "ward_name": "Singerbond Pt I",
+            "ward_id": 299731
+        },
+        {
+            "ward_no": 299732,
+            "ward_name": "Singerbond Pt Ii",
+            "ward_id": 299732
+        },
+        {
+            "ward_no": 299733,
+            "ward_name": "Singerbond Pt Iii",
+            "ward_id": 299733
+        },
+        {
+            "ward_no": 299734,
+            "ward_name": "Singerbond Pt Iv",
+            "ward_id": 299734
+        },
+        {
+            "ward_no": 905590,
+            "ward_name": "Singerbond Pt-V",
+            "ward_id": 905590
+        },
+        {
+            "ward_no": 299928,
+            "ward_name": "Tilka Grant (Tika T.E.)",
+            "ward_id": 299928
+        },
+        {
+            "ward_no": 299964,
+            "ward_name": "Tulartol F.V. (Fulertol F.V.)",
+            "ward_id": 299964
+        },
+        {
+            "ward_no": 299962,
+            "ward_name": "Tupidahar F.V.",
+            "ward_id": 299962
+        },
+        {
+            "ward_no": 905596,
+            "ward_name": "Ujai Punji",
+            "ward_id": 905596
+        }
+    ]
+}

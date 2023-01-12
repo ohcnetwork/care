@@ -1,0 +1,604 @@
+{
+    "name": "Badarpur",
+    "lsg_code": 2627,
+    "district": "Karimganj",
+    "state": "Assam",
+    "no_of_wards": 119,
+    "wards": [
+        {
+            "ward_no": 300229,
+            "ward_name": "Adarkona Pt I",
+            "ward_id": 300229
+        },
+        {
+            "ward_no": 300228,
+            "ward_name": "Adarkona Pt Ii",
+            "ward_id": 300228
+        },
+        {
+            "ward_no": 300227,
+            "ward_name": "Adarkona Pt Iii",
+            "ward_id": 300227
+        },
+        {
+            "ward_no": 300222,
+            "ward_name": "Adarkona Pt Iv",
+            "ward_id": 300222
+        },
+        {
+            "ward_no": 300202,
+            "ward_name": "Alakulipur",
+            "ward_id": 300202
+        },
+        {
+            "ward_no": 300209,
+            "ward_name": "Alekargool",
+            "ward_id": 300209
+        },
+        {
+            "ward_no": 300149,
+            "ward_name": "Arengabad",
+            "ward_id": 300149
+        },
+        {
+            "ward_no": 300230,
+            "ward_name": "Badarpur Rly. Town (Ct)",
+            "ward_id": 300230
+        },
+        {
+            "ward_no": 300283,
+            "ward_name": "Baleswar",
+            "ward_id": 300283
+        },
+        {
+            "ward_no": 300155,
+            "ward_name": "Barbari",
+            "ward_id": 300155
+        },
+        {
+            "ward_no": 300214,
+            "ward_name": "Bargool",
+            "ward_id": 300214
+        },
+        {
+            "ward_no": 300226,
+            "ward_name": "Barthal Pt I",
+            "ward_id": 300226
+        },
+        {
+            "ward_no": 300190,
+            "ward_name": "Barthal Pt Iii",
+            "ward_id": 300190
+        },
+        {
+            "ward_no": 300191,
+            "ward_name": "Barthal Pt Ii (Sribehula T.E.)",
+            "ward_id": 300191
+        },
+        {
+            "ward_no": 300220,
+            "ward_name": "Barthal Pt Iv",
+            "ward_id": 300220
+        },
+        {
+            "ward_no": 300218,
+            "ward_name": "Barthal Pt Ix",
+            "ward_id": 300218
+        },
+        {
+            "ward_no": 300192,
+            "ward_name": "Barthal Pt V",
+            "ward_id": 300192
+        },
+        {
+            "ward_no": 300221,
+            "ward_name": "Barthal Pt Vi",
+            "ward_id": 300221
+        },
+        {
+            "ward_no": 300219,
+            "ward_name": "Barthal Pt Viii",
+            "ward_id": 300219
+        },
+        {
+            "ward_no": 300193,
+            "ward_name": "Barthal Pt Vii(Sribehula T.E.)",
+            "ward_id": 300193
+        },
+        {
+            "ward_no": 300217,
+            "ward_name": "Barthal Pt X",
+            "ward_id": 300217
+        },
+        {
+            "ward_no": 300215,
+            "ward_name": "Barthal Pt Xi",
+            "ward_id": 300215
+        },
+        {
+            "ward_no": 300213,
+            "ward_name": "Barthal Pt Xii",
+            "ward_id": 300213
+        },
+        {
+            "ward_no": 300174,
+            "ward_name": "Basail",
+            "ward_id": 300174
+        },
+        {
+            "ward_no": 300172,
+            "ward_name": "Basla",
+            "ward_id": 300172
+        },
+        {
+            "ward_no": 300232,
+            "ward_name": "Chapra (Ct)",
+            "ward_id": 300232
+        },
+        {
+            "ward_no": 300301,
+            "ward_name": "Chaykut",
+            "ward_id": 300301
+        },
+        {
+            "ward_no": 300163,
+            "ward_name": "Chinipatan",
+            "ward_id": 300163
+        },
+        {
+            "ward_no": 300199,
+            "ward_name": "Dakshin Gram",
+            "ward_id": 300199
+        },
+        {
+            "ward_no": 300187,
+            "ward_name": "Dattapur",
+            "ward_id": 300187
+        },
+        {
+            "ward_no": 300194,
+            "ward_name": "Ghatudaram",
+            "ward_id": 300194
+        },
+        {
+            "ward_no": 300157,
+            "ward_name": "Ghoramara Pt I",
+            "ward_id": 300157
+        },
+        {
+            "ward_no": 300165,
+            "ward_name": "Ghoramara Pt Ii",
+            "ward_id": 300165
+        },
+        {
+            "ward_no": 300197,
+            "ward_name": "Goabari",
+            "ward_id": 300197
+        },
+        {
+            "ward_no": 300400,
+            "ward_name": "Hafania",
+            "ward_id": 300400
+        },
+        {
+            "ward_no": 300223,
+            "ward_name": "Haldigool",
+            "ward_id": 300223
+        },
+        {
+            "ward_no": 300195,
+            "ward_name": "Harinadik",
+            "ward_id": 300195
+        },
+        {
+            "ward_no": 300183,
+            "ward_name": "Hasanpur",
+            "ward_id": 300183
+        },
+        {
+            "ward_no": 300184,
+            "ward_name": "Hazipur",
+            "ward_id": 300184
+        },
+        {
+            "ward_no": 300104,
+            "ward_name": "Humak",
+            "ward_id": 300104
+        },
+        {
+            "ward_no": 300100,
+            "ward_name": "Jalalnagar T.E.",
+            "ward_id": 300100
+        },
+        {
+            "ward_no": 300171,
+            "ward_name": "Jikar",
+            "ward_id": 300171
+        },
+        {
+            "ward_no": 300077,
+            "ward_name": "Jinahabra",
+            "ward_id": 300077
+        },
+        {
+            "ward_no": 300212,
+            "ward_name": "Jum Pt I",
+            "ward_id": 300212
+        },
+        {
+            "ward_no": 300210,
+            "ward_name": "Jum Pt Ii",
+            "ward_id": 300210
+        },
+        {
+            "ward_no": 300205,
+            "ward_name": "Jum Pt Iv",
+            "ward_id": 300205
+        },
+        {
+            "ward_no": 300206,
+            "ward_name": "Jum Pt V",
+            "ward_id": 300206
+        },
+        {
+            "ward_no": 300204,
+            "ward_name": "Jum Pt Vi",
+            "ward_id": 300204
+        },
+        {
+            "ward_no": 300203,
+            "ward_name": "Jum Pt Vii",
+            "ward_id": 300203
+        },
+        {
+            "ward_no": 300164,
+            "ward_name": "Kalakuri",
+            "ward_id": 300164
+        },
+        {
+            "ward_no": 300128,
+            "ward_name": "Kamargram Pt I",
+            "ward_id": 300128
+        },
+        {
+            "ward_no": 300129,
+            "ward_name": "Kamargram Pt Ii",
+            "ward_id": 300129
+        },
+        {
+            "ward_no": 300179,
+            "ward_name": "Kandigram Chaitanya Nagar",
+            "ward_id": 300179
+        },
+        {
+            "ward_no": 300178,
+            "ward_name": "Kandigram Malua",
+            "ward_id": 300178
+        },
+        {
+            "ward_no": 300161,
+            "ward_name": "Kankalesh Pt I",
+            "ward_id": 300161
+        },
+        {
+            "ward_no": 300162,
+            "ward_name": "Kankalesh Pt Ii",
+            "ward_id": 300162
+        },
+        {
+            "ward_no": 300066,
+            "ward_name": "Karnamadhu Pt I",
+            "ward_id": 300066
+        },
+        {
+            "ward_no": 300168,
+            "ward_name": "Khola Pt I",
+            "ward_id": 300168
+        },
+        {
+            "ward_no": 300167,
+            "ward_name": "Khola Pt Ii",
+            "ward_id": 300167
+        },
+        {
+            "ward_no": 300189,
+            "ward_name": "Kuchilargool",
+            "ward_id": 300189
+        },
+        {
+            "ward_no": 300097,
+            "ward_name": "Kulcherra Pt I",
+            "ward_id": 300097
+        },
+        {
+            "ward_no": 300098,
+            "ward_name": "Kulcherra Pt Ii",
+            "ward_id": 300098
+        },
+        {
+            "ward_no": 300145,
+            "ward_name": "Kunapara",
+            "ward_id": 300145
+        },
+        {
+            "ward_no": 300139,
+            "ward_name": "Lamajuar",
+            "ward_id": 300139
+        },
+        {
+            "ward_no": 300150,
+            "ward_name": "Lamajuar Pt I",
+            "ward_id": 300150
+        },
+        {
+            "ward_no": 300130,
+            "ward_name": "Lamajuar Pt I",
+            "ward_id": 300130
+        },
+        {
+            "ward_no": 300131,
+            "ward_name": "Lamajuar Pt Ii",
+            "ward_id": 300131
+        },
+        {
+            "ward_no": 300153,
+            "ward_name": "Lamajuar Pt Ii",
+            "ward_id": 300153
+        },
+        {
+            "ward_no": 300158,
+            "ward_name": "Lamajuar Pt Iii",
+            "ward_id": 300158
+        },
+        {
+            "ward_no": 300156,
+            "ward_name": "Lamajuar Pt Iv",
+            "ward_id": 300156
+        },
+        {
+            "ward_no": 300176,
+            "ward_name": "Mahakal Pt I",
+            "ward_id": 300176
+        },
+        {
+            "ward_no": 300175,
+            "ward_name": "Mahakal Pt Ii",
+            "ward_id": 300175
+        },
+        {
+            "ward_no": 300185,
+            "ward_name": "Mahakal Pt Iii",
+            "ward_id": 300185
+        },
+        {
+            "ward_no": 300186,
+            "ward_name": "Mahakal Pt Iv",
+            "ward_id": 300186
+        },
+        {
+            "ward_no": 300169,
+            "ward_name": "Mahakal Pt V",
+            "ward_id": 300169
+        },
+        {
+            "ward_no": 300216,
+            "ward_name": "Mahakal Pt Vi",
+            "ward_id": 300216
+        },
+        {
+            "ward_no": 300170,
+            "ward_name": "Mahakal Pt Vii",
+            "ward_id": 300170
+        },
+        {
+            "ward_no": 300357,
+            "ward_name": "Mahamadpur Pt I",
+            "ward_id": 300357
+        },
+        {
+            "ward_no": 300358,
+            "ward_name": "Mahamadpur Pt Ii",
+            "ward_id": 300358
+        },
+        {
+            "ward_no": 300359,
+            "ward_name": "Mahamadpur Pt Iii",
+            "ward_id": 300359
+        },
+        {
+            "ward_no": 300364,
+            "ward_name": "Mahamadpur T.E.",
+            "ward_id": 300364
+        },
+        {
+            "ward_no": 300173,
+            "ward_name": "Marjat Kandi",
+            "ward_id": 300173
+        },
+        {
+            "ward_no": 300211,
+            "ward_name": "Mazar Gool",
+            "ward_id": 300211
+        },
+        {
+            "ward_no": 300208,
+            "ward_name": "Medalbeel",
+            "ward_id": 300208
+        },
+        {
+            "ward_no": 300151,
+            "ward_name": "Mirjapur Pt I",
+            "ward_id": 300151
+        },
+        {
+            "ward_no": 300152,
+            "ward_name": "Mirjapur Pt Ii",
+            "ward_id": 300152
+        },
+        {
+            "ward_no": 300231,
+            "ward_name": "Mosli Pt I (Ct)",
+            "ward_id": 300231
+        },
+        {
+            "ward_no": 300160,
+            "ward_name": "Mosli Pt Ii",
+            "ward_id": 300160
+        },
+        {
+            "ward_no": 300188,
+            "ward_name": "Mugrapur",
+            "ward_id": 300188
+        },
+        {
+            "ward_no": 300106,
+            "ward_name": "Nagkapan",
+            "ward_id": 300106
+        },
+        {
+            "ward_no": 300114,
+            "ward_name": "Nagkapan",
+            "ward_id": 300114
+        },
+        {
+            "ward_no": 300112,
+            "ward_name": "Nagkapan Chak",
+            "ward_id": 300112
+        },
+        {
+            "ward_no": 300093,
+            "ward_name": "Nagkapan Pt I",
+            "ward_id": 300093
+        },
+        {
+            "ward_no": 300068,
+            "ward_name": "Nagkapan Pt Ii",
+            "ward_id": 300068
+        },
+        {
+            "ward_no": 300180,
+            "ward_name": "Naharpur",
+            "ward_id": 300180
+        },
+        {
+            "ward_no": 300154,
+            "ward_name": "Nairgram",
+            "ward_id": 300154
+        },
+        {
+            "ward_no": 300181,
+            "ward_name": "Niz Malua",
+            "ward_id": 300181
+        },
+        {
+            "ward_no": 300094,
+            "ward_name": "Panchas",
+            "ward_id": 300094
+        },
+        {
+            "ward_no": 300177,
+            "ward_name": "Patharkandi",
+            "ward_id": 300177
+        },
+        {
+            "ward_no": 300196,
+            "ward_name": "Piratikar",
+            "ward_id": 300196
+        },
+        {
+            "ward_no": 300159,
+            "ward_name": "Raj Pasha",
+            "ward_id": 300159
+        },
+        {
+            "ward_no": 300224,
+            "ward_name": "Robbania Pt Ii T.E.",
+            "ward_id": 300224
+        },
+        {
+            "ward_no": 300225,
+            "ward_name": "Robbania Pt I T.E.",
+            "ward_id": 300225
+        },
+        {
+            "ward_no": 300116,
+            "ward_name": "Saidambar Pt I",
+            "ward_id": 300116
+        },
+        {
+            "ward_no": 300117,
+            "ward_name": "Saidambar Pt Ii",
+            "ward_id": 300117
+        },
+        {
+            "ward_no": 300166,
+            "ward_name": "Siberchak",
+            "ward_id": 300166
+        },
+        {
+            "ward_no": 300143,
+            "ward_name": "Sirajdhipur",
+            "ward_id": 300143
+        },
+        {
+            "ward_no": 300182,
+            "ward_name": "Srigauri",
+            "ward_id": 300182
+        },
+        {
+            "ward_no": 300146,
+            "ward_name": "Surjyadas",
+            "ward_id": 300146
+        },
+        {
+            "ward_no": 300198,
+            "ward_name": "Tikarpara",
+            "ward_id": 300198
+        },
+        {
+            "ward_no": 300125,
+            "ward_name": "Tundurail",
+            "ward_id": 300125
+        },
+        {
+            "ward_no": 300107,
+            "ward_name": "Umarpur Pt I",
+            "ward_id": 300107
+        },
+        {
+            "ward_no": 300201,
+            "ward_name": "Umarpur Pt I",
+            "ward_id": 300201
+        },
+        {
+            "ward_no": 300200,
+            "ward_name": "Umarpur Pt Ii",
+            "ward_id": 300200
+        },
+        {
+            "ward_no": 300108,
+            "ward_name": "Umarpur Pt Ii",
+            "ward_id": 300108
+        },
+        {
+            "ward_no": 300207,
+            "ward_name": "Umarpur Pt Iii",
+            "ward_id": 300207
+        },
+        {
+            "ward_no": 300109,
+            "ward_name": "Umarpur Pt Iii",
+            "ward_id": 300109
+        },
+        {
+            "ward_no": 300110,
+            "ward_name": "Umarpur Pt Iv",
+            "ward_id": 300110
+        },
+        {
+            "ward_no": 300111,
+            "ward_name": "Umarpur Pt V",
+            "ward_id": 300111
+        }
+    ]
+}

@@ -1,0 +1,134 @@
+{
+    "name": "Dolongghat",
+    "lsg_code": 2661,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 25,
+    "wards": [
+        {
+            "ward_no": 284662,
+            "ward_name": "Aibheti Satra (Aibheti)",
+            "ward_id": 284662
+        },
+        {
+            "ward_no": 284660,
+            "ward_name": "Atoatika Pathar (Atoatika)",
+            "ward_id": 284660
+        },
+        {
+            "ward_no": 284658,
+            "ward_name": "Bagariguri Pam",
+            "ward_id": 284658
+        },
+        {
+            "ward_no": 284676,
+            "ward_name": "Bhalukmari",
+            "ward_id": 284676
+        },
+        {
+            "ward_no": 284667,
+            "ward_name": "Bhogbari Satra(Bhogbari Pathar",
+            "ward_id": 284667
+        },
+        {
+            "ward_no": 284674,
+            "ward_name": "Bogoriguri",
+            "ward_id": 284674
+        },
+        {
+            "ward_no": 284801,
+            "ward_name": "Darangial Gaon",
+            "ward_id": 284801
+        },
+        {
+            "ward_no": 284664,
+            "ward_name": "Garai Mari Pathar (Garaimari)",
+            "ward_id": 284664
+        },
+        {
+            "ward_no": 284681,
+            "ward_name": "Gederbori",
+            "ward_id": 284681
+        },
+        {
+            "ward_no": 284657,
+            "ward_name": "Gendhua Pathar",
+            "ward_id": 284657
+        },
+        {
+            "ward_no": 284677,
+            "ward_name": "Gohaibari",
+            "ward_id": 284677
+        },
+        {
+            "ward_no": 284656,
+            "ward_name": "Hatijujua Pathar (Hatijujua)",
+            "ward_id": 284656
+        },
+        {
+            "ward_no": 284679,
+            "ward_name": "Jamuguri",
+            "ward_id": 284679
+        },
+        {
+            "ward_no": 284675,
+            "ward_name": "Kakamari",
+            "ward_id": 284675
+        },
+        {
+            "ward_no": 284663,
+            "ward_name": "Karchung Satra",
+            "ward_id": 284663
+        },
+        {
+            "ward_no": 284661,
+            "ward_name": "Kawaimari Pam",
+            "ward_id": 284661
+        },
+        {
+            "ward_no": 284665,
+            "ward_name": "Kharupetia (Kharu Pathar)",
+            "ward_id": 284665
+        },
+        {
+            "ward_no": 284678,
+            "ward_name": "Kujidah Na-Mati",
+            "ward_id": 284678
+        },
+        {
+            "ward_no": 284668,
+            "ward_name": "Majgaon",
+            "ward_id": 284668
+        },
+        {
+            "ward_no": 284673,
+            "ward_name": "Maj Jajari",
+            "ward_id": 284673
+        },
+        {
+            "ward_no": 284672,
+            "ward_name": "Niz Hatichung",
+            "ward_id": 284672
+        },
+        {
+            "ward_no": 284671,
+            "ward_name": "Phulaniati",
+            "ward_id": 284671
+        },
+        {
+            "ward_no": 284659,
+            "ward_name": "Raidongia",
+            "ward_id": 284659
+        },
+        {
+            "ward_no": 284666,
+            "ward_name": "Samkalia Pathar",
+            "ward_id": 284666
+        },
+        {
+            "ward_no": 284680,
+            "ward_name": "Samua Gaon",
+            "ward_id": 284680
+        }
+    ]
+}

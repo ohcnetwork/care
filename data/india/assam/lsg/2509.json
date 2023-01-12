@@ -1,0 +1,209 @@
+{
+    "name": "Barjalenga",
+    "lsg_code": 2509,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 40,
+    "wards": [
+        {
+            "ward_no": 299360,
+            "ward_name": "Bag-O-Bahar Pt I",
+            "ward_id": 299360
+        },
+        {
+            "ward_no": 299359,
+            "ward_name": "Bag-O-Bahar Pt Ii",
+            "ward_id": 299359
+        },
+        {
+            "ward_no": 299358,
+            "ward_name": "Bag-O-Bahar Pt Iii",
+            "ward_id": 299358
+        },
+        {
+            "ward_no": 299357,
+            "ward_name": "Bag-O-Bahar Pt Iv",
+            "ward_id": 299357
+        },
+        {
+            "ward_no": 299356,
+            "ward_name": "Bag-O-Bahar Pt V",
+            "ward_id": 299356
+        },
+        {
+            "ward_no": 299355,
+            "ward_name": "Bag-O-Bahar T.E.",
+            "ward_id": 299355
+        },
+        {
+            "ward_no": 299369,
+            "ward_name": "Baluchari F.V.",
+            "ward_id": 299369
+        },
+        {
+            "ward_no": 299319,
+            "ward_name": "Barjalenga Pt I",
+            "ward_id": 299319
+        },
+        {
+            "ward_no": 299331,
+            "ward_name": "Bar Jalenga Pt Ii",
+            "ward_id": 299331
+        },
+        {
+            "ward_no": 299293,
+            "ward_name": "Borakhai Grant",
+            "ward_id": 299293
+        },
+        {
+            "ward_no": 299330,
+            "ward_name": "Bor Jalenga Grant",
+            "ward_id": 299330
+        },
+        {
+            "ward_no": 299327,
+            "ward_name": "Choto Jalenga Grant",
+            "ward_id": 299327
+        },
+        {
+            "ward_no": 299320,
+            "ward_name": "Choto Jalenga Pt I",
+            "ward_id": 299320
+        },
+        {
+            "ward_no": 299329,
+            "ward_name": "Choto Jalenga Pt Ii",
+            "ward_id": 299329
+        },
+        {
+            "ward_no": 299328,
+            "ward_name": "Choto Jalenga Pt Iii",
+            "ward_id": 299328
+        },
+        {
+            "ward_no": 299349,
+            "ward_name": "Chotojalenga Pt Iv",
+            "ward_id": 299349
+        },
+        {
+            "ward_no": 299361,
+            "ward_name": "Duarbond Basti (Duarbond)",
+            "ward_id": 299361
+        },
+        {
+            "ward_no": 299354,
+            "ward_name": "Duarbond Grant",
+            "ward_id": 299354
+        },
+        {
+            "ward_no": 299344,
+            "ward_name": "Gopinathpur Khasia Punji",
+            "ward_id": 299344
+        },
+        {
+            "ward_no": 299343,
+            "ward_name": "Gopinathpur T.E.",
+            "ward_id": 299343
+        },
+        {
+            "ward_no": 299372,
+            "ward_name": "Ikrathal F.V.",
+            "ward_id": 299372
+        },
+        {
+            "ward_no": 299385,
+            "ward_name": "Irongmara (Ct)",
+            "ward_id": 299385
+        },
+        {
+            "ward_no": 299350,
+            "ward_name": "Jalengachara Grant",
+            "ward_id": 299350
+        },
+        {
+            "ward_no": 299353,
+            "ward_name": "Jogirbond Grant",
+            "ward_id": 299353
+        },
+        {
+            "ward_no": 299363,
+            "ward_name": "Loharbond",
+            "ward_id": 299363
+        },
+        {
+            "ward_no": 299370,
+            "ward_name": "Loharbond F.V.",
+            "ward_id": 299370
+        },
+        {
+            "ward_no": 299371,
+            "ward_name": "Nagathal F.V.",
+            "ward_id": 299371
+        },
+        {
+            "ward_no": 299376,
+            "ward_name": "Newbag Bahar F.V.",
+            "ward_id": 299376
+        },
+        {
+            "ward_no": 299348,
+            "ward_name": "Noarbond Grant",
+            "ward_id": 299348
+        },
+        {
+            "ward_no": 299374,
+            "ward_name": "Nokafella F.V.",
+            "ward_id": 299374
+        },
+        {
+            "ward_no": 299373,
+            "ward_name": "Nuwagang F.V.",
+            "ward_id": 299373
+        },
+        {
+            "ward_no": 299366,
+            "ward_name": "Old Bagbahar",
+            "ward_id": 299366
+        },
+        {
+            "ward_no": 299375,
+            "ward_name": "Pratappur F.V.",
+            "ward_id": 299375
+        },
+        {
+            "ward_no": 299307,
+            "ward_name": "Silcoorie Grant",
+            "ward_id": 299307
+        },
+        {
+            "ward_no": 299362,
+            "ward_name": "Sonachera Pt I",
+            "ward_id": 299362
+        },
+        {
+            "ward_no": 299364,
+            "ward_name": "Sonachera Pt Ii",
+            "ward_id": 299364
+        },
+        {
+            "ward_no": 299365,
+            "ward_name": "Sonachera Pt Iii",
+            "ward_id": 299365
+        },
+        {
+            "ward_no": 299347,
+            "ward_name": "Taranathpur Pt I",
+            "ward_id": 299347
+        },
+        {
+            "ward_no": 299346,
+            "ward_name": "Taranathpur Pt Ii",
+            "ward_id": 299346
+        },
+        {
+            "ward_no": 299294,
+            "ward_name": "Tarutajabari Pt I",
+            "ward_id": 299294
+        }
+    ]
+}

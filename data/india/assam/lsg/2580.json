@@ -1,0 +1,194 @@
+{
+    "name": "Golaghat North",
+    "lsg_code": 2580,
+    "district": "Golaghat",
+    "state": "Assam",
+    "no_of_wards": 37,
+    "wards": [
+        {
+            "ward_no": 294365,
+            "ward_name": "Bali Dowar",
+            "ward_id": 294365
+        },
+        {
+            "ward_no": 294377,
+            "ward_name": "Bari Chowa Gaon",
+            "ward_id": 294377
+        },
+        {
+            "ward_no": 294386,
+            "ward_name": "Bhaboli Gaon",
+            "ward_id": 294386
+        },
+        {
+            "ward_no": 294362,
+            "ward_name": "Bogorioni",
+            "ward_id": 294362
+        },
+        {
+            "ward_no": 294385,
+            "ward_name": "Bongal Gaon",
+            "ward_id": 294385
+        },
+        {
+            "ward_no": 294359,
+            "ward_name": "Chakial Chapori Gaon",
+            "ward_id": 294359
+        },
+        {
+            "ward_no": 294376,
+            "ward_name": "Dadhora Ahom Gaon",
+            "ward_id": 294376
+        },
+        {
+            "ward_no": 294373,
+            "ward_name": "Dakhin Dolijalia",
+            "ward_id": 294373
+        },
+        {
+            "ward_no": 294361,
+            "ward_name": "Dani Chapori",
+            "ward_id": 294361
+        },
+        {
+            "ward_no": 294384,
+            "ward_name": "Doyongia Goal Gaon",
+            "ward_id": 294384
+        },
+        {
+            "ward_no": 294382,
+            "ward_name": "Dulia Gaon",
+            "ward_id": 294382
+        },
+        {
+            "ward_no": 294375,
+            "ward_name": "Ekorani Gaon",
+            "ward_id": 294375
+        },
+        {
+            "ward_no": 294358,
+            "ward_name": "Gormora Chapori No.1",
+            "ward_id": 294358
+        },
+        {
+            "ward_no": 294357,
+            "ward_name": "Gormora Chapori No.2",
+            "ward_id": 294357
+        },
+        {
+            "ward_no": 294379,
+            "ward_name": "Habi Gaon",
+            "ward_id": 294379
+        },
+        {
+            "ward_no": 294371,
+            "ward_name": "Hanhchowa Gaon",
+            "ward_id": 294371
+        },
+        {
+            "ward_no": 294390,
+            "ward_name": "Kachari Pam Gaon",
+            "ward_id": 294390
+        },
+        {
+            "ward_no": 294381,
+            "ward_name": "Khonikor Gaon",
+            "ward_id": 294381
+        },
+        {
+            "ward_no": 294368,
+            "ward_name": "Koroiani Bhakat Gaon",
+            "ward_id": 294368
+        },
+        {
+            "ward_no": 294369,
+            "ward_name": "Kubal Pam",
+            "ward_id": 294369
+        },
+        {
+            "ward_no": 294360,
+            "ward_name": "Kumoli Chapori",
+            "ward_id": 294360
+        },
+        {
+            "ward_no": 294356,
+            "ward_name": "Lengera Chapori",
+            "ward_id": 294356
+        },
+        {
+            "ward_no": 294370,
+            "ward_name": "Mamoroni Gaon",
+            "ward_id": 294370
+        },
+        {
+            "ward_no": 294380,
+            "ward_name": "Missamora Bagicha",
+            "ward_id": 294380
+        },
+        {
+            "ward_no": 294387,
+            "ward_name": "Molai Kumar Gaon",
+            "ward_id": 294387
+        },
+        {
+            "ward_no": 294383,
+            "ward_name": "Mudoi Gaon",
+            "ward_id": 294383
+        },
+        {
+            "ward_no": 294353,
+            "ward_name": "No.1 Joraguri",
+            "ward_id": 294353
+        },
+        {
+            "ward_no": 294355,
+            "ward_name": "No 1 Khokondaguri",
+            "ward_id": 294355
+        },
+        {
+            "ward_no": 294354,
+            "ward_name": "No.2 Joraguri",
+            "ward_id": 294354
+        },
+        {
+            "ward_no": 294364,
+            "ward_name": "No.2 Khokond Guri",
+            "ward_id": 294364
+        },
+        {
+            "ward_no": 294366,
+            "ward_name": "Obhota Chapori",
+            "ward_id": 294366
+        },
+        {
+            "ward_no": 294367,
+            "ward_name": "Puli Koroiani",
+            "ward_id": 294367
+        },
+        {
+            "ward_no": 294363,
+            "ward_name": "Puranimati Bhakat Gaon",
+            "ward_id": 294363
+        },
+        {
+            "ward_no": 294374,
+            "ward_name": "Raja Bahar Gaon",
+            "ward_id": 294374
+        },
+        {
+            "ward_no": 294378,
+            "ward_name": "Rongaliting Grant",
+            "ward_id": 294378
+        },
+        {
+            "ward_no": 294388,
+            "ward_name": "Telia Sonari Gaon",
+            "ward_id": 294388
+        },
+        {
+            "ward_no": 294372,
+            "ward_name": "Uttar Doli Jalia Gaon",
+            "ward_id": 294372
+        }
+    ]
+}
