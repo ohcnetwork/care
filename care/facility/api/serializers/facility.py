@@ -121,8 +121,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
     def validate_middleware_address(self, value):
         value = value.strip()
-        if not value or not value.startswith("http"):
-            raise serializers.ValidationError("Invalid URL")
+        if not value:
+            return value
         if value.endswith("/"):
             raise serializers.ValidationError("URL should not end with /")
         return value
