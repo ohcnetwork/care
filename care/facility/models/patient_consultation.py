@@ -80,7 +80,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     consultation_status = models.IntegerField(
-        default=ConsultationStatusEnum.TRANSFERRED_FROM_WARD.value,
+        default=ConsultationStatusEnum.UNKNOWN.value,
         choices=ConsultationStatusChoices,
     )
     review_interval = models.IntegerField(default=-1)

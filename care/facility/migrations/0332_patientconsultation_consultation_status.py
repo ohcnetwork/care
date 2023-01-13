@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0331_auto_20221224_1531'),
+        ("facility", "0331_auto_20221224_1531"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='consultation_status',
-            field=models.IntegerField(choices=[(1, 'BROUGHT_DEAD'), (2, 'TRANSFERRED_FROM_WARD'), (3, 'TRANSFERRED_FROM_ICU'), (4, 'REFERRED_FROM_OTHER_HOSPITAL'), (5, 'OUT_PATIENT')], default=2),
+            model_name="patientconsultation",
+            name="consultation_status",
+            field=models.IntegerField(
+                choices=[
+                    (0, "UNKNOWN"),
+                    (1, "BROUGHT_DEAD"),
+                    (2, "TRANSFERRED_FROM_WARD"),
+                    (3, "TRANSFERRED_FROM_ICU"),
+                    (4, "REFERRED_FROM_OTHER_HOSPITAL"),
+                    (5, "OUT_PATIENT"),
+                ],
+                default=0,
+            ),
         ),
     ]

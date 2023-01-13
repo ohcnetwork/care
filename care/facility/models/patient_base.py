@@ -100,6 +100,7 @@ SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD=
 
 
 class ConsultationStatusEnum(enum.Enum):
+    UNKNOWN = 0
     BROUGHT_DEAD = 1
     TRANSFERRED_FROM_WARD = 2
     TRANSFERRED_FROM_ICU = 3
