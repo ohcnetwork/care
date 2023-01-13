@@ -1,0 +1,264 @@
+{
+    "name": "Nayeralga",
+    "lsg_code": 2560,
+    "district": "Dhubri",
+    "state": "Assam",
+    "no_of_wards": 51,
+    "wards": [
+        {
+            "ward_no": 281245,
+            "ward_name": "Boalkamri Pt.I",
+            "ward_id": 281245
+        },
+        {
+            "ward_no": 281246,
+            "ward_name": "Boalkamri Pt.Iii",
+            "ward_id": 281246
+        },
+        {
+            "ward_no": 281089,
+            "ward_name": "Boyjer Alga Pt.Iii",
+            "ward_id": 281089
+        },
+        {
+            "ward_no": 281088,
+            "ward_name": "Boyjer Alga Pt.Iv",
+            "ward_id": 281088
+        },
+        {
+            "ward_no": 281087,
+            "ward_name": "Boyjer Alga Pt.V",
+            "ward_id": 281087
+        },
+        {
+            "ward_no": 281093,
+            "ward_name": "Dalaner Alga No.2",
+            "ward_id": 281093
+        },
+        {
+            "ward_no": 281247,
+            "ward_name": "Dubachuri Pt.I",
+            "ward_id": 281247
+        },
+        {
+            "ward_no": 281248,
+            "ward_name": "Dubachuri Pt.Ii",
+            "ward_id": 281248
+        },
+        {
+            "ward_no": 281274,
+            "ward_name": "Futkibari (Medhipara)",
+            "ward_id": 281274
+        },
+        {
+            "ward_no": 281276,
+            "ward_name": "Ghughunikhata Pt.I",
+            "ward_id": 281276
+        },
+        {
+            "ward_no": 281275,
+            "ward_name": "Ghughunikhata Pt.Ii",
+            "ward_id": 281275
+        },
+        {
+            "ward_no": 281255,
+            "ward_name": "Gutipara Pt.I",
+            "ward_id": 281255
+        },
+        {
+            "ward_no": 281084,
+            "ward_name": "Gutipara Pt.Ii",
+            "ward_id": 281084
+        },
+        {
+            "ward_no": 281083,
+            "ward_name": "Gutipara Pt.Iii",
+            "ward_id": 281083
+        },
+        {
+            "ward_no": 281082,
+            "ward_name": "Gutipara Pt.Iv",
+            "ward_id": 281082
+        },
+        {
+            "ward_no": 281086,
+            "ward_name": "Gutipara Pt.V",
+            "ward_id": 281086
+        },
+        {
+            "ward_no": 281080,
+            "ward_name": "Gutipara Pt Vi",
+            "ward_id": 281080
+        },
+        {
+            "ward_no": 281081,
+            "ward_name": "Gutipara Pt. Vii",
+            "ward_id": 281081
+        },
+        {
+            "ward_no": 281092,
+            "ward_name": "Jaharnura",
+            "ward_id": 281092
+        },
+        {
+            "ward_no": 281079,
+            "ward_name": "Jheltarchar Pt.Iii",
+            "ward_id": 281079
+        },
+        {
+            "ward_no": 281249,
+            "ward_name": "Jhelturchar Pt.I",
+            "ward_id": 281249
+        },
+        {
+            "ward_no": 281078,
+            "ward_name": "Jhelturchar Pt.Ii",
+            "ward_id": 281078
+        },
+        {
+            "ward_no": 281241,
+            "ward_name": "Kadamtala Pt.I",
+            "ward_id": 281241
+        },
+        {
+            "ward_no": 281240,
+            "ward_name": "Kadamtala Pt.Ii",
+            "ward_id": 281240
+        },
+        {
+            "ward_no": 281239,
+            "ward_name": "Kadamtala Pt.Iii",
+            "ward_id": 281239
+        },
+        {
+            "ward_no": 281252,
+            "ward_name": "Kathaldi Pt.I",
+            "ward_id": 281252
+        },
+        {
+            "ward_no": 281253,
+            "ward_name": "Kathaldi Pt.Ii",
+            "ward_id": 281253
+        },
+        {
+            "ward_no": 281258,
+            "ward_name": "Kazaikata Pt.Iii",
+            "ward_id": 281258
+        },
+        {
+            "ward_no": 281257,
+            "ward_name": "Kazaikata Pt.Iv",
+            "ward_id": 281257
+        },
+        {
+            "ward_no": 281254,
+            "ward_name": "Kazaikata Pt.V",
+            "ward_id": 281254
+        },
+        {
+            "ward_no": 281250,
+            "ward_name": "Kazaikata Pt.Vi",
+            "ward_id": 281250
+        },
+        {
+            "ward_no": 281265,
+            "ward_name": "Mayarchar Pt.I",
+            "ward_id": 281265
+        },
+        {
+            "ward_no": 281261,
+            "ward_name": "Mayarchar Pt.Ii",
+            "ward_id": 281261
+        },
+        {
+            "ward_no": 281264,
+            "ward_name": "Mayarchar Pt.Iii",
+            "ward_id": 281264
+        },
+        {
+            "ward_no": 281262,
+            "ward_name": "Mayarchar Pt.Iv",
+            "ward_id": 281262
+        },
+        {
+            "ward_no": 281263,
+            "ward_name": "Mayarchar Pt.V",
+            "ward_id": 281263
+        },
+        {
+            "ward_no": 281091,
+            "ward_name": "Mayerchar Pt.Vi",
+            "ward_id": 281091
+        },
+        {
+            "ward_no": 281090,
+            "ward_name": "Mayer Char Pt. Vii",
+            "ward_id": 281090
+        },
+        {
+            "ward_no": 281266,
+            "ward_name": "Nayeralga Pt.I",
+            "ward_id": 281266
+        },
+        {
+            "ward_no": 281260,
+            "ward_name": "Nayeralga Pt.Ii",
+            "ward_id": 281260
+        },
+        {
+            "ward_no": 281256,
+            "ward_name": "Nayeralga Pt.Iii",
+            "ward_id": 281256
+        },
+        {
+            "ward_no": 281085,
+            "ward_name": "Nayer Alga Pt.Iv",
+            "ward_id": 281085
+        },
+        {
+            "ward_no": 281077,
+            "ward_name": "Patakata Pt.I",
+            "ward_id": 281077
+        },
+        {
+            "ward_no": 281076,
+            "ward_name": "Patakata Pt.Ii",
+            "ward_id": 281076
+        },
+        {
+            "ward_no": 281075,
+            "ward_name": "Patakata Pt.Iii",
+            "ward_id": 281075
+        },
+        {
+            "ward_no": 281244,
+            "ward_name": "Sagunmari Pt.I",
+            "ward_id": 281244
+        },
+        {
+            "ward_no": 281243,
+            "ward_name": "Sagunmari Pt.Ii",
+            "ward_id": 281243
+        },
+        {
+            "ward_no": 281242,
+            "ward_name": "Sagunmari Pt.Iii",
+            "ward_id": 281242
+        },
+        {
+            "ward_no": 281251,
+            "ward_name": "Sagunmari Pt.Iv",
+            "ward_id": 281251
+        },
+        {
+            "ward_no": 281267,
+            "ward_name": "Suapata Pt.Iii",
+            "ward_id": 281267
+        },
+        {
+            "ward_no": 281259,
+            "ward_name": "Suapata Pt.Iv",
+            "ward_id": 281259
+        }
+    ]
+}

@@ -1,0 +1,549 @@
+{
+    "name": "Baghmara",
+    "lsg_code": 2702,
+    "district": "Biswanath",
+    "state": "Assam",
+    "no_of_wards": 108,
+    "wards": [
+        {
+            "ward_no": 286712,
+            "ward_name": "Ara Gang",
+            "ward_id": 286712
+        },
+        {
+            "ward_no": 286734,
+            "ward_name": "Baghmari T.E. 399/402",
+            "ward_id": 286734
+        },
+        {
+            "ward_no": 286754,
+            "ward_name": "Bapujar",
+            "ward_id": 286754
+        },
+        {
+            "ward_no": 286699,
+            "ward_name": "Barjarani Bangali",
+            "ward_id": 286699
+        },
+        {
+            "ward_no": 286698,
+            "ward_name": "Barjarani Mikir",
+            "ward_id": 286698
+        },
+        {
+            "ward_no": 286705,
+            "ward_name": "Bharali Juli",
+            "ward_id": 286705
+        },
+        {
+            "ward_no": 286725,
+            "ward_name": "Bihpukhuri Bongali",
+            "ward_id": 286725
+        },
+        {
+            "ward_no": 286728,
+            "ward_name": "Bihpukhuri Kachari",
+            "ward_id": 286728
+        },
+        {
+            "ward_no": 286761,
+            "ward_name": "Bihpukhuri T.E.",
+            "ward_id": 286761
+        },
+        {
+            "ward_no": 286704,
+            "ward_name": "Biri Jan",
+            "ward_id": 286704
+        },
+        {
+            "ward_no": 286925,
+            "ward_name": "Bongaon",
+            "ward_id": 286925
+        },
+        {
+            "ward_no": 286733,
+            "ward_name": "Brahmaputra Chapari",
+            "ward_id": 286733
+        },
+        {
+            "ward_no": 286802,
+            "ward_name": "Deka Pathar",
+            "ward_id": 286802
+        },
+        {
+            "ward_no": 286750,
+            "ward_name": "Dighal Tangani",
+            "ward_id": 286750
+        },
+        {
+            "ward_no": 286911,
+            "ward_name": "Dimapur",
+            "ward_id": 286911
+        },
+        {
+            "ward_no": 286924,
+            "ward_name": "Ganeshbari",
+            "ward_id": 286924
+        },
+        {
+            "ward_no": 286724,
+            "ward_name": "Gela Pukhuri",
+            "ward_id": 286724
+        },
+        {
+            "ward_no": 286749,
+            "ward_name": "Gereki",
+            "ward_id": 286749
+        },
+        {
+            "ward_no": 286741,
+            "ward_name": "Ghora Mari",
+            "ward_id": 286741
+        },
+        {
+            "ward_no": 286730,
+            "ward_name": "Jara Bari",
+            "ward_id": 286730
+        },
+        {
+            "ward_no": 286695,
+            "ward_name": "Jarani",
+            "ward_id": 286695
+        },
+        {
+            "ward_no": 286715,
+            "ward_name": "Jingia T.E. 208/355",
+            "ward_id": 286715
+        },
+        {
+            "ward_no": 286716,
+            "ward_name": "Jingia T.E. 209/370",
+            "ward_id": 286716
+        },
+        {
+            "ward_no": 286717,
+            "ward_name": "Jingia T.E. 210/371",
+            "ward_id": 286717
+        },
+        {
+            "ward_no": 286778,
+            "ward_name": "Kalahandi",
+            "ward_id": 286778
+        },
+        {
+            "ward_no": 286742,
+            "ward_name": "Kala Pani",
+            "ward_id": 286742
+        },
+        {
+            "ward_no": 286759,
+            "ward_name": "Kathani Bari",
+            "ward_id": 286759
+        },
+        {
+            "ward_no": 286760,
+            "ward_name": "Kathani Bari Pathar",
+            "ward_id": 286760
+        },
+        {
+            "ward_no": 286758,
+            "ward_name": "Kathani Basti",
+            "ward_id": 286758
+        },
+        {
+            "ward_no": 286747,
+            "ward_name": "Khara Simalu",
+            "ward_id": 286747
+        },
+        {
+            "ward_no": 286735,
+            "ward_name": "Komurakhati Grazing",
+            "ward_id": 286735
+        },
+        {
+            "ward_no": 286801,
+            "ward_name": "Kuhiar Bari Bongali",
+            "ward_id": 286801
+        },
+        {
+            "ward_no": 286800,
+            "ward_name": "Kuhiar Bari Nepali",
+            "ward_id": 286800
+        },
+        {
+            "ward_no": 286740,
+            "ward_name": "Laow Dalani",
+            "ward_id": 286740
+        },
+        {
+            "ward_no": 286719,
+            "ward_name": "Madhu Rani",
+            "ward_id": 286719
+        },
+        {
+            "ward_no": 286748,
+            "ward_name": "Mijika",
+            "ward_id": 286748
+        },
+        {
+            "ward_no": 286744,
+            "ward_name": "Mijika 106/243",
+            "ward_id": 286744
+        },
+        {
+            "ward_no": 286743,
+            "ward_name": "Mijika 179/339",
+            "ward_id": 286743
+        },
+        {
+            "ward_no": 286783,
+            "ward_name": "Mijikajan T.E. 135/243",
+            "ward_id": 286783
+        },
+        {
+            "ward_no": 286786,
+            "ward_name": "Mijikajan T.E. 180/309",
+            "ward_id": 286786
+        },
+        {
+            "ward_no": 286791,
+            "ward_name": "Mijikajan T.E. 18/2",
+            "ward_id": 286791
+        },
+        {
+            "ward_no": 286787,
+            "ward_name": "Mijikajan T.E. 194/352",
+            "ward_id": 286787
+        },
+        {
+            "ward_no": 286788,
+            "ward_name": "Mijikajan T.E. 262/446",
+            "ward_id": 286788
+        },
+        {
+            "ward_no": 286781,
+            "ward_name": "Mijikajan T.E. 263/441",
+            "ward_id": 286781
+        },
+        {
+            "ward_no": 286784,
+            "ward_name": "Mijikajan T.E. 281/321",
+            "ward_id": 286784
+        },
+        {
+            "ward_no": 286785,
+            "ward_name": "Mijikajan T.E. 282/485",
+            "ward_id": 286785
+        },
+        {
+            "ward_no": 286789,
+            "ward_name": "Mijikajan T.E. 283/486",
+            "ward_id": 286789
+        },
+        {
+            "ward_no": 286782,
+            "ward_name": "Mijikajan T.E. 29/9",
+            "ward_id": 286782
+        },
+        {
+            "ward_no": 286790,
+            "ward_name": "Mijikajan T.E. 336/590",
+            "ward_id": 286790
+        },
+        {
+            "ward_no": 286792,
+            "ward_name": "Mijikajan T.E. 38/6",
+            "ward_id": 286792
+        },
+        {
+            "ward_no": 286793,
+            "ward_name": "Mijikajan T.E. P.K.P. No.2",
+            "ward_id": 286793
+        },
+        {
+            "ward_no": 286794,
+            "ward_name": "Mijikajan T.E. S.P.P. No.1",
+            "ward_id": 286794
+        },
+        {
+            "ward_no": 286745,
+            "ward_name": "Mijika Nlr 193/353",
+            "ward_id": 286745
+        },
+        {
+            "ward_no": 286746,
+            "ward_name": "Mijuka 247/416",
+            "ward_id": 286746
+        },
+        {
+            "ward_no": 286755,
+            "ward_name": "Mizikajan",
+            "ward_id": 286755
+        },
+        {
+            "ward_no": 286910,
+            "ward_name": "Moinaguri F.V.",
+            "ward_id": 286910
+        },
+        {
+            "ward_no": 286768,
+            "ward_name": "Monabari 153/269",
+            "ward_id": 286768
+        },
+        {
+            "ward_no": 286772,
+            "ward_name": "Monabari 154/279",
+            "ward_id": 286772
+        },
+        {
+            "ward_no": 286775,
+            "ward_name": "Monabari 213/379",
+            "ward_id": 286775
+        },
+        {
+            "ward_no": 286773,
+            "ward_name": "Monabari 269/451",
+            "ward_id": 286773
+        },
+        {
+            "ward_no": 286769,
+            "ward_name": "Monabari 326/578",
+            "ward_id": 286769
+        },
+        {
+            "ward_no": 286729,
+            "ward_name": "Monabari Basti",
+            "ward_id": 286729
+        },
+        {
+            "ward_no": 286722,
+            "ward_name": "Monabari Pathar",
+            "ward_id": 286722
+        },
+        {
+            "ward_no": 286770,
+            "ward_name": "Monabari P.P. No.1 Bl.1",
+            "ward_id": 286770
+        },
+        {
+            "ward_no": 286774,
+            "ward_name": "Monabari P.P. No.2",
+            "ward_id": 286774
+        },
+        {
+            "ward_no": 286771,
+            "ward_name": "Monabari P.P.No.2(Bihpukhuri)",
+            "ward_id": 286771
+        },
+        {
+            "ward_no": 286777,
+            "ward_name": "Monabari T.E. 169/303",
+            "ward_id": 286777
+        },
+        {
+            "ward_no": 286766,
+            "ward_name": "Monabari T.E. 195/327",
+            "ward_id": 286766
+        },
+        {
+            "ward_no": 286764,
+            "ward_name": "Monabari T.E. 212/354",
+            "ward_id": 286764
+        },
+        {
+            "ward_no": 286776,
+            "ward_name": "Monabari T.E. 280/496",
+            "ward_id": 286776
+        },
+        {
+            "ward_no": 286765,
+            "ward_name": "Monabari T.E. 292/495",
+            "ward_id": 286765
+        },
+        {
+            "ward_no": 286763,
+            "ward_name": "Monabari T.E. 317/516",
+            "ward_id": 286763
+        },
+        {
+            "ward_no": 286767,
+            "ward_name": "Monabari T.E.P.P.No.1(Bihpukri",
+            "ward_id": 286767
+        },
+        {
+            "ward_no": 286703,
+            "ward_name": "Muja Basti",
+            "ward_id": 286703
+        },
+        {
+            "ward_no": 286707,
+            "ward_name": "Nahar Bari",
+            "ward_id": 286707
+        },
+        {
+            "ward_no": 286780,
+            "ward_name": "Na-Pamua",
+            "ward_id": 286780
+        },
+        {
+            "ward_no": 286732,
+            "ward_name": "Niz-Baghmara",
+            "ward_id": 286732
+        },
+        {
+            "ward_no": 286752,
+            "ward_name": "Niz-Salmara",
+            "ward_id": 286752
+        },
+        {
+            "ward_no": 286700,
+            "ward_name": "No.1 Barjarani",
+            "ward_id": 286700
+        },
+        {
+            "ward_no": 286720,
+            "ward_name": "No.1 Dhemaji Bari",
+            "ward_id": 286720
+        },
+        {
+            "ward_no": 286731,
+            "ward_name": "No.1 Disiri Pathar",
+            "ward_id": 286731
+        },
+        {
+            "ward_no": 286713,
+            "ward_name": "No.1 Garoimari",
+            "ward_id": 286713
+        },
+        {
+            "ward_no": 286756,
+            "ward_name": "No.1 Monabari",
+            "ward_id": 286756
+        },
+        {
+            "ward_no": 286736,
+            "ward_name": "No.1 Pulisomani",
+            "ward_id": 286736
+        },
+        {
+            "ward_no": 286701,
+            "ward_name": "No.2 Barjarani",
+            "ward_id": 286701
+        },
+        {
+            "ward_no": 286762,
+            "ward_name": "No.2 Bihpukhuri",
+            "ward_id": 286762
+        },
+        {
+            "ward_no": 286721,
+            "ward_name": "No.2 Dhemaji Bari",
+            "ward_id": 286721
+        },
+        {
+            "ward_no": 286726,
+            "ward_name": "No.2 Disiri Pathar",
+            "ward_id": 286726
+        },
+        {
+            "ward_no": 286714,
+            "ward_name": "No.2 Garoi Mari",
+            "ward_id": 286714
+        },
+        {
+            "ward_no": 286757,
+            "ward_name": "No.2 Monabari",
+            "ward_id": 286757
+        },
+        {
+            "ward_no": 286737,
+            "ward_name": "No.2 Pulisomani",
+            "ward_id": 286737
+        },
+        {
+            "ward_no": 286913,
+            "ward_name": "No.2 Rangajan",
+            "ward_id": 286913
+        },
+        {
+            "ward_no": 286718,
+            "ward_name": "No.2 Ratowa",
+            "ward_id": 286718
+        },
+        {
+            "ward_no": 286702,
+            "ward_name": "No.3 Barjarani",
+            "ward_id": 286702
+        },
+        {
+            "ward_no": 286738,
+            "ward_name": "No.3 Pulisomani",
+            "ward_id": 286738
+        },
+        {
+            "ward_no": 286779,
+            "ward_name": "Oria Basti",
+            "ward_id": 286779
+        },
+        {
+            "ward_no": 286710,
+            "ward_name": "Pachim Jinjia",
+            "ward_id": 286710
+        },
+        {
+            "ward_no": 286709,
+            "ward_name": "Pub Jinjia",
+            "ward_id": 286709
+        },
+        {
+            "ward_no": 286706,
+            "ward_name": "Ranga Jan",
+            "ward_id": 286706
+        },
+        {
+            "ward_no": 286727,
+            "ward_name": "Ratowa Pathar",
+            "ward_id": 286727
+        },
+        {
+            "ward_no": 286739,
+            "ward_name": "Siju Bari",
+            "ward_id": 286739
+        },
+        {
+            "ward_no": 286751,
+            "ward_name": "Simalu Guri",
+            "ward_id": 286751
+        },
+        {
+            "ward_no": 286711,
+            "ward_name": "Singi Bil",
+            "ward_id": 286711
+        },
+        {
+            "ward_no": 286697,
+            "ward_name": "Solmari",
+            "ward_id": 286697
+        },
+        {
+            "ward_no": 286753,
+            "ward_name": "Solmari Bongali",
+            "ward_id": 286753
+        },
+        {
+            "ward_no": 286554,
+            "ward_name": "Tinisuti Mukh",
+            "ward_id": 286554
+        },
+        {
+            "ward_no": 286723,
+            "ward_name": "Tipu Basti",
+            "ward_id": 286723
+        },
+        {
+            "ward_no": 286708,
+            "ward_name": "Uttar Jinjia",
+            "ward_id": 286708
+        }
+    ]
+}

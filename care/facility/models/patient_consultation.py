@@ -29,6 +29,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         (SuggestionChoices.R, "REFERRAL"),
         (SuggestionChoices.OP, "OP CONSULTATION"),
         (SuggestionChoices.DC, "DOMICILIARY CARE"),
+        (SuggestionChoices.DD, "DECLARE DEATH"),
     ]
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 

@@ -96,7 +96,7 @@ BLOOD_GROUP_CHOICES = [
     ("O-", "O-"),
     ("UNK", "UNKNOWN"),
 ]
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
 class BedType(enum.Enum):

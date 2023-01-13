@@ -1,0 +1,49 @@
+{
+    "name": "Golakganj-Btc",
+    "lsg_code": 6569,
+    "district": "Kokrajhar",
+    "state": "Assam",
+    "no_of_wards": 8,
+    "wards": [
+        {
+            "ward_no": 280389,
+            "ward_name": "Kharkhari Pt.-I",
+            "ward_id": 280389
+        },
+        {
+            "ward_no": 280390,
+            "ward_name": "Kharkhari Pt.-Ii",
+            "ward_id": 280390
+        },
+        {
+            "ward_no": 280394,
+            "ward_name": "Masalijhorajhar Pt.-I",
+            "ward_id": 280394
+        },
+        {
+            "ward_no": 280392,
+            "ward_name": "Masalijhorajhar Pt.-Ii",
+            "ward_id": 280392
+        },
+        {
+            "ward_no": 280396,
+            "ward_name": "Maulijhoragaon Pt.I",
+            "ward_id": 280396
+        },
+        {
+            "ward_no": 280395,
+            "ward_name": "Maulijhoragaon Pt.Ii",
+            "ward_id": 280395
+        },
+        {
+            "ward_no": 280393,
+            "ward_name": "Mosulijhora Pathardubi Pt.-I",
+            "ward_id": 280393
+        },
+        {
+            "ward_no": 280391,
+            "ward_name": "Mosulijhora Pathardubi Pt.-Ii",
+            "ward_id": 280391
+        }
+    ]
+}

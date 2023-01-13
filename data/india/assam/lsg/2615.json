@@ -1,0 +1,229 @@
+{
+    "name": "Sualkuchi",
+    "lsg_code": 2615,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 44,
+    "wards": [
+        {
+            "ward_no": 302673,
+            "ward_name": "Ambari",
+            "ward_id": 302673
+        },
+        {
+            "ward_no": 302705,
+            "ward_name": "Bamun Sualkuchi (Ct)",
+            "ward_id": 302705
+        },
+        {
+            "ward_no": 302662,
+            "ward_name": "Bansar",
+            "ward_id": 302662
+        },
+        {
+            "ward_no": 302697,
+            "ward_name": "Bargaon",
+            "ward_id": 302697
+        },
+        {
+            "ward_no": 302686,
+            "ward_name": "Barijani Pathar Pacharia",
+            "ward_id": 302686
+        },
+        {
+            "ward_no": 302667,
+            "ward_name": "Bathan",
+            "ward_id": 302667
+        },
+        {
+            "ward_no": 302666,
+            "ward_name": "Bathan Pam",
+            "ward_id": 302666
+        },
+        {
+            "ward_no": 302683,
+            "ward_name": "Dakshin Pakor Kona",
+            "ward_id": 302683
+        },
+        {
+            "ward_no": 302691,
+            "ward_name": "Garia Para Pacharia",
+            "ward_id": 302691
+        },
+        {
+            "ward_no": 302688,
+            "ward_name": "Guimara Pathar Pacharia",
+            "ward_id": 302688
+        },
+        {
+            "ward_no": 302687,
+            "ward_name": "Keotarbari Pacharia",
+            "ward_id": 302687
+        },
+        {
+            "ward_no": 302685,
+            "ward_name": "Khudra Kulhati Pacharia",
+            "ward_id": 302685
+        },
+        {
+            "ward_no": 302690,
+            "ward_name": "Na-Para Pacharia",
+            "ward_id": 302690
+        },
+        {
+            "ward_no": 302674,
+            "ward_name": "Niz-Bansar",
+            "ward_id": 302674
+        },
+        {
+            "ward_no": 302680,
+            "ward_name": "Niz-Gandh Mow",
+            "ward_id": 302680
+        },
+        {
+            "ward_no": 302698,
+            "ward_name": "No.1 Dalibari",
+            "ward_id": 302698
+        },
+        {
+            "ward_no": 302677,
+            "ward_name": "No.1 Gandh Mow",
+            "ward_id": 302677
+        },
+        {
+            "ward_no": 302676,
+            "ward_name": "No.1 Kismat Bansar",
+            "ward_id": 302676
+        },
+        {
+            "ward_no": 302669,
+            "ward_name": "No.1 Sarudam Pam",
+            "ward_id": 302669
+        },
+        {
+            "ward_no": 302663,
+            "ward_name": "No.1 Shrihati",
+            "ward_id": 302663
+        },
+        {
+            "ward_no": 302692,
+            "ward_name": "No.1 Singimari",
+            "ward_id": 302692
+        },
+        {
+            "ward_no": 302699,
+            "ward_name": "No.2 Dalibari",
+            "ward_id": 302699
+        },
+        {
+            "ward_no": 302672,
+            "ward_name": "No.2 Gondh Mow",
+            "ward_id": 302672
+        },
+        {
+            "ward_no": 302675,
+            "ward_name": "No.2 Kismat Bansar",
+            "ward_id": 302675
+        },
+        {
+            "ward_no": 302665,
+            "ward_name": "No.2 Shrihati",
+            "ward_id": 302665
+        },
+        {
+            "ward_no": 302693,
+            "ward_name": "No.2 Singimari",
+            "ward_id": 302693
+        },
+        {
+            "ward_no": 302681,
+            "ward_name": "No.3 Singimari",
+            "ward_id": 302681
+        },
+        {
+            "ward_no": 302689,
+            "ward_name": "Pacharia",
+            "ward_id": 302689
+        },
+        {
+            "ward_no": 302696,
+            "ward_name": "Pacharia Dalar Pathar",
+            "ward_id": 302696
+        },
+        {
+            "ward_no": 302694,
+            "ward_name": "Pachim Dadora",
+            "ward_id": 302694
+        },
+        {
+            "ward_no": 302695,
+            "ward_name": "Pub-Dadora",
+            "ward_id": 302695
+        },
+        {
+            "ward_no": 302679,
+            "ward_name": "Rakshashi Char",
+            "ward_id": 302679
+        },
+        {
+            "ward_no": 302678,
+            "ward_name": "Rakshashi Char N.C.(A)",
+            "ward_id": 302678
+        },
+        {
+            "ward_no": 302701,
+            "ward_name": "Rakshashini Char N.C. (B)",
+            "ward_id": 302701
+        },
+        {
+            "ward_no": 302682,
+            "ward_name": "Roumari",
+            "ward_id": 302682
+        },
+        {
+            "ward_no": 302668,
+            "ward_name": "Sanpara Gaon",
+            "ward_id": 302668
+        },
+        {
+            "ward_no": 302664,
+            "ward_name": "Sanpara Parbat",
+            "ward_id": 302664
+        },
+        {
+            "ward_no": 302703,
+            "ward_name": "Sarmojuli N.C.",
+            "ward_id": 302703
+        },
+        {
+            "ward_no": 302702,
+            "ward_name": "Sarmojuli Pam",
+            "ward_id": 302702
+        },
+        {
+            "ward_no": 302700,
+            "ward_name": "Sarmosali Gaon",
+            "ward_id": 302700
+        },
+        {
+            "ward_no": 302704,
+            "ward_name": "Sualkuchi (Ct)",
+            "ward_id": 302704
+        },
+        {
+            "ward_no": 302671,
+            "ward_name": "Sualkuchi N.C.",
+            "ward_id": 302671
+        },
+        {
+            "ward_no": 302670,
+            "ward_name": "Sualkuchi Pathar",
+            "ward_id": 302670
+        },
+        {
+            "ward_no": 302684,
+            "ward_name": "Uttar Pakor Kona",
+            "ward_id": 302684
+        }
+    ]
+}
