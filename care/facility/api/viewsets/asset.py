@@ -48,6 +48,7 @@ from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 
 inverse_asset_type = inverse_choices(Asset.AssetTypeChoices)
+inverse_asset_class = inverse_choices(Asset.AssetClassChoices)
 inverse_asset_status = inverse_choices(Asset.StatusChoices)
 
 
@@ -101,6 +102,7 @@ class AssetFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="current_location__facility__external_id")
     location = filters.UUIDFilter(field_name="current_location__external_id")
     asset_type = CareChoiceFilter(choice_dict=inverse_asset_type)
+    asset_class = CareChoiceFilter(choice_dict=inverse_asset_class)
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
