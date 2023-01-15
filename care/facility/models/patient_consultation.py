@@ -34,7 +34,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey(
-        "PatientRegistration", on_delete=models.CASCADE, related_name="consultations"
+        "PatientRegistration",
+        on_delete=models.CASCADE,
+        related_name="consultations",
     )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
@@ -94,6 +96,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
+    death_datetime = models.DateTimeField(null=True, blank=True)
+    death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
 
     is_kasp = models.BooleanField(default=False)
@@ -103,7 +107,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
     assigned_to = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_assigned_to",
     )
 
     verified_by = models.TextField(default="", null=True, blank=True)
@@ -113,11 +120,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="last_edited_user",
     )
 
     last_daily_round = models.ForeignKey(
-        "facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None
+        "facility.DailyRound",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
 
     current_bed = models.ForeignKey(

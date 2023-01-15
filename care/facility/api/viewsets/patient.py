@@ -369,6 +369,30 @@ class PatientViewSet(
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
             last_consultation.current_bed = None
+            if reason == "EXP":
+                death_datetime = request.data.get("death_datetime")
+                death_confirmed_doctor = request.data.get("death_confirmed_doctor")
+                if death_datetime is None:
+                    raise serializers.ValidationError(
+                        {"death_datetime": "Please provide death date and time"}
+                    )
+                if death_confirmed_doctor is None:
+                    raise serializers.ValidationError(
+                        {"death_confirmed_doctor": "Please provide doctor details"}
+                    )
+                last_consultation.death_datetime = death_datetime
+                last_consultation.death_confirmed_doctor = death_confirmed_doctor
+            if reason == "REC":
+                prn_prescription = request.data.get("prn_prescription", [])
+                discharge_advice = request.data.get("discharge_advice", [])
+                discharge_date = request.data.get("discharge_date")
+                if discharge_date is None:
+                    raise serializers.ValidationError(
+                        {"discharge_date": "Please set the discharge date"}
+                    )
+                last_consultation.prn_prescription = prn_prescription
+                last_consultation.discharge_advice = discharge_advice
+                last_consultation.discharge_date = discharge_date
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
