@@ -55,6 +55,30 @@ class SignUpSerializer(serializers.ModelSerializer):
         validated_data["password"] = make_password(validated_data.get("password"))
         return super().create(validated_data)
 
+    def validate(self, attrs):
+        super().validate(attrs)
+        if attrs["user_type"] == "Doctor":
+            if not attrs["doctor_qualification"]:
+                raise serializers.ValidationError(
+                    {
+                        "doctor_qualification": "Field required for Doctor User Type",
+                    }
+                )
+
+            if not attrs["doctor_experience_commenced_on"]:
+                raise serializers.ValidationError(
+                    {
+                        "doctor_experience_commenced_on": "Field required for Doctor User Type",
+                    }
+                )
+
+            if not attrs["doctor_medical_council_registration"]:
+                raise serializers.ValidationError(
+                    {
+                        "doctor_medical_council_registration": "Field required for Doctor User Type",
+                    }
+                )
+
 
 class UserCreateSerializer(SignUpSerializer):
     password = serializers.CharField(required=False)
