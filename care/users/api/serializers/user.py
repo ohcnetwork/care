@@ -370,6 +370,9 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "user_type",
             "last_login",
             "home_facility_object",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
         )
 
 
