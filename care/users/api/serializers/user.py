@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
@@ -56,7 +58,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def validate(self, attrs):
-        super().validate(attrs)
+        validated = super().validate(attrs)
         if attrs["user_type"] == "Doctor":
             if not attrs["doctor_qualification"]:
                 raise serializers.ValidationError(
@@ -72,12 +74,21 @@ class SignUpSerializer(serializers.ModelSerializer):
                     }
                 )
 
+            if attrs["doctor_experience_commenced_on"] > date.today():
+                raise serializers.ValidationError(
+                    {
+                        "doctor_experience_commenced_on": "Experience cannot be in the future",
+                    }
+                )
+
             if not attrs["doctor_medical_council_registration"]:
                 raise serializers.ValidationError(
                     {
                         "doctor_medical_council_registration": "Field required for Doctor User Type",
                     }
                 )
+
+        return validated
 
 
 class UserCreateSerializer(SignUpSerializer):
