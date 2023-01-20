@@ -16,6 +16,7 @@ from care.facility.models.asset import (
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
+from datetime import datetime
 
 
 class AssetLocationSerializer(ModelSerializer):
@@ -64,6 +65,16 @@ class AssetSerializer(ModelSerializer):
                 raise PermissionError()
             del attrs["location"]
             attrs["current_location"] = location
+
+        # validate that warraty date is not in the past
+        if "warranty_amc_end_of_validity" in attrs:
+            if datetime.strptime(attrs["warranty_amc_end_of_validity"], '%Y-%m-%d') < datetime.now():
+                raise ValidationError("Warranty/AMC end of validity cannot be in the past")
+        
+        # validate that last serviced date is not in the future
+        if "last_serviced_on" in attrs:
+            if datetime.strptime(attrs["last_serviced_on"], '%Y-%m-%d') > datetime.now():
+                raise ValidationError("Last serviced on cannot be in the future")
 
         return super().validate(attrs)
 
