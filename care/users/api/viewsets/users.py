@@ -70,6 +70,20 @@ class UserFilterSet(filters.FilterSet):
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
 
+    def get_facilities(
+        self,
+        queryset,
+        field_name,
+        value,
+    ):
+        if value:
+            return queryset.filter(facilities__external_id=value)
+        return queryset
+
+    facility_id = filters.CharFilter(
+        method="get_facilities", field_name="facility_id", lookup_expr="exact"
+    )
+
 
 class UserViewSet(
     mixins.RetrieveModelMixin,
