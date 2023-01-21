@@ -268,7 +268,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -376,7 +376,7 @@ DJANGO_REST_LOOKUP_FIELD = "username"
 
 CHROME_WINDOW_SIZE = "2480,3508"
 
-CHROME_PATH = "/usr/bin/google-chrome-stable"
+CHROME_PATH = "/usr/bin/chromium"
 
 IS_PRODUCTION = False
 
