@@ -60,14 +60,14 @@ class SignUpSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         if attrs["user_type"] == "Doctor":
-            if not attrs["doctor_qualification"]:
+            if not attrs.get("doctor_qualification"):
                 raise serializers.ValidationError(
                     {
                         "doctor_qualification": "Field required for Doctor User Type",
                     }
                 )
 
-            if not attrs["doctor_experience_commenced_on"]:
+            if not attrs.get("doctor_experience_commenced_on"):
                 raise serializers.ValidationError(
                     {
                         "doctor_experience_commenced_on": "Field required for Doctor User Type",
@@ -81,7 +81,7 @@ class SignUpSerializer(serializers.ModelSerializer):
                     }
                 )
 
-            if not attrs["doctor_medical_council_registration"]:
+            if not attrs.get("doctor_medical_council_registration"):
                 raise serializers.ValidationError(
                     {
                         "doctor_medical_council_registration": "Field required for Doctor User Type",
