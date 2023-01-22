@@ -237,6 +237,23 @@ class User(AbstractUser):
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
+
+    doctor_qualification = models.TextField(
+        blank=False,
+        null=True,
+    )
+    doctor_experience_commenced_on = models.DateField(
+        default=None,
+        blank=False,
+        null=True,
+    )
+    doctor_medical_council_registration = models.CharField(
+        max_length=255,
+        default=None,
+        blank=False,
+        null=True,
+    )
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
