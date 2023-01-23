@@ -59,7 +59,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if attrs["user_type"] == "Doctor":
+        if "user_type" in attrs and attrs["user_type"] == "Doctor":
             if not attrs.get("doctor_qualification"):
                 raise serializers.ValidationError(
                     {
@@ -137,7 +137,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].ward
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different Ward")
         return value
@@ -148,7 +148,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError(
                 "Cannot create for a different local body"
@@ -161,7 +161,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["StateAdmin"]
+                    >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different district")
         return value
