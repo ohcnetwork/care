@@ -25,15 +25,20 @@ SYMPTOM_CHOICES = [
     (5, "BREATHLESSNESS"),
     (6, "MYALGIA"),
     (7, "ABDOMINAL DISCOMFORT"),
-    (8, "VOMITING/DIARRHOEA"),
+    (8, "VOMITING"),
     (9, "OTHERS"),
-    (10, "SARI"),
     (11, "SPUTUM"),
     (12, "NAUSEA"),
     (13, "CHEST PAIN"),
     (14, "HEMOPTYSIS"),
     (15, "NASAL DISCHARGE"),
     (16, "BODY ACHE"),
+    (17, "DIARRHOEA"),
+    (18, "PAIN"),
+    (19, "PEDAL EDEMA"),
+    (20, "WOUND"),
+    (21, "CONSTIPATION"),
+    (22, "HEAD ACHE"),
 ]
 
 DISEASE_CHOICES_MAP = {
