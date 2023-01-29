@@ -37,7 +37,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
     review_interval = serializers.IntegerField(default=-1, required=False)
 
@@ -195,6 +197,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     cloned_daily_round_obj.last_edited_by = self.context["request"].user
                     cloned_daily_round_obj.created_date = timezone.now()
                     cloned_daily_round_obj.modified_date = timezone.now()
+                    cloned_daily_round_obj.predated_date = last_objects[0].modified_date
                     cloned_daily_round_obj.external_id = uuid4()
                     cloned_daily_round_obj.save()
                     self.update_last_daily_round(cloned_daily_round_obj)
