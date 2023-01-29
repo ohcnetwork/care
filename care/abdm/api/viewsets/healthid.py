@@ -168,7 +168,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         # patient_obj.abha_number = abha_object
         # patient_obj.save()
-        return Response({"abha": abha_object.external_id}, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
 
     # APIs to Find & Link Existing HealthID
     # searchByHealthId
