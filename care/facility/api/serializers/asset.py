@@ -69,7 +69,7 @@ class AssetSerializer(ModelSerializer):
 
         # validate that warraty date is not in the past
         if "warranty_amc_end_of_validity" in attrs:
-            if attrs["warranty_amc_end_of_validity"] < datetime.now().date():
+            if attrs["warranty_amc_end_of_validity"] and attrs["warranty_amc_end_of_validity"] < datetime.now().date():
                 raise ValidationError(
                     "Warranty/AMC end of validity cannot be in the past"
                 )
