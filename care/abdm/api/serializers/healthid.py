@@ -103,6 +103,37 @@ class VerifyOtpRequestPayloadSerializer(Serializer):
     )  # TODO: Add UUID Validation
 
 
+class VerifyDemographicsRequestPayloadSerializer(Serializer):
+    gender = CharField(
+        max_length=10,
+        min_length=1,
+        required=True,
+        help_text="Gender",
+        validators=[],
+    )
+    name = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Name",
+        validators=[],
+    )
+    yearOfBirth = CharField(
+        max_length=4,
+        min_length=4,
+        required=True,
+        help_text="Year Of Birth",
+        validators=[],
+    )
+    txnId = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Transaction ID",
+        validators=[],
+    )
+
+
 # {
 #   "email": "Example@Demo.com",
 #   "firstName": "manoj",

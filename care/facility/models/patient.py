@@ -394,7 +394,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # ABDM Health ID
 
-    abha_number = models.OneToOneField(AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True)
+    abha_number = models.OneToOneField(
+        AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
 
@@ -594,7 +596,7 @@ class PatientSearch(PatientBaseModel):
     phone_number = models.CharField(max_length=14)
     date_of_birth = models.DateField(null=True)
     year_of_birth = models.IntegerField()
-    state_id = models.IntegerField()
+    state_id = models.IntegerField(null=True)
 
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     patient_external_id = EncryptedCharField(max_length=100, default="")

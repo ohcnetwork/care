@@ -216,6 +216,12 @@ class HealthIdGateway:
         response = self.api.post(path, data)
         return response.json()
 
+    # /v1/auth/confirmWithDemographics
+    def confirm_with_demographics(self, data):
+        path = "/v1/auth/confirmWithDemographics"
+        response = self.api.post(path, data)
+        return response.json()
+
     # /v1/auth/generate/access-token
     def generate_access_token(self, data):
         if "access_token" in data:

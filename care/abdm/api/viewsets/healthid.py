@@ -15,6 +15,7 @@ from care.abdm.api.serializers.healthid import (
     GenerateMobileOtpRequestPayloadSerializer,
     HealthIdAuthSerializer,
     HealthIdSerializer,
+    VerifyDemographicsRequestPayloadSerializer,
     VerifyOtpRequestPayloadSerializer,
 )
 from care.abdm.models import AbhaNumber
@@ -266,6 +267,38 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 {"message": "ABHA NUmber / Health ID already Exists"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    @swagger_auto_schema(
+        operation_id="confirm_with_demographics",
+        request_body=VerifyDemographicsRequestPayloadSerializer,
+        responses={"200": "{'status': true}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def confirm_with_demographics(self, request):
+        data = request.data
+        serializer = VerifyDemographicsRequestPayloadSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response = HealthIdGateway().confirm_with_demographics(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+        # patient_id = data.pop("patientId")
+        # if patient_id and response.status:
+        #     allowed_patients = get_patient_queryset(request.user)
+        #     patient_obj = allowed_patients.filter(external_id=patient_id).first()
+        #     if not patient_obj:
+        #         raise ValidationError({"patient": "Not Found"})
+
+        #     if self.add_abha_details_to_patient(
+        #         abha_object,
+        #         patient_obj,
+        #     ):
+        #         return Response(abha_object, status=status.HTTP_200_OK)
+        #     else:
+        #         return Response(
+        #             {"message": "ABHA NUmber / Health ID already Exists"},
+        #             status=status.HTTP_400_BAD_REQUEST,
+        #         )
 
     ############################################################################################################
     # HealthID V2 APIs
