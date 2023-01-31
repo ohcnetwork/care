@@ -39,6 +39,8 @@ SYMPTOM_CHOICES = [
     (20, "WOUND"),
     (21, "CONSTIPATION"),
     (22, "HEAD ACHE"),
+    (23, "BLEEDING"),
+    (24, "DIZZINESS"),
 ]
 
 DISEASE_CHOICES_MAP = {
