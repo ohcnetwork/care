@@ -2,17 +2,21 @@ import datetime
 
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.hip import HipShareProfileSerializer
 from care.abdm.models import AbhaNumber
-from care.abdm.utils.api_call import HealthIdGateway
+from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 
 
 class HipViewSet(GenericViewSet):
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
     def add_abha_details_to_patient(self, data, patient_obj):
         abha_object = AbhaNumber.objects.filter(
             abha_number=data["healthIdNumber"]
@@ -54,11 +58,10 @@ class HipViewSet(GenericViewSet):
             return False
 
     @action(detail=False, methods=["POST"])
-    def share_profile(self, request, *args, **kwargs):
+    def share(self, request, *args, **kwargs):
         data = request.data
         patient_data = data["profile"]["patient"]
-        # hip_id = self.request.GET.get("hip_id")
-        counter_id = self.request.GET.get("counter_id")  # facility_id
+        counter_id = data["profile"]["hipCode"]
 
         patient_data["mobile"] = ""
         for identifier in patient_data["identifiers"]:
@@ -72,61 +75,77 @@ class HipViewSet(GenericViewSet):
         patient = PatientRegistration.objects.filter(
             abha_number__abha_number=patient_data["healthIdNumber"]
         )
-        if not patient:
-            patient = PatientRegistration.objects.create(
-                facility=Facility.objects.get(external_id=counter_id),
-                name=patient_data["name"],
-                gender=1
-                if patient_data["gender"] == "M"
-                else 2
-                if patient_data["gender"] == "F"
-                else 3,
-                is_antenatal=False,
-                phone_number=patient_data["mobile"],
-                emergency_phone_number=patient_data["mobile"],
-                date_of_birth=datetime.datetime.strptime(
-                    f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
-                    "%Y-%m-%d",
-                ).date(),
-                blood_group="UNK",
-                nationality="India",
-                address=patient_data["address"]["line"],
-                pincode=patient_data["address"]["pincode"],
-                created_by=None,
-                state=None,
-                district=None,
-                local_body=None,
-                ward=None,
+        if patient:
+            res = AbdmGateway().on_share(
+                {
+                    "requestId": data["requestId"],
+                    # "timestamp": str(datetime.datetime.now()),
+                    "acknowledgement": {
+                        "status": "SUCCESS",
+                        "healthId": patient_data["healthId"],
+                        "tokenNumber": "02",
+                    },
+                    # "error": {"code": 1000, "message": "string"},
+                    "resp": {"requestId": data["requestId"]},
+                }
             )
+            print(res)
+
+            return Response(
+                {
+                    "requestId": data["requestId"],
+                    "status": "SUCCESS",
+                    "healthId": patient_data["healthIdNumber"],
+                    # "healthIdNumber": patient_data["healthIdNumber"],
+                    "tokenNumber": "02",  # this is for out patients
+                },
+                status=status.HTTP_202_ACCEPTED,
+            )
+
+        patient = PatientRegistration.objects.create(
+            facility=Facility.objects.get(external_id=counter_id),
+            name=patient_data["name"],
+            gender=1
+            if patient_data["gender"] == "M"
+            else 2
+            if patient_data["gender"] == "F"
+            else 3,
+            is_antenatal=False,
+            phone_number=patient_data["mobile"],
+            emergency_phone_number=patient_data["mobile"],
+            date_of_birth=datetime.datetime.strptime(
+                f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                "%Y-%m-%d",
+            ).date(),
+            blood_group="UNK",
+            nationality="India",
+            address=patient_data["address"]["line"],
+            pincode=patient_data["address"]["pincode"],
+            created_by=None,
+            state=None,
+            district=None,
+            local_body=None,
+            ward=None,
+        )
 
         # verify details using demographics method (name, gender and yearOfBirth)
         if self.demographics_verification(patient_data):
             self.add_abha_details_to_patient(patient_data, patient)
             return Response(
                 {
-                    "requestId": data["requestId"],
-                    "timestamp": str(datetime.datetime.now()),
-                    "acknowledgement": {
-                        "status": "SUCCESS",
-                        "healthId": patient_data["healthId"],
-                        "healthIdNumber": patient_data["healthIdNumber"],
-                        "tokenNumber": "01",  # this is for out patients
-                    },
+                    "status": "SUCCESS",
+                    "healthId": patient_data["healthId"],
+                    # "healthIdNumber": patient_data["healthIdNumber"],
+                    "tokenNumber": "02",  # this is for out patients
                 },
                 status=status.HTTP_202_ACCEPTED,
             )
         else:
             return Response(
                 {
-                    "requestId": data["requestId"],
-                    "timestamp": str(datetime.datetime.now()),
-                    "acknowledgement": {
-                        "status": "FAILURE",
-                    },
-                    "error": {
-                        "code": 1000,
-                        "message": "Demographics verification failed",
-                    },
+                    "status": "FAILURE",
+                    "healthId": patient_data["healthId"],
+                    "healthIdNumber": patient_data["healthIdNumber"],
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
             )

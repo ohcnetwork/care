@@ -10,6 +10,7 @@ from django.core.cache import cache
 GATEWAY_API_URL = "https://dev.abdm.gov.in/"
 HEALTH_SERVICE_API_URL = "https://healthidsbx.abdm.gov.in/api"
 ABDM_TOKEN_URL = GATEWAY_API_URL + "gateway/v0.5/sessions"
+ABDM_GATEWAY_URL = GATEWAY_API_URL + "gateway"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
@@ -32,6 +33,8 @@ class APIGateway:
             self.url = HEALTH_SERVICE_API_URL
         elif gateway == "abdm":
             self.url = GATEWAY_API_URL
+        elif gateway == "abdm_gateway":
+            self.url = ABDM_GATEWAY_URL
         else:
             self.url = GATEWAY_API_URL
         self.token = token
@@ -95,6 +98,9 @@ class APIGateway:
         auth_header = {"Authorization": "Bearer {}".format(token)}
         return {**headers, **auth_header}
 
+    def add_additional_headers(self, headers, additional_headers):
+        return {**headers, **additional_headers}
+
     def get(self, path, params=None, auth=None):
         url = self.url + path
         headers = {}
@@ -106,7 +112,7 @@ class APIGateway:
         print("{} Response: {}".format(response.status_code, response.text))
         return response
 
-    def post(self, path, data=None, auth=None):
+    def post(self, path, data=None, auth=None, additional_headers=None):
         url = self.url + path
         headers = {
             "Content-Type": "application/json",
@@ -116,6 +122,8 @@ class APIGateway:
         headers = self.add_auth_header(headers)
         if auth:
             headers = self.add_user_header(headers, auth)
+        if additional_headers:
+            headers = self.add_additional_headers(headers, additional_headers)
         # headers_string = " ".join(
         #     ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
         # )
@@ -289,10 +297,17 @@ class HealthIdGatewayV2:
 
 class AbdmGateway:
     def __init__(self):
-        self.api = APIGateway("abdm", None)
+        self.api = APIGateway("abdm_gateway", None)
 
     # /v0.5/users/auth/fetch-modes
     def fetch_modes(self, data):
         path = "/v0.5/users/auth/fetch-modes"
         response = self.api.post(path, data)
         return response.json()
+
+    # /v1.0/patients/profile/on-share
+    def on_share(self, data):
+        path = "/v1.0/patients/profile/on-share"
+        additional_headers = {"X-CM-ID": "sbx"}
+        response = self.api.post(path, data, None, additional_headers)
+        return response

@@ -82,10 +82,19 @@ from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
+
+class OptionalSlashRouter(SimpleRouter):
+    def __init__(self):
+        super().__init__()
+        self.trailing_slash = "/?"
+
+
 if settings.DEBUG:
     router = DefaultRouter()
+    # abdm_router = DefaultRouter()
 else:
     router = SimpleRouter()
+abdm_router = OptionalSlashRouter()
 
 router.register("users", UserViewSet)
 user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
@@ -199,7 +208,7 @@ router.register("public/asset", AssetPublicViewSet)
 
 # ABDM endpoints
 router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
-router.register("abdm/hip", HipViewSet, basename="hip")
+abdm_router.register("profile", HipViewSet, basename="hip")
 
 app_name = "api"
 urlpatterns = [
@@ -210,4 +219,8 @@ urlpatterns = [
     url(r"^", include(consultation_nested_router.urls)),
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
+]
+
+abdm_urlpatterns = [
+    url(r"^", include(abdm_router.urls)),
 ]
