@@ -31,6 +31,7 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import ICDDiseases
 from care.users.models import (
     GENDER_CHOICES,
     REVERSE_GENDER_CHOICES,
@@ -502,7 +503,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
         "last_consultation__icd11_diagnoses": (
-            lambda x: ", ".join([d.name for d in x])
+            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
     }
 
