@@ -46,7 +46,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)
+    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=[], blank=True, null=True
     )
