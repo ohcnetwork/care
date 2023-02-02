@@ -490,6 +490,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "gender": "Gender",
         "created_date": "Date of Registration",
         "last_consultation__icd11_diagnoses": "Diagnoses",
+        "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
         "last_consultation__suggestion": "Decision after Consultation",
         "last_consultation__discharge_reason": "Discharge Reason",
         "last_consultation__discharge_date": "Date of Discharge",
@@ -503,6 +504,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
         "last_consultation__icd11_diagnoses": (
+            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
+        ),
+        "last_consultation__icd11_provisional_diagnoses": (
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
     }
