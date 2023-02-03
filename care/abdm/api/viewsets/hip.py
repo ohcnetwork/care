@@ -1,4 +1,5 @@
-import datetime
+import uuid
+from datetime import datetime, timezone
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -60,6 +61,7 @@ class HipViewSet(GenericViewSet):
     @action(detail=False, methods=["POST"])
     def share(self, request, *args, **kwargs):
         data = request.data
+
         patient_data = data["profile"]["patient"]
         counter_id = data["profile"]["hipCode"]
 
@@ -71,81 +73,68 @@ class HipViewSet(GenericViewSet):
         serializer = HipShareProfileSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        # create a patient or search for existing patient with this abha number
-        patient = PatientRegistration.objects.filter(
-            abha_number__abha_number=patient_data["healthIdNumber"]
-        )
-        if patient:
-            res = AbdmGateway().on_share(
-                {
-                    "requestId": data["requestId"],
-                    # "timestamp": str(datetime.datetime.now()),
-                    "acknowledgement": {
-                        "status": "SUCCESS",
-                        "healthId": patient_data["healthId"],
-                        "tokenNumber": "02",
-                    },
-                    # "error": {"code": 1000, "message": "string"},
-                    "resp": {"requestId": data["requestId"]},
-                }
-            )
-            print(res)
-
-            return Response(
-                {
-                    "requestId": data["requestId"],
-                    "status": "SUCCESS",
-                    "healthId": patient_data["healthIdNumber"],
-                    # "healthIdNumber": patient_data["healthIdNumber"],
-                    "tokenNumber": "02",  # this is for out patients
-                },
-                status=status.HTTP_202_ACCEPTED,
-            )
-
-        patient = PatientRegistration.objects.create(
-            facility=Facility.objects.get(external_id=counter_id),
-            name=patient_data["name"],
-            gender=1
-            if patient_data["gender"] == "M"
-            else 2
-            if patient_data["gender"] == "F"
-            else 3,
-            is_antenatal=False,
-            phone_number=patient_data["mobile"],
-            emergency_phone_number=patient_data["mobile"],
-            date_of_birth=datetime.datetime.strptime(
-                f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
-                "%Y-%m-%d",
-            ).date(),
-            blood_group="UNK",
-            nationality="India",
-            address=patient_data["address"]["line"],
-            pincode=patient_data["address"]["pincode"],
-            created_by=None,
-            state=None,
-            district=None,
-            local_body=None,
-            ward=None,
-        )
-
-        # verify details using demographics method (name, gender and yearOfBirth)
         if self.demographics_verification(patient_data):
-            self.add_abha_details_to_patient(patient_data, patient)
-            return Response(
-                {
+            patient = PatientRegistration.objects.filter(
+                abha_number__abha_number=patient_data["healthIdNumber"]
+            )
+
+            if not patient:
+                patient = PatientRegistration.objects.create(
+                    facility=Facility.objects.get(external_id=counter_id),
+                    name=patient_data["name"],
+                    gender=1
+                    if patient_data["gender"] == "M"
+                    else 2
+                    if patient_data["gender"] == "F"
+                    else 3,
+                    is_antenatal=False,
+                    phone_number=patient_data["mobile"],
+                    emergency_phone_number=patient_data["mobile"],
+                    date_of_birth=datetime.strptime(
+                        f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                        "%Y-%m-%d",
+                    ).date(),
+                    blood_group="UNK",
+                    nationality="India",
+                    address=patient_data["address"]["line"],
+                    pincode=patient_data["address"]["pincode"],
+                    created_by=None,
+                    state=None,
+                    district=None,
+                    local_body=None,
+                    ward=None,
+                )
+                self.add_abha_details_to_patient(patient_data, patient)
+
+            payload = {
+                "requestId": str(uuid.uuid4()),
+                "timestamp": str(
+                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                ),
+                "acknowledgement": {
                     "status": "SUCCESS",
-                    "healthId": patient_data["healthId"],
-                    # "healthIdNumber": patient_data["healthIdNumber"],
-                    "tokenNumber": "02",  # this is for out patients
+                    "healthId": patient_data["healthId"]
+                    or patient_data["healthIdNumber"],
+                    "tokenNumber": "100",
                 },
-                status=status.HTTP_202_ACCEPTED,
-            )
-        else:
-            return Response(
-                {
-                    "status": "FAILURE",
-                    "healthId": patient_data["healthId"],
-                    "healthIdNumber": patient_data["healthIdNumber"],
+                "error": None,
+                "resp": {
+                    "requestId": data["requestId"],
                 },
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            }
+
+            on_share_response = AbdmGateway().on_share(payload)
+            if on_share_response.status_code == 202:
+                print("on_share_header", on_share_response.request.body)
+                return Response(
+                    on_share_response.request.body,
+                    status=status.HTTP_202_ACCEPTED,
+                )
+
+        return Response(
+            {
+                "status": "FAILURE",
+                "healthId": patient_data["healthId"] or patient_data["healthIdNumber"],
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
