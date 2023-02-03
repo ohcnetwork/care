@@ -1,5 +1,7 @@
 import datetime
-from dateutil.relativedelta import *
+
+from dateutil.relativedelta import relativedelta
+
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
@@ -98,16 +100,22 @@ class PatientIcmr(PatientRegistration):
         return None
 
     @property
-    def contact_case_name(self,):
+    def contact_case_name(
+        self,
+    ):
         contact_case = self.contacted_patients.first()
         return "" if not contact_case else contact_case.name
 
     @property
-    def was_quarantined(self,):
+    def was_quarantined(
+        self,
+    ):
         return None
 
     @property
-    def quarantined_type(self,):
+    def quarantined_type(
+        self,
+    ):
         return None
 
 
@@ -214,9 +222,11 @@ class PatientConsultationICMR(PatientConsultation):
         else:
             return False
 
-    def symptomatic_international_traveller(self,):
+    def symptomatic_international_traveller(
+        self,
+    ):
         return (
-            self.patient.countries_travelled 
+            self.patient.countries_travelled
             and len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
@@ -228,16 +238,22 @@ class PatientConsultationICMR(PatientConsultation):
             and self.is_symptomatic()
         )
 
-    def symptomatic_contact_of_confirmed_case(self,):
+    def symptomatic_contact_of_confirmed_case(
+        self,
+    ):
         return self.patient.contact_with_confirmed_carrier and self.is_symptomatic()
 
-    def symptomatic_healthcare_worker(self,):
+    def symptomatic_healthcare_worker(
+        self,
+    ):
         return self.patient.is_medical_worker and self.is_symptomatic()
 
     def hospitalized_sari_patient(self):
         return self.patient.has_SARI and self.admitted
 
-    def asymptomatic_family_member_of_confirmed_case(self,):
+    def asymptomatic_family_member_of_confirmed_case(
+        self,
+    ):
         return (
             self.patient.contact_with_confirmed_carrier
             and not self.is_symptomatic()
@@ -248,5 +264,7 @@ class PatientConsultationICMR(PatientConsultation):
             )
         )
 
-    def asymptomatic_healthcare_worker_without_protection(self,):
+    def asymptomatic_healthcare_worker_without_protection(
+        self,
+    ):
         return self.patient.is_medical_worker and not self.is_symptomatic()
