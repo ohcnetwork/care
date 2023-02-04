@@ -32,7 +32,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     patient_has_suspected_contact = serializers.BooleanField(
         read_only=True, source="patient.contact_with_suspected_carrier"
     )
-    patient_travel_history = serializers.CharField(read_only=True, source="patient.countries_travelled")
+    patient_travel_history = serializers.JSONField(read_only=True, source="patient.countries_travelled")
 
     facility = ExternalIdSerializerField(read_only=True, source="consultation.facility")
     facility_object = FacilityBasicInfoSerializer(source="consultation.facility", read_only=True)

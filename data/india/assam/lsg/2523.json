@@ -1,0 +1,384 @@
+{
+    "name": "Bechimari",
+    "lsg_code": 2523,
+    "district": "Darrang",
+    "state": "Assam",
+    "no_of_wards": 75,
+    "wards": [
+        {
+            "ward_no": 305230,
+            "ward_name": "Alisinga Gaon",
+            "ward_id": 305230
+        },
+        {
+            "ward_no": 305224,
+            "ward_name": "Alisinga Janghal",
+            "ward_id": 305224
+        },
+        {
+            "ward_no": 305231,
+            "ward_name": "Baligaon",
+            "ward_id": 305231
+        },
+        {
+            "ward_no": 305216,
+            "ward_name": "Barjhar Grant",
+            "ward_id": 305216
+        },
+        {
+            "ward_no": 305234,
+            "ward_name": "Baruajhar",
+            "ward_id": 305234
+        },
+        {
+            "ward_no": 305202,
+            "ward_name": "Baruapara",
+            "ward_id": 305202
+        },
+        {
+            "ward_no": 305158,
+            "ward_name": "Batabari",
+            "ward_id": 305158
+        },
+        {
+            "ward_no": 305205,
+            "ward_name": "Bechimari Jangle",
+            "ward_id": 305205
+        },
+        {
+            "ward_no": 305210,
+            "ward_name": "Borgora Bagicha",
+            "ward_id": 305210
+        },
+        {
+            "ward_no": 305203,
+            "ward_name": "Chakara Basti",
+            "ward_id": 305203
+        },
+        {
+            "ward_no": 305197,
+            "ward_name": "Chakaragaon",
+            "ward_id": 305197
+        },
+        {
+            "ward_no": 305204,
+            "ward_name": "Chikonmati Bagicha",
+            "ward_id": 305204
+        },
+        {
+            "ward_no": 305221,
+            "ward_name": "Chokabahi",
+            "ward_id": 305221
+        },
+        {
+            "ward_no": 305220,
+            "ward_name": "Daipangpara",
+            "ward_id": 305220
+        },
+        {
+            "ward_no": 305243,
+            "ward_name": "Dalgaonkhuti",
+            "ward_id": 305243
+        },
+        {
+            "ward_no": 305196,
+            "ward_name": "Dalgaon Town",
+            "ward_id": 305196
+        },
+        {
+            "ward_no": 305237,
+            "ward_name": "Dongpara",
+            "ward_id": 305237
+        },
+        {
+            "ward_no": 305238,
+            "ward_name": "Dowarpara",
+            "ward_id": 305238
+        },
+        {
+            "ward_no": 305229,
+            "ward_name": "Gendapukhuri Jangle",
+            "ward_id": 305229
+        },
+        {
+            "ward_no": 305198,
+            "ward_name": "Gerakhat",
+            "ward_id": 305198
+        },
+        {
+            "ward_no": 305242,
+            "ward_name": "Jamalpur",
+            "ward_id": 305242
+        },
+        {
+            "ward_no": 305246,
+            "ward_name": "Kahibari",
+            "ward_id": 305246
+        },
+        {
+            "ward_no": 305241,
+            "ward_name": "Kakal Bhangi Jogi Gaon",
+            "ward_id": 305241
+        },
+        {
+            "ward_no": 305218,
+            "ward_name": "Khoirakata (Khirakata)",
+            "ward_id": 305218
+        },
+        {
+            "ward_no": 305207,
+            "ward_name": "Madhabgohain Grant",
+            "ward_id": 305207
+        },
+        {
+            "ward_no": 305225,
+            "ward_name": "Madhupur",
+            "ward_id": 305225
+        },
+        {
+            "ward_no": 305247,
+            "ward_name": "Mazgaon No.1",
+            "ward_id": 305247
+        },
+        {
+            "ward_no": 305227,
+            "ward_name": "Nadirkash",
+            "ward_id": 305227
+        },
+        {
+            "ward_no": 305219,
+            "ward_name": "Na-Mati Gaon",
+            "ward_id": 305219
+        },
+        {
+            "ward_no": 305321,
+            "ward_name": "Nanglichar N.C.",
+            "ward_id": 305321
+        },
+        {
+            "ward_no": 305232,
+            "ward_name": "Nawgaon",
+            "ward_id": 305232
+        },
+        {
+            "ward_no": 305199,
+            "ward_name": "Niz Dalgaon",
+            "ward_id": 305199
+        },
+        {
+            "ward_no": 305213,
+            "ward_name": "No.1 Barjhar",
+            "ward_id": 305213
+        },
+        {
+            "ward_no": 305200,
+            "ward_name": "No.1 Borgara Khuti",
+            "ward_id": 305200
+        },
+        {
+            "ward_no": 305206,
+            "ward_name": "No.1 Chikonmati",
+            "ward_id": 305206
+        },
+        {
+            "ward_no": 305214,
+            "ward_name": "No.1 Durangbazar",
+            "ward_id": 305214
+        },
+        {
+            "ward_no": 305212,
+            "ward_name": "No.2 Barjhar",
+            "ward_id": 305212
+        },
+        {
+            "ward_no": 305201,
+            "ward_name": "No.2 Borgara Khuti",
+            "ward_id": 305201
+        },
+        {
+            "ward_no": 305248,
+            "ward_name": "No.2 Chikonmati",
+            "ward_id": 305248
+        },
+        {
+            "ward_no": 305215,
+            "ward_name": "No.2 Durangbazar",
+            "ward_id": 305215
+        },
+        {
+            "ward_no": 305235,
+            "ward_name": "No.3 Baruajhar",
+            "ward_id": 305235
+        },
+        {
+            "ward_no": 305228,
+            "ward_name": "No.3 Chikonmati",
+            "ward_id": 305228
+        },
+        {
+            "ward_no": 305217,
+            "ward_name": "No.3 Durangbazar",
+            "ward_id": 305217
+        },
+        {
+            "ward_no": 305208,
+            "ward_name": "No.3 Madhabgohain",
+            "ward_id": 305208
+        },
+        {
+            "ward_no": 305236,
+            "ward_name": "No.4 Baruajhar",
+            "ward_id": 305236
+        },
+        {
+            "ward_no": 305239,
+            "ward_name": "No.5 Baruajhar",
+            "ward_id": 305239
+        },
+        {
+            "ward_no": 305211,
+            "ward_name": "Pakoribari",
+            "ward_id": 305211
+        },
+        {
+            "ward_no": 305245,
+            "ward_name": "Sarichabari",
+            "ward_id": 305245
+        },
+        {
+            "ward_no": 305249,
+            "ward_name": "Simaluguri Kachari Gaon",
+            "ward_id": 305249
+        },
+        {
+            "ward_no": 305209,
+            "ward_name": "Takimari",
+            "ward_id": 305209
+        },
+        {
+            "ward_no": 305545,
+            "ward_name": "Ai-Thanjhar",
+            "ward_id": 305545
+        },
+        {
+            "ward_no": 305549,
+            "ward_name": "Bholabari",
+            "ward_id": 305549
+        },
+        {
+            "ward_no": 305517,
+            "ward_name": "Bholabarigaon",
+            "ward_id": 305517
+        },
+        {
+            "ward_no": 305548,
+            "ward_name": "Biijulibari",
+            "ward_id": 305548
+        },
+        {
+            "ward_no": 305534,
+            "ward_name": "Bongaligaon",
+            "ward_id": 305534
+        },
+        {
+            "ward_no": 305553,
+            "ward_name": "Chengelimari",
+            "ward_id": 305553
+        },
+        {
+            "ward_no": 305542,
+            "ward_name": "Chutipara",
+            "ward_id": 305542
+        },
+        {
+            "ward_no": 305550,
+            "ward_name": "Dalakati",
+            "ward_id": 305550
+        },
+        {
+            "ward_no": 305536,
+            "ward_name": "Dalakati Jungle",
+            "ward_id": 305536
+        },
+        {
+            "ward_no": 305544,
+            "ward_name": "Deurigaon",
+            "ward_id": 305544
+        },
+        {
+            "ward_no": 305547,
+            "ward_name": "Dhupguri Barigaon",
+            "ward_id": 305547
+        },
+        {
+            "ward_no": 305535,
+            "ward_name": "Garogaon",
+            "ward_id": 305535
+        },
+        {
+            "ward_no": 305541,
+            "ward_name": "Geruah",
+            "ward_id": 305541
+        },
+        {
+            "ward_no": 305537,
+            "ward_name": "Jhargaon",
+            "ward_id": 305537
+        },
+        {
+            "ward_no": 305552,
+            "ward_name": "Karaibari",
+            "ward_id": 305552
+        },
+        {
+            "ward_no": 305799,
+            "ward_name": "Khatarbari",
+            "ward_id": 305799
+        },
+        {
+            "ward_no": 305551,
+            "ward_name": "Ladabari",
+            "ward_id": 305551
+        },
+        {
+            "ward_no": 305543,
+            "ward_name": "Mahaliapara",
+            "ward_id": 305543
+        },
+        {
+            "ward_no": 305532,
+            "ward_name": "Majorgaon No.1",
+            "ward_id": 305532
+        },
+        {
+            "ward_no": 305539,
+            "ward_name": "Nepaligaon",
+            "ward_id": 305539
+        },
+        {
+            "ward_no": 305554,
+            "ward_name": "No.1 Madhagohain",
+            "ward_id": 305554
+        },
+        {
+            "ward_no": 305555,
+            "ward_name": "No.2 Madha Gohain",
+            "ward_id": 305555
+        },
+        {
+            "ward_no": 305540,
+            "ward_name": "Sarbaherua",
+            "ward_id": 305540
+        },
+        {
+            "ward_no": 305546,
+            "ward_name": "Simaluguri",
+            "ward_id": 305546
+        },
+        {
+            "ward_no": 305538,
+            "ward_name": "Sowtalgaon",
+            "ward_id": 305538
+        }
+    ]
+}

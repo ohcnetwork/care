@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
@@ -38,6 +40,9 @@ class SignUpSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "ward",
             "local_body",
             "district",
@@ -51,6 +56,39 @@ class SignUpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data.get("password"))
         return super().create(validated_data)
+
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        if "user_type" in attrs and attrs["user_type"] == "Doctor":
+            if not attrs.get("doctor_qualification"):
+                raise serializers.ValidationError(
+                    {
+                        "doctor_qualification": "Field required for Doctor User Type",
+                    }
+                )
+
+            if not attrs.get("doctor_experience_commenced_on"):
+                raise serializers.ValidationError(
+                    {
+                        "doctor_experience_commenced_on": "Field required for Doctor User Type",
+                    }
+                )
+
+            if attrs["doctor_experience_commenced_on"] > date.today():
+                raise serializers.ValidationError(
+                    {
+                        "doctor_experience_commenced_on": "Experience cannot be in the future",
+                    }
+                )
+
+            if not attrs.get("doctor_medical_council_registration"):
+                raise serializers.ValidationError(
+                    {
+                        "doctor_medical_council_registration": "Field required for Doctor User Type",
+                    }
+                )
+
+        return validated
 
 
 class UserCreateSerializer(SignUpSerializer):
@@ -99,7 +137,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].ward
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                    >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different Ward")
         return value
@@ -110,7 +148,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                    >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError(
                 "Cannot create for a different local body"
@@ -123,7 +161,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-            >= User.TYPE_VALUE_MAP["StateAdmin"]
+                    >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different district")
         return value
@@ -157,6 +195,7 @@ class UserCreateSerializer(SignUpSerializer):
                         ]
                     }
                 )
+
         if (
             self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
             and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
@@ -245,6 +284,9 @@ class UserSerializer(SignUpSerializer):
             "last_name",
             "email",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "created_by",
             "home_facility",
             "local_body",
@@ -312,6 +354,9 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
 
 class UserAssignedSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    home_facility_object = FacilityBareMinimumSerializer(
+        source="home_facility", read_only=True
+    )
 
     class Meta:
         model = User
@@ -324,6 +369,10 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "alt_phone_number",
             "user_type",
             "last_login",
+            "home_facility_object",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
         )
 
 
@@ -349,6 +398,9 @@ class UserListSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "user_type",
+            "doctor_qualification",
+            "doctor_experience_commenced_on",
+            "doctor_medical_council_registration",
             "created_by",
             "last_login",
             "home_facility_object",

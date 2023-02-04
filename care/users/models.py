@@ -25,6 +25,13 @@ phone_number_regex = RegexValidator(
     code="invalid_mobile",
 )
 
+phone_number_regex_11 = RegexValidator(
+    # allow 10 to 11 digit mobile numbers if the first 4 digits are 1800
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}|1800\d{6,7}$",
+    message="Please Enter 10/11 digit mobile/landline/tollfree number",
+    code="invalid_mobile",
+)
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
@@ -125,6 +132,9 @@ class CustomUserManager(UserManager):
         return qs.filter(deleted=False, is_active=True).select_related(
             "local_body", "district", "state"
         )
+
+    def get_entire_queryset(self):
+        return super().get_queryset().select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
         district = District.objects.all()[0]
@@ -227,6 +237,23 @@ class User(AbstractUser):
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
+
+    doctor_qualification = models.TextField(
+        blank=False,
+        null=True,
+    )
+    doctor_experience_commenced_on = models.DateField(
+        default=None,
+        blank=False,
+        null=True,
+    )
+    doctor_medical_council_registration = models.CharField(
+        max_length=255,
+        default=None,
+        blank=False,
+        null=True,
+    )
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -309,6 +336,10 @@ class User(AbstractUser):
     @staticmethod
     def has_add_user_permission(request):
         return request.user.is_superuser or request.user.verified
+
+    @staticmethod
+    def check_username_exists(username):
+        return User.objects.get_entire_queryset().filter(username=username).exists()
 
     def delete(self, *args, **kwargs):
         self.deleted = True

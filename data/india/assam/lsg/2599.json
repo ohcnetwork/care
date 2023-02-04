@@ -1,0 +1,304 @@
+{
+    "name": "Bezera",
+    "lsg_code": 2599,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 59,
+    "wards": [
+        {
+            "ward_no": 303611,
+            "ward_name": "2 No. Hojobari",
+            "ward_id": 303611
+        },
+        {
+            "ward_no": 303394,
+            "ward_name": "Abhaypur",
+            "ward_id": 303394
+        },
+        {
+            "ward_no": 302551,
+            "ward_name": "Agdola",
+            "ward_id": 302551
+        },
+        {
+            "ward_no": 303424,
+            "ward_name": "Agyathuri",
+            "ward_id": 303424
+        },
+        {
+            "ward_no": 302552,
+            "ward_name": "Alipub",
+            "ward_id": 302552
+        },
+        {
+            "ward_no": 302563,
+            "ward_name": "Alta",
+            "ward_id": 302563
+        },
+        {
+            "ward_no": 303429,
+            "ward_name": "Amin Gaon (Ct)",
+            "ward_id": 303429
+        },
+        {
+            "ward_no": 303364,
+            "ward_name": "Athiabai",
+            "ward_id": 303364
+        },
+        {
+            "ward_no": 303366,
+            "ward_name": "Balaibill",
+            "ward_id": 303366
+        },
+        {
+            "ward_no": 302557,
+            "ward_name": "Bamuni Gaon",
+            "ward_id": 302557
+        },
+        {
+            "ward_no": 303379,
+            "ward_name": "Bamuni Gaon",
+            "ward_id": 303379
+        },
+        {
+            "ward_no": 303367,
+            "ward_name": "Barchandra",
+            "ward_id": 303367
+        },
+        {
+            "ward_no": 303368,
+            "ward_name": "Barchandra Grant",
+            "ward_id": 303368
+        },
+        {
+            "ward_no": 302554,
+            "ward_name": "Barmola (Bormula)",
+            "ward_id": 302554
+        },
+        {
+            "ward_no": 303372,
+            "ward_name": "Bar Nizara (Barnizara)",
+            "ward_id": 303372
+        },
+        {
+            "ward_no": 302556,
+            "ward_name": "Barpalaha",
+            "ward_id": 302556
+        },
+        {
+            "ward_no": 303375,
+            "ward_name": "Berbaka",
+            "ward_id": 303375
+        },
+        {
+            "ward_no": 302559,
+            "ward_name": "Bezera",
+            "ward_id": 302559
+        },
+        {
+            "ward_no": 302560,
+            "ward_name": "Bhomolahati",
+            "ward_id": 302560
+        },
+        {
+            "ward_no": 303365,
+            "ward_name": "Bonmaja",
+            "ward_id": 303365
+        },
+        {
+            "ward_no": 303396,
+            "ward_name": "Changsari (Ct)",
+            "ward_id": 303396
+        },
+        {
+            "ward_no": 303392,
+            "ward_name": "Dakhin Fulung",
+            "ward_id": 303392
+        },
+        {
+            "ward_no": 303374,
+            "ward_name": "Dakhin Lenga",
+            "ward_id": 303374
+        },
+        {
+            "ward_no": 302567,
+            "ward_name": "Dakshin Mandakata",
+            "ward_id": 302567
+        },
+        {
+            "ward_no": 303377,
+            "ward_name": "Dhirgheswari (Dirgeswary)",
+            "ward_id": 303377
+        },
+        {
+            "ward_no": 303381,
+            "ward_name": "Dhopatari",
+            "ward_id": 303381
+        },
+        {
+            "ward_no": 303378,
+            "ward_name": "Fulung",
+            "ward_id": 303378
+        },
+        {
+            "ward_no": 303389,
+            "ward_name": "Gauripur",
+            "ward_id": 303389
+        },
+        {
+            "ward_no": 303388,
+            "ward_name": "Ghorajan",
+            "ward_id": 303388
+        },
+        {
+            "ward_no": 302555,
+            "ward_name": "Gog",
+            "ward_id": 302555
+        },
+        {
+            "ward_no": 303397,
+            "ward_name": "Jalah (Ct)",
+            "ward_id": 303397
+        },
+        {
+            "ward_no": 303386,
+            "ward_name": "Kali Pahar",
+            "ward_id": 303386
+        },
+        {
+            "ward_no": 303385,
+            "ward_name": "Karaibari",
+            "ward_id": 303385
+        },
+        {
+            "ward_no": 302558,
+            "ward_name": "Khehenipara",
+            "ward_id": 302558
+        },
+        {
+            "ward_no": 302553,
+            "ward_name": "Khudrapalha",
+            "ward_id": 302553
+        },
+        {
+            "ward_no": 302564,
+            "ward_name": "Khudra Saraighat",
+            "ward_id": 302564
+        },
+        {
+            "ward_no": 302568,
+            "ward_name": "Kumnagar",
+            "ward_id": 302568
+        },
+        {
+            "ward_no": 303383,
+            "ward_name": "Malang",
+            "ward_id": 303383
+        },
+        {
+            "ward_no": 302569,
+            "ward_name": "Malara",
+            "ward_id": 302569
+        },
+        {
+            "ward_no": 302565,
+            "ward_name": "Mandakata",
+            "ward_id": 302565
+        },
+        {
+            "ward_no": 302570,
+            "ward_name": "Mandakata Grant",
+            "ward_id": 302570
+        },
+        {
+            "ward_no": 303369,
+            "ward_name": "Manik Nagar",
+            "ward_id": 303369
+        },
+        {
+            "ward_no": 303384,
+            "ward_name": "Niz Sundari Ghopa (Niz Sindurighopa)",
+            "ward_id": 303384
+        },
+        {
+            "ward_no": 303395,
+            "ward_name": "Numalijalah (Part)",
+            "ward_id": 303395
+        },
+        {
+            "ward_no": 303428,
+            "ward_name": "Numalijalah (Part)",
+            "ward_id": 303428
+        },
+        {
+            "ward_no": 303390,
+            "ward_name": "Rangmahal",
+            "ward_id": 303390
+        },
+        {
+            "ward_no": 303393,
+            "ward_name": "Rudreswar",
+            "ward_id": 303393
+        },
+        {
+            "ward_no": 302562,
+            "ward_name": "Saraighat Salmara",
+            "ward_id": 302562
+        },
+        {
+            "ward_no": 303376,
+            "ward_name": "Sarubaka",
+            "ward_id": 303376
+        },
+        {
+            "ward_no": 303371,
+            "ward_name": "Satgaon",
+            "ward_id": 303371
+        },
+        {
+            "ward_no": 303370,
+            "ward_name": "Satgaon Grant",
+            "ward_id": 303370
+        },
+        {
+            "ward_no": 303380,
+            "ward_name": "Sila",
+            "ward_id": 303380
+        },
+        {
+            "ward_no": 303427,
+            "ward_name": "Silagrant",
+            "ward_id": 303427
+        },
+        {
+            "ward_no": 303387,
+            "ward_name": "Silamahekhaity",
+            "ward_id": 303387
+        },
+        {
+            "ward_no": 303382,
+            "ward_name": "Silbharal",
+            "ward_id": 303382
+        },
+        {
+            "ward_no": 302566,
+            "ward_name": "Simelibari",
+            "ward_id": 302566
+        },
+        {
+            "ward_no": 303426,
+            "ward_name": "Tiling Gaon",
+            "ward_id": 303426
+        },
+        {
+            "ward_no": 303391,
+            "ward_name": "Uttar Fulung",
+            "ward_id": 303391
+        },
+        {
+            "ward_no": 303373,
+            "ward_name": "Uttar Lenga",
+            "ward_id": 303373
+        }
+    ]
+}

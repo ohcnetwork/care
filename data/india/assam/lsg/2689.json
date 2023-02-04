@@ -1,0 +1,624 @@
+{
+    "name": "Diyungbra",
+    "lsg_code": 2689,
+    "district": "Dima Hasao",
+    "state": "Assam",
+    "no_of_wards": 123,
+    "wards": [
+        {
+            "ward_no": 298343,
+            "ward_name": "29Th Km Kruminglangdisa",
+            "ward_id": 298343
+        },
+        {
+            "ward_no": 298268,
+            "ward_name": "Arda (Kota)",
+            "ward_id": 298268
+        },
+        {
+            "ward_no": 298302,
+            "ward_name": "Arlangparla",
+            "ward_id": 298302
+        },
+        {
+            "ward_no": 298414,
+            "ward_name": "Baladisa",
+            "ward_id": 298414
+        },
+        {
+            "ward_no": 298293,
+            "ward_name": "Baraima",
+            "ward_id": 298293
+        },
+        {
+            "ward_no": 298306,
+            "ward_name": "Batohaja",
+            "ward_id": 298306
+        },
+        {
+            "ward_no": 298249,
+            "ward_name": "Bonglangbra",
+            "ward_id": 298249
+        },
+        {
+            "ward_no": 298265,
+            "ward_name": "Boro Langfer",
+            "ward_id": 298265
+        },
+        {
+            "ward_no": 298244,
+            "ward_name": "Boro Langherang (Boro Lang Kla",
+            "ward_id": 298244
+        },
+        {
+            "ward_no": 298230,
+            "ward_name": "Boro Langkham (Boro Langkiam)",
+            "ward_id": 298230
+        },
+        {
+            "ward_no": 298236,
+            "ward_name": "Boro Longku",
+            "ward_id": 298236
+        },
+        {
+            "ward_no": 298240,
+            "ward_name": "Boro Tungherang",
+            "ward_id": 298240
+        },
+        {
+            "ward_no": 298285,
+            "ward_name": "Boro Washiling",
+            "ward_id": 298285
+        },
+        {
+            "ward_no": 298245,
+            "ward_name": "Choto Langherang",
+            "ward_id": 298245
+        },
+        {
+            "ward_no": 298357,
+            "ward_name": "Choto Lanku",
+            "ward_id": 298357
+        },
+        {
+            "ward_no": 298235,
+            "ward_name": "Choto Longfer",
+            "ward_id": 298235
+        },
+        {
+            "ward_no": 298234,
+            "ward_name": "Choto Longklam",
+            "ward_id": 298234
+        },
+        {
+            "ward_no": 298364,
+            "ward_name": "Choto Tungkrang",
+            "ward_id": 298364
+        },
+        {
+            "ward_no": 298267,
+            "ward_name": "Choto Washiling I",
+            "ward_id": 298267
+        },
+        {
+            "ward_no": 298271,
+            "ward_name": "Choto Washiling Ii",
+            "ward_id": 298271
+        },
+        {
+            "ward_no": 298274,
+            "ward_name": "Choto Washiling Iii",
+            "ward_id": 298274
+        },
+        {
+            "ward_no": 298390,
+            "ward_name": "Daodipdisa",
+            "ward_id": 298390
+        },
+        {
+            "ward_no": 298332,
+            "ward_name": "Daodungkhar",
+            "ward_id": 298332
+        },
+        {
+            "ward_no": 298266,
+            "ward_name": "Desmahaidi",
+            "ward_id": 298266
+        },
+        {
+            "ward_no": 298374,
+            "ward_name": "Didarbi",
+            "ward_id": 298374
+        },
+        {
+            "ward_no": 298307,
+            "ward_name": "Digandu I",
+            "ward_id": 298307
+        },
+        {
+            "ward_no": 298300,
+            "ward_name": "Digandu Ii",
+            "ward_id": 298300
+        },
+        {
+            "ward_no": 298301,
+            "ward_name": "Digandu Iii",
+            "ward_id": 298301
+        },
+        {
+            "ward_no": 298305,
+            "ward_name": "Digandu Iv",
+            "ward_id": 298305
+        },
+        {
+            "ward_no": 298408,
+            "ward_name": "Digandu V",
+            "ward_id": 298408
+        },
+        {
+            "ward_no": 298243,
+            "ward_name": "Digremdisa (Dikhangdisa)",
+            "ward_id": 298243
+        },
+        {
+            "ward_no": 298711,
+            "ward_name": "Diklimdaopar",
+            "ward_id": 298711
+        },
+        {
+            "ward_no": 298239,
+            "ward_name": "Dikrabi",
+            "ward_id": 298239
+        },
+        {
+            "ward_no": 298287,
+            "ward_name": "Dikrengalao Ii",
+            "ward_id": 298287
+        },
+        {
+            "ward_no": 298269,
+            "ward_name": "Dikrenggalao I",
+            "ward_id": 298269
+        },
+        {
+            "ward_no": 298223,
+            "ward_name": "Dimadaowapu",
+            "ward_id": 298223
+        },
+        {
+            "ward_no": 298251,
+            "ward_name": "Disabra",
+            "ward_id": 298251
+        },
+        {
+            "ward_no": 298389,
+            "ward_name": "Disamto",
+            "ward_id": 298389
+        },
+        {
+            "ward_no": 298275,
+            "ward_name": "Dismao I",
+            "ward_id": 298275
+        },
+        {
+            "ward_no": 298272,
+            "ward_name": "Dismao Ii",
+            "ward_id": 298272
+        },
+        {
+            "ward_no": 298334,
+            "ward_name": "Dithur Hapila",
+            "ward_id": 298334
+        },
+        {
+            "ward_no": 298396,
+            "ward_name": "Dithur Tea Garden",
+            "ward_id": 298396
+        },
+        {
+            "ward_no": 298294,
+            "ward_name": "Diyungbra Gorjee Laskar",
+            "ward_id": 298294
+        },
+        {
+            "ward_no": 298325,
+            "ward_name": "Diyungjaso (Diyangdao Jao)",
+            "ward_id": 298325
+        },
+        {
+            "ward_no": 298277,
+            "ward_name": "Gereba",
+            "ward_id": 298277
+        },
+        {
+            "ward_no": 298713,
+            "ward_name": "Grayung",
+            "ward_id": 298713
+        },
+        {
+            "ward_no": 298335,
+            "ward_name": "Grayung-Ii",
+            "ward_id": 298335
+        },
+        {
+            "ward_no": 298282,
+            "ward_name": "Hajwari",
+            "ward_id": 298282
+        },
+        {
+            "ward_no": 298412,
+            "ward_name": "Hanjanglangso",
+            "ward_id": 298412
+        },
+        {
+            "ward_no": 298304,
+            "ward_name": "Harmudisa",
+            "ward_id": 298304
+        },
+        {
+            "ward_no": 298276,
+            "ward_name": "Jangpang Langso",
+            "ward_id": 298276
+        },
+        {
+            "ward_no": 298322,
+            "ward_name": "Jarmadisa",
+            "ward_id": 298322
+        },
+        {
+            "ward_no": 298326,
+            "ward_name": "Jongsherhadi",
+            "ward_id": 298326
+        },
+        {
+            "ward_no": 298295,
+            "ward_name": "Kailadisa",
+            "ward_id": 298295
+        },
+        {
+            "ward_no": 298321,
+            "ward_name": "Kalnala Kachari",
+            "ward_id": 298321
+        },
+        {
+            "ward_no": 298315,
+            "ward_name": "Kelempu",
+            "ward_id": 298315
+        },
+        {
+            "ward_no": 298316,
+            "ward_name": "Kimthao",
+            "ward_id": 298316
+        },
+        {
+            "ward_no": 298242,
+            "ward_name": "Kokdalangso (Kokdanglangso)",
+            "ward_id": 298242
+        },
+        {
+            "ward_no": 298329,
+            "ward_name": "Kungkruwari (Kungkswari)",
+            "ward_id": 298329
+        },
+        {
+            "ward_no": 298231,
+            "ward_name": "Langdisa",
+            "ward_id": 298231
+        },
+        {
+            "ward_no": 298296,
+            "ward_name": "Langphermukh",
+            "ward_id": 298296
+        },
+        {
+            "ward_no": 298270,
+            "ward_name": "Langri",
+            "ward_id": 298270
+        },
+        {
+            "ward_no": 298248,
+            "ward_name": "Lanku",
+            "ward_id": 298248
+        },
+        {
+            "ward_no": 298410,
+            "ward_name": "Laosadisa",
+            "ward_id": 298410
+        },
+        {
+            "ward_no": 298279,
+            "ward_name": "Larbo",
+            "ward_id": 298279
+        },
+        {
+            "ward_no": 298218,
+            "ward_name": "Longdenkro (Longdreng Krow)",
+            "ward_id": 298218
+        },
+        {
+            "ward_no": 298238,
+            "ward_name": "Longjin",
+            "ward_id": 298238
+        },
+        {
+            "ward_no": 298232,
+            "ward_name": "Longkula",
+            "ward_id": 298232
+        },
+        {
+            "ward_no": 298252,
+            "ward_name": "Longkupur",
+            "ward_id": 298252
+        },
+        {
+            "ward_no": 298256,
+            "ward_name": "Longplaidisa",
+            "ward_id": 298256
+        },
+        {
+            "ward_no": 298286,
+            "ward_name": "Longrimukh",
+            "ward_id": 298286
+        },
+        {
+            "ward_no": 298257,
+            "ward_name": "Longsomepi",
+            "ward_id": 298257
+        },
+        {
+            "ward_no": 298351,
+            "ward_name": "Longyendisa",
+            "ward_id": 298351
+        },
+        {
+            "ward_no": 298262,
+            "ward_name": "Lurulangso",
+            "ward_id": 298262
+        },
+        {
+            "ward_no": 298413,
+            "ward_name": "Mahurbra",
+            "ward_id": 298413
+        },
+        {
+            "ward_no": 298333,
+            "ward_name": "Majowari",
+            "ward_id": 298333
+        },
+        {
+            "ward_no": 298314,
+            "ward_name": "Mandayunghadi",
+            "ward_id": 298314
+        },
+        {
+            "ward_no": 298323,
+            "ward_name": "Mangadi Hower",
+            "ward_id": 298323
+        },
+        {
+            "ward_no": 298297,
+            "ward_name": "Monbn Nepali",
+            "ward_id": 298297
+        },
+        {
+            "ward_no": 298246,
+            "ward_name": "Mungele",
+            "ward_id": 298246
+        },
+        {
+            "ward_no": 298254,
+            "ward_name": "Mungloi Phonglo",
+            "ward_id": 298254
+        },
+        {
+            "ward_no": 298255,
+            "ward_name": "Nabdi Hower",
+            "ward_id": 298255
+        },
+        {
+            "ward_no": 298261,
+            "ward_name": "Nabdi Langayen",
+            "ward_id": 298261
+        },
+        {
+            "ward_no": 298253,
+            "ward_name": "Nabdi Longukro",
+            "ward_id": 298253
+        },
+        {
+            "ward_no": 298289,
+            "ward_name": "Namawari",
+            "ward_id": 298289
+        },
+        {
+            "ward_no": 298331,
+            "ward_name": "Nasingwari (Narsing Wari )",
+            "ward_id": 298331
+        },
+        {
+            "ward_no": 298278,
+            "ward_name": "Natun Gera (New Gera)",
+            "ward_id": 298278
+        },
+        {
+            "ward_no": 298299,
+            "ward_name": "Nayapur",
+            "ward_id": 298299
+        },
+        {
+            "ward_no": 298281,
+            "ward_name": "Ningthenglangso",
+            "ward_id": 298281
+        },
+        {
+            "ward_no": 298373,
+            "ward_name": "N. Kungkruwari",
+            "ward_id": 298373
+        },
+        {
+            "ward_no": 298233,
+            "ward_name": "Nuthenlangso (Natun Langso)",
+            "ward_id": 298233
+        },
+        {
+            "ward_no": 298228,
+            "ward_name": "Paklangso I",
+            "ward_id": 298228
+        },
+        {
+            "ward_no": 298229,
+            "ward_name": "Paklangso Ii",
+            "ward_id": 298229
+        },
+        {
+            "ward_no": 298319,
+            "ward_name": "Panimur",
+            "ward_id": 298319
+        },
+        {
+            "ward_no": 298324,
+            "ward_name": "Phalai Pahadi",
+            "ward_id": 298324
+        },
+        {
+            "ward_no": 298288,
+            "ward_name": "Phanglangso",
+            "ward_id": 298288
+        },
+        {
+            "ward_no": 298291,
+            "ward_name": "Phonglodisa",
+            "ward_id": 298291
+        },
+        {
+            "ward_no": 298317,
+            "ward_name": "Prapdisa",
+            "ward_id": 298317
+        },
+        {
+            "ward_no": 298284,
+            "ward_name": "Purana Langri Ii",
+            "ward_id": 298284
+        },
+        {
+            "ward_no": 298303,
+            "ward_name": "Raijaodisa (Raijao)",
+            "ward_id": 298303
+        },
+        {
+            "ward_no": 298280,
+            "ward_name": "Railinghadi",
+            "ward_id": 298280
+        },
+        {
+            "ward_no": 298318,
+            "ward_name": "Rajbari",
+            "ward_id": 298318
+        },
+        {
+            "ward_no": 298900,
+            "ward_name": "Ranghangdisa-Ii",
+            "ward_id": 298900
+        },
+        {
+            "ward_no": 298411,
+            "ward_name": "Rongkelan",
+            "ward_id": 298411
+        },
+        {
+            "ward_no": 298371,
+            "ward_name": "Rongkhola",
+            "ward_id": 298371
+        },
+        {
+            "ward_no": 298712,
+            "ward_name": "Rongpongdisa",
+            "ward_id": 298712
+        },
+        {
+            "ward_no": 298258,
+            "ward_name": "Sainilangso",
+            "ward_id": 298258
+        },
+        {
+            "ward_no": 298298,
+            "ward_name": "Simbao",
+            "ward_id": 298298
+        },
+        {
+            "ward_no": 298409,
+            "ward_name": "Snemblinghadi",
+            "ward_id": 298409
+        },
+        {
+            "ward_no": 298227,
+            "ward_name": "Surangdisa",
+            "ward_id": 298227
+        },
+        {
+            "ward_no": 298308,
+            "ward_name": "Tara Abi",
+            "ward_id": 298308
+        },
+        {
+            "ward_no": 298260,
+            "ward_name": "Taralangso",
+            "ward_id": 298260
+        },
+        {
+            "ward_no": 298264,
+            "ward_name": "Teranglangso",
+            "ward_id": 298264
+        },
+        {
+            "ward_no": 298290,
+            "ward_name": "Thadikreng",
+            "ward_id": 298290
+        },
+        {
+            "ward_no": 298383,
+            "ward_name": "Thaosenpur",
+            "ward_id": 298383
+        },
+        {
+            "ward_no": 298292,
+            "ward_name": "Tharvethepo",
+            "ward_id": 298292
+        },
+        {
+            "ward_no": 298259,
+            "ward_name": "Tortelangso",
+            "ward_id": 298259
+        },
+        {
+            "ward_no": 298355,
+            "ward_name": "Wari Diplai",
+            "ward_id": 298355
+        },
+        {
+            "ward_no": 298263,
+            "ward_name": "Wari Haplai",
+            "ward_id": 298263
+        },
+        {
+            "ward_no": 298386,
+            "ward_name": "Wari Lampu",
+            "ward_id": 298386
+        },
+        {
+            "ward_no": 298273,
+            "ward_name": "Washaikong",
+            "ward_id": 298273
+        },
+        {
+            "ward_no": 298283,
+            "ward_name": "Wasubil",
+            "ward_id": 298283
+        },
+        {
+            "ward_no": 298247,
+            "ward_name": "Waterdisa",
+            "ward_id": 298247
+        }
+    ]
+}

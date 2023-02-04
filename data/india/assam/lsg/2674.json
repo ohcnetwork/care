@@ -1,0 +1,219 @@
+{
+    "name": "Rupahi",
+    "lsg_code": 2674,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 42,
+    "wards": [
+        {
+            "ward_no": 284546,
+            "ward_name": "Barpaka",
+            "ward_id": 284546
+        },
+        {
+            "ward_no": 284550,
+            "ward_name": "Barpeta",
+            "ward_id": 284550
+        },
+        {
+            "ward_no": 284346,
+            "ward_name": "Batamari",
+            "ward_id": 284346
+        },
+        {
+            "ward_no": 284341,
+            "ward_name": "Belaguri Kachari Gaon",
+            "ward_id": 284341
+        },
+        {
+            "ward_no": 284347,
+            "ward_name": "Borghat",
+            "ward_id": 284347
+        },
+        {
+            "ward_no": 284545,
+            "ward_name": "Dakhin Khatowal",
+            "ward_id": 284545
+        },
+        {
+            "ward_no": 284548,
+            "ward_name": "Dighali",
+            "ward_id": 284548
+        },
+        {
+            "ward_no": 284552,
+            "ward_name": "Fakali",
+            "ward_id": 284552
+        },
+        {
+            "ward_no": 284340,
+            "ward_name": "Gatanga",
+            "ward_id": 284340
+        },
+        {
+            "ward_no": 284544,
+            "ward_name": "Gehua Chalchali",
+            "ward_id": 284544
+        },
+        {
+            "ward_no": 284344,
+            "ward_name": "Gereki",
+            "ward_id": 284344
+        },
+        {
+            "ward_no": 284357,
+            "ward_name": "Gerua Ati",
+            "ward_id": 284357
+        },
+        {
+            "ward_no": 284541,
+            "ward_name": "Gorajan",
+            "ward_id": 284541
+        },
+        {
+            "ward_no": 284348,
+            "ward_name": "Gorematikhowa",
+            "ward_id": 284348
+        },
+        {
+            "ward_no": 284351,
+            "ward_name": "Halowa Gaon",
+            "ward_id": 284351
+        },
+        {
+            "ward_no": 284549,
+            "ward_name": "Hathi Para (Pathipara)",
+            "ward_id": 284549
+        },
+        {
+            "ward_no": 284538,
+            "ward_name": "Hathi Pukhuri",
+            "ward_id": 284538
+        },
+        {
+            "ward_no": 284354,
+            "ward_name": "Jarthani (Jarkhani)",
+            "ward_id": 284354
+        },
+        {
+            "ward_no": 284355,
+            "ward_name": "Jiewmari",
+            "ward_id": 284355
+        },
+        {
+            "ward_no": 284539,
+            "ward_name": "Kanchanpur",
+            "ward_id": 284539
+        },
+        {
+            "ward_no": 284547,
+            "ward_name": "Kandhuli Mari",
+            "ward_id": 284547
+        },
+        {
+            "ward_no": 284353,
+            "ward_name": "Khanatup",
+            "ward_id": 284353
+        },
+        {
+            "ward_no": 284543,
+            "ward_name": "Koach Gaon",
+            "ward_id": 284543
+        },
+        {
+            "ward_no": 284350,
+            "ward_name": "Kumar Gaon",
+            "ward_id": 284350
+        },
+        {
+            "ward_no": 284339,
+            "ward_name": "Laogaon",
+            "ward_id": 284339
+        },
+        {
+            "ward_no": 284349,
+            "ward_name": "Latabowa",
+            "ward_id": 284349
+        },
+        {
+            "ward_no": 284540,
+            "ward_name": "Nanal Dowa",
+            "ward_id": 284540
+        },
+        {
+            "ward_no": 284542,
+            "ward_name": "Niz Saidaria",
+            "ward_id": 284542
+        },
+        {
+            "ward_no": 284342,
+            "ward_name": "Owana",
+            "ward_id": 284342
+        },
+        {
+            "ward_no": 284535,
+            "ward_name": "Pachim Amrakanda",
+            "ward_id": 284535
+        },
+        {
+            "ward_no": 284532,
+            "ward_name": "Pachim Photaljar",
+            "ward_id": 284532
+        },
+        {
+            "ward_no": 284534,
+            "ward_name": "Pub-Amrakanda",
+            "ward_id": 284534
+        },
+        {
+            "ward_no": 284533,
+            "ward_name": "Pub-Photaljar",
+            "ward_id": 284533
+        },
+        {
+            "ward_no": 284553,
+            "ward_name": "Puthikhaity",
+            "ward_id": 284553
+        },
+        {
+            "ward_no": 284551,
+            "ward_name": "Rawmari",
+            "ward_id": 284551
+        },
+        {
+            "ward_no": 284343,
+            "ward_name": "Rupahi Bhakat Gaon",
+            "ward_id": 284343
+        },
+        {
+            "ward_no": 284490,
+            "ward_name": "Rupahi Town (Ct)",
+            "ward_id": 284490
+        },
+        {
+            "ward_no": 284358,
+            "ward_name": "Sapat Kara",
+            "ward_id": 284358
+        },
+        {
+            "ward_no": 284345,
+            "ward_name": "Tamalitup",
+            "ward_id": 284345
+        },
+        {
+            "ward_no": 284536,
+            "ward_name": "Telia Chapori Toop",
+            "ward_id": 284536
+        },
+        {
+            "ward_no": 284356,
+            "ward_name": "Telia Sapari",
+            "ward_id": 284356
+        },
+        {
+            "ward_no": 284537,
+            "ward_name": "Uttar Khatowal",
+            "ward_id": 284537
+        }
+    ]
+}

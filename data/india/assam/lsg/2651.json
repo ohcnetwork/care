@@ -1,0 +1,139 @@
+{
+    "name": "Dolongghat (Part)",
+    "lsg_code": 2651,
+    "district": "Marigaon",
+    "state": "Assam",
+    "no_of_wards": 26,
+    "wards": [
+        {
+            "ward_no": 284069,
+            "ward_name": "Bamun Bori",
+            "ward_id": 284069
+        },
+        {
+            "ward_no": 284057,
+            "ward_name": "Bar Hulung",
+            "ward_id": 284057
+        },
+        {
+            "ward_no": 284061,
+            "ward_name": "Bar Manipur",
+            "ward_id": 284061
+        },
+        {
+            "ward_no": 284056,
+            "ward_name": "Barsila",
+            "ward_id": 284056
+        },
+        {
+            "ward_no": 284066,
+            "ward_name": "Bhakat Gaon",
+            "ward_id": 284066
+        },
+        {
+            "ward_no": 284048,
+            "ward_name": "Boalguri",
+            "ward_id": 284048
+        },
+        {
+            "ward_no": 284064,
+            "ward_name": "Chari Punia (Charia Punia)",
+            "ward_id": 284064
+        },
+        {
+            "ward_no": 284062,
+            "ward_name": "Chotamonipur",
+            "ward_id": 284062
+        },
+        {
+            "ward_no": 284054,
+            "ward_name": "Deora Bori (Dura Bori)",
+            "ward_id": 284054
+        },
+        {
+            "ward_no": 284063,
+            "ward_name": "Etakali Sabukdhara",
+            "ward_id": 284063
+        },
+        {
+            "ward_no": 284049,
+            "ward_name": "Ga-Khajua",
+            "ward_id": 284049
+        },
+        {
+            "ward_no": 284065,
+            "ward_name": "Ghumati Gaon",
+            "ward_id": 284065
+        },
+        {
+            "ward_no": 284051,
+            "ward_name": "Haladhi Ati",
+            "ward_id": 284051
+        },
+        {
+            "ward_no": 284052,
+            "ward_name": "Kahua Ati",
+            "ward_id": 284052
+        },
+        {
+            "ward_no": 284072,
+            "ward_name": "Kapahera",
+            "ward_id": 284072
+        },
+        {
+            "ward_no": 284067,
+            "ward_name": "Kasai Bori",
+            "ward_id": 284067
+        },
+        {
+            "ward_no": 284053,
+            "ward_name": "Khalapia",
+            "ward_id": 284053
+        },
+        {
+            "ward_no": 284047,
+            "ward_name": "Kuji Satra",
+            "ward_id": 284047
+        },
+        {
+            "ward_no": 284060,
+            "ward_name": "Mulan Kamura",
+            "ward_id": 284060
+        },
+        {
+            "ward_no": 284068,
+            "ward_name": "Paghali",
+            "ward_id": 284068
+        },
+        {
+            "ward_no": 284071,
+            "ward_name": "Palahguri",
+            "ward_id": 284071
+        },
+        {
+            "ward_no": 284055,
+            "ward_name": "Parali Guri",
+            "ward_id": 284055
+        },
+        {
+            "ward_no": 284059,
+            "ward_name": "Pub Borigaon",
+            "ward_id": 284059
+        },
+        {
+            "ward_no": 283842,
+            "ward_name": "Simaluguri",
+            "ward_id": 283842
+        },
+        {
+            "ward_no": 284070,
+            "ward_name": "Sonaruguri",
+            "ward_id": 284070
+        },
+        {
+            "ward_no": 284058,
+            "ward_name": "Tup Gaon",
+            "ward_id": 284058
+        }
+    ]
+}

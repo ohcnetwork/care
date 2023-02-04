@@ -1,0 +1,159 @@
+{
+    "name": "South Salmara",
+    "lsg_code": 2562,
+    "district": "Dhubri",
+    "state": "Assam",
+    "no_of_wards": 30,
+    "wards": [
+        {
+            "ward_no": 281589,
+            "ward_name": "Baladmara (Fakirganga)",
+            "ward_id": 281589
+        },
+        {
+            "ward_no": 281580,
+            "ward_name": "Baladmara (Joypur)",
+            "ward_id": 281580
+        },
+        {
+            "ward_no": 281581,
+            "ward_name": "Bamunirpar",
+            "ward_id": 281581
+        },
+        {
+            "ward_no": 281592,
+            "ward_name": "Baushkata Pt.I",
+            "ward_id": 281592
+        },
+        {
+            "ward_no": 281593,
+            "ward_name": "Baushkata Pt.Ii",
+            "ward_id": 281593
+        },
+        {
+            "ward_no": 281594,
+            "ward_name": "Baushkata Pt.Iii",
+            "ward_id": 281594
+        },
+        {
+            "ward_no": 281595,
+            "ward_name": "Baushkata Pt.Iv",
+            "ward_id": 281595
+        },
+        {
+            "ward_no": 281596,
+            "ward_name": "Baushkata Pt.V",
+            "ward_id": 281596
+        },
+        {
+            "ward_no": 281597,
+            "ward_name": "Baushkata Pt.Vi",
+            "ward_id": 281597
+        },
+        {
+            "ward_no": 281598,
+            "ward_name": "Baushkata Pt. Vii",
+            "ward_id": 281598
+        },
+        {
+            "ward_no": 281587,
+            "ward_name": "Bhakuamari",
+            "ward_id": 281587
+        },
+        {
+            "ward_no": 281607,
+            "ward_name": "Borokalia Chatlarpur",
+            "ward_id": 281607
+        },
+        {
+            "ward_no": 281606,
+            "ward_name": "Borokalia Goladegi",
+            "ward_id": 281606
+        },
+        {
+            "ward_no": 281604,
+            "ward_name": "Borokalia Nashkara",
+            "ward_id": 281604
+        },
+        {
+            "ward_no": 281588,
+            "ward_name": "Borokalia Pt.I",
+            "ward_id": 281588
+        },
+        {
+            "ward_no": 281599,
+            "ward_name": "Borokalia Pt.Ii",
+            "ward_id": 281599
+        },
+        {
+            "ward_no": 281605,
+            "ward_name": "Borokalia Sharsho",
+            "ward_id": 281605
+        },
+        {
+            "ward_no": 281608,
+            "ward_name": "Borokalia Surjyamara",
+            "ward_id": 281608
+        },
+        {
+            "ward_no": 281609,
+            "ward_name": "Bororavatary Pt.I",
+            "ward_id": 281609
+        },
+        {
+            "ward_no": 281610,
+            "ward_name": "Bororavatary Pt.Ii",
+            "ward_id": 281610
+        },
+        {
+            "ward_no": 281603,
+            "ward_name": "Charia Gram",
+            "ward_id": 281603
+        },
+        {
+            "ward_no": 281584,
+            "ward_name": "Chotokalia Pt.I",
+            "ward_id": 281584
+        },
+        {
+            "ward_no": 281585,
+            "ward_name": "Chotokalia Pt.Ii",
+            "ward_id": 281585
+        },
+        {
+            "ward_no": 281586,
+            "ward_name": "Chotokalia Pt.Iii",
+            "ward_id": 281586
+        },
+        {
+            "ward_no": 281582,
+            "ward_name": "Ghagmari Pt.I (Bhegmari Pt..I)",
+            "ward_id": 281582
+        },
+        {
+            "ward_no": 281583,
+            "ward_name": "Ghagmari Pt.Ii (Bhegmari Pt.Ii)",
+            "ward_id": 281583
+        },
+        {
+            "ward_no": 281591,
+            "ward_name": "Mairakuchi Pt.Ii",
+            "ward_id": 281591
+        },
+        {
+            "ward_no": 281576,
+            "ward_name": "Payastechar",
+            "ward_id": 281576
+        },
+        {
+            "ward_no": 281600,
+            "ward_name": "Soto Ravatary",
+            "ward_id": 281600
+        },
+        {
+            "ward_no": 281590,
+            "ward_name": "Sunderpara Pt.Iv",
+            "ward_id": 281590
+        }
+    ]
+}

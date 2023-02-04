@@ -1,0 +1,289 @@
+{
+    "name": "Manikpur Part",
+    "lsg_code": 7151,
+    "district": "Chirang",
+    "state": "Assam",
+    "no_of_wards": 56,
+    "wards": [
+        {
+            "ward_no": 302298,
+            "ward_name": "Amguri",
+            "ward_id": 302298
+        },
+        {
+            "ward_no": 302256,
+            "ward_name": "Baghmara",
+            "ward_id": 302256
+        },
+        {
+            "ward_no": 302264,
+            "ward_name": "Bangaljhora",
+            "ward_id": 302264
+        },
+        {
+            "ward_no": 302267,
+            "ward_name": "Barlesiagaon",
+            "ward_id": 302267
+        },
+        {
+            "ward_no": 302270,
+            "ward_name": "Batabari",
+            "ward_id": 302270
+        },
+        {
+            "ward_no": 302285,
+            "ward_name": "Bedlangkhaity",
+            "ward_id": 302285
+        },
+        {
+            "ward_no": 302265,
+            "ward_name": "Bhatipara (Lasatipara)",
+            "ward_id": 302265
+        },
+        {
+            "ward_no": 302269,
+            "ward_name": "Bhetagaon No. 1",
+            "ward_id": 302269
+        },
+        {
+            "ward_no": 302273,
+            "ward_name": "Bhetagaon No.2",
+            "ward_id": 302273
+        },
+        {
+            "ward_no": 302294,
+            "ward_name": "Bijni Gaon",
+            "ward_id": 302294
+        },
+        {
+            "ward_no": 302262,
+            "ward_name": "Bishdoba",
+            "ward_id": 302262
+        },
+        {
+            "ward_no": 302232,
+            "ward_name": "Boupara",
+            "ward_id": 302232
+        },
+        {
+            "ward_no": 302279,
+            "ward_name": "Charagaon No.1",
+            "ward_id": 302279
+        },
+        {
+            "ward_no": 302278,
+            "ward_name": "Charagaon No.2",
+            "ward_id": 302278
+        },
+        {
+            "ward_no": 302250,
+            "ward_name": "Charapet No.1",
+            "ward_id": 302250
+        },
+        {
+            "ward_no": 302251,
+            "ward_name": "Charapet No.2",
+            "ward_id": 302251
+        },
+        {
+            "ward_no": 302275,
+            "ward_name": "Chatianguri No. 1",
+            "ward_id": 302275
+        },
+        {
+            "ward_no": 302274,
+            "ward_name": "Chatianguri No.2",
+            "ward_id": 302274
+        },
+        {
+            "ward_no": 302300,
+            "ward_name": "Chatrasing",
+            "ward_id": 302300
+        },
+        {
+            "ward_no": 302268,
+            "ward_name": "Choto-Lawgong No. 1",
+            "ward_id": 302268
+        },
+        {
+            "ward_no": 302276,
+            "ward_name": "Choto-Lawgong No. 2",
+            "ward_id": 302276
+        },
+        {
+            "ward_no": 302301,
+            "ward_name": "Dangaigaon",
+            "ward_id": 302301
+        },
+        {
+            "ward_no": 302283,
+            "ward_name": "Dhupguri",
+            "ward_id": 302283
+        },
+        {
+            "ward_no": 302266,
+            "ward_name": "Dongagaon No. 2",
+            "ward_id": 302266
+        },
+        {
+            "ward_no": 302271,
+            "ward_name": "Doturi",
+            "ward_id": 302271
+        },
+        {
+            "ward_no": 302297,
+            "ward_name": "Fagunagaon No. 1",
+            "ward_id": 302297
+        },
+        {
+            "ward_no": 302296,
+            "ward_name": "Fagunagaon No. 2",
+            "ward_id": 302296
+        },
+        {
+            "ward_no": 302259,
+            "ward_name": "Gargaon No.1",
+            "ward_id": 302259
+        },
+        {
+            "ward_no": 302260,
+            "ward_name": "Gargaon No.2",
+            "ward_id": 302260
+        },
+        {
+            "ward_no": 302284,
+            "ward_name": "Goroimari No. 1",
+            "ward_id": 302284
+        },
+        {
+            "ward_no": 302289,
+            "ward_name": "Goroimari No.2",
+            "ward_id": 302289
+        },
+        {
+            "ward_no": 302288,
+            "ward_name": "Goroimari No.3",
+            "ward_id": 302288
+        },
+        {
+            "ward_no": 302291,
+            "ward_name": "Hawargaon",
+            "ward_id": 302291
+        },
+        {
+            "ward_no": 302302,
+            "ward_name": "Kashdoba",
+            "ward_id": 302302
+        },
+        {
+            "ward_no": 302280,
+            "ward_name": "Kawadi Sonaikhowa No1",
+            "ward_id": 302280
+        },
+        {
+            "ward_no": 301715,
+            "ward_name": "Kawadi (Sonaikola)No.2",
+            "ward_id": 301715
+        },
+        {
+            "ward_no": 302272,
+            "ward_name": "Kawatika-1",
+            "ward_id": 302272
+        },
+        {
+            "ward_no": 302286,
+            "ward_name": "Kharija Bispani No. 2",
+            "ward_id": 302286
+        },
+        {
+            "ward_no": 302255,
+            "ward_name": "Khujurapguri",
+            "ward_id": 302255
+        },
+        {
+            "ward_no": 302261,
+            "ward_name": "Kochpara",
+            "ward_id": 302261
+        },
+        {
+            "ward_no": 302292,
+            "ward_name": "Koptuli",
+            "ward_id": 302292
+        },
+        {
+            "ward_no": 302304,
+            "ward_name": "Kumargaon",
+            "ward_id": 302304
+        },
+        {
+            "ward_no": 302258,
+            "ward_name": "Majrabari No. 1",
+            "ward_id": 302258
+        },
+        {
+            "ward_no": 302257,
+            "ward_name": "Majrabari No. 2",
+            "ward_id": 302257
+        },
+        {
+            "ward_no": 302277,
+            "ward_name": "Matiapara",
+            "ward_id": 302277
+        },
+        {
+            "ward_no": 302287,
+            "ward_name": "Monakosha No.1",
+            "ward_id": 302287
+        },
+        {
+            "ward_no": 302290,
+            "ward_name": "Monakucha No.2",
+            "ward_id": 302290
+        },
+        {
+            "ward_no": 302293,
+            "ward_name": "Moneswari",
+            "ward_id": 302293
+        },
+        {
+            "ward_no": 302303,
+            "ward_name": "Nadhiapara",
+            "ward_id": 302303
+        },
+        {
+            "ward_no": 302249,
+            "ward_name": "No.1 Bholatal",
+            "ward_id": 302249
+        },
+        {
+            "ward_no": 302248,
+            "ward_name": "No.2 Bhoiatal",
+            "ward_id": 302248
+        },
+        {
+            "ward_no": 302299,
+            "ward_name": "Sialmari",
+            "ward_id": 302299
+        },
+        {
+            "ward_no": 302252,
+            "ward_name": "Sishubari No.1",
+            "ward_id": 302252
+        },
+        {
+            "ward_no": 302253,
+            "ward_name": "Sishubari No.2",
+            "ward_id": 302253
+        },
+        {
+            "ward_no": 302254,
+            "ward_name": "Sishubari No.3",
+            "ward_id": 302254
+        },
+        {
+            "ward_no": 302295,
+            "ward_name": "Supariguri No.1",
+            "ward_id": 302295
+        }
+    ]
+}

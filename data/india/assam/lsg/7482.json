@@ -1,0 +1,139 @@
+{
+    "name": "South Salmara  Part",
+    "lsg_code": 7482,
+    "district": "South Salmara Mancachar",
+    "state": "Assam",
+    "no_of_wards": 26,
+    "wards": [
+        {
+            "ward_no": 281613,
+            "ward_name": "Baladoba",
+            "ward_id": 281613
+        },
+        {
+            "ward_no": 281644,
+            "ward_name": "Boraitari",
+            "ward_id": 281644
+        },
+        {
+            "ward_no": 281641,
+            "ward_name": "Bramputra Borabanga",
+            "ward_id": 281641
+        },
+        {
+            "ward_no": 281617,
+            "ward_name": "Chaitarchar (Basirchar)",
+            "ward_id": 281617
+        },
+        {
+            "ward_no": 281601,
+            "ward_name": "Chaitarchar Pt.I",
+            "ward_id": 281601
+        },
+        {
+            "ward_no": 281615,
+            "ward_name": "Chaitarchar Pt.Ii",
+            "ward_id": 281615
+        },
+        {
+            "ward_no": 281616,
+            "ward_name": "Chaitarchar Pt.Iii",
+            "ward_id": 281616
+        },
+        {
+            "ward_no": 281602,
+            "ward_name": "Char Bastir Char",
+            "ward_id": 281602
+        },
+        {
+            "ward_no": 281643,
+            "ward_name": "Falimari",
+            "ward_id": 281643
+        },
+        {
+            "ward_no": 281630,
+            "ward_name": "Khodaidhila",
+            "ward_id": 281630
+        },
+        {
+            "ward_no": 281628,
+            "ward_name": "Lawkhowa",
+            "ward_id": 281628
+        },
+        {
+            "ward_no": 281624,
+            "ward_name": "Monirchar",
+            "ward_id": 281624
+        },
+        {
+            "ward_no": 281627,
+            "ward_name": "Monirchar Boidergaon",
+            "ward_id": 281627
+        },
+        {
+            "ward_no": 281625,
+            "ward_name": "Monirchar Madarchar",
+            "ward_id": 281625
+        },
+        {
+            "ward_no": 281626,
+            "ward_name": "Monir Damumara",
+            "ward_id": 281626
+        },
+        {
+            "ward_no": 281631,
+            "ward_name": "Niz Monirchar",
+            "ward_id": 281631
+        },
+        {
+            "ward_no": 281621,
+            "ward_name": "Raja Bala",
+            "ward_id": 281621
+        },
+        {
+            "ward_no": 281622,
+            "ward_name": "Rajabala Bhlukmari",
+            "ward_id": 281622
+        },
+        {
+            "ward_no": 281623,
+            "ward_name": "Rajabala Tersertari",
+            "ward_id": 281623
+        },
+        {
+            "ward_no": 281614,
+            "ward_name": "Saboltari",
+            "ward_id": 281614
+        },
+        {
+            "ward_no": 281611,
+            "ward_name": "Salmara Pt.I",
+            "ward_id": 281611
+        },
+        {
+            "ward_no": 281612,
+            "ward_name": "Salmara Pt.Ii",
+            "ward_id": 281612
+        },
+        {
+            "ward_no": 281629,
+            "ward_name": "Taltari",
+            "ward_id": 281629
+        },
+        {
+            "ward_no": 281618,
+            "ward_name": "Tumni",
+            "ward_id": 281618
+        },
+        {
+            "ward_no": 281620,
+            "ward_name": "Tumni Lawkhowa",
+            "ward_id": 281620
+        },
+        {
+            "ward_no": 281619,
+            "ward_name": "Tumni Simlakandi",
+            "ward_id": 281619
+        }
+    ]
+}

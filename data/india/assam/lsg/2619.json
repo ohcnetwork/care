@@ -1,0 +1,2319 @@
+{
+    "name": "Howraghat",
+    "lsg_code": 2619,
+    "district": "Karbi Anglong",
+    "state": "Assam",
+    "no_of_wards": 462,
+    "wards": [
+        {
+            "ward_no": 296777,
+            "ward_name": "Aghuna Timung",
+            "ward_id": 296777
+        },
+        {
+            "ward_no": 297156,
+            "ward_name": "Ajut Terang",
+            "ward_id": 297156
+        },
+        {
+            "ward_no": 296969,
+            "ward_name": "Ambari Gaon",
+            "ward_id": 296969
+        },
+        {
+            "ward_no": 296994,
+            "ward_name": "Ampathar",
+            "ward_id": 296994
+        },
+        {
+            "ward_no": 296934,
+            "ward_name": "Ampukhuri",
+            "ward_id": 296934
+        },
+        {
+            "ward_no": 297685,
+            "ward_name": "Ampukhuri",
+            "ward_id": 297685
+        },
+        {
+            "ward_no": 296802,
+            "ward_name": "Ampukhuri",
+            "ward_id": 296802
+        },
+        {
+            "ward_no": 296930,
+            "ward_name": "Ampukhuri No.2",
+            "ward_id": 296930
+        },
+        {
+            "ward_no": 296871,
+            "ward_name": "Ampupukhuri",
+            "ward_id": 296871
+        },
+        {
+            "ward_no": 297499,
+            "ward_name": "Anjok Bey",
+            "ward_id": 297499
+        },
+        {
+            "ward_no": 297601,
+            "ward_name": "Ara Engti Gaon",
+            "ward_id": 297601
+        },
+        {
+            "ward_no": 297145,
+            "ward_name": "At-So- Bey",
+            "ward_id": 297145
+        },
+        {
+            "ward_no": 296944,
+            "ward_name": "Bagaram Ronghang",
+            "ward_id": 296944
+        },
+        {
+            "ward_no": 297185,
+            "ward_name": "Bagari Rongpi",
+            "ward_id": 297185
+        },
+        {
+            "ward_no": 297632,
+            "ward_name": "Bahoni Gaon",
+            "ward_id": 297632
+        },
+        {
+            "ward_no": 296867,
+            "ward_name": "Bakong Tisso",
+            "ward_id": 296867
+        },
+        {
+            "ward_no": 297097,
+            "ward_name": "Bali Gaon",
+            "ward_id": 297097
+        },
+        {
+            "ward_no": 296873,
+            "ward_name": "Bali Gaon",
+            "ward_id": 296873
+        },
+        {
+            "ward_no": 296761,
+            "ward_name": "Balok Gaon",
+            "ward_id": 296761
+        },
+        {
+            "ward_no": 297658,
+            "ward_name": "Bam Gaon",
+            "ward_id": 297658
+        },
+        {
+            "ward_no": 297223,
+            "ward_name": "Bamon Rongphar",
+            "ward_id": 297223
+        },
+        {
+            "ward_no": 297354,
+            "ward_name": "Banduguri",
+            "ward_id": 297354
+        },
+        {
+            "ward_no": 296754,
+            "ward_name": "Bar-Bali Gaon",
+            "ward_id": 296754
+        },
+        {
+            "ward_no": 296856,
+            "ward_name": "Barbil Gaon",
+            "ward_id": 296856
+        },
+        {
+            "ward_no": 296924,
+            "ward_name": "Basalong Tokbi",
+            "ward_id": 296924
+        },
+        {
+            "ward_no": 296755,
+            "ward_name": "Basa Rangphar",
+            "ward_id": 296755
+        },
+        {
+            "ward_no": 297656,
+            "ward_name": "Basu Bey Gaon",
+            "ward_id": 297656
+        },
+        {
+            "ward_no": 297678,
+            "ward_name": "Batabari",
+            "ward_id": 297678
+        },
+        {
+            "ward_no": 297722,
+            "ward_name": "Batabari",
+            "ward_id": 297722
+        },
+        {
+            "ward_no": 297664,
+            "ward_name": "Batabari",
+            "ward_id": 297664
+        },
+        {
+            "ward_no": 296855,
+            "ward_name": "Beloguri",
+            "ward_id": 296855
+        },
+        {
+            "ward_no": 297002,
+            "ward_name": "Bepari Teron",
+            "ward_id": 297002
+        },
+        {
+            "ward_no": 296687,
+            "ward_name": "Bethani Nepali Bosti",
+            "ward_id": 296687
+        },
+        {
+            "ward_no": 297612,
+            "ward_name": "Bey Kethe Gaon",
+            "ward_id": 297612
+        },
+        {
+            "ward_no": 296927,
+            "ward_name": "Bharajan",
+            "ward_id": 296927
+        },
+        {
+            "ward_no": 297162,
+            "ward_name": "Bibek Langso",
+            "ward_id": 297162
+        },
+        {
+            "ward_no": 296913,
+            "ward_name": "Bilashpuri Gaon",
+            "ward_id": 296913
+        },
+        {
+            "ward_no": 296814,
+            "ward_name": "Bini Engti",
+            "ward_id": 296814
+        },
+        {
+            "ward_no": 297327,
+            "ward_name": "Bithani Gaon",
+            "ward_id": 297327
+        },
+        {
+            "ward_no": 296919,
+            "ward_name": "Bomrui",
+            "ward_id": 296919
+        },
+        {
+            "ward_no": 297253,
+            "ward_name": "Bongaiuso Gaon",
+            "ward_id": 297253
+        },
+        {
+            "ward_no": 296756,
+            "ward_name": "Bonglong Gaon",
+            "ward_id": 296756
+        },
+        {
+            "ward_no": 296926,
+            "ward_name": "Bor-Bari",
+            "ward_id": 296926
+        },
+        {
+            "ward_no": 297114,
+            "ward_name": "Borbil Amoni",
+            "ward_id": 297114
+        },
+        {
+            "ward_no": 297300,
+            "ward_name": "Borispa",
+            "ward_id": 297300
+        },
+        {
+            "ward_no": 297242,
+            "ward_name": "Borkula Kro",
+            "ward_id": 297242
+        },
+        {
+            "ward_no": 297462,
+            "ward_name": "Bor Pukhuri",
+            "ward_id": 297462
+        },
+        {
+            "ward_no": 297622,
+            "ward_name": "Borsing Engti",
+            "ward_id": 297622
+        },
+        {
+            "ward_no": 911404,
+            "ward_name": "Borsing Ronghang",
+            "ward_id": 911404
+        },
+        {
+            "ward_no": 297339,
+            "ward_name": "Borsing Tisso",
+            "ward_id": 297339
+        },
+        {
+            "ward_no": 911405,
+            "ward_name": "B. Rongcheho",
+            "ward_id": 911405
+        },
+        {
+            "ward_no": 296912,
+            "ward_name": "Bura Killing",
+            "ward_id": 296912
+        },
+        {
+            "ward_no": 297321,
+            "ward_name": "Bura Rongpi",
+            "ward_id": 297321
+        },
+        {
+            "ward_no": 296819,
+            "ward_name": "Bura Sing Rong Chehon",
+            "ward_id": 296819
+        },
+        {
+            "ward_no": 297036,
+            "ward_name": "Burasing Teron Gaon",
+            "ward_id": 297036
+        },
+        {
+            "ward_no": 296797,
+            "ward_name": "Buraso Engti",
+            "ward_id": 296797
+        },
+        {
+            "ward_no": 297468,
+            "ward_name": "Bura Teron",
+            "ward_id": 297468
+        },
+        {
+            "ward_no": 297112,
+            "ward_name": "Bura Terong (San Pathar)",
+            "ward_id": 297112
+        },
+        {
+            "ward_no": 296946,
+            "ward_name": "Bura Tisso (Long Sekjan)",
+            "ward_id": 296946
+        },
+        {
+            "ward_no": 296723,
+            "ward_name": "Central Range Diphu",
+            "ward_id": 296723
+        },
+        {
+            "ward_no": 296724,
+            "ward_name": "Central Range Manja",
+            "ward_id": 296724
+        },
+        {
+            "ward_no": 297201,
+            "ward_name": "Chandrasing Engti",
+            "ward_id": 297201
+        },
+        {
+            "ward_no": 297715,
+            "ward_name": "Chandra Sing Hanse",
+            "ward_id": 297715
+        },
+        {
+            "ward_no": 911409,
+            "ward_name": "Chandra Sing Taru Gaon",
+            "ward_id": 911409
+        },
+        {
+            "ward_no": 296821,
+            "ward_name": "Chandra Sing Timung",
+            "ward_id": 296821
+        },
+        {
+            "ward_no": 297269,
+            "ward_name": "Chandro Sing Kro",
+            "ward_id": 297269
+        },
+        {
+            "ward_no": 297031,
+            "ward_name": "Chat Teron",
+            "ward_id": 297031
+        },
+        {
+            "ward_no": 297197,
+            "ward_name": "Cheke Rongpi",
+            "ward_id": 297197
+        },
+        {
+            "ward_no": 296759,
+            "ward_name": "Chella Kuli Nam Gaon",
+            "ward_id": 296759
+        },
+        {
+            "ward_no": 296760,
+            "ward_name": "Cherakani",
+            "ward_id": 296760
+        },
+        {
+            "ward_no": 297089,
+            "ward_name": "Chereng Engti Gaon",
+            "ward_id": 297089
+        },
+        {
+            "ward_no": 297218,
+            "ward_name": "Chimin Killing",
+            "ward_id": 297218
+        },
+        {
+            "ward_no": 297001,
+            "ward_name": "Dakhin Silputa",
+            "ward_id": 297001
+        },
+        {
+            "ward_no": 296977,
+            "ward_name": "Das Bari",
+            "ward_id": 296977
+        },
+        {
+            "ward_no": 296982,
+            "ward_name": "Das Gaon (Hatum Pur Jay Sing)",
+            "ward_id": 296982
+        },
+        {
+            "ward_no": 297065,
+            "ward_name": "Den Teron Gaon",
+            "ward_id": 297065
+        },
+        {
+            "ward_no": 297369,
+            "ward_name": "Dhan Sing Ronghang",
+            "ward_id": 297369
+        },
+        {
+            "ward_no": 296727,
+            "ward_name": "Dhansiri Beat Eastern Range (Rongapahar)",
+            "ward_id": 296727
+        },
+        {
+            "ward_no": 296800,
+            "ward_name": "Dhuity Teron",
+            "ward_id": 296800
+        },
+        {
+            "ward_no": 296854,
+            "ward_name": "Dighalipar",
+            "ward_id": 296854
+        },
+        {
+            "ward_no": 296851,
+            "ward_name": "Dighali Par",
+            "ward_id": 296851
+        },
+        {
+            "ward_no": 911407,
+            "ward_name": "Dighalpani Gaon",
+            "ward_id": 911407
+        },
+        {
+            "ward_no": 296885,
+            "ward_name": "Dighal Pani Kachari",
+            "ward_id": 296885
+        },
+        {
+            "ward_no": 296890,
+            "ward_name": "Dighliati Gaon",
+            "ward_id": 296890
+        },
+        {
+            "ward_no": 297271,
+            "ward_name": "Dikrut Rongchehon",
+            "ward_id": 297271
+        },
+        {
+            "ward_no": 296731,
+            "ward_name": "Dillangi Reserve Forest",
+            "ward_id": 296731
+        },
+        {
+            "ward_no": 296744,
+            "ward_name": "Dilli Terang",
+            "ward_id": 296744
+        },
+        {
+            "ward_no": 296762,
+            "ward_name": "Dingso Gaon",
+            "ward_id": 296762
+        },
+        {
+            "ward_no": 296795,
+            "ward_name": "Dipor Timung",
+            "ward_id": 296795
+        },
+        {
+            "ward_no": 296801,
+            "ward_name": "Dokhin Borgonga",
+            "ward_id": 296801
+        },
+        {
+            "ward_no": 296932,
+            "ward_name": "Doutpur",
+            "ward_id": 296932
+        },
+        {
+            "ward_no": 296880,
+            "ward_name": "Dumukhi",
+            "ward_id": 296880
+        },
+        {
+            "ward_no": 296870,
+            "ward_name": "Dumukhi Dighalipar",
+            "ward_id": 296870
+        },
+        {
+            "ward_no": 296725,
+            "ward_name": "Eastern Range Rongapahar",
+            "ward_id": 296725
+        },
+        {
+            "ward_no": 297140,
+            "ward_name": "Engleng Gaon",
+            "ward_id": 297140
+        },
+        {
+            "ward_no": 296991,
+            "ward_name": "Engleng Gaon (Thipok Engleng)",
+            "ward_id": 296991
+        },
+        {
+            "ward_no": 296840,
+            "ward_name": "Eradighalpani",
+            "ward_id": 296840
+        },
+        {
+            "ward_no": 296699,
+            "ward_name": "Firing Tila (Langsoliet)",
+            "ward_id": 296699
+        },
+        {
+            "ward_no": 297004,
+            "ward_name": "Ganapath Gour Gaon",
+            "ward_id": 297004
+        },
+        {
+            "ward_no": 297381,
+            "ward_name": "Ganeshpur",
+            "ward_id": 297381
+        },
+        {
+            "ward_no": 296789,
+            "ward_name": "Ganeshpur",
+            "ward_id": 296789
+        },
+        {
+            "ward_no": 296908,
+            "ward_name": "Gangamala",
+            "ward_id": 296908
+        },
+        {
+            "ward_no": 296743,
+            "ward_name": "Garo Basti",
+            "ward_id": 296743
+        },
+        {
+            "ward_no": 296651,
+            "ward_name": "Garo Basti",
+            "ward_id": 296651
+        },
+        {
+            "ward_no": 296738,
+            "ward_name": "Garo Gaon",
+            "ward_id": 296738
+        },
+        {
+            "ward_no": 296734,
+            "ward_name": "Garukata Ratin Gaon",
+            "ward_id": 296734
+        },
+        {
+            "ward_no": 296850,
+            "ward_name": "Garukhia Pukhuri",
+            "ward_id": 296850
+        },
+        {
+            "ward_no": 297625,
+            "ward_name": "Gobin Rongphar",
+            "ward_id": 297625
+        },
+        {
+            "ward_no": 296806,
+            "ward_name": "Godabari",
+            "ward_id": 296806
+        },
+        {
+            "ward_no": 296914,
+            "ward_name": "Gudam Gaon",
+            "ward_id": 296914
+        },
+        {
+            "ward_no": 297155,
+            "ward_name": "Habe Kather",
+            "ward_id": 297155
+        },
+        {
+            "ward_no": 296979,
+            "ward_name": "Halda Bagan (English Bagan)",
+            "ward_id": 296979
+        },
+        {
+            "ward_no": 296976,
+            "ward_name": "Haldu Bagan 2",
+            "ward_id": 296976
+        },
+        {
+            "ward_no": 296893,
+            "ward_name": "Hambong Gaon",
+            "ward_id": 296893
+        },
+        {
+            "ward_no": 297109,
+            "ward_name": "Hamukjan",
+            "ward_id": 297109
+        },
+        {
+            "ward_no": 297113,
+            "ward_name": "Hanboka Gaon",
+            "ward_id": 297113
+        },
+        {
+            "ward_no": 296572,
+            "ward_name": "Hanse Nala",
+            "ward_id": 296572
+        },
+        {
+            "ward_no": 297188,
+            "ward_name": "Hari Ronghang",
+            "ward_id": 297188
+        },
+        {
+            "ward_no": 297798,
+            "ward_name": "Hariso Tokbi Gaon F.V",
+            "ward_id": 297798
+        },
+        {
+            "ward_no": 296923,
+            "ward_name": "Hatipara",
+            "ward_id": 296923
+        },
+        {
+            "ward_no": 296895,
+            "ward_name": "Hatipara Kandali Ronghang",
+            "ward_id": 296895
+        },
+        {
+            "ward_no": 296899,
+            "ward_name": "Hatiparameteka Block 1,2",
+            "ward_id": 296899
+        },
+        {
+            "ward_no": 296900,
+            "ward_name": "Hatipara Okreng",
+            "ward_id": 296900
+        },
+        {
+            "ward_no": 296696,
+            "ward_name": "Hemari Kro",
+            "ward_id": 296696
+        },
+        {
+            "ward_no": 297660,
+            "ward_name": "Hemari Rongphar",
+            "ward_id": 297660
+        },
+        {
+            "ward_no": 297419,
+            "ward_name": "Hemari Timung",
+            "ward_id": 297419
+        },
+        {
+            "ward_no": 297296,
+            "ward_name": "Henru Abi-1",
+            "ward_id": 297296
+        },
+        {
+            "ward_no": 296857,
+            "ward_name": "Hidi Bonglong",
+            "ward_id": 296857
+        },
+        {
+            "ward_no": 296786,
+            "ward_name": "Honbaka",
+            "ward_id": 296786
+        },
+        {
+            "ward_no": 296787,
+            "ward_name": "Honbaka-I",
+            "ward_id": 296787
+        },
+        {
+            "ward_no": 297507,
+            "ward_name": "Honisoni Pahar",
+            "ward_id": 297507
+        },
+        {
+            "ward_no": 297721,
+            "ward_name": "Horizon Bosti",
+            "ward_id": 297721
+        },
+        {
+            "ward_no": 297099,
+            "ward_name": "Hor Kathi Gaon",
+            "ward_id": 297099
+        },
+        {
+            "ward_no": 911410,
+            "ward_name": "Howraghat",
+            "ward_id": 911410
+        },
+        {
+            "ward_no": 297118,
+            "ward_name": "Jaljuri",
+            "ward_id": 297118
+        },
+        {
+            "ward_no": 911401,
+            "ward_name": "Jaljuri Terang Gaon",
+            "ward_id": 911401
+        },
+        {
+            "ward_no": 296879,
+            "ward_name": "Jaluguti",
+            "ward_id": 296879
+        },
+        {
+            "ward_no": 911406,
+            "ward_name": "Jamuna Gaon",
+            "ward_id": 911406
+        },
+        {
+            "ward_no": 296889,
+            "ward_name": "Jamunajapong Than",
+            "ward_id": 296889
+        },
+        {
+            "ward_no": 911416,
+            "ward_name": "Jamunapar Gaon",
+            "ward_id": 911416
+        },
+        {
+            "ward_no": 296896,
+            "ward_name": "Janghar Gaon",
+            "ward_id": 296896
+        },
+        {
+            "ward_no": 297484,
+            "ward_name": "Jan Rongpi",
+            "ward_id": 297484
+        },
+        {
+            "ward_no": 296751,
+            "ward_name": "Japi Saya",
+            "ward_id": 296751
+        },
+        {
+            "ward_no": 297446,
+            "ward_name": "Jar Hemari Gaon",
+            "ward_id": 297446
+        },
+        {
+            "ward_no": 297565,
+            "ward_name": "Jar Teron",
+            "ward_id": 297565
+        },
+        {
+            "ward_no": 297139,
+            "ward_name": "Jar Terong",
+            "ward_id": 297139
+        },
+        {
+            "ward_no": 297441,
+            "ward_name": "Jaysing Rongpi",
+            "ward_id": 297441
+        },
+        {
+            "ward_no": 297370,
+            "ward_name": "Jay Sing Rongpi",
+            "ward_id": 297370
+        },
+        {
+            "ward_no": 297117,
+            "ward_name": "Jhaihuguri Village",
+            "ward_id": 297117
+        },
+        {
+            "ward_no": 297143,
+            "ward_name": "Jingreng Hanse",
+            "ward_id": 297143
+        },
+        {
+            "ward_no": 297108,
+            "ward_name": "Jing Ronghang",
+            "ward_id": 297108
+        },
+        {
+            "ward_no": 296799,
+            "ward_name": "Jor Teron",
+            "ward_id": 296799
+        },
+        {
+            "ward_no": 296810,
+            "ward_name": "Joypur",
+            "ward_id": 296810
+        },
+        {
+            "ward_no": 297626,
+            "ward_name": "Joysing Doloi (Model Village)",
+            "ward_id": 297626
+        },
+        {
+            "ward_no": 296901,
+            "ward_name": "Jumuna Pagala Than",
+            "ward_id": 296901
+        },
+        {
+            "ward_no": 297337,
+            "ward_name": "Jumuna Timung",
+            "ward_id": 297337
+        },
+        {
+            "ward_no": 296955,
+            "ward_name": "Kabir Dharam",
+            "ward_id": 296955
+        },
+        {
+            "ward_no": 911412,
+            "ward_name": "Kachupukhuri",
+            "ward_id": 911412
+        },
+        {
+            "ward_no": 296916,
+            "ward_name": "Kachupukhuri 1,2",
+            "ward_id": 296916
+        },
+        {
+            "ward_no": 296917,
+            "ward_name": "Kachupukhuri Santipur",
+            "ward_id": 296917
+        },
+        {
+            "ward_no": 297046,
+            "ward_name": "Kaibong Kro",
+            "ward_id": 297046
+        },
+        {
+            "ward_no": 296782,
+            "ward_name": "Kajesera Gaon",
+            "ward_id": 296782
+        },
+        {
+            "ward_no": 296805,
+            "ward_name": "Kaje Sera Mati Khula",
+            "ward_id": 296805
+        },
+        {
+            "ward_no": 296779,
+            "ward_name": "Kajesera No.1",
+            "ward_id": 296779
+        },
+        {
+            "ward_no": 296780,
+            "ward_name": "Kaje Sera No.2",
+            "ward_id": 296780
+        },
+        {
+            "ward_no": 296781,
+            "ward_name": "Kaje Sera No.3",
+            "ward_id": 296781
+        },
+        {
+            "ward_no": 297153,
+            "ward_name": "Kamai Ronghang",
+            "ward_id": 297153
+        },
+        {
+            "ward_no": 296825,
+            "ward_name": "Kamar Tisso",
+            "ward_id": 296825
+        },
+        {
+            "ward_no": 296887,
+            "ward_name": "Kamrupia Gaon",
+            "ward_id": 296887
+        },
+        {
+            "ward_no": 296809,
+            "ward_name": "Kamtapur",
+            "ward_id": 296809
+        },
+        {
+            "ward_no": 296997,
+            "ward_name": "Kangbura Killing",
+            "ward_id": 296997
+        },
+        {
+            "ward_no": 297224,
+            "ward_name": "Kang Bura Rongpi",
+            "ward_id": 297224
+        },
+        {
+            "ward_no": 297088,
+            "ward_name": "Kangting Rongpi",
+            "ward_id": 297088
+        },
+        {
+            "ward_no": 297120,
+            "ward_name": "Kania Bey",
+            "ward_id": 297120
+        },
+        {
+            "ward_no": 297301,
+            "ward_name": "Kania Hanse",
+            "ward_id": 297301
+        },
+        {
+            "ward_no": 296968,
+            "ward_name": "Kania Rongphar",
+            "ward_id": 296968
+        },
+        {
+            "ward_no": 297149,
+            "ward_name": "Kania Timung",
+            "ward_id": 297149
+        },
+        {
+            "ward_no": 296808,
+            "ward_name": "Karai Guri",
+            "ward_id": 296808
+        },
+        {
+            "ward_no": 296892,
+            "ward_name": "Karaijhar Gaon",
+            "ward_id": 296892
+        },
+        {
+            "ward_no": 296915,
+            "ward_name": "Karkok Bey Gaon",
+            "ward_id": 296915
+        },
+        {
+            "ward_no": 296788,
+            "ward_name": "Karkok Bilashpuri",
+            "ward_id": 296788
+        },
+        {
+            "ward_no": 296842,
+            "ward_name": "Karkok Gaon",
+            "ward_id": 296842
+        },
+        {
+            "ward_no": 296910,
+            "ward_name": "Kartik Gairi Gaon",
+            "ward_id": 296910
+        },
+        {
+            "ward_no": 297119,
+            "ward_name": "Katcherui",
+            "ward_id": 297119
+        },
+        {
+            "ward_no": 296959,
+            "ward_name": "Katon Teron",
+            "ward_id": 296959
+        },
+        {
+            "ward_no": 911408,
+            "ward_name": "Kauripathar",
+            "ward_id": 911408
+        },
+        {
+            "ward_no": 296747,
+            "ward_name": "Ka-Uri Pathar",
+            "ward_id": 296747
+        },
+        {
+            "ward_no": 296749,
+            "ward_name": "Ka-Uri Pathar",
+            "ward_id": 296749
+        },
+        {
+            "ward_no": 297323,
+            "ward_name": "Kchai Terang",
+            "ward_id": 297323
+        },
+        {
+            "ward_no": 297107,
+            "ward_name": "Kethe Rongpi",
+            "ward_id": 297107
+        },
+        {
+            "ward_no": 297226,
+            "ward_name": "Khangra Tokbi",
+            "ward_id": 297226
+        },
+        {
+            "ward_no": 297412,
+            "ward_name": "Khaya Phangcho",
+            "ward_id": 297412
+        },
+        {
+            "ward_no": 297061,
+            "ward_name": "Khor Bora",
+            "ward_id": 297061
+        },
+        {
+            "ward_no": 296974,
+            "ward_name": "Kouch Gaon",
+            "ward_id": 296974
+        },
+        {
+            "ward_no": 296998,
+            "ward_name": "Kram Kramsa",
+            "ward_id": 296998
+        },
+        {
+            "ward_no": 296945,
+            "ward_name": "Kramsa Kakijon",
+            "ward_id": 296945
+        },
+        {
+            "ward_no": 296750,
+            "ward_name": "Kuli Gaon",
+            "ward_id": 296750
+        },
+        {
+            "ward_no": 296882,
+            "ward_name": "Kuli Gaon No.1",
+            "ward_id": 296882
+        },
+        {
+            "ward_no": 297362,
+            "ward_name": "Kumari Tali Gaon",
+            "ward_id": 297362
+        },
+        {
+            "ward_no": 297106,
+            "ward_name": "Kuruna Bey Gaon",
+            "ward_id": 297106
+        },
+        {
+            "ward_no": 297292,
+            "ward_name": "Kuruna Tisso",
+            "ward_id": 297292
+        },
+        {
+            "ward_no": 297442,
+            "ward_name": "Lachitalangso (Sarthe Kro)",
+            "ward_id": 297442
+        },
+        {
+            "ward_no": 911402,
+            "ward_name": "Lachit Nagar",
+            "ward_id": 911402
+        },
+        {
+            "ward_no": 296938,
+            "ward_name": "Lagar Maazur Mari",
+            "ward_id": 296938
+        },
+        {
+            "ward_no": 297705,
+            "ward_name": "Laharighat",
+            "ward_id": 297705
+        },
+        {
+            "ward_no": 296726,
+            "ward_name": "Lahorijan Beat Eastern Range (Rongapahar)",
+            "ward_id": 296726
+        },
+        {
+            "ward_no": 296987,
+            "ward_name": "Lakhimpuria",
+            "ward_id": 296987
+        },
+        {
+            "ward_no": 297003,
+            "ward_name": "Lanbai Pahar (Majur)",
+            "ward_id": 297003
+        },
+        {
+            "ward_no": 297745,
+            "ward_name": "Langbuton Garo Bosti",
+            "ward_id": 297745
+        },
+        {
+            "ward_no": 297361,
+            "ward_name": "Langdengpur",
+            "ward_id": 297361
+        },
+        {
+            "ward_no": 297244,
+            "ward_name": "Langdhai Likhan",
+            "ward_id": 297244
+        },
+        {
+            "ward_no": 297793,
+            "ward_name": "Langhin Kramsa",
+            "ward_id": 297793
+        },
+        {
+            "ward_no": 297596,
+            "ward_name": "Langkam Teron",
+            "ward_id": 297596
+        },
+        {
+            "ward_no": 297336,
+            "ward_name": "Langtuk Terong",
+            "ward_id": 297336
+        },
+        {
+            "ward_no": 296758,
+            "ward_name": "Latua Gaon",
+            "ward_id": 296758
+        },
+        {
+            "ward_no": 297127,
+            "ward_name": "Lindak Engti",
+            "ward_id": 297127
+        },
+        {
+            "ward_no": 296966,
+            "ward_name": "Lindakteron",
+            "ward_id": 296966
+        },
+        {
+            "ward_no": 296925,
+            "ward_name": "Long Chap Engleng",
+            "ward_id": 296925
+        },
+        {
+            "ward_no": 297245,
+            "ward_name": "Longjenso",
+            "ward_id": 297245
+        },
+        {
+            "ward_no": 297121,
+            "ward_name": "Longki Amse",
+            "ward_id": 297121
+        },
+        {
+            "ward_no": 297602,
+            "ward_name": "Longki Hanse",
+            "ward_id": 297602
+        },
+        {
+            "ward_no": 296697,
+            "ward_name": "Longki Hanse",
+            "ward_id": 296697
+        },
+        {
+            "ward_no": 296826,
+            "ward_name": "Longki Honse",
+            "ward_id": 296826
+        },
+        {
+            "ward_no": 297277,
+            "ward_name": "Longkiri Habe",
+            "ward_id": 297277
+        },
+        {
+            "ward_no": 297124,
+            "ward_name": "Longki Terong",
+            "ward_id": 297124
+        },
+        {
+            "ward_no": 296703,
+            "ward_name": "Longsing Hanse",
+            "ward_id": 296703
+        },
+        {
+            "ward_no": 296818,
+            "ward_name": "Long Terang Gaon",
+            "ward_id": 296818
+        },
+        {
+            "ward_no": 296820,
+            "ward_name": "Long Thing Phangcho",
+            "ward_id": 296820
+        },
+        {
+            "ward_no": 296823,
+            "ward_name": "Lonktuk Teron",
+            "ward_id": 296823
+        },
+        {
+            "ward_no": 296954,
+            "ward_name": "Lon Sekjan Block 1,2",
+            "ward_id": 296954
+        },
+        {
+            "ward_no": 297630,
+            "ward_name": "Loring Tipi Langtuk Tokbi",
+            "ward_id": 297630
+        },
+        {
+            "ward_no": 297629,
+            "ward_name": "Loring Tipi Rong Terang",
+            "ward_id": 297629
+        },
+        {
+            "ward_no": 297104,
+            "ward_name": "Lotumari Gaon",
+            "ward_id": 297104
+        },
+        {
+            "ward_no": 296807,
+            "ward_name": "Lotumari No.2",
+            "ward_id": 296807
+        },
+        {
+            "ward_no": 296698,
+            "ward_name": "Lunse Kro",
+            "ward_id": 296698
+        },
+        {
+            "ward_no": 296803,
+            "ward_name": "Lutumari No.1",
+            "ward_id": 296803
+        },
+        {
+            "ward_no": 296776,
+            "ward_name": "Mahamaya Bal Gaon",
+            "ward_id": 296776
+        },
+        {
+            "ward_no": 296775,
+            "ward_name": "Mahamaya Sing Teron",
+            "ward_id": 296775
+        },
+        {
+            "ward_no": 297659,
+            "ward_name": "Maharaj Teron",
+            "ward_id": 297659
+        },
+        {
+            "ward_no": 297007,
+            "ward_name": "Maj Gaon",
+            "ward_id": 297007
+        },
+        {
+            "ward_no": 296757,
+            "ward_name": "Maji Gaon",
+            "ward_id": 296757
+        },
+        {
+            "ward_no": 297672,
+            "ward_name": "Majuburi Gaon",
+            "ward_id": 297672
+        },
+        {
+            "ward_no": 297110,
+            "ward_name": "Makung Gaon",
+            "ward_id": 297110
+        },
+        {
+            "ward_no": 296942,
+            "ward_name": "Manik Teron",
+            "ward_id": 296942
+        },
+        {
+            "ward_no": 297186,
+            "ward_name": "Markas Gaon",
+            "ward_id": 297186
+        },
+        {
+            "ward_no": 296791,
+            "ward_name": "Mati Khula",
+            "ward_id": 296791
+        },
+        {
+            "ward_no": 296903,
+            "ward_name": "Mati Khula",
+            "ward_id": 296903
+        },
+        {
+            "ward_no": 911403,
+            "ward_name": "Matikhula Bengali",
+            "ward_id": 911403
+        },
+        {
+            "ward_no": 296973,
+            "ward_name": "May Terang",
+            "ward_id": 296973
+        },
+        {
+            "ward_no": 296877,
+            "ward_name": "Men Taro",
+            "ward_id": 296877
+        },
+        {
+            "ward_no": 911390,
+            "ward_name": "Men Terang",
+            "ward_id": 911390
+        },
+        {
+            "ward_no": 296796,
+            "ward_name": "Men Timung",
+            "ward_id": 296796
+        },
+        {
+            "ward_no": 296897,
+            "ward_name": "Meteka Janghar",
+            "ward_id": 296897
+        },
+        {
+            "ward_no": 296967,
+            "ward_name": "Miji Gaon",
+            "ward_id": 296967
+        },
+        {
+            "ward_no": 296918,
+            "ward_name": "Mirdo Pathar",
+            "ward_id": 296918
+        },
+        {
+            "ward_no": 296852,
+            "ward_name": "Miri Bali",
+            "ward_id": 296852
+        },
+        {
+            "ward_no": 296891,
+            "ward_name": "Mistribali Gaon",
+            "ward_id": 296891
+        },
+        {
+            "ward_no": 297548,
+            "ward_name": "Mizo Bosti",
+            "ward_id": 297548
+        },
+        {
+            "ward_no": 296886,
+            "ward_name": "Modartoli Gaon",
+            "ward_id": 296886
+        },
+        {
+            "ward_no": 297708,
+            "ward_name": "Mohan Phancho",
+            "ward_id": 297708
+        },
+        {
+            "ward_no": 296702,
+            "ward_name": "Mohon Lekthe",
+            "ward_id": 296702
+        },
+        {
+            "ward_no": 296939,
+            "ward_name": "Molesh Bosti",
+            "ward_id": 296939
+        },
+        {
+            "ward_no": 296940,
+            "ward_name": "Molesh Gaur Gaon",
+            "ward_id": 296940
+        },
+        {
+            "ward_no": 297283,
+            "ward_name": "Mon Sing Engti",
+            "ward_id": 297283
+        },
+        {
+            "ward_no": 296711,
+            "ward_name": "Monsing Teron",
+            "ward_id": 296711
+        },
+        {
+            "ward_no": 297513,
+            "ward_name": "Monsing Teron",
+            "ward_id": 297513
+        },
+        {
+            "ward_no": 296742,
+            "ward_name": "Mulajan",
+            "ward_id": 296742
+        },
+        {
+            "ward_no": 297000,
+            "ward_name": "Mumru Ronhang",
+            "ward_id": 297000
+        },
+        {
+            "ward_no": 297227,
+            "ward_name": "Mungseng Hanse",
+            "ward_id": 297227
+        },
+        {
+            "ward_no": 297717,
+            "ward_name": "Mura Bari",
+            "ward_id": 297717
+        },
+        {
+            "ward_no": 297516,
+            "ward_name": "Naga Rongphar",
+            "ward_id": 297516
+        },
+        {
+            "ward_no": 296737,
+            "ward_name": "Nagaya Gaon",
+            "ward_id": 296737
+        },
+        {
+            "ward_no": 297021,
+            "ward_name": "Nam Bokulia-1,2",
+            "ward_id": 297021
+        },
+        {
+            "ward_no": 296722,
+            "ward_name": "Nambor Adarsha Range",
+            "ward_id": 296722
+        },
+        {
+            "ward_no": 296960,
+            "ward_name": "Namtong Lalung",
+            "ward_id": 296960
+        },
+        {
+            "ward_no": 296785,
+            "ward_name": "Narlongati Adorsha Engti",
+            "ward_id": 296785
+        },
+        {
+            "ward_no": 296784,
+            "ward_name": "Narlongati Adorsha Rongpi",
+            "ward_id": 296784
+        },
+        {
+            "ward_no": 296783,
+            "ward_name": "Narlongti Adorsha",
+            "ward_id": 296783
+        },
+        {
+            "ward_no": 296907,
+            "ward_name": "Naya Danga",
+            "ward_id": 296907
+        },
+        {
+            "ward_no": 296941,
+            "ward_name": "Naya Danga Chohon Bosti",
+            "ward_id": 296941
+        },
+        {
+            "ward_no": 296704,
+            "ward_name": "Nepali Bosti Upper Hapjan",
+            "ward_id": 296704
+        },
+        {
+            "ward_no": 297100,
+            "ward_name": "New Bali Gaon",
+            "ward_id": 297100
+        },
+        {
+            "ward_no": 297062,
+            "ward_name": "Nijdeng Gaon",
+            "ward_id": 297062
+        },
+        {
+            "ward_no": 297374,
+            "ward_name": "No.1 Belbari",
+            "ward_id": 297374
+        },
+        {
+            "ward_no": 296928,
+            "ward_name": "No.1 Beloguri",
+            "ward_id": 296928
+        },
+        {
+            "ward_no": 296929,
+            "ward_name": "No.2 Beloguri",
+            "ward_id": 296929
+        },
+        {
+            "ward_no": 297437,
+            "ward_name": "No.2 Jaipur",
+            "ward_id": 297437
+        },
+        {
+            "ward_no": 297409,
+            "ward_name": "No.2 Kekang Pathar",
+            "ward_id": 297409
+        },
+        {
+            "ward_no": 296956,
+            "ward_name": "No.2 Raja Pathar Silputa 1,2",
+            "ward_id": 296956
+        },
+        {
+            "ward_no": 296881,
+            "ward_name": "No.3 Kuli Gaon",
+            "ward_id": 296881
+        },
+        {
+            "ward_no": 296898,
+            "ward_name": "No.3 Okareng Pathar",
+            "ward_id": 296898
+        },
+        {
+            "ward_no": 296729,
+            "ward_name": "Northern Range Bokolia (Kaki)",
+            "ward_id": 296729
+        },
+        {
+            "ward_no": 296884,
+            "ward_name": "Okreng Dighal Pani",
+            "ward_id": 296884
+        },
+        {
+            "ward_no": 296894,
+            "ward_name": "Okreng Pathar",
+            "ward_id": 296894
+        },
+        {
+            "ward_no": 296878,
+            "ward_name": "On Sing",
+            "ward_id": 296878
+        },
+        {
+            "ward_no": 296869,
+            "ward_name": "On Teron",
+            "ward_id": 296869
+        },
+        {
+            "ward_no": 296920,
+            "ward_name": "Pachim Kachamari",
+            "ward_id": 296920
+        },
+        {
+            "ward_no": 296978,
+            "ward_name": "Pakla Gaon",
+            "ward_id": 296978
+        },
+        {
+            "ward_no": 296804,
+            "ward_name": "Pakritari",
+            "ward_id": 296804
+        },
+        {
+            "ward_no": 296964,
+            "ward_name": "Palam Phongcho",
+            "ward_id": 296964
+        },
+        {
+            "ward_no": 296845,
+            "ward_name": "Palka Mati",
+            "ward_id": 296845
+        },
+        {
+            "ward_no": 296844,
+            "ward_name": "Palkha Mati",
+            "ward_id": 296844
+        },
+        {
+            "ward_no": 911396,
+            "ward_name": "Pam Baligaon",
+            "ward_id": 911396
+        },
+        {
+            "ward_no": 297098,
+            "ward_name": "Pam Gaon Block 1,2",
+            "ward_id": 297098
+        },
+        {
+            "ward_no": 296911,
+            "ward_name": "Pan Engti Gaon",
+            "ward_id": 296911
+        },
+        {
+            "ward_no": 297137,
+            "ward_name": "Paniram Killing",
+            "ward_id": 297137
+        },
+        {
+            "ward_no": 297501,
+            "ward_name": "Paniram Ronghang",
+            "ward_id": 297501
+        },
+        {
+            "ward_no": 296875,
+            "ward_name": "Pan Kumar",
+            "ward_id": 296875
+        },
+        {
+            "ward_no": 296876,
+            "ward_name": "Pan Kumar Dimasa",
+            "ward_id": 296876
+        },
+        {
+            "ward_no": 297729,
+            "ward_name": "Parakhuwa Mechpara",
+            "ward_id": 297729
+        },
+        {
+            "ward_no": 911387,
+            "ward_name": "Parokhuwa",
+            "ward_id": 911387
+        },
+        {
+            "ward_no": 297330,
+            "ward_name": "Phai Klung",
+            "ward_id": 297330
+        },
+        {
+            "ward_no": 296684,
+            "ward_name": "Phailong",
+            "ward_id": 296684
+        },
+        {
+            "ward_no": 297377,
+            "ward_name": "Phankai Rongpi",
+            "ward_id": 297377
+        },
+        {
+            "ward_no": 297154,
+            "ward_name": "Phukan Rangpi",
+            "ward_id": 297154
+        },
+        {
+            "ward_no": 297103,
+            "ward_name": "Phuloni Block 1,2",
+            "ward_id": 297103
+        },
+        {
+            "ward_no": 296746,
+            "ward_name": "Phuloni Terang",
+            "ward_id": 296746
+        },
+        {
+            "ward_no": 297389,
+            "ward_name": "Phuron Teron",
+            "ward_id": 297389
+        },
+        {
+            "ward_no": 296905,
+            "ward_name": "Pochim Gajalipar",
+            "ward_id": 296905
+        },
+        {
+            "ward_no": 296902,
+            "ward_name": "Pondit Ghat",
+            "ward_id": 296902
+        },
+        {
+            "ward_no": 296868,
+            "ward_name": "Pongure Kro",
+            "ward_id": 296868
+        },
+        {
+            "ward_no": 296683,
+            "ward_name": "P. Songjam",
+            "ward_id": 296683
+        },
+        {
+            "ward_no": 296883,
+            "ward_name": "Pub-Dikharu",
+            "ward_id": 296883
+        },
+        {
+            "ward_no": 296904,
+            "ward_name": "Pub-Gajalipar",
+            "ward_id": 296904
+        },
+        {
+            "ward_no": 296921,
+            "ward_name": "Pub Kachamari",
+            "ward_id": 296921
+        },
+        {
+            "ward_no": 296957,
+            "ward_name": "Pub- Silputa",
+            "ward_id": 296957
+        },
+        {
+            "ward_no": 297401,
+            "ward_name": "Pub Silputa Chowhan",
+            "ward_id": 297401
+        },
+        {
+            "ward_no": 296811,
+            "ward_name": "Pudum Pukhuri No.1",
+            "ward_id": 296811
+        },
+        {
+            "ward_no": 296812,
+            "ward_name": "Pudum Pukhuri No.2",
+            "ward_id": 296812
+        },
+        {
+            "ward_no": 296937,
+            "ward_name": "Rajapathar Hati",
+            "ward_id": 296937
+        },
+        {
+            "ward_no": 296952,
+            "ward_name": "Rajapathar Tin-Ali",
+            "ward_id": 296952
+        },
+        {
+            "ward_no": 296949,
+            "ward_name": "Raja Pathar Tin- Ali Nepali Das",
+            "ward_id": 296949
+        },
+        {
+            "ward_no": 296953,
+            "ward_name": "Rajapathar Tin-Ali (Silputa)",
+            "ward_id": 296953
+        },
+        {
+            "ward_no": 296922,
+            "ward_name": "Raj Pur",
+            "ward_id": 296922
+        },
+        {
+            "ward_no": 297669,
+            "ward_name": "Ram Lokjan",
+            "ward_id": 297669
+        },
+        {
+            "ward_no": 296753,
+            "ward_name": "Ramsa Takbi",
+            "ward_id": 296753
+        },
+        {
+            "ward_no": 296837,
+            "ward_name": "Rangkut No.2",
+            "ward_id": 296837
+        },
+        {
+            "ward_no": 296833,
+            "ward_name": "Rangkut No.3(4)",
+            "ward_id": 296833
+        },
+        {
+            "ward_no": 296735,
+            "ward_name": "Ratia Gaon",
+            "ward_id": 296735
+        },
+        {
+            "ward_no": 296792,
+            "ward_name": "Reng Reng Jharani",
+            "ward_id": 296792
+        },
+        {
+            "ward_no": 296996,
+            "ward_name": "Ring Gaon",
+            "ward_id": 296996
+        },
+        {
+            "ward_no": 296694,
+            "ward_name": "Rongbangbong",
+            "ward_id": 296694
+        },
+        {
+            "ward_no": 296771,
+            "ward_name": "Rongbong Engti",
+            "ward_id": 296771
+        },
+        {
+            "ward_no": 296695,
+            "ward_name": "Rongchave",
+            "ward_id": 296695
+        },
+        {
+            "ward_no": 296693,
+            "ward_name": "Ronghache",
+            "ward_id": 296693
+        },
+        {
+            "ward_no": 297325,
+            "ward_name": "Ronghang Teron",
+            "ward_id": 297325
+        },
+        {
+            "ward_no": 297111,
+            "ward_name": "Rongkimi",
+            "ward_id": 297111
+        },
+        {
+            "ward_no": 296838,
+            "ward_name": "Rongkut 1 Block -1,2",
+            "ward_id": 296838
+        },
+        {
+            "ward_no": 296839,
+            "ward_name": "Rongkut Block No. 4",
+            "ward_id": 296839
+        },
+        {
+            "ward_no": 297689,
+            "ward_name": "Rongkut Horizon Gaon",
+            "ward_id": 297689
+        },
+        {
+            "ward_no": 296909,
+            "ward_name": "Rongkut Mati Khula",
+            "ward_id": 296909
+        },
+        {
+            "ward_no": 296835,
+            "ward_name": "Rongkut No.1 Block 1-2",
+            "ward_id": 296835
+        },
+        {
+            "ward_no": 296834,
+            "ward_name": "Rongkut No.3 Block No. 1,2",
+            "ward_id": 296834
+        },
+        {
+            "ward_no": 297383,
+            "ward_name": "Rongkut Terang",
+            "ward_id": 297383
+        },
+        {
+            "ward_no": 297688,
+            "ward_name": "Rongmarjang",
+            "ward_id": 297688
+        },
+        {
+            "ward_no": 297306,
+            "ward_name": "Rong Nagar Chohan Bosti",
+            "ward_id": 297306
+        },
+        {
+            "ward_no": 297657,
+            "ward_name": "Rongtara Hanse",
+            "ward_id": 297657
+        },
+        {
+            "ward_no": 296963,
+            "ward_name": "Sadar Bey Sampathar",
+            "ward_id": 296963
+        },
+        {
+            "ward_no": 296962,
+            "ward_name": "Sador Kro",
+            "ward_id": 296962
+        },
+        {
+            "ward_no": 297316,
+            "ward_name": "Sakai Langso",
+            "ward_id": 297316
+        },
+        {
+            "ward_no": 296931,
+            "ward_name": "Samarali",
+            "ward_id": 296931
+        },
+        {
+            "ward_no": 296992,
+            "ward_name": "Samar-Ali Das Gaon",
+            "ward_id": 296992
+        },
+        {
+            "ward_no": 296989,
+            "ward_name": "Samgaon",
+            "ward_id": 296989
+        },
+        {
+            "ward_no": 297353,
+            "ward_name": "Samoguri",
+            "ward_id": 297353
+        },
+        {
+            "ward_no": 296948,
+            "ward_name": "Sam Pathar",
+            "ward_id": 296948
+        },
+        {
+            "ward_no": 296935,
+            "ward_name": "Samuguri Kachamari No.1",
+            "ward_id": 296935
+        },
+        {
+            "ward_no": 296936,
+            "ward_name": "Samuguri Kachamari No.2",
+            "ward_id": 296936
+        },
+        {
+            "ward_no": 296849,
+            "ward_name": "Samuguri No.1",
+            "ward_id": 296849
+        },
+        {
+            "ward_no": 296848,
+            "ward_name": "Samuguri No.2",
+            "ward_id": 296848
+        },
+        {
+            "ward_no": 296847,
+            "ward_name": "Samuguri No.3 Block 1,2",
+            "ward_id": 296847
+        },
+        {
+            "ward_no": 296733,
+            "ward_name": "Sanding Gaon",
+            "ward_id": 296733
+        },
+        {
+            "ward_no": 296740,
+            "ward_name": "Sankar Gaon",
+            "ward_id": 296740
+        },
+        {
+            "ward_no": 297282,
+            "ward_name": "Sarbura Tisso",
+            "ward_id": 297282
+        },
+        {
+            "ward_no": 297384,
+            "ward_name": "Sarbura Tokbi",
+            "ward_id": 297384
+        },
+        {
+            "ward_no": 297528,
+            "ward_name": "Saret Kro (Suren Kro)",
+            "ward_id": 297528
+        },
+        {
+            "ward_no": 296943,
+            "ward_name": "Saret Teron",
+            "ward_id": 296943
+        },
+        {
+            "ward_no": 296690,
+            "ward_name": "Sar Hanse (6 Mile Coffee Bagan)",
+            "ward_id": 296690
+        },
+        {
+            "ward_no": 296843,
+            "ward_name": "Sarik Bey No. 2",
+            "ward_id": 296843
+        },
+        {
+            "ward_no": 296841,
+            "ward_name": "Sarik Boygaon No.1",
+            "ward_id": 296841
+        },
+        {
+            "ward_no": 296774,
+            "ward_name": "Sarjeng",
+            "ward_id": 296774
+        },
+        {
+            "ward_no": 297713,
+            "ward_name": "Sarkimi Taro",
+            "ward_id": 297713
+        },
+        {
+            "ward_no": 296933,
+            "ward_name": "Sarmen Kro",
+            "ward_id": 296933
+        },
+        {
+            "ward_no": 297605,
+            "ward_name": "Sarphu Kro",
+            "ward_id": 297605
+        },
+        {
+            "ward_no": 296824,
+            "ward_name": "Sar Rongpi",
+            "ward_id": 296824
+        },
+        {
+            "ward_no": 296981,
+            "ward_name": "Sar Terong",
+            "ward_id": 296981
+        },
+        {
+            "ward_no": 297148,
+            "ward_name": "Sarthe",
+            "ward_id": 297148
+        },
+        {
+            "ward_no": 297712,
+            "ward_name": "Sarthe Enghi",
+            "ward_id": 297712
+        },
+        {
+            "ward_no": 296995,
+            "ward_name": "Sarthe Engti",
+            "ward_id": 296995
+        },
+        {
+            "ward_no": 297326,
+            "ward_name": "Sarthe Gaon",
+            "ward_id": 297326
+        },
+        {
+            "ward_no": 296975,
+            "ward_name": "Sarthe Hanse",
+            "ward_id": 296975
+        },
+        {
+            "ward_no": 296681,
+            "ward_name": "Sarthe Kramsa (Bonglong Kramsa)",
+            "ward_id": 296681
+        },
+        {
+            "ward_no": 296947,
+            "ward_name": "Sarthe Kro (Sam Pathar)",
+            "ward_id": 296947
+        },
+        {
+            "ward_no": 296741,
+            "ward_name": "Sarthe Rangpi",
+            "ward_id": 296741
+        },
+        {
+            "ward_no": 296961,
+            "ward_name": "Sarthe Ronghong Sochen Pathar",
+            "ward_id": 296961
+        },
+        {
+            "ward_no": 296822,
+            "ward_name": "Sarthe Rongphar",
+            "ward_id": 296822
+        },
+        {
+            "ward_no": 297792,
+            "ward_name": "Sarthe Timung",
+            "ward_id": 297792
+        },
+        {
+            "ward_no": 297748,
+            "ward_name": "Satnami Gaon",
+            "ward_id": 297748
+        },
+        {
+            "ward_no": 296471,
+            "ward_name": "Sedeng Terang",
+            "ward_id": 296471
+        },
+        {
+            "ward_no": 296790,
+            "ward_name": "Selabor Rongpi",
+            "ward_id": 296790
+        },
+        {
+            "ward_no": 296813,
+            "ward_name": "Seltu Mari",
+            "ward_id": 296813
+        },
+        {
+            "ward_no": 297102,
+            "ward_name": "Shilpukhuri Gaon",
+            "ward_id": 297102
+        },
+        {
+            "ward_no": 297105,
+            "ward_name": "Shilpukhuri Gaon",
+            "ward_id": 297105
+        },
+        {
+            "ward_no": 297714,
+            "ward_name": "Sikari Engti",
+            "ward_id": 297714
+        },
+        {
+            "ward_no": 297014,
+            "ward_name": "Sikari Engti Gaon",
+            "ward_id": 297014
+        },
+        {
+            "ward_no": 297146,
+            "ward_name": "Sikari Rangphar",
+            "ward_id": 297146
+        },
+        {
+            "ward_no": 297313,
+            "ward_name": "Sil Bheta Kaury",
+            "ward_id": 297313
+        },
+        {
+            "ward_no": 296769,
+            "ward_name": "Sildharampur",
+            "ward_id": 296769
+        },
+        {
+            "ward_no": 297101,
+            "ward_name": "Simuluguri Gaon",
+            "ward_id": 297101
+        },
+        {
+            "ward_no": 297122,
+            "ward_name": "Sing Bey",
+            "ward_id": 297122
+        },
+        {
+            "ward_no": 296730,
+            "ward_name": "Singhashan Reserve Forest",
+            "ward_id": 296730
+        },
+        {
+            "ward_no": 297378,
+            "ward_name": "Sing Kong Rongpi",
+            "ward_id": 297378
+        },
+        {
+            "ward_no": 296701,
+            "ward_name": "Sing Tisso",
+            "ward_id": 296701
+        },
+        {
+            "ward_no": 296846,
+            "ward_name": "Sital Mari",
+            "ward_id": 296846
+        },
+        {
+            "ward_no": 296836,
+            "ward_name": "Sobai Kro",
+            "ward_id": 296836
+        },
+        {
+            "ward_no": 296680,
+            "ward_name": "Soi Timung (Kania Timung)",
+            "ward_id": 296680
+        },
+        {
+            "ward_no": 297293,
+            "ward_name": "Son Sing Tisso",
+            "ward_id": 297293
+        },
+        {
+            "ward_no": 296748,
+            "ward_name": "Sukhang Terang",
+            "ward_id": 296748
+        },
+        {
+            "ward_no": 297095,
+            "ward_name": "Sumaram Engti",
+            "ward_id": 297095
+        },
+        {
+            "ward_no": 297295,
+            "ward_name": "Sunapur",
+            "ward_id": 297295
+        },
+        {
+            "ward_no": 911421,
+            "ward_name": "Sunpura Bihari Gaon",
+            "ward_id": 911421
+        },
+        {
+            "ward_no": 911411,
+            "ward_name": "Tarabasa",
+            "ward_id": 911411
+        },
+        {
+            "ward_no": 296816,
+            "ward_name": "Tarabasa Rongpi",
+            "ward_id": 296816
+        },
+        {
+            "ward_no": 296817,
+            "ward_name": "Tarabasa Sukam Tokbi",
+            "ward_id": 296817
+        },
+        {
+            "ward_no": 297633,
+            "ward_name": "Tarlong Chikung Bey",
+            "ward_id": 297633
+        },
+        {
+            "ward_no": 296798,
+            "ward_name": "Teke Rongpi",
+            "ward_id": 296798
+        },
+        {
+            "ward_no": 296950,
+            "ward_name": "Temikhula",
+            "ward_id": 296950
+        },
+        {
+            "ward_no": 296770,
+            "ward_name": "Teprong Rongpi",
+            "ward_id": 296770
+        },
+        {
+            "ward_no": 297406,
+            "ward_name": "Terang Bey Pt.2",
+            "ward_id": 297406
+        },
+        {
+            "ward_no": 297405,
+            "ward_name": "Teron Bey Pt.1",
+            "ward_id": 297405
+        },
+        {
+            "ward_no": 297294,
+            "ward_name": "Teteliguri Nutun",
+            "ward_id": 297294
+        },
+        {
+            "ward_no": 296866,
+            "ward_name": "Thang Tisso",
+            "ward_id": 296866
+        },
+        {
+            "ward_no": 296970,
+            "ward_name": "Thare Teron",
+            "ward_id": 296970
+        },
+        {
+            "ward_no": 296965,
+            "ward_name": "Tharwe Hanse",
+            "ward_id": 296965
+        },
+        {
+            "ward_no": 297333,
+            "ward_name": "Thekerajan",
+            "ward_id": 297333
+        },
+        {
+            "ward_no": 296888,
+            "ward_name": "There Gaon",
+            "ward_id": 296888
+        },
+        {
+            "ward_no": 297279,
+            "ward_name": "There-Ke-Up",
+            "ward_id": 297279
+        },
+        {
+            "ward_no": 296778,
+            "ward_name": "Thijiriguri Gaon",
+            "ward_id": 296778
+        },
+        {
+            "ward_no": 296686,
+            "ward_name": "Thingcham",
+            "ward_id": 296686
+        },
+        {
+            "ward_no": 296752,
+            "ward_name": "Thoi -So",
+            "ward_id": 296752
+        },
+        {
+            "ward_no": 296906,
+            "ward_name": "Tiladanga Block 1,2",
+            "ward_id": 296906
+        },
+        {
+            "ward_no": 296951,
+            "ward_name": "Tin-Ali Lalung",
+            "ward_id": 296951
+        },
+        {
+            "ward_no": 296999,
+            "ward_name": "Tisso Gaon",
+            "ward_id": 296999
+        },
+        {
+            "ward_no": 296990,
+            "ward_name": "Tokubari",
+            "ward_id": 296990
+        },
+        {
+            "ward_no": 296853,
+            "ward_name": "Toupura",
+            "ward_id": 296853
+        },
+        {
+            "ward_no": 297257,
+            "ward_name": "Tubong Engti",
+            "ward_id": 297257
+        },
+        {
+            "ward_no": 911398,
+            "ward_name": "Udharjan",
+            "ward_id": 911398
+        },
+        {
+            "ward_no": 911397,
+            "ward_name": "Uttar Borbil",
+            "ward_id": 911397
+        },
+        {
+            "ward_no": 296831,
+            "ward_name": "Uttar Borbill 4 Block Block 1,2",
+            "ward_id": 296831
+        },
+        {
+            "ward_no": 296830,
+            "ward_name": "Uttar Borbill Block 1,2",
+            "ward_id": 296830
+        },
+        {
+            "ward_no": 296832,
+            "ward_name": "Uttar Borbill No.5 Block 1,2",
+            "ward_id": 296832
+        },
+        {
+            "ward_no": 296794,
+            "ward_name": "Uttar Borbil No.1",
+            "ward_id": 296794
+        },
+        {
+            "ward_no": 296828,
+            "ward_name": "Uttar Borbil No.2",
+            "ward_id": 296828
+        },
+        {
+            "ward_no": 296829,
+            "ward_name": "Uttar Borbil No.3",
+            "ward_id": 296829
+        },
+        {
+            "ward_no": 296793,
+            "ward_name": "Uttar Bor Bil Reng Reng Jharani",
+            "ward_id": 296793
+        },
+        {
+            "ward_no": 296872,
+            "ward_name": "Uttar Pan Kumar",
+            "ward_id": 296872
+        },
+        {
+            "ward_no": 296827,
+            "ward_name": "Uttor Borbil Block-I No.2",
+            "ward_id": 296827
+        },
+        {
+            "ward_no": 296958,
+            "ward_name": "Uttor Phonglokpet",
+            "ward_id": 296958
+        },
+        {
+            "ward_no": 296874,
+            "ward_name": "Vohar Engti",
+            "ward_id": 296874
+        },
+        {
+            "ward_no": 297651,
+            "ward_name": "Wapong Teron",
+            "ward_id": 297651
+        },
+        {
+            "ward_no": 296728,
+            "ward_name": "Western Range Borlangpher",
+            "ward_id": 296728
+        },
+        {
+            "ward_no": 911399,
+            "ward_name": "West Tarabasa",
+            "ward_id": 911399
+        },
+        {
+            "ward_no": 296447,
+            "ward_name": "Wophong Timung",
+            "ward_id": 296447
+        }
+    ]
+}

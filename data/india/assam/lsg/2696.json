@@ -1,0 +1,149 @@
+{
+    "name": "Lakuwa",
+    "lsg_code": 2696,
+    "district": "Charaideo",
+    "state": "Assam",
+    "no_of_wards": 28,
+    "wards": [
+        {
+            "ward_no": 292969,
+            "ward_name": "Bheloguri Dubi Lakwa Chah Bagicha",
+            "ward_id": 292969
+        },
+        {
+            "ward_no": 292976,
+            "ward_name": "Bhokot Bhajoni Pothar",
+            "ward_id": 292976
+        },
+        {
+            "ward_no": 292982,
+            "ward_name": "Bhokot Gaon",
+            "ward_id": 292982
+        },
+        {
+            "ward_no": 292980,
+            "ward_name": "Bormothurapur Gaon",
+            "ward_id": 292980
+        },
+        {
+            "ward_no": 292984,
+            "ward_name": "Chakial Gaon",
+            "ward_id": 292984
+        },
+        {
+            "ward_no": 292986,
+            "ward_name": "Charimuthia Gaon",
+            "ward_id": 292986
+        },
+        {
+            "ward_no": 292987,
+            "ward_name": "Chetia Gaon",
+            "ward_id": 292987
+        },
+        {
+            "ward_no": 292975,
+            "ward_name": "Chola Chah Bagicha",
+            "ward_id": 292975
+        },
+        {
+            "ward_no": 292974,
+            "ward_name": "Chola F.R",
+            "ward_id": 292974
+        },
+        {
+            "ward_no": 292973,
+            "ward_name": "Chola Pothar Gaon",
+            "ward_id": 292973
+        },
+        {
+            "ward_no": 292994,
+            "ward_name": "Chuladhowa Khonikar",
+            "ward_id": 292994
+        },
+        {
+            "ward_no": 292996,
+            "ward_name": "Chumoni",
+            "ward_id": 292996
+        },
+        {
+            "ward_no": 292988,
+            "ward_name": "Dhamdhuli Gaon",
+            "ward_id": 292988
+        },
+        {
+            "ward_no": 292989,
+            "ward_name": "Ghorpholia",
+            "ward_id": 292989
+        },
+        {
+            "ward_no": 292993,
+            "ward_name": "Handique Gaon",
+            "ward_id": 292993
+        },
+        {
+            "ward_no": 292990,
+            "ward_name": "Hulal",
+            "ward_id": 292990
+        },
+        {
+            "ward_no": 293171,
+            "ward_name": "Khokon Pothar F.V",
+            "ward_id": 293171
+        },
+        {
+            "ward_no": 292992,
+            "ward_name": "Kukurachowa Gaon",
+            "ward_id": 292992
+        },
+        {
+            "ward_no": 293172,
+            "ward_name": "Manuhmari F.V",
+            "ward_id": 293172
+        },
+        {
+            "ward_no": 292995,
+            "ward_name": "Moran Gaon",
+            "ward_id": 292995
+        },
+        {
+            "ward_no": 292983,
+            "ward_name": "Mothura Pur Jungle",
+            "ward_id": 292983
+        },
+        {
+            "ward_no": 292977,
+            "ward_name": "Naharhabi Grant & Lakwa Rly. Stn.",
+            "ward_id": 292977
+        },
+        {
+            "ward_no": 292978,
+            "ward_name": "Naharhabi Grant No.83",
+            "ward_id": 292978
+        },
+        {
+            "ward_no": 292972,
+            "ward_name": "Nara Gaon",
+            "ward_id": 292972
+        },
+        {
+            "ward_no": 292981,
+            "ward_name": "No.101 F.S Grant",
+            "ward_id": 292981
+        },
+        {
+            "ward_no": 292985,
+            "ward_name": "No.2 Konwar",
+            "ward_id": 292985
+        },
+        {
+            "ward_no": 292991,
+            "ward_name": "Rajabari Gaon",
+            "ward_id": 292991
+        },
+        {
+            "ward_no": 292979,
+            "ward_name": "Saru Mothurapur",
+            "ward_id": 292979
+        }
+    ]
+}

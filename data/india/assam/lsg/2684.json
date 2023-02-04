@@ -1,0 +1,249 @@
+{
+    "name": "Paschim Nalbari",
+    "lsg_code": 2684,
+    "district": "Nalbari",
+    "state": "Assam",
+    "no_of_wards": 48,
+    "wards": [
+        {
+            "ward_no": 303668,
+            "ward_name": "Amani",
+            "ward_id": 303668
+        },
+        {
+            "ward_no": 303695,
+            "ward_name": "Bagurihati",
+            "ward_id": 303695
+        },
+        {
+            "ward_no": 303711,
+            "ward_name": "Bangaon (Ct)",
+            "ward_id": 303711
+        },
+        {
+            "ward_no": 303674,
+            "ward_name": "Barhelacha",
+            "ward_id": 303674
+        },
+        {
+            "ward_no": 303679,
+            "ward_name": "Bari",
+            "ward_id": 303679
+        },
+        {
+            "ward_no": 303684,
+            "ward_name": "Barkhetri Barni(Barkhetri)",
+            "ward_id": 303684
+        },
+        {
+            "ward_no": 303691,
+            "ward_name": "Barnarddi (Barnardoli)",
+            "ward_id": 303691
+        },
+        {
+            "ward_no": 303693,
+            "ward_name": "Batshor",
+            "ward_id": 303693
+        },
+        {
+            "ward_no": 303708,
+            "ward_name": "Belsor (Ct)",
+            "ward_id": 303708
+        },
+        {
+            "ward_no": 303701,
+            "ward_name": "Bhairaghol",
+            "ward_id": 303701
+        },
+        {
+            "ward_no": 303687,
+            "ward_name": "Bihampur",
+            "ward_id": 303687
+        },
+        {
+            "ward_no": 303683,
+            "ward_name": "Billeswar",
+            "ward_id": 303683
+        },
+        {
+            "ward_no": 303665,
+            "ward_name": "Chamata",
+            "ward_id": 303665
+        },
+        {
+            "ward_no": 303692,
+            "ward_name": "Churchuri",
+            "ward_id": 303692
+        },
+        {
+            "ward_no": 303677,
+            "ward_name": "Dahudi",
+            "ward_id": 303677
+        },
+        {
+            "ward_no": 303706,
+            "ward_name": "Dangardi",
+            "ward_id": 303706
+        },
+        {
+            "ward_no": 303697,
+            "ward_name": "Dehar Bolawa",
+            "ward_id": 303697
+        },
+        {
+            "ward_no": 303666,
+            "ward_name": "Gandhia",
+            "ward_id": 303666
+        },
+        {
+            "ward_no": 303704,
+            "ward_name": "Gangapur",
+            "ward_id": 303704
+        },
+        {
+            "ward_no": 303675,
+            "ward_name": "Ghilazari",
+            "ward_id": 303675
+        },
+        {
+            "ward_no": 303696,
+            "ward_name": "Goalpara",
+            "ward_id": 303696
+        },
+        {
+            "ward_no": 303703,
+            "ward_name": "Godira",
+            "ward_id": 303703
+        },
+        {
+            "ward_no": 303698,
+            "ward_name": "Jagara",
+            "ward_id": 303698
+        },
+        {
+            "ward_no": 303678,
+            "ward_name": "Kaihati",
+            "ward_id": 303678
+        },
+        {
+            "ward_no": 303709,
+            "ward_name": "Kakaya (Ct)",
+            "ward_id": 303709
+        },
+        {
+            "ward_no": 303671,
+            "ward_name": "Kandubari",
+            "ward_id": 303671
+        },
+        {
+            "ward_no": 303669,
+            "ward_name": "Kathla",
+            "ward_id": 303669
+        },
+        {
+            "ward_no": 303699,
+            "ward_name": "Khakhrisal (Khakhisal)",
+            "ward_id": 303699
+        },
+        {
+            "ward_no": 303664,
+            "ward_name": "Khatarupiabathan",
+            "ward_id": 303664
+        },
+        {
+            "ward_no": 303673,
+            "ward_name": "Khelua",
+            "ward_id": 303673
+        },
+        {
+            "ward_no": 303685,
+            "ward_name": "Khudra Khetribarni",
+            "ward_id": 303685
+        },
+        {
+            "ward_no": 303700,
+            "ward_name": "Kutnikuchi",
+            "ward_id": 303700
+        },
+        {
+            "ward_no": 303672,
+            "ward_name": "Lakhapur (Larchapur)",
+            "ward_id": 303672
+        },
+        {
+            "ward_no": 303702,
+            "ward_name": "Larakuchi",
+            "ward_id": 303702
+        },
+        {
+            "ward_no": 303705,
+            "ward_name": "Mohbiyani",
+            "ward_id": 303705
+        },
+        {
+            "ward_no": 303694,
+            "ward_name": "Mohkholi",
+            "ward_id": 303694
+        },
+        {
+            "ward_no": 303682,
+            "ward_name": "Nalicha",
+            "ward_id": 303682
+        },
+        {
+            "ward_no": 303690,
+            "ward_name": "Nizpokowa",
+            "ward_id": 303690
+        },
+        {
+            "ward_no": 303680,
+            "ward_name": "Niztapa",
+            "ward_id": 303680
+        },
+        {
+            "ward_no": 303688,
+            "ward_name": "Panigaon",
+            "ward_id": 303688
+        },
+        {
+            "ward_no": 303710,
+            "ward_name": "Pipalibari (Ct)",
+            "ward_id": 303710
+        },
+        {
+            "ward_no": 303670,
+            "ward_name": "Pukhura",
+            "ward_id": 303670
+        },
+        {
+            "ward_no": 303707,
+            "ward_name": "Rupiabathan (Ct)",
+            "ward_id": 303707
+        },
+        {
+            "ward_no": 303981,
+            "ward_name": "Sandheli",
+            "ward_id": 303981
+        },
+        {
+            "ward_no": 303686,
+            "ward_name": "Simalia",
+            "ward_id": 303686
+        },
+        {
+            "ward_no": 303667,
+            "ward_name": "Solmari",
+            "ward_id": 303667
+        },
+        {
+            "ward_no": 303676,
+            "ward_name": "Sukekuchi",
+            "ward_id": 303676
+        },
+        {
+            "ward_no": 303681,
+            "ward_name": "Thutikata",
+            "ward_id": 303681
+        }
+    ]
+}

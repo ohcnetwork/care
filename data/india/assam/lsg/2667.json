@@ -1,0 +1,199 @@
+{
+    "name": "Khagarijan",
+    "lsg_code": 2667,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 38,
+    "wards": [
+        {
+            "ward_no": 284716,
+            "ward_name": "Alengi Satra",
+            "ward_id": 284716
+        },
+        {
+            "ward_no": 284705,
+            "ward_name": "Auguri",
+            "ward_id": 284705
+        },
+        {
+            "ward_no": 284702,
+            "ward_name": "Bamun Gaon",
+            "ward_id": 284702
+        },
+        {
+            "ward_no": 284711,
+            "ward_name": "Bangthai",
+            "ward_id": 284711
+        },
+        {
+            "ward_no": 284700,
+            "ward_name": "Barbheti",
+            "ward_id": 284700
+        },
+        {
+            "ward_no": 284695,
+            "ward_name": "Bhakat Gaon",
+            "ward_id": 284695
+        },
+        {
+            "ward_no": 284710,
+            "ward_name": "Birah Bebejia",
+            "ward_id": 284710
+        },
+        {
+            "ward_no": 284816,
+            "ward_name": "Dimaruguri (Ct)",
+            "ward_id": 284816
+        },
+        {
+            "ward_no": 284713,
+            "ward_name": "Dimow",
+            "ward_id": 284713
+        },
+        {
+            "ward_no": 284689,
+            "ward_name": "Dipahalu",
+            "ward_id": 284689
+        },
+        {
+            "ward_no": 284687,
+            "ward_name": "Etapara",
+            "ward_id": 284687
+        },
+        {
+            "ward_no": 284715,
+            "ward_name": "Garikuri Bebejia(Gariguri Bebe",
+            "ward_id": 284715
+        },
+        {
+            "ward_no": 284683,
+            "ward_name": "Herapati",
+            "ward_id": 284683
+        },
+        {
+            "ward_no": 284712,
+            "ward_name": "Jamuguri",
+            "ward_id": 284712
+        },
+        {
+            "ward_no": 284784,
+            "ward_name": "Kamar Gaon",
+            "ward_id": 284784
+        },
+        {
+            "ward_no": 284693,
+            "ward_name": "Katimari Grant",
+            "ward_id": 284693
+        },
+        {
+            "ward_no": 284692,
+            "ward_name": "Katimari Pathar",
+            "ward_id": 284692
+        },
+        {
+            "ward_no": 284698,
+            "ward_name": "Kawaimari",
+            "ward_id": 284698
+        },
+        {
+            "ward_no": 284684,
+            "ward_name": "Kendu Guri",
+            "ward_id": 284684
+        },
+        {
+            "ward_no": 284707,
+            "ward_name": "Khuti Katia",
+            "ward_id": 284707
+        },
+        {
+            "ward_no": 284688,
+            "ward_name": "Lao Gaon",
+            "ward_id": 284688
+        },
+        {
+            "ward_no": 284703,
+            "ward_name": "Mahe Khosha",
+            "ward_id": 284703
+        },
+        {
+            "ward_no": 284691,
+            "ward_name": "Majarati",
+            "ward_id": 284691
+        },
+        {
+            "ward_no": 284682,
+            "ward_name": "Naramari",
+            "ward_id": 284682
+        },
+        {
+            "ward_no": 284701,
+            "ward_name": "Niz-Kachamari",
+            "ward_id": 284701
+        },
+        {
+            "ward_no": 284720,
+            "ward_name": "Palasoni",
+            "ward_id": 284720
+        },
+        {
+            "ward_no": 284706,
+            "ward_name": "Phakali Pathar",
+            "ward_id": 284706
+        },
+        {
+            "ward_no": 284704,
+            "ward_name": "Pukhuri Par",
+            "ward_id": 284704
+        },
+        {
+            "ward_no": 284699,
+            "ward_name": "Ranga Gara Huzz",
+            "ward_id": 284699
+        },
+        {
+            "ward_no": 284686,
+            "ward_name": "Rowmari",
+            "ward_id": 284686
+        },
+        {
+            "ward_no": 284685,
+            "ward_name": "Rupahi Gaon",
+            "ward_id": 284685
+        },
+        {
+            "ward_no": 284708,
+            "ward_name": "Sensuwa",
+            "ward_id": 284708
+        },
+        {
+            "ward_no": 284694,
+            "ward_name": "Silangani Gaon",
+            "ward_id": 284694
+        },
+        {
+            "ward_no": 284697,
+            "ward_name": "Simaluguri",
+            "ward_id": 284697
+        },
+        {
+            "ward_no": 284696,
+            "ward_name": "Takowbari",
+            "ward_id": 284696
+        },
+        {
+            "ward_no": 284690,
+            "ward_name": "Telia Gaon",
+            "ward_id": 284690
+        },
+        {
+            "ward_no": 284719,
+            "ward_name": "Telia Pahukata",
+            "ward_id": 284719
+        },
+        {
+            "ward_no": 284714,
+            "ward_name": "Tukulai Bebejia (Tukulai)",
+            "ward_id": 284714
+        }
+    ]
+}

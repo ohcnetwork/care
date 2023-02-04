@@ -31,6 +31,9 @@ class TestSuperUser(TestBase):
             "pf_endpoint": obj.pf_endpoint,
             "pf_p256dh": obj.pf_p256dh,
             "pf_auth": obj.pf_auth,
+            'doctor_experience_commenced_on': obj.doctor_experience_commenced_on,
+            'doctor_medical_council_registration': obj.doctor_medical_council_registration,
+            'doctor_qualification': obj.doctor_qualification,
             **self.get_local_body_district_state_representation(obj),
         }
 
@@ -60,7 +63,7 @@ class TestSuperUser(TestBase):
         data["district"] = data["district"].id
         data["state"] = data["state"].id
 
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31},)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31}, )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
@@ -136,7 +139,7 @@ class TestUser(TestBase):
         """Test user can modify the attributes for themselves"""
         password = "new_password"
         username = self.user.username
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, }, )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -153,7 +156,7 @@ class TestUser(TestBase):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, },)
+        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, }, )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_delete_others(self):

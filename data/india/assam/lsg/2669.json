@@ -1,0 +1,424 @@
+{
+    "name": "Lumding",
+    "lsg_code": 2669,
+    "district": "Hojai",
+    "state": "Assam",
+    "no_of_wards": 83,
+    "wards": [
+        {
+            "ward_no": 285486,
+            "ward_name": "Barmangsu F.V.",
+            "ward_id": 285486
+        },
+        {
+            "ward_no": 285480,
+            "ward_name": "Chandura",
+            "ward_id": 285480
+        },
+        {
+            "ward_no": 285472,
+            "ward_name": "Dakhin Lumding",
+            "ward_id": 285472
+        },
+        {
+            "ward_no": 285474,
+            "ward_name": "Dakhin Lumding Part-1",
+            "ward_id": 285474
+        },
+        {
+            "ward_no": 285434,
+            "ward_name": "Deben Gaon No.1",
+            "ward_id": 285434
+        },
+        {
+            "ward_no": 285435,
+            "ward_name": "Deben Gaon No.2",
+            "ward_id": 285435
+        },
+        {
+            "ward_no": 285406,
+            "ward_name": "Deka Basti",
+            "ward_id": 285406
+        },
+        {
+            "ward_no": 285425,
+            "ward_name": "Dera Pathar No. 1 N.C.",
+            "ward_id": 285425
+        },
+        {
+            "ward_no": 285426,
+            "ward_name": "Dera Pathar No.2 N.C.",
+            "ward_id": 285426
+        },
+        {
+            "ward_no": 285427,
+            "ward_name": "Dera Pathar No.3 N.C.",
+            "ward_id": 285427
+        },
+        {
+            "ward_no": 285428,
+            "ward_name": "Dera Pathar No.4 N.C.",
+            "ward_id": 285428
+        },
+        {
+            "ward_no": 285494,
+            "ward_name": "Dimaru Pathar F.V.",
+            "ward_id": 285494
+        },
+        {
+            "ward_no": 285483,
+            "ward_name": "F.T.V.No.1(Kakitangia F.V.No.1)",
+            "ward_id": 285483
+        },
+        {
+            "ward_no": 285484,
+            "ward_name": "F.T.V.No.2(Kakitangia No.2)",
+            "ward_id": 285484
+        },
+        {
+            "ward_no": 285485,
+            "ward_name": "F.T.V.No.3(Kaki Tangia No.3)",
+            "ward_id": 285485
+        },
+        {
+            "ward_no": 285460,
+            "ward_name": "Hati Khali Gaon",
+            "ward_id": 285460
+        },
+        {
+            "ward_no": 285456,
+            "ward_name": "Hati Khali No.1",
+            "ward_id": 285456
+        },
+        {
+            "ward_no": 285457,
+            "ward_name": "Hatikhali No.2",
+            "ward_id": 285457
+        },
+        {
+            "ward_no": 285454,
+            "ward_name": "Hatikhuli No.3",
+            "ward_id": 285454
+        },
+        {
+            "ward_no": 285461,
+            "ward_name": "Jarang Disha",
+            "ward_id": 285461
+        },
+        {
+            "ward_no": 285462,
+            "ward_name": "Jarang Disha No.1",
+            "ward_id": 285462
+        },
+        {
+            "ward_no": 285463,
+            "ward_name": "Jarang Disha No.2",
+            "ward_id": 285463
+        },
+        {
+            "ward_no": 285467,
+            "ward_name": "Jungle Block",
+            "ward_id": 285467
+        },
+        {
+            "ward_no": 285465,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 285465
+        },
+        {
+            "ward_no": 285466,
+            "ward_name": "Kachari Pam",
+            "ward_id": 285466
+        },
+        {
+            "ward_no": 285475,
+            "ward_name": "Kangar Gaon",
+            "ward_id": 285475
+        },
+        {
+            "ward_no": 285473,
+            "ward_name": "Kangargaon Part-1",
+            "ward_id": 285473
+        },
+        {
+            "ward_no": 285449,
+            "ward_name": "Kenekkegi Show Basti",
+            "ward_id": 285449
+        },
+        {
+            "ward_no": 285430,
+            "ward_name": "Khagarijan No.1",
+            "ward_id": 285430
+        },
+        {
+            "ward_no": 285433,
+            "ward_name": "Khagarijan No.2",
+            "ward_id": 285433
+        },
+        {
+            "ward_no": 285431,
+            "ward_name": "Khagarijan No.3",
+            "ward_id": 285431
+        },
+        {
+            "ward_no": 285440,
+            "ward_name": "Khring Khring No.1",
+            "ward_id": 285440
+        },
+        {
+            "ward_no": 285432,
+            "ward_name": "Khring Khring No.2",
+            "ward_id": 285432
+        },
+        {
+            "ward_no": 285441,
+            "ward_name": "Khring Khring No.3",
+            "ward_id": 285441
+        },
+        {
+            "ward_no": 285451,
+            "ward_name": "Khristan Basti",
+            "ward_id": 285451
+        },
+        {
+            "ward_no": 285470,
+            "ward_name": "Krishna Basti No.1",
+            "ward_id": 285470
+        },
+        {
+            "ward_no": 285469,
+            "ward_name": "Krishna Basti No.2",
+            "ward_id": 285469
+        },
+        {
+            "ward_no": 285471,
+            "ward_name": "Krishna Basti No.3",
+            "ward_id": 285471
+        },
+        {
+            "ward_no": 285447,
+            "ward_name": "Lal Mati",
+            "ward_id": 285447
+        },
+        {
+            "ward_no": 285403,
+            "ward_name": "Mathara Bil (T.V.)",
+            "ward_id": 285403
+        },
+        {
+            "ward_no": 285452,
+            "ward_name": "Mora Basti",
+            "ward_id": 285452
+        },
+        {
+            "ward_no": 285409,
+            "ward_name": "Mouzadar Gaon No.1",
+            "ward_id": 285409
+        },
+        {
+            "ward_no": 285410,
+            "ward_name": "Mouzadar Gaon No.2",
+            "ward_id": 285410
+        },
+        {
+            "ward_no": 285429,
+            "ward_name": "Mouzadar Gaon No.3",
+            "ward_id": 285429
+        },
+        {
+            "ward_no": 285404,
+            "ward_name": "Nakhuti Nonkey (N.C)(Naukhutimau Kegareagaon Basti",
+            "ward_id": 285404
+        },
+        {
+            "ward_no": 285442,
+            "ward_name": "Nakhuti P.R.F.",
+            "ward_id": 285442
+        },
+        {
+            "ward_no": 285445,
+            "ward_name": "Pagla Basti",
+            "ward_id": 285445
+        },
+        {
+            "ward_no": 285444,
+            "ward_name": "Panijan",
+            "ward_id": 285444
+        },
+        {
+            "ward_no": 285450,
+            "ward_name": "Photo Pathar",
+            "ward_id": 285450
+        },
+        {
+            "ward_no": 285477,
+            "ward_name": "Pub Lumding",
+            "ward_id": 285477
+        },
+        {
+            "ward_no": 285476,
+            "ward_name": "Pub Lumding Part-1",
+            "ward_id": 285476
+        },
+        {
+            "ward_no": 285481,
+            "ward_name": "Pub Lumding Part-2",
+            "ward_id": 285481
+        },
+        {
+            "ward_no": 285407,
+            "ward_name": "Ramsing Gaon No.1",
+            "ward_id": 285407
+        },
+        {
+            "ward_no": 285408,
+            "ward_name": "Ramsing Gaon No.2",
+            "ward_id": 285408
+        },
+        {
+            "ward_no": 285455,
+            "ward_name": "Sadhukhuti No.1",
+            "ward_id": 285455
+        },
+        {
+            "ward_no": 285453,
+            "ward_name": "Sadhukuthi No.2",
+            "ward_id": 285453
+        },
+        {
+            "ward_no": 285446,
+            "ward_name": "Sarkey Bosti",
+            "ward_id": 285446
+        },
+        {
+            "ward_no": 285439,
+            "ward_name": "Sarthey Basti",
+            "ward_id": 285439
+        },
+        {
+            "ward_no": 285437,
+            "ward_name": "Sarthey Gaon No.1",
+            "ward_id": 285437
+        },
+        {
+            "ward_no": 285436,
+            "ward_name": "Sarthey Gaon No.2",
+            "ward_id": 285436
+        },
+        {
+            "ward_no": 285438,
+            "ward_name": "Sarthey Gaon No.3",
+            "ward_id": 285438
+        },
+        {
+            "ward_no": 285458,
+            "ward_name": "Shastri Gaon No.1",
+            "ward_id": 285458
+        },
+        {
+            "ward_no": 285459,
+            "ward_name": "Shastri Gaon No.2",
+            "ward_id": 285459
+        },
+        {
+            "ward_no": 285405,
+            "ward_name": "Shidhashoria",
+            "ward_id": 285405
+        },
+        {
+            "ward_no": 285468,
+            "ward_name": "Sunlodge Part-1",
+            "ward_id": 285468
+        },
+        {
+            "ward_no": 285464,
+            "ward_name": "Sunlodge Part-2",
+            "ward_id": 285464
+        },
+        {
+            "ward_no": 285478,
+            "ward_name": "Taralongsu Part-1",
+            "ward_id": 285478
+        },
+        {
+            "ward_no": 285479,
+            "ward_name": "Taralongsu Part-2",
+            "ward_id": 285479
+        },
+        {
+            "ward_no": 285443,
+            "ward_name": "Ten Thousand Bigha N.C.",
+            "ward_id": 285443
+        },
+        {
+            "ward_no": 285423,
+            "ward_name": "Teralongsu 2000 Bigha N.C.",
+            "ward_id": 285423
+        },
+        {
+            "ward_no": 285424,
+            "ward_name": "Teralongsu 3000 Bigha N.C.",
+            "ward_id": 285424
+        },
+        {
+            "ward_no": 285448,
+            "ward_name": "The Dong Hola Chakma Basti",
+            "ward_id": 285448
+        },
+        {
+            "ward_no": 285418,
+            "ward_name": "Village No.1 Block No.2",
+            "ward_id": 285418
+        },
+        {
+            "ward_no": 285416,
+            "ward_name": "Village No.1 Block No.3",
+            "ward_id": 285416
+        },
+        {
+            "ward_no": 285420,
+            "ward_name": "Village No.2 Block No.2",
+            "ward_id": 285420
+        },
+        {
+            "ward_no": 285415,
+            "ward_name": "Village No.2 Block No.3",
+            "ward_id": 285415
+        },
+        {
+            "ward_no": 285417,
+            "ward_name": "Village No.3 Block No.2",
+            "ward_id": 285417
+        },
+        {
+            "ward_no": 285412,
+            "ward_name": "Village No.3 Block No.3",
+            "ward_id": 285412
+        },
+        {
+            "ward_no": 285419,
+            "ward_name": "Village No.4 Block No.2",
+            "ward_id": 285419
+        },
+        {
+            "ward_no": 285411,
+            "ward_name": "Village No.4 Block No.3",
+            "ward_id": 285411
+        },
+        {
+            "ward_no": 285414,
+            "ward_name": "Village No.5 Block No.3",
+            "ward_id": 285414
+        },
+        {
+            "ward_no": 285413,
+            "ward_name": "Village No.6 Block No.3",
+            "ward_id": 285413
+        },
+        {
+            "ward_no": 285336,
+            "ward_name": "Village No.7 Block No.1",
+            "ward_id": 285336
+        }
+    ]
+}
