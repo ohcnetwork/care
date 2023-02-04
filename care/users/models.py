@@ -147,7 +147,7 @@ class CustomUserManager(UserManager):
 
 
 class Skill(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=True, blank=True, default="")
 
     def __str__(self):
