@@ -105,27 +105,33 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().verify_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    def add_abha_details_to_patient(self, data, patient_obj):
+    def create_abha(self, abha_profile):
         abha_object = AbhaNumber.objects.filter(
-            abha_number=data["healthIdNumber"]
+            abha_number=abha_profile["healthIdNumber"]
         ).first()
-        if abha_object:
-            # Flow when abha number exists in db somehow!
-            return False
-        else:
-            # Create abha number flow
-            abha_object = AbhaNumber()
-            abha_object.abha_number = data["healthIdNumber"]
-            abha_object.email = data["email"]
-            abha_object.first_name = data["firstName"]
-            abha_object.health_id = data["healthId"]
-            abha_object.last_name = data["lastName"]
-            abha_object.middle_name = data["middleName"]
-            abha_object.profile_photo = data["profilePhoto"]
-            abha_object.save()
 
-        patient_obj.abha_number = abha_object
-        patient_obj.save()
+        if abha_object:
+            return abha_object
+
+        abha_object = AbhaNumber()
+        abha_object.abha_number = abha_profile["healthIdNumber"]
+        abha_object.email = abha_profile["email"]
+        abha_object.first_name = abha_profile["firstName"]
+        abha_object.health_id = abha_profile["healthId"]
+        abha_object.last_name = abha_profile["lastName"]
+        abha_object.middle_name = abha_profile["middleName"]
+        abha_object.profile_photo = abha_profile["profilePhoto"]
+        abha_object.txn_id = abha_profile["healthIdNumber"]
+        abha_object.save()
+
+        return abha_object
+
+    def add_abha_details_to_patient(self, abha_object, patient_object):
+        if patient_object.abha_number:
+            return False
+
+        patient_object.abha_number = abha_object
+        patient_object.save()
         return True
 
     @swagger_auto_schema(
@@ -140,27 +146,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = CreateHealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGateway().create_health_id(data)
-        abha_object = AbhaNumber.objects.filter(
-            abha_number=response["healthIdNumber"]
-        ).first()
-        if abha_object:
-            # Flow when abha number exists in db somehow!
-            pass
-        else:
-            # Create abha number flow
-            abha_object = AbhaNumber()
-            abha_object.abha_number = response["healthIdNumber"]
-            abha_object.email = response["email"]
-            abha_object.first_name = response["firstName"]
-            abha_object.health_id = response["healthId"]
-            abha_object.last_name = response["lastName"]
-            abha_object.middle_name = response["middleName"]
-            abha_object.profile_photo = response["profilePhoto"]
-            abha_object.txn_id = response["healthIdNumber"]
-            abha_object.access_token = response["token"]
-            abha_object.refresh_token = data["txnId"]
-            abha_object.save()
+        abha_profile = HealthIdGateway().create_health_id(data)
+
+        # have a serializer to verify data of abha_profile
+        abha_object = self.create_abha(abha_profile)
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
@@ -168,10 +157,20 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
                 raise ValidationError({"patient": "Not Found"})
-            patient_obj.abha_number = abha_object
-            patient_obj.save()
 
-        return Response(response, status=status.HTTP_200_OK)
+            if not self.add_abha_details_to_patient(
+                abha_object,
+                patient_obj,
+            ):
+                return Response(
+                    {"message": "Failed to add abha Number to the patient"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        return Response(
+            {"id": abha_object.external_id, "abha_profile": abha_profile},
+            status=status.HTTP_200_OK,
+        )
 
     # APIs to Find & Link Existing HealthID
     # searchByHealthId
@@ -219,7 +218,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_aadhaar_otp(data)
-        abha_object = HealthIdGateway().get_profile(response)
+        abha_profile = HealthIdGateway().get_profile(response)
+
+        # have a serializer to verify data of abha_profile
+        abha_object = self.create_abha(abha_profile)
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
@@ -233,11 +235,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 patient_obj,
             ):
                 return Response(
-                    {"message": "ABHA NUmber / Health ID already Exists"},
+                    {"message": "Failed to add abha Number to the patient"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        return Response(abha_object, status=status.HTTP_200_OK)
+        return Response(
+            {"id": abha_object.external_id, "abha_profile": abha_profile},
+            status=status.HTTP_200_OK,
+        )
 
     # /v1/auth/confirmWithMobileOtp
     @swagger_auto_schema(
@@ -252,7 +257,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_mobile_otp(data)
-        abha_object = HealthIdGateway().get_profile(response)
+        abha_profile = HealthIdGateway().get_profile(response)
+
+        # have a serializer to verify data of abha_profile
+        abha_object = self.create_abha(abha_profile)
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
@@ -266,11 +274,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 patient_obj,
             ):
                 return Response(
-                    {"message": "ABHA NUmber / Health ID already Exists"},
+                    {"message": "Failed to add abha Number to the patient"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        return Response(abha_object, status=status.HTTP_200_OK)
+        return Response(
+            {"id": abha_object.external_id, "abha_profile": abha_profile},
+            status=status.HTTP_200_OK,
+        )
 
     @swagger_auto_schema(
         operation_id="confirm_with_demographics",
@@ -285,24 +296,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_demographics(data)
         return Response(response, status=status.HTTP_200_OK)
-
-        # patient_id = data.pop("patientId")
-        # if patient_id and response.status:
-        #     allowed_patients = get_patient_queryset(request.user)
-        #     patient_obj = allowed_patients.filter(external_id=patient_id).first()
-        #     if not patient_obj:
-        #         raise ValidationError({"patient": "Not Found"})
-
-        #     if self.add_abha_details_to_patient(
-        #         abha_object,
-        #         patient_obj,
-        #     ):
-        #         return Response(abha_object, status=status.HTTP_200_OK)
-        #     else:
-        #         return Response(
-        #             {"message": "ABHA NUmber / Health ID already Exists"},
-        #             status=status.HTTP_400_BAD_REQUEST,
-        #         )
 
     ############################################################################################################
     # HealthID V2 APIs
