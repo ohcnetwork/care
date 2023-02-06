@@ -141,7 +141,7 @@ class AssetViewSet(
     serializer_class = AssetSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
-    search_fields = ["name"]
+    search_fields = ["name","serial_number","qr_code_id"]
     permission_classes = [IsAuthenticated]
     filterset_class = AssetFilter
 
