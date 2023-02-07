@@ -1,5 +1,7 @@
 # ABDM HealthID APIs
 
+from datetime import datetime
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
@@ -15,11 +17,13 @@ from care.abdm.api.serializers.healthid import (
     GenerateMobileOtpRequestPayloadSerializer,
     HealthIdAuthSerializer,
     HealthIdSerializer,
+    QRContentSerializer,
     VerifyDemographicsRequestPayloadSerializer,
     VerifyOtpRequestPayloadSerializer,
 )
 from care.abdm.models import AbhaNumber
-from care.abdm.utils.api_call import HealthIdGateway, HealthIdGatewayV2
+from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
+from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
 
@@ -41,7 +45,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         data = request.data
         serializer = AadharOtpGenerateRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        response = HealthIdGatewayV2().generate_aadhaar_otp(data)
+        response = HealthIdGateway().generate_aadhaar_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
@@ -193,6 +197,60 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().search_by_health_id(data)
         return Response(response, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        # /v1/registration/aadhaar/searchByHealthId
+        operation_id="link_via_qr",
+        request_body=HealthIdSerializer,
+        responses={"200": "{'status': 'boolean'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def link_via_qr(self, request):
+        data = request.data
+        serializer = QRContentSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        if "patientId" not in data:
+            patient = PatientRegistration.objects.create(
+                facility=Facility.objects.get(external_id=data["facilityId"]),
+                name=data["name"],
+                gender=1
+                if data["gender"] == "M"
+                else 2
+                if data["gender"] == "F"
+                else 3,
+                is_antenatal=False,
+                phone_number=data["mobile"],
+                emergency_phone_number=data["mobile"],
+                date_of_birth=datetime.strptime(data["dob"], "%d-%m-%Y").date(),
+                blood_group="UNK",
+                nationality="India",
+                address=data["address"],
+                pincode=None,
+                created_by=None,
+                state=None,
+                district=None,
+                local_body=None,
+                ward=None,
+            )
+            patient.save()
+
+            patient_id = patient.external_id
+        else:
+            patient_id = data["patientId"]
+
+        AbdmGateway().fetch_modes(
+            {
+                "healthId": data["phr"] or data["hidn"],
+                "name": data["name"],
+                "gender": data["gender"],
+                "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[0:10],
+                "patientId": patient_id,
+            }
+        )
+
+        return Response({}, status=status.HTTP_200_OK)
 
     # auth/init
     @swagger_auto_schema(

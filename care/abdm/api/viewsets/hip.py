@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.hip import HipShareProfileSerializer
-from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
@@ -18,27 +17,8 @@ class HipViewSet(GenericViewSet):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    def add_abha_details_to_patient(self, data, patient_obj):
-        abha_object = AbhaNumber.objects.filter(
-            abha_number=data["healthIdNumber"]
-        ).first()
-        if abha_object:
-            # Flow when abha number exists in db somehow!
-            pass
-        else:
-            # Create abha number flow
-            abha_object = AbhaNumber()
-            abha_object.abha_number = data["healthIdNumber"]
-            # abha_object.email = data["email"]
-            # abha_object.first_name = data["firstName"]
-            abha_object.health_id = data["healthId"]
-            # abha_object.last_name = data["lastName"]
-            # abha_object.middle_name = data["middleName"]
-            # abha_object.profile_photo = data["profilePhoto"]
-            abha_object.save()
-
-        patient_obj.abha_number = abha_object
-        patient_obj.save()
+    def add_abha_details_to_patient(self, data):
+        AbdmGateway().fetch_modes(data)
         return True
 
     def demographics_verification(self, data):
@@ -63,7 +43,9 @@ class HipViewSet(GenericViewSet):
         data = request.data
 
         patient_data = data["profile"]["patient"]
-        counter_id = data["profile"]["hipCode"]
+        counter_id = (
+            "8be5ab36-1b66-44ca-ae77-c719e084160d" or data["profile"]["hipCode"]
+        )
 
         patient_data["mobile"] = ""
         for identifier in patient_data["identifiers"]:
@@ -104,7 +86,22 @@ class HipViewSet(GenericViewSet):
                     local_body=None,
                     ward=None,
                 )
-                self.add_abha_details_to_patient(patient_data, patient)
+                patient.save()
+                self.add_abha_details_to_patient(
+                    {
+                        "healthId": patient_data["healthId"]
+                        or patient_data["healthIdNumber"],
+                        "name": patient_data["name"],
+                        "gender": patient_data["gender"],
+                        "dateOfBirth": str(
+                            datetime.strptime(
+                                f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                                "%Y-%m-%d",
+                            )
+                        )[0:10],
+                        "patientId": patient.external_id,
+                    }
+                )
 
             payload = {
                 "requestId": str(uuid.uuid4()),

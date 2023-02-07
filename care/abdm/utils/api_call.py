@@ -1,11 +1,16 @@
 import json
+import uuid
 from base64 import b64encode
+from datetime import datetime, timezone
 
 import requests
 from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.core.cache import cache
+
+from care.abdm.models import AbhaNumber
+from care.facility.models import PatientRegistration
 
 GATEWAY_API_URL = "https://dev.abdm.gov.in/"
 HEALTH_SERVICE_API_URL = "https://healthidsbx.abdm.gov.in/api"
@@ -296,14 +301,134 @@ class HealthIdGatewayV2:
 
 
 class AbdmGateway:
+    # TODO: replace this with in-memory db (redis)
+    temp_memory = {}
+    hip_id = "IN3210000017"
+
     def __init__(self):
         self.api = APIGateway("abdm_gateway", None)
+
+    def link_patient_abha(self, patient, access_token, request_id):
+        data = self.temp_memory[request_id]
+
+        abha_object = AbhaNumber()
+        abha_object.health_id = patient["id"] or data["healthId"]
+        # abha_object.email = data["email"]
+        # abha_object.first_name = data["firstName"]
+        # abha_object.health_id = data["healthId"]
+        # abha_object.last_name = data["lastName"]
+        # abha_object.middle_name = data["middleName"]
+        # abha_object.profile_photo = data["profilePhoto"]
+        abha_object.access_token = access_token
+        abha_object.save()
+
+        patient = PatientRegistration.objects.filter(
+            external_id=data["patientId"]
+        ).first()
+        patient.abha_number = abha_object
+        patient.save()
 
     # /v0.5/users/auth/fetch-modes
     def fetch_modes(self, data):
         path = "/v0.5/users/auth/fetch-modes"
-        response = self.api.post(path, data)
-        return response.json()
+        additional_headers = {"X-CM-ID": "sbx"}
+        request_id = str(uuid.uuid4())
+
+        """
+        data = {
+            healthId,
+            name,
+            gender,
+            dateOfBirth,
+            patientId
+        }
+        """
+        self.temp_memory[request_id] = data
+
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "query": {
+                "id": data["healthId"],
+                "purpose": "KYC_AND_LINK",
+                "requester": {"type": "HIP", "id": self.hip_id},
+            },
+        }
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    # "/v0.5/users/auth/init"
+    def init(self, prev_request_id):
+        path = "/v0.5/users/auth/init"
+        additional_headers = {"X-CM-ID": "sbx"}
+
+        request_id = str(uuid.uuid4())
+
+        data = self.temp_memory[prev_request_id]
+        self.temp_memory[request_id] = data
+
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "query": {
+                "id": data["healthId"],
+                "purpose": "KYC_AND_LINK",
+                "authMode": "DEMOGRAPHICS",
+                "requester": {"type": "HIP", "id": self.hip_id},
+            },
+        }
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    """
+    {
+        "requestId": guidv4,
+        "timestamp": isotime,
+        "transactionId": "xxxxxxxxxxxxxxx from on-init",
+        "credential": {
+            "demographic": {
+                "name": "Khavin",
+                "gender": "M",
+                "dateOfBirth": "1999-01-18"
+            },
+            "authCode": ""
+        }
+    }
+    """
+    # "/v0.5/users/auth/confirm"
+    def confirm(self, transaction_id, prev_request_id):
+        path = "/v0.5/users/auth/confirm"
+        additional_headers = {"X-CM-ID": "sbx"}
+
+        request_id = str(uuid.uuid4())
+
+        data = self.temp_memory[prev_request_id]
+        self.temp_memory[request_id] = data
+
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "transactionId": transaction_id,
+            "credential": {
+                "demographic": {
+                    "name": data["name"],
+                    "gender": data["gender"],
+                    "dateOfBirth": data["dateOfBirth"],
+                },
+                "authCode": "",
+            },
+        }
+
+        print(payload)
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
 
     # /v1.0/patients/profile/on-share
     def on_share(self, data):

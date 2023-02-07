@@ -9,6 +9,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
+from care.abdm.api.viewsets.auth import OnConfirmView, OnFetchView, OnInitView
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
@@ -82,6 +83,21 @@ urlpatterns = [
     ),
     path("api/v1/", include(api_router.urlpatterns)),
     path("v1.0/patients/", include(api_router.abdm_urlpatterns)),
+    path(
+        "v0.5/users/auth/on-fetch-modes",
+        OnFetchView.as_view(),
+        name="abdm_on_fetch_modes_view",
+    ),
+    path(
+        "v0.5/users/auth/on-init",
+        OnInitView.as_view(),
+        name="abdm_on_init_view",
+    ),
+    path(
+        "v0.5/users/auth/on-confirm",
+        OnConfirmView.as_view(),
+        name="abdm_on_confirm_view",
+    ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),

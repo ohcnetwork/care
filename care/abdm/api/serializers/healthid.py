@@ -30,6 +30,40 @@ class HealthIdSerializer(Serializer):
     )
 
 
+class QRContentSerializer(Serializer):
+    hidn = CharField(
+        max_length=17,
+        min_length=17,
+        required=True,
+        help_text="Health ID Number",
+    )
+    phr = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Health ID",
+    )
+    name = CharField(
+        max_length=64,
+        min_length=1,
+        required=True,
+        help_text="Name",
+    )
+    gender = CharField(
+        max_length=1,
+        min_length=1,
+        required=True,
+        help_text="Name",
+    )
+    dob = CharField(
+        max_length=10,
+        min_length=8,
+        required=True,
+        help_text="Name",
+    )
+    # {"statelgd":"33","distlgd":"573","address":"C/O Gopalsamy NO 33 A WESTSTREET ODANILAI KASTHURIBAI GRAMAM ARACHALUR Erode","state name":"TAMIL NADU","dist name":"Erode","mobile":"7639899448"}
+
+
 # {
 #   "authMethod": "AADHAAR_OTP",
 #   "healthid": "43-4221-5105-6749"
