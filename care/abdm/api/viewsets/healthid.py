@@ -132,7 +132,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     "%Y-%m-%d",
                 )
             )[0:10],
-            address=abha_profile["address"],
+            address=abha_profile["address"] if "address" in abha_profile else "",
             district=abha_profile["districtName"],
             state=abha_profile["stateName"],
             pincode=abha_profile["pincode"],
