@@ -47,7 +47,7 @@ class HipViewSet(GenericViewSet):
         ):
             patient = PatientRegistration.objects.filter(
                 abha_number__abha_number=patient_data["healthIdNumber"]
-            )
+            ).first()
 
             if not patient:
                 patient = PatientRegistration.objects.create(

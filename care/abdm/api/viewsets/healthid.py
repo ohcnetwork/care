@@ -212,6 +212,26 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer.is_valid(raise_exception=True)
 
         if "patientId" not in data:
+            patient = PatientRegistration.objects.filter(
+                abha_number__abha_number=data["hidn"]
+            ).first()
+            if patient:
+                return Response(
+                    {
+                        "message": "A patient is already associated with the provided Abha Number"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            if (
+                "facilityId" not in data
+                or not Facility.objects.filter(external_id=data["facilityId"]).first()
+            ):
+                return Response(
+                    {"message": "Enter a valid facilityId"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             patient = PatientRegistration.objects.create(
                 facility=Facility.objects.get(external_id=data["facilityId"]),
                 name=data["name"],
@@ -234,11 +254,31 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 local_body=None,
                 ward=None,
             )
-            patient.save()
-
-            patient_id = patient.external_id
         else:
-            patient_id = data["patientId"]
+            patient = PatientRegistration.objects.filter(
+                external_id=data["patientId"]
+            ).first()
+
+            if not patient:
+                return Response(
+                    {"message": "Enter a valid patientId"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        abha_number = AbhaNumber.objects.create(
+            abha_number=data["hidn"],
+            health_id=data["phr"],
+            name=data["name"],
+            gender=data["gender"],
+            date_of_birth=str(datetime.strptime(data["dob"], "%d-%m-%Y"))[0:10],
+            address=data["address"],
+            district=data["dist name"],
+            state=data["state name"],
+        )
+
+        abha_number.save()
+        patient.abha_number = abha_number
+        patient.save()
 
         AbdmGateway().fetch_modes(
             {
@@ -246,7 +286,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 "name": data["name"],
                 "gender": data["gender"],
                 "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[0:10],
-                "patientId": patient_id,
             }
         )
 
