@@ -28,7 +28,9 @@ class HipViewSet(GenericViewSet):
 
         patient_data = data["profile"]["patient"]
         counter_id = (
-            "8be5ab36-1b66-44ca-ae77-c719e084160d" or data["profile"]["hipCode"]
+            data["profile"]["hipCode"]
+            if len(data["profile"]["hipCode"]) == 36
+            else Facility.objects.first().external_id
         )
 
         patient_data["mobile"] = ""
