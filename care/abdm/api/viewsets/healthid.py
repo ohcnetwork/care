@@ -118,7 +118,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if abha_object:
             return abha_object
 
-        abha_object = AbhaNumber().objects.create(
+        abha_object = AbhaNumber.objects.create(
             abha_number=abha_profile["healthIdNumber"],
             health_id=abha_profile["healthId"],
             name=abha_profile["name"],
