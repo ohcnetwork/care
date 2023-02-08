@@ -110,7 +110,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().verify_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    def create_abha(self, abha_profile):
+    def create_abha(self, abha_profile, token):
         abha_object = AbhaNumber.objects.filter(
             abha_number=abha_profile["healthIdNumber"]
         ).first()
@@ -118,15 +118,30 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if abha_object:
             return abha_object
 
-        abha_object = AbhaNumber()
-        abha_object.abha_number = abha_profile["healthIdNumber"]
-        abha_object.email = abha_profile["email"]
-        abha_object.first_name = abha_profile["firstName"]
-        abha_object.health_id = abha_profile["healthId"]
-        abha_object.last_name = abha_profile["lastName"]
-        abha_object.middle_name = abha_profile["middleName"]
-        abha_object.profile_photo = abha_profile["profilePhoto"]
-        abha_object.txn_id = abha_profile["healthIdNumber"]
+        abha_object = AbhaNumber().objects.create(
+            abha_number=abha_profile["healthIdNumber"],
+            health_id=abha_profile["healthId"],
+            name=abha_profile["name"],
+            first_name=abha_profile["firstName"],
+            middle_name=abha_profile["middleName"],
+            last_name=abha_profile["lastName"],
+            gender=abha_profile["gender"],
+            date_of_birth=str(
+                datetime.strptime(
+                    f"{abha_profile['yearOfBirth']}-{abha_profile['monthOfBirth']}-{abha_profile['dayOfBirth']}",
+                    "%Y-%m-%d",
+                )
+            )[0:10],
+            address=abha_profile["address"],
+            district=abha_profile["districtName"],
+            state=abha_profile["stateName"],
+            pincode=abha_profile["pincode"],
+            email=abha_profile["email"],
+            profile_photo=abha_profile["profilePhoto"],
+            txn_id=token["txn_id"],
+            access_token=token["access_token"],
+            refresh_token=token["refresh_token"],
+        )
         abha_object.save()
 
         return abha_object
@@ -158,7 +173,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_profile = HealthIdGateway().create_health_id(data)
 
         # have a serializer to verify data of abha_profile
-        abha_object = self.create_abha(abha_profile)
+        abha_object = self.create_abha(
+            abha_profile,
+            {
+                "txn_id": data["txnId"],
+                "access_token": abha_profile["token"],
+                "refresh_token": None,
+            },
+        )
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
@@ -335,7 +357,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_profile = HealthIdGateway().get_profile(response)
 
         # have a serializer to verify data of abha_profile
-        abha_object = self.create_abha(abha_profile)
+        abha_object = self.create_abha(
+            abha_profile,
+            {
+                "access_token": response["token"],
+                "refresh_token": response["refreshToken"],
+                "txn_id": data["txnId"],
+            },
+        )
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
@@ -374,7 +403,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_profile = HealthIdGateway().get_profile(response)
 
         # have a serializer to verify data of abha_profile
-        abha_object = self.create_abha(abha_profile)
+        abha_object = self.create_abha(
+            abha_profile,
+            {
+                "access_token": response["token"],
+                "refresh_token": response["refreshToken"],
+                "txn_id": data["txnId"],
+            },
+        )
 
         if "patientId" in data:
             patient_id = data.pop("patientId")
