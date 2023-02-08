@@ -509,6 +509,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__icd11_provisional_diagnoses": (
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
+        "last_consultation__discharge_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "last_consultation__created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
     }
 
 
