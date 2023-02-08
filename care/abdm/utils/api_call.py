@@ -8,9 +8,9 @@ from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Q
 
 from care.abdm.models import AbhaNumber
-from care.facility.models import PatientRegistration
 
 GATEWAY_API_URL = "https://dev.abdm.gov.in/"
 HEALTH_SERVICE_API_URL = "https://healthidsbx.abdm.gov.in/api"
@@ -235,6 +235,23 @@ class HealthIdGateway:
         response = self.api.post(path, data)
         return response.json()
 
+    def verify_demographics(self, health_id, name, gender, year_of_birth):
+        auth_init_response = HealthIdGateway().auth_init(
+            {"authMethod": "DEMOGRAPHICS", "healthid": health_id}
+        )
+        if "txnId" in auth_init_response:
+            demographics_response = HealthIdGateway().confirm_with_demographics(
+                {
+                    "txnId": auth_init_response["txnId"],
+                    "name": name,
+                    "gender": gender,
+                    "yearOfBirth": year_of_birth,
+                }
+            )
+            return "status" in demographics_response and demographics_response["status"]
+
+        return False
+
     # /v1/auth/generate/access-token
     def generate_access_token(self, data):
         if "access_token" in data:
@@ -308,25 +325,20 @@ class AbdmGateway:
     def __init__(self):
         self.api = APIGateway("abdm_gateway", None)
 
-    def link_patient_abha(self, patient, access_token, request_id):
+    def save_linking_token(self, patient, access_token, request_id):
         data = self.temp_memory[request_id]
+        health_id = patient["id"] or data["healthId"]
 
-        abha_object = AbhaNumber()
-        abha_object.health_id = patient["id"] or data["healthId"]
-        # abha_object.email = data["email"]
-        # abha_object.first_name = data["firstName"]
-        # abha_object.health_id = data["healthId"]
-        # abha_object.last_name = data["lastName"]
-        # abha_object.middle_name = data["middleName"]
-        # abha_object.profile_photo = data["profilePhoto"]
-        abha_object.access_token = access_token
-        abha_object.save()
-
-        patient = PatientRegistration.objects.filter(
-            external_id=data["patientId"]
+        abha_object = AbhaNumber.objects.filter(
+            Q(abha_number=health_id) | Q(health_id=health_id)
         ).first()
-        patient.abha_number = abha_object
-        patient.save()
+
+        if abha_object:
+            abha_object.access_token = access_token
+            abha_object.save()
+            return True
+
+        return False
 
     # /v0.5/users/auth/fetch-modes
     def fetch_modes(self, data):

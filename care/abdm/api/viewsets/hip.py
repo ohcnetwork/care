@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.hip import HipShareProfileSerializer
+from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
@@ -17,26 +18,9 @@ class HipViewSet(GenericViewSet):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    def add_abha_details_to_patient(self, data):
+    def get_linking_token(self, data):
         AbdmGateway().fetch_modes(data)
         return True
-
-    def demographics_verification(self, data):
-        auth_init_response = HealthIdGateway().auth_init(
-            {"authMethod": "DEMOGRAPHICS", "healthid": data["healthIdNumber"]}
-        )
-        if "txnId" in auth_init_response:
-            demographics_response = HealthIdGateway().confirm_with_demographics(
-                {
-                    "txnId": auth_init_response["txnId"],
-                    "name": data["name"],
-                    "gender": data["gender"],
-                    "yearOfBirth": data["yearOfBirth"],
-                }
-            )
-            return "status" in demographics_response and demographics_response["status"]
-        else:
-            return False
 
     @action(detail=False, methods=["POST"])
     def share(self, request, *args, **kwargs):
@@ -55,7 +39,12 @@ class HipViewSet(GenericViewSet):
         serializer = HipShareProfileSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        if self.demographics_verification(patient_data):
+        if HealthIdGateway().verify_demographics(
+            patient_data["healthIdNumber"],
+            patient_data["name"],
+            patient_data["gender"],
+            patient_data["yearOfBirth"],
+        ):
             patient = PatientRegistration.objects.filter(
                 abha_number__abha_number=patient_data["healthIdNumber"]
             )
@@ -86,8 +75,29 @@ class HipViewSet(GenericViewSet):
                     local_body=None,
                     ward=None,
                 )
+
+                abha_number = AbhaNumber.objects.create(
+                    abha_number=patient_data["healthIdNumber"],
+                    health_id=patient_data["healthId"],
+                    name=patient_data["name"],
+                    gender=patient_data["gender"],
+                    date_of_birth=str(
+                        datetime.strptime(
+                            f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                            "%Y-%m-%d",
+                        )
+                    )[0:10],
+                    address=patient_data["address"]["line"],
+                    district=patient_data["address"]["district"],
+                    state=patient_data["address"]["state"],
+                    pincode=patient_data["address"]["pincode"],
+                )
+
+                abha_number.save()
+                patient.abha_number = abha_number
                 patient.save()
-                self.add_abha_details_to_patient(
+
+                self.get_linking_token(
                     {
                         "healthId": patient_data["healthId"]
                         or patient_data["healthIdNumber"],
@@ -99,7 +109,6 @@ class HipViewSet(GenericViewSet):
                                 "%Y-%m-%d",
                             )
                         )[0:10],
-                        "patientId": patient.external_id,
                     }
                 )
 
@@ -122,7 +131,6 @@ class HipViewSet(GenericViewSet):
 
             on_share_response = AbdmGateway().on_share(payload)
             if on_share_response.status_code == 202:
-                print("on_share_header", on_share_response.request.body)
                 return Response(
                     on_share_response.request.body,
                     status=status.HTTP_202_ACCEPTED,
