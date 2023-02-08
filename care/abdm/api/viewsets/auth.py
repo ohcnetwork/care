@@ -35,7 +35,7 @@ class OnConfirmView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         print(data)
-        AbdmGateway().link_patient_abha(
+        AbdmGateway().save_linking_token(
             data["auth"]["patient"],
             data["auth"]["accessToken"],
             data["resp"]["requestId"],

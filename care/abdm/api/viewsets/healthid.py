@@ -232,6 +232,18 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+            dob = datetime.strptime(data["dob"], "%d-%m-%Y").date()
+            if not HealthIdGateway().verify_demographics(
+                data["phr"] or data["hdin"],
+                data["name"],
+                data["gender"],
+                str(dob.year),
+            ):
+                return Response(
+                    {"message": "Please enter valid data"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
             patient = PatientRegistration.objects.create(
                 facility=Facility.objects.get(external_id=data["facilityId"]),
                 name=data["name"],
@@ -243,7 +255,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 is_antenatal=False,
                 phone_number=data["mobile"],
                 emergency_phone_number=data["mobile"],
-                date_of_birth=datetime.strptime(data["dob"], "%d-%m-%Y").date(),
+                date_of_birth=dob,
                 blood_group="UNK",
                 nationality="India",
                 address=data["address"],
@@ -270,7 +282,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             health_id=data["phr"],
             name=data["name"],
             gender=data["gender"],
-            date_of_birth=str(datetime.strptime(data["dob"], "%d-%m-%Y"))[0:10],
+            date_of_birth=str(dob)[0:10],
             address=data["address"],
             district=data["dist name"],
             state=data["state name"],
@@ -289,7 +301,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             }
         )
 
-        return Response({}, status=status.HTTP_200_OK)
+        return Response({"message": "success"}, status=status.HTTP_200_OK)
 
     # auth/init
     @swagger_auto_schema(
