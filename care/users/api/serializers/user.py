@@ -358,7 +358,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
-    skills = SkillSerializer(many=True, read_only=True, source="userskill_set")
+    skills = SkillSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
