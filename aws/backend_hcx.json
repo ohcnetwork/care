@@ -201,7 +201,7 @@
   ],
   "memory": "512",
   "taskRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
-  "family": "care",
+  "family": "care-hcx",
   "requiresCompatibilities": [
     "FARGATE"
   ],
