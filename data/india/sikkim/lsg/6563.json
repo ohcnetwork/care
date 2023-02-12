@@ -1,0 +1,49 @@
+{
+    "name": "Jorethang",
+    "lsg_code": 6563,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 8,
+    "wards": [
+        {
+            "ward_no": 261120,
+            "ward_name": "Chisopani",
+            "ward_id": 261120
+        },
+        {
+            "ward_no": 261117,
+            "ward_name": "Denchung",
+            "ward_id": 261117
+        },
+        {
+            "ward_no": 261122,
+            "ward_name": "Dhargaon",
+            "ward_id": 261122
+        },
+        {
+            "ward_no": 261123,
+            "ward_name": "Dorop",
+            "ward_id": 261123
+        },
+        {
+            "ward_no": 261199,
+            "ward_name": "Jorethang Forest Block",
+            "ward_id": 261199
+        },
+        {
+            "ward_no": 261118,
+            "ward_name": "Poklok",
+            "ward_id": 261118
+        },
+        {
+            "ward_no": 261121,
+            "ward_name": "Salghari",
+            "ward_id": 261121
+        },
+        {
+            "ward_no": 261119,
+            "ward_name": "Tinik",
+            "ward_id": 261119
+        }
+    ]
+}

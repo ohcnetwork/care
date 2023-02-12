@@ -1,0 +1,59 @@
+{
+    "name": "Hee Martam",
+    "lsg_code": 7139,
+    "district": "Gyalshing",
+    "state": "Sikkim",
+    "no_of_wards": 10,
+    "wards": [
+        {
+            "ward_no": 261041,
+            "ward_name": "Barphok",
+            "ward_id": 261041
+        },
+        {
+            "ward_no": 261040,
+            "ward_name": "Barthang",
+            "ward_id": 261040
+        },
+        {
+            "ward_no": 261039,
+            "ward_name": "Bermiok",
+            "ward_id": 261039
+        },
+        {
+            "ward_no": 261042,
+            "ward_name": "Chingthang",
+            "ward_id": 261042
+        },
+        {
+            "ward_no": 261036,
+            "ward_name": "Hee-Patal",
+            "ward_id": 261036
+        },
+        {
+            "ward_no": 261038,
+            "ward_name": "Martam",
+            "ward_id": 261038
+        },
+        {
+            "ward_no": 261044,
+            "ward_name": "Meeyong",
+            "ward_id": 261044
+        },
+        {
+            "ward_no": 261043,
+            "ward_name": "Mengyong",
+            "ward_id": 261043
+        },
+        {
+            "ward_no": 261037,
+            "ward_name": "Pecherek",
+            "ward_id": 261037
+        },
+        {
+            "ward_no": 261052,
+            "ward_name": "Bernyak Forest Block",
+            "ward_id": 261052
+        }
+    ]
+}

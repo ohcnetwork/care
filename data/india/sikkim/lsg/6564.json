@@ -1,0 +1,134 @@
+{
+    "name": "Namthang",
+    "lsg_code": 6564,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 25,
+    "wards": [
+        {
+            "ward_no": 261175,
+            "ward_name": "Barul",
+            "ward_id": 261175
+        },
+        {
+            "ward_no": 261160,
+            "ward_name": "Bikmat",
+            "ward_id": 261160
+        },
+        {
+            "ward_no": 261171,
+            "ward_name": "Chuba",
+            "ward_id": 261171
+        },
+        {
+            "ward_no": 261194,
+            "ward_name": "Donak",
+            "ward_id": 261194
+        },
+        {
+            "ward_no": 261168,
+            "ward_name": "Kabrey",
+            "ward_id": 261168
+        },
+        {
+            "ward_no": 261169,
+            "ward_name": "Karek",
+            "ward_id": 261169
+        },
+        {
+            "ward_no": 261163,
+            "ward_name": "Kateng-Bokrang",
+            "ward_id": 261163
+        },
+        {
+            "ward_no": 261192,
+            "ward_name": "Khanamtek",
+            "ward_id": 261192
+        },
+        {
+            "ward_no": 261195,
+            "ward_name": "Mamring",
+            "ward_id": 261195
+        },
+        {
+            "ward_no": 261202,
+            "ward_name": "Mamring Forest Block",
+            "ward_id": 261202
+        },
+        {
+            "ward_no": 261167,
+            "ward_name": "Maneydara",
+            "ward_id": 261167
+        },
+        {
+            "ward_no": 261166,
+            "ward_name": "Nagi",
+            "ward_id": 261166
+        },
+        {
+            "ward_no": 261165,
+            "ward_name": "Nalam Kolbung",
+            "ward_id": 261165
+        },
+        {
+            "ward_no": 261201,
+            "ward_name": "Namthang Forest Block",
+            "ward_id": 261201
+        },
+        {
+            "ward_no": 261174,
+            "ward_name": "Nizrameng",
+            "ward_id": 261174
+        },
+        {
+            "ward_no": 261164,
+            "ward_name": "Pakytam",
+            "ward_id": 261164
+        },
+        {
+            "ward_no": 261193,
+            "ward_name": "Pamphok",
+            "ward_id": 261193
+        },
+        {
+            "ward_no": 261162,
+            "ward_name": "Passi",
+            "ward_id": 261162
+        },
+        {
+            "ward_no": 261172,
+            "ward_name": "Perbing",
+            "ward_id": 261172
+        },
+        {
+            "ward_no": 261170,
+            "ward_name": "Phong",
+            "ward_id": 261170
+        },
+        {
+            "ward_no": 261158,
+            "ward_name": "Rabikhola",
+            "ward_id": 261158
+        },
+        {
+            "ward_no": 261173,
+            "ward_name": "Rameng",
+            "ward_id": 261173
+        },
+        {
+            "ward_no": 261161,
+            "ward_name": "Rateypani",
+            "ward_id": 261161
+        },
+        {
+            "ward_no": 261159,
+            "ward_name": "Tangzi",
+            "ward_id": 261159
+        },
+        {
+            "ward_no": 261191,
+            "ward_name": "Turung",
+            "ward_id": 261191
+        }
+    ]
+}

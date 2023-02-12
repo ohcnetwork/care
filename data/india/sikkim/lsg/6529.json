@@ -1,0 +1,94 @@
+{
+    "name": "Dentam",
+    "lsg_code": 6529,
+    "district": "Gyalshing",
+    "state": "Sikkim",
+    "no_of_wards": 17,
+    "wards": [
+        {
+            "ward_no": 261030,
+            "ward_name": "Begha",
+            "ward_id": 261030
+        },
+        {
+            "ward_no": 261023,
+            "ward_name": "Bongten",
+            "ward_id": 261023
+        },
+        {
+            "ward_no": 261032,
+            "ward_name": "Dentam",
+            "ward_id": 261032
+        },
+        {
+            "ward_no": 261051,
+            "ward_name": "Dentam Forest Block",
+            "ward_id": 261051
+        },
+        {
+            "ward_no": 261026,
+            "ward_name": "Gitang",
+            "ward_id": 261026
+        },
+        {
+            "ward_no": 261035,
+            "ward_name": "Hee",
+            "ward_id": 261035
+        },
+        {
+            "ward_no": 261027,
+            "ward_name": "Karmatar",
+            "ward_id": 261027
+        },
+        {
+            "ward_no": 261025,
+            "ward_name": "Liching",
+            "ward_id": 261025
+        },
+        {
+            "ward_no": 261029,
+            "ward_name": "Maneybung",
+            "ward_id": 261029
+        },
+        {
+            "ward_no": 261031,
+            "ward_name": "Mangmo",
+            "ward_id": 261031
+        },
+        {
+            "ward_no": 261034,
+            "ward_name": "Radukhandu",
+            "ward_id": 261034
+        },
+        {
+            "ward_no": 261033,
+            "ward_name": "Sangkhu",
+            "ward_id": 261033
+        },
+        {
+            "ward_no": 261022,
+            "ward_name": "Sapong",
+            "ward_id": 261022
+        },
+        {
+            "ward_no": 261028,
+            "ward_name": "Sopakha",
+            "ward_id": 261028
+        },
+        {
+            "ward_no": 261024,
+            "ward_name": "Srinagi",
+            "ward_id": 261024
+        },
+        {
+            "ward_no": 261021,
+            "ward_name": "Lungzik",
+            "ward_id": 261021
+        },
+        {
+            "ward_no": 261020,
+            "ward_name": "Sardong",
+            "ward_id": 261020
+        }
+    ]
+}

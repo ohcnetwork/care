@@ -1,0 +1,129 @@
+{
+    "name": "Ravangla",
+    "lsg_code": 2158,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 24,
+    "wards": [
+        {
+            "ward_no": 261214,
+            "ward_name": "Bakhim",
+            "ward_id": 261214
+        },
+        {
+            "ward_no": 261213,
+            "ward_name": "Barfung",
+            "ward_id": 261213
+        },
+        {
+            "ward_no": 261213,
+            "ward_name": "Barfung",
+            "ward_id": 261213
+        },
+        {
+            "ward_no": 261205,
+            "ward_name": "Borong",
+            "ward_id": 261205
+        },
+        {
+            "ward_no": 261216,
+            "ward_name": "Dalep",
+            "ward_id": 261216
+        },
+        {
+            "ward_no": 261211,
+            "ward_name": "Deythang",
+            "ward_id": 261211
+        },
+        {
+            "ward_no": 261212,
+            "ward_name": "Jarrong",
+            "ward_id": 261212
+        },
+        {
+            "ward_no": 261215,
+            "ward_name": "Kewzing",
+            "ward_id": 261215
+        },
+        {
+            "ward_no": 261252,
+            "ward_name": "Kewzing Forest Block",
+            "ward_id": 261252
+        },
+        {
+            "ward_no": 261218,
+            "ward_name": "Legship",
+            "ward_id": 261218
+        },
+        {
+            "ward_no": 261050,
+            "ward_name": "Legship Forest Block",
+            "ward_id": 261050
+        },
+        {
+            "ward_no": 261208,
+            "ward_name": "Lingding",
+            "ward_id": 261208
+        },
+        {
+            "ward_no": 261217,
+            "ward_name": "Lingzo",
+            "ward_id": 261217
+        },
+        {
+            "ward_no": 261207,
+            "ward_name": "Namlung",
+            "ward_id": 261207
+        },
+        {
+            "ward_no": 261204,
+            "ward_name": "Phamthang",
+            "ward_id": 261204
+        },
+        {
+            "ward_no": 261206,
+            "ward_name": "Polok",
+            "ward_id": 261206
+        },
+        {
+            "ward_no": 261227,
+            "ward_name": "Rabong",
+            "ward_id": 261227
+        },
+        {
+            "ward_no": 931588,
+            "ward_name": "Rabong Bazar",
+            "ward_id": 931588
+        },
+        {
+            "ward_no": 261250,
+            "ward_name": "Ralang Forest Block",
+            "ward_id": 261250
+        },
+        {
+            "ward_no": 261209,
+            "ward_name": "Ralong",
+            "ward_id": 261209
+        },
+        {
+            "ward_no": 261225,
+            "ward_name": "Rayong",
+            "ward_id": 261225
+        },
+        {
+            "ward_no": 261203,
+            "ward_name": "Sada",
+            "ward_id": 261203
+        },
+        {
+            "ward_no": 261226,
+            "ward_name": "Sangmoo",
+            "ward_id": 261226
+        },
+        {
+            "ward_no": 261224,
+            "ward_name": "Tinkitam",
+            "ward_id": 261224
+        }
+    ]
+}
