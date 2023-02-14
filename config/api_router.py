@@ -78,6 +78,7 @@ from care.users.api.viewsets.lsg import (
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
+from care.hcx.api.viewsets.policy import PolicyViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -189,6 +190,9 @@ consultation_nested_router = NestedSimpleRouter(
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
+
+# HCX
+router.register("hcx/policy", PolicyViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
