@@ -1,7 +1,12 @@
 from rest_framework.serializers import ModelSerializer, UUIDField, CharField
 from config.serializers import ChoiceField
 from care.hcx.models.policy import Policy
-from care.hcx.models.policy import STATUS_CHOICES, PRIORITY_CHOICES, PURPOSE_CHOICES, OUTCOME_CHOICES
+from care.hcx.models.policy import (
+    STATUS_CHOICES,
+    PRIORITY_CHOICES,
+    PURPOSE_CHOICES,
+    OUTCOME_CHOICES,
+)
 from django.shortcuts import get_object_or_404
 from care.facility.models.patient import PatientRegistration
 from care.facility.api.serializers.patient import PatientDetailSerializer
@@ -12,25 +17,25 @@ TIMESTAMP_FIELDS = (
     "modified_date",
 )
 
+
 class PolicySerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
     patient = UUIDField(write_only=True, required=True)
     patient_object = PatientDetailSerializer(source="patient", read_only=True)
 
-    subscriber_id =  CharField()
+    subscriber_id = CharField()
     policy_id = CharField()
-    
-    insurer_id = CharField()
+
+    insurer_id = CharField(required=False)
     insurer_name = CharField()
 
-    status = ChoiceField(choices=STATUS_CHOICES)
+    status = ChoiceField(choices=STATUS_CHOICES, default="active")
     priority = ChoiceField(choices=PRIORITY_CHOICES, default="normal")
-    purpose = ChoiceField(choices=PURPOSE_CHOICES)
-    
-    outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
-    error_text = CharField()
+    purpose = ChoiceField(choices=PURPOSE_CHOICES, default="benefits")
 
+    outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
+    error_text = CharField(read_only=True)
 
     class Meta:
         model = Policy
@@ -44,7 +49,5 @@ class PolicySerializer(ModelSerializer):
             )
             attrs["patient"] = patient
         else:
-            raise ValidationError(
-                {"patient": "Field is Required"}
-            )
+            raise ValidationError({"patient": "Field is Required"})
         return super().validate(attrs)

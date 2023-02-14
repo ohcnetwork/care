@@ -17,7 +17,7 @@ class PolicyViewSet(
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
-    GenericViewSet
+    GenericViewSet,
 ):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer

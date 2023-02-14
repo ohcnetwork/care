@@ -10,7 +10,7 @@ STATUS_CHOICES = [
     ("active", "Active"),
     ("cancelled", "Cancelled"),
     ("draft", "Draft"),
-    ("entered-in-error", "Entered in Error")
+    ("entered-in-error", "Entered in Error"),
 ]
 REVERSE_STATUS_CHOICES = reverse_choices(STATUS_CHOICES)
 
@@ -29,7 +29,7 @@ PURPOSE_CHOICES = [
     ("auth-requirements", "Auth Requirements"),
     ("benefits", "Benefits"),
     ("discovery", "Discovery"),
-    ("validation", "Validation")
+    ("validation", "Validation"),
 ]
 REVERSE_PURPOSE_CHOICES = reverse_choices(PURPOSE_CHOICES)
 
@@ -39,6 +39,6 @@ OUTCOME_CHOICES = [
     ("queued", "Queued"),
     ("complete", "Processing Complete"),
     ("error", "Error"),
-    ("partial", "Partial Processing")
+    ("partial", "Partial Processing"),
 ]
 REVERSE_OUTCOME_CHOICES = reverse_choices(OUTCOME_CHOICES)
