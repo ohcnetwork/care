@@ -5,6 +5,8 @@ argon2-cffi==19.2.0  # https://github.com/hynek/argon2_cffi
 whitenoise==6.0.0  # https://github.com/evansd/whitenoise
 redis==3.4.1 # https://github.com/andymccurdy/redis-py
 boto3==1.12.23 # For AWS interactions
+pycryptodome==3.16.0
+pycryptodomex==3.16.0
 # Django
 # ------------------------------------------------------------------------------
 django==2.2.11  # pyup: < 3.0  # https://www.djangoproject.com/
@@ -62,3 +64,5 @@ typed-ast==1.5.0
 # In Memory Database
 # ------------------------------------------------------------------------------
 littletable==2.0.7
+# HCX
+fhir.resources==6.5.0
