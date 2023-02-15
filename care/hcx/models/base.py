@@ -42,3 +42,21 @@ OUTCOME_CHOICES = [
     ("partial", "Partial Processing"),
 ]
 REVERSE_OUTCOME_CHOICES = reverse_choices(OUTCOME_CHOICES)
+
+# http://hl7.org/fhir/claim-use
+USE_CHOICES = [
+    ("claim", "Claim"),
+    ("preauthorization", "Pre-Authorization"),
+    ("predetermination", "Pre-Determination"),
+]
+REVERSE_USE_CHOICES = reverse_choices(USE_CHOICES)
+
+# http://hl7.org/fhir/claim-use
+CLAIM_TYPE_CHOICES = [
+    ("institutional", "Institutional"),
+    ("oral", "Oral"),
+    ("pharmacy", "Pharmacy"),
+    ("professional", "Professional"),
+    ("vision", "Vision"),
+]
+REVERSE_CLAIM_TYPE_CHOICES = reverse_choices(CLAIM_TYPE_CHOICES)
