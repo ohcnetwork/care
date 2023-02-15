@@ -26,6 +26,8 @@ from uuid import uuid4 as uuid
 
 
 # TODO: seperate out system in coding and profile into a const dict
+# TODO: add practioner profile
+# TODO: refactor this file
 
 
 def get_reference(resource: DomainResource):
@@ -290,7 +292,7 @@ def create_claim_profile(
             "coding": [
                 Coding(
                     system="http://terminology.hl7.org/CodeSystem/processpriority",
-                    priority=priority,
+                    code=priority,
                 )
             ]
         },
