@@ -29,6 +29,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
+    REVERSE_DISCHARGE_REASON_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
@@ -508,6 +509,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         ),
         "last_consultation__icd11_provisional_diagnoses": (
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
+        ),
+        "last_consultation__discharge_reason": (
+            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
         "created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
         "last_consultation__discharge_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
