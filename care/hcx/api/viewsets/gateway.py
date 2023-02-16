@@ -12,6 +12,8 @@ from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.utils.fhir import eligibility_check_fhir, claim_fhir
 from care.facility.models.patient import PatientRegistration
+from care.hcx.utils.hcx import Hcx, HcxOperations
+import json
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -36,7 +38,13 @@ class HcxGatewayViewSet(GenericViewSet):
             policy["policy_id"],
         )
 
-        return Response(eligibility_check_fhir_bundle.dict(), status=status.HTTP_200_OK)
+        response = Hcx().generateOutgoingHcxCall(
+            fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
+            operation=HcxOperations.COVERAGE_ELIGIBILITY_CHECK,
+            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+        )
+
+        return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
@@ -59,6 +67,12 @@ class HcxGatewayViewSet(GenericViewSet):
             claim["policy_object"]["policy_id"],
             "claim",
             claim["procedures"],
-        ).dict()
+        )
 
-        return Response(claim_fhir_bundle, status=status.HTTP_200_OK)
+        response = Hcx().generateOutgoingHcxCall(
+            fhirPayload=json.loads(claim_fhir_bundle.json()),
+            operation=HcxOperations.CLAIM_SUBMIT,
+            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+        )
+
+        return Response(dict(response.get("response")), status=status.HTTP_200_OK)
