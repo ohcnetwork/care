@@ -4,7 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from care.users.api.serializers.userskill import UserSkillSerializer
-from care.users.models import UserSkill
+from care.users.models import User, UserSkill
 from care.utils.queryset.user import get_users
 
 
@@ -18,7 +18,7 @@ class UserSkillViewSet(
 
     def get_queryset(self):
         username = self.kwargs["users_username"]
-        user = get_object_or_404(get_users(self.request.user).filter(username=username))
+        user = get_object_or_404(User, username=username)
 
         return self.queryset.filter(user=user)
 
