@@ -1,0 +1,99 @@
+{
+    "name": "Temi",
+    "lsg_code": 6524,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 18,
+    "wards": [
+        {
+            "ward_no": 261181,
+            "ward_name": "Aifaltar",
+            "ward_id": 261181
+        },
+        {
+            "ward_no": 261176,
+            "ward_name": "Barnyak",
+            "ward_id": 261176
+        },
+        {
+            "ward_no": 261246,
+            "ward_name": "Ben",
+            "ward_id": 261246
+        },
+        {
+            "ward_no": 261247,
+            "ward_name": "Deu",
+            "ward_id": 261247
+        },
+        {
+            "ward_no": 261187,
+            "ward_name": "Doring",
+            "ward_id": 261187
+        },
+        {
+            "ward_no": 261180,
+            "ward_name": "Gangchung",
+            "ward_id": 261180
+        },
+        {
+            "ward_no": 261189,
+            "ward_name": "Namphing",
+            "ward_id": 261189
+        },
+        {
+            "ward_no": 261245,
+            "ward_name": "Namprik",
+            "ward_id": 261245
+        },
+        {
+            "ward_no": 261186,
+            "ward_name": "Pabong (Gangchung)",
+            "ward_id": 261186
+        },
+        {
+            "ward_no": 261188,
+            "ward_name": "Rashyap",
+            "ward_id": 261188
+        },
+        {
+            "ward_no": 261185,
+            "ward_name": "Tanak",
+            "ward_id": 261185
+        },
+        {
+            "ward_no": 261184,
+            "ward_name": "Tarku",
+            "ward_id": 261184
+        },
+        {
+            "ward_no": 261183,
+            "ward_name": "Temi",
+            "ward_id": 261183
+        },
+        {
+            "ward_no": 261196,
+            "ward_name": "Temi Forest Block",
+            "ward_id": 261196
+        },
+        {
+            "ward_no": 261177,
+            "ward_name": "Thangsing",
+            "ward_id": 261177
+        },
+        {
+            "ward_no": 261178,
+            "ward_name": "Tokal",
+            "ward_id": 261178
+        },
+        {
+            "ward_no": 261179,
+            "ward_name": "Tokdey",
+            "ward_id": 261179
+        },
+        {
+            "ward_no": 261190,
+            "ward_name": "Tsalumthang",
+            "ward_id": 261190
+        }
+    ]
+}

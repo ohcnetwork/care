@@ -1,0 +1,94 @@
+{
+    "name": "Sumbuk",
+    "lsg_code": 6527,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 17,
+    "wards": [
+        {
+            "ward_no": 261133,
+            "ward_name": "Kartikey",
+            "ward_id": 261133
+        },
+        {
+            "ward_no": 261150,
+            "ward_name": "Kerabari",
+            "ward_id": 261150
+        },
+        {
+            "ward_no": 261151,
+            "ward_name": "Melli",
+            "ward_id": 261151
+        },
+        {
+            "ward_no": 261152,
+            "ward_name": "Mellidara",
+            "ward_id": 261152
+        },
+        {
+            "ward_no": 261200,
+            "ward_name": "Melli Forest Block",
+            "ward_id": 261200
+        },
+        {
+            "ward_no": 261153,
+            "ward_name": "Paiyong",
+            "ward_id": 261153
+        },
+        {
+            "ward_no": 261147,
+            "ward_name": "Panchgharey",
+            "ward_id": 261147
+        },
+        {
+            "ward_no": 261149,
+            "ward_name": "Ramabung",
+            "ward_id": 261149
+        },
+        {
+            "ward_no": 261134,
+            "ward_name": "Sumbuk",
+            "ward_id": 261134
+        },
+        {
+            "ward_no": 261135,
+            "ward_name": "Suntaley",
+            "ward_id": 261135
+        },
+        {
+            "ward_no": 261148,
+            "ward_name": "Turuk",
+            "ward_id": 261148
+        },
+        {
+            "ward_no": 261146,
+            "ward_name": "Kamarey",
+            "ward_id": 261146
+        },
+        {
+            "ward_no": 261145,
+            "ward_name": "Lungchok",
+            "ward_id": 261145
+        },
+        {
+            "ward_no": 261157,
+            "ward_name": "Rabitar",
+            "ward_id": 261157
+        },
+        {
+            "ward_no": 261156,
+            "ward_name": "Sadam",
+            "ward_id": 261156
+        },
+        {
+            "ward_no": 261155,
+            "ward_name": "Sukrabarey",
+            "ward_id": 261155
+        },
+        {
+            "ward_no": 261154,
+            "ward_name": "Suntoley",
+            "ward_id": 261154
+        }
+    ]
+}

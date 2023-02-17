@@ -1,0 +1,94 @@
+{
+    "name": "Yangang",
+    "lsg_code": 6526,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 17,
+    "wards": [
+        {
+            "ward_no": 261241,
+            "ward_name": "Gagyong",
+            "ward_id": 261241
+        },
+        {
+            "ward_no": 261232,
+            "ward_name": "Kau",
+            "ward_id": 261232
+        },
+        {
+            "ward_no": 261235,
+            "ward_name": "Kolthang",
+            "ward_id": 261235
+        },
+        {
+            "ward_no": 261229,
+            "ward_name": "Lingi",
+            "ward_id": 261229
+        },
+        {
+            "ward_no": 261233,
+            "ward_name": "Lingmo",
+            "ward_id": 261233
+        },
+        {
+            "ward_no": 261230,
+            "ward_name": "Lower Paiyong",
+            "ward_id": 261230
+        },
+        {
+            "ward_no": 261237,
+            "ward_name": "Mangzing",
+            "ward_id": 261237
+        },
+        {
+            "ward_no": 261240,
+            "ward_name": "Namphok",
+            "ward_id": 261240
+        },
+        {
+            "ward_no": 261238,
+            "ward_name": "Neh-Brum",
+            "ward_id": 261238
+        },
+        {
+            "ward_no": 261234,
+            "ward_name": "Pepthang",
+            "ward_id": 261234
+        },
+        {
+            "ward_no": 261242,
+            "ward_name": "Rangang",
+            "ward_id": 261242
+        },
+        {
+            "ward_no": 261244,
+            "ward_name": "Satam",
+            "ward_id": 261244
+        },
+        {
+            "ward_no": 261228,
+            "ward_name": "Sokpay",
+            "ward_id": 261228
+        },
+        {
+            "ward_no": 261239,
+            "ward_name": "Sripatam",
+            "ward_id": 261239
+        },
+        {
+            "ward_no": 261236,
+            "ward_name": "Tokday (Lingmo)",
+            "ward_id": 261236
+        },
+        {
+            "ward_no": 261231,
+            "ward_name": "Upper Paiyong",
+            "ward_id": 261231
+        },
+        {
+            "ward_no": 261243,
+            "ward_name": "Yangang",
+            "ward_id": 261243
+        }
+    ]
+}

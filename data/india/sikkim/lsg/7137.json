@@ -1,0 +1,49 @@
+{
+    "name": "Parkha",
+    "lsg_code": 7137,
+    "district": "Pakyong",
+    "state": "Sikkim",
+    "no_of_wards": 8,
+    "wards": [
+        {
+            "ward_no": 261352,
+            "ward_name": "Chuchenpheri",
+            "ward_id": 261352
+        },
+        {
+            "ward_no": 261353,
+            "ward_name": "Latuk",
+            "ward_id": 261353
+        },
+        {
+            "ward_no": 261347,
+            "ward_name": "Linkey",
+            "ward_id": 261347
+        },
+        {
+            "ward_no": 261351,
+            "ward_name": "Machong",
+            "ward_id": 261351
+        },
+        {
+            "ward_no": 261349,
+            "ward_name": "Parkha",
+            "ward_id": 261349
+        },
+        {
+            "ward_no": 261356,
+            "ward_name": "Pathing Forest Block",
+            "ward_id": 261356
+        },
+        {
+            "ward_no": 261350,
+            "ward_name": "Riwa",
+            "ward_id": 261350
+        },
+        {
+            "ward_no": 261348,
+            "ward_name": "Thekabong",
+            "ward_id": 261348
+        }
+    ]
+}

@@ -1,0 +1,74 @@
+{
+    "name": "Arithang Chongrang",
+    "lsg_code": 7138,
+    "district": "Gyalshing",
+    "state": "Sikkim",
+    "no_of_wards": 13,
+    "wards": [
+        {
+            "ward_no": 261005,
+            "ward_name": "Arithang",
+            "ward_id": 261005
+        },
+        {
+            "ward_no": 261004,
+            "ward_name": "Chongrong",
+            "ward_id": 261004
+        },
+        {
+            "ward_no": 261008,
+            "ward_name": "Dhupidara",
+            "ward_id": 261008
+        },
+        {
+            "ward_no": 261011,
+            "ward_name": "Gangyep",
+            "ward_id": 261011
+        },
+        {
+            "ward_no": 260982,
+            "ward_name": "Gerethang",
+            "ward_id": 260982
+        },
+        {
+            "ward_no": 261006,
+            "ward_name": "Kongri",
+            "ward_id": 261006
+        },
+        {
+            "ward_no": 261007,
+            "ward_name": "Labdang",
+            "ward_id": 261007
+        },
+        {
+            "ward_no": 260983,
+            "ward_name": "Labing",
+            "ward_id": 260983
+        },
+        {
+            "ward_no": 261012,
+            "ward_name": "Lasso",
+            "ward_id": 261012
+        },
+        {
+            "ward_no": 261010,
+            "ward_name": "Mangnam",
+            "ward_id": 261010
+        },
+        {
+            "ward_no": 261009,
+            "ward_name": "Narkhola",
+            "ward_id": 261009
+        },
+        {
+            "ward_no": 261013,
+            "ward_name": "Tashiding",
+            "ward_id": 261013
+        },
+        {
+            "ward_no": 261047,
+            "ward_name": "Tashiding Forest Block",
+            "ward_id": 261047
+        }
+    ]
+}
