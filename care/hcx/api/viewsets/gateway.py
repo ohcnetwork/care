@@ -10,7 +10,7 @@ from care.hcx.api.serializers.gateway import (
 )
 from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.api.serializers.claim import ClaimSerializer
-from care.hcx.utils.fhir import eligibility_check_fhir, claim_fhir
+from care.hcx.utils.fhir import eligibility_check_fhir, claim_fhir, validate_fhir
 from care.facility.models.patient import PatientRegistration
 from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
@@ -39,6 +39,11 @@ class HcxGatewayViewSet(GenericViewSet):
             policy["subscriber_id"],
             policy["policy_id"],
         )
+
+        if not validate_fhir(eligibility_check_fhir_bundle.json()):
+            return Response(
+                {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
@@ -71,6 +76,11 @@ class HcxGatewayViewSet(GenericViewSet):
             "claim",
             claim["procedures"],
         )
+
+        if not validate_fhir(claim_fhir_bundle.json()):
+            return Response(
+                {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),

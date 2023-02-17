@@ -23,7 +23,10 @@ from fhir.resources.claim import (
 )
 from datetime import datetime, timezone
 from uuid import uuid4 as uuid
+import requests
 
+
+FHIR_VALIDATION_URL = "https://staging-hcx.swasth.app/hapi-fhir/fhir/Bundle/$validate"
 
 # TODO: seperate out system in coding and profile into a const dict
 # TODO: add practioner profile
@@ -413,3 +416,20 @@ def claim_fhir(
     )
 
     return claim_request
+
+
+def validate_fhir(fhir_payload):
+    headers = {"Content-Type": "application/json"}
+    response = requests.request(
+        "POST", FHIR_VALIDATION_URL, headers=headers, data=fhir_payload
+    ).json()
+
+    issues = response["issue"] if "issue" in response else []
+    valid = True
+
+    for issue in issues:
+        if issue["severity"] == "error":
+            valid = False
+            break
+
+    return {"valid": valid, "issues": issues}
