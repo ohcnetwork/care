@@ -11,9 +11,9 @@ class Hcx:
     def __init__(
         self,
         protocolBasePath="http://staging-hcx.swasth.app/api/v0.7",
-        participantCode="1-521eaec7-8cb9-4b6c-8b4e-4dba300af6f4",
+        participantCode="qwertyreboot.gmail@swasth-hcx-staging",
         authBasePath="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
-        username="swasth_mock_provider@swasthapp.org",
+        username="qwertyreboot@gmail.com",
         password="Opensaber@123",
         encryptionPrivateKeyURL="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/sprint-30/demo-app/server/resources/keys/x509-private-key.pem",
         igUrl="https://ig.hcxprotocol.io/v0.7.1",
