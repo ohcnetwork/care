@@ -8,6 +8,7 @@ from care.hcx.models.base import (
     PURPOSE_CHOICES,
     OUTCOME_CHOICES,
 )
+from care.users.models import User
 
 
 class Policy(BaseModel):
@@ -33,3 +34,6 @@ class Policy(BaseModel):
         choices=OUTCOME_CHOICES, max_length=20, default=None, blank=True, null=True
     )
     error_text = models.TextField(null=True, blank=True)
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

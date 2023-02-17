@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from care.facility.models.patient import PatientRegistration
 from care.facility.api.serializers.patient import PatientDetailSerializer
 from rest_framework.exceptions import ValidationError
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 TIMESTAMP_FIELDS = (
     "created_date",
@@ -37,6 +38,9 @@ class PolicySerializer(ModelSerializer):
     outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
     error_text = CharField(read_only=True)
 
+    created_by = UserBaseMinimumSerializer(read_only=True)
+    last_modified_by = UserBaseMinimumSerializer(read_only=True)
+
     class Meta:
         model = Policy
         exclude = ("deleted", "external_id")
@@ -51,3 +55,12 @@ class PolicySerializer(ModelSerializer):
         else:
             raise ValidationError({"patient": "Field is Required"})
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+        validated_data["last_modified_by"] = self.context["request"].user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        instance.last_modified_by = self.context["request"].user
+        return super().update(instance, validated_data)

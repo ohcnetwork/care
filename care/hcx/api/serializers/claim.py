@@ -24,6 +24,7 @@ from care.facility.api.serializers.patient_consultation import (
 from rest_framework.exceptions import ValidationError
 from care.utils.models.validators import JSONFieldSchemaValidator
 from care.hcx.models.json_schema.claim import PROCEDURES
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 TIMESTAMP_FIELDS = (
     "created_date",
@@ -56,6 +57,9 @@ class ClaimSerializer(ModelSerializer):
     outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
     error_text = CharField(read_only=True)
 
+    created_by = UserBaseMinimumSerializer(read_only=True)
+    last_modified_by = UserBaseMinimumSerializer(read_only=True)
+
     class Meta:
         model = Claim
         exclude = ("deleted", "external_id")
@@ -84,3 +88,12 @@ class ClaimSerializer(ModelSerializer):
             attrs["total_claim_amount"] = total_claim_amount
 
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+        validated_data["last_modified_by"] = self.context["request"].user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        instance.last_modified_by = self.context["request"].user
+        return super().update(instance, validated_data)
