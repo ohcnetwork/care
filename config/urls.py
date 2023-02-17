@@ -88,17 +88,17 @@ urlpatterns = [
     path("api/v1/", include(api_router.urlpatterns)),
     # Hcx Listeners
     path(
-        "coverageeligibility/on_check/",
+        "coverageeligibility/on_check",
         CoverageElibilityOnCheckView.as_view(),
         name="hcx_coverage_eligibility_on_check",
     ),
     path(
-        "preauth/on_submit/",
+        "preauth/on_submit",
         PreAuthOnSubmitView.as_view(),
         name="hcx_pre_auth_on_submit",
     ),
     path(
-        "claim/on_submit/",
+        "claim/on_submit",
         ClaimOnSubmitView.as_view(),
         name="hcx_claim_on_submit",
     ),
