@@ -9,6 +9,11 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
+from care.hcx.api.viewsets.listener import (
+    CoverageElibilityOnCheckView,
+    PreAuthOnSubmitView,
+    ClaimOnSubmitView,
+)
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
@@ -81,6 +86,22 @@ urlpatterns = [
         name="change_password_view",
     ),
     path("api/v1/", include(api_router.urlpatterns)),
+    # Hcx Listeners
+    path(
+        "coverageeligibility/on_check/",
+        CoverageElibilityOnCheckView.as_view(),
+        name="hcx_coverage_eligibility_on_check",
+    ),
+    path(
+        "preauth/on_submit/",
+        PreAuthOnSubmitView.as_view(),
+        name="hcx_pre_auth_on_submit",
+    ),
+    path(
+        "claim/on_submit/",
+        ClaimOnSubmitView.as_view(),
+        name="hcx_claim_on_submit",
+    ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),

@@ -14,11 +14,13 @@ from care.hcx.utils.fhir import eligibility_check_fhir, claim_fhir
 from care.facility.models.patient import PatientRegistration
 from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
+from drf_yasg.utils import swagger_auto_schema
 
 
 class HcxGatewayViewSet(GenericViewSet):
     queryset = Policy.objects.all()
 
+    @swagger_auto_schema(tags=["hcx"], request_body=CheckEligibilitySerializer())
     @action(detail=False, methods=["post"])
     def check_eligibility(self, request):
         data = request.data
@@ -46,6 +48,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(tags=["hcx"], request_body=MakeClaimSerializer())
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
         data = request.data
