@@ -10,11 +10,13 @@ from care.hcx.api.serializers.gateway import (
 )
 from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.api.serializers.claim import ClaimSerializer
-from care.hcx.utils.fhir import eligibility_check_fhir, claim_fhir, validate_fhir
+from care.hcx.utils.fhir import Fhir
 from care.facility.models.patient import PatientRegistration
 from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
 from drf_yasg.utils import swagger_auto_schema
+from care.users.models import User
+from care.hcx.models.base import USE_CHOICES, REVERSE_USE_CHOICES
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -24,23 +26,47 @@ class HcxGatewayViewSet(GenericViewSet):
     @action(detail=False, methods=["post"])
     def check_eligibility(self, request):
         data = request.data
+        user = User.objects.first()
+
         serializer = CheckEligibilitySerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         policy = PolicySerializer(self.queryset.get(external_id=data["policy"])).data
 
-        eligibility_check_fhir_bundle = eligibility_check_fhir(
-            policy["patient_object"]["facility_object"]["id"],
-            policy["patient_object"]["facility_object"]["name"],
-            "IN000018",
-            policy["patient_object"]["id"],
-            policy["patient_object"]["name"],
-            "male" if policy["patient_object"]["gender"] == 1 else "female",
-            policy["subscriber_id"],
-            policy["policy_id"],
+        print(user.id)
+
+        eligibility_check_fhir_bundle = (
+            Fhir().create_coverage_eligibility_request_bundle(
+                policy["id"],
+                policy["policy_id"],
+                policy["patient_object"]["facility_object"]["id"],
+                policy["patient_object"]["facility_object"]["name"],
+                "IN000018",
+                "GICOFINDIA",
+                "GICOFINDIA",
+                "GICOFINDIA",
+                user.username,
+                user.username,
+                "223366009",
+                "7894561232",
+                policy["patient_object"]["id"],
+                policy["patient_object"]["name"],
+                "male"
+                if policy["patient_object"]["gender"] == 1
+                else "female"
+                if policy["patient_object"]["gender"] == 2
+                else "other",
+                policy["subscriber_id"],
+                policy["policy_id"],
+                policy["id"],
+                policy["id"],
+                policy["id"],
+            )
         )
 
-        if not validate_fhir(eligibility_check_fhir_bundle.json()):
+        if not Fhir().validate_fhir_remote(eligibility_check_fhir_bundle.json())[
+            "valid"
+        ]:
             return Response(
                 {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
             )
@@ -57,30 +83,42 @@ class HcxGatewayViewSet(GenericViewSet):
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
         data = request.data
+
         serializer = MakeClaimSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         claim = ClaimSerializer(Claim.objects.get(external_id=data["claim"])).data
 
-        claim_fhir_bundle = claim_fhir(
+        claim_fhir_bundle = Fhir().create_claim_bundle(
+            claim["id"],
+            claim["id"],
             claim["policy_object"]["patient_object"]["facility_object"]["id"],
             claim["policy_object"]["patient_object"]["facility_object"]["name"],
             "IN000018",
+            "GICOFINDIA",
+            "GICOFINDIA",
+            "GICOFINDIA",
             claim["policy_object"]["patient_object"]["id"],
             claim["policy_object"]["patient_object"]["name"],
             "male"
             if claim["policy_object"]["patient_object"]["gender"] == 1
-            else "female",
+            else "female"
+            if claim["policy_object"]["patient_object"]["gender"] == 2
+            else "other",
             claim["policy_object"]["subscriber_id"],
             claim["policy_object"]["policy_id"],
-            "claim",
+            claim["policy_object"]["id"],
+            claim["id"],
+            claim["id"],
             claim["procedures"],
+            REVERSE_USE_CHOICES[claim["use"]],
         )
 
-        if not validate_fhir(claim_fhir_bundle.json()):
-            return Response(
-                {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
+        #     return Response(
+        #         {"message": "Invalid FHIR object"},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),

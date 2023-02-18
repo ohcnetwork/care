@@ -1,7 +1,7 @@
 def reverse_choices(choices):
     output = {}
     for choice in choices:
-        output[choice[0]] = choice[1]
+        output[choice[1]] = choice[0]
     return output
 
 
