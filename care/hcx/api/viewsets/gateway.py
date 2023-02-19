@@ -122,7 +122,9 @@ class HcxGatewayViewSet(GenericViewSet):
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),
-            operation=HcxOperations.CLAIM_SUBMIT,
+            operation=HcxOperations.CLAIM_SUBMIT
+            if REVERSE_USE_CHOICES[claim["use"]] == "claim"
+            else HcxOperations.PRE_AUTH_SUBMIT,
             recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
         )
 
