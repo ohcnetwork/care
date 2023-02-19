@@ -29,5 +29,14 @@ class PolicyViewSet(
     serializer_class = PolicySerializer
     lookup_field = "external_id"
     search_fields = ["patient"]
-    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        drf_filters.SearchFilter,
+        drf_filters.OrderingFilter,
+    )
     filterset_class = PolicyFilter
+    ordering_fields = [
+        "id",
+        "created_date",
+        "modified_date",
+    ]
