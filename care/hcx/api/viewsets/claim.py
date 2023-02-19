@@ -11,11 +11,13 @@ from care.hcx.models.claim import Claim
 from care.hcx.api.serializers.claim import ClaimSerializer
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
+from care.hcx.models.base import USE_CHOICES
 
 
 class PolicyFilter(filters.FilterSet):
     consultation = filters.UUIDFilter(field_name="consultation__external_id")
     policy = filters.UUIDFilter(field_name="policy__external_id")
+    use = filters.ChoiceFilter(field_name="use", choices=USE_CHOICES)
 
 
 class ClaimViewSet(
