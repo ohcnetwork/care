@@ -70,7 +70,7 @@ class Hcx:
             .isoformat(),
             "x-hcx-sender_code": self.participantCode,
             "x-hcx-correlation_id": str(uuid.uuid4()),
-            "x-hcx-workflow_id": str(uuid.uuid4()),
+            # "x-hcx-workflow_id": str(uuid.uuid4()),
             "x-hcx-api_call_id": str(uuid.uuid4()),
         }
         return hcx_headers

@@ -16,7 +16,13 @@ from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
 from drf_yasg.utils import swagger_auto_schema
 from care.users.models import User
-from care.hcx.models.base import USE_CHOICES, REVERSE_USE_CHOICES
+from care.hcx.models.base import (
+    REVERSE_CLAIM_TYPE_CHOICES,
+    REVERSE_PRIORITY_CHOICES,
+    REVERSE_PURPOSE_CHOICES,
+    REVERSE_STATUS_CHOICES,
+    REVERSE_USE_CHOICES,
+)
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -26,14 +32,11 @@ class HcxGatewayViewSet(GenericViewSet):
     @action(detail=False, methods=["post"])
     def check_eligibility(self, request):
         data = request.data
-        user = User.objects.first()
 
         serializer = CheckEligibilitySerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         policy = PolicySerializer(self.queryset.get(external_id=data["policy"])).data
-
-        print(user.id)
 
         eligibility_check_fhir_bundle = (
             Fhir().create_coverage_eligibility_request_bundle(
@@ -45,8 +48,8 @@ class HcxGatewayViewSet(GenericViewSet):
                 "GICOFINDIA",
                 "GICOFINDIA",
                 "GICOFINDIA",
-                user.username,
-                user.username,
+                policy["last_modified_by"]["username"],
+                policy["last_modified_by"]["username"],
                 "223366009",
                 "7894561232",
                 policy["patient_object"]["id"],
@@ -61,6 +64,9 @@ class HcxGatewayViewSet(GenericViewSet):
                 policy["id"],
                 policy["id"],
                 policy["id"],
+                REVERSE_STATUS_CHOICES[policy["status"]],
+                REVERSE_PRIORITY_CHOICES[policy["priority"]],
+                REVERSE_PURPOSE_CHOICES[policy["purpose"]],
             )
         )
 
@@ -112,6 +118,9 @@ class HcxGatewayViewSet(GenericViewSet):
             claim["id"],
             claim["procedures"],
             REVERSE_USE_CHOICES[claim["use"]],
+            REVERSE_STATUS_CHOICES[claim["status"]],
+            REVERSE_CLAIM_TYPE_CHOICES[claim["type"]],
+            REVERSE_PRIORITY_CHOICES[claim["priority"]],
         )
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:

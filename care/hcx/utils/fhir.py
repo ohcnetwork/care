@@ -17,7 +17,6 @@ from fhir.resources import (
 )
 from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
-from uuid import uuid4 as uuid
 import requests
 from functools import reduce
 
@@ -671,25 +670,27 @@ class Fhir:
                 )[0].resource.dict()
             )
         )
-        # coverage_eligibility_check_request = (
-        #     coverageeligibilityrequest.CoverageEligibilityRequest(
-        #         list(
-        #             filter(
-        #                 lambda entry: type(entry.resource)
-        #                 == coverageeligibilityrequest.CoverageEligibilityRequest,
-        #                 coverage_eligibility_check_bundle.entry,
-        #             )
-        #         )[0]["resource"]
-        #     )
-        # )
+        coverage_request = coverage.Coverage(
+            **list(
+                filter(
+                    lambda entry: type(entry.resource) == coverage.Coverage,
+                    coverage_eligibility_check_bundle.entry,
+                )
+            )[0].resource.dict()
+        )
+
+        def get_errors_from_coding(codings):
+            return "; ".join(
+                list(map(lambda coding: f"{coding.code}: {coding.display}", codings))
+            )
 
         return {
-            # "id": coverage_eligibility_check_request.id,
+            "id": coverage_request.id,
             "outcome": coverage_eligibility_check_response.outcome,
             "error": ", ".join(
                 list(
                     map(
-                        lambda error: error.code,
+                        lambda error: get_errors_from_coding(error.code.coding),
                         coverage_eligibility_check_response.error or [],
                     )
                 )
@@ -707,17 +708,14 @@ class Fhir:
                 )
             )[0].resource.dict()
         )
-        # claim_request = claim.Claim(
-        #     list(
-        #         filter(
-        #             lambda entry: type(entry.resource) == claim.Claim,
-        #             claim_bundle.entry,
-        #         )
-        #     )[0]["resource"]
-        # )
+
+        def get_errors_from_coding(codings):
+            return "; ".join(
+                list(map(lambda coding: f"{coding.code}: {coding.display}", codings))
+            )
 
         return {
-            # "id": claim_request.id,
+            "id": claim_bundle.identifier.value,
             "total_approved": reduce(
                 lambda price, acc: price + acc,
                 map(
@@ -732,7 +730,7 @@ class Fhir:
             "error": ", ".join(
                 list(
                     map(
-                        lambda error: error.code,
+                        lambda error: get_errors_from_coding(error.code.coding),
                         claim_response.error or [],
                     )
                 )
