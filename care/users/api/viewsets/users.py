@@ -265,6 +265,20 @@ class UserViewSet(
         },
     )
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
+    def clear_home_facility(self, request, *args, **kwargs):
+        user = self.get_object()
+        requesting_user = request.user
+
+        if not user.home_facility:
+            raise ValidationError({"home_facility": "No Home Facility Present"})
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        user.home_facility = None
+        user.save(update_fields=["home_facility"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def delete_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
         user = self.get_object()
