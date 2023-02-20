@@ -273,14 +273,6 @@ class UserViewSet(
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
-        if not self.has_facility_permission(requesting_user, user.home_facility):
-            raise ValidationError({"home_facility": "Facility Access not Present"})
-        if not self.has_facility_permission(user, user.home_facility):
-            raise ValidationError(
-                {
-                    "home_facility": "Intended User Does not have permission to this facility"
-                }
-            )
 
         user.home_facility = None
         user.save(update_fields=["home_facility"])
