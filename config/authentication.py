@@ -73,7 +73,9 @@ class MiddlewareAuthentication(JWTAuthentication):
         if not facility.middleware_address:
             raise InvalidToken({"detail": "Facility not connected to a middleware"})
 
-        open_id_url = f"{facility.middleware_address}/.well-known/openid-configuration/"
+        open_id_url = (
+            f"https://{facility.middleware_address}/.well-known/openid-configuration/"
+        )
 
         validated_token = self.get_validated_token(open_id_url, raw_token)
 
