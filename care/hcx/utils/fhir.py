@@ -183,6 +183,7 @@ class IClaimItem(TypedDict):
 class IClaimSupportingInfo(TypedDict):
     type: str
     url: str
+    name: str
 
 
 class IRelatedClaim(TypedDict):
@@ -512,7 +513,10 @@ class Fhir:
                                     )
                                 ]
                             ),
-                            valueAttachment=attachment.Attachment(url=info["url"]),
+                            valueAttachment=attachment.Attachment(
+                                url=info["url"],
+                                title=info["name"],
+                            ),
                         )
                     ),
                     supporting_info,

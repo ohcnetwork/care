@@ -102,7 +102,9 @@ class HcxGatewayViewSet(GenericViewSet):
 
         docs = list(
             map(
-                lambda file: ({"type": "MB", "url": file.read_signed_url()}),
+                lambda file: (
+                    {"type": "MB", "name": file.name, "url": file.read_signed_url()}
+                ),
                 FileUpload.objects.filter(
                     associating_id=claim["consultation_object"]["id"]
                 ),
@@ -113,7 +115,13 @@ class HcxGatewayViewSet(GenericViewSet):
             discharge_summary_url = generate_discharge_report_signed_url(
                 claim["policy_object"]["patient_object"]["id"]
             )
-            docs.append({"type": "DIA", "url": discharge_summary_url})
+            docs.append(
+                {
+                    "type": "DIA",
+                    "name": "Discharge Summary",
+                    "url": discharge_summary_url,
+                }
+            )
 
         claim_fhir_bundle = Fhir().create_claim_bundle(
             claim["id"],
