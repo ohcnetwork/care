@@ -278,6 +278,9 @@ class UserViewSet(
         ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
         user.home_facility = None
         user.save(update_fields=["home_facility"])
         return Response(status=status.HTTP_204_NO_CONTENT)
