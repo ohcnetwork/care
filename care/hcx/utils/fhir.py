@@ -55,6 +55,9 @@ class SYSTEM:
     coverage_eligibility_request_bundle_identifier = "https://www.tmh.in/bundle"
     practitioner_speciality = "http://snomed.info/sct"
     claim_supporting_info_category = "https://ig.hcxprotocol.io/v0.7.1/ValueSet-claim-supporting-info-categories.html"
+    related_claim_relationship = (
+        "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship"
+    )
 
 
 PRACTIONER_SPECIALITY = {
@@ -179,6 +182,11 @@ class IClaimItem(TypedDict):
 class IClaimSupportingInfo(TypedDict):
     type: str
     url: str
+
+
+class IRelatedClaim(TypedDict):
+    id: str
+    type: Literal["prior", "associated"]
 
 
 FHIR_VALIDATION_URL = "https://staging-hcx.swasth.app/hapi-fhir/fhir/Bundle/$validate"
@@ -386,6 +394,7 @@ class Fhir:
         priority="normal",
         claim_payee_type="provider",
         supporting_info=[],
+        related_claims=[],
     ):
         return claim.Claim(
             id=id,
@@ -407,6 +416,23 @@ class Fhir:
                 ]
             },
             use=use,
+            related=list(
+                map(
+                    lambda related_claim: (
+                        claim.ClaimRelated(
+                            id=related_claim["id"],
+                            relationship=coding.Coding(
+                                system=SYSTEM.related_claim_relationship,
+                                code=related_claim["type"],
+                            ),
+                            claim=reference.Reference(
+                                reference=f'Claim/{related_claim["id"]}'
+                            ),
+                        )
+                    ),
+                    related_claims,
+                )
+            ),
             patient=reference.Reference(reference=self.get_reference_url(patient)),
             created=datetime.now().astimezone(tz=timezone.utc),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
@@ -616,6 +642,7 @@ class Fhir:
         claim_payee_type="provider",
         last_updated=datetime.now().astimezone(tz=timezone.utc),
         supporting_info=[],
+        related_claims=[],
     ):
         provider = self.create_provider_profile(
             provider_id, provider_name, provider_identifier_value
@@ -648,6 +675,7 @@ class Fhir:
             priority,
             claim_payee_type,
             supporting_info=supporting_info,
+            related_claims=related_claims,
         )
 
         return bundle.Bundle(
