@@ -17,6 +17,9 @@ class UserSkillPermission(BasePermission):
         user = get_object_or_404(User, username=username)
 
         if request.method not in SAFE_METHODS:
+            if requesting_user == user:
+                return True
+
             if (
                 requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
                 or requesting_user.user_type in READ_ONLY_USER_TYPES
