@@ -11,7 +11,10 @@ from care.hcx.api.serializers.gateway import (
 from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.utils.fhir import Fhir
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.file_upload import FileUpload
+from care.facility.tasks.patient.discharge_report import (
+    generate_discharge_report_signed_url,
+)
 from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
 from drf_yasg.utils import swagger_auto_schema
@@ -95,6 +98,21 @@ class HcxGatewayViewSet(GenericViewSet):
 
         claim = ClaimSerializer(Claim.objects.get(external_id=data["claim"])).data
 
+        docs = list(
+            map(
+                lambda file: ({"type": "MB", "url": file.read_signed_url()}),
+                FileUpload.objects.filter(
+                    associating_id=claim["consultation_object"]["id"]
+                ),
+            )
+        )
+
+        if REVERSE_USE_CHOICES[claim["use"]] == "claim":
+            discharge_summary_url = generate_discharge_report_signed_url(
+                claim["policy_object"]["patient_object"]["id"]
+            )
+            docs.append({"type": "DIA", "url": discharge_summary_url})
+
         claim_fhir_bundle = Fhir().create_claim_bundle(
             claim["id"],
             claim["id"],
@@ -121,6 +139,7 @@ class HcxGatewayViewSet(GenericViewSet):
             REVERSE_STATUS_CHOICES[claim["status"]],
             REVERSE_CLAIM_TYPE_CHOICES[claim["type"]],
             REVERSE_PRIORITY_CHOICES[claim["priority"]],
+            supporting_info=docs,
         )
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:

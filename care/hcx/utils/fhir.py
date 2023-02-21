@@ -14,6 +14,7 @@ from fhir.resources import (
     claim,
     claimresponse,
     domainresource,
+    attachment,
 )
 from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
@@ -53,6 +54,7 @@ class SYSTEM:
     claim_bundle_identifier = "https://www.tmh.in/bundle"
     coverage_eligibility_request_bundle_identifier = "https://www.tmh.in/bundle"
     practitioner_speciality = "http://snomed.info/sct"
+    claim_supporting_info_category = "https://ig.hcxprotocol.io/v0.7.1/ValueSet-claim-supporting-info-categories.html"
 
 
 PRACTIONER_SPECIALITY = {
@@ -172,6 +174,11 @@ class IClaimItem(TypedDict):
     id: str
     name: str
     price: float
+
+
+class IClaimSupportingInfo(TypedDict):
+    type: str
+    url: str
 
 
 FHIR_VALIDATION_URL = "https://staging-hcx.swasth.app/hapi-fhir/fhir/Bundle/$validate"
@@ -378,6 +385,7 @@ class Fhir:
         type="institutional",
         priority="normal",
         claim_payee_type="provider",
+        supporting_info=[],
     ):
         return claim.Claim(
             id=id,
@@ -458,6 +466,26 @@ class Fhir:
                     ),
                     items,
                     range(1, len(items) + 1),
+                )
+            ),
+            supportingInfo=list(
+                map(
+                    lambda info, i: (
+                        claim.ClaimSupportingInfo(
+                            sequence=i,
+                            category={
+                                "coding": [
+                                    coding.Coding(
+                                        system=SYSTEM.claim_supporting_info_category,
+                                        code=info["type"],
+                                    )
+                                ]
+                            },
+                            valueAttachment=attachment.Attachment(url=info["url"]),
+                        )
+                    ),
+                    supporting_info,
+                    range(1, len(supporting_info) + 1),
                 )
             ),
         )
@@ -587,6 +615,7 @@ class Fhir:
         priority="normal",
         claim_payee_type="provider",
         last_updated=datetime.now().astimezone(tz=timezone.utc),
+        supporting_info=[],
     ):
         provider = self.create_provider_profile(
             provider_id, provider_name, provider_identifier_value
@@ -618,6 +647,7 @@ class Fhir:
             type,
             priority,
             claim_payee_type,
+            supporting_info=supporting_info,
         )
 
         return bundle.Bundle(
