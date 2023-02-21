@@ -17,6 +17,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
@@ -271,6 +272,12 @@ class UserViewSet(
 
         if not user.home_facility:
             raise ValidationError({"home_facility": "No Home Facility Present"})
+        if (
+            requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or requesting_user.user_type in READ_ONLY_USER_TYPES
+        ):
+            raise ValidationError({"home_facility": "Insufficient Permissions"})
+
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
 
