@@ -98,7 +98,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         claim = ClaimSerializer(Claim.objects.get(external_id=data["claim"])).data
 
-        previous_claim = Claim.objects.filter(ordering="-modified_date").first()
+        previous_claim = Claim.objects.order_by("-modified_date").first()
 
         docs = list(
             map(
@@ -144,6 +144,8 @@ class HcxGatewayViewSet(GenericViewSet):
             supporting_info=docs,
             related_claims=[{"id": previous_claim.external_id, "type": "prior"}],
         )
+
+        return Response(claim_fhir_bundle.dict())
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
         #     return Response(

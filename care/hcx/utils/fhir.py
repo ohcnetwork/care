@@ -15,6 +15,7 @@ from fhir.resources import (
     claimresponse,
     domainresource,
     attachment,
+    codeableconcept,
 )
 from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
@@ -204,15 +205,15 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.patient]),
             identifier=[
                 identifier.Identifier(
-                    type={
-                        "coding": [
+                    type=codeableconcept.CodeableConcept(
+                        coding=[
                             coding.Coding(
                                 system=SYSTEM.codes,
                                 code="SN",
                                 display="Subscriber Number",
                             )
                         ]
-                    },
+                    ),
                     system=SYSTEM.patient_identifier,
                     value=identifier_value,
                 )
@@ -227,15 +228,15 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.organization]),
             identifier=[
                 identifier.Identifier(
-                    type={
-                        "coding": [
+                    type=codeableconcept.CodeableConcept(
+                        coding=[
                             coding.Coding(
                                 system=SYSTEM.codes,
                                 code="AC",
                                 display=name,
                             )
                         ]
-                    },
+                    ),
                     system=SYSTEM.provider_identifier,
                     value=identifier_value,
                 )
@@ -249,15 +250,15 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.organization]),
             identifier=[
                 identifier.Identifier(
-                    type={
-                        "coding": [
+                    type=codeableconcept.CodeableConcept(
+                        coding=[
                             coding.Coding(
                                 system=SYSTEM.codes,
                                 code="AC",
                                 display=name,
                             )
                         ]
-                    },
+                    ),
                     system=SYSTEM.insurer_identifier,
                     value=identifier_value,
                 )
@@ -273,28 +274,28 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.practitioner_role]),
             identifier=[
                 identifier.Identifier(
-                    type={
-                        "coding": [
+                    type=codeableconcept.CodeableConcept(
+                        coding=[
                             coding.Coding(
                                 system=SYSTEM.codes,
                                 code="NP",
                                 display="Nurse practitioner number",
                             )
                         ]
-                    },
+                    ),
                     value=identifier_value,
                 )
             ],
             specialty=[
-                {
-                    "coding": [
+                codeableconcept.CodeableConcept(
+                    coding=[
                         coding.Coding(
                             system=SYSTEM.practitioner_speciality,
                             code=speciality,
                             display=PRACTIONER_SPECIALITY[speciality],
                         )
                     ]
-                }
+                )
             ],
             telecom=[{"system": "phone", "value": phone}],
         )
@@ -321,14 +322,14 @@ class Fhir:
             subscriber=reference.Reference(reference=self.get_reference_url(patient)),
             subscriberId=subscriber_id,
             beneficiary=reference.Reference(reference=self.get_reference_url(patient)),
-            relationship={
-                "coding": [
+            relationship=codeableconcept.CodeableConcept(
+                coding=[
                     coding.Coding(
                         system=SYSTEM.coverage_relationship,
                         code=relationship,
                     )
                 ]
-            },
+            ),
             payor=[reference.Reference(reference=self.get_reference_url(insurer))],
         )
 
@@ -352,14 +353,14 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.coverage_eligibility_request]),
             identifier=[identifier.Identifier(value=identifier_value)],
             status=status,
-            priority={
-                "coding": [
+            priority=codeableconcept.CodeableConcept(
+                coding=[
                     coding.Coding(
                         system=SYSTEM.priority,
                         code=priority,
                     )
                 ]
-            },
+            ),
             purpose=[purpose],
             patient=reference.Reference(reference=self.get_reference_url(patient)),
             servicedPeriod=period.Period(
@@ -407,23 +408,27 @@ class Fhir:
                 )
             ],
             status=status,
-            type={
-                "coding": [
+            type=codeableconcept.CodeableConcept(
+                coding=[
                     coding.Coding(
                         system=SYSTEM.claim_type,
                         code=type,
                     )
                 ]
-            },
+            ),
             use=use,
             related=list(
                 map(
                     lambda related_claim: (
                         claim.ClaimRelated(
                             id=related_claim["id"],
-                            relationship=coding.Coding(
-                                system=SYSTEM.related_claim_relationship,
-                                code=related_claim["type"],
+                            relationship=codeableconcept.CodeableConcept(
+                                coding=[
+                                    coding.Coding(
+                                        system=SYSTEM.related_claim_relationship,
+                                        code=related_claim["type"],
+                                    )
+                                ]
                             ),
                             claim=reference.Reference(
                                 reference=f'Claim/{related_claim["id"]}'
@@ -437,23 +442,23 @@ class Fhir:
             created=datetime.now().astimezone(tz=timezone.utc),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
             provider=reference.Reference(reference=self.get_reference_url(provider)),
-            priority={
-                "coding": [
+            priority=codeableconcept.CodeableConcept(
+                coding=[
                     coding.Coding(
                         system=SYSTEM.priority,
                         code=priority,
                     )
                 ]
-            },
+            ),
             payee=claim.ClaimPayee(
-                type={
-                    "coding": [
+                type=codeableconcept.CodeableConcept(
+                    coding=[
                         coding.Coding(
                             system=SYSTEM.claim_payee_type,
                             code=claim_payee_type,
                         )
                     ]
-                },
+                ),
                 party=reference.Reference(reference=self.get_reference_url(provider)),
             ),
             careTeam=[
@@ -478,15 +483,15 @@ class Fhir:
                     lambda item, i: (
                         claim.ClaimItem(
                             sequence=i,
-                            productOrService={
-                                "coding": [
+                            productOrService=codeableconcept.CodeableConcept(
+                                coding=[
                                     coding.Coding(
                                         system=SYSTEM.claim_item,
                                         code=item["id"],
                                         display=item["name"],
                                     )
                                 ]
-                            },
+                            ),
                             unitPrice={"value": item["price"], "currency": "INR"},
                         )
                     ),
@@ -499,14 +504,14 @@ class Fhir:
                     lambda info, i: (
                         claim.ClaimSupportingInfo(
                             sequence=i,
-                            category={
-                                "coding": [
+                            category=codeableconcept.CodeableConcept(
+                                coding=[
                                     coding.Coding(
                                         system=SYSTEM.claim_supporting_info_category,
                                         code=info["type"],
                                     )
                                 ]
-                            },
+                            ),
                             valueAttachment=attachment.Attachment(url=info["url"]),
                         )
                     ),
