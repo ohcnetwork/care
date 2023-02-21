@@ -142,10 +142,8 @@ class HcxGatewayViewSet(GenericViewSet):
             REVERSE_CLAIM_TYPE_CHOICES[claim["type"]],
             REVERSE_PRIORITY_CHOICES[claim["priority"]],
             supporting_info=docs,
-            related_claims=[{"id": previous_claim.external_id, "type": "prior"}],
+            related_claims=[{"id": str(previous_claim.external_id), "type": "prior"}],
         )
-
-        return Response(claim_fhir_bundle.dict())
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
         #     return Response(
