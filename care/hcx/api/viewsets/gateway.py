@@ -236,11 +236,11 @@ class HcxGatewayViewSet(GenericViewSet):
             diagnoses=diagnoses,
         )
 
-        # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
-        #     return Response(
-        #         {"message": "Invalid FHIR object"},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
+        if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
+            return Response(
+                {"message": "Invalid FHIR object"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),

@@ -632,9 +632,9 @@ class Fhir:
     ):
         return procedure.Procedure(
             id=id,
-            meta=meta.Meta(
-                profile=[PROFILE.procedure],
-            ),
+            # meta=meta.Meta(
+            #     profile=[PROFILE.procedure],
+            # ),
             status=status,
             note=[annotation.Annotation(text=name)],
             subject=reference.Reference(reference=self.get_reference_url(patient)),
