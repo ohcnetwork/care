@@ -30,6 +30,7 @@ from care.hcx.models.base import (
     REVERSE_USE_CHOICES,
 )
 from care.facility.static_data.icd11 import ICDDiseases
+from django.db.models import Q
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -185,7 +186,8 @@ class HcxGatewayViewSet(GenericViewSet):
                     {"type": "MB", "name": file.name, "url": file.read_signed_url()}
                 ),
                 FileUpload.objects.filter(
-                    associating_id=claim["consultation_object"]["id"]
+                    Q(associating_id=claim["consultation_object"]["id"])
+                    | Q(associating_id=claim["id"])
                 ),
             )
         )
