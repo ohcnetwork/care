@@ -8,10 +8,10 @@ ITEMS = {
                 "id": {"type": "string"},
                 "name": {"type": "string"},
                 "price": {"type": "number"},
+                "category": {"type": "string"},
             },
             "additionalProperties": False,
             "required": ["id", "name", "price"],
-            "category": "string",
         }
     ],
 }

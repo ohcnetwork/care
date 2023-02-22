@@ -651,7 +651,7 @@ class Fhir:
     def create_condition_profile(self, id, code, label, patient):
         return condition.Condition(
             id=id,
-            meta=meta.Meta(profile=[PROFILE.condition]),
+            # meta=meta.Meta(profile=[PROFILE.condition]),
             code=codeableconcept.CodeableConcept(
                 coding=[
                     coding.Coding(system=SYSTEM.condition, code=code, display=label)
