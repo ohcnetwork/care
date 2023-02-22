@@ -249,3 +249,12 @@ class HcxGatewayViewSet(GenericViewSet):
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(tags=["hcx"])
+    @action(detail=False, methods=["get"])
+    def payors(self, request):
+        payors = Hcx().searchRegistry("roles", "payor")["participants"]
+
+        active_payors = list(filter(lambda payor: payor["status"] == "Active", payors))
+
+        return Response(active_payors, status=status.HTTP_200_OK)
