@@ -29,6 +29,7 @@ from care.hcx.models.base import (
     REVERSE_STATUS_CHOICES,
     REVERSE_USE_CHOICES,
 )
+from care.facility.static_data.icd11 import ICDDiseases
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -127,7 +128,42 @@ class HcxGatewayViewSet(GenericViewSet):
                 )
             )
 
-        print(procedures)
+        diagnoses = []
+        if len(consultation.icd11_diagnoses):
+            diagnoses = list(
+                map(
+                    lambda diagnosis: {
+                        "id": str(uuid()),
+                        "label": diagnosis.label.split(" ", 1)[1],
+                        "code": diagnosis.label.split(" ", 1)[0] or "00",
+                        "type": "clinical",
+                    },
+                    list(
+                        map(
+                            lambda icd_id: ICDDiseases.by.id[icd_id],
+                            consultation.icd11_diagnoses,
+                        )
+                    ),
+                )
+            )
+
+        if len(consultation.icd11_provisional_diagnoses):
+            diagnoses = list(
+                map(
+                    lambda diagnosis: {
+                        "id": str(uuid()),
+                        "label": diagnosis.label.split(" ", 1)[1],
+                        "code": diagnosis.label.split(" ", 1)[0] or "00",
+                        "type": "admitting",
+                    },
+                    list(
+                        map(
+                            lambda icd_id: ICDDiseases.by.id[icd_id],
+                            consultation.icd11_provisional_diagnoses,
+                        )
+                    ),
+                )
+            )
 
         previous_claim = (
             Claim.objects.filter(
@@ -195,9 +231,8 @@ class HcxGatewayViewSet(GenericViewSet):
             supporting_info=docs,
             related_claims=related_claims,
             procedures=procedures,
+            diagnoses=diagnoses,
         )
-
-        return Response(claim_fhir_bundle.dict())
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
         #     return Response(

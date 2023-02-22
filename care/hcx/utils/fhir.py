@@ -18,6 +18,7 @@ from fhir.resources import (
     codeableconcept,
     procedure,
     annotation,
+    condition,
 )
 from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
@@ -39,6 +40,7 @@ class PROFILE:
         "https://nrces.in/ndhm/fhir/r4/StructureDefinition/PractitionerRole"
     )
     procedure = "http://hl7.org/fhir/R4/procedure.html"
+    condition = "https://nrces.in/ndhm/fhir/r4/StructureDefinition/Condition"
 
 
 class SYSTEM:
@@ -63,6 +65,8 @@ class SYSTEM:
         "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship"
     )
     procedure_status = "http://hl7.org/fhir/event-status"
+    condition = "http://snomed.info/sct"
+    diagnosis_type = "http://terminology.hl7.org/CodeSystem/ex-diagnosistype"
 
 
 PRACTIONER_SPECIALITY = {
@@ -197,6 +201,26 @@ class IClaimProcedure(TypedDict):
         "completed",
         "entered-in-error",
         "unknown",
+    ]
+
+
+class IClaimDiagnosis(TypedDict):
+    id: str
+    label: str
+    code: str
+    type: Literal[
+        "admitting",
+        "clinical",
+        "differential",
+        "discharge",
+        "laboratory",
+        "nursing",
+        "prenatal",
+        "principal",
+        "radiology",
+        "remote",
+        "retrospective",
+        "self",
     ]
 
 
@@ -418,6 +442,7 @@ class Fhir:
         supporting_info=[],
         related_claims=[],
         procedures=[],
+        diagnoses=[],
     ):
         return claim.Claim(
             id=id,
@@ -558,6 +583,30 @@ class Fhir:
                     range(1, len(procedures) + 1),
                 )
             ),
+            diagnosis=list(
+                map(
+                    lambda diagnosis, i: (
+                        claim.ClaimDiagnosis(
+                            sequence=i,
+                            diagnosisReference=reference.Reference(
+                                reference=self.get_reference_url(diagnosis["profile"])
+                            ),
+                            type=[
+                                codeableconcept.CodeableConcept(
+                                    coding=[
+                                        coding.Coding(
+                                            system=SYSTEM.diagnosis_type,
+                                            code=diagnosis["type"],
+                                        )
+                                    ]
+                                )
+                            ],
+                        )
+                    ),
+                    diagnoses,
+                    range(1, len(diagnoses) + 1),
+                )
+            ),
         )
 
     def create_procedure_profile(
@@ -569,7 +618,6 @@ class Fhir:
         status="unknown",
         performed=None,
     ):
-        print(status)
         return procedure.Procedure(
             id=id,
             meta=meta.Meta(
@@ -586,6 +634,18 @@ class Fhir:
                 )
             ],
             performedString=performed,
+        )
+
+    def create_condition_profile(self, id, code, label, patient):
+        return condition.Condition(
+            id=id,
+            meta=meta.Meta(profile=[PROFILE.condition]),
+            code=codeableconcept.CodeableConcept(
+                coding=[
+                    coding.Coding(system=SYSTEM.condition, code=code, display=label)
+                ]
+            ),
+            subject=reference.Reference(reference=self.get_reference_url(patient)),
         )
 
     def create_coverage_eligibility_request_bundle(
@@ -716,6 +776,7 @@ class Fhir:
         supporting_info=[],
         related_claims=[],
         procedures=[],
+        diagnoses=[],
     ):
         provider = self.create_provider_profile(
             provider_id, provider_name, provider_identifier_value
@@ -749,6 +810,18 @@ class Fhir:
             )
         )
 
+        diagnoses = list(
+            map(
+                lambda diagnosis: {
+                    "profile": self.create_condition_profile(
+                        diagnosis["id"], diagnosis["code"], diagnosis["label"], patient
+                    ),
+                    "type": diagnosis["type"],
+                },
+                diagnoses,
+            )
+        )
+
         claim = self.create_claim_profile(
             claim_id,
             claim_identifier_value,
@@ -765,6 +838,7 @@ class Fhir:
             supporting_info=supporting_info,
             related_claims=related_claims,
             procedures=procedures,
+            diagnoses=diagnoses,
         )
 
         return bundle.Bundle(
@@ -807,6 +881,15 @@ class Fhir:
                             resource=procedure,
                         ),
                         procedures,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda diagnosis: bundle.BundleEntry(
+                            fullUrl=self.get_reference_url(diagnosis["profile"]),
+                            resource=diagnosis["profile"],
+                        ),
+                        diagnoses,
                     )
                 ),
             ],
