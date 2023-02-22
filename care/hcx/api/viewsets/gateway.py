@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from care.hcx.models.policy import Policy
 from care.hcx.models.claim import Claim
+from care.facility.models.patient_consultation import PatientConsultation
 from care.hcx.api.serializers.gateway import (
     CheckEligibilitySerializer,
     MakeClaimSerializer,
@@ -15,8 +16,10 @@ from care.facility.models.file_upload import FileUpload
 from care.facility.tasks.patient.discharge_report import (
     generate_discharge_report_signed_url,
 )
+from uuid import uuid4 as uuid
 from care.hcx.utils.hcx import Hcx, HcxOperations
 import json
+from datetime import datetime
 from drf_yasg.utils import swagger_auto_schema
 from care.users.models import User
 from care.hcx.models.base import (
@@ -97,6 +100,34 @@ class HcxGatewayViewSet(GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         claim = ClaimSerializer(Claim.objects.get(external_id=data["claim"])).data
+        consultation = PatientConsultation.objects.get(
+            external_id=claim["consultation_object"]["id"]
+        )
+
+        procedures = []
+        if len(consultation.procedure):
+            procedures = list(
+                map(
+                    lambda procedure: {
+                        "id": str(uuid()),
+                        "name": procedure["procedure"],
+                        "performed": procedure["time"]
+                        if "time" in procedure
+                        else procedure["frequency"],
+                        "status": (
+                            "completed"
+                            if datetime.strptime(procedure["time"], "%Y-%m-%dT%H:%M")
+                            < datetime.now()
+                            else "preparation"
+                        )
+                        if "time" in procedure
+                        else "in-progress",
+                    },
+                    consultation.procedure,
+                )
+            )
+
+        print(procedures)
 
         previous_claim = (
             Claim.objects.filter(
@@ -163,7 +194,10 @@ class HcxGatewayViewSet(GenericViewSet):
             REVERSE_PRIORITY_CHOICES[claim["priority"]],
             supporting_info=docs,
             related_claims=related_claims,
+            procedures=procedures,
         )
+
+        return Response(claim_fhir_bundle.dict())
 
         # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
         #     return Response(

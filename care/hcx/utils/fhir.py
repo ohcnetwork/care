@@ -16,6 +16,8 @@ from fhir.resources import (
     domainresource,
     attachment,
     codeableconcept,
+    procedure,
+    annotation,
 )
 from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
@@ -36,6 +38,7 @@ class PROFILE:
     practitioner_role = (
         "https://nrces.in/ndhm/fhir/r4/StructureDefinition/PractitionerRole"
     )
+    procedure = "http://hl7.org/fhir/R4/procedure.html"
 
 
 class SYSTEM:
@@ -59,6 +62,7 @@ class SYSTEM:
     related_claim_relationship = (
         "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship"
     )
+    procedure_status = "http://hl7.org/fhir/event-status"
 
 
 PRACTIONER_SPECIALITY = {
@@ -178,6 +182,22 @@ class IClaimItem(TypedDict):
     id: str
     name: str
     price: float
+
+
+class IClaimProcedure(TypedDict):
+    id: str
+    name: str
+    performed: str
+    status: Literal[
+        "preparation",
+        "in-progress",
+        "not-done",
+        "on-hold",
+        "stopped",
+        "completed",
+        "entered-in-error",
+        "unknown",
+    ]
 
 
 class IClaimSupportingInfo(TypedDict):
@@ -397,6 +417,7 @@ class Fhir:
         claim_payee_type="provider",
         supporting_info=[],
         related_claims=[],
+        procedures=[],
     ):
         return claim.Claim(
             id=id,
@@ -523,6 +544,48 @@ class Fhir:
                     range(1, len(supporting_info) + 1),
                 )
             ),
+            procedure=list(
+                map(
+                    lambda procedure, i: (
+                        claim.ClaimProcedure(
+                            sequence=i,
+                            procedureReference=reference.Reference(
+                                reference=self.get_reference_url(procedure)
+                            ),
+                        )
+                    ),
+                    procedures,
+                    range(1, len(procedures) + 1),
+                )
+            ),
+        )
+
+    def create_procedure_profile(
+        self,
+        id,
+        name,
+        patient,
+        provider,
+        status="unknown",
+        performed=None,
+    ):
+        print(status)
+        return procedure.Procedure(
+            id=id,
+            meta=meta.Meta(
+                profile=[PROFILE.procedure],
+            ),
+            status=status,
+            note=[annotation.Annotation(text=name)],
+            subject=reference.Reference(reference=self.get_reference_url(patient)),
+            performer=[
+                procedure.ProcedurePerformer(
+                    actor=reference.Reference(
+                        reference=self.get_reference_url(provider)
+                    )
+                )
+            ],
+            performedString=performed,
         )
 
     def create_coverage_eligibility_request_bundle(
@@ -652,6 +715,7 @@ class Fhir:
         last_updated=datetime.now().astimezone(tz=timezone.utc),
         supporting_info=[],
         related_claims=[],
+        procedures=[],
     ):
         provider = self.create_provider_profile(
             provider_id, provider_name, provider_identifier_value
@@ -670,6 +734,21 @@ class Fhir:
             insurer,
             status,
         )
+
+        procedures = list(
+            map(
+                lambda procedure: self.create_procedure_profile(
+                    procedure["id"],
+                    procedure["name"],
+                    patient,
+                    provider,
+                    procedure["status"],
+                    procedure["performed"],
+                ),
+                procedures,
+            )
+        )
+
         claim = self.create_claim_profile(
             claim_id,
             claim_identifier_value,
@@ -685,6 +764,7 @@ class Fhir:
             claim_payee_type,
             supporting_info=supporting_info,
             related_claims=related_claims,
+            procedures=procedures,
         )
 
         return bundle.Bundle(
@@ -719,6 +799,15 @@ class Fhir:
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(coverage),
                     resource=coverage,
+                ),
+                *list(
+                    map(
+                        lambda procedure: bundle.BundleEntry(
+                            fullUrl=self.get_reference_url(procedure),
+                            resource=procedure,
+                        ),
+                        procedures,
+                    )
                 ),
             ],
         )
