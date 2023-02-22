@@ -257,4 +257,14 @@ class HcxGatewayViewSet(GenericViewSet):
 
         active_payors = list(filter(lambda payor: payor["status"] == "Active", payors))
 
-        return Response(active_payors, status=status.HTTP_200_OK)
+        response = list(
+            map(
+                lambda payor: {
+                    "name": payor["participant_name"],
+                    "code": payor["participant_code"],
+                },
+                active_payors,
+            )
+        )
+
+        return Response(response, status=status.HTTP_200_OK)
