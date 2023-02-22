@@ -292,9 +292,9 @@ class HcxGatewayViewSet(GenericViewSet):
             return result
 
         queryset = PMJYPackages
+        limit = request.GET.get("limit", 20)
         if request.GET.get("query", False):
             query = request.GET.get("query")
-            limit = request.GET.get("query", 20)
             queryset = queryset.where(
                 name=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )
