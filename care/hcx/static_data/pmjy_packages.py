@@ -15,7 +15,6 @@ IGNORE_FIELDS = [
     "hbp_code",
     "specialty",
     "package_code",
-    "package_name",
     "stratification",
     "implant",
 ]

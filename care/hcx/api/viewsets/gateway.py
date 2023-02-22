@@ -287,6 +287,7 @@ class HcxGatewayViewSet(GenericViewSet):
                         "code": pmjy_package.code,
                         "name": pmjy_package.name,
                         "price": pmjy_package.price,
+                        "package_name": pmjy_package.package_name,
                     }
                 )
             return result
