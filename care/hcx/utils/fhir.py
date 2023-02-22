@@ -67,6 +67,8 @@ class SYSTEM:
     procedure_status = "http://hl7.org/fhir/event-status"
     condition = "http://snomed.info/sct"
     diagnosis_type = "http://terminology.hl7.org/CodeSystem/ex-diagnosistype"
+    claim_item_category = "https://irdai.gov.in/benefit-billing-group-code"
+    claim_item_category_pmjy = "https://pmjay.gov.in/benefit-billing-group-code"
 
 
 PRACTIONER_SPECIALITY = {
@@ -540,6 +542,16 @@ class Fhir:
                                 ]
                             ),
                             unitPrice={"value": item["price"], "currency": "INR"},
+                            category=codeableconcept.CodeableConcept(
+                                coding=[
+                                    coding.Coding(
+                                        system=SYSTEM.claim_item_category_pmjy
+                                        if item["category"] == "HBP"
+                                        else SYSTEM.claim_item_category,
+                                        code=item["category"],
+                                    )
+                                ]
+                            ),
                         )
                     ),
                     items,
