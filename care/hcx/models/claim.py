@@ -12,7 +12,7 @@ from care.hcx.models.base import (
 )
 from django.contrib.postgres.fields import JSONField
 from care.utils.models.validators import JSONFieldSchemaValidator
-from care.hcx.models.json_schema.claim import PROCEDURES
+from care.hcx.models.json_schema.claim import ITEMS
 from care.users.models import User
 
 
@@ -22,9 +22,7 @@ class Claim(BaseModel):
         Policy, on_delete=models.CASCADE
     )  # cascade - check it with Gigin
 
-    procedures = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(PROCEDURES)]
-    )
+    items = JSONField(default=list, validators=[JSONFieldSchemaValidator(ITEMS)])
     total_claim_amount = models.FloatField(blank=True, null=True)
     total_amount_approved = models.FloatField(blank=True, null=True)
 

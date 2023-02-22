@@ -23,7 +23,7 @@ from care.facility.api.serializers.patient_consultation import (
 )
 from rest_framework.exceptions import ValidationError
 from care.utils.models.validators import JSONFieldSchemaValidator
-from care.hcx.models.json_schema.claim import PROCEDURES
+from care.hcx.models.json_schema.claim import ITEMS
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 TIMESTAMP_FIELDS = (
@@ -43,9 +43,7 @@ class ClaimSerializer(ModelSerializer):
     policy = UUIDField(write_only=True, required=True)
     policy_object = PolicySerializer(source="policy", read_only=True)
 
-    procedures = JSONField(
-        required=False, validators=[JSONFieldSchemaValidator(PROCEDURES)]
-    )
+    items = JSONField(required=False, validators=[JSONFieldSchemaValidator(ITEMS)])
     total_claim_amount = FloatField(required=False)
     total_amount_approved = FloatField(required=False)
 
@@ -80,10 +78,10 @@ class ClaimSerializer(ModelSerializer):
                 {"consultation": "Field is Required", "policy": "Field is Required"}
             )
 
-        if "total_claim_amount" not in attrs and "procedures" in attrs:
+        if "total_claim_amount" not in attrs and "items" in attrs:
             total_claim_amount = 0.0
-            for procedure in attrs["procedures"]:
-                total_claim_amount += procedure["price"]
+            for item in attrs["items"]:
+                total_claim_amount += item["price"]
 
             attrs["total_claim_amount"] = total_claim_amount
 

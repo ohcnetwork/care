@@ -1,4 +1,4 @@
-PROCEDURES = {
+ITEMS = {
     "$schema": f"http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
@@ -11,6 +11,7 @@ PROCEDURES = {
             },
             "additionalProperties": False,
             "required": ["id", "name", "price"],
+            "category": "string",
         }
     ],
 }

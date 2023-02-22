@@ -225,7 +225,7 @@ class HcxGatewayViewSet(GenericViewSet):
             claim["policy_object"]["id"],
             claim["id"],
             claim["id"],
-            claim["procedures"],
+            claim["items"],
             REVERSE_USE_CHOICES[claim["use"]],
             REVERSE_STATUS_CHOICES[claim["status"]],
             REVERSE_CLAIM_TYPE_CHOICES[claim["type"]],
