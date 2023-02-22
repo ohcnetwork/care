@@ -31,6 +31,7 @@ from care.hcx.models.base import (
 )
 from care.facility.static_data.icd11 import ICDDiseases
 from django.db.models import Q
+from re import IGNORECASE
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -270,3 +271,30 @@ class HcxGatewayViewSet(GenericViewSet):
         )
 
         return Response(response, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(tags=["hcx"])
+    @action(detail=False, methods=["get"])
+    def pmjy_packages(self, request):
+        from care.hcx.static_data.pmjy_packages import PMJYPackages
+
+        def serailize_data(pmjy_packages):
+            result = []
+            for pmjy_package in pmjy_packages:
+                if type(pmjy_package) == tuple:
+                    pmjy_package = pmjy_package[0]
+                result.append(
+                    {
+                        "code": pmjy_package.code,
+                        "name": pmjy_package.name,
+                        "price": pmjy_package.price,
+                    }
+                )
+            return result
+
+        queryset = PMJYPackages
+        if request.GET.get("query", False):
+            query = request.GET.get("query")
+            queryset = queryset.where(
+                name=queryset.re_match(r".*" + query + r".*", IGNORECASE)
+            )
+        return Response(serailize_data(queryset[0:100]))
