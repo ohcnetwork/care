@@ -294,7 +294,8 @@ class HcxGatewayViewSet(GenericViewSet):
         queryset = PMJYPackages
         if request.GET.get("query", False):
             query = request.GET.get("query")
+            limit = request.GET.get("query", 20)
             queryset = queryset.where(
                 name=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )
-        return Response(serailize_data(queryset[0:100]))
+        return Response(serailize_data(queryset[0:limit]))
