@@ -287,14 +287,16 @@ class HcxGatewayViewSet(GenericViewSet):
                         "code": pmjy_package.code,
                         "name": pmjy_package.name,
                         "price": pmjy_package.price,
+                        "package_name": pmjy_package.package_name,
                     }
                 )
             return result
 
         queryset = PMJYPackages
+        limit = request.GET.get("limit", 20)
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
                 name=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )
-        return Response(serailize_data(queryset[0:100]))
+        return Response(serailize_data(queryset[0:limit]))
