@@ -112,7 +112,7 @@
           "name": "POSTGRES_PORT"
         },
         {
-          "valueFrom": "/care-hcx/backend/POSTGRES_HOST",
+          "valueFrom": "/care/backend/POSTGRES_HOST",
           "name": "POSTGRES_HOST"
         },
         {
@@ -144,7 +144,7 @@
           "name": "REDIS_URL"
         },
         {
-          "valueFrom": "/care/backend/POSTGIS_URL",
+          "valueFrom": "/care-hcx/backend/POSTGIS_URL",
           "name": "POSTGIS_URL"
         },
         {
