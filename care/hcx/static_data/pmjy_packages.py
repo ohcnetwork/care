@@ -8,7 +8,7 @@ def fetch_data():
         return json.load(json_file)
 
 
-PMJYPackages = Table("ICD11")
+PMJYPackages = Table("PMJYPackages")
 pmjy_packages = fetch_data()
 
 IGNORE_FIELDS = [
@@ -24,9 +24,10 @@ for pmjy_package in pmjy_packages:
         pmjy_package.pop(field, "")
 
     pmjy_package["code"] = pmjy_package.pop("procedure_code")
-    pmjy_package["name"] = pmjy_package.pop("procedure_name")
+    pmjy_package["name"] = pmjy_package.pop("procedure_label")
     pmjy_package["price"] = pmjy_package.pop("procedure_price")
     PMJYPackages.insert(pmjy_package)
 
 PMJYPackages.create_search_index("name")
+PMJYPackages.create_search_index("package_name")
 PMJYPackages.create_index("code", unique=True)

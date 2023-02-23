@@ -1,0 +1,79 @@
+{
+    "name": "Soreng",
+    "lsg_code": 2160,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 14,
+    "wards": [
+        {
+            "ward_no": 261075,
+            "ward_name": "Arubotey",
+            "ward_id": 261075
+        },
+        {
+            "ward_no": 261079,
+            "ward_name": "Burikhop",
+            "ward_id": 261079
+        },
+        {
+            "ward_no": 261076,
+            "ward_name": "Chota-Samdong",
+            "ward_id": 261076
+        },
+        {
+            "ward_no": 904425,
+            "ward_name": "Dodak",
+            "ward_id": 904425
+        },
+        {
+            "ward_no": 261078,
+            "ward_name": "Karthok",
+            "ward_id": 261078
+        },
+        {
+            "ward_no": 261095,
+            "ward_name": "Malbasey",
+            "ward_id": 261095
+        },
+        {
+            "ward_no": 261095,
+            "ward_name": "Malbasey",
+            "ward_id": 261095
+        },
+        {
+            "ward_no": 261077,
+            "ward_name": "Singling",
+            "ward_id": 261077
+        },
+        {
+            "ward_no": 261094,
+            "ward_name": "Soreng",
+            "ward_id": 261094
+        },
+        {
+            "ward_no": 261094,
+            "ward_name": "Soreng",
+            "ward_id": 261094
+        },
+        {
+            "ward_no": 261102,
+            "ward_name": "Soreng Forest Block",
+            "ward_id": 261102
+        },
+        {
+            "ward_no": 261093,
+            "ward_name": "Tharpu",
+            "ward_id": 261093
+        },
+        {
+            "ward_no": 261092,
+            "ward_name": "Timberbong",
+            "ward_id": 261092
+        },
+        {
+            "ward_no": 261092,
+            "ward_name": "Timberbong",
+            "ward_id": 261092
+        }
+    ]
+}

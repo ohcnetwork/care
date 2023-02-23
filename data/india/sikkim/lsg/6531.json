@@ -1,0 +1,79 @@
+{
+    "name": "Daramdin",
+    "lsg_code": 6531,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 14,
+    "wards": [
+        {
+            "ward_no": 261082,
+            "ward_name": "Bhareng",
+            "ward_id": 261082
+        },
+        {
+            "ward_no": 261080,
+            "ward_name": "Burikhop Rumbuk",
+            "ward_id": 261080
+        },
+        {
+            "ward_no": 261090,
+            "ward_name": "Dhallam",
+            "ward_id": 261090
+        },
+        {
+            "ward_no": 261100,
+            "ward_name": "Hilley Forest Block",
+            "ward_id": 261100
+        },
+        {
+            "ward_no": 261089,
+            "ward_name": "Lower Fambong",
+            "ward_id": 261089
+        },
+        {
+            "ward_no": 261088,
+            "ward_name": "Lungchok",
+            "ward_id": 261088
+        },
+        {
+            "ward_no": 261084,
+            "ward_name": "Okhery",
+            "ward_id": 261084
+        },
+        {
+            "ward_no": 261083,
+            "ward_name": "Ribdi",
+            "ward_id": 261083
+        },
+        {
+            "ward_no": 261081,
+            "ward_name": "Rumbuk",
+            "ward_id": 261081
+        },
+        {
+            "ward_no": 261087,
+            "ward_name": "Salyangdang",
+            "ward_id": 261087
+        },
+        {
+            "ward_no": 261086,
+            "ward_name": "Siktam",
+            "ward_id": 261086
+        },
+        {
+            "ward_no": 261101,
+            "ward_name": "Sombaria Forest Block",
+            "ward_id": 261101
+        },
+        {
+            "ward_no": 261085,
+            "ward_name": "Tikpur",
+            "ward_id": 261085
+        },
+        {
+            "ward_no": 261091,
+            "ward_name": "Upper Fambong",
+            "ward_id": 261091
+        }
+    ]
+}

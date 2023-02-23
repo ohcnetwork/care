@@ -1,0 +1,74 @@
+{
+    "name": "Martam",
+    "lsg_code": 6562,
+    "district": "Gangtok",
+    "state": "Sikkim",
+    "no_of_wards": 13,
+    "wards": [
+        {
+            "ward_no": 261286,
+            "ward_name": "Chuba",
+            "ward_id": 261286
+        },
+        {
+            "ward_no": 261290,
+            "ward_name": "Marchak",
+            "ward_id": 261290
+        },
+        {
+            "ward_no": 261289,
+            "ward_name": "Namin",
+            "ward_id": 261289
+        },
+        {
+            "ward_no": 261287,
+            "ward_name": "Namli",
+            "ward_id": 261287
+        },
+        {
+            "ward_no": 261322,
+            "ward_name": "Ranipool Forest Block",
+            "ward_id": 261322
+        },
+        {
+            "ward_no": 261325,
+            "ward_name": "Sang Forest Block",
+            "ward_id": 261325
+        },
+        {
+            "ward_no": 261288,
+            "ward_name": "Tumlabung",
+            "ward_id": 261288
+        },
+        {
+            "ward_no": 261275,
+            "ward_name": "Byeng Sang",
+            "ward_id": 261275
+        },
+        {
+            "ward_no": 261279,
+            "ward_name": "Martam",
+            "ward_id": 261279
+        },
+        {
+            "ward_no": 261278,
+            "ward_name": "Nazitam",
+            "ward_id": 261278
+        },
+        {
+            "ward_no": 261276,
+            "ward_name": "Phegyong",
+            "ward_id": 261276
+        },
+        {
+            "ward_no": 261277,
+            "ward_name": "Tirkutam",
+            "ward_id": 261277
+        },
+        {
+            "ward_no": 261272,
+            "ward_name": "Tshalumthang",
+            "ward_id": 261272
+        }
+    ]
+}

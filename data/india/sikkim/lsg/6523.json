@@ -1,0 +1,109 @@
+{
+    "name": "Kabi Tingda",
+    "lsg_code": 6523,
+    "district": "Mangan",
+    "state": "Sikkim",
+    "no_of_wards": 20,
+    "wards": [
+        {
+            "ward_no": 260967,
+            "ward_name": "Chawang",
+            "ward_id": 260967
+        },
+        {
+            "ward_no": 260972,
+            "ward_name": "Kabi",
+            "ward_id": 260972
+        },
+        {
+            "ward_no": 260971,
+            "ward_name": "Labi",
+            "ward_id": 260971
+        },
+        {
+            "ward_no": 261301,
+            "ward_name": "Lingdok",
+            "ward_id": 261301
+        },
+        {
+            "ward_no": 260969,
+            "ward_name": "Men-Rongong",
+            "ward_id": 260969
+        },
+        {
+            "ward_no": 261300,
+            "ward_name": "Nampong",
+            "ward_id": 261300
+        },
+        {
+            "ward_no": 261302,
+            "ward_name": "Navey",
+            "ward_id": 261302
+        },
+        {
+            "ward_no": 260970,
+            "ward_name": "Paney Phensang",
+            "ward_id": 260970
+        },
+        {
+            "ward_no": 261320,
+            "ward_name": "Pangthang Forest Block",
+            "ward_id": 261320
+        },
+        {
+            "ward_no": 261304,
+            "ward_name": "Penlong",
+            "ward_id": 261304
+        },
+        {
+            "ward_no": 260968,
+            "ward_name": "Phamtam",
+            "ward_id": 260968
+        },
+        {
+            "ward_no": 260966,
+            "ward_name": "Phodong",
+            "ward_id": 260966
+        },
+        {
+            "ward_no": 260978,
+            "ward_name": "Phodong Forest Block",
+            "ward_id": 260978
+        },
+        {
+            "ward_no": 260963,
+            "ward_name": "Ramthang",
+            "ward_id": 260963
+        },
+        {
+            "ward_no": 260964,
+            "ward_name": "Rongong",
+            "ward_id": 260964
+        },
+        {
+            "ward_no": 261303,
+            "ward_name": "Shotak",
+            "ward_id": 261303
+        },
+        {
+            "ward_no": 260962,
+            "ward_name": "Tangyek",
+            "ward_id": 260962
+        },
+        {
+            "ward_no": 260973,
+            "ward_name": "Tingda",
+            "ward_id": 260973
+        },
+        {
+            "ward_no": 260973,
+            "ward_name": "Tingda",
+            "ward_id": 260973
+        },
+        {
+            "ward_no": 260965,
+            "ward_name": "Tumlong",
+            "ward_id": 260965
+        }
+    ]
+}

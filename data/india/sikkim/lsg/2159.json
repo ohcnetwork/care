@@ -1,0 +1,94 @@
+{
+    "name": "Gyalshing",
+    "lsg_code": 2159,
+    "district": "Gyalshing",
+    "state": "Sikkim",
+    "no_of_wards": 17,
+    "wards": [
+        {
+            "ward_no": 261003,
+            "ward_name": "Bhaluthang",
+            "ward_id": 261003
+        },
+        {
+            "ward_no": 260999,
+            "ward_name": "Chumbung",
+            "ward_id": 260999
+        },
+        {
+            "ward_no": 260995,
+            "ward_name": "Darap",
+            "ward_id": 260995
+        },
+        {
+            "ward_no": 261015,
+            "ward_name": "Gyalshing",
+            "ward_id": 261015
+        },
+        {
+            "ward_no": 261048,
+            "ward_name": "Gyalshing Forest Block",
+            "ward_id": 261048
+        },
+        {
+            "ward_no": 261016,
+            "ward_name": "Kyongsa",
+            "ward_id": 261016
+        },
+        {
+            "ward_no": 261019,
+            "ward_name": "Lingchom",
+            "ward_id": 261019
+        },
+        {
+            "ward_no": 260998,
+            "ward_name": "Naku",
+            "ward_id": 260998
+        },
+        {
+            "ward_no": 260994,
+            "ward_name": "Nambu",
+            "ward_id": 260994
+        },
+        {
+            "ward_no": 261014,
+            "ward_name": "Omchung",
+            "ward_id": 261014
+        },
+        {
+            "ward_no": 260996,
+            "ward_name": "Sindrang",
+            "ward_id": 260996
+        },
+        {
+            "ward_no": 260993,
+            "ward_name": "Sindrangbong",
+            "ward_id": 260993
+        },
+        {
+            "ward_no": 260997,
+            "ward_name": "Singyang",
+            "ward_id": 260997
+        },
+        {
+            "ward_no": 261018,
+            "ward_name": "Tikjya",
+            "ward_id": 261018
+        },
+        {
+            "ward_no": 261002,
+            "ward_name": "Unglok",
+            "ward_id": 261002
+        },
+        {
+            "ward_no": 261001,
+            "ward_name": "Yangten",
+            "ward_id": 261001
+        },
+        {
+            "ward_no": 261017,
+            "ward_name": "Yangthang",
+            "ward_id": 261017
+        }
+    ]
+}
