@@ -112,7 +112,7 @@
           "name": "POSTGRES_PORT"
         },
         {
-          "valueFrom": "/care/backend/POSTGRES_HOST",
+          "valueFrom": "/care-hcx/backend/POSTGRES_HOST",
           "name": "POSTGRES_HOST"
         },
         {
