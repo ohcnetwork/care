@@ -87,7 +87,7 @@
         },
         {
           "name": "POSTGRES_DB",
-          "value": "care_staging"
+          "value": "care_hcx"
         },
         {
           "name": "POSTGRES_USER",
