@@ -207,6 +207,7 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "256",
-  "volumes": []
+  "volumes": [],
+  "enableExecuteCommand": true
 }
 
