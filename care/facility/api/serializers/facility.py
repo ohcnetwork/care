@@ -13,6 +13,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.csp import config as cs_provider
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 User = get_user_model()
 
@@ -123,8 +124,9 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         value = value.strip()
         if not value:
             return value
-        if value.endswith("/"):
-            raise serializers.ValidationError("URL should not end with /")
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
         return value
 
     def create(self, validated_data):
