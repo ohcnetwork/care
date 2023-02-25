@@ -13,7 +13,7 @@ from care.users.models import User
 from config.serializers import ChoiceField
 
 
-def check_permissions(file_type, associating_id, user):
+def check_permissions(file_type, associating_id, user, action="create"):
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
@@ -34,9 +34,12 @@ def check_permissions(file_type, associating_id, user):
         elif file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if consultation.discharge_date:
-                raise serializers.ValidationError(
-                    {"consultation": "Cannot upload file for a completed consultation."}
-                )
+                if not action == "read":
+                    raise serializers.ValidationError(
+                        {
+                            "consultation": "Cannot upload file for a discharged consultation."
+                        }
+                    )
             if consultation.patient.assigned_to:
                 if user == consultation.patient.assigned_to:
                     return consultation.id
