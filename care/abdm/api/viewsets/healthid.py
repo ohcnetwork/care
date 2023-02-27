@@ -23,6 +23,7 @@ from care.abdm.api.serializers.healthid import (
 )
 from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
+from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
@@ -325,7 +326,8 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             }
         )
 
-        return Response({"message": "success"}, status=status.HTTP_200_OK)
+        patient_serialized = PatientDetailSerializer(patient).data
+        return Response(patient_serialized, status=status.HTTP_200_OK)
 
     # auth/init
     @swagger_auto_schema(
