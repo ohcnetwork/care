@@ -230,8 +230,11 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def link_via_qr(self, request):
         data = request.data
+
         serializer = QRContentSerializer(data=data)
         serializer.is_valid(raise_exception=True)
+
+        dob = datetime.strptime(data["dob"], "%d-%m-%Y").date()
 
         if "patientId" not in data:
             patient = PatientRegistration.objects.filter(
@@ -254,7 +257,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            dob = datetime.strptime(data["dob"], "%d-%m-%Y").date()
             if not HealthIdGateway().verify_demographics(
                 data["phr"] or data["hdin"],
                 data["name"],
