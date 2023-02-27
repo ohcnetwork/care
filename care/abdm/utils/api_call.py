@@ -219,7 +219,7 @@ class HealthIdGateway:
 
     # /v1/auth/confirmWithAadhaarOtp
     def confirm_with_aadhaar_otp(self, data):
-        path = "/v1/auth/confirmWithAadhaarOtp"
+        path = "/v1/auth/confirmWithAadhaarOTP"
         response = self.api.post(path, data)
         return response.json()
 
@@ -343,7 +343,7 @@ class AbdmGateway:
     # /v0.5/users/auth/fetch-modes
     def fetch_modes(self, data):
         path = "/v0.5/users/auth/fetch-modes"
-        additional_headers = {"X-CM-ID": "sbx"}
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
         request_id = str(uuid.uuid4())
 
         """
@@ -374,7 +374,7 @@ class AbdmGateway:
     # "/v0.5/users/auth/init"
     def init(self, prev_request_id):
         path = "/v0.5/users/auth/init"
-        additional_headers = {"X-CM-ID": "sbx"}
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
         request_id = str(uuid.uuid4())
 
@@ -396,25 +396,10 @@ class AbdmGateway:
         response = self.api.post(path, payload, None, additional_headers)
         return response
 
-    """
-    {
-        "requestId": guidv4,
-        "timestamp": isotime,
-        "transactionId": "xxxxxxxxxxxxxxx from on-init",
-        "credential": {
-            "demographic": {
-                "name": "Khavin",
-                "gender": "M",
-                "dateOfBirth": "1999-01-18"
-            },
-            "authCode": ""
-        }
-    }
-    """
     # "/v0.5/users/auth/confirm"
     def confirm(self, transaction_id, prev_request_id):
         path = "/v0.5/users/auth/confirm"
-        additional_headers = {"X-CM-ID": "sbx"}
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
         request_id = str(uuid.uuid4())
 
@@ -445,6 +430,6 @@ class AbdmGateway:
     # /v1.0/patients/profile/on-share
     def on_share(self, data):
         path = "/v1.0/patients/profile/on-share"
-        additional_headers = {"X-CM-ID": "sbx"}
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
         response = self.api.post(path, data, None, additional_headers)
         return response
