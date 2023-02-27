@@ -269,7 +269,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-                      "%(process)d %(thread)d %(message)s"
+            "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -512,3 +512,4 @@ JWKS = JsonWebKey.import_key_set(
 
 ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
 ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
+X_CM_ID = env("X_CM_ID", default="sbx")
