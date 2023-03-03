@@ -28,6 +28,8 @@ from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
+from config.auth_views import CaptchaRequiredException
+from config.ratelimit import ratelimit
 
 
 # API for Generating OTP for HealthID
@@ -46,6 +48,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def generate_aadhaar_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "generate_aadhaar_otp", [data["aadhaar"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = AadharOtpGenerateRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().generate_aadhaar_otp(data)
@@ -61,6 +70,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def resend_aadhaar_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "resend_aadhaar_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = AadharOtpResendRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().resend_aadhaar_otp(data)
@@ -76,6 +92,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def verify_aadhaar_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "verify_aadhaar_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().verify_aadhaar_otp(
@@ -93,6 +116,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def generate_mobile_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "generate_mobile_otp", [data["mobile"], data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = GenerateMobileOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().generate_mobile_otp(data)
@@ -108,6 +138,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def verify_mobile_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "verify_mobile_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().verify_mobile_otp(data)
@@ -171,6 +208,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def create_health_id(self, request):
         data = request.data
+
+        if ratelimit(request, "create_health_id", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = CreateHealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         abha_profile = HealthIdGateway().create_health_id(data)
@@ -218,6 +262,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def search_by_health_id(self, request):
         data = request.data
+
+        if ratelimit(request, "search_by_health_id", [data["healthId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = HealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().search_by_health_id(data)
@@ -342,6 +393,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def auth_init(self, request):
         data = request.data
+
+        if ratelimit(request, "auth_init", [data["healthid"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = HealthIdAuthSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().auth_init(data)
@@ -357,6 +415,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def confirm_with_aadhaar_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "confirm_with_aadhaar_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_aadhaar_otp(data)
@@ -403,6 +468,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def confirm_with_mobile_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "confirm_with_mobile_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = VerifyOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_mobile_otp(data)
@@ -448,6 +520,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def confirm_with_demographics(self, request):
         data = request.data
+
+        if ratelimit(request, "confirm_with_demographics", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = VerifyDemographicsRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().confirm_with_demographics(data)
@@ -465,6 +544,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["post"])
     def check_and_generate_mobile_otp(self, request):
         data = request.data
+
+        if ratelimit(request, "check_and_generate_mobile_otp", [data["txnId"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = GenerateMobileOtpRequestPayloadSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().check_and_generate_mobile_otp(data)
