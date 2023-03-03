@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -33,6 +34,7 @@ from care.utils.queryset.patient import get_patient_queryset
 class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     base_name = "healthid"
     model = AbhaNumber
+    permission_classes = (IsAuthenticated,)
 
     # TODO: Ratelimiting for all endpoints that generate OTP's / Critical API's
     @swagger_auto_schema(
