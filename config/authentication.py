@@ -45,7 +45,7 @@ class CustomBasicAuthentication(BasicAuthentication):
             User.USERNAME_FIELD: userid,
             'password': password
         }
-        if ratelimit(request, "login", [userid]):
+        if ratelimit(request, "login", [userid], increment=False):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -53,6 +53,7 @@ class CustomBasicAuthentication(BasicAuthentication):
         user = authenticate(request=request, **credentials)
 
         if user is None:
+            ratelimit(request, "login", [userid])
             raise exceptions.AuthenticationFailed(_('Invalid username/password.'))
 
         if not user.is_active:
