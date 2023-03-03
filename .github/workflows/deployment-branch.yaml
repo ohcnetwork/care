@@ -2,6 +2,12 @@ name: Branch based deploy
 
 on:
   workflow_dispatch:
+  
+  push:
+    branches:
+      - abdm-m1-vignesh
+    paths-ignore:
+      - "docs/**"
 
 env:
   IMAGE_NAME: care-${{ github.ref_name}}
