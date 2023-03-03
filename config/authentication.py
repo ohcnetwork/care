@@ -2,9 +2,11 @@ import json
 
 import jwt
 import requests
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from rest_framework import HTTP_HEADER_ENCODING
+from rest_framework import HTTP_HEADER_ENCODING, exceptions
+from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
@@ -12,6 +14,7 @@ from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidTok
 from care.facility.models import Facility
 from care.facility.models.asset import Asset
 from care.users.models import User
+from config.ratelimit import ratelimit
 
 
 class CustomJWTAuthentication(JWTAuthentication):
@@ -31,6 +34,32 @@ class CustomJWTAuthentication(JWTAuthentication):
 
 
 class CustomBasicAuthentication(BasicAuthentication):
+
+    def authenticate_credentials(self, userid, password, request=None):
+        """
+        Authenticate the userid and password against username and password
+        with optional request for context.
+        """
+        from config.auth_views import CaptchaRequiredException
+        credentials = {
+            User.USERNAME_FIELD: userid,
+            'password': password
+        }
+        if ratelimit(request, "login", [userid]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+        user = authenticate(request=request, **credentials)
+
+        if user is None:
+            raise exceptions.AuthenticationFailed(_('Invalid username/password.'))
+
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
+
+        return (user, None)
+
     def authenticate_header(self, request):
         return ""
 
