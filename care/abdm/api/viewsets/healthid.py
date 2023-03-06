@@ -117,7 +117,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def generate_mobile_otp(self, request):
         data = request.data
 
-        if ratelimit(request, "generate_mobile_otp", [data["mobile"], data["txnId"]]):
+        if ratelimit(request, "generate_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -263,7 +263,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def search_by_health_id(self, request):
         data = request.data
 
-        if ratelimit(request, "search_by_health_id", [data["healthId"]]):
+        if ratelimit(
+            request, "search_by_health_id", [data["healthId"]], increment=False
+        ):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
