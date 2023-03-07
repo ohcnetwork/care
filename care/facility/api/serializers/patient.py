@@ -182,7 +182,7 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     abha_number = ExternalIdSerializerField(
-        queryset=AbhaNumber.objects.all(), required=False
+        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
     )
     abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
