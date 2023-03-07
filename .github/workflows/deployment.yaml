@@ -343,7 +343,7 @@ jobs:
           ref: main
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -397,7 +397,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -443,7 +443,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -489,7 +489,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -535,7 +535,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -581,7 +581,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
