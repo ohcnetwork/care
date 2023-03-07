@@ -219,7 +219,7 @@ class HealthIdGateway:
 
     # /v1/auth/confirmWithAadhaarOtp
     def confirm_with_aadhaar_otp(self, data):
-        path = "/v1/auth/confirmWithAadhaarOTP"
+        path = "/v1/auth/confirmWithAadhaarOtp"
         response = self.api.post(path, data)
         return response.json()
 
