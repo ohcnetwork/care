@@ -324,6 +324,7 @@ def GETKEY(group, request):
     return "ratelimit"
 
 
+# https://django-ratelimit.readthedocs.io/en/stable/rates.html
 DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
 
 GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
