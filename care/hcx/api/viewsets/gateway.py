@@ -79,12 +79,12 @@ class HcxGatewayViewSet(GenericViewSet):
             )
         )
 
-        if not Fhir().validate_fhir_remote(eligibility_check_fhir_bundle.json())[
-            "valid"
-        ]:
-            return Response(
-                {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        # if not Fhir().validate_fhir_remote(eligibility_check_fhir_bundle.json())[
+        #     "valid"
+        # ]:
+        #     return Response(
+        #         {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
+        #     )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
