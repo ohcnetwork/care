@@ -1,0 +1,49 @@
+{
+    "name": "Wok",
+    "lsg_code": 6525,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 8,
+    "wards": [
+        {
+            "ward_no": 261106,
+            "ward_name": "Chumlok",
+            "ward_id": 261106
+        },
+        {
+            "ward_no": 261105,
+            "ward_name": "Omchu",
+            "ward_id": 261105
+        },
+        {
+            "ward_no": 261223,
+            "ward_name": "Sanganath",
+            "ward_id": 261223
+        },
+        {
+            "ward_no": 261107,
+            "ward_name": "Wok",
+            "ward_id": 261107
+        },
+        {
+            "ward_no": 261219,
+            "ward_name": "Hingdam",
+            "ward_id": 261219
+        },
+        {
+            "ward_no": 261220,
+            "ward_name": "Lamting",
+            "ward_id": 261220
+        },
+        {
+            "ward_no": 261221,
+            "ward_name": "Mangbrue",
+            "ward_id": 261221
+        },
+        {
+            "ward_no": 261222,
+            "ward_name": "Tingmo",
+            "ward_id": 261222
+        }
+    ]
+}
