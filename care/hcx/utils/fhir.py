@@ -54,7 +54,7 @@ class SYSTEM:
         "http://terminology.hl7.org/CodeSystem/subscriber-relationship"
     )
     priority = "http://terminology.hl7.org/CodeSystem/processpriority"
-    claim_identifier = "https://" + CURRENT_DOMAIN
+    claim_identifier = CURRENT_DOMAIN
     claim_type = "http://terminology.hl7.org/CodeSystem/claim-type"
     claim_payee_type = "http://terminology.hl7.org/CodeSystem/payeetype"
     claim_item = "https://pmjay.gov.in/hbp-package-code"
