@@ -191,7 +191,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                         )
 
                     if "rounds_type" not in validated_data:
-                        raise ValidationError({"daily_round": "Rounds type is required to clone"})
+                        raise ValidationError(
+                            {"daily_round": "Rounds type is required to clone"}
+                        )
 
                     rounds_type = validated_data.get("rounds_type")
                     if rounds_type == DailyRound.RoundsType.NORMAL.value:
