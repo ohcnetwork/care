@@ -189,8 +189,40 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                         raise ValidationError(
                             {"daily_round": "No Daily Round record available to copy"}
                         )
-                    cloned_daily_round_obj = last_objects[0]
+
+                    if "rounds_type" not in validated_data:
+                        raise ValidationError(
+                            {"daily_round": "Rounds type is required to clone"}
+                        )
+
+                    rounds_type = validated_data.get("rounds_type")
+                    if rounds_type == DailyRound.RoundsType.NORMAL.value:
+                        fields_to_clone = [
+                            "consultation_id",
+                            "patient_category",
+                            "taken_at",
+                            "additional_symptoms",
+                            "other_symptoms",
+                            "physical_examination_info",
+                            "other_details",
+                            "recommend_discharge",
+                            "bp",
+                            "pulse",
+                            "resp",
+                            "temperature",
+                            "rhythm",
+                            "rhythm_detail",
+                            "ventilator_spo2",
+                        ]
+                        cloned_daily_round_obj = DailyRound()
+                        for field in fields_to_clone:
+                            value = getattr(last_objects[0], field)
+                            setattr(cloned_daily_round_obj, field, value)
+                    else:
+                        cloned_daily_round_obj = last_objects[0]
+
                     cloned_daily_round_obj.pk = None
+                    cloned_daily_round_obj.rounds_type = rounds_type
                     cloned_daily_round_obj.created_by = self.context["request"].user
                     cloned_daily_round_obj.last_edited_by = self.context["request"].user
                     cloned_daily_round_obj.created_date = timezone.now()
