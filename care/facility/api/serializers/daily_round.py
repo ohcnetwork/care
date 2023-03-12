@@ -39,7 +39,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
     )
-    review_interval = serializers.IntegerField(source="consultation__review_interval", required=False)
+    review_interval = serializers.IntegerField(
+        source="consultation__review_interval", required=False
+    )
 
     taken_at = serializers.DateTimeField(required=True)
 
@@ -111,7 +113,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 {"consultation": ["Discharged Consultation data cannot be updated"]}
             )
 
-        if "action" in validated_data or "consultation__review_interval" in validated_data:
+        if (
+            "action" in validated_data
+            or "consultation__review_interval" in validated_data
+        ):
             patient = instance.consultation.patient
 
             if "action" in validated_data:
@@ -121,9 +126,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             if "consultation__review_interval" in validated_data:
                 review_interval = validated_data.pop("consultation__review_interval")
                 instance.consultation.review_interval = review_interval
-                instance.consultation.save(
-                    update_fields=["review_interval"]
-                )
+                instance.consultation.save(update_fields=["review_interval"])
                 if review_interval >= 0:
                     patient.review_time = localtime(now()) + timedelta(
                         minutes=review_interval
@@ -237,7 +240,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     self.update_last_daily_round(cloned_daily_round_obj)
                     return self.update(cloned_daily_round_obj, validated_data)
 
-            if "action" in validated_data or "consultation__review_interval" in validated_data:
+            if (
+                "action" in validated_data
+                or "consultation__review_interval" in validated_data
+            ):
                 patient = validated_data["consultation"].patient
 
                 if "action" in validated_data:
@@ -245,7 +251,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     patient.action = action
 
                 if "consultation__review_interval" in validated_data:
-                    review_interval = validated_data.pop("consultation__review_interval")
+                    review_interval = validated_data.pop(
+                        "consultation__review_interval"
+                    )
                     if review_interval >= 0:
                         validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
