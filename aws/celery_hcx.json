@@ -78,7 +78,7 @@
         },
         {
           "name": "POSTGRES_DB",
-          "value": "care_staging"
+          "value": "care_hcx"
         },
         {
           "name": "POSTGRES_USER",
@@ -137,7 +137,7 @@
           "name": "REDIS_URL"
         },
         {
-          "valueFrom": "/care/backend/POSTGIS_URL",
+          "valueFrom": "/care-hcx/backend/POSTGIS_URL",
           "name": "POSTGIS_URL"
         },
         {
@@ -270,7 +270,7 @@
         },
         {
           "name": "POSTGRES_DB",
-          "value": "care_staging"
+          "value": "care_hcx"
         },
         {
           "name": "POSTGRES_USER",
@@ -327,7 +327,7 @@
           "name": "REDIS_URL"
         },
         {
-          "valueFrom": "/care/backend/POSTGIS_URL",
+          "valueFrom": "/care-hcx/backend/POSTGIS_URL",
           "name": "POSTGIS_URL"
         },
         {
