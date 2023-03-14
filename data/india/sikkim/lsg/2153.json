@@ -1,0 +1,89 @@
+{
+    "name": "Nandok",
+    "lsg_code": 2153,
+    "district": "Gangtok",
+    "state": "Sikkim",
+    "no_of_wards": 16,
+    "wards": [
+        {
+            "ward_no": 261314,
+            "ward_name": "Bhusuk",
+            "ward_id": 261314
+        },
+        {
+            "ward_no": 261321,
+            "ward_name": "Gangtok Forest Block",
+            "ward_id": 261321
+        },
+        {
+            "ward_no": 261315,
+            "ward_name": "Gnathang",
+            "ward_id": 261315
+        },
+        {
+            "ward_no": 261315,
+            "ward_name": "Gnathang",
+            "ward_id": 261315
+        },
+        {
+            "ward_no": 261319,
+            "ward_name": "Gnathang Forest Block",
+            "ward_id": 261319
+        },
+        {
+            "ward_no": 261318,
+            "ward_name": "Kyongnosla Forest Block",
+            "ward_id": 261318
+        },
+        {
+            "ward_no": 261311,
+            "ward_name": "Naitam",
+            "ward_id": 261311
+        },
+        {
+            "ward_no": 261312,
+            "ward_name": "Namong",
+            "ward_id": 261312
+        },
+        {
+            "ward_no": 261310,
+            "ward_name": "Nandok",
+            "ward_id": 261310
+        },
+        {
+            "ward_no": 261307,
+            "ward_name": "Rongay",
+            "ward_id": 261307
+        },
+        {
+            "ward_no": 261309,
+            "ward_name": "Syari",
+            "ward_id": 261309
+        },
+        {
+            "ward_no": 261308,
+            "ward_name": "Tathangchen",
+            "ward_id": 261308
+        },
+        {
+            "ward_no": 261316,
+            "ward_name": "Assam",
+            "ward_id": 261316
+        },
+        {
+            "ward_no": 261317,
+            "ward_name": "Lingchey",
+            "ward_id": 261317
+        },
+        {
+            "ward_no": 261316,
+            "ward_name": "Assam",
+            "ward_id": 261316
+        },
+        {
+            "ward_no": 261317,
+            "ward_name": "Lingchey",
+            "ward_id": 261317
+        }
+    ]
+}

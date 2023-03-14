@@ -31,7 +31,7 @@ from care.hcx.models.base import (
 )
 from care.facility.static_data.icd11 import ICDDiseases
 from django.db.models import Q
-from re import IGNORECASE
+from re import IGNORECASE, search
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -79,12 +79,12 @@ class HcxGatewayViewSet(GenericViewSet):
             )
         )
 
-        if not Fhir().validate_fhir_remote(eligibility_check_fhir_bundle.json())[
-            "valid"
-        ]:
-            return Response(
-                {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        # if not Fhir().validate_fhir_remote(eligibility_check_fhir_bundle.json())[
+        #     "valid"
+        # ]:
+        #     return Response(
+        #         {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
+        #     )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
@@ -237,11 +237,11 @@ class HcxGatewayViewSet(GenericViewSet):
             diagnoses=diagnoses,
         )
 
-        if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
-            return Response(
-                {"message": "Invalid FHIR object"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # if not Fhir().validate_fhir_remote(claim_fhir_bundle.json())["valid"]:
+        #     return Response(
+        #         {"message": "Invalid FHIR object"},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),
@@ -297,6 +297,9 @@ class HcxGatewayViewSet(GenericViewSet):
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
-                name=queryset.re_match(r".*" + query + r".*", IGNORECASE)
+                lambda row: search(r".*" + query + r".*", row.name, IGNORECASE)
+                is not None
+                or search(r".*" + query + r".*", row.package_name, IGNORECASE)
+                is not None
             )
         return Response(serailize_data(queryset[0:limit]))
