@@ -101,6 +101,7 @@ class AssetFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="current_location__facility__external_id")
     location = filters.UUIDFilter(field_name="current_location__external_id")
     asset_type = CareChoiceFilter(choice_dict=inverse_asset_type)
+    asset_class = filters.CharFilter(field_name="asset_class")
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
@@ -140,7 +141,7 @@ class AssetViewSet(
     serializer_class = AssetSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
-    search_fields = ["name"]
+    search_fields = ["name", "serial_number", "qr_code_id"]
     permission_classes = [IsAuthenticated]
     filterset_class = AssetFilter
 
@@ -271,7 +272,8 @@ class AssetViewSet(
 
 
 class AssetTransactionFilter(filters.FilterSet):
-    asset = filters.UUIDFilter(field_name="asset__external_id")
+    qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
+    external_id = filters.CharFilter(field_name="asset__external_id")
 
 
 class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):

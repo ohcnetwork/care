@@ -1,0 +1,79 @@
+{
+    "name": "Reghu",
+    "lsg_code": 6537,
+    "district": "Pakyong",
+    "state": "Sikkim",
+    "no_of_wards": 14,
+    "wards": [
+        {
+            "ward_no": 261372,
+            "ward_name": "Aritar",
+            "ward_id": 261372
+        },
+        {
+            "ward_no": 261366,
+            "ward_name": "Changeylakha",
+            "ward_id": 261366
+        },
+        {
+            "ward_no": 261367,
+            "ward_name": "Chujachen",
+            "ward_id": 261367
+        },
+        {
+            "ward_no": 261368,
+            "ward_name": "Dolepchen",
+            "ward_id": 261368
+        },
+        {
+            "ward_no": 261358,
+            "ward_name": "Lamaten",
+            "ward_id": 261358
+        },
+        {
+            "ward_no": 261359,
+            "ward_name": "Lingtam",
+            "ward_id": 261359
+        },
+        {
+            "ward_no": 261364,
+            "ward_name": "North Regoh",
+            "ward_id": 261364
+        },
+        {
+            "ward_no": 261360,
+            "ward_name": "Phadamchen",
+            "ward_id": 261360
+        },
+        {
+            "ward_no": 261361,
+            "ward_name": "Premlakha",
+            "ward_id": 261361
+        },
+        {
+            "ward_no": 261357,
+            "ward_name": "Rolep",
+            "ward_id": 261357
+        },
+        {
+            "ward_no": 931536,
+            "ward_name": "Rongli Bazar",
+            "ward_id": 931536
+        },
+        {
+            "ward_no": 261362,
+            "ward_name": "Singaneybas",
+            "ward_id": 261362
+        },
+        {
+            "ward_no": 261365,
+            "ward_name": "South Regoh",
+            "ward_id": 261365
+        },
+        {
+            "ward_no": 261363,
+            "ward_name": "Subaneydara",
+            "ward_id": 261363
+        }
+    ]
+}

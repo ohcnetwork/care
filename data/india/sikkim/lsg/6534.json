@@ -1,0 +1,54 @@
+{
+    "name": "Rakdong Tintek",
+    "lsg_code": 6534,
+    "district": "Gangtok",
+    "state": "Sikkim",
+    "no_of_wards": 9,
+    "wards": [
+        {
+            "ward_no": 261255,
+            "ward_name": "Kambal",
+            "ward_id": 261255
+        },
+        {
+            "ward_no": 261253,
+            "ward_name": "Rakdong",
+            "ward_id": 261253
+        },
+        {
+            "ward_no": 261257,
+            "ward_name": "Raley-Khese",
+            "ward_id": 261257
+        },
+        {
+            "ward_no": 261256,
+            "ward_name": "Samdong",
+            "ward_id": 261256
+        },
+        {
+            "ward_no": 261254,
+            "ward_name": "Tintek",
+            "ward_id": 261254
+        },
+        {
+            "ward_no": 261263,
+            "ward_name": "Patuk",
+            "ward_id": 261263
+        },
+        {
+            "ward_no": 261264,
+            "ward_name": "Singbel",
+            "ward_id": 261264
+        },
+        {
+            "ward_no": 261324,
+            "ward_name": "Tumen Forest Block",
+            "ward_id": 261324
+        },
+        {
+            "ward_no": 261258,
+            "ward_name": "Tumin",
+            "ward_id": 261258
+        }
+    ]
+}

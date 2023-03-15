@@ -1,0 +1,54 @@
+{
+    "name": "Chungthang",
+    "lsg_code": 2155,
+    "district": "Mangan",
+    "state": "Sikkim",
+    "no_of_wards": 9,
+    "wards": [
+        {
+            "ward_no": 260927,
+            "ward_name": "Chungthang",
+            "ward_id": 260927
+        },
+        {
+            "ward_no": 260925,
+            "ward_name": "Lachen",
+            "ward_id": 260925
+        },
+        {
+            "ward_no": 260930,
+            "ward_name": "Lachen Forest Block",
+            "ward_id": 260930
+        },
+        {
+            "ward_no": 260926,
+            "ward_name": "Lachung",
+            "ward_id": 260926
+        },
+        {
+            "ward_no": 260932,
+            "ward_name": "Lachung Forest Block",
+            "ward_id": 260932
+        },
+        {
+            "ward_no": 260928,
+            "ward_name": "Shipgyer",
+            "ward_id": 260928
+        },
+        {
+            "ward_no": 935337,
+            "ward_name": "Shipgyer Forest Block",
+            "ward_id": 935337
+        },
+        {
+            "ward_no": 260931,
+            "ward_name": "Thangu Forest Block",
+            "ward_id": 260931
+        },
+        {
+            "ward_no": 260933,
+            "ward_name": "Tshungthang Forest Block",
+            "ward_id": 260933
+        }
+    ]
+}

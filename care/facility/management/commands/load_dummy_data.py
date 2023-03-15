@@ -26,5 +26,7 @@ class Command(BaseCommand):
             management.call_command("seed_data")
             management.call_command("loaddata", self.BASE_URL + "users.json")
             management.call_command("loaddata", self.BASE_URL + "facility.json")
+            management.call_command("loaddata", self.BASE_URL + "cypress_users.json")
+            management.call_command("loaddata", self.BASE_URL + "facility_users.json")
         except Exception as e:
             raise CommandError(e)

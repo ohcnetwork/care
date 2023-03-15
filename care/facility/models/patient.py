@@ -17,7 +17,6 @@ from care.facility.models import (
     PatientBaseModel,
     State,
     Ward,
-    pretty_boolean,
 )
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
@@ -29,13 +28,11 @@ from care.facility.models.mixins.permissions.patient import (
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
-    REVERSE_BED_TYPE_CHOICES,
-    REVERSE_BLOOD_GROUP_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_COVID_CATEGORY_CHOICES,
-    REVERSE_DISEASE_STATUS_CHOICES,
+    REVERSE_DISCHARGE_REASON_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import ICDDiseases
 from care.users.models import (
     GENDER_CHOICES,
     REVERSE_GENDER_CHOICES,
@@ -489,95 +486,36 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     CSV_MAPPING = {
         "external_id": "Patient ID",
         "name": "Patient Name",
-        "phone_number": "Patient Phone Number",
-        "date_of_birth": "Date of Birth",
-        # "year_of_birth": "Year of Birth",
         "facility__name": "Facility Name",
-        # "nearest_facility__name": "Nearest Facility",
         "age": "Age",
         "gender": "Gender",
-        "ward__name": "Ward Name",
-        "ward__number": "Ward Number",
-        "local_body__name": "Local Body",
-        "district__name": "District",
-        "state__name": "State",
-        "address": "Address",
-        "nationality": "Nationality",
-        "disease_status": "Disease Status",
-        # "state_test_id": "State Test ID",
-        "last_consultation__admitted": "Admission Status",
-        "last_consultation__current_bed__bed__bed_type": "Admission Bed Type",
-        # Reffered or transferred
-        # remarks
-        "number_of_aged_dependents": "Number of people aged above 60 living with the patient",
-        "number_of_chronic_diseased_dependents": "Number of people who have chronic diseases living with the patient",
-        "blood_group": "Blood Group",
-        "is_medical_worker": "Is the Patient a Medical Worker",
-        "contact_with_confirmed_carrier": "Confirmed Contact with a Covid19 Carrier",
-        "contact_with_suspected_carrier": "Suspected Contact with a Covid19 Carrier",
-        "estimated_contact_date": "Estimated Contact Date",
-        "past_travel": "Travelled to Any Foreign Countries in the last 28 Days",
-        "countries_travelled": "Countries Patient has Travelled to",
-        "date_of_return": "Return Date from the Last Country if Travelled",
-        "is_migrant_worker": "Is the Patient a Migrant Worker",
-        "present_health": "Patient's Current Health Details",
-        "ongoing_medication": "Already pescribed medication if any",
-        "has_SARI": "Does the Patient Suffer from SARI",
-        "date_of_receipt_of_information": "Patient's information received date",
-        "will_donate_blood": "Will Patient Donate Blood?",
-        "fit_for_blood_donation": "Is Patient Fit for Blood Donation?",
-        "date_of_test": "Date of Sample Test",
-        "srf_id": "SRF Test Id",
-        # IDSP Data
-        "village": "Village",
-        "designation_of_health_care_worker": "Designation of Health Care Worker",
-        "instituion_of_health_care_worker": "Institution of Health Care Worker",
-        "transit_details": "Transit Details",
-        "frontline_worker": "FrontLine Worker",
-        "date_of_result": "Date of Result",
-        "number_of_primary_contacts": "Number of Primary Contacts",
-        "number_of_secondary_contacts": "Number of Secondary Contacts",
-        "cluster_name": "Name/ Cluster of Contact",
-        "is_declared_positive": "Is Patient Declared Positive",
-        "date_declared_positive": "Date Patient is Declared Positive",
-        # Vaccination Data
-        "is_vaccinated": "Is Patient Vaccinated",
-        "number_of_doses": "Number of Vaccine Doses Recieved",
-        "vaccine_name": "Vaccine Name",
-        "last_vaccinated_date": "Last Vaccinated Date",
-        # Consultation Data
-        "last_consultation__admission_date": "Date of Admission",
-        "last_consultation__symptoms_onset_date": "Date of Onset of Symptoms",
-        "last_consultation__symptoms": "Symptoms at time of consultation",
-        "last_consultation__category": "Category",
-        "last_consultation__examination_details": "Examination Details",
-        "last_consultation__suggestion": "Suggestion",
-        "last_consultation__created_date": "Date of Consultation",
+        "created_date": "Date of Registration",
+        "last_consultation__icd11_diagnoses": "Diagnoses",
+        "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
+        "last_consultation__suggestion": "Decision after Consultation",
+        "last_consultation__discharge_reason": "Discharge Reason",
         "last_consultation__discharge_date": "Date of Discharge",
+        "last_consultation__created_date": "Date of Consultation",
     }
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
-        "blood_group": (lambda x: REVERSE_BLOOD_GROUP_CHOICES[x]),
-        "disease_status": (lambda x: REVERSE_DISEASE_STATUS_CHOICES[x]),
-        "is_medical_worker": pretty_boolean,
-        "will_donate_blood": pretty_boolean,
-        "fit_for_blood_donation": pretty_boolean,
-        "is_migrant_worker": pretty_boolean,
-        "is_declared_positive": pretty_boolean,
-        "is_vaccinated": pretty_boolean,
-        # Consultation Data
-        "last_consultation__deprecated_covid_category": (
-            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
-        ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
-        "last_consultation__admitted": pretty_boolean,
-        "last_consultation__current_bed__bed__bed_type": (
-            lambda x: REVERSE_BED_TYPE_CHOICES.get(x, "-")
+        "last_consultation__icd11_diagnoses": (
+            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
+        "last_consultation__icd11_provisional_diagnoses": (
+            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
+        ),
+        "last_consultation__discharge_reason": (
+            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
+        ),
+        "created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "last_consultation__discharge_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "last_consultation__created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
     }
 
 

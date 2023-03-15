@@ -83,7 +83,7 @@ class ICMRPatientCategorySerializer(serializers.ModelSerializer):
 
 class ICMRExposureHistorySerializer(serializers.ModelSerializer):
     has_travel_to_foreign_last_14_days = serializers.BooleanField()
-    places_of_travel = serializers.CharField(source="countries_travelled")
+    places_of_travel = serializers.JSONField(source="countries_travelled")
     travel_start_date = serializers.DateField()
     travel_end_date = serializers.DateField()
 

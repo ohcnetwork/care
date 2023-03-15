@@ -1,0 +1,59 @@
+{
+    "name": "Kaluk",
+    "lsg_code": 6530,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 10,
+    "wards": [
+        {
+            "ward_no": 261060,
+            "ward_name": "Bara-Samdong",
+            "ward_id": 261060
+        },
+        {
+            "ward_no": 261058,
+            "ward_name": "Boom",
+            "ward_id": 261058
+        },
+        {
+            "ward_no": 261062,
+            "ward_name": "Deythang",
+            "ward_id": 261062
+        },
+        {
+            "ward_no": 261057,
+            "ward_name": "Hathidunga",
+            "ward_id": 261057
+        },
+        {
+            "ward_no": 261056,
+            "ward_name": "Jeel",
+            "ward_id": 261056
+        },
+        {
+            "ward_no": 261059,
+            "ward_name": "Reshi",
+            "ward_id": 261059
+        },
+        {
+            "ward_no": 261054,
+            "ward_name": "Rinchenpong",
+            "ward_id": 261054
+        },
+        {
+            "ward_no": 261055,
+            "ward_name": "Sangadorji",
+            "ward_id": 261055
+        },
+        {
+            "ward_no": 261061,
+            "ward_name": "Sribadam",
+            "ward_id": 261061
+        },
+        {
+            "ward_no": 261053,
+            "ward_name": "Tadong",
+            "ward_id": 261053
+        }
+    ]
+}

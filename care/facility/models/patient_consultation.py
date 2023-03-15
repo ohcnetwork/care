@@ -16,6 +16,8 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
+    ConsultationStatusChoices,
+    ConsultationStatusEnum,
     SuggestionChoices,
     reverse_choices,
 )
@@ -44,7 +46,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)
+    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=[], blank=True, null=True
     )
@@ -77,6 +79,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
+    consultation_status = models.IntegerField(
+        default=ConsultationStatusEnum.UNKNOWN.value,
+        choices=ConsultationStatusChoices,
+    )
     review_interval = models.IntegerField(default=-1)
     referred_to = models.ForeignKey(
         "Facility",

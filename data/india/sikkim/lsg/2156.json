@@ -1,0 +1,89 @@
+{
+    "name": "Mangan",
+    "lsg_code": 2156,
+    "district": "Mangan",
+    "state": "Sikkim",
+    "no_of_wards": 16,
+    "wards": [
+        {
+            "ward_no": 260934,
+            "ward_name": "Naga-Namgor",
+            "ward_id": 260934
+        },
+        {
+            "ward_no": 260929,
+            "ward_name": "Tung",
+            "ward_id": 260929
+        },
+        {
+            "ward_no": 260959,
+            "ward_name": "L. Mangshila",
+            "ward_id": 260959
+        },
+        {
+            "ward_no": 260957,
+            "ward_name": "Tingchim",
+            "ward_id": 260957
+        },
+        {
+            "ward_no": 260958,
+            "ward_name": "U. Mangshila",
+            "ward_id": 260958
+        },
+        {
+            "ward_no": 260938,
+            "ward_name": "Kazor",
+            "ward_id": 260938
+        },
+        {
+            "ward_no": 260977,
+            "ward_name": "Mangan Forest Block",
+            "ward_id": 260977
+        },
+        {
+            "ward_no": 260935,
+            "ward_name": "Meyong",
+            "ward_id": 260935
+        },
+        {
+            "ward_no": 260976,
+            "ward_name": "Naga Forest Block",
+            "ward_id": 260976
+        },
+        {
+            "ward_no": 260956,
+            "ward_name": "Nampatam",
+            "ward_id": 260956
+        },
+        {
+            "ward_no": 260937,
+            "ward_name": "Pakshep",
+            "ward_id": 260937
+        },
+        {
+            "ward_no": 260955,
+            "ward_name": "Ringhim",
+            "ward_id": 260955
+        },
+        {
+            "ward_no": 260939,
+            "ward_name": "Sentam",
+            "ward_id": 260939
+        },
+        {
+            "ward_no": 260936,
+            "ward_name": "Singchit",
+            "ward_id": 260936
+        },
+        {
+            "ward_no": 260954,
+            "ward_name": "Singhik Sentam",
+            "ward_id": 260954
+        },
+        {
+            "ward_no": 260953,
+            "ward_name": "Zimchung",
+            "ward_id": 260953
+        }
+    ]
+}
