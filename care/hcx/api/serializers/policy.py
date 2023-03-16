@@ -29,7 +29,7 @@ class PolicySerializer(ModelSerializer):
     policy_id = CharField()
 
     insurer_id = CharField(required=False)
-    insurer_name = CharField()
+    insurer_name = CharField(required=False)
 
     status = ChoiceField(choices=STATUS_CHOICES, default="active")
     priority = ChoiceField(choices=PRIORITY_CHOICES, default="normal")
