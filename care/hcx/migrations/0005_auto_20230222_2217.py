@@ -8,13 +8,36 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hcx', '0004_auto_20230222_2012'),
+        ("hcx", "0004_auto_20230222_2012"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='claim',
-            name='items',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=list, validators=[care.utils.models.validators.JSONFieldSchemaValidator({'$schema': 'http://json-schema.org/draft-07/schema#', 'items': [{'additionalProperties': False, 'properties': {'category': {'type': 'string'}, 'id': {'type': 'string'}, 'name': {'type': 'string'}, 'price': {'type': 'number'}}, 'required': ['id', 'name', 'price'], 'type': 'object'}], 'type': 'array'})]),
+            model_name="claim",
+            name="items",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=list,
+                validators=[
+                    care.utils.models.validators.JSONFieldSchemaValidator(
+                        {
+                            "$schema": "http://json-schema.org/draft-07/schema#",
+                            "items": [
+                                {
+                                    "additionalProperties": False,
+                                    "properties": {
+                                        "category": {"type": "string"},
+                                        "id": {"type": "string"},
+                                        "name": {"type": "string"},
+                                        "price": {"type": "number"},
+                                    },
+                                    "required": ["id", "name", "price"],
+                                    "type": "object",
+                                }
+                            ],
+                            "type": "array",
+                        }
+                    )
+                ],
+            ),
         ),
     ]

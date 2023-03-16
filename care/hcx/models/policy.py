@@ -36,4 +36,9 @@ class Policy(BaseModel):
     error_text = models.TextField(null=True, blank=True)
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    last_modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="policy_last_modified_by")
+    last_modified_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="policy_last_modified_by",
+    )
