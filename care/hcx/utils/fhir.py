@@ -24,6 +24,7 @@ from typing import TypedDict, Literal, List
 from datetime import datetime, timezone
 import requests
 from functools import reduce
+from config.settings.base import CURRENT_DOMAIN
 
 
 class PROFILE:
@@ -53,7 +54,7 @@ class SYSTEM:
         "http://terminology.hl7.org/CodeSystem/subscriber-relationship"
     )
     priority = "http://terminology.hl7.org/CodeSystem/processpriority"
-    claim_identifier = "http://identifiersystem.com"
+    claim_identifier = CURRENT_DOMAIN
     claim_type = "http://terminology.hl7.org/CodeSystem/claim-type"
     claim_payee_type = "http://terminology.hl7.org/CodeSystem/payeetype"
     claim_item = "https://pmjay.gov.in/hbp-package-code"
@@ -966,7 +967,12 @@ class Fhir:
             )
 
         return {
-            "id": claim_bundle.identifier.value,
+            "id": list(
+                filter(
+                    lambda identifier: identifier.system == SYSTEM.claim_identifier,
+                    claim_response.identifier,
+                )
+            )[0].value,
             "total_approved": reduce(
                 lambda price, acc: price + acc,
                 map(
