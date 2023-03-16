@@ -64,7 +64,7 @@ class FileUploadViewSet(
             raise ValidationError({"file_type": "invalid file type"})
         file_type = FileUpload.FileType[file_type].value
         associating_internal_id = check_permissions(
-            file_type, associating_id, self.request.user
+            file_type, associating_id, self.request.user, "read"
         )
         return self.queryset.filter(
             file_type=file_type, associating_id=associating_internal_id

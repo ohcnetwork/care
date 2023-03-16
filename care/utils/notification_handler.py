@@ -17,7 +17,6 @@ from care.facility.models.patient_investigation import (
 from care.facility.models.shifting import ShiftingRequest
 from care.users.models import User
 from care.utils.sms.sendSMS import sendSMS
-from care.utils.whatsapp.send_mesage import sendWhatsappMessage
 
 
 class NotificationCreationException(Exception):
@@ -244,22 +243,6 @@ class NotificationGenerator:
                 )
         return message
 
-    def _get_default_whatsapp_config(self):
-        return {
-            Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value: {
-                "message": "You have been assigned to a new patient in care platform for specialist teleconsultation.",
-                "header": "Specialist Consultation Requested",
-                "footer": "Click the following to link to view patient details.",
-            }
-        }
-
-    def generate_whatsapp_message(self):
-        if settings.WHATSAPP_MESSAGE_CONFIG:
-            message_dict = json.loads(settings.WHATSAPP_MESSAGE_CONFIG)
-        else:
-            message_dict = self._get_default_whatsapp_config()
-        return message_dict[self.event]
-
     def generate_sms_phone_numbers(self):
         if isinstance(self.caused_object, ShiftingRequest):
             return [
@@ -328,11 +311,6 @@ class NotificationGenerator:
             self.caused_objects["shifting"] = str(self.caused_object.external_id)
 
         return True
-
-    def generate_whatsapp_users(self):
-        if self.event == Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT.value:
-            return [self.caused_object.assigned_to]
-        raise Exception("Action Does not have associated users")
 
     def generate_system_users(self):
         users = []
