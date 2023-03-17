@@ -26,7 +26,7 @@ env:
   CONTAINER_NAME_CRON: "care-celery-beat"
 jobs:
   test:
-    if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master'
+    if: github.repository == 'coronasafe/care' && (github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
@@ -117,7 +117,7 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   build-staging:
-    #needs: test
+    needs: test
     name: Build & Push Staging to container registries
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
