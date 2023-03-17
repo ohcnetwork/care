@@ -12,6 +12,7 @@ from care.hcx.api.serializers.claim import ClaimSerializer
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from care.hcx.models.base import USE_CHOICES
+from rest_framework.permissions import IsAuthenticated
 
 
 class PolicyFilter(filters.FilterSet):
@@ -29,6 +30,7 @@ class ClaimViewSet(
     GenericViewSet,
 ):
     queryset = Claim.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = ClaimSerializer
     lookup_field = "external_id"
     search_fields = ["consultation", "policy"]

@@ -32,10 +32,12 @@ from care.hcx.models.base import (
 from care.facility.static_data.icd11 import ICDDiseases
 from django.db.models import Q
 from re import IGNORECASE, search
+from rest_framework.permissions import IsAuthenticated
 
 
 class HcxGatewayViewSet(GenericViewSet):
     queryset = Policy.objects.all()
+    permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(tags=["hcx"], request_body=CheckEligibilitySerializer())
     @action(detail=False, methods=["post"])

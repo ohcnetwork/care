@@ -11,6 +11,7 @@ from care.hcx.models.policy import Policy
 from care.hcx.api.serializers.policy import PolicySerializer
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
+from rest_framework.permissions import IsAuthenticated
 
 
 class PolicyFilter(filters.FilterSet):
@@ -26,6 +27,7 @@ class PolicyViewSet(
     GenericViewSet,
 ):
     queryset = Policy.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = PolicySerializer
     lookup_field = "external_id"
     search_fields = ["patient"]
