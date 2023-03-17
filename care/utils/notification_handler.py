@@ -28,6 +28,13 @@ def notification_task_generator(**kwargs):
     NotificationGenerator(**kwargs).generate()
 
 
+@celery.task()
+def send_webpush(**kwargs):
+    user = User.objects.get(username=kwargs.get("username"))
+    message = kwargs.get("message")
+    NotificationGenerator.send_webpush_user(None, user, message)
+
+
 def get_model_class(model_name):
     if model_name == "User":
         return apps.get_model("users.{}".format(model_name))
@@ -388,3 +395,14 @@ class NotificationGenerator:
                                 }
                             ),
                         )
+            elif (
+                medium == Notification.Medium.WHATSAPP.value
+                and settings.ENABLE_WHATSAPP
+            ):
+                for user in self.generate_whatsapp_users():
+                    number = user.alt_phone_number
+                    message = self.generate_whatsapp_message()
+                    notification_obj = self.generate_message_for_user(
+                        user, message, Notification.Medium.WHATSAPP.value
+                    )
+                    sendWhatsappMessage(number, message, notification_obj.external_id)
