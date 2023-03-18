@@ -132,7 +132,9 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -386,11 +388,11 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         exclude = (
-                      "date_of_birth",
-                      "year_of_birth",
-                      "external_id",
-                      "id",
-                  ) + TIMESTAMP_FIELDS
+            "date_of_birth",
+            "year_of_birth",
+            "external_id",
+            "id",
+        ) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
@@ -421,8 +423,18 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
+    NOTE_EDIT_WINDOW = 30 * 60  # 30 minutes
+
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    edit_window = serializers.SerializerMethodField(read_only=True)
+
+    def get_edit_window(self, obj):
+        return self.NOTE_EDIT_WINDOW
+
+    def validate(self, data):
+        data["edit_window"] = self.get_edit_window(data)
+        return data
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -431,5 +443,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientNotes
-        fields = ("note", "facility", "created_by_object", "created_date")
-        read_only_fields = ("created_date",)
+        fields = (
+            "id",
+            "note",
+            "facility",
+            "created_by_object",
+            "created_date",
+            "modified_date",
+            "edit_window",
+        )
+        read_only_fields = ("id", "created_date", "modified_date")

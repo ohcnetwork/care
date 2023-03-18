@@ -15,7 +15,12 @@ from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -604,13 +609,18 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
 
 class PatientNotesViewSet(
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
 ):
     queryset = (
         PatientNotes.objects.all()
         .select_related("facility", "patient", "created_by")
         .order_by("-created_date")
     )
+    http_method_names = ["get", "post", "put", "patch"]
     serializer_class = PatientNotesSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
 
@@ -634,6 +644,7 @@ class PatientNotesViewSet(
         return queryset
 
     def perform_create(self, serializer):
+        serializer.validated_data.pop("edit_window")
         patient = get_object_or_404(
             get_patient_notes_queryset(self.request.user).filter(
                 external_id=self.kwargs.get("patient_external_id")
@@ -648,3 +659,23 @@ class PatientNotesViewSet(
             patient=patient,
             created_by=self.request.user,
         )
+
+    def perform_update(self, serializer):
+        edit_window = serializer.validated_data.get("edit_window")
+        note = serializer.instance
+        time_diff = now() - note.created_date
+        max_update_time = datetime.timedelta(seconds=edit_window)
+        if time_diff > max_update_time:
+            raise ValidationError(
+                {"note": f"Note can not be updated after {edit_window / 60:.2f} mins"}
+            )
+        patient = get_object_or_404(
+            get_patient_notes_queryset(self.request.user).filter(
+                external_id=self.kwargs.get("patient_external_id")
+            )
+        )
+        if not patient.is_active:
+            raise ValidationError(
+                {"patient": "Only active patients data can be updated"}
+            )
+        return super().perform_update(serializer)
