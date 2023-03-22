@@ -509,3 +509,9 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+# Livekit Settings
+LIVEKIT_API_URL = env("LIVEKIT_API_URL", default="wss://livekit.ohc.network")
+LIVEKIT_API_KEY = env("LIVEKIT_API_KEY", default="")
+LIVEKIT_API_SECRET = env("LIVEKIT_API_SECRET", default="")
+LIVEKIT_ROOM_NAME_PREFIX = env("LIVEKIT_ROOM_NAME_PREFIX", default="care-")
