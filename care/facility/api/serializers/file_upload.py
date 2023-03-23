@@ -8,6 +8,7 @@ from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_sample import PatientSample
+from care.hcx.models.claim import Claim
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
 from config.serializers import ChoiceField
@@ -74,6 +75,17 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 raise Exception("No Permission")
             return sample.id
         elif file_type == FileUpload.FileType.CLAIM.value:
+            claim = Claim.objects.get(external_id=associating_id)
+            if claim.outcome in ["complete", "error"]:
+                if not action == "read":
+                    raise serializers.ValidationError(
+                        {"claim": "Cannot upload file for a processed claim."}
+                    )
+            if not (
+                has_facility_permission(user, claim.consultation.patient.facility)
+                or has_facility_permission(user, claim.consultation.facility)
+            ):
+                raise Exception("No Permission")
             return associating_id
         else:
             raise Exception("Undefined File Type")
