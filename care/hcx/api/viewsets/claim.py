@@ -2,7 +2,6 @@ from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.mixins import (
     CreateModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
@@ -25,7 +24,6 @@ class PolicyFilter(filters.FilterSet):
 
 class ClaimViewSet(
     CreateModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
