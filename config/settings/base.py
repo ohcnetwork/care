@@ -509,3 +509,11 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+# HCX
+HCX_CERT_URL = env(
+    "HCX_CERT_URL",
+    default="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/sprint-27/hcx-apis/src/test/resources/examples/x509-self-signed-certificate.pem",
+)
+
+HCX_USERNAME = env("HCX_USERNAME", default="hcx_user_internal")

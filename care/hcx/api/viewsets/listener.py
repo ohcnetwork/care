@@ -1,22 +1,29 @@
+import json
+
+from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
-from care.hcx.utils.hcx import Hcx
-from care.hcx.utils.fhir import Fhir
-from care.utils.notification_handler import send_webpush
-import json
-from care.hcx.models.policy import Policy
+
 from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
+from care.hcx.utils.fhir import Fhir
+from care.hcx.utils.hcx import Hcx
+from care.utils.notification_handler import send_webpush
+from config.authentication import HCXAuthentication
 
 
 class CoverageElibilityOnCheckView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [HCXAuthentication]
 
     @swagger_auto_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
+        if not request.user.username == settings.HCX_USERNAME:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_coverage_elibility_check_response(response["payload"])
 
@@ -39,10 +46,13 @@ class CoverageElibilityOnCheckView(GenericAPIView):
 
 class PreAuthOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [HCXAuthentication]
 
     @swagger_auto_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
+        if not request.user.username == settings.HCX_USERNAME:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_claim_response(response["payload"])
 
@@ -66,10 +76,13 @@ class PreAuthOnSubmitView(GenericAPIView):
 
 class ClaimOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [HCXAuthentication]
 
     @swagger_auto_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
+        if not request.user.username == settings.HCX_USERNAME:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_claim_response(response["payload"])
 
