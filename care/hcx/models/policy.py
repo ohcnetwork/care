@@ -1,14 +1,17 @@
 from django.db import models
 
-from care.utils.models.base import BaseModel
 from care.facility.models.patient import PatientRegistration
 from care.hcx.models.base import (
-    STATUS_CHOICES,
+    OUTCOME_CHOICES,
     PRIORITY_CHOICES,
     PURPOSE_CHOICES,
-    OUTCOME_CHOICES,
+    STATUS_CHOICES,
+    PriorityEnum,
+    PurposeEnum,
+    StatusEnum,
 )
 from care.users.models import User
+from care.utils.models.base import BaseModel
 
 
 class Policy(BaseModel):
@@ -21,13 +24,13 @@ class Policy(BaseModel):
     insurer_name = models.TextField(null=True, blank=True)
 
     status = models.CharField(
-        choices=STATUS_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=STATUS_CHOICES, max_length=20, default=StatusEnum.ACTIVE.value
     )
     priority = models.CharField(
-        choices=PRIORITY_CHOICES, max_length=20, default="normal"
+        choices=PRIORITY_CHOICES, max_length=20, default=PriorityEnum.NORMAL.value
     )
     purpose = models.CharField(
-        choices=PURPOSE_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=PURPOSE_CHOICES, max_length=20, default=PurposeEnum.BENEFITS.value
     )
 
     outcome = models.CharField(

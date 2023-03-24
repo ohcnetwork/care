@@ -1,17 +1,17 @@
-from rest_framework.serializers import ModelSerializer, UUIDField, CharField
-from config.serializers import ChoiceField
-from care.hcx.models.policy import Policy
+from rest_framework.serializers import CharField, ModelSerializer, UUIDField
+
+from care.facility.api.serializers.patient import PatientDetailSerializer
+from care.facility.models.patient import PatientRegistration
 from care.hcx.models.policy import (
-    STATUS_CHOICES,
+    OUTCOME_CHOICES,
     PRIORITY_CHOICES,
     PURPOSE_CHOICES,
-    OUTCOME_CHOICES,
+    STATUS_CHOICES,
+    Policy,
 )
-from django.shortcuts import get_object_or_404
-from care.facility.models.patient import PatientRegistration
-from care.facility.api.serializers.patient import PatientDetailSerializer
-from rest_framework.exceptions import ValidationError
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from config.serializers import ChoiceField
 
 TIMESTAMP_FIELDS = (
     "created_date",
@@ -22,7 +22,9 @@ TIMESTAMP_FIELDS = (
 class PolicySerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
-    patient = UUIDField(write_only=True, required=True)
+    patient = ExternalIdSerializerField(
+        queryset=PatientRegistration.objects.all(), write_only=True, required=True
+    )
     patient_object = PatientDetailSerializer(source="patient", read_only=True)
 
     subscriber_id = CharField()
@@ -31,9 +33,9 @@ class PolicySerializer(ModelSerializer):
     insurer_id = CharField(required=False)
     insurer_name = CharField(required=False)
 
-    status = ChoiceField(choices=STATUS_CHOICES, default="active")
-    priority = ChoiceField(choices=PRIORITY_CHOICES, default="normal")
-    purpose = ChoiceField(choices=PURPOSE_CHOICES, default="benefits")
+    status = ChoiceField(choices=STATUS_CHOICES, required=False)
+    priority = ChoiceField(choices=PRIORITY_CHOICES, required=False)
+    purpose = ChoiceField(choices=PURPOSE_CHOICES, required=False)
 
     outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
     error_text = CharField(read_only=True)
@@ -45,16 +47,6 @@ class PolicySerializer(ModelSerializer):
         model = Policy
         exclude = ("deleted", "external_id")
         read_only_fields = TIMESTAMP_FIELDS
-
-    def validate(self, attrs):
-        if "patient" in attrs:
-            patient = get_object_or_404(
-                PatientRegistration.objects.filter(external_id=attrs["patient"])
-            )
-            attrs["patient"] = patient
-        else:
-            raise ValidationError({"patient": "Field is Required"})
-        return super().validate(attrs)
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user

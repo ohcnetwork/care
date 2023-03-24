@@ -1,19 +1,23 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
-from care.utils.models.base import BaseModel
 from care.facility.models.patient import PatientConsultation
-from care.hcx.models.policy import Policy
 from care.hcx.models.base import (
-    STATUS_CHOICES,
-    PRIORITY_CHOICES,
-    USE_CHOICES,
     CLAIM_TYPE_CHOICES,
     OUTCOME_CHOICES,
+    PRIORITY_CHOICES,
+    STATUS_CHOICES,
+    USE_CHOICES,
+    ClaimTypeEnum,
+    PriorityEnum,
+    StatusEnum,
+    UseEnum,
 )
-from django.contrib.postgres.fields import JSONField
-from care.utils.models.validators import JSONFieldSchemaValidator
 from care.hcx.models.json_schema.claim import ITEMS
+from care.hcx.models.policy import Policy
 from care.users.models import User
+from care.utils.models.base import BaseModel
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class Claim(BaseModel):
@@ -27,16 +31,18 @@ class Claim(BaseModel):
     total_amount_approved = models.FloatField(blank=True, null=True)
 
     use = models.CharField(
-        choices=USE_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=USE_CHOICES, max_length=20, default=UseEnum.CLAIM.value
     )
     status = models.CharField(
-        choices=STATUS_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=STATUS_CHOICES, max_length=20, default=StatusEnum.ACTIVE.value
     )
     priority = models.CharField(
-        choices=PRIORITY_CHOICES, max_length=20, default="normal"
+        choices=PRIORITY_CHOICES, max_length=20, default=PriorityEnum.NORMAL.value
     )
     type = models.CharField(
-        choices=CLAIM_TYPE_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=CLAIM_TYPE_CHOICES,
+        max_length=20,
+        default=ClaimTypeEnum.INSTITUTIONAL.value,
     )
 
     outcome = models.CharField(
