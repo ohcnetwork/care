@@ -82,8 +82,8 @@ class PatientFilterSet(filters.FilterSet):
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
-    age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
-    age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
+    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
+    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
     deprecated_covid_category = filters.ChoiceFilter(
         field_name="last_consultation__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
@@ -205,7 +205,6 @@ class PatientViewSet(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
-
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
