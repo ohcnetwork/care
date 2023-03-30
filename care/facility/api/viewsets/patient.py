@@ -5,6 +5,8 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
+from django.db import models
+from django.db.models import Case, When
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -14,6 +16,7 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
@@ -197,6 +200,30 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
         return queryset.filter(facility_id__isnull=show_without_facility)
 
 
+class PatientCustomOrderingFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        ordering = request.query_params.get("ordering", "")
+
+        if ordering == "category_severity" or ordering == "-category_severity":
+            category_ordering = {
+                category: index + 1
+                for index, (category, _) in enumerate(CATEGORY_CHOICES)
+            }
+            when_statements = [
+                When(last_consultation__category=cat, then=order)
+                for cat, order in category_ordering.items()
+            ]
+            queryset = queryset.annotate(
+                category_severity=Case(
+                    *when_statements,
+                    default=(len(category_ordering) + 1),
+                    output_field=models.IntegerField(),
+                )
+            ).order_by(ordering)
+
+        return queryset
+
+
 class PatientViewSet(
     HistoryMixin,
     mixins.CreateModelMixin,
@@ -248,6 +275,7 @@ class PatientViewSet(
         PatientDRYFilter,
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
+        PatientCustomOrderingFilter,
     )
     filterset_class = PatientFilterSet
 
