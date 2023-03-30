@@ -9,7 +9,15 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
-from care.abdm.api.viewsets.auth import OnConfirmView, OnFetchView, OnInitView
+from care.abdm.api.viewsets.auth import (
+    DiscoverView,
+    LinkConfirmView,
+    LinkInitView,
+    OnAddContextsView,
+    OnConfirmView,
+    OnFetchView,
+    OnInitView,
+)
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
@@ -97,6 +105,26 @@ urlpatterns = [
         "v0.5/users/auth/on-confirm",
         OnConfirmView.as_view(),
         name="abdm_on_confirm_view",
+    ),
+    path(
+        "v0.5/links/link/on-add-contexts",
+        OnAddContextsView.as_view(),
+        name="abdm_on_add_context_view",
+    ),
+    path(
+        "v0.5/care-contexts/discover",
+        DiscoverView.as_view(),
+        name="abdm_discover_view",
+    ),
+    path(
+        "v0.5/links/link/init",
+        LinkInitView.as_view(),
+        name="abdm_link_init_view",
+    ),
+    path(
+        "v0.5/links/link/confirm",
+        LinkConfirmView.as_view(),
+        name="abdm_link_confirm_view",
     ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),

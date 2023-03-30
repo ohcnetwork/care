@@ -1,7 +1,7 @@
 import json
 import uuid
 from base64 import b64encode
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 from Crypto.Cipher import PKCS1_v1_5
@@ -423,6 +423,129 @@ class AbdmGateway:
         }
 
         print(payload)
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    # TODO: make it dynamic and call it at discharge (call it from on_confirm)
+    def add_contexts(self, data):
+        path = "/v0.5/links/link/add-contexts"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "link": {
+                "accessToken": data["access_token"],
+                "patient": {
+                    "referenceNumber": data["patient_id"],
+                    "display": data["patient_name"],
+                    "careContexts": [
+                        {
+                            "referenceNumber": data["context_id"],
+                            "display": data["context_name"],
+                        }
+                    ],
+                },
+            },
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def on_discover(self, data):
+        path = "/v0.5/care-contexts/on-discover"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "transactionId": data["transaction_id"],
+            "patient": {
+                "referenceNumber": data["patient_id"],
+                "display": data["patient_name"],
+                "careContexts": list(
+                    map(
+                        lambda context: {
+                            "referenceNumber": context["id"],
+                            "display": context["name"],
+                        },
+                        data["care_contexts"],
+                    )
+                ),
+                "matchedBy": data["matched_by"],
+            },
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def on_link_init(self, data):
+        path = "/v0.5/links/link/on-init"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "transactionId": data["transaction_id"],
+            "link": {
+                "referenceNumber": data["patient_id"],
+                "authenticationType": "DIRECT",
+                "meta": {
+                    "communicationMedium": "MOBILE",
+                    "communicationHint": data["phone"],
+                    "communicationExpiry": str(
+                        (datetime.now() + timedelta(minutes=15)).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        )
+                    ),
+                },
+            },
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def on_link_confirm(self, data):
+        path = "/v0.5/links/link/on-confirm"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "patient": {
+                "referenceNumber": data["patient_id"],
+                "display": data["patient_name"],
+                "careContexts": list(
+                    map(
+                        lambda context: {
+                            "referenceNumber": context["id"],
+                            "display": context["name"],
+                        },
+                        data["care_contexts"],
+                    )
+                ),
+            },
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
 
         response = self.api.post(path, payload, None, additional_headers)
         return response

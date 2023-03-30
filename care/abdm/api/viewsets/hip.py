@@ -11,7 +11,7 @@ from care.abdm.api.serializers.hip import HipShareProfileSerializer
 from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient import PatientConsultation, PatientRegistration
 
 
 class HipViewSet(GenericViewSet):
@@ -145,3 +145,27 @@ class HipViewSet(GenericViewSet):
             },
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
+    # TODO: move it somewhere appropriate
+    @action(detail=False, methods=["POST"])
+    def add_care_context(self, request, *args, **kwargs):
+        consultation_id = request.data["consultation"]
+
+        consultation = PatientConsultation.objects.get(external_id=consultation_id)
+
+        if not consultation:
+            return Response(
+                {"consultation": "No matching records found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        response = AbdmGateway().add_contexts(
+            {
+                "access_token": consultation.patient.abha_number.access_token,
+                "patient_id": str(consultation.patient.external_id),
+                "patient_name": consultation.patient.name,
+                "context_id": str(consultation.external_id),
+                "context_name": f"Encounter: {str(consultation.created_date.date())}",
+            }
+        )
+        return Response(response)

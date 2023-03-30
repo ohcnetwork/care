@@ -384,6 +384,30 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         patient_serialized = PatientDetailSerializer(patient).data
         return Response(patient_serialized, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_id="get_new_linking_token",
+        responses={"200": "{'status': 'boolean'}"},
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def get_new_linking_token(self, request):
+        data = request.data
+
+        patient = PatientDetailSerializer(
+            PatientRegistration.objects.get(external_id=data["patient"])
+        ).data
+
+        AbdmGateway().fetch_modes(
+            {
+                "healthId": patient["abha_number_object"]["abha_number"],
+                "name": patient["abha_number_object"]["name"],
+                "gender": patient["abha_number_object"]["gender"],
+                "dateOfBirth": str(patient["abha_number_object"]["date_of_birth"]),
+            }
+        )
+
+        return Response({}, status=status.HTTP_200_OK)
+
     # auth/init
     @swagger_auto_schema(
         # /v1/auth/init
