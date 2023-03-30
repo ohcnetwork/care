@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 [
                     MetaICD11Diagnosis(
                         id=icd11_object["ID"],
-                        _id=int(icd11_object["ID"].split("/")[5]),
+                        _id=int(icd11_object["ID"].split("/")[-1]),
                         average_depth=icd11_object["averageDepth"],
                         is_adopted_child=icd11_object["isAdoptedChild"],
                         parent_id=icd11_object["parentId"],
@@ -32,6 +32,7 @@ class Command(BaseCommand):
                         breadth_value=icd11_object["breadthValue"],
                     )
                     for icd11_object in icd11_objects
+                    if icd11_object["ID"].split("/")[-1].isnumeric()
                 ]
             )
             print("Done loading ICD11 data to database.")
