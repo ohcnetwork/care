@@ -13,6 +13,7 @@ from care.abdm.api.viewsets.auth import (
     DiscoverView,
     LinkConfirmView,
     LinkInitView,
+    NotifyView,
     OnAddContextsView,
     OnConfirmView,
     OnFetchView,
@@ -125,6 +126,11 @@ urlpatterns = [
         "v0.5/links/link/confirm",
         LinkConfirmView.as_view(),
         name="abdm_link_confirm_view",
+    ),
+    path(
+        "v0.5/consents/hip/notify",
+        NotifyView.as_view(),
+        name="abdm_notify_view",
     ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),

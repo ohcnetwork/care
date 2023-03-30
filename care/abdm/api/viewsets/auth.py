@@ -1,3 +1,6 @@
+import json
+
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -170,4 +173,60 @@ class LinkConfirmView(GenericAPIView):
             }
         )
 
+        return Response({}, status=status.HTTP_202_ACCEPTED)
+
+
+class NotifyView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print(data)
+
+        # TODO: create a seperate cache and also add a expiration time
+        cache.set(data["notification"]["consentId"], json.dumps(data))
+
+        # data = {
+        #     "requestId": "5f7a535d-a3fd-416b-b069-c97d021fbacd",
+        #     "timestamp": "2023-03-30T05:00:31.288Z",
+        #     "notification": {
+        #         "status": "GRANTED",
+        #         "consentId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        #         "consentDetail": {
+        #             "schemaVersion": "string",
+        #             "consentId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        #             "createdAt": "2023-03-30T05:00:31.288Z",
+        #             "patient": {"id": "hinapatel79@ndhm"},
+        #             "careContexts": [
+        #                 {
+        #                     "patientReference": "hinapatel79@hospital",
+        #                     "careContextReference": "Episode1",
+        #                 }
+        #             ],
+        #             "purpose": {"text": "string", "code": "string", "refUri": "string"},
+        #             "hip": {"id": "string", "name": "TESI-HIP"},
+        #             "consentManager": {"id": "string"},
+        #             "hiTypes": ["OPConsultation"],
+        #             "permission": {
+        #                 "accessMode": "VIEW",
+        #                 "dateRange": {
+        #                     "from": "2023-03-30T05:00:31.288Z",
+        #                     "to": "2023-03-30T05:00:31.288Z",
+        #                 },
+        #                 "dataEraseAt": "2023-03-30T05:00:31.288Z",
+        #                 "frequency": {"unit": "HOUR", "value": 0, "repeats": 0},
+        #             },
+        #         },
+        #         "signature": "Signature of CM as defined in W3C standards; Base64 encoded",
+        #         "grantAcknowledgement": False,
+        #     },
+        # }
+
+        AbdmGateway().on_notify(
+            {
+                "request_id": data["requestId"],
+                "consent_id": data["notification"]["consentId"],
+            }
+        )
         return Response({}, status=status.HTTP_202_ACCEPTED)
