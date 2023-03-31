@@ -18,6 +18,7 @@ from care.abdm.api.viewsets.auth import (
     OnConfirmView,
     OnFetchView,
     OnInitView,
+    RequestDataView,
 )
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
@@ -131,6 +132,11 @@ urlpatterns = [
         "v0.5/consents/hip/notify",
         NotifyView.as_view(),
         name="abdm_notify_view",
+    ),
+    path(
+        "v0.5/health-information/hip/request",
+        RequestDataView.as_view(),
+        name="abdm_request_data_view",
     ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),

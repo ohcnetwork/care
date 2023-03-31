@@ -568,6 +568,87 @@ class AbdmGateway:
         response = self.api.post(path, payload, None, additional_headers)
         return response
 
+    def on_data_request(self, data):
+        path = "/v0.5/health-information/hip/on-request"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "hiRequest": {
+                "transactionId": data["transaction_id"],
+                "sessionStatus": "ACKNOWLEDGED",
+            },
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def data_transfer(self, data):
+        headers = {"Authorization": f"Bearer {cache.get(ABDM_TOKEN_CACHE_KEY)}"}
+
+        payload = {
+            "pageNumber": 0,
+            "pageCount": 0,
+            "transactionId": data["transaction_id"],
+            "entries": list(
+                map(
+                    lambda context: {
+                        "content": context["data"],
+                        "media": "application/fhir+json",
+                        "checksum": "string",
+                        "careContextReference": context["consultation_id"],
+                    },
+                )
+            ),
+            "keyMaterial": data["key_material"],
+        }
+
+        response = requests.post(data["data_push_url"], payload, headers=headers)
+        return response
+
+    def data_notify(self, data):
+        path = "/v0.5/health-information/notify"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "notification": {
+                "consentId": data["consent_id"],
+                "transactionId": data["transaction_id"],
+                "doneAt": str(
+                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                ),
+                "notifier": {"type": "HIP", "id": self.hip_id},
+                "statusNotification": {
+                    "sessionStatus": "TRANSFERRED",
+                    "hipId": self.hip_id,
+                    "statusResponses": list(
+                        map(
+                            lambda context: {
+                                "careContextReference": context["id"],
+                                "hiStatus": "OK",
+                                "description": "success",  # not sure what to put
+                            },
+                            data["care_contexts"],
+                        )
+                    ),
+                },
+            },
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
     # /v1.0/patients/profile/on-share
     def on_share(self, data):
         path = "/v1.0/patients/profile/on-share"
