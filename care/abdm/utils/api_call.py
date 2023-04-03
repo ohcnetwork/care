@@ -604,12 +604,16 @@ class AbdmGateway:
                         "checksum": "string",
                         "careContextReference": context["consultation_id"],
                     },
+                    data["care_contexts"],
                 )
             ),
             "keyMaterial": data["key_material"],
         }
 
         response = requests.post(data["data_push_url"], payload, headers=headers)
+        print("-----------------------------------------")
+        print("data response", response.text, response.status_code)
+        print("-----------------------------------------")
         return response
 
     def data_notify(self, data):
