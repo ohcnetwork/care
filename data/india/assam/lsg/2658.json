@@ -1,0 +1,224 @@
+{
+    "name": "Batadrava",
+    "lsg_code": 2658,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 43,
+    "wards": [
+        {
+            "ward_no": 284612,
+            "ward_name": "Ahom Gaon",
+            "ward_id": 284612
+        },
+        {
+            "ward_no": 284610,
+            "ward_name": "Amlakhi Gaon",
+            "ward_id": 284610
+        },
+        {
+            "ward_no": 284589,
+            "ward_name": "Aphala Pathar",
+            "ward_id": 284589
+        },
+        {
+            "ward_no": 284585,
+            "ward_name": "Auniati Kheraj",
+            "ward_id": 284585
+        },
+        {
+            "ward_no": 284584,
+            "ward_name": "Auniati Satra",
+            "ward_id": 284584
+        },
+        {
+            "ward_no": 284590,
+            "ward_name": "Bali Satra",
+            "ward_id": 284590
+        },
+        {
+            "ward_no": 284598,
+            "ward_name": "Baruati",
+            "ward_id": 284598
+        },
+        {
+            "ward_no": 284599,
+            "ward_name": "Bata Bari",
+            "ward_id": 284599
+        },
+        {
+            "ward_no": 284609,
+            "ward_name": "Batadraba Bar Bheti",
+            "ward_id": 284609
+        },
+        {
+            "ward_no": 284606,
+            "ward_name": "Batadraba Barhisa",
+            "ward_id": 284606
+        },
+        {
+            "ward_no": 284607,
+            "ward_name": "Batadraba Saruhisa",
+            "ward_id": 284607
+        },
+        {
+            "ward_no": 284604,
+            "ward_name": "Batamari",
+            "ward_id": 284604
+        },
+        {
+            "ward_no": 284600,
+            "ward_name": "Bher Bheri",
+            "ward_id": 284600
+        },
+        {
+            "ward_no": 284608,
+            "ward_name": "Bhumura Guri",
+            "ward_id": 284608
+        },
+        {
+            "ward_no": 284583,
+            "ward_name": "Bilatia",
+            "ward_id": 284583
+        },
+        {
+            "ward_no": 284615,
+            "ward_name": "Chamaka Gaon",
+            "ward_id": 284615
+        },
+        {
+            "ward_no": 284586,
+            "ward_name": "Dhakaya Basti",
+            "ward_id": 284586
+        },
+        {
+            "ward_no": 284618,
+            "ward_name": "Dhania Bheti Gaon",
+            "ward_id": 284618
+        },
+        {
+            "ward_no": 284619,
+            "ward_name": "Dhania Bheti Pathar",
+            "ward_id": 284619
+        },
+        {
+            "ward_no": 284595,
+            "ward_name": "Dhupa Guri Gaon",
+            "ward_id": 284595
+        },
+        {
+            "ward_no": 284596,
+            "ward_name": "Dhupa Guri Kachari Gaon",
+            "ward_id": 284596
+        },
+        {
+            "ward_no": 284594,
+            "ward_name": "Dhupguri Pathar",
+            "ward_id": 284594
+        },
+        {
+            "ward_no": 284605,
+            "ward_name": "Haidubi Pathar",
+            "ward_id": 284605
+        },
+        {
+            "ward_no": 284602,
+            "ward_name": "Kadamani Gaon",
+            "ward_id": 284602
+        },
+        {
+            "ward_no": 284601,
+            "ward_name": "Kadamani Pathar",
+            "ward_id": 284601
+        },
+        {
+            "ward_no": 284578,
+            "ward_name": "Kandhuli Mari No.1 (Kandhuli M",
+            "ward_id": 284578
+        },
+        {
+            "ward_no": 284579,
+            "ward_name": "Kandhuli Mari No.2 (Kandhuli M",
+            "ward_id": 284579
+        },
+        {
+            "ward_no": 284614,
+            "ward_name": "Katah Guri",
+            "ward_id": 284614
+        },
+        {
+            "ward_no": 284582,
+            "ward_name": "Khairamari",
+            "ward_id": 284582
+        },
+        {
+            "ward_no": 284617,
+            "ward_name": "Kubai Kata Gaon",
+            "ward_id": 284617
+        },
+        {
+            "ward_no": 284611,
+            "ward_name": "Lalana Bari",
+            "ward_id": 284611
+        },
+        {
+            "ward_no": 284620,
+            "ward_name": "Lalung Gaon",
+            "ward_id": 284620
+        },
+        {
+            "ward_no": 284581,
+            "ward_name": "Magurmari",
+            "ward_id": 284581
+        },
+        {
+            "ward_no": 284588,
+            "ward_name": "Rajabari Grant",
+            "ward_id": 284588
+        },
+        {
+            "ward_no": 284591,
+            "ward_name": "Rampur Pam",
+            "ward_id": 284591
+        },
+        {
+            "ward_no": 284603,
+            "ward_name": "Rampur Satra",
+            "ward_id": 284603
+        },
+        {
+            "ward_no": 284613,
+            "ward_name": "Rou-Mari Bill",
+            "ward_id": 284613
+        },
+        {
+            "ward_no": 284597,
+            "ward_name": "Saharia Gaon",
+            "ward_id": 284597
+        },
+        {
+            "ward_no": 284587,
+            "ward_name": "Salaguri Gaon",
+            "ward_id": 284587
+        },
+        {
+            "ward_no": 284592,
+            "ward_name": "Sala Pathar",
+            "ward_id": 284592
+        },
+        {
+            "ward_no": 284580,
+            "ward_name": "Sunseri",
+            "ward_id": 284580
+        },
+        {
+            "ward_no": 284616,
+            "ward_name": "Tuk-Tuki",
+            "ward_id": 284616
+        },
+        {
+            "ward_no": 284593,
+            "ward_name": "Upar Dumdumia",
+            "ward_id": 284593
+        }
+    ]
+}

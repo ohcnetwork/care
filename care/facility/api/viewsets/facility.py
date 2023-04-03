@@ -5,10 +5,15 @@ from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissio
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
+from care.facility.api.serializers.facility import (
+    FacilityBasicInfoSerializer,
+    FacilityImageUploadSerializer,
+    FacilitySerializer,
+)
 from care.facility.models import (
     Facility,
     FacilityCapacity,
@@ -16,7 +21,6 @@ from care.facility.models import (
     HospitalDoctors,
     PatientRegistration,
 )
-from care.users.api.serializers.user import UserAssignedSerializer
 from care.users.models import User
 
 
@@ -24,9 +28,13 @@ class FacilityFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     facility_type = filters.NumberFilter(field_name="facility_type")
     district = filters.NumberFilter(field_name="district__id")
-    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    district_name = filters.CharFilter(
+        field_name="district__name", lookup_expr="icontains"
+    )
     local_body = filters.NumberFilter(field_name="local_body__id")
-    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    local_body_name = filters.CharFilter(
+        field_name="local_body__name", lookup_expr="icontains"
+    )
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
@@ -56,7 +64,9 @@ class FacilityViewSet(
 ):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.all().select_related("ward", "local_body", "district", "state")
+    queryset = Facility.objects.all().select_related(
+        "ward", "local_body", "district", "state"
+    )
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -75,20 +85,37 @@ class FacilityViewSet(
     FACILITY_DOCTORS_CSV_KEY = "doctors"
     FACILITY_TRIAGE_CSV_KEY = "triage"
 
+    def initialize_request(self, request, *args, **kwargs):
+        self.action = self.action_map.get(request.method.lower())
+        return super().initialize_request(request, *args, **kwargs)
+
+    def get_parsers(self):
+        if self.action == "cover_image":
+            return [MultiPartParser()]
+        return super().get_parsers()
+
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
+        if self.action == "cover_image":
+            # Check DRYpermissions before updating
+            return FacilityImageUploadSerializer
         else:
             return FacilitySerializer
 
     def destroy(self, request, *args, **kwargs):
-        if request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            if not PatientRegistration.objects.filter(facility=self.get_object(), is_active=True).exists():
+        if (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+        ):
+            if not PatientRegistration.objects.filter(
+                facility=self.get_object(), is_active=True
+            ).exists():
                 return super().destroy(request, *args, **kwargs)
             else:
                 return Response(
                     {"facility": "cannot delete facility with active patients"},
-                    status=status.HTTP_403_FORBIDDEN,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
         return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -104,27 +131,30 @@ class FacilityViewSet(
                 pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY.copy())
             elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
                 mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING.copy())
-                pretty_mapping.update(FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy())
+                pretty_mapping.update(
+                    FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy()
+                )
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
-            return render_to_csv_response(queryset, field_header_map=mapping, field_serializer_map=pretty_mapping)
+            return render_to_csv_response(
+                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+            )
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
-    @action(methods=["GET"], detail=True)
-    def get_users(self, request, external_id):
-        user_type_filter = None
-        if "user_type" in request.GET:
-            if request.GET["user_type"] in User.TYPE_VALUE_MAP:
-                user_type_filter = User.TYPE_VALUE_MAP[request.GET["user_type"]]
-        facility = Facility.objects.filter(external_id=external_id).first()
-        if not facility:
-            return Response({"facility": "does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        users = facility.users.all()
-        if user_type_filter:
-            users = users.filter(user_type=user_type_filter)
-        users = users.order_by("-last_login")
-        data = UserAssignedSerializer(users, many=True)
-        return Response(data.data)
+    @action(methods=["POST"], detail=True)
+    def cover_image(self, request, external_id):
+        facility = self.get_object()
+        serializer = FacilityImageUploadSerializer(facility, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @cover_image.mapping.delete
+    def cover_image_delete(self, *args, **kwargs):
+        facility = self.get_object()
+        facility.cover_image_url = None
+        facility.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AllFacilityViewSet(

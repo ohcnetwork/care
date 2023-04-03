@@ -1,0 +1,944 @@
+{
+    "name": "Hapjan",
+    "lsg_code": 2717,
+    "district": "Tinsukia",
+    "state": "Assam",
+    "no_of_wards": 187,
+    "wards": [
+        {
+            "ward_no": 290294,
+            "ward_name": "Amguri Gaon",
+            "ward_id": 290294
+        },
+        {
+            "ward_no": 290677,
+            "ward_name": "Anandabag T.E.",
+            "ward_id": 290677
+        },
+        {
+            "ward_no": 290210,
+            "ward_name": "Asomiya Balijan Gaon",
+            "ward_id": 290210
+        },
+        {
+            "ward_no": 290681,
+            "ward_name": "Assomiya Balijan Gaon",
+            "ward_id": 290681
+        },
+        {
+            "ward_no": 290718,
+            "ward_name": "Assomiya Pathar Gaon",
+            "ward_id": 290718
+        },
+        {
+            "ward_no": 290252,
+            "ward_name": "Baghjan Gaon",
+            "ward_id": 290252
+        },
+        {
+            "ward_no": 290251,
+            "ward_name": "Baghjan N.C.",
+            "ward_id": 290251
+        },
+        {
+            "ward_no": 290253,
+            "ward_name": "Baghjan T.E. 137/140 (A) Nlr",
+            "ward_id": 290253
+        },
+        {
+            "ward_no": 290270,
+            "ward_name": "Baghjan T.E. 137/140(B) Nlr",
+            "ward_id": 290270
+        },
+        {
+            "ward_no": 290225,
+            "ward_name": "Baghjan T.E. 212/167/214/164",
+            "ward_id": 290225
+        },
+        {
+            "ward_no": 290271,
+            "ward_name": "Baghjan T.E. 31 Wl",
+            "ward_id": 290271
+        },
+        {
+            "ward_no": 290248,
+            "ward_name": "Baghjan T.E. 351/352",
+            "ward_id": 290248
+        },
+        {
+            "ward_no": 290222,
+            "ward_name": "Baghjan T.E. 353 Nlr",
+            "ward_id": 290222
+        },
+        {
+            "ward_no": 290246,
+            "ward_name": "Bandarkhati Gaon",
+            "ward_id": 290246
+        },
+        {
+            "ward_no": 290207,
+            "ward_name": "Bangali Balijan",
+            "ward_id": 290207
+        },
+        {
+            "ward_no": 290284,
+            "ward_name": "Bebejia Gaon",
+            "ward_id": 290284
+        },
+        {
+            "ward_no": 290308,
+            "ward_name": "Betjan Bongali Gaon",
+            "ward_id": 290308
+        },
+        {
+            "ward_no": 290312,
+            "ward_name": "Betjan Gaon",
+            "ward_id": 290312
+        },
+        {
+            "ward_no": 290306,
+            "ward_name": "Betjan T.E. 154/151 Nlr",
+            "ward_id": 290306
+        },
+        {
+            "ward_no": 290313,
+            "ward_name": "Betjan T.E. 255 Nlr",
+            "ward_id": 290313
+        },
+        {
+            "ward_no": 290314,
+            "ward_name": "Betjan T.E. 297 Nlr",
+            "ward_id": 290314
+        },
+        {
+            "ward_no": 290302,
+            "ward_name": "Bihiating Gaon",
+            "ward_id": 290302
+        },
+        {
+            "ward_no": 290238,
+            "ward_name": "Bisakupi T.E. 72 Fs.",
+            "ward_id": 290238
+        },
+        {
+            "ward_no": 290235,
+            "ward_name": "Bissakopi Gaon",
+            "ward_id": 290235
+        },
+        {
+            "ward_no": 290236,
+            "ward_name": "Bissakupi T.E. 72 Wl",
+            "ward_id": 290236
+        },
+        {
+            "ward_no": 290730,
+            "ward_name": "Bogapani T.E.27 Appln.No.1 Block",
+            "ward_id": 290730
+        },
+        {
+            "ward_no": 290731,
+            "ward_name": "Bogapani T.E.27 Appln.No.2 Block",
+            "ward_id": 290731
+        },
+        {
+            "ward_no": 290732,
+            "ward_name": "Bogapani T.E.27 Appln No.3 Block",
+            "ward_id": 290732
+        },
+        {
+            "ward_no": 290733,
+            "ward_name": "Bogapani T.E.27 Block No.4",
+            "ward_id": 290733
+        },
+        {
+            "ward_no": 290726,
+            "ward_name": "Bogapani T.E.32 Darkhasta",
+            "ward_id": 290726
+        },
+        {
+            "ward_no": 290685,
+            "ward_name": "Bongali Balijan Gaon",
+            "ward_id": 290685
+        },
+        {
+            "ward_no": 290303,
+            "ward_name": "Borgaon",
+            "ward_id": 290303
+        },
+        {
+            "ward_no": 290693,
+            "ward_name": "Borhapjan Gaon",
+            "ward_id": 290693
+        },
+        {
+            "ward_no": 290229,
+            "ward_name": "Bor Rupai Gaon",
+            "ward_id": 290229
+        },
+        {
+            "ward_no": 290687,
+            "ward_name": "Bortarani Gaon",
+            "ward_id": 290687
+        },
+        {
+            "ward_no": 290694,
+            "ward_name": "Chengelijan Gaon",
+            "ward_id": 290694
+        },
+        {
+            "ward_no": 290243,
+            "ward_name": "Chota Rupai Gaon",
+            "ward_id": 290243
+        },
+        {
+            "ward_no": 290679,
+            "ward_name": "Chotohapjan 114/4 Nlr.",
+            "ward_id": 290679
+        },
+        {
+            "ward_no": 290680,
+            "ward_name": "Chotohapjan 120 (Pattaland)",
+            "ward_id": 290680
+        },
+        {
+            "ward_no": 290678,
+            "ward_name": "Chotohapjan T.E. 128 Nlr.",
+            "ward_id": 290678
+        },
+        {
+            "ward_no": 290605,
+            "ward_name": "Chototingrai No-2 Wla Gt.",
+            "ward_id": 290605
+        },
+        {
+            "ward_no": 290298,
+            "ward_name": "Chuta Hapjan G Aon No-1",
+            "ward_id": 290298
+        },
+        {
+            "ward_no": 290311,
+            "ward_name": "Chuta Hapjan T.E. 129 Fs.",
+            "ward_id": 290311
+        },
+        {
+            "ward_no": 290310,
+            "ward_name": "Chuta Hapjan T.E. 56 Wl",
+            "ward_id": 290310
+        },
+        {
+            "ward_no": 290265,
+            "ward_name": "Daidam T.E. 135/138 Wl",
+            "ward_id": 290265
+        },
+        {
+            "ward_no": 290263,
+            "ward_name": "Daidam T.E. 38 Wl",
+            "ward_id": 290263
+        },
+        {
+            "ward_no": 290262,
+            "ward_name": "Daidam T.E. 561/7 Wl",
+            "ward_id": 290262
+        },
+        {
+            "ward_no": 290237,
+            "ward_name": "Daimukhiya Gaon",
+            "ward_id": 290237
+        },
+        {
+            "ward_no": 290261,
+            "ward_name": "Daimukhiya T.E. 12 Wl",
+            "ward_id": 290261
+        },
+        {
+            "ward_no": 290260,
+            "ward_name": "Daimukhiya T.E. 13/34/49 Wl",
+            "ward_id": 290260
+        },
+        {
+            "ward_no": 290233,
+            "ward_name": "Daimukhiya T.E. 25/26 Wl",
+            "ward_id": 290233
+        },
+        {
+            "ward_no": 290239,
+            "ward_name": "Daimukhiya T.E. 83 Wl",
+            "ward_id": 290239
+        },
+        {
+            "ward_no": 290240,
+            "ward_name": "Daimukhiya T.E. 84 Wl",
+            "ward_id": 290240
+        },
+        {
+            "ward_no": 290181,
+            "ward_name": "Daisa.16 No. Wl.P",
+            "ward_id": 290181
+        },
+        {
+            "ward_no": 290183,
+            "ward_name": "Daisa Balijan No.1",
+            "ward_id": 290183
+        },
+        {
+            "ward_no": 290184,
+            "ward_name": "Daisa Balijan No.2",
+            "ward_id": 290184
+        },
+        {
+            "ward_no": 290206,
+            "ward_name": "Daisa Gaon",
+            "ward_id": 290206
+        },
+        {
+            "ward_no": 290205,
+            "ward_name": "Daisajan T.E. 10/12/ Wl",
+            "ward_id": 290205
+        },
+        {
+            "ward_no": 290216,
+            "ward_name": "Daisajan T.E. (1) 2 Wl",
+            "ward_id": 290216
+        },
+        {
+            "ward_no": 290214,
+            "ward_name": "Daisajan T.E. 13/14/22/15",
+            "ward_id": 290214
+        },
+        {
+            "ward_no": 290204,
+            "ward_name": "Daisajan T.E. 2/8/9 Wl",
+            "ward_id": 290204
+        },
+        {
+            "ward_no": 290182,
+            "ward_name": "Daisajan T.E.No.12 Wl.",
+            "ward_id": 290182
+        },
+        {
+            "ward_no": 290212,
+            "ward_name": "Daisa T.E. 13/9(A)",
+            "ward_id": 290212
+        },
+        {
+            "ward_no": 290215,
+            "ward_name": "Daisa T.E. No.2 Wl",
+            "ward_id": 290215
+        },
+        {
+            "ward_no": 290208,
+            "ward_name": "Dariabheti Gaon",
+            "ward_id": 290208
+        },
+        {
+            "ward_no": 290198,
+            "ward_name": "Darjijan Gaon No.2",
+            "ward_id": 290198
+        },
+        {
+            "ward_no": 290199,
+            "ward_name": "Dazijan No.1",
+            "ward_id": 290199
+        },
+        {
+            "ward_no": 290305,
+            "ward_name": "Denka Gaon",
+            "ward_id": 290305
+        },
+        {
+            "ward_no": 290274,
+            "ward_name": "Dhelakhat T.E. 17 Wl",
+            "ward_id": 290274
+        },
+        {
+            "ward_no": 290268,
+            "ward_name": "Diamuli 39 Nlr",
+            "ward_id": 290268
+        },
+        {
+            "ward_no": 290272,
+            "ward_name": "Diamuli Gaon No-1",
+            "ward_id": 290272
+        },
+        {
+            "ward_no": 290273,
+            "ward_name": "Diamuli Gaon No-2",
+            "ward_id": 290273
+        },
+        {
+            "ward_no": 290244,
+            "ward_name": "Diamuli T.E. 11 Nlr",
+            "ward_id": 290244
+        },
+        {
+            "ward_no": 290256,
+            "ward_name": "Diamuli T.E. 139/136 Nlr",
+            "ward_id": 290256
+        },
+        {
+            "ward_no": 290254,
+            "ward_name": "Diamuli T.E. 141/138 Nlr",
+            "ward_id": 290254
+        },
+        {
+            "ward_no": 290257,
+            "ward_name": "Diamuli T.E. 168/144/195/193 N",
+            "ward_id": 290257
+        },
+        {
+            "ward_no": 290269,
+            "ward_name": "Diamuli T.E. 181 Wl.",
+            "ward_id": 290269
+        },
+        {
+            "ward_no": 290267,
+            "ward_name": "Diamuli T.E. 183/224 Nlr",
+            "ward_id": 290267
+        },
+        {
+            "ward_no": 290247,
+            "ward_name": "Diamuli T.E. 205/203",
+            "ward_id": 290247
+        },
+        {
+            "ward_no": 290226,
+            "ward_name": "Diamuli T.E. 269 Nlr",
+            "ward_id": 290226
+        },
+        {
+            "ward_no": 290255,
+            "ward_name": "Diamuli T.E. 41 Wl",
+            "ward_id": 290255
+        },
+        {
+            "ward_no": 290292,
+            "ward_name": "Dighal Sako Gaon",
+            "ward_id": 290292
+        },
+        {
+            "ward_no": 290250,
+            "ward_name": "Dighaltarang Gaon",
+            "ward_id": 290250
+        },
+        {
+            "ward_no": 290224,
+            "ward_name": "Dighaltarang T.E. 120/117",
+            "ward_id": 290224
+        },
+        {
+            "ward_no": 290223,
+            "ward_name": "Dighal Tarang T.E. 120/123/215",
+            "ward_id": 290223
+        },
+        {
+            "ward_no": 290249,
+            "ward_name": "Dighaltarang T.E. 121/122/118",
+            "ward_id": 290249
+        },
+        {
+            "ward_no": 290316,
+            "ward_name": "Disaojan Gaon",
+            "ward_id": 290316
+        },
+        {
+            "ward_no": 290245,
+            "ward_name": "Dohutia Gaon",
+            "ward_id": 290245
+        },
+        {
+            "ward_no": 290699,
+            "ward_name": "Doomdooma Pathar Gaon",
+            "ward_id": 290699
+        },
+        {
+            "ward_no": 290211,
+            "ward_name": "Garumoratup Gaon",
+            "ward_id": 290211
+        },
+        {
+            "ward_no": 290221,
+            "ward_name": "Gatang Gaon",
+            "ward_id": 290221
+        },
+        {
+            "ward_no": 290686,
+            "ward_name": "Gupanari Habi Gaon",
+            "ward_id": 290686
+        },
+        {
+            "ward_no": 290700,
+            "ward_name": "Hahsara 8 No,Grant",
+            "ward_id": 290700
+        },
+        {
+            "ward_no": 290696,
+            "ward_name": "Hahsara T.E.15/12 Nlr.",
+            "ward_id": 290696
+        },
+        {
+            "ward_no": 290735,
+            "ward_name": "Hahsara T.E.20/156 Orr.",
+            "ward_id": 290735
+        },
+        {
+            "ward_no": 290697,
+            "ward_name": "Hahsara T.E. 59/56 Appln.",
+            "ward_id": 290697
+        },
+        {
+            "ward_no": 290698,
+            "ward_name": "Hahsara T.E. 79/538 Gt.",
+            "ward_id": 290698
+        },
+        {
+            "ward_no": 290213,
+            "ward_name": "Hallowkhowa Gaon",
+            "ward_id": 290213
+        },
+        {
+            "ward_no": 290295,
+            "ward_name": "Hallowtup Gaon",
+            "ward_id": 290295
+        },
+        {
+            "ward_no": 290291,
+            "ward_name": "Hatibat Gaon No-1",
+            "ward_id": 290291
+        },
+        {
+            "ward_no": 290290,
+            "ward_name": "Hatibat Gaon No-2",
+            "ward_id": 290290
+        },
+        {
+            "ward_no": 290317,
+            "ward_name": "Hatigarh Gaon",
+            "ward_id": 290317
+        },
+        {
+            "ward_no": 290293,
+            "ward_name": "Hatijan Gaon",
+            "ward_id": 290293
+        },
+        {
+            "ward_no": 290203,
+            "ward_name": "Hatisal Gaon No.1",
+            "ward_id": 290203
+        },
+        {
+            "ward_no": 290202,
+            "ward_name": "Hatisal Gaon No.2",
+            "ward_id": 290202
+        },
+        {
+            "ward_no": 290275,
+            "ward_name": "Hilikha T.E. 265 Wl",
+            "ward_id": 290275
+        },
+        {
+            "ward_no": 290283,
+            "ward_name": "Hilikha T.E. 27 Fs.",
+            "ward_id": 290283
+        },
+        {
+            "ward_no": 290277,
+            "ward_name": "Hilikha T.E. 5 Wl",
+            "ward_id": 290277
+        },
+        {
+            "ward_no": 290279,
+            "ward_name": "Hukanguri T.E. 110 Fs.",
+            "ward_id": 290279
+        },
+        {
+            "ward_no": 290280,
+            "ward_name": "Hukanguri T.E. 23/20 Nlr",
+            "ward_id": 290280
+        },
+        {
+            "ward_no": 290281,
+            "ward_name": "Hukanguri T.E. 27 Fs.",
+            "ward_id": 290281
+        },
+        {
+            "ward_no": 290278,
+            "ward_name": "Hukanguri T.E. 86 Nlr",
+            "ward_id": 290278
+        },
+        {
+            "ward_no": 290729,
+            "ward_name": "Hullunghabi T.E.126 Appln.",
+            "ward_id": 290729
+        },
+        {
+            "ward_no": 290220,
+            "ward_name": "Jakaichuk Gaon",
+            "ward_id": 290220
+        },
+        {
+            "ward_no": 290304,
+            "ward_name": "Jangu Khowa Gaon",
+            "ward_id": 290304
+        },
+        {
+            "ward_no": 290218,
+            "ward_name": "Kajanga Gaon",
+            "ward_id": 290218
+        },
+        {
+            "ward_no": 290217,
+            "ward_name": "Kardaiguri Gaon No-2",
+            "ward_id": 290217
+        },
+        {
+            "ward_no": 290201,
+            "ward_name": "Kardoiguri No.1",
+            "ward_id": 290201
+        },
+        {
+            "ward_no": 290200,
+            "ward_name": "Kardoiguri No.3",
+            "ward_id": 290200
+        },
+        {
+            "ward_no": 290219,
+            "ward_name": "Kecheruguri Gaon",
+            "ward_id": 290219
+        },
+        {
+            "ward_no": 290692,
+            "ward_name": "Kecheruguri Gaon",
+            "ward_id": 290692
+        },
+        {
+            "ward_no": 290300,
+            "ward_name": "Langsowal T.E. 210/208",
+            "ward_id": 290300
+        },
+        {
+            "ward_no": 290299,
+            "ward_name": "Langsowal T.E. 31 Wl",
+            "ward_id": 290299
+        },
+        {
+            "ward_no": 290319,
+            "ward_name": "Lesengka Bangali Gaon",
+            "ward_id": 290319
+        },
+        {
+            "ward_no": 290315,
+            "ward_name": "Lesenka Gaon",
+            "ward_id": 290315
+        },
+        {
+            "ward_no": 290307,
+            "ward_name": "Longsowal T.E. 109/112",
+            "ward_id": 290307
+        },
+        {
+            "ward_no": 290296,
+            "ward_name": "Longsowal T.E. 114 Nlr",
+            "ward_id": 290296
+        },
+        {
+            "ward_no": 290297,
+            "ward_name": "Longsowal T.E. 254 Nlr",
+            "ward_id": 290297
+        },
+        {
+            "ward_no": 290309,
+            "ward_name": "Lonsowal T.E. 429/192 Nlr",
+            "ward_id": 290309
+        },
+        {
+            "ward_no": 290320,
+            "ward_name": "Makum Junction Gaon",
+            "ward_id": 290320
+        },
+        {
+            "ward_no": 290695,
+            "ward_name": "Mulan Pathar Gaon",
+            "ward_id": 290695
+        },
+        {
+            "ward_no": 290301,
+            "ward_name": "Na-Matapung Gaon",
+            "ward_id": 290301
+        },
+        {
+            "ward_no": 290724,
+            "ward_name": "No.1 Assomiya Gaon",
+            "ward_id": 290724
+        },
+        {
+            "ward_no": 290711,
+            "ward_name": "No.1 Nazirating Gaon",
+            "ward_id": 290711
+        },
+        {
+            "ward_no": 290723,
+            "ward_name": "No.1 Tokowani Gaon",
+            "ward_id": 290723
+        },
+        {
+            "ward_no": 290712,
+            "ward_name": "No.2 Assomiya Gaon",
+            "ward_id": 290712
+        },
+        {
+            "ward_no": 290683,
+            "ward_name": "No.2 Chutahapjan Gaon",
+            "ward_id": 290683
+        },
+        {
+            "ward_no": 290725,
+            "ward_name": "No.2 Naziratng Gaon",
+            "ward_id": 290725
+        },
+        {
+            "ward_no": 290709,
+            "ward_name": "No.2 Tokowani Gaon",
+            "ward_id": 290709
+        },
+        {
+            "ward_no": 290682,
+            "ward_name": "No.3 Chotohapjan Gaon",
+            "ward_id": 290682
+        },
+        {
+            "ward_no": 290727,
+            "ward_name": "Obhatajan Gaon",
+            "ward_id": 290727
+        },
+        {
+            "ward_no": 290728,
+            "ward_name": "Obhatajan T.E.293 Nlr.",
+            "ward_id": 290728
+        },
+        {
+            "ward_no": 290234,
+            "ward_name": "Ouguri Gaon",
+            "ward_id": 290234
+        },
+        {
+            "ward_no": 290721,
+            "ward_name": "Owguri Gaon",
+            "ward_id": 290721
+        },
+        {
+            "ward_no": 290276,
+            "ward_name": "Pabhajan T.E. 219 Wl",
+            "ward_id": 290276
+        },
+        {
+            "ward_no": 290691,
+            "ward_name": "Pabhajan T.E.220/218",
+            "ward_id": 290691
+        },
+        {
+            "ward_no": 290690,
+            "ward_name": "Pabhajan T.E.223/221 Nlr",
+            "ward_id": 290690
+        },
+        {
+            "ward_no": 290716,
+            "ward_name": "Panikhowa Bongali Gaon",
+            "ward_id": 290716
+        },
+        {
+            "ward_no": 290713,
+            "ward_name": "Panikhowa Gaon",
+            "ward_id": 290713
+        },
+        {
+            "ward_no": 290266,
+            "ward_name": "Pavajan T.E. 137/130/129/124",
+            "ward_id": 290266
+        },
+        {
+            "ward_no": 290264,
+            "ward_name": "Pavajan T.E. 206 Wl",
+            "ward_id": 290264
+        },
+        {
+            "ward_no": 290259,
+            "ward_name": "Pavajan T.E. 65 Wl",
+            "ward_id": 290259
+        },
+        {
+            "ward_no": 290289,
+            "ward_name": "Purani Matapung No-1",
+            "ward_id": 290289
+        },
+        {
+            "ward_no": 290288,
+            "ward_name": "Purani Matapung No-2",
+            "ward_id": 290288
+        },
+        {
+            "ward_no": 290285,
+            "ward_name": "Purani Matapung No-3",
+            "ward_id": 290285
+        },
+        {
+            "ward_no": 290286,
+            "ward_name": "Purani Matapung No-4",
+            "ward_id": 290286
+        },
+        {
+            "ward_no": 290287,
+            "ward_name": "Purani Matapung No-5",
+            "ward_id": 290287
+        },
+        {
+            "ward_no": 290715,
+            "ward_name": "Raidang Bongali Gaon",
+            "ward_id": 290715
+        },
+        {
+            "ward_no": 290689,
+            "ward_name": "Raidang Gaon",
+            "ward_id": 290689
+        },
+        {
+            "ward_no": 290714,
+            "ward_name": "Raidang Pathar Gaon",
+            "ward_id": 290714
+        },
+        {
+            "ward_no": 290701,
+            "ward_name": "Raidang T.E. 122 Fs.Gt.",
+            "ward_id": 290701
+        },
+        {
+            "ward_no": 290704,
+            "ward_name": "Raidang T.E.132 Fs.",
+            "ward_id": 290704
+        },
+        {
+            "ward_no": 290232,
+            "ward_name": "Rupai (Patta Land)",
+            "ward_id": 290232
+        },
+        {
+            "ward_no": 290258,
+            "ward_name": "Rupai T.E. 182 Wl",
+            "ward_id": 290258
+        },
+        {
+            "ward_no": 290227,
+            "ward_name": "Rupai T.E. 232/230 Nlr",
+            "ward_id": 290227
+        },
+        {
+            "ward_no": 290228,
+            "ward_name": "Rupai T.E. 233/231 Nlr",
+            "ward_id": 290228
+        },
+        {
+            "ward_no": 290230,
+            "ward_name": "Rupai T.E. 246/244 Nlr",
+            "ward_id": 290230
+        },
+        {
+            "ward_no": 290231,
+            "ward_name": "Rupai T.E. 249/246/265/250",
+            "ward_id": 290231
+        },
+        {
+            "ward_no": 290242,
+            "ward_name": "Rupai T.E. 265 Nlr (Rupai T.E. 265/540 Wla)",
+            "ward_id": 290242
+        },
+        {
+            "ward_no": 290241,
+            "ward_name": "Rupai T.E. 38/32 Wla",
+            "ward_id": 290241
+        },
+        {
+            "ward_no": 290282,
+            "ward_name": "Samaguri Gaon",
+            "ward_id": 290282
+        },
+        {
+            "ward_no": 290708,
+            "ward_name": "Samdang T.E. 241/239 Nlr.",
+            "ward_id": 290708
+        },
+        {
+            "ward_no": 290710,
+            "ward_name": "Samdang T.E.309/9I276 Wl.Appln.",
+            "ward_id": 290710
+        },
+        {
+            "ward_no": 290707,
+            "ward_name": "Samdang T.E.46 Appln",
+            "ward_id": 290707
+        },
+        {
+            "ward_no": 290702,
+            "ward_name": "Samdang T.E. 48 Fs.(A)",
+            "ward_id": 290702
+        },
+        {
+            "ward_no": 290705,
+            "ward_name": "Samdang T.E. 48 Fs (B)",
+            "ward_id": 290705
+        },
+        {
+            "ward_no": 290706,
+            "ward_name": "Samdang T.E.48 Grant (A)",
+            "ward_id": 290706
+        },
+        {
+            "ward_no": 290703,
+            "ward_name": "Samdang T.E.59/126/16 Wla.",
+            "ward_id": 290703
+        },
+        {
+            "ward_no": 290684,
+            "ward_name": "Sukanguri T.E. 109/111 Nlr",
+            "ward_id": 290684
+        },
+        {
+            "ward_no": 290722,
+            "ward_name": "Sukanpukhuri Gaon",
+            "ward_id": 290722
+        },
+        {
+            "ward_no": 290318,
+            "ward_name": "Tarajan Gaon",
+            "ward_id": 290318
+        },
+        {
+            "ward_no": 290739,
+            "ward_name": "Tingrai Forest Village",
+            "ward_id": 290739
+        },
+        {
+            "ward_no": 290717,
+            "ward_name": "Tingrai Gaon",
+            "ward_id": 290717
+        },
+        {
+            "ward_no": 290188,
+            "ward_name": "Tipuk 102(M) Fs",
+            "ward_id": 290188
+        },
+        {
+            "ward_no": 290187,
+            "ward_name": "Tipuk T.E. 100 Fs.",
+            "ward_id": 290187
+        },
+        {
+            "ward_no": 290209,
+            "ward_name": "Tipuk T.E. 101 Fs.",
+            "ward_id": 290209
+        },
+        {
+            "ward_no": 290720,
+            "ward_name": "Uppar Mamorani Gaon",
+            "ward_id": 290720
+        }
+    ]
+}

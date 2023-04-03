@@ -5,8 +5,13 @@ from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.api.serializers.facility import FacilityBasicInfoSerializer, FacilitySerializer
-from care.facility.api.serializers.patient_consultation import PatientConsultationSerializer
+from care.facility.api.serializers.facility import (
+    FacilityBasicInfoSerializer,
+    FacilitySerializer,
+)
+from care.facility.api.serializers.patient_consultation import (
+    PatientConsultationSerializer,
+)
 from care.facility.models import (
     DISEASE_CHOICES,
     GENDER_CHOICES,
@@ -20,19 +25,33 @@ from care.facility.models import (
     PatientSearch,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import BLOOD_GROUP_CHOICES, DISEASE_STATUS_CHOICES, DiseaseStatusEnum
+from care.facility.models.patient_base import (
+    BLOOD_GROUP_CHOICES,
+    DISEASE_STATUS_CHOICES,
+    DiseaseStatusEnum,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
+from care.users.api.serializers.lsg import (
+    DistrictSerializer,
+    LocalBodySerializer,
+    StateSerializer,
+    WardSerializer,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
+from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
+from care.utils.serializer.phonenumber_ispossible_field import (
+    PhoneNumberIsPossibleField,
+)
 from config.serializers import ChoiceField
 from care.utils.validation.not_empty import NotEmptyValidator
-
+from care.hcx.models.policy import Policy
+from care.hcx.models.claim import Claim
+from django.db.models import Q
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
     occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
@@ -44,7 +63,9 @@ class PatientMetaInfoSerializer(serializers.ModelSerializer):
 
 class PatientListSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    facility = serializers.UUIDField(source="facility.external_id", allow_null=True, read_only=True)
+    facility = serializers.UUIDField(
+        source="facility.external_id", allow_null=True, read_only=True
+    )
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
     ward_object = WardSerializer(source="ward", read_only=True)
     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
@@ -54,10 +75,43 @@ class PatientListSerializer(serializers.ModelSerializer):
     last_consultation = PatientConsultationSerializer(read_only=True)
 
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
-    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
+    disease_status = ChoiceField(
+        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+    )
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    # HCX
+    has_eligible_policy = serializers.SerializerMethodField(
+        "get_has_eligible_policy", read_only=True
+    )
+
+    def get_has_eligible_policy(self, patient):
+        eligible_policies = Policy.objects.filter(
+            (Q(error_text="") | Q(error_text=None)),
+            outcome="complete",
+            patient=patient.id,
+        )
+        return bool(len(eligible_policies))
+
+    approved_claim_amount = serializers.SerializerMethodField(
+        "get_approved_claim_amount", read_only=True
+    )
+
+    def get_approved_claim_amount(self, patient):
+        if patient.last_consultation is not None:
+            claim = (
+                Claim.objects.filter(
+                    Q(error_text="") | Q(error_text=None),
+                    consultation__external_id=patient.last_consultation.external_id,
+                    outcome="complete",
+                    total_claim_amount__isnull=False,
+                )
+                .order_by("-modified_date")
+                .first()
+            )
+            return claim.total_claim_amount if claim is not None else None
 
     class Meta:
         model = PatientRegistration
@@ -79,7 +133,9 @@ class PatientContactDetailsSerializer(serializers.ModelSerializer):
     relation_with_patient = ChoiceField(choices=PatientContactDetails.RelationChoices)
     mode_of_contact = ChoiceField(choices=PatientContactDetails.ModeOfContactChoices)
 
-    patient_in_contact_object = PatientListSerializer(read_only=True, source="patient_in_contact")
+    patient_in_contact_object = PatientListSerializer(
+        read_only=True, source="patient_in_contact"
+    )
     patient_in_contact = serializers.UUIDField(source="patient_in_contact.external_id")
 
     class Meta:
@@ -110,10 +166,16 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
-    medical_history = serializers.ListSerializer(child=MedicalHistorySerializer(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
+    medical_history = serializers.ListSerializer(
+        child=MedicalHistorySerializer(), required=False
+    )
 
-    tele_consultation_history = serializers.ListSerializer(child=PatientTeleConsultationSerializer(), read_only=True)
+    tele_consultation_history = serializers.ListSerializer(
+        child=PatientTeleConsultationSerializer(), read_only=True
+    )
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(
@@ -124,10 +186,14 @@ class PatientDetailSerializer(PatientListSerializer):
         choices=PatientRegistration.SourceChoices,
         default=PatientRegistration.SourceEnum.CARE.value,
     )
-    disease_status = ChoiceField(choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value)
+    disease_status = ChoiceField(
+        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+    )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
-    contacted_patients = PatientContactDetailsSerializer(many=True, required=False, allow_null=True)
+    contacted_patients = PatientContactDetailsSerializer(
+        many=True, required=False, allow_null=True
+    )
 
     test_type = ChoiceField(
         choices=PatientRegistration.TestTypeChoices,
@@ -137,11 +203,15 @@ class PatientDetailSerializer(PatientListSerializer):
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
-    vaccine_name = serializers.ChoiceField(choices=PatientRegistration.vaccineChoices, required=False, allow_null=True)
+    vaccine_name = serializers.ChoiceField(
+        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
+    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
-    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    assigned_to = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=False, allow_null=True
+    )
 
     class Meta:
         model = PatientRegistration
@@ -175,20 +245,28 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if not self.partial and not validated.get("age") and not validated.get("date_of_birth"):
-            raise serializers.ValidationError({"non_field_errors": [f"Either age or date_of_birth should be passed"]})
+        if (
+            not self.partial
+            and not validated.get("age")
+            and not validated.get("date_of_birth")
+        ):
+            raise serializers.ValidationError(
+                {"non_field_errors": ["Either age or date_of_birth should be passed"]}
+            )
 
         if validated.get("is_vaccinated"):
             if validated.get("number_of_doses") == 0:
                 raise serializers.ValidationError("Number of doses cannot be 0")
-            if validated.get("vaccine_name") == None:
+            if validated.get("vaccine_name") is None:
                 raise serializers.ValidationError("Vaccine name cannot be null")
 
         return validated
 
     def check_external_entry(self, srf_id):
         if srf_id:
-            PatientExternalTest.objects.filter(srf_id__iexact=srf_id).update(patient_created=True)
+            PatientExternalTest.objects.filter(srf_id__iexact=srf_id).update(
+                patient_created=True
+            )
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -196,9 +274,24 @@ class PatientDetailSerializer(PatientListSerializer):
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
 
-            if "facility" in validated_data:
-                pass
-                # TODO Facility Authorization
+            if "facility" not in validated_data:
+                raise serializers.ValidationError(
+                    {"facility": "Facility is required to register a patient"}
+                )
+
+            # Authorization checks
+
+            allowed_facilities = get_home_facility_queryset(
+                self.context["request"].user
+            )
+            if not allowed_facilities.filter(
+                id=self.validated_data["facility"].id
+            ).exists():
+                raise serializers.ValidationError(
+                    {"facility": "Patient can only be created in the home facility"}
+                )
+
+            # Authorisation checks end
 
             if "srf_id" in validated_data:
                 if validated_data["srf_id"]:
@@ -219,7 +312,10 @@ class PatientDetailSerializer(PatientListSerializer):
                 patient.save()
 
             if contacted_patients:
-                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
+                contacted_patient_objs = [
+                    PatientContactDetails(**data, patient=patient)
+                    for data in contacted_patients
+                ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
             patient.last_edited = self.context["request"].user
@@ -243,7 +339,9 @@ class PatientDetailSerializer(PatientListSerializer):
             if "facility" in validated_data:
                 external_id = validated_data.pop("facility")["external_id"]
                 if external_id:
-                    validated_data["facility_id"] = Facility.objects.get(external_id=external_id).id
+                    validated_data["facility_id"] = Facility.objects.get(
+                        external_id=external_id
+                    ).id
 
             if "srf_id" in validated_data:
                 if instance.srf_id != validated_data["srf_id"]:
@@ -266,7 +364,10 @@ class PatientDetailSerializer(PatientListSerializer):
                 patient.contacted_patients.all().delete()
 
             if contacted_patients:
-                contacted_patient_objs = [PatientContactDetails(**data, patient=patient) for data in contacted_patients]
+                contacted_patient_objs = [
+                    PatientContactDetails(**data, patient=patient)
+                    for data in contacted_patients
+                ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
             patient.last_edited = self.context["request"].user
@@ -284,8 +385,12 @@ class PatientDetailSerializer(PatientListSerializer):
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    entry_date = serializers.DateField(default=make_aware(datetime.datetime.today()).date())
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), read_only=True)
+    entry_date = serializers.DateField(
+        default=make_aware(datetime.datetime.today()).date()
+    )
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), read_only=True
+    )
 
     class Meta:
         model = FacilityPatientStatsHistory
@@ -311,6 +416,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     phone_number = PhoneNumberIsPossibleField()
     patient_id = serializers.UUIDField(source="external_id", read_only=True)
+
     # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
 
     class Meta:
@@ -325,7 +431,9 @@ class PatientSearchSerializer(serializers.ModelSerializer):
 
 class PatientTransferSerializer(serializers.ModelSerializer):
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
-    facility = ExternalIdSerializerField(write_only=True, queryset=Facility.objects.all())
+    facility = ExternalIdSerializerField(
+        write_only=True, queryset=Facility.objects.all()
+    )
     patient = serializers.UUIDField(source="external_id", read_only=True)
 
     class Meta:
@@ -342,9 +450,9 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
-        PatientConsultation.objects.filter(patient=self.instance, discharge_date__isnull=True).update(
-            discharge_date=localtime(now())
-        )
+        PatientConsultation.objects.filter(
+            patient=self.instance, discharge_date__isnull=True
+        ).update(discharge_date=localtime(now()))
         self.instance.save()
 
 

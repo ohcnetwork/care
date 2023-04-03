@@ -1,0 +1,414 @@
+{
+    "name": "Lowairpoa",
+    "lsg_code": 2629,
+    "district": "Karimganj",
+    "state": "Assam",
+    "no_of_wards": 81,
+    "wards": [
+        {
+            "ward_no": 300552,
+            "ward_name": "Achairghat",
+            "ward_id": 300552
+        },
+        {
+            "ward_no": 300615,
+            "ward_name": "Aditya Nagar F.V.",
+            "ward_id": 300615
+        },
+        {
+            "ward_no": 300523,
+            "ward_name": "Akaidum",
+            "ward_id": 300523
+        },
+        {
+            "ward_no": 300540,
+            "ward_name": "Bagan Gaon",
+            "ward_id": 300540
+        },
+        {
+            "ward_no": 300546,
+            "ward_name": "Baithakhal Basti",
+            "ward_id": 300546
+        },
+        {
+            "ward_no": 300512,
+            "ward_name": "Baithakhal T.E.",
+            "ward_id": 300512
+        },
+        {
+            "ward_no": 300616,
+            "ward_name": "Balipipla F.V.",
+            "ward_id": 300616
+        },
+        {
+            "ward_no": 300299,
+            "ward_name": "Balirbond",
+            "ward_id": 300299
+        },
+        {
+            "ward_no": 300541,
+            "ward_name": "Balirbond Grant",
+            "ward_id": 300541
+        },
+        {
+            "ward_no": 300625,
+            "ward_name": "Balirbond Pt Iii",
+            "ward_id": 300625
+        },
+        {
+            "ward_no": 300899,
+            "ward_name": "Barbalia",
+            "ward_id": 300899
+        },
+        {
+            "ward_no": 300569,
+            "ward_name": "Barbazari Kitte Chandrapur",
+            "ward_id": 300569
+        },
+        {
+            "ward_no": 300432,
+            "ward_name": "Barcharrapunjee",
+            "ward_id": 300432
+        },
+        {
+            "ward_no": 300527,
+            "ward_name": "Baroputni",
+            "ward_id": 300527
+        },
+        {
+            "ward_no": 300503,
+            "ward_name": "Bhubrighat T.E.",
+            "ward_id": 300503
+        },
+        {
+            "ward_no": 300509,
+            "ward_name": "Champabari Gaon",
+            "ward_id": 300509
+        },
+        {
+            "ward_no": 300511,
+            "ward_name": "Chandkhira T.E.",
+            "ward_id": 300511
+        },
+        {
+            "ward_no": 300736,
+            "ward_name": "Chunaligul Cha Bagan Ii",
+            "ward_id": 300736
+        },
+        {
+            "ward_no": 300735,
+            "ward_name": "Chunaligul Cha Bagan Pt I",
+            "ward_id": 300735
+        },
+        {
+            "ward_no": 300734,
+            "ward_name": "Chunaligul Cha Bagan Pt Iii",
+            "ward_id": 300734
+        },
+        {
+            "ward_no": 300530,
+            "ward_name": "Chuto Putni",
+            "ward_id": 300530
+        },
+        {
+            "ward_no": 300573,
+            "ward_name": "Dakshin Bazari",
+            "ward_id": 300573
+        },
+        {
+            "ward_no": 300565,
+            "ward_name": "Dakshin Hatikhira",
+            "ward_id": 300565
+        },
+        {
+            "ward_no": 300579,
+            "ward_name": "Dakshin Sagolmar Bond",
+            "ward_id": 300579
+        },
+        {
+            "ward_no": 300525,
+            "ward_name": "Dakshin Sonakhira",
+            "ward_id": 300525
+        },
+        {
+            "ward_no": 300618,
+            "ward_name": "Dewali F.V.",
+            "ward_id": 300618
+        },
+        {
+            "ward_no": 300551,
+            "ward_name": "Dhengarbond",
+            "ward_id": 300551
+        },
+        {
+            "ward_no": 300521,
+            "ward_name": "Dumabaroi",
+            "ward_id": 300521
+        },
+        {
+            "ward_no": 300545,
+            "ward_name": "Gopalpur",
+            "ward_id": 300545
+        },
+        {
+            "ward_no": 300554,
+            "ward_name": "Hailam Charra",
+            "ward_id": 300554
+        },
+        {
+            "ward_no": 300542,
+            "ward_name": "Hatai Charra",
+            "ward_id": 300542
+        },
+        {
+            "ward_no": 300561,
+            "ward_name": "Hatairbond",
+            "ward_id": 300561
+        },
+        {
+            "ward_no": 300564,
+            "ward_name": "Hatikhira T.E.",
+            "ward_id": 300564
+        },
+        {
+            "ward_no": 300533,
+            "ward_name": "Indurali Punjee",
+            "ward_id": 300533
+        },
+        {
+            "ward_no": 300577,
+            "ward_name": "Isabeel",
+            "ward_id": 300577
+        },
+        {
+            "ward_no": 300576,
+            "ward_name": "Isaipunjee Kitte Dasanpur",
+            "ward_id": 300576
+        },
+        {
+            "ward_no": 300611,
+            "ward_name": "Jacobnagar F.V.",
+            "ward_id": 300611
+        },
+        {
+            "ward_no": 300535,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 300535
+        },
+        {
+            "ward_no": 300593,
+            "ward_name": "Kanikhai F.V.",
+            "ward_id": 300593
+        },
+        {
+            "ward_no": 300529,
+            "ward_name": "Kharkana Putni",
+            "ward_id": 300529
+        },
+        {
+            "ward_no": 300536,
+            "ward_name": "Kurti Gaon",
+            "ward_id": 300536
+        },
+        {
+            "ward_no": 300513,
+            "ward_name": "Lalkhira Sonakhira",
+            "ward_id": 300513
+        },
+        {
+            "ward_no": 300528,
+            "ward_name": "Latitilla",
+            "ward_id": 300528
+        },
+        {
+            "ward_no": 300592,
+            "ward_name": "Longai Forest",
+            "ward_id": 300592
+        },
+        {
+            "ward_no": 300506,
+            "ward_name": "Longai T.E.",
+            "ward_id": 300506
+        },
+        {
+            "ward_no": 300566,
+            "ward_name": "Lowairpoa",
+            "ward_id": 300566
+        },
+        {
+            "ward_no": 300599,
+            "ward_name": "Maguna Punjee F.V.",
+            "ward_id": 300599
+        },
+        {
+            "ward_no": 300572,
+            "ward_name": "Makundarbond",
+            "ward_id": 300572
+        },
+        {
+            "ward_no": 300537,
+            "ward_name": "Marugaon",
+            "ward_id": 300537
+        },
+        {
+            "ward_no": 300531,
+            "ward_name": "Medli Grant",
+            "ward_id": 300531
+        },
+        {
+            "ward_no": 300609,
+            "ward_name": "Nandigram F.V.",
+            "ward_id": 300609
+        },
+        {
+            "ward_no": 300607,
+            "ward_name": "Nilkantapur F.V.",
+            "ward_id": 300607
+        },
+        {
+            "ward_no": 300608,
+            "ward_name": "Nurkha F.V.",
+            "ward_id": 300608
+        },
+        {
+            "ward_no": 300594,
+            "ward_name": "Old Solamona F.V.",
+            "ward_id": 300594
+        },
+        {
+            "ward_no": 300559,
+            "ward_name": "Pecharghat",
+            "ward_id": 300559
+        },
+        {
+            "ward_no": 300617,
+            "ward_name": "Piplacharra F.V.",
+            "ward_id": 300617
+        },
+        {
+            "ward_no": 300516,
+            "ward_name": "Piplagool T.E.",
+            "ward_id": 300516
+        },
+        {
+            "ward_no": 300614,
+            "ward_name": "Piplapunjee F.V.",
+            "ward_id": 300614
+        },
+        {
+            "ward_no": 300600,
+            "ward_name": "Proper Magura F.V.",
+            "ward_id": 300600
+        },
+        {
+            "ward_no": 300568,
+            "ward_name": "Purbo Bazari",
+            "ward_id": 300568
+        },
+        {
+            "ward_no": 300578,
+            "ward_name": "Purbo Isabeel",
+            "ward_id": 300578
+        },
+        {
+            "ward_no": 300567,
+            "ward_name": "Purbo Lowairpoa",
+            "ward_id": 300567
+        },
+        {
+            "ward_no": 300557,
+            "ward_name": "Purbo Pecharghat",
+            "ward_id": 300557
+        },
+        {
+            "ward_no": 300515,
+            "ward_name": "Purbo Piplagool",
+            "ward_id": 300515
+        },
+        {
+            "ward_no": 300434,
+            "ward_name": "Purbo Purbogool",
+            "ward_id": 300434
+        },
+        {
+            "ward_no": 300522,
+            "ward_name": "Putni T.E.",
+            "ward_id": 300522
+        },
+        {
+            "ward_no": 300612,
+            "ward_name": "Rangamati F.V.",
+            "ward_id": 300612
+        },
+        {
+            "ward_no": 300549,
+            "ward_name": "Salgoi T.E.",
+            "ward_id": 300549
+        },
+        {
+            "ward_no": 300539,
+            "ward_name": "Sarjul Punjee",
+            "ward_id": 300539
+        },
+        {
+            "ward_no": 300601,
+            "ward_name": "Shambu Nagar F.V.",
+            "ward_id": 300601
+        },
+        {
+            "ward_no": 300570,
+            "ward_name": "Sibergool",
+            "ward_id": 300570
+        },
+        {
+            "ward_no": 300603,
+            "ward_name": "South Magura F.V.",
+            "ward_id": 300603
+        },
+        {
+            "ward_no": 300610,
+            "ward_name": "Tarapur F.V.",
+            "ward_id": 300610
+        },
+        {
+            "ward_no": 300591,
+            "ward_name": "Tilbhum Forest",
+            "ward_id": 300591
+        },
+        {
+            "ward_no": 300534,
+            "ward_name": "Trimti T.E.",
+            "ward_id": 300534
+        },
+        {
+            "ward_no": 300574,
+            "ward_name": "Uttor Chagolmar Bond",
+            "ward_id": 300574
+        },
+        {
+            "ward_no": 300544,
+            "ward_name": "Uttor Gopalpur",
+            "ward_id": 300544
+        },
+        {
+            "ward_no": 300555,
+            "ward_name": "Uttor Hailamcharra",
+            "ward_id": 300555
+        },
+        {
+            "ward_no": 300562,
+            "ward_name": "Uttor Hatikhira",
+            "ward_id": 300562
+        },
+        {
+            "ward_no": 300538,
+            "ward_name": "Uttor Tilbhum",
+            "ward_id": 300538
+        },
+        {
+            "ward_no": 300585,
+            "ward_name": "Zerjheri",
+            "ward_id": 300585
+        }
+    ]
+}

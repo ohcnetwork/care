@@ -1,0 +1,479 @@
+{
+    "name": "Rangapara",
+    "lsg_code": 2713,
+    "district": "Sonitpur",
+    "state": "Assam",
+    "no_of_wards": 94,
+    "wards": [
+        {
+            "ward_no": 286077,
+            "ward_name": "Aamtal Bangali",
+            "ward_id": 286077
+        },
+        {
+            "ward_no": 285910,
+            "ward_name": "Adabari T.E.",
+            "ward_id": 285910
+        },
+        {
+            "ward_no": 286058,
+            "ward_name": "Barjuli Sonajuli Req Grant",
+            "ward_id": 286058
+        },
+        {
+            "ward_no": 286034,
+            "ward_name": "Duala Padung Gaon",
+            "ward_id": 286034
+        },
+        {
+            "ward_no": 286078,
+            "ward_name": "Hatidubi Gaon",
+            "ward_id": 286078
+        },
+        {
+            "ward_no": 286066,
+            "ward_name": "Hatipukhuri",
+            "ward_id": 286066
+        },
+        {
+            "ward_no": 285983,
+            "ward_name": "Kachamari Grant",
+            "ward_id": 285983
+        },
+        {
+            "ward_no": 285984,
+            "ward_name": "Kachamari Under Madapi",
+            "ward_id": 285984
+        },
+        {
+            "ward_no": 286123,
+            "ward_name": "Kachari Gaon Pambasti",
+            "ward_id": 286123
+        },
+        {
+            "ward_no": 286020,
+            "ward_name": "Kachari Gaon T.E.",
+            "ward_id": 286020
+        },
+        {
+            "ward_no": 286026,
+            "ward_name": "Kachari Gaon T.E.",
+            "ward_id": 286026
+        },
+        {
+            "ward_no": 286009,
+            "ward_name": "Karai Bari",
+            "ward_id": 286009
+        },
+        {
+            "ward_no": 286147,
+            "ward_name": "Kaubari",
+            "ward_id": 286147
+        },
+        {
+            "ward_no": 286195,
+            "ward_name": "Kerimari Betbari",
+            "ward_id": 286195
+        },
+        {
+            "ward_no": 286135,
+            "ward_name": "Laigang Para",
+            "ward_id": 286135
+        },
+        {
+            "ward_no": 286149,
+            "ward_name": "Laimandera",
+            "ward_id": 286149
+        },
+        {
+            "ward_no": 286156,
+            "ward_name": "Lal-Barahi",
+            "ward_id": 286156
+        },
+        {
+            "ward_no": 286157,
+            "ward_name": "Lal-Barahi No.1",
+            "ward_id": 286157
+        },
+        {
+            "ward_no": 286010,
+            "ward_name": "Mahjan Pathar",
+            "ward_id": 286010
+        },
+        {
+            "ward_no": 286082,
+            "ward_name": "Mainajuli Grant",
+            "ward_id": 286082
+        },
+        {
+            "ward_no": 286198,
+            "ward_name": "Main Shree",
+            "ward_id": 286198
+        },
+        {
+            "ward_no": 286197,
+            "ward_name": "Maz Gaon (Tenga Bil)",
+            "ward_id": 286197
+        },
+        {
+            "ward_no": 286035,
+            "ward_name": "Nagapathar",
+            "ward_id": 286035
+        },
+        {
+            "ward_no": 286109,
+            "ward_name": "Naharani Gaon",
+            "ward_id": 286109
+        },
+        {
+            "ward_no": 286023,
+            "ward_name": "Naharani Reserve Grant",
+            "ward_id": 286023
+        },
+        {
+            "ward_no": 286029,
+            "ward_name": "Namani Gaon No.1",
+            "ward_id": 286029
+        },
+        {
+            "ward_no": 286036,
+            "ward_name": "Nam Gaon T.E.",
+            "ward_id": 286036
+        },
+        {
+            "ward_no": 286037,
+            "ward_name": "Natun Adabari T.E.",
+            "ward_id": 286037
+        },
+        {
+            "ward_no": 286075,
+            "ward_name": "Natun Ghatua",
+            "ward_id": 286075
+        },
+        {
+            "ward_no": 285906,
+            "ward_name": "No.1 Amaribari T.E.",
+            "ward_id": 285906
+        },
+        {
+            "ward_no": 286067,
+            "ward_name": "No.1 Bahumari Gaon",
+            "ward_id": 286067
+        },
+        {
+            "ward_no": 286085,
+            "ward_name": "No.1 Barjuli T.E.",
+            "ward_id": 286085
+        },
+        {
+            "ward_no": 286060,
+            "ward_name": "No.1 Bhelatar Gaon",
+            "ward_id": 286060
+        },
+        {
+            "ward_no": 286055,
+            "ward_name": "No.1 Dhendai T.E.",
+            "ward_id": 286055
+        },
+        {
+            "ward_no": 286090,
+            "ward_name": "No.1 Dhulapadung T.E.",
+            "ward_id": 286090
+        },
+        {
+            "ward_no": 286063,
+            "ward_name": "No.1 Gorali T.E.",
+            "ward_id": 286063
+        },
+        {
+            "ward_no": 285908,
+            "ward_name": "No.1 Harchura T.E.",
+            "ward_id": 285908
+        },
+        {
+            "ward_no": 286038,
+            "ward_name": "No.1 Hatibari T.E.",
+            "ward_id": 286038
+        },
+        {
+            "ward_no": 286025,
+            "ward_name": "No.1 Kachari Gaon T.E.",
+            "ward_id": 286025
+        },
+        {
+            "ward_no": 286083,
+            "ward_name": "No.1 Mainajuli T.E.",
+            "ward_id": 286083
+        },
+        {
+            "ward_no": 286043,
+            "ward_name": "No.1 Naharani T.E.",
+            "ward_id": 286043
+        },
+        {
+            "ward_no": 286033,
+            "ward_name": "No.1 Nam Gaon",
+            "ward_id": 286033
+        },
+        {
+            "ward_no": 286046,
+            "ward_name": "No.1 Panipota T.E.",
+            "ward_id": 286046
+        },
+        {
+            "ward_no": 286086,
+            "ward_name": "No.1 Rangapara T.E.",
+            "ward_id": 286086
+        },
+        {
+            "ward_no": 286051,
+            "ward_name": "No.1 Sonajuli T E",
+            "ward_id": 286051
+        },
+        {
+            "ward_no": 286049,
+            "ward_name": "No.1 Tarajuli T.E.",
+            "ward_id": 286049
+        },
+        {
+            "ward_no": 286087,
+            "ward_name": "No.1 Thakurbari T.E.",
+            "ward_id": 286087
+        },
+        {
+            "ward_no": 286040,
+            "ward_name": "No.2 Amari Bari T.E.",
+            "ward_id": 286040
+        },
+        {
+            "ward_no": 286242,
+            "ward_name": "No.2 Arimara",
+            "ward_id": 286242
+        },
+        {
+            "ward_no": 286068,
+            "ward_name": "No.2 Bahumari Gaon",
+            "ward_id": 286068
+        },
+        {
+            "ward_no": 286062,
+            "ward_name": "No.2 Barjuli T.E.",
+            "ward_id": 286062
+        },
+        {
+            "ward_no": 286061,
+            "ward_name": "No.2 Bhelatar Gaon",
+            "ward_id": 286061
+        },
+        {
+            "ward_no": 286054,
+            "ward_name": "No.2 Dhendai T.E.",
+            "ward_id": 286054
+        },
+        {
+            "ward_no": 286091,
+            "ward_name": "No.2 Dhulapadung T.E.",
+            "ward_id": 286091
+        },
+        {
+            "ward_no": 286105,
+            "ward_name": "No.2 Ghogora T.E.",
+            "ward_id": 286105
+        },
+        {
+            "ward_no": 286089,
+            "ward_name": "No.2 Gorali T.E.",
+            "ward_id": 286089
+        },
+        {
+            "ward_no": 286032,
+            "ward_name": "No.2 Hatibari T.E.",
+            "ward_id": 286032
+        },
+        {
+            "ward_no": 286024,
+            "ward_name": "No.2 Kachari Gaon",
+            "ward_id": 286024
+        },
+        {
+            "ward_no": 286084,
+            "ward_name": "No.2 Mainajuli T.E.",
+            "ward_id": 286084
+        },
+        {
+            "ward_no": 286041,
+            "ward_name": "No.2 Naharani T.E.",
+            "ward_id": 286041
+        },
+        {
+            "ward_no": 286030,
+            "ward_name": "No.2 Namani Gaon",
+            "ward_id": 286030
+        },
+        {
+            "ward_no": 285907,
+            "ward_name": "No.2 Namgaon T.E.",
+            "ward_id": 285907
+        },
+        {
+            "ward_no": 286047,
+            "ward_name": "No.2 Panipota T.E.",
+            "ward_id": 286047
+        },
+        {
+            "ward_no": 286059,
+            "ward_name": "No.2 Rangapara T.E.",
+            "ward_id": 286059
+        },
+        {
+            "ward_no": 286052,
+            "ward_name": "No.2 Sonajuli T E",
+            "ward_id": 286052
+        },
+        {
+            "ward_no": 286050,
+            "ward_name": "No.2 Tarajuli",
+            "ward_id": 286050
+        },
+        {
+            "ward_no": 286088,
+            "ward_name": "No.2 Thakurbari T.E.",
+            "ward_id": 286088
+        },
+        {
+            "ward_no": 286092,
+            "ward_name": "No.3 Dhulapadung T.E.",
+            "ward_id": 286092
+        },
+        {
+            "ward_no": 286039,
+            "ward_name": "No.3 Hatibari T.E.",
+            "ward_id": 286039
+        },
+        {
+            "ward_no": 286044,
+            "ward_name": "No.3 Naharani T.E.",
+            "ward_id": 286044
+        },
+        {
+            "ward_no": 286053,
+            "ward_name": "No.3 Sonajuli T E",
+            "ward_id": 286053
+        },
+        {
+            "ward_no": 286031,
+            "ward_name": "No.4 Hatibari T.E.",
+            "ward_id": 286031
+        },
+        {
+            "ward_no": 286028,
+            "ward_name": "No.4 Sessa T.E.",
+            "ward_id": 286028
+        },
+        {
+            "ward_no": 286065,
+            "ward_name": "Pagala Bil Gaon",
+            "ward_id": 286065
+        },
+        {
+            "ward_no": 286048,
+            "ward_name": "Panipota T.E.",
+            "ward_id": 286048
+        },
+        {
+            "ward_no": 286045,
+            "ward_name": "Phulbari T.E.",
+            "ward_id": 286045
+        },
+        {
+            "ward_no": 286079,
+            "ward_name": "Phul Guri Gaon",
+            "ward_id": 286079
+        },
+        {
+            "ward_no": 286076,
+            "ward_name": "Phulguri Nepali",
+            "ward_id": 286076
+        },
+        {
+            "ward_no": 285997,
+            "ward_name": "Ran Gajan Miri Pathar",
+            "ward_id": 285997
+        },
+        {
+            "ward_no": 286176,
+            "ward_name": "Rangpur",
+            "ward_id": 286176
+        },
+        {
+            "ward_no": 286208,
+            "ward_name": "Ranjan Jan Forest",
+            "ward_id": 286208
+        },
+        {
+            "ward_no": 286169,
+            "ward_name": "Rupa Juli",
+            "ward_id": 286169
+        },
+        {
+            "ward_no": 286069,
+            "ward_name": "Samukia Kachari",
+            "ward_id": 286069
+        },
+        {
+            "ward_no": 285969,
+            "ward_name": "Sessa T.E. No.1",
+            "ward_id": 285969
+        },
+        {
+            "ward_no": 285970,
+            "ward_name": "Sessa T.E. No.2",
+            "ward_id": 285970
+        },
+        {
+            "ward_no": 285971,
+            "ward_name": "Sessa T.E. No.3",
+            "ward_id": 285971
+        },
+        {
+            "ward_no": 286127,
+            "ward_name": "Sijuguri Gajan Juli",
+            "ward_id": 286127
+        },
+        {
+            "ward_no": 285972,
+            "ward_name": "Singari Jan T.E.",
+            "ward_id": 285972
+        },
+        {
+            "ward_no": 286131,
+            "ward_name": "Singi Mari",
+            "ward_id": 286131
+        },
+        {
+            "ward_no": 286064,
+            "ward_name": "Sonabil",
+            "ward_id": 286064
+        },
+        {
+            "ward_no": 286143,
+            "ward_name": "Soranloga",
+            "ward_id": 286143
+        },
+        {
+            "ward_no": 286141,
+            "ward_name": "Sourang Juli",
+            "ward_id": 286141
+        },
+        {
+            "ward_no": 286056,
+            "ward_name": "Tarajuli Gaon",
+            "ward_id": 286056
+        },
+        {
+            "ward_no": 286027,
+            "ward_name": "Upar Kachari",
+            "ward_id": 286027
+        }
+    ]
+}

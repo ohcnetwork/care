@@ -1,0 +1,154 @@
+{
+    "name": "Madhupur",
+    "lsg_code": 2682,
+    "district": "Nalbari",
+    "state": "Assam",
+    "no_of_wards": 29,
+    "wards": [
+        {
+            "ward_no": 303988,
+            "ward_name": "Balizar",
+            "ward_id": 303988
+        },
+        {
+            "ward_no": 303997,
+            "ward_name": "Banbhag Solmari",
+            "ward_id": 303997
+        },
+        {
+            "ward_no": 303990,
+            "ward_name": "Bangnabari",
+            "ward_id": 303990
+        },
+        {
+            "ward_no": 304000,
+            "ward_name": "Barkhetri Banekuchi",
+            "ward_id": 304000
+        },
+        {
+            "ward_no": 304002,
+            "ward_name": "Barnagar Banekuchi",
+            "ward_id": 304002
+        },
+        {
+            "ward_no": 303989,
+            "ward_name": "Baushipara",
+            "ward_id": 303989
+        },
+        {
+            "ward_no": 303983,
+            "ward_name": "Bechimari",
+            "ward_id": 303983
+        },
+        {
+            "ward_no": 303662,
+            "ward_name": "Bihampur",
+            "ward_id": 303662
+        },
+        {
+            "ward_no": 303998,
+            "ward_name": "Buri Nagar",
+            "ward_id": 303998
+        },
+        {
+            "ward_no": 303999,
+            "ward_name": "Danguapara",
+            "ward_id": 303999
+        },
+        {
+            "ward_no": 303660,
+            "ward_name": "Fulguri",
+            "ward_id": 303660
+        },
+        {
+            "ward_no": 303659,
+            "ward_name": "Gamarimari",
+            "ward_id": 303659
+        },
+        {
+            "ward_no": 303984,
+            "ward_name": "Jawardi",
+            "ward_id": 303984
+        },
+        {
+            "ward_no": 303994,
+            "ward_name": "Kachimpur",
+            "ward_id": 303994
+        },
+        {
+            "ward_no": 303982,
+            "ward_name": "Kaithalkuchi",
+            "ward_id": 303982
+        },
+        {
+            "ward_no": 303991,
+            "ward_name": "Kathalbari",
+            "ward_id": 303991
+        },
+        {
+            "ward_no": 303993,
+            "ward_name": "Kendukuchi",
+            "ward_id": 303993
+        },
+        {
+            "ward_no": 303987,
+            "ward_name": "Kharsitha",
+            "ward_id": 303987
+        },
+        {
+            "ward_no": 303985,
+            "ward_name": "Khata Numbarbhog",
+            "ward_id": 303985
+        },
+        {
+            "ward_no": 303996,
+            "ward_name": "Khukhundi",
+            "ward_id": 303996
+        },
+        {
+            "ward_no": 303986,
+            "ward_name": "Madhupur",
+            "ward_id": 303986
+        },
+        {
+            "ward_no": 303658,
+            "ward_name": "Nadla",
+            "ward_id": 303658
+        },
+        {
+            "ward_no": 304001,
+            "ward_name": "Niz-Banekuchi",
+            "ward_id": 304001
+        },
+        {
+            "ward_no": 303661,
+            "ward_name": "Niz Mularkuchi",
+            "ward_id": 303661
+        },
+        {
+            "ward_no": 303663,
+            "ward_name": "Pahlanpara",
+            "ward_id": 303663
+        },
+        {
+            "ward_no": 304003,
+            "ward_name": "Rajakhat Banekuchi",
+            "ward_id": 304003
+        },
+        {
+            "ward_no": 303689,
+            "ward_name": "Santheli(Sandheli)",
+            "ward_id": 303689
+        },
+        {
+            "ward_no": 303992,
+            "ward_name": "Suplekuchi",
+            "ward_id": 303992
+        },
+        {
+            "ward_no": 303995,
+            "ward_name": "Taumura",
+            "ward_id": 303995
+        }
+    ]
+}

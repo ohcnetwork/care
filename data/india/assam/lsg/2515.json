@@ -1,0 +1,554 @@
+{
+    "name": "Narsingpur",
+    "lsg_code": 2515,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 109,
+    "wards": [
+        {
+            "ward_no": 299648,
+            "ward_name": "Aradhanpur",
+            "ward_id": 299648
+        },
+        {
+            "ward_no": 299637,
+            "ward_name": "Arjanpur",
+            "ward_id": 299637
+        },
+        {
+            "ward_no": 299672,
+            "ward_name": "Bagewallah F.V.",
+            "ward_id": 299672
+        },
+        {
+            "ward_no": 299641,
+            "ward_name": "Bangram",
+            "ward_id": 299641
+        },
+        {
+            "ward_no": 299342,
+            "ward_name": "Barjalenga Pt Iii",
+            "ward_id": 299342
+        },
+        {
+            "ward_no": 299345,
+            "ward_name": "Barjalenga Pt Iv",
+            "ward_id": 299345
+        },
+        {
+            "ward_no": 299341,
+            "ward_name": "Barjalenga Pt Ix (Pt Xi)",
+            "ward_id": 299341
+        },
+        {
+            "ward_no": 299681,
+            "ward_name": "Barmannagar F.V.",
+            "ward_id": 299681
+        },
+        {
+            "ward_no": 299614,
+            "ward_name": "Berabak Pt I",
+            "ward_id": 299614
+        },
+        {
+            "ward_no": 299615,
+            "ward_name": "Berabak Pt Ii",
+            "ward_id": 299615
+        },
+        {
+            "ward_no": 905586,
+            "ward_name": "Berebak Pt-Iii",
+            "ward_id": 905586
+        },
+        {
+            "ward_no": 299659,
+            "ward_name": "Bidyaratanpur",
+            "ward_id": 299659
+        },
+        {
+            "ward_no": 299654,
+            "ward_name": "Bishnupur",
+            "ward_id": 299654
+        },
+        {
+            "ward_no": 299680,
+            "ward_name": "Bishnupur F.V.",
+            "ward_id": 299680
+        },
+        {
+            "ward_no": 299336,
+            "ward_name": "Bor Jalenga Pt V",
+            "ward_id": 299336
+        },
+        {
+            "ward_no": 299337,
+            "ward_name": "Bor Jalenga Pt Vi",
+            "ward_id": 299337
+        },
+        {
+            "ward_no": 299338,
+            "ward_name": "Bor Jalenga Pt Vii",
+            "ward_id": 299338
+        },
+        {
+            "ward_no": 299339,
+            "ward_name": "Bor Jalenga Pt Viii",
+            "ward_id": 299339
+        },
+        {
+            "ward_no": 299334,
+            "ward_name": "Bor Jalenga Pt X",
+            "ward_id": 299334
+        },
+        {
+            "ward_no": 299335,
+            "ward_name": "Bor Jalenga Pt Xi",
+            "ward_id": 299335
+        },
+        {
+            "ward_no": 299688,
+            "ward_name": "Borkhal F.V.",
+            "ward_id": 299688
+        },
+        {
+            "ward_no": 299377,
+            "ward_name": "Boro Salganga F.V.",
+            "ward_id": 299377
+        },
+        {
+            "ward_no": 299352,
+            "ward_name": "Borosalganga T.V.",
+            "ward_id": 299352
+        },
+        {
+            "ward_no": 299647,
+            "ward_name": "Channighat",
+            "ward_id": 299647
+        },
+        {
+            "ward_no": 299351,
+            "ward_name": "Chotojalenga T.V.",
+            "ward_id": 299351
+        },
+        {
+            "ward_no": 299368,
+            "ward_name": "Chotosalganga F.V.",
+            "ward_id": 299368
+        },
+        {
+            "ward_no": 299318,
+            "ward_name": "Clever House Pt I",
+            "ward_id": 299318
+        },
+        {
+            "ward_no": 299317,
+            "ward_name": "Clever House Pt Ii",
+            "ward_id": 299317
+        },
+        {
+            "ward_no": 299315,
+            "ward_name": "Clever House Pt Iii",
+            "ward_id": 299315
+        },
+        {
+            "ward_no": 299314,
+            "ward_name": "Clever House Pt Iv",
+            "ward_id": 299314
+        },
+        {
+            "ward_no": 299316,
+            "ward_name": "Clever House T.E.",
+            "ward_id": 299316
+        },
+        {
+            "ward_no": 299628,
+            "ward_name": "Debipur",
+            "ward_id": 299628
+        },
+        {
+            "ward_no": 299333,
+            "ward_name": "Derby T.E.",
+            "ward_id": 299333
+        },
+        {
+            "ward_no": 299667,
+            "ward_name": "Dhalakhal F.V.",
+            "ward_id": 299667
+        },
+        {
+            "ward_no": 299676,
+            "ward_name": "Dhalakhal F.V.",
+            "ward_id": 299676
+        },
+        {
+            "ward_no": 299512,
+            "ward_name": "Dhanipur",
+            "ward_id": 299512
+        },
+        {
+            "ward_no": 299332,
+            "ward_name": "Elanpur T.E.",
+            "ward_id": 299332
+        },
+        {
+            "ward_no": 299646,
+            "ward_name": "Frenchnagar",
+            "ward_id": 299646
+        },
+        {
+            "ward_no": 299700,
+            "ward_name": "French Nagar F.V.",
+            "ward_id": 299700
+        },
+        {
+            "ward_no": 299629,
+            "ward_name": "Gajalghat",
+            "ward_id": 299629
+        },
+        {
+            "ward_no": 299679,
+            "ward_name": "Garultala F.V.",
+            "ward_id": 299679
+        },
+        {
+            "ward_no": 299691,
+            "ward_name": "Garultolaekth F.V.",
+            "ward_id": 299691
+        },
+        {
+            "ward_no": 299635,
+            "ward_name": "Gurudayalpur",
+            "ward_id": 299635
+        },
+        {
+            "ward_no": 299671,
+            "ward_name": "Gurudayalpur F.V.",
+            "ward_id": 299671
+        },
+        {
+            "ward_no": 299703,
+            "ward_name": "Hadma",
+            "ward_id": 299703
+        },
+        {
+            "ward_no": 299696,
+            "ward_name": "Hatalmara F.V.",
+            "ward_id": 299696
+        },
+        {
+            "ward_no": 299698,
+            "ward_name": "Hathikhal F.V.",
+            "ward_id": 299698
+        },
+        {
+            "ward_no": 905587,
+            "ward_name": "Hawaithang",
+            "ward_id": 905587
+        },
+        {
+            "ward_no": 299645,
+            "ward_name": "Howaithang",
+            "ward_id": 299645
+        },
+        {
+            "ward_no": 299640,
+            "ward_name": "Islamabad",
+            "ward_id": 299640
+        },
+        {
+            "ward_no": 299699,
+            "ward_name": "Jabha F.V.",
+            "ward_id": 299699
+        },
+        {
+            "ward_no": 299656,
+            "ward_name": "Jamalpur",
+            "ward_id": 299656
+        },
+        {
+            "ward_no": 905585,
+            "ward_name": "Jamirkhal F.V.",
+            "ward_id": 905585
+        },
+        {
+            "ward_no": 299693,
+            "ward_name": "Jamirkhal F.V.",
+            "ward_id": 299693
+        },
+        {
+            "ward_no": 299630,
+            "ward_name": "Jibangram",
+            "ward_id": 299630
+        },
+        {
+            "ward_no": 299643,
+            "ward_name": "Joydhanpur",
+            "ward_id": 299643
+        },
+        {
+            "ward_no": 299613,
+            "ward_name": "Kajidahar Pt I",
+            "ward_id": 299613
+        },
+        {
+            "ward_no": 299612,
+            "ward_name": "Kajidahar Pt Ii",
+            "ward_id": 299612
+        },
+        {
+            "ward_no": 299611,
+            "ward_name": "Kajidahar Pt Iii",
+            "ward_id": 299611
+        },
+        {
+            "ward_no": 299675,
+            "ward_name": "Kalahawar F.V.",
+            "ward_id": 299675
+        },
+        {
+            "ward_no": 299697,
+            "ward_name": "Karkat Basti F.V.",
+            "ward_id": 299697
+        },
+        {
+            "ward_no": 299651,
+            "ward_name": "Khashpur",
+            "ward_id": 299651
+        },
+        {
+            "ward_no": 299655,
+            "ward_name": "Khulichara",
+            "ward_id": 299655
+        },
+        {
+            "ward_no": 299709,
+            "ward_name": "Khulichara Mizo Sec",
+            "ward_id": 299709
+        },
+        {
+            "ward_no": 299670,
+            "ward_name": "Khulichora F.V.",
+            "ward_id": 299670
+        },
+        {
+            "ward_no": 299708,
+            "ward_name": "Lailapur",
+            "ward_id": 299708
+        },
+        {
+            "ward_no": 905588,
+            "ward_name": "Lailapur F.V.",
+            "ward_id": 905588
+        },
+        {
+            "ward_no": 299633,
+            "ward_name": "Lantugram",
+            "ward_id": 299633
+        },
+        {
+            "ward_no": 299644,
+            "ward_name": "Laylapur",
+            "ward_id": 299644
+        },
+        {
+            "ward_no": 299639,
+            "ward_name": "Loknathpur",
+            "ward_id": 299639
+        },
+        {
+            "ward_no": 299627,
+            "ward_name": "Mahadevpur",
+            "ward_id": 299627
+        },
+        {
+            "ward_no": 299653,
+            "ward_name": "Mathurapur",
+            "ward_id": 299653
+        },
+        {
+            "ward_no": 299710,
+            "ward_name": "Mohanpur",
+            "ward_id": 299710
+        },
+        {
+            "ward_no": 299626,
+            "ward_name": "Nagdirgram Pt I",
+            "ward_id": 299626
+        },
+        {
+            "ward_no": 299618,
+            "ward_name": "Nagdirgram Pt Ii",
+            "ward_id": 299618
+        },
+        {
+            "ward_no": 299619,
+            "ward_name": "Nagdirgram Pt Iii",
+            "ward_id": 299619
+        },
+        {
+            "ward_no": 299620,
+            "ward_name": "Nagdirgram Pt Iv",
+            "ward_id": 299620
+        },
+        {
+            "ward_no": 299701,
+            "ward_name": "Napitkhal Panjum F.V.",
+            "ward_id": 299701
+        },
+        {
+            "ward_no": 299660,
+            "ward_name": "Narayanpur",
+            "ward_id": 299660
+        },
+        {
+            "ward_no": 299617,
+            "ward_name": "Narsingpur Pt I",
+            "ward_id": 299617
+        },
+        {
+            "ward_no": 299621,
+            "ward_name": "Narsingpur Pt Ii",
+            "ward_id": 299621
+        },
+        {
+            "ward_no": 299622,
+            "ward_name": "Narsingpur Pt Iii",
+            "ward_id": 299622
+        },
+        {
+            "ward_no": 299623,
+            "ward_name": "Narsingpur Pt Iv",
+            "ward_id": 299623
+        },
+        {
+            "ward_no": 299624,
+            "ward_name": "Narsingpur Pt V",
+            "ward_id": 299624
+        },
+        {
+            "ward_no": 299625,
+            "ward_name": "Narsingpur Pt Vi",
+            "ward_id": 299625
+        },
+        {
+            "ward_no": 299690,
+            "ward_name": "Natacherrah F.V.",
+            "ward_id": 299690
+        },
+        {
+            "ward_no": 299340,
+            "ward_name": "Paloipunji T.E.",
+            "ward_id": 299340
+        },
+        {
+            "ward_no": 299677,
+            "ward_name": "Pancherrah F.V.",
+            "ward_id": 299677
+        },
+        {
+            "ward_no": 299689,
+            "ward_name": "Phainung F.V.",
+            "ward_id": 299689
+        },
+        {
+            "ward_no": 299702,
+            "ward_name": "Punicherra F.V.",
+            "ward_id": 299702
+        },
+        {
+            "ward_no": 299695,
+            "ward_name": "Punihowar F.V.",
+            "ward_id": 299695
+        },
+        {
+            "ward_no": 299678,
+            "ward_name": "Radhanagar F.V.",
+            "ward_id": 299678
+        },
+        {
+            "ward_no": 299636,
+            "ward_name": "Rajanikhal",
+            "ward_id": 299636
+        },
+        {
+            "ward_no": 299642,
+            "ward_name": "Rajghat",
+            "ward_id": 299642
+        },
+        {
+            "ward_no": 905584,
+            "ward_name": "Rajghat",
+            "ward_id": 905584
+        },
+        {
+            "ward_no": 299649,
+            "ward_name": "Rajgobindapur",
+            "ward_id": 299649
+        },
+        {
+            "ward_no": 299658,
+            "ward_name": "Rajnagar",
+            "ward_id": 299658
+        },
+        {
+            "ward_no": 299632,
+            "ward_name": "Ramprasabpur",
+            "ward_id": 299632
+        },
+        {
+            "ward_no": 299707,
+            "ward_name": "Ramprasadpur",
+            "ward_id": 299707
+        },
+        {
+            "ward_no": 299652,
+            "ward_name": "Raraipunjee",
+            "ward_id": 299652
+        },
+        {
+            "ward_no": 299634,
+            "ward_name": "Sadagram (Sapagram)",
+            "ward_id": 299634
+        },
+        {
+            "ward_no": 299638,
+            "ward_name": "Saptagram",
+            "ward_id": 299638
+        },
+        {
+            "ward_no": 299650,
+            "ward_name": "Saraspur",
+            "ward_id": 299650
+        },
+        {
+            "ward_no": 299673,
+            "ward_name": "Sewrartol F.V.",
+            "ward_id": 299673
+        },
+        {
+            "ward_no": 299657,
+            "ward_name": "Shymacharanpur",
+            "ward_id": 299657
+        },
+        {
+            "ward_no": 299711,
+            "ward_name": "Soranagar (Goranagar)",
+            "ward_id": 299711
+        },
+        {
+            "ward_no": 299694,
+            "ward_name": "Suparikhal F.V.",
+            "ward_id": 299694
+        },
+        {
+            "ward_no": 299631,
+            "ward_name": "Tilanagar",
+            "ward_id": 299631
+        },
+        {
+            "ward_no": 299674,
+            "ward_name": "Tulartal F.V.",
+            "ward_id": 299674
+        }
+    ]
+}

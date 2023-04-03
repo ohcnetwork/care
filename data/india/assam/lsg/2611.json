@@ -1,0 +1,339 @@
+{
+    "name": "Kamalpur",
+    "lsg_code": 2611,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 66,
+    "wards": [
+        {
+            "ward_no": 302496,
+            "ward_name": "Alegjar (Alekjari)",
+            "ward_id": 302496
+        },
+        {
+            "ward_no": 302468,
+            "ward_name": "Alta",
+            "ward_id": 302468
+        },
+        {
+            "ward_no": 302486,
+            "ward_name": "Athagaon",
+            "ward_id": 302486
+        },
+        {
+            "ward_no": 302463,
+            "ward_name": "Azara",
+            "ward_id": 302463
+        },
+        {
+            "ward_no": 302495,
+            "ward_name": "Baihata",
+            "ward_id": 302495
+        },
+        {
+            "ward_no": 302458,
+            "ward_name": "Bamungaon",
+            "ward_id": 302458
+        },
+        {
+            "ward_no": 302470,
+            "ward_name": "Barangabari",
+            "ward_id": 302470
+        },
+        {
+            "ward_no": 302502,
+            "ward_name": "Bardaipakhia",
+            "ward_id": 302502
+        },
+        {
+            "ward_no": 302479,
+            "ward_name": "Bardekpar",
+            "ward_id": 302479
+        },
+        {
+            "ward_no": 302514,
+            "ward_name": "Bargaon",
+            "ward_id": 302514
+        },
+        {
+            "ward_no": 302485,
+            "ward_name": "Barkha",
+            "ward_id": 302485
+        },
+        {
+            "ward_no": 302504,
+            "ward_name": "Barmarai",
+            "ward_id": 302504
+        },
+        {
+            "ward_no": 302517,
+            "ward_name": "Baro Gaon (Bara Gog)",
+            "ward_id": 302517
+        },
+        {
+            "ward_no": 302478,
+            "ward_name": "Baruajani",
+            "ward_id": 302478
+        },
+        {
+            "ward_no": 302520,
+            "ward_name": "Bhitarkhala Grant",
+            "ward_id": 302520
+        },
+        {
+            "ward_no": 302511,
+            "ward_name": "Bhitarkhola",
+            "ward_id": 302511
+        },
+        {
+            "ward_no": 302510,
+            "ward_name": "Bhitarkhola N.C.",
+            "ward_id": 302510
+        },
+        {
+            "ward_no": 302492,
+            "ward_name": "Borka",
+            "ward_id": 302492
+        },
+        {
+            "ward_no": 302524,
+            "ward_name": "Boro Gaon (Bara Gaon)",
+            "ward_id": 302524
+        },
+        {
+            "ward_no": 302493,
+            "ward_name": "Chepti",
+            "ward_id": 302493
+        },
+        {
+            "ward_no": 302476,
+            "ward_name": "Chowrakara",
+            "ward_id": 302476
+        },
+        {
+            "ward_no": 302474,
+            "ward_name": "Dakhin Singra",
+            "ward_id": 302474
+        },
+        {
+            "ward_no": 302491,
+            "ward_name": "Dalang",
+            "ward_id": 302491
+        },
+        {
+            "ward_no": 302465,
+            "ward_name": "Dalma",
+            "ward_id": 302465
+        },
+        {
+            "ward_no": 302518,
+            "ward_name": "Darakahara",
+            "ward_id": 302518
+        },
+        {
+            "ward_no": 302477,
+            "ward_name": "Degunpar",
+            "ward_id": 302477
+        },
+        {
+            "ward_no": 302462,
+            "ward_name": "Dekarkuchi",
+            "ward_id": 302462
+        },
+        {
+            "ward_no": 302506,
+            "ward_name": "Deoduar",
+            "ward_id": 302506
+        },
+        {
+            "ward_no": 302487,
+            "ward_name": "Dhonaka (Dhonuka)",
+            "ward_id": 302487
+        },
+        {
+            "ward_no": 302466,
+            "ward_name": "Dinkar",
+            "ward_id": 302466
+        },
+        {
+            "ward_no": 302472,
+            "ward_name": "Ghopla",
+            "ward_id": 302472
+        },
+        {
+            "ward_no": 302509,
+            "ward_name": "Gopeswar",
+            "ward_id": 302509
+        },
+        {
+            "ward_no": 302475,
+            "ward_name": "Guiya",
+            "ward_id": 302475
+        },
+        {
+            "ward_no": 302464,
+            "ward_name": "Haberikura",
+            "ward_id": 302464
+        },
+        {
+            "ward_no": 302456,
+            "ward_name": "Hahara",
+            "ward_id": 302456
+        },
+        {
+            "ward_no": 302497,
+            "ward_name": "Jalimura",
+            "ward_id": 302497
+        },
+        {
+            "ward_no": 302461,
+            "ward_name": "Kacharua",
+            "ward_id": 302461
+        },
+        {
+            "ward_no": 302494,
+            "ward_name": "Kalakuchi",
+            "ward_id": 302494
+        },
+        {
+            "ward_no": 302467,
+            "ward_name": "Kamalpur",
+            "ward_id": 302467
+        },
+        {
+            "ward_no": 302508,
+            "ward_name": "Katanipara",
+            "ward_id": 302508
+        },
+        {
+            "ward_no": 302459,
+            "ward_name": "Kendukona",
+            "ward_id": 302459
+        },
+        {
+            "ward_no": 302505,
+            "ward_name": "Kharikat",
+            "ward_id": 302505
+        },
+        {
+            "ward_no": 302481,
+            "ward_name": "Khudra Sesha",
+            "ward_id": 302481
+        },
+        {
+            "ward_no": 302501,
+            "ward_name": "Kokeria",
+            "ward_id": 302501
+        },
+        {
+            "ward_no": 302480,
+            "ward_name": "Kusumpur",
+            "ward_id": 302480
+        },
+        {
+            "ward_no": 302460,
+            "ward_name": "Laukuri",
+            "ward_id": 302460
+        },
+        {
+            "ward_no": 302455,
+            "ward_name": "Lochakona",
+            "ward_id": 302455
+        },
+        {
+            "ward_no": 302507,
+            "ward_name": "Madanpur",
+            "ward_id": 302507
+        },
+        {
+            "ward_no": 302473,
+            "ward_name": "Maguri",
+            "ward_id": 302473
+        },
+        {
+            "ward_no": 302483,
+            "ward_name": "Maihati",
+            "ward_id": 302483
+        },
+        {
+            "ward_no": 302512,
+            "ward_name": "Mainasundari",
+            "ward_id": 302512
+        },
+        {
+            "ward_no": 302516,
+            "ward_name": "Maniari",
+            "ward_id": 302516
+        },
+        {
+            "ward_no": 302503,
+            "ward_name": "Marai",
+            "ward_id": 302503
+        },
+        {
+            "ward_no": 302457,
+            "ward_name": "Maukuchi",
+            "ward_id": 302457
+        },
+        {
+            "ward_no": 302519,
+            "ward_name": "Natuanacha",
+            "ward_id": 302519
+        },
+        {
+            "ward_no": 302498,
+            "ward_name": "Niz-Madartola",
+            "ward_id": 302498
+        },
+        {
+            "ward_no": 302513,
+            "ward_name": "Paikana",
+            "ward_id": 302513
+        },
+        {
+            "ward_no": 302484,
+            "ward_name": "Palara",
+            "ward_id": 302484
+        },
+        {
+            "ward_no": 302490,
+            "ward_name": "Panitama",
+            "ward_id": 302490
+        },
+        {
+            "ward_no": 302499,
+            "ward_name": "Pialikhata",
+            "ward_id": 302499
+        },
+        {
+            "ward_no": 302488,
+            "ward_name": "Raipat",
+            "ward_id": 302488
+        },
+        {
+            "ward_no": 302482,
+            "ward_name": "Singra",
+            "ward_id": 302482
+        },
+        {
+            "ward_no": 302489,
+            "ward_name": "Sonapur",
+            "ward_id": 302489
+        },
+        {
+            "ward_no": 302469,
+            "ward_name": "Soneswar",
+            "ward_id": 302469
+        },
+        {
+            "ward_no": 302471,
+            "ward_name": "Sundarisal",
+            "ward_id": 302471
+        },
+        {
+            "ward_no": 302500,
+            "ward_name": "Tahura",
+            "ward_id": 302500
+        }
+    ]
+}

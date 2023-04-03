@@ -1,0 +1,364 @@
+{
+    "name": "Pakabetbari",
+    "lsg_code": 2498,
+    "district": "Barpeta",
+    "state": "Assam",
+    "no_of_wards": 71,
+    "wards": [
+        {
+            "ward_no": 905146,
+            "ward_name": "10 No. Block",
+            "ward_id": 905146
+        },
+        {
+            "ward_no": 905147,
+            "ward_name": "11 No. Block",
+            "ward_id": 905147
+        },
+        {
+            "ward_no": 905144,
+            "ward_name": "5 No Block",
+            "ward_id": 905144
+        },
+        {
+            "ward_no": 905145,
+            "ward_name": "6 No. Block",
+            "ward_id": 905145
+        },
+        {
+            "ward_no": 905142,
+            "ward_name": "7 No Block",
+            "ward_id": 905142
+        },
+        {
+            "ward_no": 905143,
+            "ward_name": "8 No Block",
+            "ward_id": 905143
+        },
+        {
+            "ward_no": 283045,
+            "ward_name": "Ata",
+            "ward_id": 283045
+        },
+        {
+            "ward_no": 283054,
+            "ward_name": "Balarbhitha",
+            "ward_id": 283054
+        },
+        {
+            "ward_no": 283041,
+            "ward_name": "Bamun Bari",
+            "ward_id": 283041
+        },
+        {
+            "ward_no": 283246,
+            "ward_name": "Bamundi",
+            "ward_id": 283246
+        },
+        {
+            "ward_no": 283260,
+            "ward_name": "Bamun Paka (Bamen Paka)",
+            "ward_id": 283260
+        },
+        {
+            "ward_no": 283064,
+            "ward_name": "Banti Pur",
+            "ward_id": 283064
+        },
+        {
+            "ward_no": 283053,
+            "ward_name": "Barbala",
+            "ward_id": 283053
+        },
+        {
+            "ward_no": 283063,
+            "ward_name": "Bariar Pathar",
+            "ward_id": 283063
+        },
+        {
+            "ward_no": 283052,
+            "ward_name": "Betbari Gaon",
+            "ward_id": 283052
+        },
+        {
+            "ward_no": 283051,
+            "ward_name": "Betbari Pathar",
+            "ward_id": 283051
+        },
+        {
+            "ward_no": 283046,
+            "ward_name": "Bhakuamari",
+            "ward_id": 283046
+        },
+        {
+            "ward_no": 283058,
+            "ward_name": "Bhalukabari Gaon",
+            "ward_id": 283058
+        },
+        {
+            "ward_no": 283057,
+            "ward_name": "Bhalukabari Pathar",
+            "ward_id": 283057
+        },
+        {
+            "ward_no": 283235,
+            "ward_name": "Bhera Gaon",
+            "ward_id": 283235
+        },
+        {
+            "ward_no": 283048,
+            "ward_name": "Bunbahar (Bonbaha)",
+            "ward_id": 283048
+        },
+        {
+            "ward_no": 283061,
+            "ward_name": "Chakir Bhitha",
+            "ward_id": 283061
+        },
+        {
+            "ward_no": 283243,
+            "ward_name": "Era Gaon",
+            "ward_id": 283243
+        },
+        {
+            "ward_no": 283244,
+            "ward_name": "Era Kachari Para",
+            "ward_id": 283244
+        },
+        {
+            "ward_no": 283245,
+            "ward_name": "Erar Tari (Ara Tari)",
+            "ward_id": 283245
+        },
+        {
+            "ward_no": 283043,
+            "ward_name": "Fulor Guri",
+            "ward_id": 283043
+        },
+        {
+            "ward_no": 283230,
+            "ward_name": "Gumir Pathar (Gunir Pathar)",
+            "ward_id": 283230
+        },
+        {
+            "ward_no": 283240,
+            "ward_name": "Helacha",
+            "ward_id": 283240
+        },
+        {
+            "ward_no": 283259,
+            "ward_name": "Jabri Kuchi",
+            "ward_id": 283259
+        },
+        {
+            "ward_no": 283238,
+            "ward_name": "Jalkara",
+            "ward_id": 283238
+        },
+        {
+            "ward_no": 283055,
+            "ward_name": "Jarabari",
+            "ward_id": 283055
+        },
+        {
+            "ward_no": 283037,
+            "ward_name": "Kaljar",
+            "ward_id": 283037
+        },
+        {
+            "ward_no": 283050,
+            "ward_name": "Kamalpur",
+            "ward_id": 283050
+        },
+        {
+            "ward_no": 283056,
+            "ward_name": "Kamalpur Pam",
+            "ward_id": 283056
+        },
+        {
+            "ward_no": 283231,
+            "ward_name": "Kapahar Tari",
+            "ward_id": 283231
+        },
+        {
+            "ward_no": 283040,
+            "ward_name": "Kathalor Tari",
+            "ward_id": 283040
+        },
+        {
+            "ward_no": 283224,
+            "ward_name": "Kawaimarikaragari Reserve",
+            "ward_id": 283224
+        },
+        {
+            "ward_no": 283226,
+            "ward_name": "Kayakuchi Gaon",
+            "ward_id": 283226
+        },
+        {
+            "ward_no": 283223,
+            "ward_name": "Kayakuchi Pam",
+            "ward_id": 283223
+        },
+        {
+            "ward_no": 283227,
+            "ward_name": "Kayakuchi Pathar",
+            "ward_id": 283227
+        },
+        {
+            "ward_no": 283067,
+            "ward_name": "Keot Para",
+            "ward_id": 283067
+        },
+        {
+            "ward_no": 283060,
+            "ward_name": "Khablar Bhitha",
+            "ward_id": 283060
+        },
+        {
+            "ward_no": 283068,
+            "ward_name": "Khandarkur",
+            "ward_id": 283068
+        },
+        {
+            "ward_no": 283039,
+            "ward_name": "Khandar Par",
+            "ward_id": 283039
+        },
+        {
+            "ward_no": 283038,
+            "ward_name": "Kujarpith",
+            "ward_id": 283038
+        },
+        {
+            "ward_no": 283047,
+            "ward_name": "Kuriha",
+            "ward_id": 283047
+        },
+        {
+            "ward_no": 283248,
+            "ward_name": "Kurihar Pam",
+            "ward_id": 283248
+        },
+        {
+            "ward_no": 283062,
+            "ward_name": "Maricha",
+            "ward_id": 283062
+        },
+        {
+            "ward_no": 283233,
+            "ward_name": "Maricha Pathar",
+            "ward_id": 283233
+        },
+        {
+            "ward_no": 283049,
+            "ward_name": "Marolor Tari",
+            "ward_id": 283049
+        },
+        {
+            "ward_no": 283225,
+            "ward_name": "Nali Gaon",
+            "ward_id": 283225
+        },
+        {
+            "ward_no": 283228,
+            "ward_name": "Nalir Pam (Nabir Pam)",
+            "ward_id": 283228
+        },
+        {
+            "ward_no": 283241,
+            "ward_name": "Nalir Pathar",
+            "ward_id": 283241
+        },
+        {
+            "ward_no": 283262,
+            "ward_name": "Na-Satra",
+            "ward_id": 283262
+        },
+        {
+            "ward_no": 283247,
+            "ward_name": "Newlar Bhitha",
+            "ward_id": 283247
+        },
+        {
+            "ward_no": 283066,
+            "ward_name": "Pakabetbari Gaon",
+            "ward_id": 283066
+        },
+        {
+            "ward_no": 283065,
+            "ward_name": "Pakabetbaripam N.C.",
+            "ward_id": 283065
+        },
+        {
+            "ward_no": 283069,
+            "ward_name": "Paka Betbari Pathar",
+            "ward_id": 283069
+        },
+        {
+            "ward_no": 283263,
+            "ward_name": "Pakadalani",
+            "ward_id": 283263
+        },
+        {
+            "ward_no": 283234,
+            "ward_name": "Panimaricha Gaon(Punimaricha Gaon)",
+            "ward_id": 283234
+        },
+        {
+            "ward_no": 283232,
+            "ward_name": "Panimaricha Pathar",
+            "ward_id": 283232
+        },
+        {
+            "ward_no": 283261,
+            "ward_name": "Phul Bari",
+            "ward_id": 283261
+        },
+        {
+            "ward_no": 283242,
+            "ward_name": "Pithadi Gaon",
+            "ward_id": 283242
+        },
+        {
+            "ward_no": 283239,
+            "ward_name": "Pithadi Pam",
+            "ward_id": 283239
+        },
+        {
+            "ward_no": 283059,
+            "ward_name": "Putlar Tari",
+            "ward_id": 283059
+        },
+        {
+            "ward_no": 283042,
+            "ward_name": "Rangialor Tari",
+            "ward_id": 283042
+        },
+        {
+            "ward_no": 283258,
+            "ward_name": "Satra Paka",
+            "ward_id": 283258
+        },
+        {
+            "ward_no": 283044,
+            "ward_name": "Suagpur",
+            "ward_id": 283044
+        },
+        {
+            "ward_no": 283229,
+            "ward_name": "Teleria",
+            "ward_id": 283229
+        },
+        {
+            "ward_no": 283237,
+            "ward_name": "Theka Gaon (Thekar Gaon)",
+            "ward_id": 283237
+        },
+        {
+            "ward_no": 283236,
+            "ward_name": "Thekar Pathar",
+            "ward_id": 283236
+        }
+    ]
+}

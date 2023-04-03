@@ -1,0 +1,114 @@
+{
+    "name": "Kapili",
+    "lsg_code": 2652,
+    "district": "Marigaon",
+    "state": "Assam",
+    "no_of_wards": 21,
+    "wards": [
+        {
+            "ward_no": 284035,
+            "ward_name": "Baramara Pathar (Barama Pathar)",
+            "ward_id": 284035
+        },
+        {
+            "ward_no": 284040,
+            "ward_name": "Bar Bhagia",
+            "ward_id": 284040
+        },
+        {
+            "ward_no": 284031,
+            "ward_name": "Barsaka Baha",
+            "ward_id": 284031
+        },
+        {
+            "ward_no": 284042,
+            "ward_name": "Bhumuraguri",
+            "ward_id": 284042
+        },
+        {
+            "ward_no": 284025,
+            "ward_name": "Garmari",
+            "ward_id": 284025
+        },
+        {
+            "ward_no": 284032,
+            "ward_name": "Ghurabak Pathar",
+            "ward_id": 284032
+        },
+        {
+            "ward_no": 284037,
+            "ward_name": "Jaluguti",
+            "ward_id": 284037
+        },
+        {
+            "ward_no": 284041,
+            "ward_name": "Kahibari",
+            "ward_id": 284041
+        },
+        {
+            "ward_no": 284027,
+            "ward_name": "Kalmoubari",
+            "ward_id": 284027
+        },
+        {
+            "ward_no": 284039,
+            "ward_name": "Kashadhara Sat Gaon (Kashadhara)",
+            "ward_id": 284039
+        },
+        {
+            "ward_no": 283941,
+            "ward_name": "Losonabari",
+            "ward_id": 283941
+        },
+        {
+            "ward_no": 284036,
+            "ward_name": "Majaorbori",
+            "ward_id": 284036
+        },
+        {
+            "ward_no": 284043,
+            "ward_name": "Majgaon",
+            "ward_id": 284043
+        },
+        {
+            "ward_no": 284029,
+            "ward_name": "Mikirgaon",
+            "ward_id": 284029
+        },
+        {
+            "ward_no": 284033,
+            "ward_name": "Niz-Charai Bahi (Niz-Sarai Bahi)",
+            "ward_id": 284033
+        },
+        {
+            "ward_no": 284044,
+            "ward_name": "Niz-Mikirgaon",
+            "ward_id": 284044
+        },
+        {
+            "ward_no": 284030,
+            "ward_name": "Patua Kata",
+            "ward_id": 284030
+        },
+        {
+            "ward_no": 284034,
+            "ward_name": "Rahdhala",
+            "ward_id": 284034
+        },
+        {
+            "ward_no": 284038,
+            "ward_name": "Takuna Bori",
+            "ward_id": 284038
+        },
+        {
+            "ward_no": 284028,
+            "ward_name": "Tarajan",
+            "ward_id": 284028
+        },
+        {
+            "ward_no": 284026,
+            "ward_name": "Thengkhali",
+            "ward_id": 284026
+        }
+    ]
+}

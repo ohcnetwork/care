@@ -1,0 +1,259 @@
+{
+    "name": "Katlicherra",
+    "lsg_code": 2588,
+    "district": "Hailakandi",
+    "state": "Assam",
+    "no_of_wards": 50,
+    "wards": [
+        {
+            "ward_no": 301138,
+            "ward_name": "Ahyalapur N.C.",
+            "ward_id": 301138
+        },
+        {
+            "ward_no": 301185,
+            "ward_name": "Alaicherra Pt Vi",
+            "ward_id": 301185
+        },
+        {
+            "ward_no": 301146,
+            "ward_name": "Alexanderpur Grant",
+            "ward_id": 301146
+        },
+        {
+            "ward_no": 301151,
+            "ward_name": "Apin Grant (Lata Kandi Grant)",
+            "ward_id": 301151
+        },
+        {
+            "ward_no": 301152,
+            "ward_name": "Apin Pt I",
+            "ward_id": 301152
+        },
+        {
+            "ward_no": 301153,
+            "ward_name": "Apin Pt Ii",
+            "ward_id": 301153
+        },
+        {
+            "ward_no": 301145,
+            "ward_name": "Araynapur",
+            "ward_id": 301145
+        },
+        {
+            "ward_no": 301139,
+            "ward_name": "Bhagabanpur",
+            "ward_id": 301139
+        },
+        {
+            "ward_no": 301141,
+            "ward_name": "Bipincherra",
+            "ward_id": 301141
+        },
+        {
+            "ward_no": 301136,
+            "ward_name": "Dhancherra N.C.",
+            "ward_id": 301136
+        },
+        {
+            "ward_no": 301166,
+            "ward_name": "Dholai Molai Pt I",
+            "ward_id": 301166
+        },
+        {
+            "ward_no": 301168,
+            "ward_name": "Dholai Molai Pt Ii",
+            "ward_id": 301168
+        },
+        {
+            "ward_no": 301169,
+            "ward_name": "Dholai Molai Pt Iv",
+            "ward_id": 301169
+        },
+        {
+            "ward_no": 301162,
+            "ward_name": "Dholai Molai Pt Ix",
+            "ward_id": 301162
+        },
+        {
+            "ward_no": 301167,
+            "ward_name": "Dholai Molai Pt V",
+            "ward_id": 301167
+        },
+        {
+            "ward_no": 301164,
+            "ward_name": "Dholai Molai Pt Vi",
+            "ward_id": 301164
+        },
+        {
+            "ward_no": 301149,
+            "ward_name": "Digar Apin",
+            "ward_id": 301149
+        },
+        {
+            "ward_no": 301132,
+            "ward_name": "Dinanathpur Pt I",
+            "ward_id": 301132
+        },
+        {
+            "ward_no": 301131,
+            "ward_name": "Dinanathpur Pt Ii",
+            "ward_id": 301131
+        },
+        {
+            "ward_no": 907761,
+            "ward_name": "Durbintilla",
+            "ward_id": 907761
+        },
+        {
+            "ward_no": 907762,
+            "ward_name": "Garod Punji",
+            "ward_id": 907762
+        },
+        {
+            "ward_no": 301198,
+            "ward_name": "Gendacherra",
+            "ward_id": 301198
+        },
+        {
+            "ward_no": 301143,
+            "ward_name": "Harishnagar Pt I",
+            "ward_id": 301143
+        },
+        {
+            "ward_no": 301142,
+            "ward_name": "Harishnagar Pt Ii",
+            "ward_id": 301142
+        },
+        {
+            "ward_no": 301140,
+            "ward_name": "Harishnagar Pt Iii",
+            "ward_id": 301140
+        },
+        {
+            "ward_no": 907763,
+            "ward_name": "Kalidas Punji",
+            "ward_id": 907763
+        },
+        {
+            "ward_no": 301133,
+            "ward_name": "Kaliganj N.C.",
+            "ward_id": 301133
+        },
+        {
+            "ward_no": 301144,
+            "ward_name": "Katlicherra Grant",
+            "ward_id": 301144
+        },
+        {
+            "ward_no": 301184,
+            "ward_name": "Lochanpur",
+            "ward_id": 301184
+        },
+        {
+            "ward_no": 301163,
+            "ward_name": "Makengipur",
+            "ward_id": 301163
+        },
+        {
+            "ward_no": 301130,
+            "ward_name": "Mulapur N.C.",
+            "ward_id": 301130
+        },
+        {
+            "ward_no": 301134,
+            "ward_name": "Paglacherra N.C.",
+            "ward_id": 301134
+        },
+        {
+            "ward_no": 301180,
+            "ward_name": "Pratap Nagar",
+            "ward_id": 301180
+        },
+        {
+            "ward_no": 301137,
+            "ward_name": "Ramsantipur",
+            "ward_id": 301137
+        },
+        {
+            "ward_no": 301147,
+            "ward_name": "Rangabak Pt I",
+            "ward_id": 301147
+        },
+        {
+            "ward_no": 301148,
+            "ward_name": "Rangabak Pt Ii",
+            "ward_id": 301148
+        },
+        {
+            "ward_no": 301154,
+            "ward_name": "Rongpur Pt I",
+            "ward_id": 301154
+        },
+        {
+            "ward_no": 301155,
+            "ward_name": "Rongpur Pt Ii",
+            "ward_id": 301155
+        },
+        {
+            "ward_no": 301150,
+            "ward_name": "Rongpur Pt Iii",
+            "ward_id": 301150
+        },
+        {
+            "ward_no": 301165,
+            "ward_name": "Rongpur Pt Iv",
+            "ward_id": 301165
+        },
+        {
+            "ward_no": 301156,
+            "ward_name": "Rongpur Pt Vii",
+            "ward_id": 301156
+        },
+        {
+            "ward_no": 301157,
+            "ward_name": "Rongpur Pt Viii",
+            "ward_id": 301157
+        },
+        {
+            "ward_no": 907758,
+            "ward_name": "Roopacherra R.A",
+            "ward_id": 907758
+        },
+        {
+            "ward_no": 301161,
+            "ward_name": "Rupacherra Punjee",
+            "ward_id": 301161
+        },
+        {
+            "ward_no": 301160,
+            "ward_name": "Rupacherra Tea Garden",
+            "ward_id": 301160
+        },
+        {
+            "ward_no": 301159,
+            "ward_name": "Sahabad Pt I",
+            "ward_id": 301159
+        },
+        {
+            "ward_no": 301158,
+            "ward_name": "Sahabad Pt Ii",
+            "ward_id": 301158
+        },
+        {
+            "ward_no": 907759,
+            "ward_name": "Sonacherra Bagan",
+            "ward_id": 907759
+        },
+        {
+            "ward_no": 907760,
+            "ward_name": "Sonacherra Basti",
+            "ward_id": 907760
+        },
+        {
+            "ward_no": 301135,
+            "ward_name": "Telecherra N.C.",
+            "ward_id": 301135
+        }
+    ]
+}

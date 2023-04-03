@@ -1,0 +1,244 @@
+{
+    "name": "Laokhowa",
+    "lsg_code": 2668,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 47,
+    "wards": [
+        {
+            "ward_no": 284466,
+            "ward_name": "Barunguri",
+            "ward_id": 284466
+        },
+        {
+            "ward_no": 284457,
+            "ward_name": "Bhurbandha Bazar",
+            "ward_id": 284457
+        },
+        {
+            "ward_no": 284455,
+            "ward_name": "Bhurbandha No.1",
+            "ward_id": 284455
+        },
+        {
+            "ward_no": 284458,
+            "ward_name": "Bhurbandha No.2",
+            "ward_id": 284458
+        },
+        {
+            "ward_no": 284453,
+            "ward_name": "Bhurbandha No.3",
+            "ward_id": 284453
+        },
+        {
+            "ward_no": 284456,
+            "ward_name": "Bhurbandha No.4",
+            "ward_id": 284456
+        },
+        {
+            "ward_no": 284301,
+            "ward_name": "Bogabill",
+            "ward_id": 284301
+        },
+        {
+            "ward_no": 284454,
+            "ward_name": "Bogamukh No.1",
+            "ward_id": 284454
+        },
+        {
+            "ward_no": 284452,
+            "ward_name": "Bogamukh No.2",
+            "ward_id": 284452
+        },
+        {
+            "ward_no": 284451,
+            "ward_name": "Bogamukh No.3",
+            "ward_id": 284451
+        },
+        {
+            "ward_no": 284450,
+            "ward_name": "Bogamukh No.4",
+            "ward_id": 284450
+        },
+        {
+            "ward_no": 284449,
+            "ward_name": "Bogamukh No.5",
+            "ward_id": 284449
+        },
+        {
+            "ward_no": 284448,
+            "ward_name": "Bogamukh No.6",
+            "ward_id": 284448
+        },
+        {
+            "ward_no": 284447,
+            "ward_name": "Bogamukh No.7",
+            "ward_id": 284447
+        },
+        {
+            "ward_no": 284488,
+            "ward_name": "Bongaon F.V.",
+            "ward_id": 284488
+        },
+        {
+            "ward_no": 284460,
+            "ward_name": "Dakhin Belguri",
+            "ward_id": 284460
+        },
+        {
+            "ward_no": 284468,
+            "ward_name": "Dakhin Bhomoraguri",
+            "ward_id": 284468
+        },
+        {
+            "ward_no": 284487,
+            "ward_name": "Dakhin Potakolong",
+            "ward_id": 284487
+        },
+        {
+            "ward_no": 284465,
+            "ward_name": "Haribhanga",
+            "ward_id": 284465
+        },
+        {
+            "ward_no": 284480,
+            "ward_name": "Kacha Khaity",
+            "ward_id": 284480
+        },
+        {
+            "ward_no": 284299,
+            "ward_name": "Kadamguri",
+            "ward_id": 284299
+        },
+        {
+            "ward_no": 284475,
+            "ward_name": "Karoiguir",
+            "ward_id": 284475
+        },
+        {
+            "ward_no": 284484,
+            "ward_name": "Kathpara",
+            "ward_id": 284484
+        },
+        {
+            "ward_no": 284298,
+            "ward_name": "Kawaimari",
+            "ward_id": 284298
+        },
+        {
+            "ward_no": 284467,
+            "ward_name": "Lailuri",
+            "ward_id": 284467
+        },
+        {
+            "ward_no": 284486,
+            "ward_name": "Latani Chapari",
+            "ward_id": 284486
+        },
+        {
+            "ward_no": 284482,
+            "ward_name": "Magurmati",
+            "ward_id": 284482
+        },
+        {
+            "ward_no": 284464,
+            "ward_name": "Mahabar Ali",
+            "ward_id": 284464
+        },
+        {
+            "ward_no": 284483,
+            "ward_name": "Mori Puthikhaity",
+            "ward_id": 284483
+        },
+        {
+            "ward_no": 284459,
+            "ward_name": "Niz Lawkhowa",
+            "ward_id": 284459
+        },
+        {
+            "ward_no": 284472,
+            "ward_name": "No.1 Bhatiakhali",
+            "ward_id": 284472
+        },
+        {
+            "ward_no": 284485,
+            "ward_name": "No.2 Bhatiakhali",
+            "ward_id": 284485
+        },
+        {
+            "ward_no": 284474,
+            "ward_name": "Pachim Larimukh",
+            "ward_id": 284474
+        },
+        {
+            "ward_no": 284477,
+            "ward_name": "Pachim Salpara",
+            "ward_id": 284477
+        },
+        {
+            "ward_no": 284478,
+            "ward_name": "Pachim Singimari",
+            "ward_id": 284478
+        },
+        {
+            "ward_no": 284469,
+            "ward_name": "Pachim Sualani",
+            "ward_id": 284469
+        },
+        {
+            "ward_no": 284473,
+            "ward_name": "Pub Larimukh",
+            "ward_id": 284473
+        },
+        {
+            "ward_no": 284476,
+            "ward_name": "Pub Salpara",
+            "ward_id": 284476
+        },
+        {
+            "ward_no": 284479,
+            "ward_name": "Pub Singimari",
+            "ward_id": 284479
+        },
+        {
+            "ward_no": 284470,
+            "ward_name": "Pub-Sualani",
+            "ward_id": 284470
+        },
+        {
+            "ward_no": 284297,
+            "ward_name": "Puthikhaity",
+            "ward_id": 284297
+        },
+        {
+            "ward_no": 284489,
+            "ward_name": "Salpara F.V.",
+            "ward_id": 284489
+        },
+        {
+            "ward_no": 284481,
+            "ward_name": "Solmari",
+            "ward_id": 284481
+        },
+        {
+            "ward_no": 284462,
+            "ward_name": "Tubukijarani",
+            "ward_id": 284462
+        },
+        {
+            "ward_no": 284461,
+            "ward_name": "Uttar Belguri",
+            "ward_id": 284461
+        },
+        {
+            "ward_no": 284463,
+            "ward_name": "Uttar Bhomoraguri",
+            "ward_id": 284463
+        },
+        {
+            "ward_no": 284471,
+            "ward_name": "Uttar Potakalang",
+            "ward_id": 284471
+        }
+    ]
+}

@@ -1,0 +1,204 @@
+{
+    "name": "Banskandi",
+    "lsg_code": 2508,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 39,
+    "wards": [
+        {
+            "ward_no": 299720,
+            "ward_name": "Algapur Pt I",
+            "ward_id": 299720
+        },
+        {
+            "ward_no": 299727,
+            "ward_name": "Algapur Pt Ii",
+            "ward_id": 299727
+        },
+        {
+            "ward_no": 299849,
+            "ward_name": "Alipur Cha Bagicha",
+            "ward_id": 299849
+        },
+        {
+            "ward_no": 299851,
+            "ward_name": "Alipur Pt I",
+            "ward_id": 299851
+        },
+        {
+            "ward_no": 299853,
+            "ward_name": "Alipur Pt Ii",
+            "ward_id": 299853
+        },
+        {
+            "ward_no": 299856,
+            "ward_name": "Badripar",
+            "ward_id": 299856
+        },
+        {
+            "ward_no": 299718,
+            "ward_name": "Badripar Pt I",
+            "ward_id": 299718
+        },
+        {
+            "ward_no": 299719,
+            "ward_name": "Badripar Pt Ii",
+            "ward_id": 299719
+        },
+        {
+            "ward_no": 299717,
+            "ward_name": "Badripar Pt Iii",
+            "ward_id": 299717
+        },
+        {
+            "ward_no": 299716,
+            "ward_name": "Badripar Pt Iv",
+            "ward_id": 299716
+        },
+        {
+            "ward_no": 905594,
+            "ward_name": "Badripar Pt-V",
+            "ward_id": 905594
+        },
+        {
+            "ward_no": 299854,
+            "ward_name": "Chandrapur Pt Ii",
+            "ward_id": 299854
+        },
+        {
+            "ward_no": 299860,
+            "ward_name": "Chandrapur Pt Ii",
+            "ward_id": 299860
+        },
+        {
+            "ward_no": 299858,
+            "ward_name": "Chandrapur Pt Iii",
+            "ward_id": 299858
+        },
+        {
+            "ward_no": 299715,
+            "ward_name": "Dadripar Pt V (Badrapar V)",
+            "ward_id": 299715
+        },
+        {
+            "ward_no": 299602,
+            "ward_name": "Dulalgram",
+            "ward_id": 299602
+        },
+        {
+            "ward_no": 299846,
+            "ward_name": "Dulalgram Grant",
+            "ward_id": 299846
+        },
+        {
+            "ward_no": 299729,
+            "ward_name": "Dungripar Pt I",
+            "ward_id": 299729
+        },
+        {
+            "ward_no": 299730,
+            "ward_name": "Dungripar Pt Ii",
+            "ward_id": 299730
+        },
+        {
+            "ward_no": 299721,
+            "ward_name": "Durgapur",
+            "ward_id": 299721
+        },
+        {
+            "ward_no": 299714,
+            "ward_name": "Gangapur",
+            "ward_id": 299714
+        },
+        {
+            "ward_no": 299728,
+            "ward_name": "Gobindapur Pt I",
+            "ward_id": 299728
+        },
+        {
+            "ward_no": 299726,
+            "ward_name": "Gobindapur Pt Ii",
+            "ward_id": 299726
+        },
+        {
+            "ward_no": 299722,
+            "ward_name": "Gobindapur Pt Iii",
+            "ward_id": 299722
+        },
+        {
+            "ward_no": 299852,
+            "ward_name": "Monipur Kitta Dakshin Sonapur",
+            "ward_id": 299852
+        },
+        {
+            "ward_no": 299848,
+            "ward_name": "Monipur Kitta Uttar Sonapur",
+            "ward_id": 299848
+        },
+        {
+            "ward_no": 299861,
+            "ward_name": "Monipur Pt I",
+            "ward_id": 299861
+        },
+        {
+            "ward_no": 299862,
+            "ward_name": "Monipur Pt Ii",
+            "ward_id": 299862
+        },
+        {
+            "ward_no": 905591,
+            "ward_name": "Niz Banskandi Pt-I",
+            "ward_id": 905591
+        },
+        {
+            "ward_no": 299857,
+            "ward_name": "Niz-Banskandi Pt I",
+            "ward_id": 299857
+        },
+        {
+            "ward_no": 299723,
+            "ward_name": "Niz-Banskandi Pt Ii",
+            "ward_id": 299723
+        },
+        {
+            "ward_no": 299724,
+            "ward_name": "Niz-Banskandi Pt Iii",
+            "ward_id": 299724
+        },
+        {
+            "ward_no": 905592,
+            "ward_name": "Niz Banskandi Pt-Iv",
+            "ward_id": 905592
+        },
+        {
+            "ward_no": 299855,
+            "ward_name": "Niz-Banskandi Pt Iv",
+            "ward_id": 299855
+        },
+        {
+            "ward_no": 299847,
+            "ward_name": "Palerbond Grant(P.B.Grant T.E)",
+            "ward_id": 299847
+        },
+        {
+            "ward_no": 299725,
+            "ward_name": "Ratanpur",
+            "ward_id": 299725
+        },
+        {
+            "ward_no": 299850,
+            "ward_name": "Tarapur Grant",
+            "ward_id": 299850
+        },
+        {
+            "ward_no": 905604,
+            "ward_name": "Tarapur Grant",
+            "ward_id": 905604
+        },
+        {
+            "ward_no": 299863,
+            "ward_name": "Uzan Tarapur",
+            "ward_id": 299863
+        }
+    ]
+}

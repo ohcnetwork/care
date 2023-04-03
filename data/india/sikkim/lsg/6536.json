@@ -1,0 +1,34 @@
+{
+    "name": "Rhenock",
+    "lsg_code": 6536,
+    "district": "Pakyong",
+    "state": "Sikkim",
+    "no_of_wards": 5,
+    "wards": [
+        {
+            "ward_no": 261370,
+            "ward_name": "Mulukey",
+            "ward_id": 261370
+        },
+        {
+            "ward_no": 261376,
+            "ward_name": "Rhenock",
+            "ward_id": 261376
+        },
+        {
+            "ward_no": 905115,
+            "ward_name": "Rhenock Bazar",
+            "ward_id": 905115
+        },
+        {
+            "ward_no": 261369,
+            "ward_name": "Sudunglakha",
+            "ward_id": 261369
+        },
+        {
+            "ward_no": 261371,
+            "ward_name": "Tarpin",
+            "ward_id": 261371
+        }
+    ]
+}

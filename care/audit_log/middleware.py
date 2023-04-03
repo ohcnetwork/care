@@ -30,7 +30,7 @@ class AuditLogMiddleware:
 
     @staticmethod
     def is_request():
-        return hasattr(AuditLogMiddleware.thread, "__dal__")
+        return bool(getattr(AuditLogMiddleware.thread, "__dal__", None))
 
     @staticmethod
     def save(request, response=None, exception=None):
@@ -52,11 +52,15 @@ class AuditLogMiddleware:
         dal_request_id = getattr(request, "dal_request_id", None)
         if not dal_request_id:
             dal_request_id = (
-                f"{request.method.lower()}::{md5(request.path.lower().encode('utf-8')).hexdigest()}::{uuid.uuid4().hex}"
+                f"{request.method.lower()}::"
+                f"{md5(request.path.lower().encode('utf-8')).hexdigest()}::"
+                f"{uuid.uuid4().hex}"
             )
             setattr(request, "dal_request_id", dal_request_id)
 
-        AuditLogMiddleware.thread.__dal__ = RequestInformation(dal_request_id, request, response, exception)
+        AuditLogMiddleware.thread.__dal__ = RequestInformation(
+            dal_request_id, request, response, exception
+        )
 
     @staticmethod
     def get_current_request_id():
@@ -77,21 +81,23 @@ class AuditLogMiddleware:
         return environ.request
 
     def __call__(self, request: HttpRequest):
-        if request.method.lower() != "get":
-            self.save(request)
-            response: HttpResponse = self.get_response(request)
-            self.save(request, response)
-
-            current_user = request.user
-            if current_user:
-                current_user_str = f"{current_user.id}|{current_user}"
-            else:
-                current_user_str = None
-
-            logger.info(f"{request.method} {request.path} {response.status_code} User:[{current_user_str}]")
-            return response
-        else:
+        if request.method.lower() == "get":
             return self.get_response(request)
+
+        self.save(request)
+        response: HttpResponse = self.get_response(request)
+        self.save(request, response)
+
+        if request.user:
+            current_user_str = f"{request.user.id}|{request.user}"
+        else:
+            current_user_str = None
+
+        logger.info(
+            f"{request.method} {request.path} {response.status_code} "
+            f"User:[{current_user_str}]"
+        )
+        return response
 
     def process_exception(self, request, exception):
         pass

@@ -15,6 +15,9 @@ Welcome to Care's documentation!
    working-components/configuration
    django-commands/configuration
    github-repo/configuration
+   others/configuration
+   glossary/configuration
+   middleware/configuration
 
 
 

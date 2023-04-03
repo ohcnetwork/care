@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
@@ -15,8 +17,13 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
-from care.users.api.serializers.user import UserCreateSerializer, UserListSerializer, UserSerializer
+from care.users.api.serializers.user import (
+    UserCreateSerializer,
+    UserListSerializer,
+    UserSerializer,
+)
 
 User = get_user_model()
 
@@ -42,13 +49,20 @@ class UserFilterSet(filters.FilterSet):
     first_name = filters.CharFilter(field_name="first_name", lookup_expr="icontains")
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
-    phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
-    alt_phone_number = filters.CharFilter(field_name="alt_phone_number", lookup_expr="icontains")
+    phone_number = filters.CharFilter(
+        field_name="phone_number", lookup_expr="icontains"
+    )
+    alt_phone_number = filters.CharFilter(
+        field_name="alt_phone_number", lookup_expr="icontains"
+    )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
 
     def get_user_type(
-        self, queryset, field_name, value,
+        self,
+        queryset,
+        field_name,
+        value,
     ):
         if value:
             if value in INVERSE_USER_TYPE:
@@ -72,7 +86,8 @@ class UserViewSet(
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
         .select_related("local_body", "district", "state")
-        .order_by(F("last_login").desc(nulls_last=True)).annotate(
+        .order_by(F("last_login").desc(nulls_last=True))
+        .annotate(
             created_by_user=F("created_by__username"),
         )
     )
@@ -82,7 +97,11 @@ class UserViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    filter_backends = (filters.DjangoFilterBackend, rest_framework_filters.OrderingFilter, drf_filters.SearchFilter)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+        drf_filters.SearchFilter,
+    )
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
@@ -115,7 +134,8 @@ class UserViewSet(
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
-            status=status.HTTP_200_OK, data=UserSerializer(request.user, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+            data=UserSerializer(request.user, context={"request": request}).data,
         )
 
     @action(detail=False, methods=["GET"])
@@ -139,16 +159,20 @@ class UserViewSet(
             pass
         elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
-                state=request.user.state, user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"], is_superuser=False,
+                state=request.user.state,
+                user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
+                is_superuser=False,
             )
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
                 district=request.user.district,
-                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
-            raise ValidationError({"permission": "Denied"})
+            return Response(
+                status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"}
+            )
         user = get_object_or_404(queryset.filter(username=username))
         user.is_active = False
         user.save(update_fields=["is_active"])
@@ -156,9 +180,12 @@ class UserViewSet(
 
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
-        password = request.data.pop("password", User.objects.make_random_password(length=8))
+        password = request.data.pop(
+            "password", User.objects.make_random_password(length=8)
+        )
         serializer = UserCreateSerializer(
-            data={**request.data, "password": password}, context={"created_by": request.user},
+            data={**request.data, "password": password},
+            context={"created_by": request.user},
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -176,7 +203,10 @@ class UserViewSet(
                 user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (facility and user.district == facility.district)
             )
-            or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+            or (
+                user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (facility and user.state == facility.state)
+            )
         )
 
     def has_user_type_permission_elevation(self, init_user, dest_user):
@@ -188,7 +218,9 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related("local_body", "district", "state", "ward")
+        facilities = Facility.objects.filter(users=user).select_related(
+            "local_body", "district", "state", "ward"
+        )
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
         return Response(facilities.data)
 
@@ -209,9 +241,49 @@ class UserViewSet(
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         if self.check_facility_user_exists(user, facility):
-            raise ValidationError({"facility": "User Already has permission to this facility"})
+            raise ValidationError(
+                {"facility": "User Already has permission to this facility"}
+            )
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(
+        method="delete",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=["facility"],
+            title="Facility",
+            properties={
+                "facility": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_UUID,
+                    title="Facility External ID",
+                )
+            },
+        ),
+        responses={
+            204: "Deleted Successfully",
+        },
+    )
+    @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
+    def clear_home_facility(self, request, *args, **kwargs):
+        user = self.get_object()
+        requesting_user = request.user
+
+        if not user.home_facility:
+            raise ValidationError({"home_facility": "No Home Facility Present"})
+        if (
+            requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or requesting_user.user_type in READ_ONLY_USER_TYPES
+        ):
+            raise ValidationError({"home_facility": "Insufficient Permissions"})
+
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        user.home_facility = None
+        user.save(update_fields=["home_facility"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def delete_facility(self, request, *args, **kwargs):
@@ -230,15 +302,29 @@ class UserViewSet(
         if not self.has_facility_permission(requesting_user, facility):
             raise ValidationError({"facility": "Facility Access not Present"})
         if not self.has_facility_permission(user, facility):
-            raise ValidationError({"facility": "Intended User Does not have permission to this facility"})
+            raise ValidationError(
+                {"facility": "Intended User Does not have permission to this facility"}
+            )
+        if user.home_facility == facility:
+            raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["PATCH", "GET"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=["PATCH", "GET"],
+        permission_classes=[IsAuthenticated],
+    )
     def pnconfig(self, request, *args, **kwargs):
         user = request.user
         if request.method == "GET":
-            return Response({"pf_endpoint": user.pf_endpoint, "pf_p256dh": user.pf_p256dh, "pf_auth": user.pf_auth})
+            return Response(
+                {
+                    "pf_endpoint": user.pf_endpoint,
+                    "pf_p256dh": user.pf_p256dh,
+                    "pf_auth": user.pf_auth,
+                }
+            )
         acceptable_fields = ["pf_endpoint", "pf_p256dh", "pf_auth"]
         for field in acceptable_fields:
             if field in request.data:
@@ -246,3 +332,11 @@ class UserViewSet(
         user.save()
         return Response(status=status.HTTP_200_OK)
 
+    @action(methods=["GET"], detail=True)
+    def check_availability(self, request, username):
+        """
+        Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
+        """
+        if User.check_username_exists(username):
+            return Response(status=status.HTTP_409_CONFLICT)
+        return Response(status=status.HTTP_200_OK)

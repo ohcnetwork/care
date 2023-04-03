@@ -5,13 +5,13 @@ argon2-cffi==19.2.0  # https://github.com/hynek/argon2_cffi
 whitenoise==6.0.0  # https://github.com/evansd/whitenoise
 redis==3.4.1 # https://github.com/andymccurdy/redis-py
 boto3==1.12.23 # For AWS interactions
+pycryptodome==3.16.0
+pycryptodomex==3.16.0
 # Django
 # ------------------------------------------------------------------------------
 django==2.2.11  # pyup: < 3.0  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth==0.41.0  # https://github.com/pennersr/django-allauth
-django-crispy-forms==1.9.0  # https://github.com/django-crispy-forms/django-crispy-forms
 django-redis==4.11.0  # https://github.com/niwinz/django-redis
 django-storages==1.9.1 # For Storing Static Files in AWS
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
@@ -56,7 +56,15 @@ django-hardcopy==0.1.4
 # ------------------------------------------------------------------------------
 pywebpush==1.11.0
 ## Override Requirements
+Authlib==1.0.1
 PyJWT==v1.7.1
 # Json Schema
 jsonschema==3.2.0
 typed-ast==1.5.0
+# In Memory Database
+# ------------------------------------------------------------------------------
+littletable==2.0.7
+# HCX
+fhir.resources==6.5.0
+jwcrypto==1.4.2
+requests==2.25.1

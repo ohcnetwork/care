@@ -1,0 +1,389 @@
+{
+    "name": "South Hailakandi",
+    "lsg_code": 2590,
+    "district": "Hailakandi",
+    "state": "Assam",
+    "no_of_wards": 76,
+    "wards": [
+        {
+            "ward_no": 301177,
+            "ward_name": "Alaicherra Pt I",
+            "ward_id": 301177
+        },
+        {
+            "ward_no": 301178,
+            "ward_name": "Alaicherra Pt Ii",
+            "ward_id": 301178
+        },
+        {
+            "ward_no": 301202,
+            "ward_name": "Alaicherra Pt Iii",
+            "ward_id": 301202
+        },
+        {
+            "ward_no": 301188,
+            "ward_name": "Alaicherra Pt Iv",
+            "ward_id": 301188
+        },
+        {
+            "ward_no": 301187,
+            "ward_name": "Alaicherra Pt V",
+            "ward_id": 301187
+        },
+        {
+            "ward_no": 301186,
+            "ward_name": "Alaicherra Pt Vii",
+            "ward_id": 301186
+        },
+        {
+            "ward_no": 301236,
+            "ward_name": "Bagcherra F.V.",
+            "ward_id": 301236
+        },
+        {
+            "ward_no": 301196,
+            "ward_name": "Bagmara",
+            "ward_id": 301196
+        },
+        {
+            "ward_no": 301197,
+            "ward_name": "Bangla Vasha",
+            "ward_id": 301197
+        },
+        {
+            "ward_no": 301229,
+            "ward_name": "Baruncherra F.V.",
+            "ward_id": 301229
+        },
+        {
+            "ward_no": 301190,
+            "ward_name": "Baruncherra Pt I",
+            "ward_id": 301190
+        },
+        {
+            "ward_no": 301173,
+            "ward_name": "Baruncherra Pt Ii",
+            "ward_id": 301173
+        },
+        {
+            "ward_no": 301234,
+            "ward_name": "Bathcherra F.V.",
+            "ward_id": 301234
+        },
+        {
+            "ward_no": 907771,
+            "ward_name": "Betcherra",
+            "ward_id": 907771
+        },
+        {
+            "ward_no": 301195,
+            "ward_name": "Bhai-Bonti",
+            "ward_id": 301195
+        },
+        {
+            "ward_no": 301213,
+            "ward_name": "Boldaboldi Pt I",
+            "ward_id": 301213
+        },
+        {
+            "ward_no": 301212,
+            "ward_name": "Boldaboldi Pt Ii",
+            "ward_id": 301212
+        },
+        {
+            "ward_no": 301211,
+            "ward_name": "Boldaboldi Pt Iii",
+            "ward_id": 301211
+        },
+        {
+            "ward_no": 301237,
+            "ward_name": "Damcherra F.V.",
+            "ward_id": 301237
+        },
+        {
+            "ward_no": 301199,
+            "ward_name": "Dariaghat Grant",
+            "ward_id": 301199
+        },
+        {
+            "ward_no": 301208,
+            "ward_name": "Dharapur N.C.",
+            "ward_id": 301208
+        },
+        {
+            "ward_no": 301175,
+            "ward_name": "Dholai Molai Pt Iii",
+            "ward_id": 301175
+        },
+        {
+            "ward_no": 301174,
+            "ward_name": "Dholai Molai Pt Viii",
+            "ward_id": 301174
+        },
+        {
+            "ward_no": 301176,
+            "ward_name": "Dholai Molai Pt Vii T.E.",
+            "ward_id": 301176
+        },
+        {
+            "ward_no": 301171,
+            "ward_name": "Dholai Molai Pt X",
+            "ward_id": 301171
+        },
+        {
+            "ward_no": 301170,
+            "ward_name": "Dholai Molai Pt Xi",
+            "ward_id": 301170
+        },
+        {
+            "ward_no": 301172,
+            "ward_name": "Dholai Molai Pt Xii",
+            "ward_id": 301172
+        },
+        {
+            "ward_no": 301183,
+            "ward_name": "Durgapur",
+            "ward_id": 301183
+        },
+        {
+            "ward_no": 301228,
+            "ward_name": "Duttapur",
+            "ward_id": 301228
+        },
+        {
+            "ward_no": 301238,
+            "ward_name": "Garmura F.V.",
+            "ward_id": 301238
+        },
+        {
+            "ward_no": 301192,
+            "ward_name": "Gollacherra",
+            "ward_id": 301192
+        },
+        {
+            "ward_no": 301235,
+            "ward_name": "Gutguti (Pakuwa) F.V.",
+            "ward_id": 301235
+        },
+        {
+            "ward_no": 301239,
+            "ward_name": "Jakabpur F.V.",
+            "ward_id": 301239
+        },
+        {
+            "ward_no": 301232,
+            "ward_name": "Jalnacherra F.V.",
+            "ward_id": 301232
+        },
+        {
+            "ward_no": 301227,
+            "ward_name": "Jalnacherra Grant",
+            "ward_id": 301227
+        },
+        {
+            "ward_no": 301217,
+            "ward_name": "Jamira Pt I",
+            "ward_id": 301217
+        },
+        {
+            "ward_no": 301224,
+            "ward_name": "Jamira Pt Ii",
+            "ward_id": 301224
+        },
+        {
+            "ward_no": 301225,
+            "ward_name": "Jamira Pt Iii",
+            "ward_id": 301225
+        },
+        {
+            "ward_no": 301226,
+            "ward_name": "Jamira Ptiv",
+            "ward_id": 301226
+        },
+        {
+            "ward_no": 301219,
+            "ward_name": "Jamira Pt V",
+            "ward_id": 301219
+        },
+        {
+            "ward_no": 301218,
+            "ward_name": "Jamira Pt Vi",
+            "ward_id": 301218
+        },
+        {
+            "ward_no": 301223,
+            "ward_name": "Jamira Pt Vii",
+            "ward_id": 301223
+        },
+        {
+            "ward_no": 301216,
+            "ward_name": "Janira Bagan Bosti",
+            "ward_id": 301216
+        },
+        {
+            "ward_no": 907770,
+            "ward_name": "Jugicherra",
+            "ward_id": 907770
+        },
+        {
+            "ward_no": 301193,
+            "ward_name": "Kachurthal",
+            "ward_id": 301193
+        },
+        {
+            "ward_no": 301210,
+            "ward_name": "Kalyanpur N.C.",
+            "ward_id": 301210
+        },
+        {
+            "ward_no": 301231,
+            "ward_name": "Kanchiwala F.V.",
+            "ward_id": 301231
+        },
+        {
+            "ward_no": 301204,
+            "ward_name": "Karichera",
+            "ward_id": 301204
+        },
+        {
+            "ward_no": 907772,
+            "ward_name": "Karicherra Punji",
+            "ward_id": 907772
+        },
+        {
+            "ward_no": 301220,
+            "ward_name": "Katanala N.C.",
+            "ward_id": 301220
+        },
+        {
+            "ward_no": 907764,
+            "ward_name": "Killarbak",
+            "ward_id": 907764
+        },
+        {
+            "ward_no": 301209,
+            "ward_name": "Krishnapur N.C.",
+            "ward_id": 301209
+        },
+        {
+            "ward_no": 301230,
+            "ward_name": "Kukicherra F.V.",
+            "ward_id": 301230
+        },
+        {
+            "ward_no": 301189,
+            "ward_name": "Kukicherra Grant",
+            "ward_id": 301189
+        },
+        {
+            "ward_no": 301181,
+            "ward_name": "Lalpani N.C.",
+            "ward_id": 301181
+        },
+        {
+            "ward_no": 301200,
+            "ward_name": "Madhabpur",
+            "ward_id": 301200
+        },
+        {
+            "ward_no": 301179,
+            "ward_name": "Maharpur",
+            "ward_id": 301179
+        },
+        {
+            "ward_no": 907766,
+            "ward_name": "Nagacherra",
+            "ward_id": 907766
+        },
+        {
+            "ward_no": 907767,
+            "ward_name": "Nagacherra Punji",
+            "ward_id": 907767
+        },
+        {
+            "ward_no": 301221,
+            "ward_name": "Nandagram N.C. Pt I",
+            "ward_id": 301221
+        },
+        {
+            "ward_no": 301222,
+            "ward_name": "Nandagram N.C. Pt Ii",
+            "ward_id": 301222
+        },
+        {
+            "ward_no": 301182,
+            "ward_name": "Nehal Chandpur",
+            "ward_id": 301182
+        },
+        {
+            "ward_no": 907769,
+            "ward_name": "Niskar Lalpani",
+            "ward_id": 907769
+        },
+        {
+            "ward_no": 301215,
+            "ward_name": "Palaicherra Pt I",
+            "ward_id": 301215
+        },
+        {
+            "ward_no": 301214,
+            "ward_name": "Palaicherra Pt Ii",
+            "ward_id": 301214
+        },
+        {
+            "ward_no": 301194,
+            "ward_name": "Panch Pirar Mukam",
+            "ward_id": 301194
+        },
+        {
+            "ward_no": 301191,
+            "ward_name": "Raifalmara",
+            "ward_id": 301191
+        },
+        {
+            "ward_no": 301240,
+            "ward_name": "Ramnathpur F.V.",
+            "ward_id": 301240
+        },
+        {
+            "ward_no": 301201,
+            "ward_name": "Rampur",
+            "ward_id": 301201
+        },
+        {
+            "ward_no": 301233,
+            "ward_name": "Sahabmara F.V.",
+            "ward_id": 301233
+        },
+        {
+            "ward_no": 301207,
+            "ward_name": "Santipur N.C.",
+            "ward_id": 301207
+        },
+        {
+            "ward_no": 301203,
+            "ward_name": "Shyampur",
+            "ward_id": 301203
+        },
+        {
+            "ward_no": 907768,
+            "ward_name": "Sibchar",
+            "ward_id": 907768
+        },
+        {
+            "ward_no": 301205,
+            "ward_name": "Sultani",
+            "ward_id": 301205
+        },
+        {
+            "ward_no": 301206,
+            "ward_name": "Sultanicherra T.E.",
+            "ward_id": 301206
+        },
+        {
+            "ward_no": 907765,
+            "ward_name": "Triganga",
+            "ward_id": 907765
+        }
+    ]
+}

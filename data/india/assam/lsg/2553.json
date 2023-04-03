@@ -1,0 +1,469 @@
+{
+    "name": "Debitola",
+    "lsg_code": 2553,
+    "district": "Dhubri",
+    "state": "Assam",
+    "no_of_wards": 92,
+    "wards": [
+        {
+            "ward_no": 280921,
+            "ward_name": "Alomganj Pt.I",
+            "ward_id": 280921
+        },
+        {
+            "ward_no": 280922,
+            "ward_name": "Alomganj Pt.Ii",
+            "ward_id": 280922
+        },
+        {
+            "ward_no": 280919,
+            "ward_name": "Alomganj Pt.Iv",
+            "ward_id": 280919
+        },
+        {
+            "ward_no": 280923,
+            "ward_name": "Alomganj Pt Ix",
+            "ward_id": 280923
+        },
+        {
+            "ward_no": 280917,
+            "ward_name": "Alomganj Pt.V",
+            "ward_id": 280917
+        },
+        {
+            "ward_no": 280920,
+            "ward_name": "Alomganj Pt.Vi",
+            "ward_id": 280920
+        },
+        {
+            "ward_no": 280916,
+            "ward_name": "Alomganj Pt. Vii",
+            "ward_id": 280916
+        },
+        {
+            "ward_no": 280915,
+            "ward_name": "Alomganj Pt. Viii",
+            "ward_id": 280915
+        },
+        {
+            "ward_no": 280938,
+            "ward_name": "Asharikandi",
+            "ward_id": 280938
+        },
+        {
+            "ward_no": 280941,
+            "ward_name": "Baghmara",
+            "ward_id": 280941
+        },
+        {
+            "ward_no": 280918,
+            "ward_name": "Bagmara",
+            "ward_id": 280918
+        },
+        {
+            "ward_no": 281041,
+            "ward_name": "Bagulamari Pt.I",
+            "ward_id": 281041
+        },
+        {
+            "ward_no": 281042,
+            "ward_name": "Bagulamari Pt.Ii",
+            "ward_id": 281042
+        },
+        {
+            "ward_no": 280934,
+            "ward_name": "Baraibari Pt.I",
+            "ward_id": 280934
+        },
+        {
+            "ward_no": 280936,
+            "ward_name": "Baraibari Pt.Ii",
+            "ward_id": 280936
+        },
+        {
+            "ward_no": 280932,
+            "ward_name": "Baraibari Pt.Iii",
+            "ward_id": 280932
+        },
+        {
+            "ward_no": 280931,
+            "ward_name": "Baraibari Pt.Iv",
+            "ward_id": 280931
+        },
+        {
+            "ward_no": 280933,
+            "ward_name": "Baraibari Pt.V",
+            "ward_id": 280933
+        },
+        {
+            "ward_no": 280898,
+            "ward_name": "Beguntali",
+            "ward_id": 280898
+        },
+        {
+            "ward_no": 280912,
+            "ward_name": "Bromhttar Shilarpar",
+            "ward_id": 280912
+        },
+        {
+            "ward_no": 280939,
+            "ward_name": "Dalsingalga Pt.I",
+            "ward_id": 280939
+        },
+        {
+            "ward_no": 280902,
+            "ward_name": "Dalsingalga Pt.Ii",
+            "ward_id": 280902
+        },
+        {
+            "ward_no": 280900,
+            "ward_name": "Dangirchar",
+            "ward_id": 280900
+        },
+        {
+            "ward_no": 280913,
+            "ward_name": "Darchuka Pt.I",
+            "ward_id": 280913
+        },
+        {
+            "ward_no": 280925,
+            "ward_name": "Debottar Raipur Pt.I",
+            "ward_id": 280925
+        },
+        {
+            "ward_no": 280926,
+            "ward_name": "Debottar Raipur Pt.Ii",
+            "ward_id": 280926
+        },
+        {
+            "ward_no": 280930,
+            "ward_name": "Debottar Raipur Pt.Iii",
+            "ward_id": 280930
+        },
+        {
+            "ward_no": 280924,
+            "ward_name": "Geramari-Iv",
+            "ward_id": 280924
+        },
+        {
+            "ward_no": 280908,
+            "ward_name": "Geramari Pt.I",
+            "ward_id": 280908
+        },
+        {
+            "ward_no": 280907,
+            "ward_name": "Geramari Pt.Ii",
+            "ward_id": 280907
+        },
+        {
+            "ward_no": 280905,
+            "ward_name": "Geramari Pt.Iii",
+            "ward_id": 280905
+        },
+        {
+            "ward_no": 280927,
+            "ward_name": "Geramari Pt.V",
+            "ward_id": 280927
+        },
+        {
+            "ward_no": 280899,
+            "ward_name": "Geramari Pt.Vi",
+            "ward_id": 280899
+        },
+        {
+            "ward_no": 280928,
+            "ward_name": "Ghagraalga Pt.I",
+            "ward_id": 280928
+        },
+        {
+            "ward_no": 280929,
+            "ward_name": "Ghagra Alga Pt.Ii",
+            "ward_id": 280929
+        },
+        {
+            "ward_no": 280940,
+            "ward_name": "Jhalar Alga Pt.I",
+            "ward_id": 280940
+        },
+        {
+            "ward_no": 280901,
+            "ward_name": "Jhalaralga Pt.Ii",
+            "ward_id": 280901
+        },
+        {
+            "ward_no": 280937,
+            "ward_name": "Lalmonir Alga",
+            "ward_id": 280937
+        },
+        {
+            "ward_no": 280903,
+            "ward_name": "Madaikhali",
+            "ward_id": 280903
+        },
+        {
+            "ward_no": 280904,
+            "ward_name": "Matibag",
+            "ward_id": 280904
+        },
+        {
+            "ward_no": 280906,
+            "ward_name": "Sajuarkuti",
+            "ward_id": 280906
+        },
+        {
+            "ward_no": 280935,
+            "ward_name": "Sateralga",
+            "ward_id": 280935
+        },
+        {
+            "ward_no": 280911,
+            "ward_name": "Shyamcharkuti Pt.I",
+            "ward_id": 280911
+        },
+        {
+            "ward_no": 280910,
+            "ward_name": "Shyamcharkuti Pt.Ii",
+            "ward_id": 280910
+        },
+        {
+            "ward_no": 280909,
+            "ward_name": "Shyamcharkuti Pt.Iii",
+            "ward_id": 280909
+        },
+        {
+            "ward_no": 280914,
+            "ward_name": "Silairpar Pt.I",
+            "ward_id": 280914
+        },
+        {
+            "ward_no": 280921,
+            "ward_name": "Alomganj Pt.I",
+            "ward_id": 280921
+        },
+        {
+            "ward_no": 280922,
+            "ward_name": "Alomganj Pt.Ii",
+            "ward_id": 280922
+        },
+        {
+            "ward_no": 280919,
+            "ward_name": "Alomganj Pt.Iv",
+            "ward_id": 280919
+        },
+        {
+            "ward_no": 280923,
+            "ward_name": "Alomganj Pt Ix",
+            "ward_id": 280923
+        },
+        {
+            "ward_no": 280917,
+            "ward_name": "Alomganj Pt.V",
+            "ward_id": 280917
+        },
+        {
+            "ward_no": 280920,
+            "ward_name": "Alomganj Pt.Vi",
+            "ward_id": 280920
+        },
+        {
+            "ward_no": 280916,
+            "ward_name": "Alomganj Pt. Vii",
+            "ward_id": 280916
+        },
+        {
+            "ward_no": 280915,
+            "ward_name": "Alomganj Pt. Viii",
+            "ward_id": 280915
+        },
+        {
+            "ward_no": 280938,
+            "ward_name": "Asharikandi",
+            "ward_id": 280938
+        },
+        {
+            "ward_no": 280941,
+            "ward_name": "Baghmara",
+            "ward_id": 280941
+        },
+        {
+            "ward_no": 280918,
+            "ward_name": "Bagmara",
+            "ward_id": 280918
+        },
+        {
+            "ward_no": 281041,
+            "ward_name": "Bagulamari Pt.I",
+            "ward_id": 281041
+        },
+        {
+            "ward_no": 281042,
+            "ward_name": "Bagulamari Pt.Ii",
+            "ward_id": 281042
+        },
+        {
+            "ward_no": 280934,
+            "ward_name": "Baraibari Pt.I",
+            "ward_id": 280934
+        },
+        {
+            "ward_no": 280936,
+            "ward_name": "Baraibari Pt.Ii",
+            "ward_id": 280936
+        },
+        {
+            "ward_no": 280932,
+            "ward_name": "Baraibari Pt.Iii",
+            "ward_id": 280932
+        },
+        {
+            "ward_no": 280931,
+            "ward_name": "Baraibari Pt.Iv",
+            "ward_id": 280931
+        },
+        {
+            "ward_no": 280933,
+            "ward_name": "Baraibari Pt.V",
+            "ward_id": 280933
+        },
+        {
+            "ward_no": 280898,
+            "ward_name": "Beguntali",
+            "ward_id": 280898
+        },
+        {
+            "ward_no": 280912,
+            "ward_name": "Bromhttar Shilarpar",
+            "ward_id": 280912
+        },
+        {
+            "ward_no": 280939,
+            "ward_name": "Dalsingalga Pt.I",
+            "ward_id": 280939
+        },
+        {
+            "ward_no": 280902,
+            "ward_name": "Dalsingalga Pt.Ii",
+            "ward_id": 280902
+        },
+        {
+            "ward_no": 280900,
+            "ward_name": "Dangirchar",
+            "ward_id": 280900
+        },
+        {
+            "ward_no": 280913,
+            "ward_name": "Darchuka Pt.I",
+            "ward_id": 280913
+        },
+        {
+            "ward_no": 280925,
+            "ward_name": "Debottar Raipur Pt.I",
+            "ward_id": 280925
+        },
+        {
+            "ward_no": 280926,
+            "ward_name": "Debottar Raipur Pt.Ii",
+            "ward_id": 280926
+        },
+        {
+            "ward_no": 280930,
+            "ward_name": "Debottar Raipur Pt.Iii",
+            "ward_id": 280930
+        },
+        {
+            "ward_no": 280924,
+            "ward_name": "Geramari-Iv",
+            "ward_id": 280924
+        },
+        {
+            "ward_no": 280908,
+            "ward_name": "Geramari Pt.I",
+            "ward_id": 280908
+        },
+        {
+            "ward_no": 280907,
+            "ward_name": "Geramari Pt.Ii",
+            "ward_id": 280907
+        },
+        {
+            "ward_no": 280905,
+            "ward_name": "Geramari Pt.Iii",
+            "ward_id": 280905
+        },
+        {
+            "ward_no": 280927,
+            "ward_name": "Geramari Pt.V",
+            "ward_id": 280927
+        },
+        {
+            "ward_no": 280899,
+            "ward_name": "Geramari Pt.Vi",
+            "ward_id": 280899
+        },
+        {
+            "ward_no": 280928,
+            "ward_name": "Ghagraalga Pt.I",
+            "ward_id": 280928
+        },
+        {
+            "ward_no": 280929,
+            "ward_name": "Ghagra Alga Pt.Ii",
+            "ward_id": 280929
+        },
+        {
+            "ward_no": 280940,
+            "ward_name": "Jhalar Alga Pt.I",
+            "ward_id": 280940
+        },
+        {
+            "ward_no": 280901,
+            "ward_name": "Jhalaralga Pt.Ii",
+            "ward_id": 280901
+        },
+        {
+            "ward_no": 280937,
+            "ward_name": "Lalmonir Alga",
+            "ward_id": 280937
+        },
+        {
+            "ward_no": 280903,
+            "ward_name": "Madaikhali",
+            "ward_id": 280903
+        },
+        {
+            "ward_no": 280904,
+            "ward_name": "Matibag",
+            "ward_id": 280904
+        },
+        {
+            "ward_no": 280906,
+            "ward_name": "Sajuarkuti",
+            "ward_id": 280906
+        },
+        {
+            "ward_no": 280935,
+            "ward_name": "Sateralga",
+            "ward_id": 280935
+        },
+        {
+            "ward_no": 280911,
+            "ward_name": "Shyamcharkuti Pt.I",
+            "ward_id": 280911
+        },
+        {
+            "ward_no": 280910,
+            "ward_name": "Shyamcharkuti Pt.Ii",
+            "ward_id": 280910
+        },
+        {
+            "ward_no": 280909,
+            "ward_name": "Shyamcharkuti Pt.Iii",
+            "ward_id": 280909
+        },
+        {
+            "ward_no": 280914,
+            "ward_name": "Silairpar Pt.I",
+            "ward_id": 280914
+        }
+    ]
+}

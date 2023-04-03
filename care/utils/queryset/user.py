@@ -10,5 +10,5 @@ def get_users(user):
     elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
         queryset = queryset.filter(district=user.district)
     else:
-        queryset = queryset.filter(user=user)
+        queryset = queryset.filter(id=user.id)
     return queryset

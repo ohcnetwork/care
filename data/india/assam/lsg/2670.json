@@ -1,0 +1,119 @@
+{
+    "name": "Moirabari Part",
+    "lsg_code": 2670,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 22,
+    "wards": [
+        {
+            "ward_no": 284576,
+            "ward_name": "Akarabari Gaon",
+            "ward_id": 284576
+        },
+        {
+            "ward_no": 284566,
+            "ward_name": "Athgaon Chapari",
+            "ward_id": 284566
+        },
+        {
+            "ward_no": 284569,
+            "ward_name": "Barbheti",
+            "ward_id": 284569
+        },
+        {
+            "ward_no": 284557,
+            "ward_name": "Barbil Gaon(Borbill)",
+            "ward_id": 284557
+        },
+        {
+            "ward_no": 284558,
+            "ward_name": "Barbil Kachari Bari Gaon",
+            "ward_id": 284558
+        },
+        {
+            "ward_no": 284575,
+            "ward_name": "Bechamari",
+            "ward_id": 284575
+        },
+        {
+            "ward_no": 284562,
+            "ward_name": "Biringa Bari",
+            "ward_id": 284562
+        },
+        {
+            "ward_no": 284556,
+            "ward_name": "Gatikara Pam",
+            "ward_id": 284556
+        },
+        {
+            "ward_no": 284564,
+            "ward_name": "Gayan Gaon",
+            "ward_id": 284564
+        },
+        {
+            "ward_no": 284571,
+            "ward_name": "Gerekani Bill (Gerekoni)",
+            "ward_id": 284571
+        },
+        {
+            "ward_no": 284561,
+            "ward_name": "Kazali Pathar",
+            "ward_id": 284561
+        },
+        {
+            "ward_no": 284565,
+            "ward_name": "Lahkar Ghat",
+            "ward_id": 284565
+        },
+        {
+            "ward_no": 284573,
+            "ward_name": "Lali Pathar",
+            "ward_id": 284573
+        },
+        {
+            "ward_no": 284560,
+            "ward_name": "Mahkhuti",
+            "ward_id": 284560
+        },
+        {
+            "ward_no": 284577,
+            "ward_name": "Maira Dhaj",
+            "ward_id": 284577
+        },
+        {
+            "ward_no": 284555,
+            "ward_name": "Muwamari",
+            "ward_id": 284555
+        },
+        {
+            "ward_no": 284567,
+            "ward_name": "Niz-Dhing",
+            "ward_id": 284567
+        },
+        {
+            "ward_no": 284568,
+            "ward_name": "Panbari Satra(Panbari)",
+            "ward_id": 284568
+        },
+        {
+            "ward_no": 284572,
+            "ward_name": "Salkati Pathar",
+            "ward_id": 284572
+        },
+        {
+            "ward_no": 284574,
+            "ward_name": "Salmabori",
+            "ward_id": 284574
+        },
+        {
+            "ward_no": 284570,
+            "ward_name": "Sonari Gaon",
+            "ward_id": 284570
+        },
+        {
+            "ward_no": 284563,
+            "ward_name": "Sutar Gaon",
+            "ward_id": 284563
+        }
+    ]
+}
