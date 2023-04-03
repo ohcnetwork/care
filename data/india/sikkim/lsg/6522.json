@@ -1,0 +1,99 @@
+{
+    "name": "Passingdang",
+    "lsg_code": 6522,
+    "district": "Mangan",
+    "state": "Sikkim",
+    "no_of_wards": 18,
+    "wards": [
+        {
+            "ward_no": 260951,
+            "ward_name": "Barfok",
+            "ward_id": 260951
+        },
+        {
+            "ward_no": 260949,
+            "ward_name": "Gnon Sangdong",
+            "ward_id": 260949
+        },
+        {
+            "ward_no": 260948,
+            "ward_name": "Gor Taryang",
+            "ward_id": 260948
+        },
+        {
+            "ward_no": 260950,
+            "ward_name": "Hee-Gyathang",
+            "ward_id": 260950
+        },
+        {
+            "ward_no": 260942,
+            "ward_name": "Lingdem",
+            "ward_id": 260942
+        },
+        {
+            "ward_no": 260952,
+            "ward_name": "Lingdong",
+            "ward_id": 260952
+        },
+        {
+            "ward_no": 260944,
+            "ward_name": "Lingja Tholung",
+            "ward_id": 260944
+        },
+        {
+            "ward_no": 260941,
+            "ward_name": "Lingthem",
+            "ward_id": 260941
+        },
+        {
+            "ward_no": 260941,
+            "ward_name": "Lingthem",
+            "ward_id": 260941
+        },
+        {
+            "ward_no": 260975,
+            "ward_name": "Lower Dzongu Forest Block",
+            "ward_id": 260975
+        },
+        {
+            "ward_no": 260946,
+            "ward_name": "Lum",
+            "ward_id": 260946
+        },
+        {
+            "ward_no": 260945,
+            "ward_name": "Sakyong-Pentong",
+            "ward_id": 260945
+        },
+        {
+            "ward_no": 260940,
+            "ward_name": "Salim Pakel",
+            "ward_id": 260940
+        },
+        {
+            "ward_no": 260947,
+            "ward_name": "Sangtok Sagyong",
+            "ward_id": 260947
+        },
+        {
+            "ward_no": 260943,
+            "ward_name": "Tingvong",
+            "ward_id": 260943
+        },
+        {
+            "ward_no": 260960,
+            "ward_name": "Namok",
+            "ward_id": 260960
+        },
+        {
+            "ward_no": 260961,
+            "ward_name": "Swayem",
+            "ward_id": 260961
+        },
+        {
+            "ward_no": 260974,
+            "ward_name": "Upper Dzongu Forest Block",
+            "ward_id": 260974
+        }
+    ]
+}

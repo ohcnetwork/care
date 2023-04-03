@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+
+  backend:
+    image: "ghcr.io/coronasafe/care:latest"
+    env_file:
+      - ./docker/.prebuilt.env
+
+  celery-worker:
+    container_name: care_celery_worker
+    image: "ghcr.io/coronasafe/care:latest"
+    env_file:
+      - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "celery_worker.sh" ]
+    depends_on:
+      - db
+      - backend
+      - redis
+
+  celery-beat:
+    container_name: care_celery_beat
+    image: "ghcr.io/coronasafe/care:latest"
+    env_file:
+      - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "celery_beat.sh" ]
+    depends_on:
+      - db
+      - backend
+      - redis

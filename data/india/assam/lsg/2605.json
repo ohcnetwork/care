@@ -1,0 +1,344 @@
+{
+    "name": "Chayani",
+    "lsg_code": 2605,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 67,
+    "wards": [
+        {
+            "ward_no": 303272,
+            "ward_name": "Amranga",
+            "ward_id": 303272
+        },
+        {
+            "ward_no": 303341,
+            "ward_name": "Bagapani F.V.",
+            "ward_id": 303341
+        },
+        {
+            "ward_no": 303265,
+            "ward_name": "Bamuni Jhar",
+            "ward_id": 303265
+        },
+        {
+            "ward_no": 303249,
+            "ward_name": "Bangeli Bila N.C.",
+            "ward_id": 303249
+        },
+        {
+            "ward_no": 303269,
+            "ward_name": "Baranti Maniari",
+            "ward_id": 303269
+        },
+        {
+            "ward_no": 303243,
+            "ward_name": "Barduar Tea Garden No.1",
+            "ward_id": 303243
+        },
+        {
+            "ward_no": 303244,
+            "ward_name": "Barduar Tea Garden No.2",
+            "ward_id": 303244
+        },
+        {
+            "ward_no": 303245,
+            "ward_name": "Barduar Tea Garden No.3",
+            "ward_id": 303245
+        },
+        {
+            "ward_no": 303252,
+            "ward_name": "Baregaon No.1",
+            "ward_id": 303252
+        },
+        {
+            "ward_no": 303250,
+            "ward_name": "Baregaon No.2",
+            "ward_id": 303250
+        },
+        {
+            "ward_no": 303355,
+            "ward_name": "Bashimari F.V.",
+            "ward_id": 303355
+        },
+        {
+            "ward_no": 303226,
+            "ward_name": "Batakuchi",
+            "ward_id": 303226
+        },
+        {
+            "ward_no": 303230,
+            "ward_name": "Biro Gaon",
+            "ward_id": 303230
+        },
+        {
+            "ward_no": 303259,
+            "ward_name": "Bongara",
+            "ward_id": 303259
+        },
+        {
+            "ward_no": 303261,
+            "ward_name": "Chayani Moniari",
+            "ward_id": 303261
+        },
+        {
+            "ward_no": 303263,
+            "ward_name": "Chayani Rangamati",
+            "ward_id": 303263
+        },
+        {
+            "ward_no": 303235,
+            "ward_name": "Choutala",
+            "ward_id": 303235
+        },
+        {
+            "ward_no": 303224,
+            "ward_name": "Dahajatia",
+            "ward_id": 303224
+        },
+        {
+            "ward_no": 303351,
+            "ward_name": "Dalong Molong F.V.",
+            "ward_id": 303351
+        },
+        {
+            "ward_no": 303240,
+            "ward_name": "Darchala",
+            "ward_id": 303240
+        },
+        {
+            "ward_no": 303356,
+            "ward_name": "Dewanbil F.V.",
+            "ward_id": 303356
+        },
+        {
+            "ward_no": 303232,
+            "ward_name": "Dhani Para",
+            "ward_id": 303232
+        },
+        {
+            "ward_no": 303268,
+            "ward_name": "Dhantula Rangamati",
+            "ward_id": 303268
+        },
+        {
+            "ward_no": 303234,
+            "ward_name": "Dhengargaon",
+            "ward_id": 303234
+        },
+        {
+            "ward_no": 303228,
+            "ward_name": "Dighalkuchi",
+            "ward_id": 303228
+        },
+        {
+            "ward_no": 303343,
+            "ward_name": "Dimali F.V.",
+            "ward_id": 303343
+        },
+        {
+            "ward_no": 303254,
+            "ward_name": "Dole Gaon",
+            "ward_id": 303254
+        },
+        {
+            "ward_no": 303353,
+            "ward_name": "Galiya F.V.",
+            "ward_id": 303353
+        },
+        {
+            "ward_no": 303354,
+            "ward_name": "Garubanda F.V.",
+            "ward_id": 303354
+        },
+        {
+            "ward_no": 303227,
+            "ward_name": "Ghoramara",
+            "ward_id": 303227
+        },
+        {
+            "ward_no": 303223,
+            "ward_name": "Haropara",
+            "ward_id": 303223
+        },
+        {
+            "ward_no": 303264,
+            "ward_name": "Hudumpur",
+            "ward_id": 303264
+        },
+        {
+            "ward_no": 303231,
+            "ward_name": "Jaji Gaon",
+            "ward_id": 303231
+        },
+        {
+            "ward_no": 303246,
+            "ward_name": "Japangbari",
+            "ward_id": 303246
+        },
+        {
+            "ward_no": 303258,
+            "ward_name": "Kaita Sidhi (Poitasidhi)",
+            "ward_id": 303258
+        },
+        {
+            "ward_no": 303276,
+            "ward_name": "Kamargaon",
+            "ward_id": 303276
+        },
+        {
+            "ward_no": 303247,
+            "ward_name": "Khonapara",
+            "ward_id": 303247
+        },
+        {
+            "ward_no": 303357,
+            "ward_name": "Kochpara (Ct)",
+            "ward_id": 303357
+        },
+        {
+            "ward_no": 303267,
+            "ward_name": "Kokjar (Kokrajhar)",
+            "ward_id": 303267
+        },
+        {
+            "ward_no": 303255,
+            "ward_name": "Losana",
+            "ward_id": 303255
+        },
+        {
+            "ward_no": 303237,
+            "ward_name": "Madanpur",
+            "ward_id": 303237
+        },
+        {
+            "ward_no": 303262,
+            "ward_name": "Magur Para",
+            "ward_id": 303262
+        },
+        {
+            "ward_no": 303238,
+            "ward_name": "Mahmarang",
+            "ward_id": 303238
+        },
+        {
+            "ward_no": 303273,
+            "ward_name": "Majkuchi",
+            "ward_id": 303273
+        },
+        {
+            "ward_no": 303260,
+            "ward_name": "Maliata",
+            "ward_id": 303260
+        },
+        {
+            "ward_no": 303345,
+            "ward_name": "Manik Pur F.V.",
+            "ward_id": 303345
+        },
+        {
+            "ward_no": 303225,
+            "ward_name": "Marabhitha",
+            "ward_id": 303225
+        },
+        {
+            "ward_no": 303239,
+            "ward_name": "Nagaon",
+            "ward_id": 303239
+        },
+        {
+            "ward_no": 303352,
+            "ward_name": "Nagaon F.V.",
+            "ward_id": 303352
+        },
+        {
+            "ward_no": 303342,
+            "ward_name": "Nalbari F.V.",
+            "ward_id": 303342
+        },
+        {
+            "ward_no": 303270,
+            "ward_name": "Parakuchi",
+            "ward_id": 303270
+        },
+        {
+            "ward_no": 303362,
+            "ward_name": "Parlli Part (Ct)",
+            "ward_id": 303362
+        },
+        {
+            "ward_no": 303233,
+            "ward_name": "Pathelipara",
+            "ward_id": 303233
+        },
+        {
+            "ward_no": 303248,
+            "ward_name": "Puijala",
+            "ward_id": 303248
+        },
+        {
+            "ward_no": 303253,
+            "ward_name": "Raja Para",
+            "ward_id": 303253
+        },
+        {
+            "ward_no": 303251,
+            "ward_name": "Rani Khamar",
+            "ward_id": 303251
+        },
+        {
+            "ward_no": 303275,
+            "ward_name": "Sadilapur",
+            "ward_id": 303275
+        },
+        {
+            "ward_no": 303344,
+            "ward_name": "Salbari F.V.",
+            "ward_id": 303344
+        },
+        {
+            "ward_no": 303257,
+            "ward_name": "Salesala",
+            "ward_id": 303257
+        },
+        {
+            "ward_no": 303274,
+            "ward_name": "Santola",
+            "ward_id": 303274
+        },
+        {
+            "ward_no": 303361,
+            "ward_name": "Sarpara (Ct)",
+            "ward_id": 303361
+        },
+        {
+            "ward_no": 303241,
+            "ward_name": "Sasalpara No.1",
+            "ward_id": 303241
+        },
+        {
+            "ward_no": 303242,
+            "ward_name": "Sasal Para No.2",
+            "ward_id": 303242
+        },
+        {
+            "ward_no": 303256,
+            "ward_name": "Sathikarpa",
+            "ward_id": 303256
+        },
+        {
+            "ward_no": 303236,
+            "ward_name": "Satpur",
+            "ward_id": 303236
+        },
+        {
+            "ward_no": 303229,
+            "ward_name": "Titua Gaon",
+            "ward_id": 303229
+        },
+        {
+            "ward_no": 303271,
+            "ward_name": "Urput",
+            "ward_id": 303271
+        }
+    ]
+}

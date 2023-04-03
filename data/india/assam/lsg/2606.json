@@ -1,0 +1,439 @@
+{
+    "name": "Chaygaon",
+    "lsg_code": 2606,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 86,
+    "wards": [
+        {
+            "ward_no": 303000,
+            "ward_name": "Agar Char",
+            "ward_id": 303000
+        },
+        {
+            "ward_no": 302930,
+            "ward_name": "Aggumi",
+            "ward_id": 302930
+        },
+        {
+            "ward_no": 302808,
+            "ward_name": "Akchalia F.V.",
+            "ward_id": 302808
+        },
+        {
+            "ward_no": 302805,
+            "ward_name": "Alukhunda F.V.",
+            "ward_id": 302805
+        },
+        {
+            "ward_no": 302932,
+            "ward_name": "Ambari",
+            "ward_id": 302932
+        },
+        {
+            "ward_no": 302746,
+            "ward_name": "Andheri",
+            "ward_id": 302746
+        },
+        {
+            "ward_no": 302818,
+            "ward_name": "Andheri F.V.",
+            "ward_id": 302818
+        },
+        {
+            "ward_no": 302745,
+            "ward_name": "Bakali Para",
+            "ward_id": 302745
+        },
+        {
+            "ward_no": 302822,
+            "ward_name": "Bakali Para F.V.",
+            "ward_id": 302822
+        },
+        {
+            "ward_no": 302824,
+            "ward_name": "Bak Bahar F.V.",
+            "ward_id": 302824
+        },
+        {
+            "ward_no": 302819,
+            "ward_name": "Bali Juri F.V.",
+            "ward_id": 302819
+        },
+        {
+            "ward_no": 302713,
+            "ward_name": "Bamuni Gaon",
+            "ward_id": 302713
+        },
+        {
+            "ward_no": 302724,
+            "ward_name": "Bangal Kata",
+            "ward_id": 302724
+        },
+        {
+            "ward_no": 302709,
+            "ward_name": "Bankakata",
+            "ward_id": 302709
+        },
+        {
+            "ward_no": 302748,
+            "ward_name": "Barbakara",
+            "ward_id": 302748
+        },
+        {
+            "ward_no": 302828,
+            "ward_name": "Barbakara F.V.",
+            "ward_id": 302828
+        },
+        {
+            "ward_no": 302838,
+            "ward_name": "Barjar F.V.",
+            "ward_id": 302838
+        },
+        {
+            "ward_no": 302814,
+            "ward_name": "Barzar F.V.",
+            "ward_id": 302814
+        },
+        {
+            "ward_no": 302736,
+            "ward_name": "Batakuchi",
+            "ward_id": 302736
+        },
+        {
+            "ward_no": 302780,
+            "ward_name": "Batakuchi",
+            "ward_id": 302780
+        },
+        {
+            "ward_no": 302714,
+            "ward_name": "Belguri",
+            "ward_id": 302714
+        },
+        {
+            "ward_no": 302725,
+            "ward_name": "Bhathi Para",
+            "ward_id": 302725
+        },
+        {
+            "ward_no": 303192,
+            "ward_name": "Bherbheri",
+            "ward_id": 303192
+        },
+        {
+            "ward_no": 302750,
+            "ward_name": "Bherbheri",
+            "ward_id": 302750
+        },
+        {
+            "ward_no": 302830,
+            "ward_name": "Bherbheri F.V.",
+            "ward_id": 302830
+        },
+        {
+            "ward_no": 302719,
+            "ward_name": "Bihdia",
+            "ward_id": 302719
+        },
+        {
+            "ward_no": 302716,
+            "ward_name": "Choudhuri Khat",
+            "ward_id": 302716
+        },
+        {
+            "ward_no": 302721,
+            "ward_name": "Dagaon Katahi",
+            "ward_id": 302721
+        },
+        {
+            "ward_no": 302715,
+            "ward_name": "Dakshin Bankakata",
+            "ward_id": 302715
+        },
+        {
+            "ward_no": 302739,
+            "ward_name": "Dakuwa Para",
+            "ward_id": 302739
+        },
+        {
+            "ward_no": 302836,
+            "ward_name": "Daledunga F.V.",
+            "ward_id": 302836
+        },
+        {
+            "ward_no": 302843,
+            "ward_name": "Daledunga F.V.",
+            "ward_id": 302843
+        },
+        {
+            "ward_no": 302810,
+            "ward_name": "Dhania Gaon F.V.",
+            "ward_id": 302810
+        },
+        {
+            "ward_no": 302730,
+            "ward_name": "Dhekena Bari",
+            "ward_id": 302730
+        },
+        {
+            "ward_no": 302718,
+            "ward_name": "Dhubar Gaon",
+            "ward_id": 302718
+        },
+        {
+            "ward_no": 302931,
+            "ward_name": "Dhumgara",
+            "ward_id": 302931
+        },
+        {
+            "ward_no": 302744,
+            "ward_name": "Dulia Gaon",
+            "ward_id": 302744
+        },
+        {
+            "ward_no": 302740,
+            "ward_name": "Fala Ghat",
+            "ward_id": 302740
+        },
+        {
+            "ward_no": 302711,
+            "ward_name": "Ganak Para",
+            "ward_id": 302711
+        },
+        {
+            "ward_no": 302712,
+            "ward_name": "Halang Juli",
+            "ward_id": 302712
+        },
+        {
+            "ward_no": 302820,
+            "ward_name": "Hatigar F.V.",
+            "ward_id": 302820
+        },
+        {
+            "ward_no": 302749,
+            "ward_name": "Jalukbari",
+            "ward_id": 302749
+        },
+        {
+            "ward_no": 302829,
+            "ward_name": "Jalukbari F.V",
+            "ward_id": 302829
+        },
+        {
+            "ward_no": 302710,
+            "ward_name": "Jamuguri",
+            "ward_id": 302710
+        },
+        {
+            "ward_no": 302823,
+            "ward_name": "Jarua Gaon F.V.",
+            "ward_id": 302823
+        },
+        {
+            "ward_no": 302738,
+            "ward_name": "Jugibari",
+            "ward_id": 302738
+        },
+        {
+            "ward_no": 302821,
+            "ward_name": "Kahua F.V.",
+            "ward_id": 302821
+        },
+        {
+            "ward_no": 302717,
+            "ward_name": "Kaimari",
+            "ward_id": 302717
+        },
+        {
+            "ward_no": 302811,
+            "ward_name": "Kala Bakara F.V.",
+            "ward_id": 302811
+        },
+        {
+            "ward_no": 302827,
+            "ward_name": "Kardai Guri F.V.",
+            "ward_id": 302827
+        },
+        {
+            "ward_no": 302825,
+            "ward_name": "Kari Kara F.V.",
+            "ward_id": 302825
+        },
+        {
+            "ward_no": 302807,
+            "ward_name": "Khar Khari F.V.",
+            "ward_id": 302807
+        },
+        {
+            "ward_no": 302731,
+            "ward_name": "Khatira",
+            "ward_id": 302731
+        },
+        {
+            "ward_no": 302723,
+            "ward_name": "Kukur Mara",
+            "ward_id": 302723
+        },
+        {
+            "ward_no": 302856,
+            "ward_name": "Kushalpara F.V.",
+            "ward_id": 302856
+        },
+        {
+            "ward_no": 302751,
+            "ward_name": "Langkhar",
+            "ward_id": 302751
+        },
+        {
+            "ward_no": 302813,
+            "ward_name": "Maina Para F.V.",
+            "ward_id": 302813
+        },
+        {
+            "ward_no": 302927,
+            "ward_name": "Majgumi",
+            "ward_id": 302927
+        },
+        {
+            "ward_no": 302720,
+            "ward_name": "Makeli",
+            "ward_id": 302720
+        },
+        {
+            "ward_no": 302741,
+            "ward_name": "Maz Para",
+            "ward_id": 302741
+        },
+        {
+            "ward_no": 302929,
+            "ward_name": "Mohghar",
+            "ward_id": 302929
+        },
+        {
+            "ward_no": 302732,
+            "ward_name": "Nam Dhania",
+            "ward_id": 302732
+        },
+        {
+            "ward_no": 302727,
+            "ward_name": "No.1 Balashidhi",
+            "ward_id": 302727
+        },
+        {
+            "ward_no": 302728,
+            "ward_name": "No.2 Balasidhi",
+            "ward_id": 302728
+        },
+        {
+            "ward_no": 302729,
+            "ward_name": "Nowamati",
+            "ward_id": 302729
+        },
+        {
+            "ward_no": 302722,
+            "ward_name": "Nowapara",
+            "ward_id": 302722
+        },
+        {
+            "ward_no": 302812,
+            "ward_name": "Ouguri F.V.",
+            "ward_id": 302812
+        },
+        {
+            "ward_no": 302742,
+            "ward_name": "Pachim Dhuli",
+            "ward_id": 302742
+        },
+        {
+            "ward_no": 302809,
+            "ward_name": "Paglapara F.V.",
+            "ward_id": 302809
+        },
+        {
+            "ward_no": 302928,
+            "ward_name": "Pas Gumi",
+            "ward_id": 302928
+        },
+        {
+            "ward_no": 302734,
+            "ward_name": "Patgaon Khar Bakhar",
+            "ward_id": 302734
+        },
+        {
+            "ward_no": 302815,
+            "ward_name": "Phulguri F.V.",
+            "ward_id": 302815
+        },
+        {
+            "ward_no": 302743,
+            "ward_name": "Pub Dhuli",
+            "ward_id": 302743
+        },
+        {
+            "ward_no": 302816,
+            "ward_name": "Puthemari F.V.",
+            "ward_id": 302816
+        },
+        {
+            "ward_no": 302806,
+            "ward_name": "Rahpur F.V.",
+            "ward_id": 302806
+        },
+        {
+            "ward_no": 302817,
+            "ward_name": "Ratanpur Chekelia F.V.",
+            "ward_id": 302817
+        },
+        {
+            "ward_no": 302735,
+            "ward_name": "Ratanpur No.1",
+            "ward_id": 302735
+        },
+        {
+            "ward_no": 302737,
+            "ward_name": "Ratanpur No.2",
+            "ward_id": 302737
+        },
+        {
+            "ward_no": 302855,
+            "ward_name": "Rihabari F.V.",
+            "ward_id": 302855
+        },
+        {
+            "ward_no": 302826,
+            "ward_name": "Sainashi F.V.",
+            "ward_id": 302826
+        },
+        {
+            "ward_no": 302747,
+            "ward_name": "Sidila Para",
+            "ward_id": 302747
+        },
+        {
+            "ward_no": 302933,
+            "ward_name": "Simalu Bari",
+            "ward_id": 302933
+        },
+        {
+            "ward_no": 302726,
+            "ward_name": "Takara Dia",
+            "ward_id": 302726
+        },
+        {
+            "ward_no": 302934,
+            "ward_name": "Tari Gaon",
+            "ward_id": 302934
+        },
+        {
+            "ward_no": 302733,
+            "ward_name": "Upar Dhania",
+            "ward_id": 302733
+        },
+        {
+            "ward_no": 302708,
+            "ward_name": "Uttar Bankakata",
+            "ward_id": 302708
+        }
+    ]
+}

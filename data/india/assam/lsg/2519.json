@@ -1,0 +1,204 @@
+{
+    "name": "Silchar",
+    "lsg_code": 2519,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 39,
+    "wards": [
+        {
+            "ward_no": 299262,
+            "ward_name": "Ambicapur Pt I",
+            "ward_id": 299262
+        },
+        {
+            "ward_no": 299272,
+            "ward_name": "Ambicapur Pt Ii",
+            "ward_id": 299272
+        },
+        {
+            "ward_no": 299273,
+            "ward_name": "Ambicapur Pt Iii",
+            "ward_id": 299273
+        },
+        {
+            "ward_no": 299286,
+            "ward_name": "Ambicapur Pt Iv",
+            "ward_id": 299286
+        },
+        {
+            "ward_no": 299285,
+            "ward_name": "Ambicapur Pt V",
+            "ward_id": 299285
+        },
+        {
+            "ward_no": 299383,
+            "ward_name": "Ambicapur Pt Vi (Ct)",
+            "ward_id": 299383
+        },
+        {
+            "ward_no": 299271,
+            "ward_name": "Ambicapur Pt Vii",
+            "ward_id": 299271
+        },
+        {
+            "ward_no": 299382,
+            "ward_name": "Ambicapur Pt Viii (Ct)",
+            "ward_id": 299382
+        },
+        {
+            "ward_no": 299270,
+            "ward_name": "Ambicapur Pt Xi",
+            "ward_id": 299270
+        },
+        {
+            "ward_no": 299388,
+            "ward_name": "Ambikapur Pt. X (Ct)",
+            "ward_id": 299388
+        },
+        {
+            "ward_no": 299495,
+            "ward_name": "Bagpur Pt I",
+            "ward_id": 299495
+        },
+        {
+            "ward_no": 299496,
+            "ward_name": "Bagpur Pt Ii",
+            "ward_id": 299496
+        },
+        {
+            "ward_no": 299497,
+            "ward_name": "Bagpur Pt Iii",
+            "ward_id": 299497
+        },
+        {
+            "ward_no": 299260,
+            "ward_name": "Bajantipur Pt I",
+            "ward_id": 299260
+        },
+        {
+            "ward_no": 299274,
+            "ward_name": "Bajantipur Pt Ii",
+            "ward_id": 299274
+        },
+        {
+            "ward_no": 299275,
+            "ward_name": "Bajantipur Pt Iii",
+            "ward_id": 299275
+        },
+        {
+            "ward_no": 299269,
+            "ward_name": "Berenga Pt I",
+            "ward_id": 299269
+        },
+        {
+            "ward_no": 299263,
+            "ward_name": "Berenga Pt Ii",
+            "ward_id": 299263
+        },
+        {
+            "ward_no": 299264,
+            "ward_name": "Berenga Pt Iii",
+            "ward_id": 299264
+        },
+        {
+            "ward_no": 299265,
+            "ward_name": "Berenga Pt Iv",
+            "ward_id": 299265
+        },
+        {
+            "ward_no": 299266,
+            "ward_name": "Berenga Pt V",
+            "ward_id": 299266
+        },
+        {
+            "ward_no": 299284,
+            "ward_name": "Jaifarpur",
+            "ward_id": 299284
+        },
+        {
+            "ward_no": 299391,
+            "ward_name": "Kanakpur I (Ct)",
+            "ward_id": 299391
+        },
+        {
+            "ward_no": 299386,
+            "ward_name": "Kanakpur Pt. Ii (Ct)",
+            "ward_id": 299386
+        },
+        {
+            "ward_no": 299257,
+            "ward_name": "Natun Kanchanpur",
+            "ward_id": 299257
+        },
+        {
+            "ward_no": 299493,
+            "ward_name": "Neairgram Pt I",
+            "ward_id": 299493
+        },
+        {
+            "ward_no": 299494,
+            "ward_name": "Neairgram Pt Ii",
+            "ward_id": 299494
+        },
+        {
+            "ward_no": 299387,
+            "ward_name": "Silchar Pt. X (Ct)",
+            "ward_id": 299387
+        },
+        {
+            "ward_no": 299392,
+            "ward_name": "Silchar Xi (Og)",
+            "ward_id": 299392
+        },
+        {
+            "ward_no": 299232,
+            "ward_name": "Tarapur Pt I",
+            "ward_id": 299232
+        },
+        {
+            "ward_no": 299230,
+            "ward_name": "Tarapur Pt Ii",
+            "ward_id": 299230
+        },
+        {
+            "ward_no": 299231,
+            "ward_name": "Tarapur Pt Iii",
+            "ward_id": 299231
+        },
+        {
+            "ward_no": 299244,
+            "ward_name": "Tarapur Pt Iv",
+            "ward_id": 299244
+        },
+        {
+            "ward_no": 299243,
+            "ward_name": "Tarapur Pt V",
+            "ward_id": 299243
+        },
+        {
+            "ward_no": 299379,
+            "ward_name": "Tarapur Pt Vi (Ct)",
+            "ward_id": 299379
+        },
+        {
+            "ward_no": 299390,
+            "ward_name": "Tarapur Vii (Ct)",
+            "ward_id": 299390
+        },
+        {
+            "ward_no": 299393,
+            "ward_name": "Tarapur Viii (Og)",
+            "ward_id": 299393
+        },
+        {
+            "ward_no": 299378,
+            "ward_name": "Tupkhana Pt I (Ct)",
+            "ward_id": 299378
+        },
+        {
+            "ward_no": 299233,
+            "ward_name": "Tupkhana Pt Ii",
+            "ward_id": 299233
+        }
+    ]
+}

@@ -25,15 +25,22 @@ SYMPTOM_CHOICES = [
     (5, "BREATHLESSNESS"),
     (6, "MYALGIA"),
     (7, "ABDOMINAL DISCOMFORT"),
-    (8, "VOMITING/DIARRHOEA"),
+    (8, "VOMITING"),
     (9, "OTHERS"),
-    (10, "SARI"),
     (11, "SPUTUM"),
     (12, "NAUSEA"),
     (13, "CHEST PAIN"),
     (14, "HEMOPTYSIS"),
     (15, "NASAL DISCHARGE"),
     (16, "BODY ACHE"),
+    (17, "DIARRHOEA"),
+    (18, "PAIN"),
+    (19, "PEDAL EDEMA"),
+    (20, "WOUND"),
+    (21, "CONSTIPATION"),
+    (22, "HEAD ACHE"),
+    (23, "BLEEDING"),
+    (24, "DIZZINESS"),
 ]
 
 DISEASE_CHOICES_MAP = {
@@ -96,7 +103,19 @@ BLOOD_GROUP_CHOICES = [
     ("O-", "O-"),
     ("UNK", "UNKNOWN"),
 ]
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC")
+SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
+
+
+class ConsultationStatusEnum(enum.Enum):
+    UNKNOWN = 0
+    BROUGHT_DEAD = 1
+    TRANSFERRED_FROM_WARD = 2
+    TRANSFERRED_FROM_ICU = 3
+    REFERRED_FROM_OTHER_HOSPITAL = 4
+    OUT_PATIENT = 5
+
+
+ConsultationStatusChoices = [(e.value, e.name) for e in ConsultationStatusEnum]
 
 
 class BedType(enum.Enum):
@@ -117,3 +136,5 @@ REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Depr
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 # REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
+REVERSE_CONSULTATION_STATUS_CHOICES = reverse_choices(ConsultationStatusChoices)
+REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)

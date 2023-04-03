@@ -10,6 +10,7 @@ on:
 
 jobs:
   CodeQL-Build:
+    if: github.repository == 'coronasafe/care'
     runs-on: ubuntu-latest
     permissions:
       security-events: write

@@ -1,3 +1,5 @@
+from django.utils.timezone import localtime, now
+from jsonschema import ValidationError
 from rest_framework import serializers
 
 from care.facility.api.serializers.shifting import has_facility_permission
@@ -7,13 +9,18 @@ from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from config.serializers import ChoiceField
 
 
-def check_permissions(file_type, associating_id, user):
+def check_permissions(file_type, associating_id, user, action="create"):
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
+            if not patient.is_active:
+                raise serializers.ValidationError(
+                    {"patient": "Cannot upload file for a discharged patient."}
+                )
             if patient.assigned_to:
                 if user == patient.assigned_to:
                     return patient.id
@@ -26,6 +33,13 @@ def check_permissions(file_type, associating_id, user):
             return patient.id
         elif file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if consultation.discharge_date:
+                if not action == "read":
+                    raise serializers.ValidationError(
+                        {
+                            "consultation": "Cannot upload file for a discharged consultation."
+                        }
+                    )
             if consultation.patient.assigned_to:
                 if user == consultation.patient.assigned_to:
                     return consultation.id
@@ -59,6 +73,8 @@ def check_permissions(file_type, associating_id, user):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return sample.id
+        elif file_type == FileUpload.FileType.CLAIM.value:
+            return associating_id
         else:
             raise Exception("Undefined File Type")
 
@@ -67,7 +83,6 @@ def check_permissions(file_type, associating_id, user):
 
 
 class FileUploadCreateSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
     file_type = ChoiceField(choices=FileUpload.FileTypeChoices)
     file_category = ChoiceField(choices=FileUpload.FileCategoryChoices, required=False)
@@ -104,9 +119,9 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
 
 
 class FileUploadListSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
     uploaded_by = UserBaseMinimumSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
     extension = serializers.CharField(source="get_extension", read_only=True)
 
     class Meta:
@@ -115,7 +130,11 @@ class FileUploadListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "uploaded_by",
+            "archived_by",
+            "archived_datetime",
             "upload_completed",
+            "is_archived",
+            "archive_reason",
             "created_date",
             "file_category",
             "extension",
@@ -124,16 +143,49 @@ class FileUploadListSerializer(serializers.ModelSerializer):
 
 
 class FileUploadUpdateSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = FileUpload
-        fields = ("id", "name", "upload_completed")
+        fields = (
+            "id",
+            "name",
+            "upload_completed",
+            "is_archived",
+            "archive_reason",
+            "archived_by",
+            "archived_datetime",
+        )
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        if instance.is_archived:
+            raise serializers.ValidationError(
+                {"file": "Operation not permitted when archived."}
+            )
+        if user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]:
+            if instance.uploaded_by == user:
+                pass
+            else:
+                raise serializers.ValidationError(
+                    {"permission": "Don't have permission to archive"}
+                )
+        file = super().update(instance, validated_data)
+        if file.is_archived:
+            file.archived_by = user
+            file.archived_datetime = localtime(now())
+            file.save()
+        return file
+
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        if validated.get("is_archived") and not validated.get("archive_reason"):
+            raise ValidationError("Archive reason must be specified.")
+        return validated
 
 
 class FileUploadRetrieveSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
     uploaded_by = UserBaseMinimumSerializer(read_only=True)
     read_signed_url = serializers.CharField(read_only=True)
@@ -146,6 +198,8 @@ class FileUploadRetrieveSerializer(serializers.ModelSerializer):
             "name",
             "uploaded_by",
             "upload_completed",
+            "is_archived",
+            "archive_reason",
             "created_date",
             "read_signed_url",
             "file_category",

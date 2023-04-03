@@ -1,0 +1,519 @@
+{
+    "name": "Sakomatha",
+    "lsg_code": 2714,
+    "district": "Biswanath",
+    "state": "Assam",
+    "no_of_wards": 102,
+    "wards": [
+        {
+            "ward_no": 286609,
+            "ward_name": "Babu Bil",
+            "ward_id": 286609
+        },
+        {
+            "ward_no": 286604,
+            "ward_name": "Balu Danga",
+            "ward_id": 286604
+        },
+        {
+            "ward_no": 286595,
+            "ward_name": "Bamuni Pathar",
+            "ward_id": 286595
+        },
+        {
+            "ward_no": 286631,
+            "ward_name": "Barkura",
+            "ward_id": 286631
+        },
+        {
+            "ward_no": 286598,
+            "ward_name": "Barpukhuri T.E.",
+            "ward_id": 286598
+        },
+        {
+            "ward_no": 286608,
+            "ward_name": "Begun Bari Bagicha",
+            "ward_id": 286608
+        },
+        {
+            "ward_no": 286636,
+            "ward_name": "Bhimajuli",
+            "ward_id": 286636
+        },
+        {
+            "ward_no": 286572,
+            "ward_name": "Bhimajuli",
+            "ward_id": 286572
+        },
+        {
+            "ward_no": 286550,
+            "ward_name": "Bijoy Pur",
+            "ward_id": 286550
+        },
+        {
+            "ward_no": 286583,
+            "ward_name": "Dhali Kherbari",
+            "ward_id": 286583
+        },
+        {
+            "ward_no": 286548,
+            "ward_name": "Dhali Kohiar Bari",
+            "ward_id": 286548
+        },
+        {
+            "ward_no": 286582,
+            "ward_name": "Dhali Lakhan Basti",
+            "ward_id": 286582
+        },
+        {
+            "ward_no": 286597,
+            "ward_name": "Dhali Mara Diring",
+            "ward_id": 286597
+        },
+        {
+            "ward_no": 286558,
+            "ward_name": "Dhali T.E. 278/475",
+            "ward_id": 286558
+        },
+        {
+            "ward_no": 286559,
+            "ward_name": "Dhali T.E. 279/476",
+            "ward_id": 286559
+        },
+        {
+            "ward_no": 286556,
+            "ward_name": "Dhali T.E. 304/487",
+            "ward_id": 286556
+        },
+        {
+            "ward_no": 286557,
+            "ward_name": "Dhali T.E. 316/515",
+            "ward_id": 286557
+        },
+        {
+            "ward_no": 286561,
+            "ward_name": "Diring T.E. 313/519",
+            "ward_id": 286561
+        },
+        {
+            "ward_no": 286560,
+            "ward_name": "Diring T.E. 314/513",
+            "ward_id": 286560
+        },
+        {
+            "ward_no": 286562,
+            "ward_name": "Diring T.E. 315/530",
+            "ward_id": 286562
+        },
+        {
+            "ward_no": 286630,
+            "ward_name": "Japow Bari",
+            "ward_id": 286630
+        },
+        {
+            "ward_no": 286553,
+            "ward_name": "Joypur",
+            "ward_id": 286553
+        },
+        {
+            "ward_no": 286606,
+            "ward_name": "Kamar Jan",
+            "ward_id": 286606
+        },
+        {
+            "ward_no": 286627,
+            "ward_name": "Koch Gaon",
+            "ward_id": 286627
+        },
+        {
+            "ward_no": 286919,
+            "ward_name": "Koyalajuli",
+            "ward_id": 286919
+        },
+        {
+            "ward_no": 286628,
+            "ward_name": "Kuwari",
+            "ward_id": 286628
+        },
+        {
+            "ward_no": 286889,
+            "ward_name": "Madhupur",
+            "ward_id": 286889
+        },
+        {
+            "ward_no": 286574,
+            "ward_name": "Mahalakhi",
+            "ward_id": 286574
+        },
+        {
+            "ward_no": 286578,
+            "ward_name": "Mahjulibasti",
+            "ward_id": 286578
+        },
+        {
+            "ward_no": 286579,
+            "ward_name": "Mahjulipathar",
+            "ward_id": 286579
+        },
+        {
+            "ward_no": 286624,
+            "ward_name": "Majuli Garh 101/156",
+            "ward_id": 286624
+        },
+        {
+            "ward_no": 286625,
+            "ward_name": "Majuli Garh 201/356(1)",
+            "ward_id": 286625
+        },
+        {
+            "ward_no": 286626,
+            "ward_name": "Majuli Garh 201/356 (2)",
+            "ward_id": 286626
+        },
+        {
+            "ward_no": 286592,
+            "ward_name": "Majuli Ghur T.E. 36/2",
+            "ward_id": 286592
+        },
+        {
+            "ward_no": 286591,
+            "ward_name": "Majuli Ghur T.E. 4/16",
+            "ward_id": 286591
+        },
+        {
+            "ward_no": 286588,
+            "ward_name": "Majuli Ghur T.E. 65/97",
+            "ward_id": 286588
+        },
+        {
+            "ward_no": 286589,
+            "ward_name": "Majuli Ghur T.E. No.1 16/17",
+            "ward_id": 286589
+        },
+        {
+            "ward_no": 286590,
+            "ward_name": "Majuli Ghur T.E. No.2 16/17",
+            "ward_id": 286590
+        },
+        {
+            "ward_no": 286573,
+            "ward_name": "Maruabasti",
+            "ward_id": 286573
+        },
+        {
+            "ward_no": 286594,
+            "ward_name": "Missamari",
+            "ward_id": 286594
+        },
+        {
+            "ward_no": 286918,
+            "ward_name": "Mugachang",
+            "ward_id": 286918
+        },
+        {
+            "ward_no": 286662,
+            "ward_name": "Mukhar Garh",
+            "ward_id": 286662
+        },
+        {
+            "ward_no": 286570,
+            "ward_name": "Naharani",
+            "ward_id": 286570
+        },
+        {
+            "ward_no": 286674,
+            "ward_name": "Nilpur T.E. 255/420",
+            "ward_id": 286674
+        },
+        {
+            "ward_no": 286584,
+            "ward_name": "No.1 Barpathar",
+            "ward_id": 286584
+        },
+        {
+            "ward_no": 286580,
+            "ward_name": "No.1 Dhali Dilisang",
+            "ward_id": 286580
+        },
+        {
+            "ward_no": 286549,
+            "ward_name": "No.1 Diring Pathar",
+            "ward_id": 286549
+        },
+        {
+            "ward_no": 286585,
+            "ward_name": "No.2 Barpathar",
+            "ward_id": 286585
+        },
+        {
+            "ward_no": 286581,
+            "ward_name": "No.2 Dhalidili Sang",
+            "ward_id": 286581
+        },
+        {
+            "ward_no": 286596,
+            "ward_name": "No.2 Diring Pathar",
+            "ward_id": 286596
+        },
+        {
+            "ward_no": 286586,
+            "ward_name": "No.3 Barpathar",
+            "ward_id": 286586
+        },
+        {
+            "ward_no": 286587,
+            "ward_name": "No.4 Barpathar",
+            "ward_id": 286587
+        },
+        {
+            "ward_no": 286677,
+            "ward_name": "No.4 Pratapgarh S.P.P. No.1",
+            "ward_id": 286677
+        },
+        {
+            "ward_no": 286921,
+            "ward_name": "Omarjan",
+            "ward_id": 286921
+        },
+        {
+            "ward_no": 286593,
+            "ward_name": "Pabhoi",
+            "ward_id": 286593
+        },
+        {
+            "ward_no": 286563,
+            "ward_name": "Pabhoi T.E. 14/15",
+            "ward_id": 286563
+        },
+        {
+            "ward_no": 286567,
+            "ward_name": "Pabhoi T.E. 30/20",
+            "ward_id": 286567
+        },
+        {
+            "ward_no": 286568,
+            "ward_name": "Pabhoi T.E. 35/7",
+            "ward_id": 286568
+        },
+        {
+            "ward_no": 286569,
+            "ward_name": "Pabhoi T.E. 407/748",
+            "ward_id": 286569
+        },
+        {
+            "ward_no": 286564,
+            "ward_name": "Pabhoi T.E. 412/536",
+            "ward_id": 286564
+        },
+        {
+            "ward_no": 286566,
+            "ward_name": "Pabhoi T.E. 57/72",
+            "ward_id": 286566
+        },
+        {
+            "ward_no": 286565,
+            "ward_name": "Pabhoi T.E. 7/2",
+            "ward_id": 286565
+        },
+        {
+            "ward_no": 286552,
+            "ward_name": "Pathai Jan",
+            "ward_id": 286552
+        },
+        {
+            "ward_no": 286629,
+            "ward_name": "Petuli Bari",
+            "ward_id": 286629
+        },
+        {
+            "ward_no": 286676,
+            "ward_name": "Pratap Garh 72/110",
+            "ward_id": 286676
+        },
+        {
+            "ward_no": 286675,
+            "ward_name": "Pratap Garh 91/158",
+            "ward_id": 286675
+        },
+        {
+            "ward_no": 286615,
+            "ward_name": "Pratap Ghar T.E. 126/225",
+            "ward_id": 286615
+        },
+        {
+            "ward_no": 286613,
+            "ward_name": "Pratap Ghar T.E. 156/268",
+            "ward_id": 286613
+        },
+        {
+            "ward_no": 286611,
+            "ward_name": "Pratap Ghar T.E. 163/267",
+            "ward_id": 286611
+        },
+        {
+            "ward_no": 286610,
+            "ward_name": "Pratap Ghar T.E. 74/89",
+            "ward_id": 286610
+        },
+        {
+            "ward_no": 286612,
+            "ward_name": "Pratap Ghar T.E. 92/156",
+            "ward_id": 286612
+        },
+        {
+            "ward_no": 286614,
+            "ward_name": "Pratap Ghar T.E. S.P.P No.7",
+            "ward_id": 286614
+        },
+        {
+            "ward_no": 286632,
+            "ward_name": "Ranga Muri",
+            "ward_id": 286632
+        },
+        {
+            "ward_no": 286922,
+            "ward_name": "Rongajan (Pabhoi R.F.)",
+            "ward_id": 286922
+        },
+        {
+            "ward_no": 286616,
+            "ward_name": "Sadharu Ghop",
+            "ward_id": 286616
+        },
+        {
+            "ward_no": 286617,
+            "ward_name": "Sadharu Ghop F.S. 3/5",
+            "ward_id": 286617
+        },
+        {
+            "ward_no": 286618,
+            "ward_name": "Sadharu Ghop S.P.P 1/3",
+            "ward_id": 286618
+        },
+        {
+            "ward_no": 286619,
+            "ward_name": "Sadharu Ghop S.P.P. 90/157",
+            "ward_id": 286619
+        },
+        {
+            "ward_no": 286671,
+            "ward_name": "Sadharu Guri",
+            "ward_id": 286671
+        },
+        {
+            "ward_no": 286672,
+            "ward_name": "Sadharu T.E. F.S. 10/9",
+            "ward_id": 286672
+        },
+        {
+            "ward_no": 286673,
+            "ward_name": "Sadharu T.E. F.S. 23/28",
+            "ward_id": 286673
+        },
+        {
+            "ward_no": 286601,
+            "ward_name": "Sakomatha 20/8",
+            "ward_id": 286601
+        },
+        {
+            "ward_no": 286599,
+            "ward_name": "Sakomatha 34/92",
+            "ward_id": 286599
+        },
+        {
+            "ward_no": 286600,
+            "ward_name": "Sakomatha 73/18",
+            "ward_id": 286600
+        },
+        {
+            "ward_no": 286620,
+            "ward_name": "Sakomatha 90/157",
+            "ward_id": 286620
+        },
+        {
+            "ward_no": 286621,
+            "ward_name": "Sakomatha F.S. 1/3",
+            "ward_id": 286621
+        },
+        {
+            "ward_no": 286605,
+            "ward_name": "Sakomatha Gaon",
+            "ward_id": 286605
+        },
+        {
+            "ward_no": 286602,
+            "ward_name": "Sakomatha S.P.P. 6/2",
+            "ward_id": 286602
+        },
+        {
+            "ward_no": 286623,
+            "ward_name": "Sakomatha S.P.P. No.4",
+            "ward_id": 286623
+        },
+        {
+            "ward_no": 286622,
+            "ward_name": "Sakomatha S.P.P. No.5",
+            "ward_id": 286622
+        },
+        {
+            "ward_no": 286577,
+            "ward_name": "Salai Khati",
+            "ward_id": 286577
+        },
+        {
+            "ward_no": 286633,
+            "ward_name": "Salaikhati Bangali",
+            "ward_id": 286633
+        },
+        {
+            "ward_no": 286575,
+            "ward_name": "Salai Khatibasti",
+            "ward_id": 286575
+        },
+        {
+            "ward_no": 286634,
+            "ward_name": "Salaikhati Kachari",
+            "ward_id": 286634
+        },
+        {
+            "ward_no": 286635,
+            "ward_name": "Salaikhati Mikir",
+            "ward_id": 286635
+        },
+        {
+            "ward_no": 286576,
+            "ward_name": "Salai Khatipathar",
+            "ward_id": 286576
+        },
+        {
+            "ward_no": 286555,
+            "ward_name": "Samur Juli",
+            "ward_id": 286555
+        },
+        {
+            "ward_no": 286551,
+            "ward_name": "Sarih Bil",
+            "ward_id": 286551
+        },
+        {
+            "ward_no": 286923,
+            "ward_name": "Sonabil",
+            "ward_id": 286923
+        },
+        {
+            "ward_no": 286915,
+            "ward_name": "Sonajuli",
+            "ward_id": 286915
+        },
+        {
+            "ward_no": 286571,
+            "ward_name": "Tarajuli",
+            "ward_id": 286571
+        },
+        {
+            "ward_no": 286917,
+            "ward_name": "Thaikirguri",
+            "ward_id": 286917
+        }
+    ]
+}

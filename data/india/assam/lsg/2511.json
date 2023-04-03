@@ -1,0 +1,479 @@
+{
+    "name": "Borkhola",
+    "lsg_code": 2511,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 94,
+    "wards": [
+        {
+            "ward_no": 299146,
+            "ward_name": "95 Bsf Camp Damchera",
+            "ward_id": 299146
+        },
+        {
+            "ward_no": 299160,
+            "ward_name": "Abongchara Grant Pt I",
+            "ward_id": 299160
+        },
+        {
+            "ward_no": 299154,
+            "ward_name": "Abongchara Grant Pt Ii",
+            "ward_id": 299154
+        },
+        {
+            "ward_no": 299164,
+            "ward_name": "Anwarpur",
+            "ward_id": 299164
+        },
+        {
+            "ward_no": 299199,
+            "ward_name": "Ardvallik",
+            "ward_id": 299199
+        },
+        {
+            "ward_no": 299187,
+            "ward_name": "Badarpur Pt I",
+            "ward_id": 299187
+        },
+        {
+            "ward_no": 299195,
+            "ward_name": "Badarpur Pt Ii",
+            "ward_id": 299195
+        },
+        {
+            "ward_no": 299153,
+            "ward_name": "Balichara Grant Pt I",
+            "ward_id": 299153
+        },
+        {
+            "ward_no": 299151,
+            "ward_name": "Balichara Grant Pt Ii",
+            "ward_id": 299151
+        },
+        {
+            "ward_no": 299143,
+            "ward_name": "Bandar Khal Punjee",
+            "ward_id": 299143
+        },
+        {
+            "ward_no": 299158,
+            "ward_name": "Barabond",
+            "ward_id": 299158
+        },
+        {
+            "ward_no": 299167,
+            "ward_name": "Bhitor Gangapur Pt I",
+            "ward_id": 299167
+        },
+        {
+            "ward_no": 299169,
+            "ward_name": "Bhitor Gangapur Pt Ii",
+            "ward_id": 299169
+        },
+        {
+            "ward_no": 299163,
+            "ward_name": "Bijoypur",
+            "ward_id": 299163
+        },
+        {
+            "ward_no": 299162,
+            "ward_name": "Bijoypur Grant",
+            "ward_id": 299162
+        },
+        {
+            "ward_no": 299203,
+            "ward_name": "Borodudhpatil Grant",
+            "ward_id": 299203
+        },
+        {
+            "ward_no": 299180,
+            "ward_name": "Boro Rampur",
+            "ward_id": 299180
+        },
+        {
+            "ward_no": 299183,
+            "ward_name": "Boro Rampur Garden",
+            "ward_id": 299183
+        },
+        {
+            "ward_no": 299145,
+            "ward_name": "Chandranath Pur",
+            "ward_id": 299145
+        },
+        {
+            "ward_no": 299859,
+            "ward_name": "Chandrapur Pt Iv",
+            "ward_id": 299859
+        },
+        {
+            "ward_no": 299177,
+            "ward_name": "Chesri",
+            "ward_id": 299177
+        },
+        {
+            "ward_no": 299159,
+            "ward_name": "Chotorampur Grant",
+            "ward_id": 299159
+        },
+        {
+            "ward_no": 299174,
+            "ward_name": "Chutra Sangan",
+            "ward_id": 299174
+        },
+        {
+            "ward_no": 299181,
+            "ward_name": "Dalu Gram",
+            "ward_id": 299181
+        },
+        {
+            "ward_no": 299182,
+            "ward_name": "Dalu Grant",
+            "ward_id": 299182
+        },
+        {
+            "ward_no": 299133,
+            "ward_name": "Damcherra East Tomas Punjee",
+            "ward_id": 299133
+        },
+        {
+            "ward_no": 299120,
+            "ward_name": "Deswali Basti",
+            "ward_id": 299120
+        },
+        {
+            "ward_no": 299147,
+            "ward_name": "Dhalchara Grant",
+            "ward_id": 299147
+        },
+        {
+            "ward_no": 299121,
+            "ward_name": "Dimasa Punjee",
+            "ward_id": 299121
+        },
+        {
+            "ward_no": 299235,
+            "ward_name": "Dudhpatil Grant",
+            "ward_id": 299235
+        },
+        {
+            "ward_no": 299206,
+            "ward_name": "Dudhpatil Pt I",
+            "ward_id": 299206
+        },
+        {
+            "ward_no": 299207,
+            "ward_name": "Dudhpatil Pt Ii",
+            "ward_id": 299207
+        },
+        {
+            "ward_no": 299208,
+            "ward_name": "Dudhpatil Pt Iii",
+            "ward_id": 299208
+        },
+        {
+            "ward_no": 299234,
+            "ward_name": "Dudhpatil Pt Iv",
+            "ward_id": 299234
+        },
+        {
+            "ward_no": 299381,
+            "ward_name": "Dudhpatil Pt V (Ct)",
+            "ward_id": 299381
+        },
+        {
+            "ward_no": 299380,
+            "ward_name": "Dudhpatil Pt Vi (Ct)",
+            "ward_id": 299380
+        },
+        {
+            "ward_no": 299237,
+            "ward_name": "Dudhpatil Pt Vii",
+            "ward_id": 299237
+        },
+        {
+            "ward_no": 299236,
+            "ward_name": "Dudhpatil Pt Viii",
+            "ward_id": 299236
+        },
+        {
+            "ward_no": 299142,
+            "ward_name": "Durbin Tilla Punji",
+            "ward_id": 299142
+        },
+        {
+            "ward_no": 299141,
+            "ward_name": "Durgacharra Punjee",
+            "ward_id": 299141
+        },
+        {
+            "ward_no": 299134,
+            "ward_name": "Durgacherra Grant",
+            "ward_id": 299134
+        },
+        {
+            "ward_no": 299139,
+            "ward_name": "Elyas Khasia Punjee",
+            "ward_id": 299139
+        },
+        {
+            "ward_no": 299205,
+            "ward_name": "Gorer Bond Pt I",
+            "ward_id": 299205
+        },
+        {
+            "ward_no": 299204,
+            "ward_name": "Gorer Bond Pt Ii",
+            "ward_id": 299204
+        },
+        {
+            "ward_no": 299148,
+            "ward_name": "Harinchara Grant",
+            "ward_id": 299148
+        },
+        {
+            "ward_no": 299157,
+            "ward_name": "Hatichara Grant",
+            "ward_id": 299157
+        },
+        {
+            "ward_no": 299170,
+            "ward_name": "Heirbond Pt I",
+            "ward_id": 299170
+        },
+        {
+            "ward_no": 299171,
+            "ward_name": "Heirbond Pt Ii",
+            "ward_id": 299171
+        },
+        {
+            "ward_no": 299168,
+            "ward_name": "Jarailtala",
+            "ward_id": 299168
+        },
+        {
+            "ward_no": 299150,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 299150
+        },
+        {
+            "ward_no": 299126,
+            "ward_name": "Kajakani (Khajakhan)",
+            "ward_id": 299126
+        },
+        {
+            "ward_no": 299136,
+            "ward_name": "Kalibari Grant",
+            "ward_id": 299136
+        },
+        {
+            "ward_no": 299184,
+            "ward_name": "Kalinagar Garden",
+            "ward_id": 299184
+        },
+        {
+            "ward_no": 299185,
+            "ward_name": "Kalinagar Pt I",
+            "ward_id": 299185
+        },
+        {
+            "ward_no": 299186,
+            "ward_name": "Kalinagar Pt Ii",
+            "ward_id": 299186
+        },
+        {
+            "ward_no": 299176,
+            "ward_name": "Kashipur",
+            "ward_id": 299176
+        },
+        {
+            "ward_no": 299138,
+            "ward_name": "Katlichara Grant (Bagicha)",
+            "ward_id": 299138
+        },
+        {
+            "ward_no": 299127,
+            "ward_name": "Kayangpai",
+            "ward_id": 299127
+        },
+        {
+            "ward_no": 299124,
+            "ward_name": "Kayang Pur",
+            "ward_id": 299124
+        },
+        {
+            "ward_no": 299119,
+            "ward_name": "Kayangthal",
+            "ward_id": 299119
+        },
+        {
+            "ward_no": 299200,
+            "ward_name": "Kharil Bagicha",
+            "ward_id": 299200
+        },
+        {
+            "ward_no": 299125,
+            "ward_name": "Laljar",
+            "ward_id": 299125
+        },
+        {
+            "ward_no": 299202,
+            "ward_name": "Leburbond",
+            "ward_id": 299202
+        },
+        {
+            "ward_no": 299156,
+            "ward_name": "Madhurapur Grant",
+            "ward_id": 299156
+        },
+        {
+            "ward_no": 299152,
+            "ward_name": "Mainachara (Moirachara)",
+            "ward_id": 299152
+        },
+        {
+            "ward_no": 299197,
+            "ward_name": "Masimpur Bagicha",
+            "ward_id": 299197
+        },
+        {
+            "ward_no": 299196,
+            "ward_name": "Masimpur Grant",
+            "ward_id": 299196
+        },
+        {
+            "ward_no": 299198,
+            "ward_name": "Masimpur Pt Ii",
+            "ward_id": 299198
+        },
+        {
+            "ward_no": 299211,
+            "ward_name": "Masimpur Pt I (Maohimpur)",
+            "ward_id": 299211
+        },
+        {
+            "ward_no": 299209,
+            "ward_name": "Masughat",
+            "ward_id": 299209
+        },
+        {
+            "ward_no": 299201,
+            "ward_name": "Mulidahar Grant",
+            "ward_id": 299201
+        },
+        {
+            "ward_no": 299149,
+            "ward_name": "Narainchara Grant",
+            "ward_id": 299149
+        },
+        {
+            "ward_no": 299122,
+            "ward_name": "New Mesikiyar (New Machangjai)",
+            "ward_id": 299122
+        },
+        {
+            "ward_no": 299128,
+            "ward_name": "Newzer",
+            "ward_id": 299128
+        },
+        {
+            "ward_no": 299166,
+            "ward_name": "Niz-Borkhola Pt I",
+            "ward_id": 299166
+        },
+        {
+            "ward_no": 299178,
+            "ward_name": "Niz-Borkhola Pt Ii",
+            "ward_id": 299178
+        },
+        {
+            "ward_no": 299123,
+            "ward_name": "Oldoor Basti (Oldjuhar Basti)",
+            "ward_id": 299123
+        },
+        {
+            "ward_no": 299144,
+            "ward_name": "Panichar Grant",
+            "ward_id": 299144
+        },
+        {
+            "ward_no": 299214,
+            "ward_name": "Purandarpur",
+            "ward_id": 299214
+        },
+        {
+            "ward_no": 299179,
+            "ward_name": "Rampur",
+            "ward_id": 299179
+        },
+        {
+            "ward_no": 299161,
+            "ward_name": "Rampur Garden",
+            "ward_id": 299161
+        },
+        {
+            "ward_no": 298991,
+            "ward_name": "Rangar Pt I",
+            "ward_id": 298991
+        },
+        {
+            "ward_no": 298993,
+            "ward_name": "Rangar Pt Ii",
+            "ward_id": 298993
+        },
+        {
+            "ward_no": 298992,
+            "ward_name": "Rangar Pt Iii(Rangghar Pt Iii)",
+            "ward_id": 298992
+        },
+        {
+            "ward_no": 299135,
+            "ward_name": "Sabajpur Bagicha",
+            "ward_id": 299135
+        },
+        {
+            "ward_no": 299137,
+            "ward_name": "Sonachera Grant",
+            "ward_id": 299137
+        },
+        {
+            "ward_no": 299155,
+            "ward_name": "Subang Garden",
+            "ward_id": 299155
+        },
+        {
+            "ward_no": 299009,
+            "ward_name": "Suna Cherra Mikir Punjee",
+            "ward_id": 299009
+        },
+        {
+            "ward_no": 298989,
+            "ward_name": "Sunapur Pt Ii",
+            "ward_id": 298989
+        },
+        {
+            "ward_no": 298990,
+            "ward_name": "Sunapur Pt Iii",
+            "ward_id": 298990
+        },
+        {
+            "ward_no": 298988,
+            "ward_name": "Sunapur Pt I (Sonapur Pt I)",
+            "ward_id": 298988
+        },
+        {
+            "ward_no": 299140,
+            "ward_name": "Tibong Chera Khasia Punjee",
+            "ward_id": 299140
+        },
+        {
+            "ward_no": 299212,
+            "ward_name": "Ujangram",
+            "ward_id": 299212
+        },
+        {
+            "ward_no": 299165,
+            "ward_name": "Ujan Nagar",
+            "ward_id": 299165
+        }
+    ]
+}

@@ -1,0 +1,104 @@
+{
+    "name": "Borsola",
+    "lsg_code": 6554,
+    "district": "Udalguri",
+    "state": "Assam",
+    "no_of_wards": 19,
+    "wards": [
+        {
+            "ward_no": 306136,
+            "ward_name": "Amguri Kachari",
+            "ward_id": 306136
+        },
+        {
+            "ward_no": 306132,
+            "ward_name": "Barigaon Dighalipar",
+            "ward_id": 306132
+        },
+        {
+            "ward_no": 306140,
+            "ward_name": "Biskhuti",
+            "ward_id": 306140
+        },
+        {
+            "ward_no": 306141,
+            "ward_name": "Chengelimaragaon",
+            "ward_id": 306141
+        },
+        {
+            "ward_no": 306138,
+            "ward_name": "Chungabudhi Kachari (Sunga Budhi Gaon)",
+            "ward_id": 306138
+        },
+        {
+            "ward_no": 306142,
+            "ward_name": "Dhupguri",
+            "ward_id": 306142
+        },
+        {
+            "ward_no": 306144,
+            "ward_name": "Fata Simalu Chapari",
+            "ward_id": 306144
+        },
+        {
+            "ward_no": 306143,
+            "ward_name": "Fata Simalugaon",
+            "ward_id": 306143
+        },
+        {
+            "ward_no": 306139,
+            "ward_name": "Gariapathargaon",
+            "ward_id": 306139
+        },
+        {
+            "ward_no": 306131,
+            "ward_name": "Kacharichangaon",
+            "ward_id": 306131
+        },
+        {
+            "ward_no": 306128,
+            "ward_name": "Kachomari Gaon",
+            "ward_id": 306128
+        },
+        {
+            "ward_no": 306129,
+            "ward_name": "Kamarchuburi Gaon",
+            "ward_id": 306129
+        },
+        {
+            "ward_no": 306126,
+            "ward_name": "Manuhmari Kachari",
+            "ward_id": 306126
+        },
+        {
+            "ward_no": 306130,
+            "ward_name": "Natun Panbari",
+            "ward_id": 306130
+        },
+        {
+            "ward_no": 306137,
+            "ward_name": "Pachnoigaon (Pach No.1)",
+            "ward_id": 306137
+        },
+        {
+            "ward_no": 306135,
+            "ward_name": "Sialmari Kachari Gaon",
+            "ward_id": 306135
+        },
+        {
+            "ward_no": 306134,
+            "ward_name": "Sialmaripathar",
+            "ward_id": 306134
+        },
+        {
+            "ward_no": 306133,
+            "ward_name": "Silpota Bori",
+            "ward_id": 306133
+        },
+        {
+            "ward_no": 306127,
+            "ward_name": "Singimari No.1",
+            "ward_id": 306127
+        }
+    ]
+}

@@ -13,7 +13,7 @@
   },
   {
     "state": "Assam",
-    "districts": "Barpeta, Biswanath, Bongaigaon, Cachar, Charaideo, Chirang, Darrang, Dhemaji, Dhubri, Dibrugarh, Goalpara, Golaghat, Hailakandi, Hojai, Jorhat, Kamrup Metropolitan, Kamrup, Karbi Anglong, Karimganj, Kokrajhar, Lakhimpur, Majuli, Morigaon, Nagaon, Nalbari, Dima Hasao, Sivasagar, Sonitpur, South Salmara-Mankachar, Tinsukia, Udalguri, West Karbi Anglong"
+    "districts": "Barpeta, Biswanath, Bongaigaon, Cachar, Charaideo, Chirang, Darrang, Dhemaji, Dhubri, Dibrugarh, Goalpara, Golaghat, Hailakandi, Hojai, Jorhat, Kamrup Metro, Kamrup, Karbi Anglong, Karimganj, Kokrajhar, Lakhimpur, Majuli, Marigaon, Nagaon, Nalbari, Dima Hasao, Sivasagar, Sonitpur, South Salmara Mankachar, Tinsukia, Udalguri, West Karbi Anglong"
   },
   {
     "state": "Bihar",
@@ -117,7 +117,7 @@
   },
   {
     "state": "Sikkim",
-    "districts": "East Sikkim, North Sikkim, South Sikkim, West Sikkim"
+    "districts": "Gangtok, Gyalshing, Mangan, Namchi, Pakyong, Soreng"
   },
   {
     "state": "Tamil Nadu",

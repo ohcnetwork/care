@@ -16,6 +16,8 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
+    ConsultationStatusChoices,
+    ConsultationStatusEnum,
     SuggestionChoices,
     reverse_choices,
 )
@@ -29,11 +31,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         (SuggestionChoices.R, "REFERRAL"),
         (SuggestionChoices.OP, "OP CONSULTATION"),
         (SuggestionChoices.DC, "DOMICILIARY CARE"),
+        (SuggestionChoices.DD, "DECLARE DEATH"),
     ]
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey(
-        "PatientRegistration", on_delete=models.CASCADE, related_name="consultations"
+        "PatientRegistration",
+        on_delete=models.CASCADE,
+        related_name="consultations",
     )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
@@ -41,7 +46,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)
+    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=[], blank=True, null=True
     )
@@ -74,6 +79,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
+    consultation_status = models.IntegerField(
+        default=ConsultationStatusEnum.UNKNOWN.value,
+        choices=ConsultationStatusChoices,
+    )
+    review_interval = models.IntegerField(default=-1)
     referred_to = models.ForeignKey(
         "Facility",
         null=True,
@@ -92,6 +102,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
+    death_datetime = models.DateTimeField(null=True, blank=True)
+    death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
 
     is_kasp = models.BooleanField(default=False)
@@ -101,7 +113,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     last_updated_by_telemedicine = models.BooleanField(default=False)  # Deprecated
 
     assigned_to = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_assigned_to"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_assigned_to",
     )
 
     verified_by = models.TextField(default="", null=True, blank=True)
@@ -111,11 +126,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="last_edited_user",
     )
 
     last_daily_round = models.ForeignKey(
-        "facility.DailyRound", on_delete=models.SET_NULL, null=True, default=None
+        "facility.DailyRound",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
 
     current_bed = models.ForeignKey(

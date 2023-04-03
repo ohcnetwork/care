@@ -1,0 +1,334 @@
+{
+    "name": "Sarukhetri",
+    "lsg_code": 2500,
+    "district": "Barpeta",
+    "state": "Assam",
+    "no_of_wards": 65,
+    "wards": [
+        {
+            "ward_no": 283156,
+            "ward_name": "Agdia",
+            "ward_id": 283156
+        },
+        {
+            "ward_no": 283150,
+            "ward_name": "Agdia Pathar",
+            "ward_id": 283150
+        },
+        {
+            "ward_no": 283183,
+            "ward_name": "Bagari Tari",
+            "ward_id": 283183
+        },
+        {
+            "ward_no": 283160,
+            "ward_name": "Balar Bari",
+            "ward_id": 283160
+        },
+        {
+            "ward_no": 283207,
+            "ward_name": "Balipara Pam",
+            "ward_id": 283207
+        },
+        {
+            "ward_no": 283195,
+            "ward_name": "Balipara Pather",
+            "ward_id": 283195
+        },
+        {
+            "ward_no": 283197,
+            "ward_name": "Bar Amrikhowa",
+            "ward_id": 283197
+        },
+        {
+            "ward_no": 283166,
+            "ward_name": "Barbil Pathar",
+            "ward_id": 283166
+        },
+        {
+            "ward_no": 283159,
+            "ward_name": "Barfaladi",
+            "ward_id": 283159
+        },
+        {
+            "ward_no": 283188,
+            "ward_name": "Barghopa",
+            "ward_id": 283188
+        },
+        {
+            "ward_no": 283201,
+            "ward_name": "Bar Gomura",
+            "ward_id": 283201
+        },
+        {
+            "ward_no": 283179,
+            "ward_name": "Barkapala",
+            "ward_id": 283179
+        },
+        {
+            "ward_no": 283171,
+            "ward_name": "Barmara",
+            "ward_id": 283171
+        },
+        {
+            "ward_no": 283198,
+            "ward_name": "Barshala Bilar Pathar",
+            "ward_id": 283198
+        },
+        {
+            "ward_no": 283155,
+            "ward_name": "Bayasha",
+            "ward_id": 283155
+        },
+        {
+            "ward_no": 283174,
+            "ward_name": "Bebari Gaon",
+            "ward_id": 283174
+        },
+        {
+            "ward_no": 283173,
+            "ward_name": "Belbari Pathar",
+            "ward_id": 283173
+        },
+        {
+            "ward_no": 283149,
+            "ward_name": "Besimari Pam",
+            "ward_id": 283149
+        },
+        {
+            "ward_no": 283172,
+            "ward_name": "Bhakua Tepa",
+            "ward_id": 283172
+        },
+        {
+            "ward_no": 283157,
+            "ward_name": "Bhogdia",
+            "ward_id": 283157
+        },
+        {
+            "ward_no": 283145,
+            "ward_name": "Bogchara",
+            "ward_id": 283145
+        },
+        {
+            "ward_no": 283167,
+            "ward_name": "Byaskuchi",
+            "ward_id": 283167
+        },
+        {
+            "ward_no": 283187,
+            "ward_name": "Chatala",
+            "ward_id": 283187
+        },
+        {
+            "ward_no": 283181,
+            "ward_name": "Chengdi",
+            "ward_id": 283181
+        },
+        {
+            "ward_no": 283194,
+            "ward_name": "Chinadi",
+            "ward_id": 283194
+        },
+        {
+            "ward_no": 283189,
+            "ward_name": "Chinadi Pathar",
+            "ward_id": 283189
+        },
+        {
+            "ward_no": 283205,
+            "ward_name": "Dewan Khetri",
+            "ward_id": 283205
+        },
+        {
+            "ward_no": 283168,
+            "ward_name": "Dubadubi Pathar",
+            "ward_id": 283168
+        },
+        {
+            "ward_no": 283165,
+            "ward_name": "Gadeshali Pam",
+            "ward_id": 283165
+        },
+        {
+            "ward_no": 283151,
+            "ward_name": "Gahia",
+            "ward_id": 283151
+        },
+        {
+            "ward_no": 283164,
+            "ward_name": "Garai Mari",
+            "ward_id": 283164
+        },
+        {
+            "ward_no": 283152,
+            "ward_name": "Garartari",
+            "ward_id": 283152
+        },
+        {
+            "ward_no": 283184,
+            "ward_name": "Garia Chatala",
+            "ward_id": 283184
+        },
+        {
+            "ward_no": 283178,
+            "ward_name": "Haladhi Bari",
+            "ward_id": 283178
+        },
+        {
+            "ward_no": 283202,
+            "ward_name": "Hariadi",
+            "ward_id": 283202
+        },
+        {
+            "ward_no": 283206,
+            "ward_name": "Hari Ghata",
+            "ward_id": 283206
+        },
+        {
+            "ward_no": 283146,
+            "ward_name": "Josodar Pam",
+            "ward_id": 283146
+        },
+        {
+            "ward_no": 283186,
+            "ward_name": "Kaldi",
+            "ward_id": 283186
+        },
+        {
+            "ward_no": 283180,
+            "ward_name": "Kaldi Pathar",
+            "ward_id": 283180
+        },
+        {
+            "ward_no": 283147,
+            "ward_name": "Kaljahi Pathar",
+            "ward_id": 283147
+        },
+        {
+            "ward_no": 283182,
+            "ward_name": "Kamalabari",
+            "ward_id": 283182
+        },
+        {
+            "ward_no": 283176,
+            "ward_name": "Kamar Para",
+            "ward_id": 283176
+        },
+        {
+            "ward_no": 283203,
+            "ward_name": "Karakuchi",
+            "ward_id": 283203
+        },
+        {
+            "ward_no": 283161,
+            "ward_name": "Kathal Bhuri",
+            "ward_id": 283161
+        },
+        {
+            "ward_no": 283190,
+            "ward_name": "Khapani Kuchi",
+            "ward_id": 283190
+        },
+        {
+            "ward_no": 283196,
+            "ward_name": "Khudra Amrikhowa",
+            "ward_id": 283196
+        },
+        {
+            "ward_no": 283185,
+            "ward_name": "Khudra Bamunbari",
+            "ward_id": 283185
+        },
+        {
+            "ward_no": 283192,
+            "ward_name": "Khudra Chinadi",
+            "ward_id": 283192
+        },
+        {
+            "ward_no": 283158,
+            "ward_name": "Khudrafaladi",
+            "ward_id": 283158
+        },
+        {
+            "ward_no": 283200,
+            "ward_name": "Khudra Gomura",
+            "ward_id": 283200
+        },
+        {
+            "ward_no": 283162,
+            "ward_name": "Kukar Par",
+            "ward_id": 283162
+        },
+        {
+            "ward_no": 283177,
+            "ward_name": "Lachima",
+            "ward_id": 283177
+        },
+        {
+            "ward_no": 283163,
+            "ward_name": "Mazdia",
+            "ward_id": 283163
+        },
+        {
+            "ward_no": 283193,
+            "ward_name": "Na-Kuchi",
+            "ward_id": 283193
+        },
+        {
+            "ward_no": 283199,
+            "ward_name": "Namshala",
+            "ward_id": 283199
+        },
+        {
+            "ward_no": 283170,
+            "ward_name": "Pachim Aladi",
+            "ward_id": 283170
+        },
+        {
+            "ward_no": 283204,
+            "ward_name": "Palla",
+            "ward_id": 283204
+        },
+        {
+            "ward_no": 283191,
+            "ward_name": "Potlarkur",
+            "ward_id": 283191
+        },
+        {
+            "ward_no": 283169,
+            "ward_name": "Purba Aladi",
+            "ward_id": 283169
+        },
+        {
+            "ward_no": 283143,
+            "ward_name": "Rangia Gaon",
+            "ward_id": 283143
+        },
+        {
+            "ward_no": 283144,
+            "ward_name": "Rangia Nadir Pam",
+            "ward_id": 283144
+        },
+        {
+            "ward_no": 283175,
+            "ward_name": "Rawly",
+            "ward_id": 283175
+        },
+        {
+            "ward_no": 283154,
+            "ward_name": "Sarimakuchi",
+            "ward_id": 283154
+        },
+        {
+            "ward_no": 283153,
+            "ward_name": "Singra",
+            "ward_id": 283153
+        },
+        {
+            "ward_no": 283148,
+            "ward_name": "Uttar Burikamar",
+            "ward_id": 283148
+        }
+    ]
+}

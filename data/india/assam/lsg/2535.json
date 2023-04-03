@@ -1,0 +1,454 @@
+{
+    "name": "Pachim-Mangaldai",
+    "lsg_code": 2535,
+    "district": "Darrang",
+    "state": "Assam",
+    "no_of_wards": 89,
+    "wards": [
+        {
+            "ward_no": 304981,
+            "ward_name": "Adhamapara",
+            "ward_id": 304981
+        },
+        {
+            "ward_no": 304979,
+            "ward_name": "Adhikari",
+            "ward_id": 304979
+        },
+        {
+            "ward_no": 305008,
+            "ward_name": "Alagjhari",
+            "ward_id": 305008
+        },
+        {
+            "ward_no": 305020,
+            "ward_name": "Bainaojha Para",
+            "ward_id": 305020
+        },
+        {
+            "ward_no": 305033,
+            "ward_name": "Bamunpara",
+            "ward_id": 305033
+        },
+        {
+            "ward_no": 304966,
+            "ward_name": "Barampur",
+            "ward_id": 304966
+        },
+        {
+            "ward_no": 305323,
+            "ward_name": "Barangabari",
+            "ward_id": 305323
+        },
+        {
+            "ward_no": 305001,
+            "ward_name": "Baranga Bari",
+            "ward_id": 305001
+        },
+        {
+            "ward_no": 304929,
+            "ward_name": "Barathiabari",
+            "ward_id": 304929
+        },
+        {
+            "ward_no": 305009,
+            "ward_name": "Barnagaon",
+            "ward_id": 305009
+        },
+        {
+            "ward_no": 305000,
+            "ward_name": "Bar - Satra",
+            "ward_id": 305000
+        },
+        {
+            "ward_no": 305011,
+            "ward_name": "Barthekera Bari",
+            "ward_id": 305011
+        },
+        {
+            "ward_no": 304985,
+            "ward_name": "Bezpara",
+            "ward_id": 304985
+        },
+        {
+            "ward_no": 305013,
+            "ward_name": "Bhaluk Khowa Para",
+            "ward_id": 305013
+        },
+        {
+            "ward_no": 305017,
+            "ward_name": "Bhanguri - Chuba",
+            "ward_id": 305017
+        },
+        {
+            "ward_no": 305034,
+            "ward_name": "Bhebarghat",
+            "ward_id": 305034
+        },
+        {
+            "ward_no": 305048,
+            "ward_name": "Bherpori Chapori",
+            "ward_id": 305048
+        },
+        {
+            "ward_no": 305041,
+            "ward_name": "Bhokeli Kanda",
+            "ward_id": 305041
+        },
+        {
+            "ward_no": 305016,
+            "ward_name": "Bhokelimara Dal",
+            "ward_id": 305016
+        },
+        {
+            "ward_no": 304970,
+            "ward_name": "Bologaratuk",
+            "ward_id": 304970
+        },
+        {
+            "ward_no": 304980,
+            "ward_name": "Chamuapara",
+            "ward_id": 304980
+        },
+        {
+            "ward_no": 305022,
+            "ward_name": "Chengeliapara",
+            "ward_id": 305022
+        },
+        {
+            "ward_no": 304991,
+            "ward_name": "Choto Athiabari",
+            "ward_id": 304991
+        },
+        {
+            "ward_no": 305010,
+            "ward_name": "Choto Nagaon",
+            "ward_id": 305010
+        },
+        {
+            "ward_no": 304974,
+            "ward_name": "Daha Chuburi",
+            "ward_id": 304974
+        },
+        {
+            "ward_no": 305014,
+            "ward_name": "Daria Para",
+            "ward_id": 305014
+        },
+        {
+            "ward_no": 304968,
+            "ward_name": "Dekargaon",
+            "ward_id": 304968
+        },
+        {
+            "ward_no": 304972,
+            "ward_name": "Dewanagaon",
+            "ward_id": 304972
+        },
+        {
+            "ward_no": 304984,
+            "ward_name": "Gadhiapara",
+            "ward_id": 304984
+        },
+        {
+            "ward_no": 304994,
+            "ward_name": "Gakhir Khowa Para",
+            "ward_id": 304994
+        },
+        {
+            "ward_no": 304998,
+            "ward_name": "Ganak Para",
+            "ward_id": 304998
+        },
+        {
+            "ward_no": 305007,
+            "ward_name": "Gariapara",
+            "ward_id": 305007
+        },
+        {
+            "ward_no": 305012,
+            "ward_name": "Garkhowa Para",
+            "ward_id": 305012
+        },
+        {
+            "ward_no": 305019,
+            "ward_name": "Ghatua Para",
+            "ward_id": 305019
+        },
+        {
+            "ward_no": 305028,
+            "ward_name": "Hengerajhar",
+            "ward_id": 305028
+        },
+        {
+            "ward_no": 304967,
+            "ward_name": "Jaberikuchi",
+            "ward_id": 304967
+        },
+        {
+            "ward_no": 305004,
+            "ward_name": "Jhargaon",
+            "ward_id": 305004
+        },
+        {
+            "ward_no": 304976,
+            "ward_name": "Jogipara",
+            "ward_id": 304976
+        },
+        {
+            "ward_no": 305166,
+            "ward_name": "Jogipara",
+            "ward_id": 305166
+        },
+        {
+            "ward_no": 304997,
+            "ward_name": "Kabikara (Kalikara)",
+            "ward_id": 304997
+        },
+        {
+            "ward_no": 304969,
+            "ward_name": "Kachomari",
+            "ward_id": 304969
+        },
+        {
+            "ward_no": 305006,
+            "ward_name": "Kameipara",
+            "ward_id": 305006
+        },
+        {
+            "ward_no": 305029,
+            "ward_name": "Kanai Chuba (Kania Para)",
+            "ward_id": 305029
+        },
+        {
+            "ward_no": 305036,
+            "ward_name": "Kaniatari",
+            "ward_id": 305036
+        },
+        {
+            "ward_no": 304996,
+            "ward_name": "Keot Para",
+            "ward_id": 304996
+        },
+        {
+            "ward_no": 305043,
+            "ward_name": "Khodoumara",
+            "ward_id": 305043
+        },
+        {
+            "ward_no": 305025,
+            "ward_name": "Kowar Para",
+            "ward_id": 305025
+        },
+        {
+            "ward_no": 305026,
+            "ward_name": "Kumar Para",
+            "ward_id": 305026
+        },
+        {
+            "ward_no": 305021,
+            "ward_name": "Kuyapanipara",
+            "ward_id": 305021
+        },
+        {
+            "ward_no": 304982,
+            "ward_name": "Lankapuri",
+            "ward_id": 304982
+        },
+        {
+            "ward_no": 304988,
+            "ward_name": "Mangaldai Gaon",
+            "ward_id": 304988
+        },
+        {
+            "ward_no": 304975,
+            "ward_name": "Maz Chuburi",
+            "ward_id": 304975
+        },
+        {
+            "ward_no": 305042,
+            "ward_name": "Medhi-Chapori",
+            "ward_id": 305042
+        },
+        {
+            "ward_no": 304987,
+            "ward_name": "Medhipara",
+            "ward_id": 304987
+        },
+        {
+            "ward_no": 305032,
+            "ward_name": "Mohanpur",
+            "ward_id": 305032
+        },
+        {
+            "ward_no": 305030,
+            "ward_name": "Mollapara",
+            "ward_id": 305030
+        },
+        {
+            "ward_no": 305044,
+            "ward_name": "Monitari",
+            "ward_id": 305044
+        },
+        {
+            "ward_no": 305003,
+            "ward_name": "Nagaon",
+            "ward_id": 305003
+        },
+        {
+            "ward_no": 304977,
+            "ward_name": "Naharbari",
+            "ward_id": 304977
+        },
+        {
+            "ward_no": 304993,
+            "ward_name": "Na - Hawli",
+            "ward_id": 304993
+        },
+        {
+            "ward_no": 304978,
+            "ward_name": "Niz - Chapai",
+            "ward_id": 304978
+        },
+        {
+            "ward_no": 304999,
+            "ward_name": "Niz Dahi",
+            "ward_id": 304999
+        },
+        {
+            "ward_no": 305015,
+            "ward_name": "Niz Rangamari",
+            "ward_id": 305015
+        },
+        {
+            "ward_no": 305051,
+            "ward_name": "No.1 Bangalpota",
+            "ward_id": 305051
+        },
+        {
+            "ward_no": 305035,
+            "ward_name": "No.1 Bezpara",
+            "ward_id": 305035
+        },
+        {
+            "ward_no": 305049,
+            "ward_name": "No.1 Bhokelimara Chapori",
+            "ward_id": 305049
+        },
+        {
+            "ward_no": 305045,
+            "ward_name": "No.1 Borolekhaiti",
+            "ward_id": 305045
+        },
+        {
+            "ward_no": 305037,
+            "ward_name": "No.1 Ghotarah Chapori",
+            "ward_id": 305037
+        },
+        {
+            "ward_no": 305054,
+            "ward_name": "No.1 Hetow Chapori",
+            "ward_id": 305054
+        },
+        {
+            "ward_no": 305039,
+            "ward_name": "No.1 Rowmari",
+            "ward_id": 305039
+        },
+        {
+            "ward_no": 305052,
+            "ward_name": "No.2 Bangalpota",
+            "ward_id": 305052
+        },
+        {
+            "ward_no": 305031,
+            "ward_name": "No.2 Bezpara",
+            "ward_id": 305031
+        },
+        {
+            "ward_no": 305050,
+            "ward_name": "No.2 Bhokelimara Chapori",
+            "ward_id": 305050
+        },
+        {
+            "ward_no": 305046,
+            "ward_name": "No.2 Borolekhaiti",
+            "ward_id": 305046
+        },
+        {
+            "ward_no": 305038,
+            "ward_name": "No.2 Ghotarah Chapori",
+            "ward_id": 305038
+        },
+        {
+            "ward_no": 305055,
+            "ward_name": "No.2 Hetow Chapori",
+            "ward_id": 305055
+        },
+        {
+            "ward_no": 305040,
+            "ward_name": "No.2 Rowmari",
+            "ward_id": 305040
+        },
+        {
+            "ward_no": 305053,
+            "ward_name": "No.3 Bangalpota",
+            "ward_id": 305053
+        },
+        {
+            "ward_no": 305047,
+            "ward_name": "No.3 Borolekhaiti",
+            "ward_id": 305047
+        },
+        {
+            "ward_no": 305023,
+            "ward_name": "Pakabangipara",
+            "ward_id": 305023
+        },
+        {
+            "ward_no": 304992,
+            "ward_name": "Patalsingpara",
+            "ward_id": 304992
+        },
+        {
+            "ward_no": 304971,
+            "ward_name": "Ramhari Chuba",
+            "ward_id": 304971
+        },
+        {
+            "ward_no": 304986,
+            "ward_name": "Saikiapara",
+            "ward_id": 304986
+        },
+        {
+            "ward_no": 304983,
+            "ward_name": "Salaipara",
+            "ward_id": 304983
+        },
+        {
+            "ward_no": 305005,
+            "ward_name": "Sareng Chuburi",
+            "ward_id": 305005
+        },
+        {
+            "ward_no": 305018,
+            "ward_name": "Saruthekerabari",
+            "ward_id": 305018
+        },
+        {
+            "ward_no": 305002,
+            "ward_name": "Tamulipara",
+            "ward_id": 305002
+        },
+        {
+            "ward_no": 304989,
+            "ward_name": "Tengabari",
+            "ward_id": 304989
+        },
+        {
+            "ward_no": 305027,
+            "ward_name": "Upahupara",
+            "ward_id": 305027
+        }
+    ]
+}

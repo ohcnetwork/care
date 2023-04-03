@@ -1,0 +1,254 @@
+{
+    "name": "Dhalpukhuri",
+    "lsg_code": 2660,
+    "district": "Hojai",
+    "state": "Assam",
+    "no_of_wards": 49,
+    "wards": [
+        {
+            "ward_no": 285378,
+            "ward_name": "Akantu",
+            "ward_id": 285378
+        },
+        {
+            "ward_no": 285393,
+            "ward_name": "Alisinga",
+            "ward_id": 285393
+        },
+        {
+            "ward_no": 285361,
+            "ward_name": "Am Pukhuri",
+            "ward_id": 285361
+        },
+        {
+            "ward_no": 285166,
+            "ward_name": "Amtala",
+            "ward_id": 285166
+        },
+        {
+            "ward_no": 285366,
+            "ward_name": "Baluhandar",
+            "ward_id": 285366
+        },
+        {
+            "ward_no": 285389,
+            "ward_name": "Barman Pathar",
+            "ward_id": 285389
+        },
+        {
+            "ward_no": 285168,
+            "ward_name": "Bishnupur",
+            "ward_id": 285168
+        },
+        {
+            "ward_no": 285383,
+            "ward_name": "Bordolong",
+            "ward_id": 285383
+        },
+        {
+            "ward_no": 285372,
+            "ward_name": "Dablong Gaon (Deblong Gaon)",
+            "ward_id": 285372
+        },
+        {
+            "ward_no": 285369,
+            "ward_name": "Dakhin Laskar Pathar (Dakshin Laskar Pathar)",
+            "ward_id": 285369
+        },
+        {
+            "ward_no": 285391,
+            "ward_name": "Dhagaon",
+            "ward_id": 285391
+        },
+        {
+            "ward_no": 285377,
+            "ward_name": "Forma Par (Formapur)",
+            "ward_id": 285377
+        },
+        {
+            "ward_no": 285175,
+            "ward_name": "Hawaipur",
+            "ward_id": 285175
+        },
+        {
+            "ward_no": 285360,
+            "ward_name": "Ita Gaon",
+            "ward_id": 285360
+        },
+        {
+            "ward_no": 285399,
+            "ward_name": "Jamuguri",
+            "ward_id": 285399
+        },
+        {
+            "ward_no": 285359,
+            "ward_name": "Jura Pukhuri",
+            "ward_id": 285359
+        },
+        {
+            "ward_no": 285376,
+            "ward_name": "Kapili Par (Kapli Par)",
+            "ward_id": 285376
+        },
+        {
+            "ward_no": 285381,
+            "ward_name": "Khari Khana Bil",
+            "ward_id": 285381
+        },
+        {
+            "ward_no": 285382,
+            "ward_name": "Kharikhana Gaon",
+            "ward_id": 285382
+        },
+        {
+            "ward_no": 285375,
+            "ward_name": "Khong Khong Basti (Khang Khang Basti)",
+            "ward_id": 285375
+        },
+        {
+            "ward_no": 285394,
+            "ward_name": "Krishna Nagar",
+            "ward_id": 285394
+        },
+        {
+            "ward_no": 285362,
+            "ward_name": "Lakhi Pur",
+            "ward_id": 285362
+        },
+        {
+            "ward_no": 285392,
+            "ward_name": "Lalong Dubi",
+            "ward_id": 285392
+        },
+        {
+            "ward_no": 285397,
+            "ward_name": "Lanka Beta",
+            "ward_id": 285397
+        },
+        {
+            "ward_no": 285176,
+            "ward_name": "Malik Basti",
+            "ward_id": 285176
+        },
+        {
+            "ward_no": 285380,
+            "ward_name": "Manduli",
+            "ward_id": 285380
+        },
+        {
+            "ward_no": 285398,
+            "ward_name": "Mosoka",
+            "ward_id": 285398
+        },
+        {
+            "ward_no": 285386,
+            "ward_name": "Nangal Bhanga",
+            "ward_id": 285386
+        },
+        {
+            "ward_no": 285395,
+            "ward_name": "Natun Ali Singa",
+            "ward_id": 285395
+        },
+        {
+            "ward_no": 285167,
+            "ward_name": "Pachim Amtala",
+            "ward_id": 285167
+        },
+        {
+            "ward_no": 285367,
+            "ward_name": "Pachim Baluhandar",
+            "ward_id": 285367
+        },
+        {
+            "ward_no": 285365,
+            "ward_name": "Pachim Bhaluk Mari (Pachim Baluk Mari)",
+            "ward_id": 285365
+        },
+        {
+            "ward_no": 285373,
+            "ward_name": "Pachim Dablong (Pachim Deblong)",
+            "ward_id": 285373
+        },
+        {
+            "ward_no": 285390,
+            "ward_name": "Padum Pukhuri",
+            "ward_id": 285390
+        },
+        {
+            "ward_no": 285358,
+            "ward_name": "Pam Gaon",
+            "ward_id": 285358
+        },
+        {
+            "ward_no": 285371,
+            "ward_name": "Panchali No.1 (Panchali)",
+            "ward_id": 285371
+        },
+        {
+            "ward_no": 285374,
+            "ward_name": "Panchali No.2",
+            "ward_id": 285374
+        },
+        {
+            "ward_no": 285387,
+            "ward_name": "Panjabi Basti",
+            "ward_id": 285387
+        },
+        {
+            "ward_no": 285388,
+            "ward_name": "Pas Bandar",
+            "ward_id": 285388
+        },
+        {
+            "ward_no": 285363,
+            "ward_name": "Pub Bhaluk Mari (Pub Balukmari)",
+            "ward_id": 285363
+        },
+        {
+            "ward_no": 285165,
+            "ward_name": "Rampur",
+            "ward_id": 285165
+        },
+        {
+            "ward_no": 285385,
+            "ward_name": "Samboria",
+            "ward_id": 285385
+        },
+        {
+            "ward_no": 285357,
+            "ward_name": "Sankar Basti",
+            "ward_id": 285357
+        },
+        {
+            "ward_no": 285384,
+            "ward_name": "Simlai Pathar",
+            "ward_id": 285384
+        },
+        {
+            "ward_no": 285396,
+            "ward_name": "Singjuri",
+            "ward_id": 285396
+        },
+        {
+            "ward_no": 285379,
+            "ward_name": "Taisubali",
+            "ward_id": 285379
+        },
+        {
+            "ward_no": 285370,
+            "ward_name": "Tentuli",
+            "ward_id": 285370
+        },
+        {
+            "ward_no": 285364,
+            "ward_name": "Uttar Baluhander",
+            "ward_id": 285364
+        },
+        {
+            "ward_no": 285368,
+            "ward_name": "Uttar Laskar Pathar",
+            "ward_id": 285368
+        }
+    ]
+}
