@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from care.abdm.utils.api_call import AbdmGateway
 from care.abdm.utils.cipher import Cipher
-from care.abdm.utils.fhir import create_consultation_bundle
+from care.abdm.utils.fhir import Fhir
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 
@@ -250,15 +250,15 @@ class RequestDataView(GenericAPIView):
                             "patient_id": context["patientReference"],
                             "consultation_id": context["careContextReference"],
                             "data": cipher.encrypt(
-                                create_consultation_bundle(
+                                Fhir(
                                     PatientConsultation.objects.get(
                                         external_id=context["careContextReference"]
                                     )
-                                )
+                                ).create_prescription_record()
                             )["data"],
                         },
                         consent["notification"]["consentDetail"]["careContexts"][
-                            :-4:-1
+                            :-2:-1
                         ],
                     )
                 ),
@@ -283,7 +283,7 @@ class RequestDataView(GenericAPIView):
                     map(
                         lambda context: {"id": context["careContextReference"]},
                         consent["notification"]["consentDetail"]["careContexts"][
-                            :-4:-1
+                            :-2:-1
                         ],
                     )
                 ),
