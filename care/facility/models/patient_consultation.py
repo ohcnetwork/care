@@ -92,6 +92,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
         related_name="referred_patients",
     )  # Deprecated
+    referred_to_external = models.TextField(default="", null=True, blank=True)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     discharge_date = models.DateTimeField(null=True, blank=True)
@@ -227,7 +228,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
             models.CheckConstraint(
                 name="if_referral_suggested",
                 check=~models.Q(suggestion=SuggestionChoices.R)
-                | models.Q(referred_to__isnull=False),
+                | models.Q(referred_to__isnull=False)
+                | models.Q(referred_to_external__isnull=False),
             ),
             models.CheckConstraint(
                 name="if_admitted",

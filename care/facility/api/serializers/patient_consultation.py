@@ -52,7 +52,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="referred_to", read_only=True
     )
     referred_to = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), required=False
+        queryset=Facility.objects.all(),
+        required=False,
+    )
+    referred_to_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
     )
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(read_only=True)
@@ -302,16 +306,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R and not validated.get(
-                "referred_to"
-            ):
-                raise ValidationError(
-                    {
-                        "referred_to": [
-                            f"This field is required as the suggestion is {SuggestionChoices.R}."
-                        ]
-                    }
-                )
+            if validated["suggestion"] is SuggestionChoices.R:
+                if not validated.get("referred_to") and not validated.get(
+                    "referred_to_external"
+                ):
+                    raise ValidationError(
+                        {
+                            "referred_to": [
+                                f"This field is required as the suggestion is {SuggestionChoices.R}."
+                            ]
+                        }
+                    )
+                if validated.get("referred_to_external"):
+                    validated["referred_to"] = None
+                elif validated.get("referred_to"):
+                    validated["referred_to_external"] = None
             if (
                 validated["suggestion"] is SuggestionChoices.A
                 and validated.get("admitted")
@@ -370,7 +379,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
-
         return validated
 
 
