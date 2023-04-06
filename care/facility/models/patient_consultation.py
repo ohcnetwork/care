@@ -42,6 +42,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
+    op_no = models.CharField(max_length=100, default="", null=True, blank=True)
 
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"

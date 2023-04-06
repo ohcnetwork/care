@@ -38,6 +38,7 @@ from care.facility.models import (
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
     BedTypeChoices,
+    DailyRound,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -63,6 +64,7 @@ from config.authentication import (
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
+VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -141,6 +143,10 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_is_telemedicine = filters.BooleanFilter(
         field_name="last_consultation__is_telemedicine"
+    )
+    ventilator_interface = CareChoiceFilter(
+        field_name="last_consultation__last_daily_round__ventilator_interface",
+        choice_dict=VENTILATOR_CHOICES,
     )
 
     # Vaccination Filters
