@@ -590,11 +590,11 @@ class AbdmGateway:
         return response
 
     def data_transfer(self, data):
-        headers = {"Authorization": f"Bearer {cache.get(ABDM_TOKEN_CACHE_KEY)}"}
+        headers = {"Content-Type": "application/json"}
 
         payload = {
-            "pageNumber": 0,
-            "pageCount": 0,
+            "pageNumber": 1,
+            "pageCount": 1,
             "transactionId": data["transaction_id"],
             "entries": list(
                 map(
@@ -610,9 +610,17 @@ class AbdmGateway:
             "keyMaterial": data["key_material"],
         }
 
-        response = requests.post(data["data_push_url"], payload, headers=headers)
+        response = requests.post(
+            data["data_push_url"], data=json.dumps(payload), headers=headers
+        )
         print("-----------------------------------------")
-        print("data response", response.text, response.status_code)
+        print(
+            "data response",
+            len(data["care_contexts"]),
+            json.dumps(payload),
+            response.text,
+            response.status_code,
+        )
         print("-----------------------------------------")
         return response
 
@@ -632,7 +640,6 @@ class AbdmGateway:
                 "doneAt": str(
                     datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
                 ),
-                "notifier": {"type": "HIP", "id": self.hip_id},
                 "statusNotification": {
                     "sessionStatus": "TRANSFERRED",
                     "hipId": self.hip_id,

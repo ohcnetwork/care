@@ -1,20 +1,14 @@
-import base64
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 
-import nacl.utils
-from Crypto.Cipher import AES
-from Crypto.Hash import SHA512
-from Crypto.Protocol.KDF import HKDF
 from django.core.cache import cache
-from nacl.encoding import Base64Encoder
-from nacl.public import Box, PrivateKey, PublicKey
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from care.abdm.utils.api_call import AbdmGateway
+from care.abdm.utils.cipher import Cipher
 from care.abdm.utils.fhir import create_consultation_bundle
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
@@ -230,31 +224,21 @@ class RequestDataView(GenericAPIView):
         # if not consent_from < now and now > consent_to:
         #     return Response({}, status=status.HTTP_403_FORBIDDEN)
 
-        AbdmGateway().on_data_request(
+        on_data_request_response = AbdmGateway().on_data_request(
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
-        hiu_public_key_b64 = data["hiRequest"]["keyMaterial"]["dhPublicKey"]["keyValue"]
-        hiu_public_key_hex = base64.b64decode(hiu_public_key_b64).hex()[2:]
-        hiu_public_key_hex_x = hiu_public_key_hex[:64]
-        # hiu_public_key_hex_y = hiu_public_key_hex[64:]
-        hiu_public_key = PublicKey(bytes.fromhex(hiu_public_key_hex_x))
-        hiu_nonce = data["hiRequest"]["keyMaterial"]["nonce"]
+        if not on_data_request_response.status_code == 202:
+            return Response(
+                on_data_request_response, status=status.HTTP_400_BAD_REQUEST
+            )
 
-        secret_key = PrivateKey.generate()
-        public_key = secret_key.public_key.encode(Base64Encoder)
-        nonce = nacl.utils.random(32).hex()
+        cipher = Cipher(
+            data["hiRequest"]["keyMaterial"]["dhPublicKey"]["keyValue"],
+            data["hiRequest"]["keyMaterial"]["nonce"],
+        )
 
-        xored_nonce = hex(
-            int(base64.b64decode(hiu_nonce).hex(), base=16) ^ int(nonce, base=16)
-        )[2:]
-        salt = xored_nonce[:40]
-        iv = xored_nonce[40:]
-        shared_key = Box(secret_key, hiu_public_key).encode(Base64Encoder).hex()
-
-        hkdf_key = HKDF(bytes.fromhex(shared_key), 32, bytes.fromhex(salt), SHA512)
-
-        cipher = AES.new(hkdf_key, AES.MODE_GCM, iv.encode("utf8"))
+        print(consent["notification"]["consentDetail"]["careContexts"][:1:-1])
 
         AbdmGateway().data_transfer(
             {
@@ -271,26 +255,22 @@ class RequestDataView(GenericAPIView):
                                         external_id=context["careContextReference"]
                                     )
                                 )
-                                .json()
-                                .encode("utf8")
-                            ),
+                            )["data"],
                         },
-                        consent["notification"]["consentDetail"]["careContexts"][3:],
+                        consent["notification"]["consentDetail"]["careContexts"][
+                            :-4:-1
+                        ],
                     )
                 ),
                 "key_material": {
                     "cryptoAlg": "ECDH",
                     "curve": "Curve25519",
                     "dhPublicKey": {
-                        "expiry": str(
-                            datetime.now(tz=timezone.utc).strftime(
-                                "%Y-%m-%dT%H:%M:%S.000Z"
-                            )
-                        ),  # not sure what to put here
-                        "parameters": f"Curve25519/{public_key}",  # not sure what to put here
-                        "keyValue": public_key,
+                        "expiry": (datetime.now() + timedelta(days=2)).isoformat(),
+                        "parameters": "Curve25519/32byte random key",
+                        "keyValue": cipher.key_to_share,
                     },
-                    "nonce": nonce,
+                    "nonce": cipher.sender_nonce,
                 },
             }
         )
@@ -302,84 +282,12 @@ class RequestDataView(GenericAPIView):
                 "care_contexts": list(
                     map(
                         lambda context: {"id": context["careContextReference"]},
-                        consent["notification"]["consentDetail"]["careContexts"],
+                        consent["notification"]["consentDetail"]["careContexts"][
+                            :-4:-1
+                        ],
                     )
                 ),
             }
         )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
-
-
-# consent = {
-#     "notification": {
-#         "consentDetail": {
-#             "consentId": "feb6a86a-3b8d-4c3b-9860-41f7b0ec1218",
-#             "createdAt": "2023-03-31T15:30:58.212283603",
-#             "purpose": {"text": "Self Requested", "code": "PATRQT", "refUri": None},
-#             "patient": {"id": "khavinshankar@sbx"},
-#             "consentManager": {"id": "sbx"},
-#             "hip": {"id": "IN3210000017", "name": "Coronasafe Care 01"},
-#             "hiTypes": ["OPConsultation"],
-#             "permission": {
-#                 "accessMode": "VIEW",
-#                 "dateRange": {
-#                     "from": "2023-03-29T15:28:00",
-#                     "to": "2023-03-31T15:28:00",
-#                 },
-#                 "dataEraseAt": "2023-04-01T15:28:18.501",
-#                 "frequency": {"unit": "HOUR", "value": 1, "repeats": 0},
-#             },
-#             "careContexts": [
-#                 {
-#                     "patientReference": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-#                     "careContextReference": "c7134ba2-692a-40f5-a143-d306896436dd",
-#                 },
-#                 {
-#                     "patientReference": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-#                     "careContextReference": "56015494-bac8-486d-85b6-6f67d1708764",
-#                 },
-#                 {
-#                     "patientReference": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-#                     "careContextReference": "140f79f9-4e4e-4bc1-b43e-ebce3c9313a5",
-#                 },
-#                 {
-#                     "patientReference": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-#                     "careContextReference": "90742c64-ac7b-4806-bcb6-2f8418d0bd5b",
-#                 },
-#                 {
-#                     "patientReference": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-#                     "careContextReference": "829cf90f-23c0-4978-be5c-94131be5d2f9",
-#                 },
-#             ],
-#         },
-#         "status": "GRANTED",
-#         "signature": "jnG9oxlV6jRfxqXgW781ehe5/VYyzG5Z3aWNsgMJB2GB4IGKRu6ZqMu82WYJOKJqY62Oy7J90XBPAWWacQJVoa1eq1qcw6Fgc7pejihVVN/Ohdu2S6LSIi27DdVRQLR//7bCTSfe1P+3qCj+GkMVGgX0LbtYp2n3awZ0kRZFDt5JUI1oqWItx4Zz8pOF+1zjhD+AdzydE4JrKl3o/qICsb6+C9Iqe0ZrfqWAOmpESD17Z0p6trzkbHgeWXW/7S4Fg27cAJt9Z+HCa4PZLTOm5yx231QXyTRKCPrSQsZDe/OR5fUu3b0bDWf4F1FIJKXLG8ZmlsCs0T1gs3n8MkWYmQ==",
-#         "consentId": "feb6a86a-3b8d-4c3b-9860-41f7b0ec1218",
-#         "grantAcknowledgement": False,
-#     },
-#     "requestId": "99b5e499-c81f-42f9-a550-e0eef2b1e2c1",
-#     "timestamp": "2023-03-31T15:30:58.236624856",
-# }
-
-
-# data = {
-#     "transactionId": "2839dccc-c9e5-4e29-8904-440a1dc7f0cf",
-#     "requestId": "87e509d3-c43e-4da5-a39c-296c01740a79",
-#     "timestamp": "2023-03-31T15:31:28.587999924",
-#     "hiRequest": {
-#         "consent": {"id": "feb6a86a-3b8d-4c3b-9860-41f7b0ec1218"},
-#         "dateRange": {"from": "2023-03-29T15:28:00", "to": "2023-03-31T15:28:00"},
-#         "dataPushUrl": "https://dev.abdm.gov.in/api-hiu/data/notification",
-#         "keyMaterial": {
-#             "cryptoAlg": "ECDH",
-#             "curve": "curve25519",
-#             "dhPublicKey": {
-#                 "expiry": "2023-04-02T15:30:58.49682",
-#                 "parameters": "Ephemeral public key",
-#                 "keyValue": "BHkJo9SpkcGmxTNqo4pYdvGuZ/ELbwwCxoLbqyY5kuSyJ42FBfQUsLkg8prSQrzk5lIwQ3JEuXYsignQT5juGow=",
-#             },
-#             "nonce": "EAeHOfrH6xNXxj2nM6TClwJ6k7FNWQ9UzAx2ylVyCzE=",
-#         },
-#     },
-# }
