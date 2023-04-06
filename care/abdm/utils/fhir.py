@@ -188,28 +188,6 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
-    pr = {
-        "entry": [
-            {"fullUrl": "Practitioner/MAX5001", "resource": ""},
-            {
-                "fullUrl": "Patient/RVH9999",
-                "resource": "",
-            },
-            {
-                "fullUrl": "Encounter/dab7fd2b-6a05-4adb-af35-bcffd6c85b81",
-                "resource": "",
-            },
-            {
-                "fullUrl": "Medication/54ab5657-5e79-4461-a823-20e522eb337d",
-                "resource": "",
-            },
-            {
-                "fullUrl": "MedicationRequest/68d9667c-00c3-455f-b75d-d580950498a0",
-                "resource": "",
-            },
-        ],
-    }
-
     def _bundle_entry(self, resource):
         return BundleEntry(fullUrl=self._reference_url(resource), resource=resource)
 
