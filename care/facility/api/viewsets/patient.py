@@ -402,6 +402,12 @@ class PatientViewSet(
                 )
             last_consultation.discharge_reason = reason
             last_consultation.discharge_notes = notes
+            last_consultation.discharge_prescription = request.data.get(
+                "discharge_prescription", []
+            )
+            last_consultation.discharge_prn_prescription = request.data.get(
+                "discharge_prn_prescription", []
+            )
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
             last_consultation.current_bed = None
