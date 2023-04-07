@@ -104,6 +104,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
+    discharge_prescription = JSONField(default=dict)
+    discharge_prn_prescription = JSONField(default=dict)
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
