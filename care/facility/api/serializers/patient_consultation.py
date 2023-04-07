@@ -72,8 +72,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
     discharge_notes = serializers.CharField(read_only=True)
 
-    discharge_prescription = serializers.JSONField()
-    discharge_prn_prescription = serializers.JSONField()
+    discharge_prescription = serializers.JSONField(required=False)
+    discharge_prn_prescription = serializers.JSONField(required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices,
