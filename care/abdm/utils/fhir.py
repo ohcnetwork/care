@@ -11,6 +11,7 @@ from fhir.resources.dosage import Dosage
 from fhir.resources.encounter import Encounter
 from fhir.resources.humanname import HumanName
 from fhir.resources.identifier import Identifier
+from fhir.resources.immunization import Immunization, ImmunizationProtocolApplied
 from fhir.resources.medication import Medication
 from fhir.resources.medicationrequest import MedicationRequest
 from fhir.resources.meta import Meta
@@ -223,6 +224,47 @@ class Fhir:
 
         return self._encounter_profile
 
+    def _immunization(self):
+        if not self.consultation.patient.is_vaccinated:
+            return
+
+        return Immunization(
+            id=str(uuid()),
+            status="completed",
+            identifier=[
+                Identifier(
+                    type=CodeableConcept(text="Covin Id"),
+                    value=self.consultation.patient.covin_id,
+                )
+            ],
+            vaccineCode=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="http://snomed.info/sct",
+                        code="1119305005",
+                        display="COVID-19 antigen vaccine",
+                    )
+                ],
+                text=self.consultation.patient.vaccine_name,
+            ),
+            patient=self._reference(self._patient()),
+            route=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="47625008",
+                        display="Intravenous route",
+                    )
+                ]
+            ),
+            occurrenceDateTime=self.consultation.patient.last_vaccinated_date.isoformat(),
+            protocolApplied=[
+                ImmunizationProtocolApplied(
+                    doseNumberPositiveInt=self.consultation.patient.number_of_doses
+                )
+            ],
+        )
+
     def _medication(self, name):
         medication_profile = Medication(id=str(uuid()), code=CodeableConcept(text=name))
 
@@ -342,6 +384,43 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
+    def _immunization_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="41000179103",
+                        display="Immunization Record",
+                    ),
+                ],
+            ),
+            title="Immunization",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=[
+                CompositionSection(
+                    title="IPD Immunization",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="41000179103",
+                                display="Immunization Record",
+                            ),
+                        ],
+                    ),
+                    entry=[self._reference(self._immunization())],
+                ),
+            ],
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter()),
+            author=[self._reference(self._organization())],
+        )
+
     def _bundle_entry(self, resource):
         return BundleEntry(fullUrl=self._reference_url(resource), resource=resource)
 
@@ -396,5 +475,24 @@ class Fhir:
                         self._observation_profiles,
                     )
                 ),
+            ],
+        ).json()
+
+    def create_immunization_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._immunization_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                self._bundle_entry(self._immunization()),
             ],
         ).json()
