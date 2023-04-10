@@ -1,12 +1,15 @@
+import base64
 from datetime import datetime, timezone
 from uuid import uuid4 as uuid
 
 from fhir.resources.address import Address
+from fhir.resources.attachment import Attachment
 from fhir.resources.bundle import Bundle, BundleEntry
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.coding import Coding
 from fhir.resources.composition import Composition, CompositionSection
 from fhir.resources.contactpoint import ContactPoint
+from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.dosage import Dosage
 from fhir.resources.encounter import Encounter
 from fhir.resources.humanname import HumanName
@@ -23,6 +26,8 @@ from fhir.resources.practitioner import Practitioner
 from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
+from care.facility.models.file_upload import FileUpload
+
 
 class Fhir:
     def __init__(self, consultation):
@@ -35,6 +40,7 @@ class Fhir:
         self._medication_profiles = []
         self._medication_request_profiles = []
         self._observation_profiles = []
+        self._document_reference_profiles = []
 
     def _reference_url(self, resource=None):
         if resource is None:
@@ -265,6 +271,27 @@ class Fhir:
             ],
         )
 
+    def _document_reference(self, file):
+        id = str(file.external_id)
+        content_type, content = file.file_contents()
+        document_reference_profile = DocumentReference(
+            id=id,
+            identifier=[Identifier(value=id)],
+            status="current",
+            type=CodeableConcept(text=file.internal_name.split(".")[0]),
+            content=[
+                DocumentReferenceContent(
+                    attachment=Attachment(
+                        contentType=content_type, data=base64.b64encode(content)
+                    )
+                )
+            ],
+            author=[self._reference(self._organization())],
+        )
+
+        self._document_reference_profiles.append(document_reference_profile)
+        return document_reference_profile
+
     def _medication(self, name):
         medication_profile = Medication(id=str(uuid()), code=CodeableConcept(text=name))
 
@@ -330,6 +357,52 @@ class Fhir:
                                 self._medication_request(medicine)[1]
                             ),
                             self.consultation.discharge_advice,
+                        )
+                    ),
+                )
+            ],
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter()),
+            author=[self._reference(self._organization())],
+        )
+
+    def _health_document_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="419891008",
+                        display="Record artifact",
+                    )
+                ]
+            ),
+            title="Health Document Record",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=[
+                CompositionSection(
+                    title="Health Document Record",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="419891008",
+                                display="Record artifact",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda file: self._reference(
+                                self._document_reference(file)
+                            ),
+                            FileUpload.objects.filter(
+                                associating_id=self.consultation.id
+                            ),
                         )
                     ),
                 )
@@ -494,5 +567,29 @@ class Fhir:
                 self._bundle_entry(self._organization()),
                 self._bundle_entry(self._encounter()),
                 self._bundle_entry(self._immunization()),
+            ],
+        ).json()
+
+    def create_health_document_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._health_document_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._document_reference_profiles,
+                    )
+                ),
             ],
         ).json()

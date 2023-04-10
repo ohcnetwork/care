@@ -254,7 +254,7 @@ class RequestDataView(GenericAPIView):
                                     PatientConsultation.objects.get(
                                         external_id=context["careContextReference"]
                                     )
-                                ).create_immunization_record()
+                                ).create_health_document_record()
                             )["data"],
                         },
                         consent["notification"]["consentDetail"]["careContexts"][

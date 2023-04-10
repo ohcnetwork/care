@@ -103,3 +103,14 @@ class FileUpload(FacilityBaseModel):
             ExpiresIn=60 * 60,  # One Hour
         )
         return signed_url
+
+    def file_contents(self):
+        s3Client = boto3.client("s3", **cs_provider.get_client_config())
+        response = s3Client.get_object(
+            Bucket=settings.FILE_UPLOAD_BUCKET,
+            Key=self.FileType(self.file_type).name + "/" + self.internal_name,
+        )
+
+        content_type = response["ContentType"]
+        content = response["Body"].read()
+        return content_type, content
