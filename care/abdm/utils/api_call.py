@@ -613,15 +613,6 @@ class AbdmGateway:
         response = requests.post(
             data["data_push_url"], data=json.dumps(payload), headers=headers
         )
-        print("-----------------------------------------")
-        print(
-            "data response",
-            len(data["care_contexts"]),
-            json.dumps(payload),
-            response.text,
-            response.status_code,
-        )
-        print("-----------------------------------------")
         return response
 
     def data_notify(self, data):

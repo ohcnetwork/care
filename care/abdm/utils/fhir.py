@@ -1,11 +1,12 @@
-import json
 from datetime import datetime, timezone
 from uuid import uuid4 as uuid
 
+from fhir.resources.address import Address
 from fhir.resources.bundle import Bundle, BundleEntry
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.coding import Coding
 from fhir.resources.composition import Composition, CompositionSection
+from fhir.resources.contactpoint import ContactPoint
 from fhir.resources.dosage import Dosage
 from fhir.resources.encounter import Encounter
 from fhir.resources.humanname import HumanName
@@ -13,10 +14,12 @@ from fhir.resources.identifier import Identifier
 from fhir.resources.medication import Medication
 from fhir.resources.medicationrequest import MedicationRequest
 from fhir.resources.meta import Meta
+from fhir.resources.observation import Observation, ObservationComponent
 from fhir.resources.organization import Organization
 from fhir.resources.patient import Patient
 from fhir.resources.period import Period
 from fhir.resources.practitioner import Practitioner
+from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
 
@@ -30,6 +33,7 @@ class Fhir:
         self._encounter_profile = None
         self._medication_profiles = []
         self._medication_request_profiles = []
+        self._observation_profiles = []
 
     def _reference_url(self, resource=None):
         if resource is None:
@@ -78,14 +82,121 @@ class Fhir:
             return self._organization_profile
 
         id = str(self.consultation.facility.external_id)
+        hip_id = "IN3210000017"  # TODO: make it dynamic
         name = self.consultation.facility.name
+        phone = self.consultation.facility.phone_number
+        address = self.consultation.facility.address
+        local_body = self.consultation.facility.local_body.name
+        district = self.consultation.facility.district.name
+        state = self.consultation.facility.state.name
+        pincode = self.consultation.facility.pincode
         self._organization_profile = Organization(
             id=id,
-            identifier=[Identifier(value=id)],
+            identifier=[
+                Identifier(system="https://facilitysbx.ndhm.gov.in", value=hip_id)
+            ],
             name=name,
+            telecom=[ContactPoint(system="phone", value=phone)],
+            address=[
+                Address(
+                    line=[address, local_body],
+                    district=district,
+                    state=state,
+                    postalCode=pincode,
+                    country="INDIA",
+                )
+            ],
         )
 
         return self._organization_profile
+
+    def _observation(self, title, value, id, date):
+        if not value or (type(value) == dict and not value["value"]):
+            return
+
+        return Observation(
+            id=f"{id}.{title.replace(' ', '')}" if id and title else str(uuid()),
+            status="final",
+            effectiveDateTime=date if date else None,
+            code=CodeableConcept(text=title),
+            valueQuantity=Quantity(value=str(value["value"]), unit=value["unit"])
+            if type(value) == dict
+            else None,
+            valueString=value if type(value) == str else None,
+            component=list(
+                map(
+                    lambda component: ObservationComponent(
+                        code=CodeableConcept(text=component["title"]),
+                        valueQuantity=Quantity(
+                            value=component["value"], unit=component["unit"]
+                        )
+                        if type(component) == dict
+                        else None,
+                        valueString=component if type(component) == str else None,
+                    ),
+                    value,
+                )
+            )
+            if type(value) == list
+            else None,
+        )
+
+    def _observations_from_daily_round(self, daily_round):
+        id = str(daily_round.external_id)
+        date = daily_round.created_date.isoformat()
+        observation_profiles = [
+            self._observation(
+                "Temperature",
+                {"value": daily_round.temperature, "unit": "F"},
+                id,
+                date,
+            ),
+            self._observation(
+                "SpO2",
+                {"value": daily_round.spo2, "unit": "%"},
+                id,
+                date,
+            ),
+            self._observation(
+                "Pulse",
+                {"value": daily_round.pulse, "unit": "bpm"},
+                id,
+                date,
+            ),
+            self._observation(
+                "Resp",
+                {"value": daily_round.resp, "unit": "bpm"},
+                id,
+                date,
+            ),
+            self._observation(
+                "Blood Pressure",
+                [
+                    {
+                        "title": "Systolic Blood Pressure",
+                        "value": daily_round.bp["systolic"],
+                        "unit": "mmHg",
+                    },
+                    {
+                        "title": "Diastolic Blood Pressure",
+                        "value": daily_round.bp["diastolic"],
+                        "unit": "mmHg",
+                    },
+                ]
+                if "systolic" in daily_round.bp and "diastolic" in daily_round.bp
+                else None,
+                id,
+                date,
+            ),
+        ]
+
+        # TODO: do it for other fields like bp, pulse, spo2, ...
+
+        observation_profiles = list(
+            filter(lambda profile: profile is not None, observation_profiles)
+        )
+        self._observation_profiles.extend(observation_profiles)
+        return observation_profiles
 
     def _encounter(self):
         if self._encounter_profile is not None:
@@ -124,9 +235,7 @@ class Fhir:
             self.consultation.admission_date.isoformat()
         )  # TODO: change to the time of prescription
         status = "unknown"  # TODO: get correct status active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown
-        dosage_text = (
-            f"{medicine['dosage_new']} / {medicine['dosage']} for {medicine['days']}"
-        )
+        dosage_text = f"{medicine['dosage_new']} / {medicine['dosage']} for {medicine['days']} days"
 
         medication_profile = self._medication(medicine["medicine"])
         medication_request_profile = MedicationRequest(
@@ -144,12 +253,12 @@ class Fhir:
         self._medication_request_profiles.append(medication_request_profile)
         return medication_profile, medication_request_profile
 
-    def _composition(self, type):
+    def _prescription_composition(self):
         id = str(uuid())  # TODO: use identifiable id
         return Composition(
             id=id,
             identifier=Identifier(value=id),
-            status="preliminary" or "final" or "amended",  # TODO: use appropriate one
+            status="final",  # TODO: use appropriate one
             type=CodeableConcept(
                 coding=[
                     Coding(
@@ -158,8 +267,8 @@ class Fhir:
                         display="Prescription record",
                     )
                 ]
-            ),  # TODO: make it dynamic
-            title=type,  # "Prescription"
+            ),
+            title="Prescription",
             date=datetime.now(timezone.utc).isoformat(),
             section=[
                 CompositionSection(
@@ -188,13 +297,57 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
+    def _wellness_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        display="Wellness Record",
+                    )
+                ]
+            ),
+            title="Wellness Record",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=list(
+                map(
+                    lambda daily_round: CompositionSection(
+                        title=f"Daily Round - {daily_round.created_date}",
+                        code=CodeableConcept(
+                            coding=[
+                                Coding(
+                                    system="https://projecteka.in/sct",
+                                    display="Wellness Record",
+                                )
+                            ]
+                        ),
+                        entry=list(
+                            map(
+                                lambda observation_profile: self._reference(
+                                    observation_profile
+                                ),
+                                self._observations_from_daily_round(daily_round),
+                            )
+                        ),
+                    ),
+                    self.consultation.daily_rounds.all(),
+                )
+            ),
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter()),
+            author=[self._reference(self._organization())],
+        )
+
     def _bundle_entry(self, resource):
         return BundleEntry(fullUrl=self._reference_url(resource), resource=resource)
 
     def create_prescription_record(self):
         id = str(uuid())
         now = datetime.now(timezone.utc).isoformat()
-        composition_profile = self._composition("Prescription")
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -202,7 +355,7 @@ class Fhir:
             meta=Meta(lastUpdated=now),
             timestamp=now,
             entry=[
-                self._bundle_entry(composition_profile),
+                self._bundle_entry(self._prescription_composition()),
                 self._bundle_entry(self._practioner()),
                 self._bundle_entry(self._patient()),
                 self._bundle_entry(self._organization()),
@@ -222,150 +375,26 @@ class Fhir:
             ],
         ).json()
 
-
-def create_consultation_bundle(consultation):
-    return json.dumps(
-        {
-            "resourceType": "Bundle",
-            "id": "3739707e-1123-46fe-918f-b52d880e4e7f",
-            "meta": {"lastUpdated": "2016-08-07T00:00:00.000+05:30"},
-            "identifier": {
-                "system": "https://www.max.in/bundle",
-                "value": "3739707e-1123-46fe-918f-b52d880e4e7f",
-            },
-            "type": "document",
-            "timestamp": "2016-08-07T00:00:00.000+05:30",
-            "entry": [
-                {
-                    "fullUrl": "Composition/c63d1435-b6b6-46c4-8163-33133bf0d9bf",
-                    "resource": {
-                        "resourceType": "Composition",
-                        "id": "c63d1435-b6b6-46c4-8163-33133bf0d9bf",
-                        "identifier": {
-                            "system": "https://www.max.in/document",
-                            "value": "c63d1435-b6b6-46c4-8163-33133bf0d9bf",
-                        },
-                        "status": "final",
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "https://projecteka.in/sct",
-                                    "code": "440545006",
-                                    "display": "Prescription record",
-                                }
-                            ]
-                        },
-                        "subject": {
-                            "reference": "Patient/1019f565-065a-4287-93fd-a3db4cda7fe4"
-                        },
-                        "encounter": {
-                            "reference": f"Encounter/{str(consultation.external_id)}"
-                        },
-                        "date": "2016-08-07T00:00:00.605+05:30",
-                        "author": [
-                            {
-                                "reference": "Practitioner/MAX5001",
-                                "display": "Dr Laxmikanth J",
-                            }
-                        ],
-                        "title": "Prescription",
-                        "section": [
-                            {
-                                "title": "OPD Prescription",
-                                "code": {
-                                    "coding": [
-                                        {
-                                            "system": "https://projecteka.in/sct",
-                                            "code": "440545006",
-                                            "display": "Prescription record",
-                                        }
-                                    ]
-                                },
-                                "entry": [
-                                    {
-                                        "reference": "MedicationRequest/68d9667c-00c3-455f-b75d-d580950498a0"
-                                    }
-                                ],
-                            }
-                        ],
-                    },
-                },
-                {
-                    "fullUrl": "Practitioner/MAX5001",
-                    "resource": {
-                        "resourceType": "Practitioner",
-                        "id": "MAX5001",
-                        "identifier": [
-                            {
-                                "system": "https://www.mciindia.in/doctor",
-                                "value": "MAX5001",
-                            }
-                        ],
-                        "name": [
-                            {"text": "Laxmikanth J", "prefix": ["Dr"], "suffix": ["MD"]}
-                        ],
-                    },
-                },
-                {
-                    "fullUrl": "Patient/1019f565-065a-4287-93fd-a3db4cda7fe4",
-                    "resource": {
-                        "resourceType": "Patient",
-                        "id": "1019f565-065a-4287-93fd-a3db4cda7fe4",
-                        "name": [{"text": "KhavinShankar G"}],
-                        "gender": "male",
-                    },
-                },
-                {
-                    "fullUrl": f"Encounter/{str(consultation.external_id)}",
-                    "resource": {
-                        "resourceType": "Encounter",
-                        "id": str(consultation.external_id),
-                        "status": "finished",
-                        "class": {
-                            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-                            "code": "AMB",
-                            "display": "Outpatient visit",
-                        },
-                        "subject": {
-                            "reference": "Patient/1019f565-065a-4287-93fd-a3db4cda7fe4"
-                        },
-                        "period": {"start": "2016-08-07T00:00:00+05:30"},
-                    },
-                },
-                {
-                    "fullUrl": "Medication/54ab5657-5e79-4461-a823-20e522eb337d",
-                    "resource": {
-                        "resourceType": "Medication",
-                        "id": "54ab5657-5e79-4461-a823-20e522eb337d",
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "https://projecteka.in/act",
-                                    "code": "R05CB02",
-                                    "display": "bromhexine 24 mg",
-                                }
-                            ]
-                        },
-                    },
-                },
-                {
-                    "fullUrl": "MedicationRequest/68d9667c-00c3-455f-b75d-d580950498a0",
-                    "resource": {
-                        "resourceType": "MedicationRequest",
-                        "id": "68d9667c-00c3-455f-b75d-d580950498a0",
-                        "status": "active",
-                        "intent": "order",
-                        "medicationReference": {
-                            "reference": "Medication/54ab5657-5e79-4461-a823-20e522eb337d"
-                        },
-                        "subject": {
-                            "reference": "Patient/1019f565-065a-4287-93fd-a3db4cda7fe4"
-                        },
-                        "authoredOn": "2016-08-07T00:00:00+05:30",
-                        "requester": {"reference": "Practitioner/MAX5001"},
-                        "dosageInstruction": [{"text": "1 capsule 2 times a day"}],
-                    },
-                },
+    def create_wellness_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._wellness_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._observation_profiles,
+                    )
+                ),
             ],
-        }
-    )
+        ).json()
