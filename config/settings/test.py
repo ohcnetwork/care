@@ -64,7 +64,6 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 WHITENOISE_AUTOREFRESH = True
 
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -89,3 +88,5 @@ LOGGING = {
         "level": "ERROR",
     },
 }
+
+CELERY_TASK_ALWAYS_EAGER = True

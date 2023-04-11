@@ -1,0 +1,299 @@
+{
+    "name": "Udali",
+    "lsg_code": 2675,
+    "district": "Hojai",
+    "state": "Assam",
+    "no_of_wards": 58,
+    "wards": [
+        {
+            "ward_no": 285329,
+            "ward_name": "Ajar Bari",
+            "ward_id": 285329
+        },
+        {
+            "ward_no": 285348,
+            "ward_name": "Bamun Gaon",
+            "ward_id": 285348
+        },
+        {
+            "ward_no": 285327,
+            "ward_name": "Ban Banganati",
+            "ward_id": 285327
+        },
+        {
+            "ward_no": 285310,
+            "ward_name": "Barbaha (Borboha)",
+            "ward_id": 285310
+        },
+        {
+            "ward_no": 285345,
+            "ward_name": "Barjarani (Borjoroni)",
+            "ward_id": 285345
+        },
+        {
+            "ward_no": 285343,
+            "ward_name": "Barjoha Gaon",
+            "ward_id": 285343
+        },
+        {
+            "ward_no": 285328,
+            "ward_name": "Bar Pukhuri",
+            "ward_id": 285328
+        },
+        {
+            "ward_no": 285347,
+            "ward_name": "Bordoloni Pathar (Bordoli Pathar)",
+            "ward_id": 285347
+        },
+        {
+            "ward_no": 285326,
+            "ward_name": "Bura Gaon",
+            "ward_id": 285326
+        },
+        {
+            "ward_no": 285354,
+            "ward_name": "Dakhin Jaroni",
+            "ward_id": 285354
+        },
+        {
+            "ward_no": 285312,
+            "ward_name": "Dakhin Kandura",
+            "ward_id": 285312
+        },
+        {
+            "ward_no": 285339,
+            "ward_name": "Dakhin Udali (Dakhine)",
+            "ward_id": 285339
+        },
+        {
+            "ward_no": 285401,
+            "ward_name": "Gosai Gaon Tangia Village Lankajan Old/New",
+            "ward_id": 285401
+        },
+        {
+            "ward_no": 285400,
+            "ward_name": "Gusai Gaon",
+            "ward_id": 285400
+        },
+        {
+            "ward_no": 285490,
+            "ward_name": "Hemari Camp Area (F.V.)",
+            "ward_id": 285490
+        },
+        {
+            "ward_no": 285332,
+            "ward_name": "Jay Sagar",
+            "ward_id": 285332
+        },
+        {
+            "ward_no": 285355,
+            "ward_name": "Joroni Gaon",
+            "ward_id": 285355
+        },
+        {
+            "ward_no": 285352,
+            "ward_name": "Jutang Basti",
+            "ward_id": 285352
+        },
+        {
+            "ward_no": 285341,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 285341
+        },
+        {
+            "ward_no": 285319,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 285319
+        },
+        {
+            "ward_no": 285320,
+            "ward_name": "Kachari Gaon No.1",
+            "ward_id": 285320
+        },
+        {
+            "ward_no": 285422,
+            "ward_name": "Kakijan Camp Area",
+            "ward_id": 285422
+        },
+        {
+            "ward_no": 285311,
+            "ward_name": "Kandura",
+            "ward_id": 285311
+        },
+        {
+            "ward_no": 285325,
+            "ward_name": "Khring Khring",
+            "ward_id": 285325
+        },
+        {
+            "ward_no": 285337,
+            "ward_name": "Lachit Pathar",
+            "ward_id": 285337
+        },
+        {
+            "ward_no": 285321,
+            "ward_name": "Lalung Gaon",
+            "ward_id": 285321
+        },
+        {
+            "ward_no": 285316,
+            "ward_name": "Lalung Gaon N.C.",
+            "ward_id": 285316
+        },
+        {
+            "ward_no": 285322,
+            "ward_name": "Lalung Gaon No.1",
+            "ward_id": 285322
+        },
+        {
+            "ward_no": 285323,
+            "ward_name": "Lalung Gaon No.2",
+            "ward_id": 285323
+        },
+        {
+            "ward_no": 285351,
+            "ward_name": "Lankajan",
+            "ward_id": 285351
+        },
+        {
+            "ward_no": 285402,
+            "ward_name": "Long Mailong N.C.",
+            "ward_id": 285402
+        },
+        {
+            "ward_no": 285317,
+            "ward_name": "Maj Dimuru No.1",
+            "ward_id": 285317
+        },
+        {
+            "ward_no": 285318,
+            "ward_name": "Maj Dimuru No.2",
+            "ward_id": 285318
+        },
+        {
+            "ward_no": 285346,
+            "ward_name": "Maz Udali",
+            "ward_id": 285346
+        },
+        {
+            "ward_no": 285491,
+            "ward_name": "Natun F.V.",
+            "ward_id": 285491
+        },
+        {
+            "ward_no": 285487,
+            "ward_name": "Paddy Land (F.T.V.)",
+            "ward_id": 285487
+        },
+        {
+            "ward_no": 285342,
+            "ward_name": "Pipal Pukhuri No.1 (Pipal Pukhuri)",
+            "ward_id": 285342
+        },
+        {
+            "ward_no": 285349,
+            "ward_name": "Pipal Pukhuri No.2 (Pipal Pukhuri)",
+            "ward_id": 285349
+        },
+        {
+            "ward_no": 285313,
+            "ward_name": "Pub Kandura",
+            "ward_id": 285313
+        },
+        {
+            "ward_no": 285356,
+            "ward_name": "Pub Udali",
+            "ward_id": 285356
+        },
+        {
+            "ward_no": 285421,
+            "ward_name": "Ram Nagar Camp Area",
+            "ward_id": 285421
+        },
+        {
+            "ward_no": 285493,
+            "ward_name": "Ramnagar F.V.",
+            "ward_id": 285493
+        },
+        {
+            "ward_no": 285492,
+            "ward_name": "Ram Nagar (F.V.)",
+            "ward_id": 285492
+        },
+        {
+            "ward_no": 285489,
+            "ward_name": "Ram Nagar (Kaki Ram Nagar F.V.)",
+            "ward_id": 285489
+        },
+        {
+            "ward_no": 285330,
+            "ward_name": "Ram Nagar No.1",
+            "ward_id": 285330
+        },
+        {
+            "ward_no": 285331,
+            "ward_name": "Ram Nagar No.2",
+            "ward_id": 285331
+        },
+        {
+            "ward_no": 285482,
+            "ward_name": "Rampur F.V. (Kaki Rampur F.V.)",
+            "ward_id": 285482
+        },
+        {
+            "ward_no": 285338,
+            "ward_name": "Rani Pukhuri",
+            "ward_id": 285338
+        },
+        {
+            "ward_no": 285344,
+            "ward_name": "Sing Gaon",
+            "ward_id": 285344
+        },
+        {
+            "ward_no": 285488,
+            "ward_name": "Tapan Pur (Kaki Tapan Pur F.V.)",
+            "ward_id": 285488
+        },
+        {
+            "ward_no": 285350,
+            "ward_name": "Tiniali Bazar",
+            "ward_id": 285350
+        },
+        {
+            "ward_no": 285340,
+            "ward_name": "Udali Gaon",
+            "ward_id": 285340
+        },
+        {
+            "ward_no": 285324,
+            "ward_name": "Village No.1 Block No.1(Village No.1Block No.1N.C)",
+            "ward_id": 285324
+        },
+        {
+            "ward_no": 285333,
+            "ward_name": "Village No.2 Block No.1",
+            "ward_id": 285333
+        },
+        {
+            "ward_no": 285315,
+            "ward_name": "Village No.3 Block No.1(Village No.3Block No.1N.C)",
+            "ward_id": 285315
+        },
+        {
+            "ward_no": 285314,
+            "ward_name": "Village No.4 Block No.1(Village No.4Block No.1 N.C",
+            "ward_id": 285314
+        },
+        {
+            "ward_no": 285334,
+            "ward_name": "Village No.5 Block No.1",
+            "ward_id": 285334
+        },
+        {
+            "ward_no": 285335,
+            "ward_name": "Village No.6 Block No.1",
+            "ward_id": 285335
+        }
+    ]
+}

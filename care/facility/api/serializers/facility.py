@@ -13,6 +13,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.csp import config as cs_provider
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 User = get_user_model()
 
@@ -107,6 +108,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "modified_date",
             "created_date",
             "kasp_empanelled",
+            "middleware_address",
             "expected_oxygen_requirement",
             "type_b_cylinders",
             "type_c_cylinders",
@@ -117,6 +119,15 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
         ]
         read_only_fields = ("modified_date", "created_date")
+
+    def validate_middleware_address(self, value):
+        value = value.strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
@@ -137,7 +148,8 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         image = self.validated_data["cover_image"]
         image_extension = image.name.rsplit(".", 1)[-1]
         s3 = boto3.client(
-            "s3", **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value)
+            "s3",
+            **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value),
         )
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
         s3.put_object(

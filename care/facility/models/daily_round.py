@@ -80,6 +80,7 @@ class DailyRound(PatientBaseModel):
         UNKNOWN = 0
         INVASIVE = 5
         NON_INVASIVE = 10
+        OXYGEN_SUPPORT = 15
 
     VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
 
@@ -449,6 +450,29 @@ class DailyRound(PatientBaseModel):
             return 0
         return value
 
+    def update_pressure_sore(self):
+        area_interval_points = [0.1, 0.3, 0.7, 1.1, 2.1, 3.1, 4.1, 8.1, 12.1, 25]
+        exudate_amounts = ["None", "Light", "Moderate", "Heavy"]
+        tissue_types = ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]
+
+        def cal_push_score(item):
+            push_score = item.get("base_score", 0.0)
+            area_score = 0
+            area = item["length"] * item["width"]
+            push_score += exudate_amounts.index(item["exudate_amount"])
+            push_score += tissue_types.index(item["tissue_type"])
+            for point in area_interval_points:
+                if area >= point:
+                    area_score += 1
+            push_score += area_score
+            return push_score
+
+        def set_push_score(item):
+            item["push_score"] = cal_push_score(item)
+            return item
+
+        return list(map(set_push_score, self.pressure_sore))
+
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
         self.glasgow_total_calculated = (
@@ -461,6 +485,8 @@ class DailyRound(PatientBaseModel):
         self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
 
         self.total_output_calculated = sum([x["quantity"] for x in self.output])
+
+        # self.pressure_sore = self.update_pressure_sore()
 
         super(DailyRound, self).save(*args, **kwargs)
 

@@ -1,0 +1,779 @@
+{
+    "name": "Udharbond",
+    "lsg_code": 2522,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 154,
+    "wards": [
+        {
+            "ward_no": 299419,
+            "ward_name": "Aina Chara T.E.",
+            "ward_id": 299419
+        },
+        {
+            "ward_no": 299489,
+            "ward_name": "Akai Punji",
+            "ward_id": 299489
+        },
+        {
+            "ward_no": 299396,
+            "ward_name": "Amaranagar T.E.",
+            "ward_id": 299396
+        },
+        {
+            "ward_no": 299471,
+            "ward_name": "Arcuttepur Grant",
+            "ward_id": 299471
+        },
+        {
+            "ward_no": 905297,
+            "ward_name": "Arkatipur Grant",
+            "ward_id": 905297
+        },
+        {
+            "ward_no": 299443,
+            "ward_name": "Arunabond T.E.",
+            "ward_id": 299443
+        },
+        {
+            "ward_no": 905573,
+            "ward_name": "Ataicherra Khasia Punjee",
+            "ward_id": 905573
+        },
+        {
+            "ward_no": 299478,
+            "ward_name": "Atik Punji",
+            "ward_id": 299478
+        },
+        {
+            "ward_no": 299468,
+            "ward_name": "Badri Par",
+            "ward_id": 299468
+        },
+        {
+            "ward_no": 299455,
+            "ward_name": "Bahadurpur",
+            "ward_id": 299455
+        },
+        {
+            "ward_no": 299480,
+            "ward_name": "Baroidisha Punji",
+            "ward_id": 299480
+        },
+        {
+            "ward_no": 299482,
+            "ward_name": "Boronagadum Punji",
+            "ward_id": 299482
+        },
+        {
+            "ward_no": 299397,
+            "ward_name": "Chalita Chara",
+            "ward_id": 299397
+        },
+        {
+            "ward_no": 299450,
+            "ward_name": "Chalita Kandi",
+            "ward_id": 299450
+        },
+        {
+            "ward_no": 299405,
+            "ward_name": "Chandighat Grant",
+            "ward_id": 299405
+        },
+        {
+            "ward_no": 299433,
+            "ward_name": "Chandi Ghat Pt I",
+            "ward_id": 299433
+        },
+        {
+            "ward_no": 299434,
+            "ward_name": "Chandi Ghat Pt Ii",
+            "ward_id": 299434
+        },
+        {
+            "ward_no": 299435,
+            "ward_name": "Chandi Ghat Pt Iii",
+            "ward_id": 299435
+        },
+        {
+            "ward_no": 299491,
+            "ward_name": "Changsu Punji (Chanshu Punji)",
+            "ward_id": 299491
+        },
+        {
+            "ward_no": 299466,
+            "ward_name": "Chappanahal Grant",
+            "ward_id": 299466
+        },
+        {
+            "ward_no": 905569,
+            "ward_name": "Dalugram Basti",
+            "ward_id": 905569
+        },
+        {
+            "ward_no": 299479,
+            "ward_name": "Daya Disha Punji",
+            "ward_id": 299479
+        },
+        {
+            "ward_no": 299481,
+            "ward_name": "Daya Punji",
+            "ward_id": 299481
+        },
+        {
+            "ward_no": 905292,
+            "ward_name": "Dayapur Grant",
+            "ward_id": 905292
+        },
+        {
+            "ward_no": 905290,
+            "ward_name": "Dayapur Pt-Ii",
+            "ward_id": 905290
+        },
+        {
+            "ward_no": 905291,
+            "ward_name": "Dayapur Pt-Iii",
+            "ward_id": 905291
+        },
+        {
+            "ward_no": 905568,
+            "ward_name": "Digar Kashipur Grant",
+            "ward_id": 905568
+        },
+        {
+            "ward_no": 299467,
+            "ward_name": "Digar Khasipur Grant",
+            "ward_id": 299467
+        },
+        {
+            "ward_no": 299428,
+            "ward_name": "Digar Khaspur",
+            "ward_id": 299428
+        },
+        {
+            "ward_no": 299406,
+            "ward_name": "Digartali Gram",
+            "ward_id": 299406
+        },
+        {
+            "ward_no": 905561,
+            "ward_name": "Digar Thaligram",
+            "ward_id": 905561
+        },
+        {
+            "ward_no": 905560,
+            "ward_name": "Digar Thaligram",
+            "ward_id": 905560
+        },
+        {
+            "ward_no": 299416,
+            "ward_name": "Digun Chara Grant",
+            "ward_id": 299416
+        },
+        {
+            "ward_no": 905582,
+            "ward_name": "Diguncherra Te",
+            "ward_id": 905582
+        },
+        {
+            "ward_no": 906239,
+            "ward_name": "Donapara Pt-I",
+            "ward_id": 906239
+        },
+        {
+            "ward_no": 299445,
+            "ward_name": "Doyapore Grant",
+            "ward_id": 299445
+        },
+        {
+            "ward_no": 299446,
+            "ward_name": "Doyapore Pt I",
+            "ward_id": 299446
+        },
+        {
+            "ward_no": 299461,
+            "ward_name": "Doyapore Pt Ii",
+            "ward_id": 299461
+        },
+        {
+            "ward_no": 299462,
+            "ward_name": "Doyapore Pt Iii",
+            "ward_id": 299462
+        },
+        {
+            "ward_no": 299459,
+            "ward_name": "Doyapore Pt Iv",
+            "ward_id": 299459
+        },
+        {
+            "ward_no": 905556,
+            "ward_name": "Doyapur Pt-Iv",
+            "ward_id": 905556
+        },
+        {
+            "ward_no": 299451,
+            "ward_name": "Durganagar Pt I",
+            "ward_id": 299451
+        },
+        {
+            "ward_no": 299452,
+            "ward_name": "Durganagar Pt Ii",
+            "ward_id": 299452
+        },
+        {
+            "ward_no": 299458,
+            "ward_name": "Durganagar Pt Iii",
+            "ward_id": 299458
+        },
+        {
+            "ward_no": 299448,
+            "ward_name": "Durganagar Pt Iv",
+            "ward_id": 299448
+        },
+        {
+            "ward_no": 905296,
+            "ward_name": "Durganagar Pt-V",
+            "ward_id": 905296
+        },
+        {
+            "ward_no": 299492,
+            "ward_name": "Durga Nagar Pt. V (Ct)",
+            "ward_id": 299492
+        },
+        {
+            "ward_no": 299447,
+            "ward_name": "Durganagar Pt Vi",
+            "ward_id": 299447
+        },
+        {
+            "ward_no": 299460,
+            "ward_name": "Durganagar Pt Vii",
+            "ward_id": 299460
+        },
+        {
+            "ward_no": 905287,
+            "ward_name": "Endogram Te",
+            "ward_id": 905287
+        },
+        {
+            "ward_no": 905555,
+            "ward_name": "Estampur Grant",
+            "ward_id": 905555
+        },
+        {
+            "ward_no": 299488,
+            "ward_name": "Euback Punjee",
+            "ward_id": 299488
+        },
+        {
+            "ward_no": 299477,
+            "ward_name": "Fatik Punji",
+            "ward_id": 299477
+        },
+        {
+            "ward_no": 299472,
+            "ward_name": "Gossaipur Pt I",
+            "ward_id": 299472
+        },
+        {
+            "ward_no": 299457,
+            "ward_name": "Gossaipur Pt Ii",
+            "ward_id": 299457
+        },
+        {
+            "ward_no": 299456,
+            "ward_name": "Gossaipur Pt Iii",
+            "ward_id": 299456
+        },
+        {
+            "ward_no": 299453,
+            "ward_name": "Gossaipur Pt Iv",
+            "ward_id": 299453
+        },
+        {
+            "ward_no": 299454,
+            "ward_name": "Gossaipur Pt V",
+            "ward_id": 299454
+        },
+        {
+            "ward_no": 299408,
+            "ward_name": "Gua Bari",
+            "ward_id": 299408
+        },
+        {
+            "ward_no": 905578,
+            "ward_name": "Gumtibari",
+            "ward_id": 905578
+        },
+        {
+            "ward_no": 299417,
+            "ward_name": "Gunti Bari Grant",
+            "ward_id": 299417
+        },
+        {
+            "ward_no": 299487,
+            "ward_name": "Haroi Punjee",
+            "ward_id": 299487
+        },
+        {
+            "ward_no": 299413,
+            "ward_name": "Icha Chara (Jehachera Garden)",
+            "ward_id": 299413
+        },
+        {
+            "ward_no": 905577,
+            "ward_name": "Ichecherra Te",
+            "ward_id": 905577
+        },
+        {
+            "ward_no": 299395,
+            "ward_name": "Indragram Pt I",
+            "ward_id": 299395
+        },
+        {
+            "ward_no": 299394,
+            "ward_name": "Indragram Pt Ii",
+            "ward_id": 299394
+        },
+        {
+            "ward_no": 299423,
+            "ward_name": "Indragram T.E.",
+            "ward_id": 299423
+        },
+        {
+            "ward_no": 299470,
+            "ward_name": "Istampur Grant (Estampurgrant)",
+            "ward_id": 299470
+        },
+        {
+            "ward_no": 299439,
+            "ward_name": "Jhapirbond Pt I",
+            "ward_id": 299439
+        },
+        {
+            "ward_no": 299440,
+            "ward_name": "Jhapirbond Pt Ii",
+            "ward_id": 299440
+        },
+        {
+            "ward_no": 299490,
+            "ward_name": "Jorju Punji",
+            "ward_id": 299490
+        },
+        {
+            "ward_no": 299268,
+            "ward_name": "Kachipur Pt I",
+            "ward_id": 299268
+        },
+        {
+            "ward_no": 299267,
+            "ward_name": "Kachipur Pt Ii",
+            "ward_id": 299267
+        },
+        {
+            "ward_no": 299420,
+            "ward_name": "Kartul Pahar",
+            "ward_id": 299420
+        },
+        {
+            "ward_no": 905567,
+            "ward_name": "Kashipur Pt-I",
+            "ward_id": 905567
+        },
+        {
+            "ward_no": 905566,
+            "ward_name": "Kashipur Pt-Ii",
+            "ward_id": 905566
+        },
+        {
+            "ward_no": 299475,
+            "ward_name": "Kasipur Grant",
+            "ward_id": 299475
+        },
+        {
+            "ward_no": 299430,
+            "ward_name": "Kaspur Bagerkona",
+            "ward_id": 299430
+        },
+        {
+            "ward_no": 299429,
+            "ward_name": "Kaspur Grant",
+            "ward_id": 299429
+        },
+        {
+            "ward_no": 299476,
+            "ward_name": "Katlir Punji",
+            "ward_id": 299476
+        },
+        {
+            "ward_no": 299473,
+            "ward_name": "Khuli Cherra U.S.",
+            "ward_id": 299473
+        },
+        {
+            "ward_no": 905575,
+            "ward_name": "Koomber Te",
+            "ward_id": 905575
+        },
+        {
+            "ward_no": 905564,
+            "ward_name": "Kulicherra Hmar Punjee",
+            "ward_id": 905564
+        },
+        {
+            "ward_no": 905574,
+            "ward_name": "Kumbha Hmar Punjee",
+            "ward_id": 905574
+        },
+        {
+            "ward_no": 299422,
+            "ward_name": "Kumbha T.E. (Kumbhir T.E.)",
+            "ward_id": 299422
+        },
+        {
+            "ward_no": 299424,
+            "ward_name": "Kumbhirgram T.E.",
+            "ward_id": 299424
+        },
+        {
+            "ward_no": 299484,
+            "ward_name": "Laibong Punji (Haibongpunji)",
+            "ward_id": 299484
+        },
+        {
+            "ward_no": 299414,
+            "ward_name": "Lailong Chara",
+            "ward_id": 299414
+        },
+        {
+            "ward_no": 299485,
+            "ward_name": "Lailong Chara Punji",
+            "ward_id": 299485
+        },
+        {
+            "ward_no": 905580,
+            "ward_name": "Lailongcherra Hmar Punjee",
+            "ward_id": 905580
+        },
+        {
+            "ward_no": 905294,
+            "ward_name": "Larsing Grant",
+            "ward_id": 905294
+        },
+        {
+            "ward_no": 905295,
+            "ward_name": "Larsingpar",
+            "ward_id": 905295
+        },
+        {
+            "ward_no": 299438,
+            "ward_name": "Larsingpar Basti",
+            "ward_id": 299438
+        },
+        {
+            "ward_no": 299437,
+            "ward_name": "Larsingpar Grant",
+            "ward_id": 299437
+        },
+        {
+            "ward_no": 905293,
+            "ward_name": "Lathigram",
+            "ward_id": 905293
+        },
+        {
+            "ward_no": 299469,
+            "ward_name": "Latigram Grant (Lathigram)",
+            "ward_id": 299469
+        },
+        {
+            "ward_no": 299449,
+            "ward_name": "Latigram (Lathigram)",
+            "ward_id": 299449
+        },
+        {
+            "ward_no": 905563,
+            "ward_name": "Lutarthal Punjee",
+            "ward_id": 905563
+        },
+        {
+            "ward_no": 299483,
+            "ward_name": "Lutatal Punji (Luththalpunji)",
+            "ward_id": 299483
+        },
+        {
+            "ward_no": 299398,
+            "ward_name": "Madhupur (Madhvpur)",
+            "ward_id": 299398
+        },
+        {
+            "ward_no": 905281,
+            "ward_name": "Madhupur Pt-I",
+            "ward_id": 905281
+        },
+        {
+            "ward_no": 905282,
+            "ward_name": "Madhupur Pt-Ii",
+            "ward_id": 905282
+        },
+        {
+            "ward_no": 905285,
+            "ward_name": "Madhura Punjee",
+            "ward_id": 905285
+        },
+        {
+            "ward_no": 299444,
+            "ward_name": "Majargram Grant",
+            "ward_id": 299444
+        },
+        {
+            "ward_no": 905286,
+            "ward_name": "Majergram Basti",
+            "ward_id": 905286
+        },
+        {
+            "ward_no": 299465,
+            "ward_name": "Majhargram Basti (Masurgram)",
+            "ward_id": 299465
+        },
+        {
+            "ward_no": 299410,
+            "ward_name": "Mamad Pur",
+            "ward_id": 299410
+        },
+        {
+            "ward_no": 906215,
+            "ward_name": "Manaspara River Pt",
+            "ward_id": 906215
+        },
+        {
+            "ward_no": 299418,
+            "ward_name": "Mati Chara T.E.",
+            "ward_id": 299418
+        },
+        {
+            "ward_no": 905581,
+            "ward_name": "Maticherra Te",
+            "ward_id": 905581
+        },
+        {
+            "ward_no": 905558,
+            "ward_name": "Nagadum Augastanagar",
+            "ward_id": 905558
+        },
+        {
+            "ward_no": 905557,
+            "ward_name": "Nagadum Khasia Punjee",
+            "ward_id": 905557
+        },
+        {
+            "ward_no": 299402,
+            "ward_name": "Nagadung Agustnagar",
+            "ward_id": 299402
+        },
+        {
+            "ward_no": 299404,
+            "ward_name": "Nagadung Bhudharbond",
+            "ward_id": 299404
+        },
+        {
+            "ward_no": 905284,
+            "ward_name": "Nagar Te",
+            "ward_id": 905284
+        },
+        {
+            "ward_no": 905283,
+            "ward_name": "Nagar Te",
+            "ward_id": 905283
+        },
+        {
+            "ward_no": 299409,
+            "ward_name": "Natsul",
+            "ward_id": 299409
+        },
+        {
+            "ward_no": 299431,
+            "ward_name": "Nayagram",
+            "ward_id": 299431
+        },
+        {
+            "ward_no": 299239,
+            "ward_name": "Nutan Dayapur",
+            "ward_id": 299239
+        },
+        {
+            "ward_no": 905565,
+            "ward_name": "Nutan Dayapur Chawkh",
+            "ward_id": 905565
+        },
+        {
+            "ward_no": 299464,
+            "ward_name": "Nutan Doyapore Chak",
+            "ward_id": 299464
+        },
+        {
+            "ward_no": 299399,
+            "ward_name": "Nuton Suka Punji",
+            "ward_id": 299399
+        },
+        {
+            "ward_no": 299436,
+            "ward_name": "Pangram Pt I",
+            "ward_id": 299436
+        },
+        {
+            "ward_no": 299441,
+            "ward_name": "Pangram Pt Ii",
+            "ward_id": 299441
+        },
+        {
+            "ward_no": 299442,
+            "ward_name": "Pangram Pt Iii",
+            "ward_id": 299442
+        },
+        {
+            "ward_no": 905583,
+            "ward_name": "Pathicherre Te",
+            "ward_id": 905583
+        },
+        {
+            "ward_no": 299412,
+            "ward_name": "Patichara T.E.(Puthicharagrant",
+            "ward_id": 299412
+        },
+        {
+            "ward_no": 905576,
+            "ward_name": "Paticherra Te",
+            "ward_id": 905576
+        },
+        {
+            "ward_no": 905562,
+            "ward_name": "Patimara Basti",
+            "ward_id": 905562
+        },
+        {
+            "ward_no": 299411,
+            "ward_name": "Patimara T.E. (Puthimaragrant)",
+            "ward_id": 299411
+        },
+        {
+            "ward_no": 299463,
+            "ward_name": "Purba Doyapore",
+            "ward_id": 299463
+        },
+        {
+            "ward_no": 299474,
+            "ward_name": "Purba Salganga",
+            "ward_id": 299474
+        },
+        {
+            "ward_no": 299238,
+            "ward_name": "Rangpur Pt Iii",
+            "ward_id": 299238
+        },
+        {
+            "ward_no": 299400,
+            "ward_name": "Ratanpur",
+            "ward_id": 299400
+        },
+        {
+            "ward_no": 299240,
+            "ward_name": "Rongpur Pt I",
+            "ward_id": 299240
+        },
+        {
+            "ward_no": 299241,
+            "ward_name": "Rongpur Pt Ii",
+            "ward_id": 299241
+        },
+        {
+            "ward_no": 299242,
+            "ward_name": "Rongpur Pt Iv",
+            "ward_id": 299242
+        },
+        {
+            "ward_no": 299426,
+            "ward_name": "Salganga Grant",
+            "ward_id": 299426
+        },
+        {
+            "ward_no": 299425,
+            "ward_name": "Salganga Par",
+            "ward_id": 299425
+        },
+        {
+            "ward_no": 299432,
+            "ward_name": "Siberbond",
+            "ward_id": 299432
+        },
+        {
+            "ward_no": 905288,
+            "ward_name": "Sonatala Grant",
+            "ward_id": 905288
+        },
+        {
+            "ward_no": 299401,
+            "ward_name": "Soraipur",
+            "ward_id": 299401
+        },
+        {
+            "ward_no": 299421,
+            "ward_name": "Suna Tula T.E.",
+            "ward_id": 299421
+        },
+        {
+            "ward_no": 299486,
+            "ward_name": "Sungjang Punji (Sunjan)",
+            "ward_id": 299486
+        },
+        {
+            "ward_no": 905571,
+            "ward_name": "Sunglu Punjee",
+            "ward_id": 905571
+        },
+        {
+            "ward_no": 905570,
+            "ward_name": "Sunjam Punjee",
+            "ward_id": 905570
+        },
+        {
+            "ward_no": 299403,
+            "ward_name": "Taligram",
+            "ward_id": 299403
+        },
+        {
+            "ward_no": 299415,
+            "ward_name": "Tatai Chara T.E.",
+            "ward_id": 299415
+        },
+        {
+            "ward_no": 905579,
+            "ward_name": "Tataicherra",
+            "ward_id": 905579
+        },
+        {
+            "ward_no": 905559,
+            "ward_name": "Thaligram",
+            "ward_id": 905559
+        },
+        {
+            "ward_no": 299407,
+            "ward_name": "Tikalpar Basti",
+            "ward_id": 299407
+        },
+        {
+            "ward_no": 299427,
+            "ward_name": "Tikalpar Grant",
+            "ward_id": 299427
+        },
+        {
+            "ward_no": 905289,
+            "ward_name": "Tikalpar Te",
+            "ward_id": 905289
+        },
+        {
+            "ward_no": 905572,
+            "ward_name": "Wibuk Punjee",
+            "ward_id": 905572
+        }
+    ]
+}

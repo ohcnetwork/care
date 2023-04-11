@@ -100,7 +100,6 @@ EMAIL_USE_TLS = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
@@ -138,7 +137,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -167,25 +166,28 @@ LOGGING = {
 
 # Sentry
 # ------------------------------------------------------------------------------
-SENTRY_DSN = env("SENTRY_DSN")
-SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
-sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL,
-    event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
-)
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
-    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
-    integrations=[
-        sentry_logging,
-        DjangoIntegration(),
-        CeleryIntegration(),
-        RedisIntegration(),
-    ],
-)
-ignore_logger("django.security.DisallowedHost")
+SENTRY_DSN = env("SENTRY_DSN", default="")
+
+if SENTRY_DSN:
+    SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
+
+    sentry_logging = LoggingIntegration(
+        level=SENTRY_LOG_LEVEL,
+        event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
+    )
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
+        integrations=[
+            sentry_logging,
+            DjangoIntegration(),
+            CeleryIntegration(),
+            RedisIntegration(),
+        ],
+    )
+    ignore_logger("django.security.DisallowedHost")
 
 # Your stuff...
 # ------------------------------------------------------------------------------

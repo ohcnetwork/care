@@ -1,0 +1,384 @@
+{
+    "name": "Palonghat",
+    "lsg_code": 2516,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 75,
+    "wards": [
+        {
+            "ward_no": 299610,
+            "ward_name": "Anandakhal",
+            "ward_id": 299610
+        },
+        {
+            "ward_no": 299685,
+            "ward_name": "Anandakhal F.V.",
+            "ward_id": 299685
+        },
+        {
+            "ward_no": 299599,
+            "ward_name": "Bharampur",
+            "ward_id": 299599
+        },
+        {
+            "ward_no": 299604,
+            "ward_name": "Bhubandahar Pt I",
+            "ward_id": 299604
+        },
+        {
+            "ward_no": 299598,
+            "ward_name": "Bhubandahar Pt Ii",
+            "ward_id": 299598
+        },
+        {
+            "ward_no": 299713,
+            "ward_name": "Bhubandhar",
+            "ward_id": 299713
+        },
+        {
+            "ward_no": 299669,
+            "ward_name": "Bhubanhill F.V.",
+            "ward_id": 299669
+        },
+        {
+            "ward_no": 299570,
+            "ward_name": "Bhubankhal",
+            "ward_id": 299570
+        },
+        {
+            "ward_no": 299687,
+            "ward_name": "Bhubankhal F.V.",
+            "ward_id": 299687
+        },
+        {
+            "ward_no": 299661,
+            "ward_name": "Bhubankhal Pt I F.V.",
+            "ward_id": 299661
+        },
+        {
+            "ward_no": 299586,
+            "ward_name": "Bhubannagar Pt I",
+            "ward_id": 299586
+        },
+        {
+            "ward_no": 299587,
+            "ward_name": "Bhubannagar Pt Ii",
+            "ward_id": 299587
+        },
+        {
+            "ward_no": 299581,
+            "ward_name": "Bhubannagar Pt Iii",
+            "ward_id": 299581
+        },
+        {
+            "ward_no": 299578,
+            "ward_name": "Bhubannagar Pt Iv",
+            "ward_id": 299578
+        },
+        {
+            "ward_no": 299577,
+            "ward_name": "Bhubannagar Pt V",
+            "ward_id": 299577
+        },
+        {
+            "ward_no": 299574,
+            "ward_name": "Bhubannagar Pt Vi",
+            "ward_id": 299574
+        },
+        {
+            "ward_no": 299591,
+            "ward_name": "Bhubannagar Pt Vii",
+            "ward_id": 299591
+        },
+        {
+            "ward_no": 299575,
+            "ward_name": "Bhubannagar Pt Viii (Pt Vi)",
+            "ward_id": 299575
+        },
+        {
+            "ward_no": 299662,
+            "ward_name": "Bhutankhal Pt Ii F.V.",
+            "ward_id": 299662
+        },
+        {
+            "ward_no": 299684,
+            "ward_name": "Chekavcham F.V.",
+            "ward_id": 299684
+        },
+        {
+            "ward_no": 299686,
+            "ward_name": "Darmitol F.V. (Darmi)",
+            "ward_id": 299686
+        },
+        {
+            "ward_no": 299692,
+            "ward_name": "Dhalaikhal F.V.",
+            "ward_id": 299692
+        },
+        {
+            "ward_no": 299607,
+            "ward_name": "Dharmikhal Grant",
+            "ward_id": 299607
+        },
+        {
+            "ward_no": 299552,
+            "ward_name": "Didarkosh Pt I",
+            "ward_id": 299552
+        },
+        {
+            "ward_no": 299551,
+            "ward_name": "Didarkosh Pt Ii",
+            "ward_id": 299551
+        },
+        {
+            "ward_no": 299572,
+            "ward_name": "Didarkosh Pt Iii",
+            "ward_id": 299572
+        },
+        {
+            "ward_no": 299573,
+            "ward_name": "Didarkosh Pt Iv",
+            "ward_id": 299573
+        },
+        {
+            "ward_no": 299712,
+            "ward_name": "Gamalpur",
+            "ward_id": 299712
+        },
+        {
+            "ward_no": 299557,
+            "ward_name": "Ganganagar Pt I",
+            "ward_id": 299557
+        },
+        {
+            "ward_no": 299553,
+            "ward_name": "Ganganagar Pt Ii",
+            "ward_id": 299553
+        },
+        {
+            "ward_no": 299554,
+            "ward_name": "Ganganagar Pt Iii",
+            "ward_id": 299554
+        },
+        {
+            "ward_no": 299555,
+            "ward_name": "Ganganagar Pt Iv",
+            "ward_id": 299555
+        },
+        {
+            "ward_no": 299563,
+            "ward_name": "Ganganagar Pt Ix",
+            "ward_id": 299563
+        },
+        {
+            "ward_no": 299556,
+            "ward_name": "Ganganagar Pt V",
+            "ward_id": 299556
+        },
+        {
+            "ward_no": 299558,
+            "ward_name": "Ganganagar Pt Vi",
+            "ward_id": 299558
+        },
+        {
+            "ward_no": 299559,
+            "ward_name": "Ganganagar Pt Vii",
+            "ward_id": 299559
+        },
+        {
+            "ward_no": 299561,
+            "ward_name": "Ganganagar Pt Viii",
+            "ward_id": 299561
+        },
+        {
+            "ward_no": 299565,
+            "ward_name": "Ganganagar Pt X",
+            "ward_id": 299565
+        },
+        {
+            "ward_no": 299564,
+            "ward_name": "Ganganagar Pt Xi",
+            "ward_id": 299564
+        },
+        {
+            "ward_no": 299566,
+            "ward_name": "Ganganagar Pt Xii",
+            "ward_id": 299566
+        },
+        {
+            "ward_no": 299560,
+            "ward_name": "Ganganagar Pt Xiii",
+            "ward_id": 299560
+        },
+        {
+            "ward_no": 299682,
+            "ward_name": "Gorkhal F.V.",
+            "ward_id": 299682
+        },
+        {
+            "ward_no": 299665,
+            "ward_name": "Kalakhal F.V.",
+            "ward_id": 299665
+        },
+        {
+            "ward_no": 299609,
+            "ward_name": "Katanpur Grant",
+            "ward_id": 299609
+        },
+        {
+            "ward_no": 299664,
+            "ward_name": "Krishnapur F.V.",
+            "ward_id": 299664
+        },
+        {
+            "ward_no": 299582,
+            "ward_name": "Kusumpur",
+            "ward_id": 299582
+        },
+        {
+            "ward_no": 299597,
+            "ward_name": "Malugram",
+            "ward_id": 299597
+        },
+        {
+            "ward_no": 299608,
+            "ward_name": "Maniyarkhal Chabagicha",
+            "ward_id": 299608
+        },
+        {
+            "ward_no": 299683,
+            "ward_name": "Metnathal F.V.",
+            "ward_id": 299683
+        },
+        {
+            "ward_no": 299568,
+            "ward_name": "Mohankhal",
+            "ward_id": 299568
+        },
+        {
+            "ward_no": 299576,
+            "ward_name": "Mohanpur",
+            "ward_id": 299576
+        },
+        {
+            "ward_no": 299569,
+            "ward_name": "Nagakhal",
+            "ward_id": 299569
+        },
+        {
+            "ward_no": 299579,
+            "ward_name": "Nayagram",
+            "ward_id": 299579
+        },
+        {
+            "ward_no": 299580,
+            "ward_name": "Panichowki",
+            "ward_id": 299580
+        },
+        {
+            "ward_no": 299594,
+            "ward_name": "Punirmukh",
+            "ward_id": 299594
+        },
+        {
+            "ward_no": 299596,
+            "ward_name": "Rakhaltila",
+            "ward_id": 299596
+        },
+        {
+            "ward_no": 299571,
+            "ward_name": "Rammaniayapur",
+            "ward_id": 299571
+        },
+        {
+            "ward_no": 299593,
+            "ward_name": "Rukni Pt Ii",
+            "ward_id": 299593
+        },
+        {
+            "ward_no": 299605,
+            "ward_name": "Rukni Pt Iii",
+            "ward_id": 299605
+        },
+        {
+            "ward_no": 299592,
+            "ward_name": "Rukni Pt I (Rukhi Pt I)",
+            "ward_id": 299592
+        },
+        {
+            "ward_no": 299606,
+            "ward_name": "Rukni Pt Iv",
+            "ward_id": 299606
+        },
+        {
+            "ward_no": 299595,
+            "ward_name": "Rukni T.E.",
+            "ward_id": 299595
+        },
+        {
+            "ward_no": 299562,
+            "ward_name": "Sentcatherine",
+            "ward_id": 299562
+        },
+        {
+            "ward_no": 299666,
+            "ward_name": "Smitnagar F.V.",
+            "ward_id": 299666
+        },
+        {
+            "ward_no": 299583,
+            "ward_name": "Sonapur",
+            "ward_id": 299583
+        },
+        {
+            "ward_no": 299663,
+            "ward_name": "Sonitnagar F.V.",
+            "ward_id": 299663
+        },
+        {
+            "ward_no": 299603,
+            "ward_name": "Sukhtala",
+            "ward_id": 299603
+        },
+        {
+            "ward_no": 299585,
+            "ward_name": "Thankimnagar Pt I",
+            "ward_id": 299585
+        },
+        {
+            "ward_no": 299588,
+            "ward_name": "Thankimnagar Pt Ii",
+            "ward_id": 299588
+        },
+        {
+            "ward_no": 299590,
+            "ward_name": "Thankimnagar Pt Iii",
+            "ward_id": 299590
+        },
+        {
+            "ward_no": 299589,
+            "ward_name": "Thankimnagar Pt Iv",
+            "ward_id": 299589
+        },
+        {
+            "ward_no": 299600,
+            "ward_name": "Tupidahar Pt I",
+            "ward_id": 299600
+        },
+        {
+            "ward_no": 299601,
+            "ward_name": "Tupidahar Pt Ii",
+            "ward_id": 299601
+        },
+        {
+            "ward_no": 299584,
+            "ward_name": "Unsurvey Bhubannagar",
+            "ward_id": 299584
+        },
+        {
+            "ward_no": 299567,
+            "ward_name": "Unsurvey Nimaipur",
+            "ward_id": 299567
+        }
+    ]
+}

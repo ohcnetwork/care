@@ -1,0 +1,294 @@
+{
+    "name": "Chenga",
+    "lsg_code": 2493,
+    "district": "Barpeta",
+    "state": "Assam",
+    "no_of_wards": 57,
+    "wards": [
+        {
+            "ward_no": 282955,
+            "ward_name": "Aduripara N.C.",
+            "ward_id": 282955
+        },
+        {
+            "ward_no": 282942,
+            "ward_name": "Arimara N.C.",
+            "ward_id": 282942
+        },
+        {
+            "ward_no": 282936,
+            "ward_name": "Atiya",
+            "ward_id": 282936
+        },
+        {
+            "ward_no": 282997,
+            "ward_name": "Balartari",
+            "ward_id": 282997
+        },
+        {
+            "ward_no": 282945,
+            "ward_name": "Balidhari",
+            "ward_id": 282945
+        },
+        {
+            "ward_no": 282980,
+            "ward_name": "Bampara",
+            "ward_id": 282980
+        },
+        {
+            "ward_no": 282938,
+            "ward_name": "Bandali",
+            "ward_id": 282938
+        },
+        {
+            "ward_no": 282992,
+            "ward_name": "Barbhitha",
+            "ward_id": 282992
+        },
+        {
+            "ward_no": 282987,
+            "ward_name": "Bar Chenga",
+            "ward_id": 282987
+        },
+        {
+            "ward_no": 282934,
+            "ward_name": "Bardia",
+            "ward_id": 282934
+        },
+        {
+            "ward_no": 282940,
+            "ward_name": "Bardia N.C.",
+            "ward_id": 282940
+        },
+        {
+            "ward_no": 282977,
+            "ward_name": "Batgaon",
+            "ward_id": 282977
+        },
+        {
+            "ward_no": 282994,
+            "ward_name": "Bechimari (Pathar)",
+            "ward_id": 282994
+        },
+        {
+            "ward_no": 283005,
+            "ward_name": "Bohari (Ct)",
+            "ward_id": 283005
+        },
+        {
+            "ward_no": 282953,
+            "ward_name": "Chagbandha N.C.",
+            "ward_id": 282953
+        },
+        {
+            "ward_no": 282995,
+            "ward_name": "Chanartari",
+            "ward_id": 282995
+        },
+        {
+            "ward_no": 282998,
+            "ward_name": "Chata Gaon",
+            "ward_id": 282998
+        },
+        {
+            "ward_no": 282943,
+            "ward_name": "Chenglidia",
+            "ward_id": 282943
+        },
+        {
+            "ward_no": 282947,
+            "ward_name": "Chenglidia N.C.",
+            "ward_id": 282947
+        },
+        {
+            "ward_no": 282944,
+            "ward_name": "Chenimari",
+            "ward_id": 282944
+        },
+        {
+            "ward_no": 282946,
+            "ward_name": "Chenimari N.C.",
+            "ward_id": 282946
+        },
+        {
+            "ward_no": 282975,
+            "ward_name": "Chutia Para",
+            "ward_id": 282975
+        },
+        {
+            "ward_no": 282950,
+            "ward_name": "Dakhin Godhani N.C.",
+            "ward_id": 282950
+        },
+        {
+            "ward_no": 282949,
+            "ward_name": "Damdama",
+            "ward_id": 282949
+        },
+        {
+            "ward_no": 282951,
+            "ward_name": "Damdama N.C.",
+            "ward_id": 282951
+        },
+        {
+            "ward_no": 282984,
+            "ward_name": "Fulbari",
+            "ward_id": 282984
+        },
+        {
+            "ward_no": 282981,
+            "ward_name": "Ganak Para",
+            "ward_id": 282981
+        },
+        {
+            "ward_no": 282982,
+            "ward_name": "Gelabil",
+            "ward_id": 282982
+        },
+        {
+            "ward_no": 282962,
+            "ward_name": "Halanga Para N.C.",
+            "ward_id": 282962
+        },
+        {
+            "ward_no": 282985,
+            "ward_name": "Haripur",
+            "ward_id": 282985
+        },
+        {
+            "ward_no": 282939,
+            "ward_name": "Jatradia N.C.",
+            "ward_id": 282939
+        },
+        {
+            "ward_no": 282957,
+            "ward_name": "Kachumara",
+            "ward_id": 282957
+        },
+        {
+            "ward_no": 282954,
+            "ward_name": "Kachumara N.C.",
+            "ward_id": 282954
+        },
+        {
+            "ward_no": 282979,
+            "ward_name": "Kadamtala",
+            "ward_id": 282979
+        },
+        {
+            "ward_no": 282983,
+            "ward_name": "Kakdhowa",
+            "ward_id": 282983
+        },
+        {
+            "ward_no": 282958,
+            "ward_name": "Kashimpur",
+            "ward_id": 282958
+        },
+        {
+            "ward_no": 282993,
+            "ward_name": "Khangra",
+            "ward_id": 282993
+        },
+        {
+            "ward_no": 282937,
+            "ward_name": "Khutabari",
+            "ward_id": 282937
+        },
+        {
+            "ward_no": 282959,
+            "ward_name": "Mahsara",
+            "ward_id": 282959
+        },
+        {
+            "ward_no": 282961,
+            "ward_name": "Mahsara N.C.",
+            "ward_id": 282961
+        },
+        {
+            "ward_no": 282956,
+            "ward_name": "Mairadia N.C.",
+            "ward_id": 282956
+        },
+        {
+            "ward_no": 282948,
+            "ward_name": "Majar Char",
+            "ward_id": 282948
+        },
+        {
+            "ward_no": 282996,
+            "ward_name": "Malipara",
+            "ward_id": 282996
+        },
+        {
+            "ward_no": 282991,
+            "ward_name": "Maneri",
+            "ward_id": 282991
+        },
+        {
+            "ward_no": 282976,
+            "ward_name": "Matabari",
+            "ward_id": 282976
+        },
+        {
+            "ward_no": 282990,
+            "ward_name": "Muchalman Gaon",
+            "ward_id": 282990
+        },
+        {
+            "ward_no": 282986,
+            "ward_name": "Niz Bahari",
+            "ward_id": 282986
+        },
+        {
+            "ward_no": 282988,
+            "ward_name": "Niz Chenga",
+            "ward_id": 282988
+        },
+        {
+            "ward_no": 282963,
+            "ward_name": "Pampara N.C.",
+            "ward_id": 282963
+        },
+        {
+            "ward_no": 282999,
+            "ward_name": "Roumari Gaon",
+            "ward_id": 282999
+        },
+        {
+            "ward_no": 283000,
+            "ward_name": "Roumari Pathar",
+            "ward_id": 283000
+        },
+        {
+            "ward_no": 282978,
+            "ward_name": "Saru Chenga",
+            "ward_id": 282978
+        },
+        {
+            "ward_no": 282935,
+            "ward_name": "Sarudia",
+            "ward_id": 282935
+        },
+        {
+            "ward_no": 282941,
+            "ward_name": "Sarudia N.C.",
+            "ward_id": 282941
+        },
+        {
+            "ward_no": 282960,
+            "ward_name": "Simalubari",
+            "ward_id": 282960
+        },
+        {
+            "ward_no": 282989,
+            "ward_name": "Subha",
+            "ward_id": 282989
+        },
+        {
+            "ward_no": 282952,
+            "ward_name": "Uttar Godhani N.C.",
+            "ward_id": 282952
+        }
+    ]
+}

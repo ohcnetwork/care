@@ -1,0 +1,19 @@
+{
+    "name": "Paschim-Mangaldai",
+    "lsg_code": 6558,
+    "district": "Udalguri",
+    "state": "Assam",
+    "no_of_wards": 2,
+    "wards": [
+        {
+            "ward_no": 305430,
+            "ward_name": "Chandowapara",
+            "ward_id": 305430
+        },
+        {
+            "ward_no": 305431,
+            "ward_name": "Niz Mangalbecha",
+            "ward_id": 305431
+        }
+    ]
+}

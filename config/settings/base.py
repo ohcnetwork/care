@@ -103,6 +103,7 @@ LOCAL_APPS = [
     "care.users.apps.UsersConfig",
     "care.facility",
     "care.audit_log.apps.AuditLogConfig",
+    "care.hcx",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -376,7 +377,7 @@ DJANGO_REST_LOOKUP_FIELD = "username"
 
 CHROME_WINDOW_SIZE = "2480,3508"
 
-CHROME_PATH = "/usr/bin/google-chrome-stable"
+CHROME_PATH = "/usr/bin/chromium"
 
 IS_PRODUCTION = False
 
@@ -419,15 +420,16 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
 FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
 FACILITY_S3_BUCKET_ENDPOINT = env(
     "FACILITY_S3_BUCKET_ENDPOINT",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.amazonaws.com",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
 )
 FACILITY_S3_STATIC_PREFIX = env(
     "FACILITY_S3_STATIC_PREFIX",
-    default=f"http://s3.amazonaws.com/{FACILITY_S3_BUCKET}/",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
 )
 
 # Audit logs

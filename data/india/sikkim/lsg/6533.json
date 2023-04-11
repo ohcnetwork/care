@@ -1,0 +1,54 @@
+{
+    "name": "Duga",
+    "lsg_code": 6533,
+    "district": "Pakyong",
+    "state": "Sikkim",
+    "no_of_wards": 9,
+    "wards": [
+        {
+            "ward_no": 261284,
+            "ward_name": "Central Pendam",
+            "ward_id": 261284
+        },
+        {
+            "ward_no": 261335,
+            "ward_name": "Kamerey Basmey",
+            "ward_id": 261335
+        },
+        {
+            "ward_no": 261335,
+            "ward_name": "Kamerey Basmey",
+            "ward_id": 261335
+        },
+        {
+            "ward_no": 261282,
+            "ward_name": "Lingzey",
+            "ward_id": 261282
+        },
+        {
+            "ward_no": 261280,
+            "ward_name": "Mangthang",
+            "ward_id": 261280
+        },
+        {
+            "ward_no": 261334,
+            "ward_name": "Pachak",
+            "ward_id": 261334
+        },
+        {
+            "ward_no": 261285,
+            "ward_name": "Sajong",
+            "ward_id": 261285
+        },
+        {
+            "ward_no": 261281,
+            "ward_name": "Sumin",
+            "ward_id": 261281
+        },
+        {
+            "ward_no": 261283,
+            "ward_name": "West Pendam",
+            "ward_id": 261283
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Batabraba (Part)",
+    "lsg_code": 2649,
+    "district": "Marigaon",
+    "state": "Assam",
+    "no_of_wards": 2,
+    "wards": [
+        {
+            "ward_no": 284045,
+            "ward_name": "Bheh Guri",
+            "ward_id": 284045
+        },
+        {
+            "ward_no": 284046,
+            "ward_name": "Silpukhuri",
+            "ward_id": 284046
+        }
+    ]
+}

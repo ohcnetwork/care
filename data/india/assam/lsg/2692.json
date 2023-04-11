@@ -1,0 +1,494 @@
+{
+    "name": "New Sangbar",
+    "lsg_code": 2692,
+    "district": "Dima Hasao",
+    "state": "Assam",
+    "no_of_wards": 97,
+    "wards": [
+        {
+            "ward_no": 298391,
+            "ward_name": "Amdc",
+            "ward_id": 298391
+        },
+        {
+            "ward_no": 298217,
+            "ward_name": "Amrudisa (Amrdisa)",
+            "ward_id": 298217
+        },
+        {
+            "ward_no": 298350,
+            "ward_name": "Assam Quarry",
+            "ward_id": 298350
+        },
+        {
+            "ward_no": 298349,
+            "ward_name": "Baga",
+            "ward_id": 298349
+        },
+        {
+            "ward_no": 298382,
+            "ward_name": "Baigao (Baigaon)",
+            "ward_id": 298382
+        },
+        {
+            "ward_no": 298394,
+            "ward_name": "Bhalukurung",
+            "ward_id": 298394
+        },
+        {
+            "ward_no": 298381,
+            "ward_name": "Bongphiri (Ch)",
+            "ward_id": 298381
+        },
+        {
+            "ward_no": 298380,
+            "ward_name": "Bongphiri (H)",
+            "ward_id": 298380
+        },
+        {
+            "ward_no": 298477,
+            "ward_name": "Boro Chenam",
+            "ward_id": 298477
+        },
+        {
+            "ward_no": 298358,
+            "ward_name": "Boro Lakhindong",
+            "ward_id": 298358
+        },
+        {
+            "ward_no": 298356,
+            "ward_name": "Boro Langlai",
+            "ward_id": 298356
+        },
+        {
+            "ward_no": 298369,
+            "ward_name": "Boro Larpheng",
+            "ward_id": 298369
+        },
+        {
+            "ward_no": 298363,
+            "ward_name": "Boro Lobang",
+            "ward_id": 298363
+        },
+        {
+            "ward_no": 298434,
+            "ward_name": "Bungkhang",
+            "ward_id": 298434
+        },
+        {
+            "ward_no": 298435,
+            "ward_name": "Chaptuk",
+            "ward_id": 298435
+        },
+        {
+            "ward_no": 298372,
+            "ward_name": "Chirilangso",
+            "ward_id": 298372
+        },
+        {
+            "ward_no": 298367,
+            "ward_name": "Choto Lakhingdong",
+            "ward_id": 298367
+        },
+        {
+            "ward_no": 298401,
+            "ward_name": "Choto Langlai",
+            "ward_id": 298401
+        },
+        {
+            "ward_no": 298250,
+            "ward_name": "Choto Larpheng",
+            "ward_id": 298250
+        },
+        {
+            "ward_no": 298362,
+            "ward_name": "Choto Lobang",
+            "ward_id": 298362
+        },
+        {
+            "ward_no": 298327,
+            "ward_name": "Dehangi",
+            "ward_id": 298327
+        },
+        {
+            "ward_no": 298224,
+            "ward_name": "Dikongmabra",
+            "ward_id": 298224
+        },
+        {
+            "ward_no": 298222,
+            "ward_name": "Dikrengma",
+            "ward_id": 298222
+        },
+        {
+            "ward_no": 298730,
+            "ward_name": "Dimahading",
+            "ward_id": 298730
+        },
+        {
+            "ward_no": 298353,
+            "ward_name": "Dithur",
+            "ward_id": 298353
+        },
+        {
+            "ward_no": 298328,
+            "ward_name": "Dorbin",
+            "ward_id": 298328
+        },
+        {
+            "ward_no": 298221,
+            "ward_name": "Doroho",
+            "ward_id": 298221
+        },
+        {
+            "ward_no": 298225,
+            "ward_name": "Embruba I",
+            "ward_id": 298225
+        },
+        {
+            "ward_no": 298226,
+            "ward_name": "Embruba Ii",
+            "ward_id": 298226
+        },
+        {
+            "ward_no": 298337,
+            "ward_name": "Garampani",
+            "ward_id": 298337
+        },
+        {
+            "ward_no": 298393,
+            "ward_name": "Garampani Nepali Basti",
+            "ward_id": 298393
+        },
+        {
+            "ward_no": 298398,
+            "ward_name": "Haplairazi",
+            "ward_id": 298398
+        },
+        {
+            "ward_no": 298555,
+            "ward_name": "Jahai",
+            "ward_id": 298555
+        },
+        {
+            "ward_no": 298344,
+            "ward_name": "Jambudisa",
+            "ward_id": 298344
+        },
+        {
+            "ward_no": 298399,
+            "ward_name": "Kamala Nagar",
+            "ward_id": 298399
+        },
+        {
+            "ward_no": 298479,
+            "ward_name": "Kamphai (Ch)",
+            "ward_id": 298479
+        },
+        {
+            "ward_no": 298478,
+            "ward_name": "Kamphai (H)",
+            "ward_id": 298478
+        },
+        {
+            "ward_no": 298309,
+            "ward_name": "Kekrangship",
+            "ward_id": 298309
+        },
+        {
+            "ward_no": 298338,
+            "ward_name": "Khangdam",
+            "ward_id": 298338
+        },
+        {
+            "ward_no": 298377,
+            "ward_name": "Kharthongship",
+            "ward_id": 298377
+        },
+        {
+            "ward_no": 298237,
+            "ward_name": "Khngjunglangso",
+            "ward_id": 298237
+        },
+        {
+            "ward_no": 298404,
+            "ward_name": "Khobak",
+            "ward_id": 298404
+        },
+        {
+            "ward_no": 298556,
+            "ward_name": "Khutlir",
+            "ward_id": 298556
+        },
+        {
+            "ward_no": 298553,
+            "ward_name": "Kotinpui (Kotripui)",
+            "ward_id": 298553
+        },
+        {
+            "ward_no": 298366,
+            "ward_name": "Krungthai",
+            "ward_id": 298366
+        },
+        {
+            "ward_no": 298368,
+            "ward_name": "Kukrilangso",
+            "ward_id": 298368
+        },
+        {
+            "ward_no": 298376,
+            "ward_name": "Laivel Kannan",
+            "ward_id": 298376
+        },
+        {
+            "ward_no": 298379,
+            "ward_name": "Langlut (Ch)",
+            "ward_id": 298379
+        },
+        {
+            "ward_no": 298378,
+            "ward_name": "Langlut (H)",
+            "ward_id": 298378
+        },
+        {
+            "ward_no": 298311,
+            "ward_name": "Langpui",
+            "ward_id": 298311
+        },
+        {
+            "ward_no": 298352,
+            "ward_name": "Longchirui (Lungcheirui)",
+            "ward_id": 298352
+        },
+        {
+            "ward_no": 298216,
+            "ward_name": "Longlaihansu",
+            "ward_id": 298216
+        },
+        {
+            "ward_no": 298365,
+            "ward_name": "Longmaiklu (Longmaklu)",
+            "ward_id": 298365
+        },
+        {
+            "ward_no": 298214,
+            "ward_name": "Longmaisadikreng",
+            "ward_id": 298214
+        },
+        {
+            "ward_no": 298395,
+            "ward_name": "Longrung",
+            "ward_id": 298395
+        },
+        {
+            "ward_no": 298439,
+            "ward_name": "Loskor (Buljoul)",
+            "ward_id": 298439
+        },
+        {
+            "ward_no": 298310,
+            "ward_name": "Lungphumphai",
+            "ward_id": 298310
+        },
+        {
+            "ward_no": 298385,
+            "ward_name": "Maibang Dimainu",
+            "ward_id": 298385
+        },
+        {
+            "ward_no": 298476,
+            "ward_name": "Malangpa (Mailangpa)",
+            "ward_id": 298476
+        },
+        {
+            "ward_no": 298241,
+            "ward_name": "Mirphung",
+            "ward_id": 298241
+        },
+        {
+            "ward_no": 298347,
+            "ward_name": "Miyungpur Raji",
+            "ward_id": 298347
+        },
+        {
+            "ward_no": 298554,
+            "ward_name": "Mouldam",
+            "ward_id": 298554
+        },
+        {
+            "ward_no": 298345,
+            "ward_name": "N.E. Cement Ltd.",
+            "ward_id": 298345
+        },
+        {
+            "ward_no": 298387,
+            "ward_name": "New Boro Pheng",
+            "ward_id": 298387
+        },
+        {
+            "ward_no": 298388,
+            "ward_name": "New Sangbar",
+            "ward_id": 298388
+        },
+        {
+            "ward_no": 298312,
+            "ward_name": "N. Kekrangship",
+            "ward_id": 298312
+        },
+        {
+            "ward_no": 298436,
+            "ward_name": "Paija",
+            "ward_id": 298436
+        },
+        {
+            "ward_no": 298220,
+            "ward_name": "Porbot Dihongma",
+            "ward_id": 298220
+        },
+        {
+            "ward_no": 298330,
+            "ward_name": "Puralangso",
+            "ward_id": 298330
+        },
+        {
+            "ward_no": 298219,
+            "ward_name": "Purana Dimainu (P. Dimhainu)",
+            "ward_id": 298219
+        },
+        {
+            "ward_no": 298400,
+            "ward_name": "Rong Arting (K)",
+            "ward_id": 298400
+        },
+        {
+            "ward_no": 298402,
+            "ward_name": "Rong Arting N",
+            "ward_id": 298402
+        },
+        {
+            "ward_no": 298370,
+            "ward_name": "Rongmepi",
+            "ward_id": 298370
+        },
+        {
+            "ward_no": 298384,
+            "ward_name": "Sangbar (P. Sangbhar)",
+            "ward_id": 298384
+        },
+        {
+            "ward_no": 298354,
+            "ward_name": "Sikilangso",
+            "ward_id": 298354
+        },
+        {
+            "ward_no": 298397,
+            "ward_name": "Silum",
+            "ward_id": 298397
+        },
+        {
+            "ward_no": 298552,
+            "ward_name": "Thaijul (Jaizal)",
+            "ward_id": 298552
+        },
+        {
+            "ward_no": 298407,
+            "ward_name": "Thaisling Hower",
+            "ward_id": 298407
+        },
+        {
+            "ward_no": 298359,
+            "ward_name": "Tharvelangso",
+            "ward_id": 298359
+        },
+        {
+            "ward_no": 298215,
+            "ward_name": "There",
+            "ward_id": 298215
+        },
+        {
+            "ward_no": 298406,
+            "ward_name": "Thingdol (Thingdoe)",
+            "ward_id": 298406
+        },
+        {
+            "ward_no": 298405,
+            "ward_name": "Thlanghoi",
+            "ward_id": 298405
+        },
+        {
+            "ward_no": 298551,
+            "ward_name": "Thuruk",
+            "ward_id": 298551
+        },
+        {
+            "ward_no": 298544,
+            "ward_name": "Tongpui (Thagpui)",
+            "ward_id": 298544
+        },
+        {
+            "ward_no": 298320,
+            "ward_name": "Tuijonte",
+            "ward_id": 298320
+        },
+        {
+            "ward_no": 298313,
+            "ward_name": "Tuisnanthuon",
+            "ward_id": 298313
+        },
+        {
+            "ward_no": 298346,
+            "ward_name": "Tumbung",
+            "ward_id": 298346
+        },
+        {
+            "ward_no": 298392,
+            "ward_name": "Ucl",
+            "ward_id": 298392
+        },
+        {
+            "ward_no": 298339,
+            "ward_name": "Umrangdisa",
+            "ward_id": 298339
+        },
+        {
+            "ward_no": 298340,
+            "ward_name": "Umrangso Dam Area",
+            "ward_id": 298340
+        },
+        {
+            "ward_no": 298341,
+            "ward_name": "Umrangso Dam Colony",
+            "ward_id": 298341
+        },
+        {
+            "ward_no": 298342,
+            "ward_name": "Umrangso Hydel Const.",
+            "ward_id": 298342
+        },
+        {
+            "ward_no": 298361,
+            "ward_name": "Umrangso (Umrangso 19 Km.)",
+            "ward_id": 298361
+        },
+        {
+            "ward_no": 298403,
+            "ward_name": "Vaitang",
+            "ward_id": 298403
+        },
+        {
+            "ward_no": 298375,
+            "ward_name": "Vaitang Hebron",
+            "ward_id": 298375
+        },
+        {
+            "ward_no": 298336,
+            "ward_name": "Varplak",
+            "ward_id": 298336
+        },
+        {
+            "ward_no": 298348,
+            "ward_name": "Wakha",
+            "ward_id": 298348
+        }
+    ]
+}

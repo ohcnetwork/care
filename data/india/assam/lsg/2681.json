@@ -1,0 +1,274 @@
+{
+    "name": "Dhamdhama",
+    "lsg_code": 2681,
+    "district": "Baksa",
+    "state": "Assam",
+    "no_of_wards": 53,
+    "wards": [
+        {
+            "ward_no": 304568,
+            "ward_name": "Amingaon",
+            "ward_id": 304568
+        },
+        {
+            "ward_no": 304588,
+            "ward_name": "Angardhua",
+            "ward_id": 304588
+        },
+        {
+            "ward_no": 304574,
+            "ward_name": "Baganpara",
+            "ward_id": 304574
+        },
+        {
+            "ward_no": 304565,
+            "ward_name": "Barikadanga",
+            "ward_id": 304565
+        },
+        {
+            "ward_no": 304569,
+            "ward_name": "Benchimari",
+            "ward_id": 304569
+        },
+        {
+            "ward_no": 304597,
+            "ward_name": "Bher Bheri",
+            "ward_id": 304597
+        },
+        {
+            "ward_no": 304572,
+            "ward_name": "Boglamari",
+            "ward_id": 304572
+        },
+        {
+            "ward_no": 304570,
+            "ward_name": "Boglamari Nc",
+            "ward_id": 304570
+        },
+        {
+            "ward_no": 304580,
+            "ward_name": "Bongaon",
+            "ward_id": 304580
+        },
+        {
+            "ward_no": 304546,
+            "ward_name": "Chaulkara",
+            "ward_id": 304546
+        },
+        {
+            "ward_no": 304545,
+            "ward_name": "Chaulkara Nc",
+            "ward_id": 304545
+        },
+        {
+            "ward_no": 304548,
+            "ward_name": "Dadhi Gaon",
+            "ward_id": 304548
+        },
+        {
+            "ward_no": 304559,
+            "ward_name": "Dakhinkuchi",
+            "ward_id": 304559
+        },
+        {
+            "ward_no": 304563,
+            "ward_name": "Dakhin Muthiabari",
+            "ward_id": 304563
+        },
+        {
+            "ward_no": 304585,
+            "ward_name": "Dhekibhanga",
+            "ward_id": 304585
+        },
+        {
+            "ward_no": 304573,
+            "ward_name": "Diapar",
+            "ward_id": 304573
+        },
+        {
+            "ward_no": 304562,
+            "ward_name": "Diringapur",
+            "ward_id": 304562
+        },
+        {
+            "ward_no": 304576,
+            "ward_name": "Gerua",
+            "ward_id": 304576
+        },
+        {
+            "ward_no": 304591,
+            "ward_name": "Ghoramara",
+            "ward_id": 304591
+        },
+        {
+            "ward_no": 304593,
+            "ward_name": "Goalbil",
+            "ward_id": 304593
+        },
+        {
+            "ward_no": 304596,
+            "ward_name": "Gorbhitor",
+            "ward_id": 304596
+        },
+        {
+            "ward_no": 304590,
+            "ward_name": "Holapar",
+            "ward_id": 304590
+        },
+        {
+            "ward_no": 304594,
+            "ward_name": "Horhoria",
+            "ward_id": 304594
+        },
+        {
+            "ward_no": 304592,
+            "ward_name": "Jartaluk",
+            "ward_id": 304592
+        },
+        {
+            "ward_no": 304558,
+            "ward_name": "Jopadong",
+            "ward_id": 304558
+        },
+        {
+            "ward_no": 304583,
+            "ward_name": "Kadamtola",
+            "ward_id": 304583
+        },
+        {
+            "ward_no": 304584,
+            "ward_name": "Khagrabari",
+            "ward_id": 304584
+        },
+        {
+            "ward_no": 304564,
+            "ward_name": "Khairani",
+            "ward_id": 304564
+        },
+        {
+            "ward_no": 304547,
+            "ward_name": "Khamarigaon",
+            "ward_id": 304547
+        },
+        {
+            "ward_no": 304582,
+            "ward_name": "Madaltana",
+            "ward_id": 304582
+        },
+        {
+            "ward_no": 304556,
+            "ward_name": "Monipur",
+            "ward_id": 304556
+        },
+        {
+            "ward_no": 304553,
+            "ward_name": "Morapagladiya Rf",
+            "ward_id": 304553
+        },
+        {
+            "ward_no": 304586,
+            "ward_name": "Muktapur",
+            "ward_id": 304586
+        },
+        {
+            "ward_no": 304561,
+            "ward_name": "Muthiabari",
+            "ward_id": 304561
+        },
+        {
+            "ward_no": 304589,
+            "ward_name": "Nichilamari",
+            "ward_id": 304589
+        },
+        {
+            "ward_no": 304466,
+            "ward_name": "Niz-Barsial",
+            "ward_id": 304466
+        },
+        {
+            "ward_no": 304571,
+            "ward_name": "Odala",
+            "ward_id": 304571
+        },
+        {
+            "ward_no": 304549,
+            "ward_name": "Pakhamara",
+            "ward_id": 304549
+        },
+        {
+            "ward_no": 304587,
+            "ward_name": "Polokata",
+            "ward_id": 304587
+        },
+        {
+            "ward_no": 304579,
+            "ward_name": "Roumari",
+            "ward_id": 304579
+        },
+        {
+            "ward_no": 304581,
+            "ward_name": "Sameridar",
+            "ward_id": 304581
+        },
+        {
+            "ward_no": 304595,
+            "ward_name": "Santipur",
+            "ward_id": 304595
+        },
+        {
+            "ward_no": 304566,
+            "ward_name": "Simlabari",
+            "ward_id": 304566
+        },
+        {
+            "ward_no": 304557,
+            "ward_name": "Subankhata",
+            "ward_id": 304557
+        },
+        {
+            "ward_no": 304560,
+            "ward_name": "Subankhata Nc",
+            "ward_id": 304560
+        },
+        {
+            "ward_no": 304552,
+            "ward_name": "Subankhata Rf",
+            "ward_id": 304552
+        },
+        {
+            "ward_no": 304577,
+            "ward_name": "Thalkuchi",
+            "ward_id": 304577
+        },
+        {
+            "ward_no": 304578,
+            "ward_name": "Tupalia",
+            "ward_id": 304578
+        },
+        {
+            "ward_no": 304567,
+            "ward_name": "Udaypur",
+            "ward_id": 304567
+        },
+        {
+            "ward_no": 304465,
+            "ward_name": "Uttar Barsial",
+            "ward_id": 304465
+        },
+        {
+            "ward_no": 304555,
+            "ward_name": "Uttar Kuchi",
+            "ward_id": 304555
+        },
+        {
+            "ward_no": 304575,
+            "ward_name": "Uttarpara",
+            "ward_id": 304575
+        },
+        {
+            "ward_no": 304554,
+            "ward_name": "Uttar Subankhata",
+            "ward_id": 304554
+        }
+    ]
+}

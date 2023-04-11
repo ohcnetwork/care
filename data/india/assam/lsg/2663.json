@@ -1,0 +1,394 @@
+{
+    "name": "Juria",
+    "lsg_code": 2663,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 77,
+    "wards": [
+        {
+            "ward_no": 284505,
+            "ward_name": "Adha Khonda",
+            "ward_id": 284505
+        },
+        {
+            "ward_no": 284655,
+            "ward_name": "Alitangani",
+            "ward_id": 284655
+        },
+        {
+            "ward_no": 284516,
+            "ward_name": "Bagariguri Gaon",
+            "ward_id": 284516
+        },
+        {
+            "ward_no": 284635,
+            "ward_name": "Balikatia",
+            "ward_id": 284635
+        },
+        {
+            "ward_no": 284626,
+            "ward_name": "Baralimari No.1",
+            "ward_id": 284626
+        },
+        {
+            "ward_no": 284637,
+            "ward_name": "Baralimari No.2",
+            "ward_id": 284637
+        },
+        {
+            "ward_no": 284632,
+            "ward_name": "Bar-Radha Ati",
+            "ward_id": 284632
+        },
+        {
+            "ward_no": 284511,
+            "ward_name": "Barunguri (Barlinguri)",
+            "ward_id": 284511
+        },
+        {
+            "ward_no": 284652,
+            "ward_name": "Bata Mari",
+            "ward_id": 284652
+        },
+        {
+            "ward_no": 284530,
+            "ward_name": "Chatian",
+            "ward_id": 284530
+        },
+        {
+            "ward_no": 284495,
+            "ward_name": "Chenimari Bill",
+            "ward_id": 284495
+        },
+        {
+            "ward_no": 284491,
+            "ward_name": "Chenimari Bill N.C.",
+            "ward_id": 284491
+        },
+        {
+            "ward_no": 284494,
+            "ward_name": "Chitalmari Bill",
+            "ward_id": 284494
+        },
+        {
+            "ward_no": 284492,
+            "ward_name": "Chitalmari Bill N.C.",
+            "ward_id": 284492
+        },
+        {
+            "ward_no": 284493,
+            "ward_name": "Chitalmari Pathar",
+            "ward_id": 284493
+        },
+        {
+            "ward_no": 284648,
+            "ward_name": "Da-Gaon",
+            "ward_id": 284648
+        },
+        {
+            "ward_no": 284627,
+            "ward_name": "Dakhin Kula Duba",
+            "ward_id": 284627
+        },
+        {
+            "ward_no": 284526,
+            "ward_name": "Dalani Juria",
+            "ward_id": 284526
+        },
+        {
+            "ward_no": 284498,
+            "ward_name": "Dhingbari Chapari",
+            "ward_id": 284498
+        },
+        {
+            "ward_no": 284499,
+            "ward_name": "Dhing Bari Pathar",
+            "ward_id": 284499
+        },
+        {
+            "ward_no": 284649,
+            "ward_name": "Dhing Gaon",
+            "ward_id": 284649
+        },
+        {
+            "ward_no": 284521,
+            "ward_name": "Dighaliati Gaon",
+            "ward_id": 284521
+        },
+        {
+            "ward_no": 284520,
+            "ward_name": "Fakali Pathar",
+            "ward_id": 284520
+        },
+        {
+            "ward_no": 284638,
+            "ward_name": "Furhani-Ati",
+            "ward_id": 284638
+        },
+        {
+            "ward_no": 284644,
+            "ward_name": "Garai Mari Gaon(Garai Mari Pam)",
+            "ward_id": 284644
+        },
+        {
+            "ward_no": 284642,
+            "ward_name": "Garia Kawai Mari",
+            "ward_id": 284642
+        },
+        {
+            "ward_no": 284508,
+            "ward_name": "Godaimari Pathar",
+            "ward_id": 284508
+        },
+        {
+            "ward_no": 284496,
+            "ward_name": "Jahajan",
+            "ward_id": 284496
+        },
+        {
+            "ward_no": 284653,
+            "ward_name": "Jamuguri",
+            "ward_id": 284653
+        },
+        {
+            "ward_no": 284629,
+            "ward_name": "Jaramari",
+            "ward_id": 284629
+        },
+        {
+            "ward_no": 284628,
+            "ward_name": "Jengani Gaon(Zengani Gaon)",
+            "ward_id": 284628
+        },
+        {
+            "ward_no": 284504,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 284504
+        },
+        {
+            "ward_no": 284507,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 284507
+        },
+        {
+            "ward_no": 284513,
+            "ward_name": "Kadamoni Pathar",
+            "ward_id": 284513
+        },
+        {
+            "ward_no": 284514,
+            "ward_name": "Kadamoni Town",
+            "ward_id": 284514
+        },
+        {
+            "ward_no": 284502,
+            "ward_name": "Kalia Dinga",
+            "ward_id": 284502
+        },
+        {
+            "ward_no": 284503,
+            "ward_name": "Kalia Dinga Pam",
+            "ward_id": 284503
+        },
+        {
+            "ward_no": 284506,
+            "ward_name": "Kaloni Jalah",
+            "ward_id": 284506
+        },
+        {
+            "ward_no": 284645,
+            "ward_name": "Kandhulimari",
+            "ward_id": 284645
+        },
+        {
+            "ward_no": 284501,
+            "ward_name": "Kathalguri",
+            "ward_id": 284501
+        },
+        {
+            "ward_no": 284528,
+            "ward_name": "Kayee Mari",
+            "ward_id": 284528
+        },
+        {
+            "ward_no": 284527,
+            "ward_name": "Kendu Guri",
+            "ward_id": 284527
+        },
+        {
+            "ward_no": 284651,
+            "ward_name": "Keri-Meri",
+            "ward_id": 284651
+        },
+        {
+            "ward_no": 284500,
+            "ward_name": "Lalung Gaon",
+            "ward_id": 284500
+        },
+        {
+            "ward_no": 284623,
+            "ward_name": "Langia Gaon",
+            "ward_id": 284623
+        },
+        {
+            "ward_no": 284515,
+            "ward_name": "Maheripar",
+            "ward_id": 284515
+        },
+        {
+            "ward_no": 284522,
+            "ward_name": "Mahguri Gaon",
+            "ward_id": 284522
+        },
+        {
+            "ward_no": 284641,
+            "ward_name": "Meleka Dhing",
+            "ward_id": 284641
+        },
+        {
+            "ward_no": 284525,
+            "ward_name": "Naga Bandha",
+            "ward_id": 284525
+        },
+        {
+            "ward_no": 284517,
+            "ward_name": "Niz Juria",
+            "ward_id": 284517
+        },
+        {
+            "ward_no": 284639,
+            "ward_name": "Pachim Makunda Ati",
+            "ward_id": 284639
+        },
+        {
+            "ward_no": 284647,
+            "ward_name": "Paramai Bheti",
+            "ward_id": 284647
+        },
+        {
+            "ward_no": 284634,
+            "ward_name": "Patia Chapari",
+            "ward_id": 284634
+        },
+        {
+            "ward_no": 284630,
+            "ward_name": "Patia Pathar",
+            "ward_id": 284630
+        },
+        {
+            "ward_no": 284531,
+            "ward_name": "Pub-Chatian",
+            "ward_id": 284531
+        },
+        {
+            "ward_no": 284625,
+            "ward_name": "Pub-Kuladuba",
+            "ward_id": 284625
+        },
+        {
+            "ward_no": 284640,
+            "ward_name": "Pub Mukanda Ati",
+            "ward_id": 284640
+        },
+        {
+            "ward_no": 284636,
+            "ward_name": "Puthimari",
+            "ward_id": 284636
+        },
+        {
+            "ward_no": 284621,
+            "ward_name": "Roumari Gaon",
+            "ward_id": 284621
+        },
+        {
+            "ward_no": 284631,
+            "ward_name": "Rowmari Pam",
+            "ward_id": 284631
+        },
+        {
+            "ward_no": 284646,
+            "ward_name": "Salpara",
+            "ward_id": 284646
+        },
+        {
+            "ward_no": 284510,
+            "ward_name": "Samdhara",
+            "ward_id": 284510
+        },
+        {
+            "ward_no": 284633,
+            "ward_name": "Saru-Radha Ati",
+            "ward_id": 284633
+        },
+        {
+            "ward_no": 284654,
+            "ward_name": "Simalu-Ati",
+            "ward_id": 284654
+        },
+        {
+            "ward_no": 284524,
+            "ward_name": "Singia Gaon",
+            "ward_id": 284524
+        },
+        {
+            "ward_no": 284509,
+            "ward_name": "Singia Pathar",
+            "ward_id": 284509
+        },
+        {
+            "ward_no": 284650,
+            "ward_name": "Sunai Bera Gaon",
+            "ward_id": 284650
+        },
+        {
+            "ward_no": 284643,
+            "ward_name": "Sunai Bera Pam",
+            "ward_id": 284643
+        },
+        {
+            "ward_no": 284497,
+            "ward_name": "Sutirpar",
+            "ward_id": 284497
+        },
+        {
+            "ward_no": 284554,
+            "ward_name": "Sutirpar Ban Gaon",
+            "ward_id": 284554
+        },
+        {
+            "ward_no": 284518,
+            "ward_name": "Telia Bebejia",
+            "ward_id": 284518
+        },
+        {
+            "ward_no": 284519,
+            "ward_name": "Telia Bebejia Pathar",
+            "ward_id": 284519
+        },
+        {
+            "ward_no": 284512,
+            "ward_name": "Theo Tangani",
+            "ward_id": 284512
+        },
+        {
+            "ward_no": 284529,
+            "ward_name": "Tinsukia",
+            "ward_id": 284529
+        },
+        {
+            "ward_no": 284622,
+            "ward_name": "Udhantula",
+            "ward_id": 284622
+        },
+        {
+            "ward_no": 284523,
+            "ward_name": "Udmari",
+            "ward_id": 284523
+        },
+        {
+            "ward_no": 284624,
+            "ward_name": "Uttar Kuladuba",
+            "ward_id": 284624
+        }
+    ]
+}

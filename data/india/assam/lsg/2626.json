@@ -1,0 +1,559 @@
+{
+    "name": "Socheng",
+    "lsg_code": 2626,
+    "district": "West Karbi Anglong",
+    "state": "Assam",
+    "no_of_wards": 110,
+    "wards": [
+        {
+            "ward_no": 295676,
+            "ward_name": "Am-Ih",
+            "ward_id": 295676
+        },
+        {
+            "ward_no": 295726,
+            "ward_name": "Amreng",
+            "ward_id": 295726
+        },
+        {
+            "ward_no": 295727,
+            "ward_name": "Amtukapam",
+            "ward_id": 295727
+        },
+        {
+            "ward_no": 911672,
+            "ward_name": "Arbon",
+            "ward_id": 911672
+        },
+        {
+            "ward_no": 295662,
+            "ward_name": "Badong",
+            "ward_id": 295662
+        },
+        {
+            "ward_no": 295663,
+            "ward_name": "Baida",
+            "ward_id": 295663
+        },
+        {
+            "ward_no": 911675,
+            "ward_name": "Bamser",
+            "ward_id": 911675
+        },
+        {
+            "ward_no": 295733,
+            "ward_name": "Bandeng",
+            "ward_id": 295733
+        },
+        {
+            "ward_no": 295723,
+            "ward_name": "Charchim",
+            "ward_id": 295723
+        },
+        {
+            "ward_no": 295724,
+            "ward_name": "Charchim D C R F",
+            "ward_id": 295724
+        },
+        {
+            "ward_no": 911667,
+            "ward_name": "Chenan Cherop",
+            "ward_id": 911667
+        },
+        {
+            "ward_no": 295717,
+            "ward_name": "Chirimthepi",
+            "ward_id": 295717
+        },
+        {
+            "ward_no": 295716,
+            "ward_name": "Chongkhili",
+            "ward_id": 295716
+        },
+        {
+            "ward_no": 911739,
+            "ward_name": "Chongkhili Rongkimi",
+            "ward_id": 911739
+        },
+        {
+            "ward_no": 295745,
+            "ward_name": "Denglier",
+            "ward_id": 295745
+        },
+        {
+            "ward_no": 911704,
+            "ward_name": "Durbintila Firm Basti",
+            "ward_id": 911704
+        },
+        {
+            "ward_no": 295714,
+            "ward_name": "Durbin Tilla",
+            "ward_id": 295714
+        },
+        {
+            "ward_no": 911692,
+            "ward_name": "Hanse Gaon (Jkd)",
+            "ward_id": 911692
+        },
+        {
+            "ward_no": 911315,
+            "ward_name": "Hijunglangso",
+            "ward_id": 911315
+        },
+        {
+            "ward_no": 911686,
+            "ward_name": "Inghinlangso",
+            "ward_id": 911686
+        },
+        {
+            "ward_no": 911673,
+            "ward_name": "Jikilok",
+            "ward_id": 911673
+        },
+        {
+            "ward_no": 911312,
+            "ward_name": "Jirikinding",
+            "ward_id": 911312
+        },
+        {
+            "ward_no": 911718,
+            "ward_name": "Kangrong Bey Gaon",
+            "ward_id": 911718
+        },
+        {
+            "ward_no": 295675,
+            "ward_name": "Khanduli",
+            "ward_id": 295675
+        },
+        {
+            "ward_no": 295692,
+            "ward_name": "Khatkhasala",
+            "ward_id": 295692
+        },
+        {
+            "ward_no": 295738,
+            "ward_name": "Khindeliar",
+            "ward_id": 295738
+        },
+        {
+            "ward_no": 295680,
+            "ward_name": "Kholaphiang",
+            "ward_id": 295680
+        },
+        {
+            "ward_no": 295746,
+            "ward_name": "Komalongjon",
+            "ward_id": 295746
+        },
+        {
+            "ward_no": 295744,
+            "ward_name": "Lamarang",
+            "ward_id": 295744
+        },
+        {
+            "ward_no": 911677,
+            "ward_name": "Lang-Et",
+            "ward_id": 911677
+        },
+        {
+            "ward_no": 911267,
+            "ward_name": "Langhemphi",
+            "ward_id": 911267
+        },
+        {
+            "ward_no": 295678,
+            "ward_name": "Langkeroi",
+            "ward_id": 295678
+        },
+        {
+            "ward_no": 295719,
+            "ward_name": "Langkiding",
+            "ward_id": 295719
+        },
+        {
+            "ward_no": 295721,
+            "ward_name": "Langlongpak",
+            "ward_id": 295721
+        },
+        {
+            "ward_no": 295709,
+            "ward_name": "Langsomepi",
+            "ward_id": 295709
+        },
+        {
+            "ward_no": 295630,
+            "ward_name": "Longle-Athan",
+            "ward_id": 295630
+        },
+        {
+            "ward_no": 295703,
+            "ward_name": "Longtarthepi",
+            "ward_id": 295703
+        },
+        {
+            "ward_no": 295694,
+            "ward_name": "Lum Mutem",
+            "ward_id": 295694
+        },
+        {
+            "ward_no": 295739,
+            "ward_name": "Lumsajar",
+            "ward_id": 295739
+        },
+        {
+            "ward_no": 295683,
+            "ward_name": "Madan-Men-Ih",
+            "ward_id": 295683
+        },
+        {
+            "ward_no": 295707,
+            "ward_name": "Madan Nongkirla",
+            "ward_id": 295707
+        },
+        {
+            "ward_no": 911682,
+            "ward_name": "Modan",
+            "ward_id": 911682
+        },
+        {
+            "ward_no": 295722,
+            "ward_name": "Mokindur",
+            "ward_id": 295722
+        },
+        {
+            "ward_no": 295734,
+            "ward_name": "Moknor",
+            "ward_id": 295734
+        },
+        {
+            "ward_no": 295695,
+            "ward_name": "Mokoilum",
+            "ward_id": 295695
+        },
+        {
+            "ward_no": 295742,
+            "ward_name": "Morap",
+            "ward_id": 295742
+        },
+        {
+            "ward_no": 295704,
+            "ward_name": "Mothade",
+            "ward_id": 295704
+        },
+        {
+            "ward_no": 295705,
+            "ward_name": "Mowlian",
+            "ward_id": 295705
+        },
+        {
+            "ward_no": 911314,
+            "ward_name": "Mujem",
+            "ward_id": 911314
+        },
+        {
+            "ward_no": 295730,
+            "ward_name": "Mukhim",
+            "ward_id": 295730
+        },
+        {
+            "ward_no": 295731,
+            "ward_name": "Mukhim Khasi",
+            "ward_id": 295731
+        },
+        {
+            "ward_no": 911712,
+            "ward_name": "Mukindor Phura Gaon",
+            "ward_id": 911712
+        },
+        {
+            "ward_no": 911714,
+            "ward_name": "Mukindor Rongpi Gaon",
+            "ward_id": 911714
+        },
+        {
+            "ward_no": 295689,
+            "ward_name": "Mukroh",
+            "ward_id": 295689
+        },
+        {
+            "ward_no": 295698,
+            "ward_name": "Mulaber",
+            "ward_id": 295698
+        },
+        {
+            "ward_no": 295743,
+            "ward_name": "Muriap",
+            "ward_id": 295743
+        },
+        {
+            "ward_no": 295710,
+            "ward_name": "Mutha",
+            "ward_id": 295710
+        },
+        {
+            "ward_no": 295701,
+            "ward_name": "Muva",
+            "ward_id": 295701
+        },
+        {
+            "ward_no": 911670,
+            "ward_name": "Nongjirong Khasi",
+            "ward_id": 911670
+        },
+        {
+            "ward_no": 911671,
+            "ward_name": "Nongjirong Nepali",
+            "ward_id": 911671
+        },
+        {
+            "ward_no": 295685,
+            "ward_name": "Nongtirong",
+            "ward_id": 295685
+        },
+        {
+            "ward_no": 911313,
+            "ward_name": "Opilangso",
+            "ward_id": 911313
+        },
+        {
+            "ward_no": 295697,
+            "ward_name": "Phlang",
+            "ward_id": 295697
+        },
+        {
+            "ward_no": 911681,
+            "ward_name": "Phle-Phle",
+            "ward_id": 911681
+        },
+        {
+            "ward_no": 295718,
+            "ward_name": "Phonglangso",
+            "ward_id": 295718
+        },
+        {
+            "ward_no": 911738,
+            "ward_name": "Pisga",
+            "ward_id": 911738
+        },
+        {
+            "ward_no": 295725,
+            "ward_name": "Prisek",
+            "ward_id": 295725
+        },
+        {
+            "ward_no": 295691,
+            "ward_name": "Psiar",
+            "ward_id": 295691
+        },
+        {
+            "ward_no": 295713,
+            "ward_name": "Rongche-Jeng",
+            "ward_id": 295713
+        },
+        {
+            "ward_no": 911698,
+            "ward_name": "Rongchingrum",
+            "ward_id": 911698
+        },
+        {
+            "ward_no": 295711,
+            "ward_name": "Rongjangphong",
+            "ward_id": 295711
+        },
+        {
+            "ward_no": 911740,
+            "ward_name": "Rongjangphong (Langsomepi)",
+            "ward_id": 911740
+        },
+        {
+            "ward_no": 295687,
+            "ward_name": "Rongkhelan",
+            "ward_id": 295687
+        },
+        {
+            "ward_no": 911688,
+            "ward_name": "Rongkimi (Jkd)",
+            "ward_id": 911688
+        },
+        {
+            "ward_no": 911666,
+            "ward_name": "Rongman Pangbong",
+            "ward_id": 911666
+        },
+        {
+            "ward_no": 295735,
+            "ward_name": "Rongmanpi",
+            "ward_id": 295735
+        },
+        {
+            "ward_no": 911690,
+            "ward_name": "Rongmili (Jkd)",
+            "ward_id": 911690
+        },
+        {
+            "ward_no": 295728,
+            "ward_name": "Rongnihang",
+            "ward_id": 295728
+        },
+        {
+            "ward_no": 295684,
+            "ward_name": "Rongpangbong",
+            "ward_id": 295684
+        },
+        {
+            "ward_no": 911727,
+            "ward_name": "Rongpi Gaon (Charchim)",
+            "ward_id": 911727
+        },
+        {
+            "ward_no": 295712,
+            "ward_name": "Rongtar-Me",
+            "ward_id": 295712
+        },
+        {
+            "ward_no": 295699,
+            "ward_name": "Saliat",
+            "ward_id": 295699
+        },
+        {
+            "ward_no": 295688,
+            "ward_name": "Sametan",
+            "ward_id": 295688
+        },
+        {
+            "ward_no": 295740,
+            "ward_name": "Sarucha",
+            "ward_id": 295740
+        },
+        {
+            "ward_no": 911676,
+            "ward_name": "Scap (B)",
+            "ward_id": 911676
+        },
+        {
+            "ward_no": 295693,
+            "ward_name": "Skap",
+            "ward_id": 295693
+        },
+        {
+            "ward_no": 911678,
+            "ward_name": "Slingih",
+            "ward_id": 911678
+        },
+        {
+            "ward_no": 295702,
+            "ward_name": "Sopiem",
+            "ward_id": 295702
+        },
+        {
+            "ward_no": 295679,
+            "ward_name": "Tadolangso",
+            "ward_id": 295679
+        },
+        {
+            "ward_no": 295681,
+            "ward_name": "Tapat",
+            "ward_id": 295681
+        },
+        {
+            "ward_no": 911668,
+            "ward_name": "Tapat Nepali",
+            "ward_id": 911668
+        },
+        {
+            "ward_no": 295720,
+            "ward_name": "Taseng",
+            "ward_id": 295720
+        },
+        {
+            "ward_no": 911721,
+            "ward_name": "Taseng Rongkhelan",
+            "ward_id": 911721
+        },
+        {
+            "ward_no": 295651,
+            "ward_name": "Terang Gaon",
+            "ward_id": 295651
+        },
+        {
+            "ward_no": 911737,
+            "ward_name": "Terang Gaon (Opilangso)",
+            "ward_id": 911737
+        },
+        {
+            "ward_no": 295729,
+            "ward_name": "Thatskai",
+            "ward_id": 295729
+        },
+        {
+            "ward_no": 911685,
+            "ward_name": "Tunglangso",
+            "ward_id": 911685
+        },
+        {
+            "ward_no": 911684,
+            "ward_name": "Tungmelangso",
+            "ward_id": 911684
+        },
+        {
+            "ward_no": 295682,
+            "ward_name": "Umbaso",
+            "ward_id": 295682
+        },
+        {
+            "ward_no": 911735,
+            "ward_name": "Umju",
+            "ward_id": 911735
+        },
+        {
+            "ward_no": 295741,
+            "ward_name": "Umjulaher",
+            "ward_id": 295741
+        },
+        {
+            "ward_no": 295690,
+            "ward_name": "Umkhirmi",
+            "ward_id": 295690
+        },
+        {
+            "ward_no": 295677,
+            "ward_name": "Umpaweng(Langhemphi)",
+            "ward_id": 295677
+        },
+        {
+            "ward_no": 295706,
+            "ward_name": "Umplong",
+            "ward_id": 295706
+        },
+        {
+            "ward_no": 295748,
+            "ward_name": "Umpoo",
+            "ward_id": 295748
+        },
+        {
+            "ward_no": 295736,
+            "ward_name": "Umta-Ap",
+            "ward_id": 295736
+        },
+        {
+            "ward_no": 295732,
+            "ward_name": "Usaliet",
+            "ward_id": 295732
+        },
+        {
+            "ward_no": 911732,
+            "ward_name": "Vojok Ronghang",
+            "ward_id": 911732
+        },
+        {
+            "ward_no": 295686,
+            "ward_name": "Wanpung",
+            "ward_id": 295686
+        },
+        {
+            "ward_no": 295708,
+            "ward_name": "Woterang Langso",
+            "ward_id": 295708
+        }
+    ]
+}

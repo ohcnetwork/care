@@ -1,0 +1,359 @@
+{
+    "name": "Rani",
+    "lsg_code": 2614,
+    "district": "Kamrup",
+    "state": "Assam",
+    "no_of_wards": 70,
+    "wards": [
+        {
+            "ward_no": 303336,
+            "ward_name": "Amring",
+            "ward_id": 303336
+        },
+        {
+            "ward_no": 303318,
+            "ward_name": "Andherijuli",
+            "ward_id": 303318
+        },
+        {
+            "ward_no": 303328,
+            "ward_name": "Bahu Para (Bahupara)",
+            "ward_id": 303328
+        },
+        {
+            "ward_no": 303311,
+            "ward_name": "Bahuwa",
+            "ward_id": 303311
+        },
+        {
+            "ward_no": 303308,
+            "ward_name": "Balahpur",
+            "ward_id": 303308
+        },
+        {
+            "ward_no": 303310,
+            "ward_name": "Barpatima",
+            "ward_id": 303310
+        },
+        {
+            "ward_no": 303319,
+            "ward_name": "Batabari",
+            "ward_id": 303319
+        },
+        {
+            "ward_no": 303283,
+            "ward_name": "Batabari Gaon",
+            "ward_id": 303283
+        },
+        {
+            "ward_no": 303282,
+            "ward_name": "Batabari N.C.",
+            "ward_id": 303282
+        },
+        {
+            "ward_no": 303281,
+            "ward_name": "Batabari Pathar",
+            "ward_id": 303281
+        },
+        {
+            "ward_no": 303280,
+            "ward_name": "Batabari Pathar N.C.",
+            "ward_id": 303280
+        },
+        {
+            "ward_no": 303307,
+            "ward_name": "Beri Gaon",
+            "ward_id": 303307
+        },
+        {
+            "ward_no": 303278,
+            "ward_name": "Betlanchi",
+            "ward_id": 303278
+        },
+        {
+            "ward_no": 303279,
+            "ward_name": "Betlanchi N.C.",
+            "ward_id": 303279
+        },
+        {
+            "ward_no": 303286,
+            "ward_name": "Bhalakhowa",
+            "ward_id": 303286
+        },
+        {
+            "ward_no": 303287,
+            "ward_name": "Bhalakhowa N.C.",
+            "ward_id": 303287
+        },
+        {
+            "ward_no": 303309,
+            "ward_name": "Bhalla",
+            "ward_id": 303309
+        },
+        {
+            "ward_no": 303349,
+            "ward_name": "Bhaluk F.V.",
+            "ward_id": 303349
+        },
+        {
+            "ward_no": 303331,
+            "ward_name": "Bhaluk Khawa N.C.",
+            "ward_id": 303331
+        },
+        {
+            "ward_no": 303304,
+            "ward_name": "Challi",
+            "ward_id": 303304
+        },
+        {
+            "ward_no": 303332,
+            "ward_name": "Dale Paham N.C.",
+            "ward_id": 303332
+        },
+        {
+            "ward_no": 303330,
+            "ward_name": "Dumopaham N.C",
+            "ward_id": 303330
+        },
+        {
+            "ward_no": 303348,
+            "ward_name": "Garbhanga F.V.",
+            "ward_id": 303348
+        },
+        {
+            "ward_no": 303305,
+            "ward_name": "Garo Para",
+            "ward_id": 303305
+        },
+        {
+            "ward_no": 303314,
+            "ward_name": "Gatuwa",
+            "ward_id": 303314
+        },
+        {
+            "ward_no": 303329,
+            "ward_name": "Hatimura",
+            "ward_id": 303329
+        },
+        {
+            "ward_no": 303335,
+            "ward_name": "Jaluk Paham N.C.",
+            "ward_id": 303335
+        },
+        {
+            "ward_no": 303347,
+            "ward_name": "Jara Sal F.V.",
+            "ward_id": 303347
+        },
+        {
+            "ward_no": 303285,
+            "ward_name": "Jimirigaon",
+            "ward_id": 303285
+        },
+        {
+            "ward_no": 303284,
+            "ward_name": "Jimirigaon N.C.",
+            "ward_id": 303284
+        },
+        {
+            "ward_no": 303350,
+            "ward_name": "Joypur F.V.",
+            "ward_id": 303350
+        },
+        {
+            "ward_no": 303326,
+            "ward_name": "Kachari Allibari",
+            "ward_id": 303326
+        },
+        {
+            "ward_no": 303339,
+            "ward_name": "Kallapara",
+            "ward_id": 303339
+        },
+        {
+            "ward_no": 303340,
+            "ward_name": "Kallapara N.C.",
+            "ward_id": 303340
+        },
+        {
+            "ward_no": 303334,
+            "ward_name": "Kanthang Paham N.C.",
+            "ward_id": 303334
+        },
+        {
+            "ward_no": 303288,
+            "ward_name": "Katal Para",
+            "ward_id": 303288
+        },
+        {
+            "ward_no": 303289,
+            "ward_name": "Katal Para N.C.",
+            "ward_id": 303289
+        },
+        {
+            "ward_no": 303346,
+            "ward_name": "Kawasing F.V.",
+            "ward_id": 303346
+        },
+        {
+            "ward_no": 303322,
+            "ward_name": "Kenduri Gaon",
+            "ward_id": 303322
+        },
+        {
+            "ward_no": 303338,
+            "ward_name": "Khena Alli Bari",
+            "ward_id": 303338
+        },
+        {
+            "ward_no": 303301,
+            "ward_name": "Khope Gaon",
+            "ward_id": 303301
+        },
+        {
+            "ward_no": 303306,
+            "ward_name": "Kumar Bori",
+            "ward_id": 303306
+        },
+        {
+            "ward_no": 303313,
+            "ward_name": "Kuruwa",
+            "ward_id": 303313
+        },
+        {
+            "ward_no": 303298,
+            "ward_name": "Mairapur",
+            "ward_id": 303298
+        },
+        {
+            "ward_no": 303297,
+            "ward_name": "Mairapur Grant",
+            "ward_id": 303297
+        },
+        {
+            "ward_no": 303299,
+            "ward_name": "Majpara",
+            "ward_id": 303299
+        },
+        {
+            "ward_no": 303277,
+            "ward_name": "Muhudi",
+            "ward_id": 303277
+        },
+        {
+            "ward_no": 303323,
+            "ward_name": "Murphuli",
+            "ward_id": 303323
+        },
+        {
+            "ward_no": 303315,
+            "ward_name": "Nalgaon",
+            "ward_id": 303315
+        },
+        {
+            "ward_no": 303325,
+            "ward_name": "Nargaon",
+            "ward_id": 303325
+        },
+        {
+            "ward_no": 303333,
+            "ward_name": "Nongtaria Paham N.C.",
+            "ward_id": 303333
+        },
+        {
+            "ward_no": 303296,
+            "ward_name": "Patgaon",
+            "ward_id": 303296
+        },
+        {
+            "ward_no": 303290,
+            "ward_name": "Pat Gaon Bandha Para",
+            "ward_id": 303290
+        },
+        {
+            "ward_no": 303291,
+            "ward_name": "Pat Gaon Bandha Para N.C.",
+            "ward_id": 303291
+        },
+        {
+            "ward_no": 303312,
+            "ward_name": "Patgaon Barmokam",
+            "ward_id": 303312
+        },
+        {
+            "ward_no": 303324,
+            "ward_name": "Pat Haledhiya",
+            "ward_id": 303324
+        },
+        {
+            "ward_no": 303300,
+            "ward_name": "Pazi Bindha",
+            "ward_id": 303300
+        },
+        {
+            "ward_no": 303317,
+            "ward_name": "Rajapanichanda",
+            "ward_id": 303317
+        },
+        {
+            "ward_no": 303337,
+            "ward_name": "Rangapara",
+            "ward_id": 303337
+        },
+        {
+            "ward_no": 303316,
+            "ward_name": "Sajan Para",
+            "ward_id": 303316
+        },
+        {
+            "ward_no": 303293,
+            "ward_name": "Salmer",
+            "ward_id": 303293
+        },
+        {
+            "ward_no": 303292,
+            "ward_name": "Salmer N.C.",
+            "ward_id": 303292
+        },
+        {
+            "ward_no": 303363,
+            "ward_name": "Sanpara (Ct)",
+            "ward_id": 303363
+        },
+        {
+            "ward_no": 303320,
+            "ward_name": "Sarania",
+            "ward_id": 303320
+        },
+        {
+            "ward_no": 303327,
+            "ward_name": "Sikarhati",
+            "ward_id": 303327
+        },
+        {
+            "ward_no": 303303,
+            "ward_name": "Tangan Para",
+            "ward_id": 303303
+        },
+        {
+            "ward_no": 303321,
+            "ward_name": "Tatibama",
+            "ward_id": 303321
+        },
+        {
+            "ward_no": 303302,
+            "ward_name": "Thengapara",
+            "ward_id": 303302
+        },
+        {
+            "ward_no": 303294,
+            "ward_name": "Umchur",
+            "ward_id": 303294
+        },
+        {
+            "ward_no": 303295,
+            "ward_name": "Umchur N.C.",
+            "ward_id": 303295
+        }
+    ]
+}

@@ -5,6 +5,8 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.validators import validate_email
+from django.db import models
+from django.db.models import Case, When
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -14,6 +16,7 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
@@ -37,6 +40,8 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
+    BedTypeChoices,
+    DailyRound,
     Facility,
     FacilityPatientStatsHistory,
     PatientConsultation,
@@ -60,7 +65,9 @@ from config.authentication import (
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
+VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -68,7 +75,8 @@ class PatientFilterSet(filters.FilterSet):
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     facility_type = CareChoiceFilter(
-        field_name="facility__facility_type", choice_dict=REVERSE_FACILITY_TYPES
+        field_name="facility__facility_type",
+        choice_dict=REVERSE_FACILITY_TYPES,
     )
     phone_number = filters.CharFilter(field_name="phone_number")
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
@@ -79,8 +87,8 @@ class PatientFilterSet(filters.FilterSet):
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
-    age_min = filters.NumberFilter(field_name="age", lookup_expr="gt")
-    age_max = filters.NumberFilter(field_name="age", lookup_expr="lt")
+    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
+    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
     deprecated_covid_category = filters.ChoiceFilter(
         field_name="last_consultation__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
@@ -126,17 +134,22 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__symptoms_onset_date"
     )
-    last_consultation_admitted_to_list = MultiSelectFilter(
-        field_name="last_consultation__admitted_to"
+    last_consultation_admitted_bed_type_list = MultiSelectFilter(
+        field_name="last_consultation__current_bed__bed__bed_type"
     )
-    last_consultation_admitted_to = filters.NumberFilter(
-        field_name="last_consultation__admitted_to"
+    last_consultation_admitted_bed_type = CareChoiceFilter(
+        field_name="last_consultation__current_bed__bed__bed_type",
+        choice_dict=REVERSE_BED_TYPES,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
     )
     last_consultation_is_telemedicine = filters.BooleanFilter(
         field_name="last_consultation__is_telemedicine"
+    )
+    ventilator_interface = CareChoiceFilter(
+        field_name="last_consultation__last_daily_round__ventilator_interface",
+        choice_dict=VENTILATOR_CHOICES,
     )
 
     # Vaccination Filters
@@ -193,6 +206,30 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
         return queryset.filter(facility_id__isnull=show_without_facility)
 
 
+class PatientCustomOrderingFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        ordering = request.query_params.get("ordering", "")
+
+        if ordering == "category_severity" or ordering == "-category_severity":
+            category_ordering = {
+                category: index + 1
+                for index, (category, _) in enumerate(CATEGORY_CHOICES)
+            }
+            when_statements = [
+                When(last_consultation__category=cat, then=order)
+                for cat, order in category_ordering.items()
+            ]
+            queryset = queryset.annotate(
+                category_severity=Case(
+                    *when_statements,
+                    default=(len(category_ordering) + 1),
+                    output_field=models.IntegerField(),
+                )
+            ).order_by(ordering)
+
+        return queryset
+
+
 class PatientViewSet(
     HistoryMixin,
     mixins.CreateModelMixin,
@@ -201,7 +238,6 @@ class PatientViewSet(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
-
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
@@ -230,10 +266,13 @@ class PatientViewSet(
         "created_by",
     )
     ordering_fields = [
+        "facility__name",
         "id",
+        "name",
         "created_date",
         "modified_date",
         "review_time",
+        "last_consultation__current_bed__bed__name",
         "date_declared_positive",
     ]
 
@@ -242,6 +281,7 @@ class PatientViewSet(
         PatientDRYFilter,
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
+        PatientCustomOrderingFilter,
     )
     filterset_class = PatientFilterSet
 
@@ -347,7 +387,8 @@ class PatientViewSet(
         patient = self.get_object()
         patient.is_active = discharged
         patient.allow_transfer = not discharged
-        patient.save(update_fields=["allow_transfer", "is_active"])
+        patient.review_time = None
+        patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
         last_consultation = (
             PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
         )
@@ -364,6 +405,34 @@ class PatientViewSet(
             if last_consultation.discharge_date is None:
                 last_consultation.discharge_date = current_time
             last_consultation.current_bed = None
+            if reason == "EXP":
+                death_datetime = request.data.get("death_datetime")
+                death_confirmed_doctor = request.data.get("death_confirmed_doctor")
+                if death_datetime is None:
+                    raise serializers.ValidationError(
+                        {"death_datetime": "Please provide death date and time"}
+                    )
+                if death_confirmed_doctor is None:
+                    raise serializers.ValidationError(
+                        {"death_confirmed_doctor": "Please provide doctor details"}
+                    )
+                last_consultation.death_datetime = death_datetime
+                last_consultation.death_confirmed_doctor = death_confirmed_doctor
+            if reason == "REC":
+                discharge_prescription = request.data.get("discharge_prescription", [])
+                discharge_prn_prescription = request.data.get(
+                    "discharge_prn_prescription", []
+                )
+                discharge_date = request.data.get("discharge_date")
+                if discharge_date is None:
+                    raise serializers.ValidationError(
+                        {"discharge_date": "Please set the discharge date"}
+                    )
+                last_consultation.discharge_prescription = discharge_prescription
+                last_consultation.discharge_prn_prescription = (
+                    discharge_prn_prescription
+                )
+                last_consultation.discharge_date = discharge_date
             last_consultation.save()
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
@@ -506,7 +575,12 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                     "age",
                 ]
             else:
-                search_keys = ["date_of_birth", "year_of_birth", "phone_number", "age"]
+                search_keys = [
+                    "date_of_birth",
+                    "year_of_birth",
+                    "phone_number",
+                    "age",
+                ]
             search_fields = {
                 key: serializer.validated_data[key]
                 for key in search_keys
@@ -607,5 +681,7 @@ class PatientNotesViewSet(
                 {"patient": "Only active patients data can be updated"}
             )
         return serializer.save(
-            facility=patient.facility, patient=patient, created_by=self.request.user
+            facility=patient.facility,
+            patient=patient,
+            created_by=self.request.user,
         )

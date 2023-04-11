@@ -1,0 +1,104 @@
+{
+    "name": "Kapili Pt.I",
+    "lsg_code": 2665,
+    "district": "Nagaon",
+    "state": "Assam",
+    "no_of_wards": 19,
+    "wards": [
+        {
+            "ward_no": 284825,
+            "ward_name": "Alikuchi Gaon",
+            "ward_id": 284825
+        },
+        {
+            "ward_no": 284838,
+            "ward_name": "Balipara",
+            "ward_id": 284838
+        },
+        {
+            "ward_no": 284832,
+            "ward_name": "Besapati",
+            "ward_id": 284832
+        },
+        {
+            "ward_no": 284836,
+            "ward_name": "Bhakat Gaon",
+            "ward_id": 284836
+        },
+        {
+            "ward_no": 284831,
+            "ward_name": "Bhatarbori",
+            "ward_id": 284831
+        },
+        {
+            "ward_no": 284828,
+            "ward_name": "Bura Gaon",
+            "ward_id": 284828
+        },
+        {
+            "ward_no": 284830,
+            "ward_name": "Chatarbori",
+            "ward_id": 284830
+        },
+        {
+            "ward_no": 284824,
+            "ward_name": "Jarabari Gaon",
+            "ward_id": 284824
+        },
+        {
+            "ward_no": 284823,
+            "ward_name": "Kachadhara Bill",
+            "ward_id": 284823
+        },
+        {
+            "ward_no": 284822,
+            "ward_name": "Kachadhara Gaon",
+            "ward_id": 284822
+        },
+        {
+            "ward_no": 284837,
+            "ward_name": "Khanajan",
+            "ward_id": 284837
+        },
+        {
+            "ward_no": 284835,
+            "ward_name": "Manipurtup",
+            "ward_id": 284835
+        },
+        {
+            "ward_no": 284827,
+            "ward_name": "Matharbari",
+            "ward_id": 284827
+        },
+        {
+            "ward_no": 284839,
+            "ward_name": "Mulankata",
+            "ward_id": 284839
+        },
+        {
+            "ward_no": 284821,
+            "ward_name": "Nabhanga Gaon",
+            "ward_id": 284821
+        },
+        {
+            "ward_no": 284826,
+            "ward_name": "Niz Barapujia",
+            "ward_id": 284826
+        },
+        {
+            "ward_no": 284829,
+            "ward_name": "Puta Kalong",
+            "ward_id": 284829
+        },
+        {
+            "ward_no": 284834,
+            "ward_name": "Tarabari Gaon",
+            "ward_id": 284834
+        },
+        {
+            "ward_no": 284833,
+            "ward_name": "Tarabaritop",
+            "ward_id": 284833
+        }
+    ]
+}

@@ -1,0 +1,229 @@
+{
+    "name": "West Abhaipur",
+    "lsg_code": 2701,
+    "district": "Charaideo",
+    "state": "Assam",
+    "no_of_wards": 44,
+    "wards": [
+        {
+            "ward_no": 292997,
+            "ward_name": "288/313 Grant",
+            "ward_id": 292997
+        },
+        {
+            "ward_no": 293000,
+            "ward_name": "348 Grant",
+            "ward_id": 293000
+        },
+        {
+            "ward_no": 293010,
+            "ward_name": "438 No. Grant",
+            "ward_id": 293010
+        },
+        {
+            "ward_no": 293008,
+            "ward_name": "Abhoypur Grant",
+            "ward_id": 293008
+        },
+        {
+            "ward_no": 293025,
+            "ward_name": "Banfera Grant",
+            "ward_id": 293025
+        },
+        {
+            "ward_no": 293027,
+            "ward_name": "Banfera T.G",
+            "ward_id": 293027
+        },
+        {
+            "ward_no": 293016,
+            "ward_name": "Barahi Grant",
+            "ward_id": 293016
+        },
+        {
+            "ward_no": 293018,
+            "ward_name": "Barahi Kachari",
+            "ward_id": 293018
+        },
+        {
+            "ward_no": 292999,
+            "ward_name": "Barpothar",
+            "ward_id": 292999
+        },
+        {
+            "ward_no": 293021,
+            "ward_name": "Bhojo Gaon & Bhojo Rly. Stn.",
+            "ward_id": 293021
+        },
+        {
+            "ward_no": 293014,
+            "ward_name": "Dakhin Sonari Habi",
+            "ward_id": 293014
+        },
+        {
+            "ward_no": 293176,
+            "ward_name": "Janaki F.V",
+            "ward_id": 293176
+        },
+        {
+            "ward_no": 293026,
+            "ward_name": "Joboka Chah Bagicha",
+            "ward_id": 293026
+        },
+        {
+            "ward_no": 293012,
+            "ward_name": "Jobok Habi Gaon",
+            "ward_id": 293012
+        },
+        {
+            "ward_no": 293033,
+            "ward_name": "Lalotipothar No.1",
+            "ward_id": 293033
+        },
+        {
+            "ward_no": 293032,
+            "ward_name": "Laloti Pothar No.2",
+            "ward_id": 293032
+        },
+        {
+            "ward_no": 293034,
+            "ward_name": "Laloti Pothar No.3",
+            "ward_id": 293034
+        },
+        {
+            "ward_no": 292998,
+            "ward_name": "Mohan Gaon & Suffry Rly. Stn.",
+            "ward_id": 292998
+        },
+        {
+            "ward_no": 293028,
+            "ward_name": "Mohkhuti Pothar",
+            "ward_id": 293028
+        },
+        {
+            "ward_no": 293175,
+            "ward_name": "Naganadi F.V",
+            "ward_id": 293175
+        },
+        {
+            "ward_no": 293017,
+            "ward_name": "Na-Gaon",
+            "ward_id": 293017
+        },
+        {
+            "ward_no": 293024,
+            "ward_name": "Na-Kachari",
+            "ward_id": 293024
+        },
+        {
+            "ward_no": 293002,
+            "ward_name": "Naphuk Gaon",
+            "ward_id": 293002
+        },
+        {
+            "ward_no": 293013,
+            "ward_name": "Naphuk Grant",
+            "ward_id": 293013
+        },
+        {
+            "ward_no": 293007,
+            "ward_name": "No.1 Gowala Pothar",
+            "ward_id": 293007
+        },
+        {
+            "ward_no": 293009,
+            "ward_name": "No.2 Gowala Pothar",
+            "ward_id": 293009
+        },
+        {
+            "ward_no": 293006,
+            "ward_name": "No.3 Gowala Pothar",
+            "ward_id": 293006
+        },
+        {
+            "ward_no": 293011,
+            "ward_name": "No.4 Gowala Pothar",
+            "ward_id": 293011
+        },
+        {
+            "ward_no": 293036,
+            "ward_name": "Raidongia Gaon",
+            "ward_id": 293036
+        },
+        {
+            "ward_no": 293029,
+            "ward_name": "Raidongia Na-Kachari",
+            "ward_id": 293029
+        },
+        {
+            "ward_no": 293037,
+            "ward_name": "Rajabari Grant (Pt)",
+            "ward_id": 293037
+        },
+        {
+            "ward_no": 293003,
+            "ward_name": "Ranga Pothar",
+            "ward_id": 293003
+        },
+        {
+            "ward_no": 293019,
+            "ward_name": "Singarijan T.G.",
+            "ward_id": 293019
+        },
+        {
+            "ward_no": 293174,
+            "ward_name": "Singlo F.V",
+            "ward_id": 293174
+        },
+        {
+            "ward_no": 293005,
+            "ward_name": "Singlo T.G",
+            "ward_id": 293005
+        },
+        {
+            "ward_no": 293001,
+            "ward_name": "Singoritol Bangali",
+            "ward_id": 293001
+        },
+        {
+            "ward_no": 293004,
+            "ward_name": "Suffry Grant",
+            "ward_id": 293004
+        },
+        {
+            "ward_no": 293173,
+            "ward_name": "Tangia F.V",
+            "ward_id": 293173
+        },
+        {
+            "ward_no": 293023,
+            "ward_name": "Teok Gaon",
+            "ward_id": 293023
+        },
+        {
+            "ward_no": 293035,
+            "ward_name": "Tingalibam T.G",
+            "ward_id": 293035
+        },
+        {
+            "ward_no": 293020,
+            "ward_name": "Tiok Bangali",
+            "ward_id": 293020
+        },
+        {
+            "ward_no": 293030,
+            "ward_name": "Towkok Grant No.1",
+            "ward_id": 293030
+        },
+        {
+            "ward_no": 293031,
+            "ward_name": "Towkok Grant No.2",
+            "ward_id": 293031
+        },
+        {
+            "ward_no": 293022,
+            "ward_name": "Uttar Sonari (Pt)",
+            "ward_id": 293022
+        }
+    ]
+}

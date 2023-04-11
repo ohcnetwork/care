@@ -26,6 +26,7 @@ class FileUpload(FacilityBaseModel):
         PATIENT = 1
         CONSULTATION = 2
         SAMPLE_MANAGEMENT = 3
+        CLAIM = 4
 
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"
@@ -40,9 +41,23 @@ class FileUpload(FacilityBaseModel):
     internal_name = models.CharField(max_length=2000)
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    archive_reason = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=True, blank=True
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="uploaded_by",
     )
+    archived_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="archived_by",
+    )
+    archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
         choices=FileTypeChoices, default=FileType.PATIENT.value
     )

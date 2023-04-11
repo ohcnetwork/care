@@ -1,0 +1,554 @@
+{
+    "name": "Nazira",
+    "lsg_code": 2697,
+    "district": "Sivasagar",
+    "state": "Assam",
+    "no_of_wards": 109,
+    "wards": [
+        {
+            "ward_no": 292913,
+            "ward_name": "107 No. Grant",
+            "ward_id": 292913
+        },
+        {
+            "ward_no": 292911,
+            "ward_name": "159 No. Grant",
+            "ward_id": 292911
+        },
+        {
+            "ward_no": 292829,
+            "ward_name": "Abhoypuria Gaon",
+            "ward_id": 292829
+        },
+        {
+            "ward_no": 292912,
+            "ward_name": "Adaboria Handique",
+            "ward_id": 292912
+        },
+        {
+            "ward_no": 292856,
+            "ward_name": "Adpuria",
+            "ward_id": 292856
+        },
+        {
+            "ward_no": 292894,
+            "ward_name": "Amkotia Gohain",
+            "ward_id": 292894
+        },
+        {
+            "ward_no": 292851,
+            "ward_name": "Asalabari Gaon",
+            "ward_id": 292851
+        },
+        {
+            "ward_no": 292841,
+            "ward_name": "Atkhal Grant No.I",
+            "ward_id": 292841
+        },
+        {
+            "ward_no": 292840,
+            "ward_name": "Atkhal Grant No.Ii",
+            "ward_id": 292840
+        },
+        {
+            "ward_no": 292899,
+            "ward_name": "Bailung Gaon",
+            "ward_id": 292899
+        },
+        {
+            "ward_no": 292941,
+            "ward_name": "Bakupukhuri Habi No.4",
+            "ward_id": 292941
+        },
+        {
+            "ward_no": 292898,
+            "ward_name": "Bali Gaon",
+            "ward_id": 292898
+        },
+        {
+            "ward_no": 292921,
+            "ward_name": "Bamun Bari",
+            "ward_id": 292921
+        },
+        {
+            "ward_no": 292867,
+            "ward_name": "Bamun Pukhuri Chah Bagicha",
+            "ward_id": 292867
+        },
+        {
+            "ward_no": 292902,
+            "ward_name": "Bangmuria Konwar",
+            "ward_id": 292902
+        },
+        {
+            "ward_no": 292948,
+            "ward_name": "Bauli Pukhuri Habi",
+            "ward_id": 292948
+        },
+        {
+            "ward_no": 292920,
+            "ward_name": "Belang Bari",
+            "ward_id": 292920
+        },
+        {
+            "ward_no": 292872,
+            "ward_name": "Bhabachuk Gaon",
+            "ward_id": 292872
+        },
+        {
+            "ward_no": 292883,
+            "ward_name": "Bhakat Gaon",
+            "ward_id": 292883
+        },
+        {
+            "ward_no": 292859,
+            "ward_name": "Bihubor Grant",
+            "ward_id": 292859
+        },
+        {
+            "ward_no": 292907,
+            "ward_name": "Bogdoi",
+            "ward_id": 292907
+        },
+        {
+            "ward_no": 292946,
+            "ward_name": "Bokopukhuri Habi",
+            "ward_id": 292946
+        },
+        {
+            "ward_no": 292885,
+            "ward_name": "Borakhowa",
+            "ward_id": 292885
+        },
+        {
+            "ward_no": 292861,
+            "ward_name": "Borgohain",
+            "ward_id": 292861
+        },
+        {
+            "ward_no": 292893,
+            "ward_name": "Bor Gohain",
+            "ward_id": 292893
+        },
+        {
+            "ward_no": 292890,
+            "ward_name": "Bura Gohain",
+            "ward_id": 292890
+        },
+        {
+            "ward_no": 292876,
+            "ward_name": "Chanbosa Handique",
+            "ward_id": 292876
+        },
+        {
+            "ward_no": 292906,
+            "ward_name": "Changdhora",
+            "ward_id": 292906
+        },
+        {
+            "ward_no": 292903,
+            "ward_name": "Chetia Handique",
+            "ward_id": 292903
+        },
+        {
+            "ward_no": 292830,
+            "ward_name": "Chetia Katoni",
+            "ward_id": 292830
+        },
+        {
+            "ward_no": 292838,
+            "ward_name": "Chutia",
+            "ward_id": 292838
+        },
+        {
+            "ward_no": 292832,
+            "ward_name": "Deogharia Duwarah",
+            "ward_id": 292832
+        },
+        {
+            "ward_no": 292835,
+            "ward_name": "Deopani Gohain",
+            "ward_id": 292835
+        },
+        {
+            "ward_no": 292839,
+            "ward_name": "Deopani Grant",
+            "ward_id": 292839
+        },
+        {
+            "ward_no": 292880,
+            "ward_name": "Dihingia",
+            "ward_id": 292880
+        },
+        {
+            "ward_no": 292836,
+            "ward_name": "Dolakakhoria Bam",
+            "ward_id": 292836
+        },
+        {
+            "ward_no": 292919,
+            "ward_name": "Duwara Gaon",
+            "ward_id": 292919
+        },
+        {
+            "ward_no": 292908,
+            "ward_name": "Garmur Miri",
+            "ward_id": 292908
+        },
+        {
+            "ward_no": 292844,
+            "ward_name": "Geleki Grant No.1",
+            "ward_id": 292844
+        },
+        {
+            "ward_no": 292845,
+            "ward_name": "Geleki Grant No.2",
+            "ward_id": 292845
+        },
+        {
+            "ward_no": 292846,
+            "ward_name": "Geleki Jungle",
+            "ward_id": 292846
+        },
+        {
+            "ward_no": 292952,
+            "ward_name": "Geleki Reserve Forest",
+            "ward_id": 292952
+        },
+        {
+            "ward_no": 292828,
+            "ward_name": "Geleki Reserve Forest",
+            "ward_id": 292828
+        },
+        {
+            "ward_no": 292923,
+            "ward_name": "Gochai Kolakhat",
+            "ward_id": 292923
+        },
+        {
+            "ward_no": 292848,
+            "ward_name": "Gohain Gaon",
+            "ward_id": 292848
+        },
+        {
+            "ward_no": 292865,
+            "ward_name": "Gohain Handique",
+            "ward_id": 292865
+        },
+        {
+            "ward_no": 292864,
+            "ward_name": "Halua Gaon",
+            "ward_id": 292864
+        },
+        {
+            "ward_no": 292857,
+            "ward_name": "Handique",
+            "ward_id": 292857
+        },
+        {
+            "ward_no": 292850,
+            "ward_name": "Harkina Grant",
+            "ward_id": 292850
+        },
+        {
+            "ward_no": 292843,
+            "ward_name": "Hatigorh",
+            "ward_id": 292843
+        },
+        {
+            "ward_no": 292849,
+            "ward_name": "Hatipoti Grant",
+            "ward_id": 292849
+        },
+        {
+            "ward_no": 292873,
+            "ward_name": "Hatsoi Grant-I",
+            "ward_id": 292873
+        },
+        {
+            "ward_no": 292940,
+            "ward_name": "Hatsoi Grant -Ii",
+            "ward_id": 292940
+        },
+        {
+            "ward_no": 292831,
+            "ward_name": "Hudupora",
+            "ward_id": 292831
+        },
+        {
+            "ward_no": 292868,
+            "ward_name": "Hulal Kalita",
+            "ward_id": 292868
+        },
+        {
+            "ward_no": 292871,
+            "ward_name": "Hulang Katoni",
+            "ward_id": 292871
+        },
+        {
+            "ward_no": 292895,
+            "ward_name": "Jogi Sotokia",
+            "ward_id": 292895
+        },
+        {
+            "ward_no": 292877,
+            "ward_name": "Joykhamdang Khat Gaon",
+            "ward_id": 292877
+        },
+        {
+            "ward_no": 292852,
+            "ward_name": "Kachari",
+            "ward_id": 292852
+        },
+        {
+            "ward_no": 292884,
+            "ward_name": "Kataki Bari",
+            "ward_id": 292884
+        },
+        {
+            "ward_no": 292922,
+            "ward_name": "Khula Khowa Pothar",
+            "ward_id": 292922
+        },
+        {
+            "ward_no": 292881,
+            "ward_name": "Kopohua",
+            "ward_id": 292881
+        },
+        {
+            "ward_no": 292887,
+            "ward_name": "Kowamora Athabari Grant",
+            "ward_id": 292887
+        },
+        {
+            "ward_no": 292853,
+            "ward_name": "Lahon",
+            "ward_id": 292853
+        },
+        {
+            "ward_no": 292916,
+            "ward_name": "Lahon Gaon",
+            "ward_id": 292916
+        },
+        {
+            "ward_no": 292942,
+            "ward_name": "Lengibor Grant",
+            "ward_id": 292942
+        },
+        {
+            "ward_no": 292875,
+            "ward_name": "Likson",
+            "ward_id": 292875
+        },
+        {
+            "ward_no": 292896,
+            "ward_name": "Luthuri Gaon",
+            "ward_id": 292896
+        },
+        {
+            "ward_no": 292886,
+            "ward_name": "Maduri Chah Bagicha",
+            "ward_id": 292886
+        },
+        {
+            "ward_no": 292892,
+            "ward_name": "Maduri Gohain",
+            "ward_id": 292892
+        },
+        {
+            "ward_no": 292951,
+            "ward_name": "Maibela Grant Elec. Power Project",
+            "ward_id": 292951
+        },
+        {
+            "ward_no": 292950,
+            "ward_name": "Mathurapur Grant",
+            "ward_id": 292950
+        },
+        {
+            "ward_no": 292889,
+            "ward_name": "Mechagorh Gohain",
+            "ward_id": 292889
+        },
+        {
+            "ward_no": 292858,
+            "ward_name": "Methonchowa Gaon",
+            "ward_id": 292858
+        },
+        {
+            "ward_no": 292869,
+            "ward_name": "Methon Chowa Gohain",
+            "ward_id": 292869
+        },
+        {
+            "ward_no": 292862,
+            "ward_name": "Methonchowa Grant",
+            "ward_id": 292862
+        },
+        {
+            "ward_no": 292905,
+            "ward_name": "Miri Gaon",
+            "ward_id": 292905
+        },
+        {
+            "ward_no": 292833,
+            "ward_name": "Missamora",
+            "ward_id": 292833
+        },
+        {
+            "ward_no": 292917,
+            "ward_name": "Mohan",
+            "ward_id": 292917
+        },
+        {
+            "ward_no": 292891,
+            "ward_name": "Mola Gaon",
+            "ward_id": 292891
+        },
+        {
+            "ward_no": 292847,
+            "ward_name": "Moran Gaon",
+            "ward_id": 292847
+        },
+        {
+            "ward_no": 292888,
+            "ward_name": "Mothia Chiga Gohain",
+            "ward_id": 292888
+        },
+        {
+            "ward_no": 292870,
+            "ward_name": "Mout Gaon",
+            "ward_id": 292870
+        },
+        {
+            "ward_no": 292914,
+            "ward_name": "Na-Gaon",
+            "ward_id": 292914
+        },
+        {
+            "ward_no": 292878,
+            "ward_name": "Na-Mati Gaon",
+            "ward_id": 292878
+        },
+        {
+            "ward_no": 292834,
+            "ward_name": "Namdongia",
+            "ward_id": 292834
+        },
+        {
+            "ward_no": 292837,
+            "ward_name": "Na-Pam Baruoti",
+            "ward_id": 292837
+        },
+        {
+            "ward_no": 292879,
+            "ward_name": "Naw Holia Gaon",
+            "ward_id": 292879
+        },
+        {
+            "ward_no": 292918,
+            "ward_name": "Nimaigorh Habi",
+            "ward_id": 292918
+        },
+        {
+            "ward_no": 292866,
+            "ward_name": "Nirmolia Gaon",
+            "ward_id": 292866
+        },
+        {
+            "ward_no": 292874,
+            "ward_name": "Niz -Nazira",
+            "ward_id": 292874
+        },
+        {
+            "ward_no": 292947,
+            "ward_name": "No.1 Bokupukhuri Habi",
+            "ward_id": 292947
+        },
+        {
+            "ward_no": 292945,
+            "ward_name": "No.3 Bokupukhuri Habi",
+            "ward_id": 292945
+        },
+        {
+            "ward_no": 292943,
+            "ward_name": "No.46 Grant (Lower Namsai)",
+            "ward_id": 292943
+        },
+        {
+            "ward_no": 292944,
+            "ward_name": "No.5 Bokupukhuri Habi",
+            "ward_id": 292944
+        },
+        {
+            "ward_no": 292949,
+            "ward_name": "No.6 Bokupukhuri Habi",
+            "ward_id": 292949
+        },
+        {
+            "ward_no": 292909,
+            "ward_name": "Owguri Jan",
+            "ward_id": 292909
+        },
+        {
+            "ward_no": 292904,
+            "ward_name": "Pator Gaon",
+            "ward_id": 292904
+        },
+        {
+            "ward_no": 292863,
+            "ward_name": "Phuloni Bari",
+            "ward_id": 292863
+        },
+        {
+            "ward_no": 292897,
+            "ward_name": "Pohuchungi Deodhai",
+            "ward_id": 292897
+        },
+        {
+            "ward_no": 292882,
+            "ward_name": "Reboti Gaon",
+            "ward_id": 292882
+        },
+        {
+            "ward_no": 292855,
+            "ward_name": "Rojabheta Grant No.2",
+            "ward_id": 292855
+        },
+        {
+            "ward_no": 292854,
+            "ward_name": "Rojabheta Lakhimijan Grant No.1",
+            "ward_id": 292854
+        },
+        {
+            "ward_no": 292860,
+            "ward_name": "Rojabheta No.1",
+            "ward_id": 292860
+        },
+        {
+            "ward_no": 292842,
+            "ward_name": "Smithpur Grant",
+            "ward_id": 292842
+        },
+        {
+            "ward_no": 292901,
+            "ward_name": "Soladhora",
+            "ward_id": 292901
+        },
+        {
+            "ward_no": 292910,
+            "ward_name": "Sontok Grant",
+            "ward_id": 292910
+        },
+        {
+            "ward_no": 292900,
+            "ward_name": "Tipomia",
+            "ward_id": 292900
+        },
+        {
+            "ward_no": 292915,
+            "ward_name": "Upper Namchai",
+            "ward_id": 292915
+        }
+    ]
+}

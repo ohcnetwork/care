@@ -2,7 +2,10 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import get_password_validators, validate_password
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -12,22 +15,74 @@ from django_rest_passwordreset.models import (
     get_password_reset_lookup_field,
     get_password_reset_token_expiry_time,
 )
-from django_rest_passwordreset.serializers import PasswordTokenSerializer, TokenSerializer
-from django_rest_passwordreset.signals import post_password_reset, pre_password_reset, reset_password_token_created
+from django_rest_passwordreset.serializers import PasswordTokenSerializer
+from django_rest_passwordreset.signals import (
+    post_password_reset,
+    pre_password_reset,
+    reset_password_token_created,
+)
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from config.ratelimit import ratelimit
+
 User = get_user_model()
 
-# TODO Ratelimiting for both endpoints
-
-HTTP_USER_AGENT_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT")
-HTTP_IP_ADDRESS_HEADER = getattr(settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR")
+HTTP_USER_AGENT_HEADER = getattr(
+    settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT"
+)
+HTTP_IP_ADDRESS_HEADER = getattr(
+    settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR"
+)
 
 
 class ResetPasswordUserSerializer(serializers.Serializer):
     username = serializers.CharField()
+
+
+class ResetPasswordCheck(GenericAPIView):
+    """
+    An Api View which provides a method to check if a password reset token is valid
+    """
+
+    permission_classes = ()
+
+    def post(self, request, *args, **kwargs):
+        token = request.data.get("token", None)
+
+        if ratelimit(request, "reset", [token], "20/h"):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        # get token validation time
+        password_reset_token_validation_time = get_password_reset_token_expiry_time()
+
+        # find token
+        reset_password_token = ResetPasswordToken.objects.filter(key=token).first()
+
+        if reset_password_token is None:
+            return Response(
+                {"status": "notfound", "detail": "The password reset link is invalid"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # check expiry date
+        expiry_date = reset_password_token.created_at + timedelta(
+            hours=password_reset_token_validation_time
+        )
+
+        if timezone.now() > expiry_date:
+            # delete expired token
+            reset_password_token.delete()
+            return Response(
+                {"status": "expired", "detail": "The password reset link has expired"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response({"status": "OK"})
 
 
 class ResetPasswordConfirm(GenericAPIView):
@@ -35,7 +90,6 @@ class ResetPasswordConfirm(GenericAPIView):
     An Api View which provides a method to reset a password based on a unique token
     """
 
-    throttle_classes = ()
     permission_classes = ()
     serializer_class = PasswordTokenSerializer
 
@@ -45,6 +99,12 @@ class ResetPasswordConfirm(GenericAPIView):
         password = serializer.validated_data["password"]
         token = serializer.validated_data["token"]
 
+        if ratelimit(request, "reset", [token], "20/h"):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         # get token validation time
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
 
@@ -52,25 +112,37 @@ class ResetPasswordConfirm(GenericAPIView):
         reset_password_token = ResetPasswordToken.objects.filter(key=token).first()
 
         if reset_password_token is None:
-            return Response({"status": "notfound", "detail": "The password reset link is invalid" }, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"status": "notfound", "detail": "The password reset link is invalid"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         # check expiry date
-        expiry_date = reset_password_token.created_at + timedelta(hours=password_reset_token_validation_time)
+        expiry_date = reset_password_token.created_at + timedelta(
+            hours=password_reset_token_validation_time
+        )
 
         if timezone.now() > expiry_date:
             # delete expired token
             reset_password_token.delete()
-            return Response({"status": "expired", "detail": "The password reset link has expired" }, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"status": "expired", "detail": "The password reset link has expired"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         # change users password (if we got to this code it means that the user is_active)
         if reset_password_token.user.eligible_for_reset():
-            pre_password_reset.send(sender=self.__class__, user=reset_password_token.user)
+            pre_password_reset.send(
+                sender=self.__class__, user=reset_password_token.user
+            )
             try:
                 # validate the password against existing validators
                 validate_password(
                     password,
                     user=reset_password_token.user,
-                    password_validators=get_password_validators(settings.AUTH_PASSWORD_VALIDATORS),
+                    password_validators=get_password_validators(
+                        settings.AUTH_PASSWORD_VALIDATORS
+                    ),
                 )
             except ValidationError as e:
                 # raise a validation error for the serializer
@@ -78,7 +150,9 @@ class ResetPasswordConfirm(GenericAPIView):
 
             reset_password_token.user.set_password(password)
             reset_password_token.user.save()
-            post_password_reset.send(sender=self.__class__, user=reset_password_token.user)
+            post_password_reset.send(
+                sender=self.__class__, user=reset_password_token.user
+            )
 
         # Delete all password reset tokens for this user
         ResetPasswordToken.objects.filter(user=reset_password_token.user).delete()
@@ -102,17 +176,27 @@ class ResetPasswordRequestToken(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data["username"]
 
+        if ratelimit(request, "reset", [username]):
+            return Response(
+                {"detail": "Too Many Requests. Please try again later."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         # before we continue, delete all existing expired tokens
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
 
         # datetime.now minus expiry hours
-        now_minus_expiry_time = timezone.now() - timedelta(hours=password_reset_token_validation_time)
+        now_minus_expiry_time = timezone.now() - timedelta(
+            hours=password_reset_token_validation_time
+        )
 
         # delete all tokens where created_at < now - 24 hours
         clear_expired(now_minus_expiry_time)
 
         # find a user
-        users = User.objects.filter(**{"{}__exact".format(get_password_reset_lookup_field()): username})
+        users = User.objects.filter(
+            **{"{}__exact".format(get_password_reset_lookup_field()): username}
+        )
 
         active_user_found = False
 
@@ -125,7 +209,9 @@ class ResetPasswordRequestToken(GenericAPIView):
 
         # No active user found, raise a validation error
         # but not if DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE == True
-        if not active_user_found and not getattr(settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False):
+        if not active_user_found and not getattr(
+            settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
+        ):
             raise exceptions.ValidationError(
                 {
                     "email": [
@@ -156,6 +242,8 @@ class ResetPasswordRequestToken(GenericAPIView):
                     )
                 # send a signal that the password token was created
                 # let whoever receives this signal handle sending the email for the password reset
-                reset_password_token_created.send(sender=self.__class__, instance=self, reset_password_token=token)
+                reset_password_token_created.send(
+                    sender=self.__class__, instance=self, reset_password_token=token
+                )
         # done
         return Response({"status": "OK"})
