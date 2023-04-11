@@ -887,3 +887,21 @@ class Fhir:
                 ),
             ],
         ).json()
+
+    def create_record(self, record_type):
+        if record_type == "Prescription":
+            return self.create_prescription_record()
+        elif record_type == "WellnessRecord":
+            return self.create_wellness_record()
+        elif record_type == "ImmunizationRecord":
+            return self.create_immunization_record()
+        elif record_type == "HealthDocumentRecord":
+            return self.create_health_document_record()
+        elif record_type == "DiagnosticReport":
+            return self.create_discharge_summary_record()
+        elif record_type == "DischargeSummary":
+            return self.create_discharge_summary_record()
+        elif record_type == "OPConsultation":
+            return self.create_discharge_summary_record()
+        else:
+            return self.create_discharge_summary_record()
