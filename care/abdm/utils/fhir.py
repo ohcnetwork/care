@@ -3,15 +3,18 @@ from datetime import datetime, timezone
 from uuid import uuid4 as uuid
 
 from fhir.resources.address import Address
+from fhir.resources.annotation import Annotation
 from fhir.resources.attachment import Attachment
 from fhir.resources.bundle import Bundle, BundleEntry
+from fhir.resources.careplan import CarePlan
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.coding import Coding
 from fhir.resources.composition import Composition, CompositionSection
+from fhir.resources.condition import Condition
 from fhir.resources.contactpoint import ContactPoint
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.dosage import Dosage
-from fhir.resources.encounter import Encounter
+from fhir.resources.encounter import Encounter, EncounterDiagnosis
 from fhir.resources.humanname import HumanName
 from fhir.resources.identifier import Identifier
 from fhir.resources.immunization import Immunization, ImmunizationProtocolApplied
@@ -23,10 +26,12 @@ from fhir.resources.organization import Organization
 from fhir.resources.patient import Patient
 from fhir.resources.period import Period
 from fhir.resources.practitioner import Practitioner
+from fhir.resources.procedure import Procedure
 from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.static_data.icd11 import ICDDiseases
 
 
 class Fhir:
@@ -37,10 +42,13 @@ class Fhir:
         self._practitioner_profile = None
         self._organization_profile = None
         self._encounter_profile = None
+        self._careplan_profile = None
         self._medication_profiles = []
         self._medication_request_profiles = []
         self._observation_profiles = []
         self._document_reference_profiles = []
+        self._condition_profiles = []
+        self._procedure_profiles = []
 
     def _reference_url(self, resource=None):
         if resource is None:
@@ -116,6 +124,94 @@ class Fhir:
         )
 
         return self._organization_profile
+
+    def _condition(self, diagnosis_id, provisional=False):
+        diagnosis = ICDDiseases.by.id[diagnosis_id]
+        [code, label] = diagnosis.label.split(" ", 1)
+        condition_profile = Condition(
+            id=diagnosis_id,
+            identifier=[Identifier(value=diagnosis_id)],
+            category=[
+                CodeableConcept(
+                    coding=[
+                        Coding(
+                            system="http://terminology.hl7.org/CodeSystem/condition-category",
+                            code="encounter-diagnosis",
+                            display="Encounter Diagnosis",
+                        )
+                    ],
+                    text="Encounter Diagnosis",
+                )
+            ],
+            verificationStatus=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                        code="provisional" if provisional else "confirmed",
+                        display="Provisional" if provisional else "Confirmed",
+                    )
+                ]
+            ),
+            code=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="http://id.who.int/icd/release/11/mms",
+                        code=code,
+                        display=label,
+                    )
+                ],
+                text=diagnosis.label,
+            ),
+            subject=self._reference(self._patient()),
+        )
+
+        self._condition_profiles.append(condition_profile)
+        return condition_profile
+
+    def _procedure(self, procedure):
+        procedure_profile = Procedure(
+            id=str(uuid()),
+            status="completed",
+            code=CodeableConcept(
+                text=procedure["procedure"],
+            ),
+            subject=self._reference(self._patient()),
+            performedDateTime=f"{procedure['time']}:00+05:30"
+            if not procedure["repetitive"]
+            else None,
+            performedString=f"Every {procedure['frequency']}"
+            if procedure["repetitive"]
+            else None,
+        )
+
+        self._procedure_profiles.append(procedure_profile)
+        return procedure_profile
+
+    def _careplan(self):
+        if self._careplan_profile:
+            return self._careplan_profile
+
+        self._careplan_profile = CarePlan(
+            id=str(uuid()),
+            status="completed",
+            intent="plan",
+            title="Care Plan",
+            description="This includes Treatment Summary, Prescribed Medication, General Notes and Special Instructions",
+            period=Period(
+                start=self.consultation.admission_date.isoformat(),
+                end=self.consultation.discharge_date.isoformat()
+                if self.consultation.discharge_date
+                else None,
+            ),
+            note=[
+                Annotation(text=self.consultation.prescribed_medication),
+                Annotation(text=self.consultation.consultation_notes),
+                Annotation(text=self.consultation.special_instruction),
+            ],
+            subject=self._reference(self._patient()),
+        )
+
+        return self._careplan_profile
 
     def _observation(self, title, value, id, date):
         if not value or (type(value) == dict and not value["value"]):
@@ -205,7 +301,7 @@ class Fhir:
         self._observation_profiles.extend(observation_profiles)
         return observation_profiles
 
-    def _encounter(self):
+    def _encounter(self, include_diagnosis=False):
         if self._encounter_profile is not None:
             return self._encounter_profile
 
@@ -225,6 +321,26 @@ class Fhir:
                 "class": Coding(code="IMP", display="Inpatient Encounter"),
                 "subject": self._reference(self._patient()),
                 "period": Period(start=period_start, end=period_end),
+                "diagnosis": list(
+                    map(
+                        lambda diagnosis: EncounterDiagnosis(
+                            condition=self._reference(
+                                self._condition(diagnosis),
+                            )
+                        ),
+                        self.consultation.icd11_diagnoses,
+                    )
+                )
+                + list(
+                    map(
+                        lambda diagnosis: EncounterDiagnosis(
+                            condition=self._reference(self._condition(diagnosis))
+                        ),
+                        self.consultation.icd11_provisional_diagnoses,
+                    )
+                )
+                if include_diagnosis
+                else None,
             }
         )
 
@@ -494,6 +610,129 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
+    def _discharge_summary_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="373942005",
+                        display="Discharge Summary Record",
+                    )
+                ]
+            ),
+            title="Discharge Summary Document",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=[
+                CompositionSection(
+                    title="Prescribed medications",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="440545006",
+                                display="Prescription",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda medicine: self._reference(
+                                self._medication_request(medicine)[1]
+                            ),
+                            self.consultation.discharge_advice,
+                        )
+                    ),
+                ),
+                CompositionSection(
+                    title="Health Documents",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="419891008",
+                                display="Record",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda file: self._reference(
+                                self._document_reference(file)
+                            ),
+                            FileUpload.objects.filter(
+                                associating_id=self.consultation.id
+                            ),
+                        )
+                    ),
+                ),
+                *list(
+                    map(
+                        lambda daily_round: CompositionSection(
+                            title=f"Daily Round - {daily_round.created_date}",
+                            code=CodeableConcept(
+                                coding=[
+                                    Coding(
+                                        system="https://projecteka.in/sct",
+                                        display="Wellness Record",
+                                    )
+                                ]
+                            ),
+                            entry=list(
+                                map(
+                                    lambda observation_profile: self._reference(
+                                        observation_profile
+                                    ),
+                                    self._observations_from_daily_round(daily_round),
+                                )
+                            ),
+                        ),
+                        self.consultation.daily_rounds.all(),
+                    )
+                ),
+                CompositionSection(
+                    title="Procedures",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="371525003",
+                                display="Clinical procedure report",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda procedure: self._reference(
+                                self._procedure(procedure)
+                            ),
+                            self.consultation.procedure,
+                        )
+                    ),
+                ),
+                CompositionSection(
+                    title="Care Plan",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="734163000",
+                                display="Care Plan",
+                            )
+                        ]
+                    ),
+                    entry=[self._reference(self._careplan())],
+                ),
+            ],
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter(include_diagnosis=True)),
+            author=[self._reference(self._organization())],
+        )
+
     def _bundle_entry(self, resource):
         return BundleEntry(fullUrl=self._reference_url(resource), resource=resource)
 
@@ -589,6 +828,61 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._document_reference_profiles,
+                    )
+                ),
+            ],
+        ).json()
+
+    def create_discharge_summary_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._discharge_summary_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                self._bundle_entry(self._careplan()),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._medication_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._medication_request_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._condition_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._procedure_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._document_reference_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._observation_profiles,
                     )
                 ),
             ],
