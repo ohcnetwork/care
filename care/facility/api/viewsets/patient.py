@@ -94,8 +94,24 @@ class PatientFilterSet(filters.FilterSet):
         choices=COVID_CATEGORY_CHOICES,
     )
     category = filters.ChoiceFilter(
-        field_name="last_consultation__category", choices=CATEGORY_CHOICES
+        method="filter_by_category",
+        choices=CATEGORY_CHOICES,
     )
+
+    def filter_by_category(self, queryset, name, value):
+        if value:
+            queryset = queryset.filter(
+                (
+                    Q(last_consultation__last_daily_round__isnull=False)
+                    & Q(last_consultation__last_daily_round__patient_category=value)
+                )
+                | (
+                    Q(last_consultation__last_daily_round__isnull=True)
+                    & Q(last_consultation__category=value)
+                )
+            )
+        return queryset
+
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
