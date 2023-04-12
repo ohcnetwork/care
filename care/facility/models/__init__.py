@@ -16,3 +16,4 @@ from .patient_external_test import *
 from .patient_investigation import *
 from .asset import *
 from .bed import *
+from .prescription import *

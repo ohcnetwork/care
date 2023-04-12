@@ -81,6 +81,7 @@ from care.users.api.viewsets.userskill import UserSkillViewSet
 from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.hcx.api.viewsets.claim import ClaimViewSet
 from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
+from care.facility.api.viewsets.prescription import PrescriptionViewSet, PRNPrescriptionViewSet, MedicineAdministrationViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -192,6 +193,9 @@ consultation_nested_router = NestedSimpleRouter(
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
+consultation_nested_router.register(r"prescriptions", PrescriptionViewSet)
+consultation_nested_router.register(r"prn_prescriptions", PRNPrescriptionViewSet)
+consultation_nested_router.register(r"medicine_administration", MedicineAdministrationViewSet)
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)
