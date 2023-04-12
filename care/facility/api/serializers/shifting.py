@@ -61,14 +61,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
     )
     assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
-    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES)
-    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES)
+    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES, required=False)
+    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES, required=False)
 
     orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
     shifting_approving_facility = serializers.UUIDField(
         source="shifting_approving_facility.external_id", allow_null=False, required=True
     )
     assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
+    assigned_facility_external = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
     patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
 
@@ -114,6 +115,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         user = self.context["request"].user
 
+        if validated_data.get("assigned_facility_external"):
+            validated_data["assigned_facility"] = None
+        elif validated_data.get("assigned_facility"):
+            validated_data["assigned_facility_external"] = None
+
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"] != instance.is_kasp:  # Check only when changed
                 if not has_facility_permission(user, instance.shifting_approving_facility):
@@ -142,17 +148,21 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 ).id
 
         assigned = False
-        if "assigned_facility" in validated_data:
+        if validated_data.get("assigned_facility"):
             assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
             if assigned_facility_external_id:
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
                 ).id
                 assigned = True
+        if validated_data.get("assigned_facility_external"):
+            validated_data["assigned_facility_id"] = None
+            validated_data["assigned_facility_object"] = None
+            assigned = True
 
         if "status" in validated_data:
             if validated_data["status"] in RECIEVING_REQUIRED_STATUS:
-                if (not instance.assigned_facility) and (not assigned):
+                if (not (instance.assigned_facility or instance.assigned_facility_external)) and (not assigned):
                     raise ValidationError({"status": ["Destination Facility is required for moving to this stage."]})
 
         instance.last_edited_by = self.context["request"].user
@@ -190,7 +200,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
             external_id=shifting_approving_facility_external_id
         ).id
 
-        if "assigned_facility" in validated_data:
+        if validated_data.get("assigned_facility_external"):
+            validated_data["assigned_facility"] = None
+        elif validated_data.get("assigned_facility"):
+            validated_data["assigned_facility_external"] = None
+
+        if validated_data.get("assigned_facility"):
             assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
             if assigned_facility_external_id:
 

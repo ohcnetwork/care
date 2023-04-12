@@ -51,6 +51,7 @@ class ShiftingRequest(FacilityBaseModel):
     assigned_facility = models.ForeignKey(
         "Facility", on_delete=models.SET_NULL, null=True, related_name="assigned_facility"
     )
+    assigned_facility_external = models.TextField(default="", null=True, blank=True)
     patient = models.ForeignKey("PatientRegistration", on_delete=models.CASCADE, related_name="patient")
     emergency = models.BooleanField(default=False)
     is_up_shift = models.BooleanField(default=False)  # False for Down , True for UP
