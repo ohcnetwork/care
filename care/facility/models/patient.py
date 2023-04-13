@@ -518,21 +518,33 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "age": "Age",
         # Policy Details
         "policy__policy_id": "Policy ID/Name",
-        "created_date": "Date and time of Registration",
+        "created_date": "Date of Registration",
+        "created_date__time": "Time of Registration",
         # Last Consultation Details
         "last_consultation__consultation_status": "Status during consultation",
-        "last_consultation__created_date": "Date and time of last consultation",
+        "last_consultation__created_date": "Date of last consultation",
+        "last_consultation__created_date__time": "Time of last consultation",
         "last_consultation__icd11_diagnoses": "Final Diagnoses",
         "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
         "last_consultation__discharge_reason": "Discharge reason",
-        "last_consultation__discharge_date": "Date and time of discharge",
+        "last_consultation__discharge_date": "Date of discharge",
+        "last_consultation__discharge_date__time": "Time of discharge",
     }
+
+    def format_as_date(date):
+        return date.strftime("%d/%m/%Y")
+
+    def format_as_time(time):
+        return time.strftime("%H:%M")
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
-        "created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "created_date": format_as_date,
+        "created_date__time": format_as_time,
+        "last_consultation__created_date": format_as_date,
+        "last_consultation__created_date__time": format_as_time,
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
@@ -542,7 +554,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__icd11_provisional_diagnoses": (
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
-        "last_consultation__created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
         "last_consultation__consultation_status": (
             lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-")
         ),
@@ -550,7 +561,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__discharge_reason": (
             lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
-        "last_consultation__discharge_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "last_consultation__discharge_date": format_as_date,
+        "last_consultation__discharge_date__time": format_as_time,
     }
 
 
