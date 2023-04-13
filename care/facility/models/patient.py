@@ -522,7 +522,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "created_date__time": "Time of Registration",
         # Last Consultation Details
         "last_consultation__consultation_status": "Status during consultation",
-        "last_consultation__created_date": "Date of last consultation",
+        "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of last consultation",
         "last_consultation__icd11_diagnoses": "Final Diagnoses",
         "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
