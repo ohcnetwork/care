@@ -1,10 +1,11 @@
 import json
 
 import requests
+from django.conf import settings
 
 
 class Cipher:
-    server_url = "http://localhost:8090"
+    server_url = settings.FIDELIUS_URL
 
     def __init__(self, reciever_public_key, reciever_nonce):
         self.reciever_public_key = reciever_public_key
