@@ -1,0 +1,364 @@
+{
+    "name": "Jorhat East",
+    "lsg_code": 2593,
+    "district": "Jorhat",
+    "state": "Assam",
+    "no_of_wards": 71,
+    "wards": [
+        {
+            "ward_no": 294082,
+            "ward_name": "Abhayporia Gaon",
+            "ward_id": 294082
+        },
+        {
+            "ward_no": 293865,
+            "ward_name": "Amtolia Gaon",
+            "ward_id": 293865
+        },
+        {
+            "ward_no": 293843,
+            "ward_name": "Bailung Gaon",
+            "ward_id": 293843
+        },
+        {
+            "ward_no": 293856,
+            "ward_name": "Baisahabi Grant",
+            "ward_id": 293856
+        },
+        {
+            "ward_no": 294102,
+            "ward_name": "Balijan Grant",
+            "ward_id": 294102
+        },
+        {
+            "ward_no": 294084,
+            "ward_name": "Balimora Gaon",
+            "ward_id": 294084
+        },
+        {
+            "ward_no": 293846,
+            "ward_name": "Bangali Gaon",
+            "ward_id": 293846
+        },
+        {
+            "ward_no": 294087,
+            "ward_name": "Borgayan Gaon",
+            "ward_id": 294087
+        },
+        {
+            "ward_no": 293839,
+            "ward_name": "Changmai Gaon",
+            "ward_id": 293839
+        },
+        {
+            "ward_no": 293841,
+            "ward_name": "Chatia Gaon",
+            "ward_id": 293841
+        },
+        {
+            "ward_no": 293849,
+            "ward_name": "Chowdang Gaon",
+            "ward_id": 293849
+        },
+        {
+            "ward_no": 293870,
+            "ward_name": "Chutiana Kari N.C",
+            "ward_id": 293870
+        },
+        {
+            "ward_no": 294100,
+            "ward_name": "Cinatali Gaon",
+            "ward_id": 294100
+        },
+        {
+            "ward_no": 294086,
+            "ward_name": "Darikial Gaon",
+            "ward_id": 294086
+        },
+        {
+            "ward_no": 294096,
+            "ward_name": "Deberapar Gaon",
+            "ward_id": 294096
+        },
+        {
+            "ward_no": 294108,
+            "ward_name": "Deberapar Grant",
+            "ward_id": 294108
+        },
+        {
+            "ward_no": 293857,
+            "ward_name": "Deogharia Gaon",
+            "ward_id": 293857
+        },
+        {
+            "ward_no": 294164,
+            "ward_name": "Desoi Reserve Forest",
+            "ward_id": 294164
+        },
+        {
+            "ward_no": 294111,
+            "ward_name": "Desoi Shah Bagisa",
+            "ward_id": 294111
+        },
+        {
+            "ward_no": 294099,
+            "ward_name": "Dihingia Par Gaon",
+            "ward_id": 294099
+        },
+        {
+            "ward_no": 294083,
+            "ward_name": "Dohatia Gaon",
+            "ward_id": 294083
+        },
+        {
+            "ward_no": 293851,
+            "ward_name": "Dulia Gaon",
+            "ward_id": 293851
+        },
+        {
+            "ward_no": 294080,
+            "ward_name": "Gabhoru Gaon",
+            "ward_id": 294080
+        },
+        {
+            "ward_no": 294088,
+            "ward_name": "Gharfolia Maibelia Gaon",
+            "ward_id": 294088
+        },
+        {
+            "ward_no": 294089,
+            "ward_name": "Gharphalia Gaon",
+            "ward_id": 294089
+        },
+        {
+            "ward_no": 294081,
+            "ward_name": "Gohain Pathar Gaon",
+            "ward_id": 294081
+        },
+        {
+            "ward_no": 293844,
+            "ward_name": "Hatimuria Gaon",
+            "ward_id": 293844
+        },
+        {
+            "ward_no": 293859,
+            "ward_name": "Hemlai Chah Bagicha",
+            "ward_id": 293859
+        },
+        {
+            "ward_no": 294110,
+            "ward_name": "Holong Gori Chah Bagisa",
+            "ward_id": 294110
+        },
+        {
+            "ward_no": 293854,
+            "ward_name": "Holowa Pathar Gaon",
+            "ward_id": 293854
+        },
+        {
+            "ward_no": 293848,
+            "ward_name": "Holuwa Gaon",
+            "ward_id": 293848
+        },
+        {
+            "ward_no": 294098,
+            "ward_name": "Kathalguri T.E.",
+            "ward_id": 294098
+        },
+        {
+            "ward_no": 293850,
+            "ward_name": "Khathalboria Gaon",
+            "ward_id": 293850
+        },
+        {
+            "ward_no": 293828,
+            "ward_name": "Khonikorsha Bagisa",
+            "ward_id": 293828
+        },
+        {
+            "ward_no": 294090,
+            "ward_name": "Kowar Gaon",
+            "ward_id": 294090
+        },
+        {
+            "ward_no": 293845,
+            "ward_name": "Kukurachowa Gaon",
+            "ward_id": 293845
+        },
+        {
+            "ward_no": 293860,
+            "ward_name": "Kuli Gaon",
+            "ward_id": 293860
+        },
+        {
+            "ward_no": 293858,
+            "ward_name": "Lahing Gaon",
+            "ward_id": 293858
+        },
+        {
+            "ward_no": 293866,
+            "ward_name": "Lawjan Grant",
+            "ward_id": 293866
+        },
+        {
+            "ward_no": 293861,
+            "ward_name": "Lunpuri Gaon",
+            "ward_id": 293861
+        },
+        {
+            "ward_no": 294095,
+            "ward_name": "Maibalia Chakial",
+            "ward_id": 294095
+        },
+        {
+            "ward_no": 293863,
+            "ward_name": "Majnoi Chabagisa",
+            "ward_id": 293863
+        },
+        {
+            "ward_no": 294101,
+            "ward_name": "Marangial Gaon",
+            "ward_id": 294101
+        },
+        {
+            "ward_no": 294109,
+            "ward_name": "Mautjoli Gaon",
+            "ward_id": 294109
+        },
+        {
+            "ward_no": 294105,
+            "ward_name": "Mograi Grant",
+            "ward_id": 294105
+        },
+        {
+            "ward_no": 294106,
+            "ward_name": "Mograi (N .C)",
+            "ward_id": 294106
+        },
+        {
+            "ward_no": 294163,
+            "ward_name": "Moran Gaon",
+            "ward_id": 294163
+        },
+        {
+            "ward_no": 293855,
+            "ward_name": "Moran Gaon",
+            "ward_id": 293855
+        },
+        {
+            "ward_no": 294094,
+            "ward_name": "Nakachari Gaon",
+            "ward_id": 294094
+        },
+        {
+            "ward_no": 293847,
+            "ward_name": "Namsesu Gaon",
+            "ward_id": 293847
+        },
+        {
+            "ward_no": 294085,
+            "ward_name": "No.163 Grant",
+            "ward_id": 294085
+        },
+        {
+            "ward_no": 293869,
+            "ward_name": "No.1 Chutia Kari",
+            "ward_id": 293869
+        },
+        {
+            "ward_no": 294104,
+            "ward_name": "No.1 Mograi",
+            "ward_id": 294104
+        },
+        {
+            "ward_no": 294103,
+            "ward_name": "No.1 Naginijan Grant",
+            "ward_id": 294103
+        },
+        {
+            "ward_no": 293871,
+            "ward_name": "No.2 Chutikari Gaon",
+            "ward_id": 293871
+        },
+        {
+            "ward_no": 294092,
+            "ward_name": "No.2 Mograi",
+            "ward_id": 294092
+        },
+        {
+            "ward_no": 294107,
+            "ward_name": "No.2 Naginijan",
+            "ward_id": 294107
+        },
+        {
+            "ward_no": 293862,
+            "ward_name": "No.610 Gabhoru Grant",
+            "ward_id": 293862
+        },
+        {
+            "ward_no": 293872,
+            "ward_name": "No.611 Gabhoru Grant",
+            "ward_id": 293872
+        },
+        {
+            "ward_no": 293873,
+            "ward_name": "No.Chutikari Gaon",
+            "ward_id": 293873
+        },
+        {
+            "ward_no": 294093,
+            "ward_name": "Phukan Habi Gaon",
+            "ward_id": 294093
+        },
+        {
+            "ward_no": 293868,
+            "ward_name": "Rajabari Gaon",
+            "ward_id": 293868
+        },
+        {
+            "ward_no": 293867,
+            "ward_name": "Rankhom Gaon",
+            "ward_id": 293867
+        },
+        {
+            "ward_no": 293864,
+            "ward_name": "Seleng Gaon",
+            "ward_id": 293864
+        },
+        {
+            "ward_no": 293853,
+            "ward_name": "Seleng Grant",
+            "ward_id": 293853
+        },
+        {
+            "ward_no": 293840,
+            "ward_name": "Sensowa Gaon",
+            "ward_id": 293840
+        },
+        {
+            "ward_no": 294091,
+            "ward_name": "Sotai Shah Bagisa",
+            "ward_id": 294091
+        },
+        {
+            "ward_no": 293852,
+            "ward_name": "Tengabari Gaon",
+            "ward_id": 293852
+        },
+        {
+            "ward_no": 293842,
+            "ward_name": "Tipamia Gaon",
+            "ward_id": 293842
+        },
+        {
+            "ward_no": 294097,
+            "ward_name": "Tirual Gaon",
+            "ward_id": 294097
+        },
+        {
+            "ward_no": 293914,
+            "ward_name": "Tirutilip Forest",
+            "ward_id": 293914
+        }
+    ]
+}

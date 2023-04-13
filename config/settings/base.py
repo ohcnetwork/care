@@ -104,6 +104,7 @@ LOCAL_APPS = [
     "care.facility",
     "care.audit_log.apps.AuditLogConfig",
     "care.abdm",
+    "care.hcx",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -378,7 +379,7 @@ DJANGO_REST_LOOKUP_FIELD = "username"
 
 CHROME_WINDOW_SIZE = "2480,3508"
 
-CHROME_PATH = "/usr/bin/google-chrome-stable"
+CHROME_PATH = "/usr/bin/chromium"
 
 IS_PRODUCTION = False
 

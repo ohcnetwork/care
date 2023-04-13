@@ -1,0 +1,24 @@
+{
+    "name": "Chumbong Chakung",
+    "lsg_code": 7140,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 3,
+    "wards": [
+        {
+            "ward_no": 261097,
+            "ward_name": "Chakung",
+            "ward_id": 261097
+        },
+        {
+            "ward_no": 261098,
+            "ward_name": "Chumbung",
+            "ward_id": 261098
+        },
+        {
+            "ward_no": 261096,
+            "ward_name": "Mendo-Goan",
+            "ward_id": 261096
+        }
+    ]
+}

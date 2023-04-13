@@ -21,6 +21,11 @@ from care.abdm.api.viewsets.auth import (
     RequestDataView,
 )
 from care.facility.api.viewsets.open_id import OpenIdConfigView
+from care.hcx.api.viewsets.listener import (
+    ClaimOnSubmitView,
+    CoverageElibilityOnCheckView,
+    PreAuthOnSubmitView,
+)
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -49,20 +54,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", home_view, name="home"),
-    # API Docs
-    url(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    url(
-        r"^swagger/$",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    url(
-        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
-    ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Rest API
@@ -138,6 +129,22 @@ urlpatterns = [
         RequestDataView.as_view(),
         name="abdm_request_data_view",
     ),
+    # Hcx Listeners
+    path(
+        "coverageeligibility/on_check",
+        CoverageElibilityOnCheckView.as_view(),
+        name="hcx_coverage_eligibility_on_check",
+    ),
+    path(
+        "preauth/on_submit",
+        PreAuthOnSubmitView.as_view(),
+        name="hcx_pre_auth_on_submit",
+    ),
+    path(
+        "claim/on_submit",
+        ClaimOnSubmitView.as_view(),
+        name="hcx_claim_on_submit",
+    ),
     # Health check urls
     url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
@@ -174,3 +181,23 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
+if not settings.IS_PRODUCTION:
+    urlpatterns += [
+        # API Docs
+        url(
+            r"^swagger(?P<format>\.json|\.yaml)$",
+            schema_view.without_ui(cache_timeout=0),
+            name="schema-json",
+        ),
+        url(
+            r"^swagger/$",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+        url(
+            r"^redoc/$",
+            schema_view.with_ui("redoc", cache_timeout=0),
+            name="schema-redoc",
+        ),
+    ]

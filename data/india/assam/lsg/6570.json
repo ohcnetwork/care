@@ -1,0 +1,254 @@
+{
+    "name": "Rupshi-Btc",
+    "lsg_code": 6570,
+    "district": "Kokrajhar",
+    "state": "Assam",
+    "no_of_wards": 49,
+    "wards": [
+        {
+            "ward_no": 280413,
+            "ward_name": "Aluabari",
+            "ward_id": 280413
+        },
+        {
+            "ward_no": 280401,
+            "ward_name": "Amjhora",
+            "ward_id": 280401
+        },
+        {
+            "ward_no": 280417,
+            "ward_name": "Atharokotharjhar Pt.-I",
+            "ward_id": 280417
+        },
+        {
+            "ward_no": 280428,
+            "ward_name": "Atharokotharjhar Pt.-Ii",
+            "ward_id": 280428
+        },
+        {
+            "ward_no": 280418,
+            "ward_name": "Atharokotharjhar Pt.-Iii",
+            "ward_id": 280418
+        },
+        {
+            "ward_no": 280438,
+            "ward_name": "Attorokotharjhar Pt.Iv",
+            "ward_id": 280438
+        },
+        {
+            "ward_no": 280443,
+            "ward_name": "Baniyaguri Borjhar",
+            "ward_id": 280443
+        },
+        {
+            "ward_no": 280444,
+            "ward_name": "Baniyaguri Pt.-I",
+            "ward_id": 280444
+        },
+        {
+            "ward_no": 280445,
+            "ward_name": "Baniyaguri Pt.-Ii",
+            "ward_id": 280445
+        },
+        {
+            "ward_no": 280434,
+            "ward_name": "Bashbari Bazar",
+            "ward_id": 280434
+        },
+        {
+            "ward_no": 280415,
+            "ward_name": "Bashbari Pt.-I",
+            "ward_id": 280415
+        },
+        {
+            "ward_no": 280416,
+            "ward_name": "Bashbari Pt.-Ii",
+            "ward_id": 280416
+        },
+        {
+            "ward_no": 280432,
+            "ward_name": "Bhekurchar",
+            "ward_id": 280432
+        },
+        {
+            "ward_no": 280397,
+            "ward_name": "Chechapani",
+            "ward_id": 280397
+        },
+        {
+            "ward_no": 280402,
+            "ward_name": "Daldoli",
+            "ward_id": 280402
+        },
+        {
+            "ward_no": 280400,
+            "ward_name": "Dangaijhora",
+            "ward_id": 280400
+        },
+        {
+            "ward_no": 280422,
+            "ward_name": "Dukhisukhijhar Pt.-I",
+            "ward_id": 280422
+        },
+        {
+            "ward_no": 280424,
+            "ward_name": "Dukhisukhijhar Pt.Ii (Dukhisukhi Pt.Ii)",
+            "ward_id": 280424
+        },
+        {
+            "ward_no": 280423,
+            "ward_name": "Dukhisukhi Pt.-I",
+            "ward_id": 280423
+        },
+        {
+            "ward_no": 280426,
+            "ward_name": "Dukhisukhi Pt.-Ii",
+            "ward_id": 280426
+        },
+        {
+            "ward_no": 280425,
+            "ward_name": "Dukhusukhijhar Pt.Iii (Dhukisukhi Pt.Iii)",
+            "ward_id": 280425
+        },
+        {
+            "ward_no": 280441,
+            "ward_name": "East Atharokotharjhar No.3 Sareswar Beel",
+            "ward_id": 280441
+        },
+        {
+            "ward_no": 280439,
+            "ward_name": "Iswarpanga",
+            "ward_id": 280439
+        },
+        {
+            "ward_no": 280437,
+            "ward_name": "Jaligaon",
+            "ward_id": 280437
+        },
+        {
+            "ward_no": 280409,
+            "ward_name": "Joldoba Pt.-I",
+            "ward_id": 280409
+        },
+        {
+            "ward_no": 280410,
+            "ward_name": "Joldoba Pt.-Ii",
+            "ward_id": 280410
+        },
+        {
+            "ward_no": 280440,
+            "ward_name": "Kawahaga",
+            "ward_id": 280440
+        },
+        {
+            "ward_no": 280404,
+            "ward_name": "Kurshakati",
+            "ward_id": 280404
+        },
+        {
+            "ward_no": 280398,
+            "ward_name": "Lalmati",
+            "ward_id": 280398
+        },
+        {
+            "ward_no": 280442,
+            "ward_name": "Maltijhora",
+            "ward_id": 280442
+        },
+        {
+            "ward_no": 280407,
+            "ward_name": "Modandubirjhar Pt.Ii",
+            "ward_id": 280407
+        },
+        {
+            "ward_no": 280405,
+            "ward_name": "Molandubi",
+            "ward_id": 280405
+        },
+        {
+            "ward_no": 280403,
+            "ward_name": "Molandubirjhor",
+            "ward_id": 280403
+        },
+        {
+            "ward_no": 280414,
+            "ward_name": "Mowamarijhar",
+            "ward_id": 280414
+        },
+        {
+            "ward_no": 280412,
+            "ward_name": "Mowamari Pt.-I",
+            "ward_id": 280412
+        },
+        {
+            "ward_no": 280411,
+            "ward_name": "Mowamari Pt.-Ii",
+            "ward_id": 280411
+        },
+        {
+            "ward_no": 280419,
+            "ward_name": "Paglijhorajhar",
+            "ward_id": 280419
+        },
+        {
+            "ward_no": 280421,
+            "ward_name": "Paglijhorajhar Pt.-I",
+            "ward_id": 280421
+        },
+        {
+            "ward_no": 280420,
+            "ward_name": "Paglijhorajhar Pt.-Ii",
+            "ward_id": 280420
+        },
+        {
+            "ward_no": 280399,
+            "ward_name": "Postibari",
+            "ward_id": 280399
+        },
+        {
+            "ward_no": 280433,
+            "ward_name": "Rupshi Pt.-I",
+            "ward_id": 280433
+        },
+        {
+            "ward_no": 280430,
+            "ward_name": "Rupshi Pt.-Ii",
+            "ward_id": 280430
+        },
+        {
+            "ward_no": 280429,
+            "ward_name": "Rupshi Pt.-Iii",
+            "ward_id": 280429
+        },
+        {
+            "ward_no": 280431,
+            "ward_name": "Rupshi Pt.-Iv",
+            "ward_id": 280431
+        },
+        {
+            "ward_no": 280427,
+            "ward_name": "Rupshir Air Field",
+            "ward_id": 280427
+        },
+        {
+            "ward_no": 280406,
+            "ward_name": "Siltoka Pt.-I",
+            "ward_id": 280406
+        },
+        {
+            "ward_no": 280408,
+            "ward_name": "Siltoka Pt.-Ii",
+            "ward_id": 280408
+        },
+        {
+            "ward_no": 280435,
+            "ward_name": "Singhjhora Pondhergaon Pt.-I",
+            "ward_id": 280435
+        },
+        {
+            "ward_no": 280436,
+            "ward_name": "Singhjhora Pondhergaon Pt.-Ii",
+            "ward_id": 280436
+        }
+    ]
+}

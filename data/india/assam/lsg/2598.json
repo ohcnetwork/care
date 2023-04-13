@@ -1,0 +1,394 @@
+{
+    "name": "Ujani Majuli",
+    "lsg_code": 2598,
+    "district": "Majuli",
+    "state": "Assam",
+    "no_of_wards": 77,
+    "wards": [
+        {
+            "ward_no": 293499,
+            "ward_name": "Abhoipuria",
+            "ward_id": 293499
+        },
+        {
+            "ward_no": 293536,
+            "ward_name": "Anai Chuk No.1",
+            "ward_id": 293536
+        },
+        {
+            "ward_no": 293535,
+            "ward_name": "Anai Chuk No.2",
+            "ward_id": 293535
+        },
+        {
+            "ward_no": 293522,
+            "ward_name": "Apechi Pathar",
+            "ward_id": 293522
+        },
+        {
+            "ward_no": 293472,
+            "ward_name": "Baghar Gaon",
+            "ward_id": 293472
+        },
+        {
+            "ward_no": 293523,
+            "ward_name": "Bali Gaon",
+            "ward_id": 293523
+        },
+        {
+            "ward_no": 293489,
+            "ward_name": "Bheuchuk",
+            "ward_id": 293489
+        },
+        {
+            "ward_no": 293491,
+            "ward_name": "Bheuchuk Kumarbari",
+            "ward_id": 293491
+        },
+        {
+            "ward_no": 293448,
+            "ward_name": "Bhuramora No.1",
+            "ward_id": 293448
+        },
+        {
+            "ward_no": 293447,
+            "ward_name": "Bhuramora No.2",
+            "ward_id": 293447
+        },
+        {
+            "ward_no": 293478,
+            "ward_name": "Bokajan Miri",
+            "ward_id": 293478
+        },
+        {
+            "ward_no": 293500,
+            "ward_name": "Bokajan Pam",
+            "ward_id": 293500
+        },
+        {
+            "ward_no": 293544,
+            "ward_name": "Bonoria Chapori N C",
+            "ward_id": 293544
+        },
+        {
+            "ward_no": 293519,
+            "ward_name": "Borbeel Bebejia",
+            "ward_id": 293519
+        },
+        {
+            "ward_no": 293476,
+            "ward_name": "Bor-Nalani No.1",
+            "ward_id": 293476
+        },
+        {
+            "ward_no": 293475,
+            "ward_name": "Bor-Nalani No.2",
+            "ward_id": 293475
+        },
+        {
+            "ward_no": 293490,
+            "ward_name": "Bor Pamua No.1",
+            "ward_id": 293490
+        },
+        {
+            "ward_no": 293485,
+            "ward_name": "Bor Pamua No.2",
+            "ward_id": 293485
+        },
+        {
+            "ward_no": 293527,
+            "ward_name": "Chawrekia",
+            "ward_id": 293527
+        },
+        {
+            "ward_no": 293524,
+            "ward_name": "Chikari Gaon",
+            "ward_id": 293524
+        },
+        {
+            "ward_no": 293470,
+            "ward_name": "Chinatoli Chapori N.C.",
+            "ward_id": 293470
+        },
+        {
+            "ward_no": 293479,
+            "ward_name": "Chiram Chapori",
+            "ward_id": 293479
+        },
+        {
+            "ward_no": 293542,
+            "ward_name": "Dabli Chapori N C",
+            "ward_id": 293542
+        },
+        {
+            "ward_no": 293497,
+            "ward_name": "Deori Pam",
+            "ward_id": 293497
+        },
+        {
+            "ward_no": 293508,
+            "ward_name": "Deuri Gaon",
+            "ward_id": 293508
+        },
+        {
+            "ward_no": 293462,
+            "ward_name": "Gayan Chuk",
+            "ward_id": 293462
+        },
+        {
+            "ward_no": 293463,
+            "ward_name": "Gayan Gaon",
+            "ward_id": 293463
+        },
+        {
+            "ward_no": 293534,
+            "ward_name": "Gezera",
+            "ward_id": 293534
+        },
+        {
+            "ward_no": 293434,
+            "ward_name": "Goalabari No.1",
+            "ward_id": 293434
+        },
+        {
+            "ward_no": 293435,
+            "ward_name": "Goalabari No.2",
+            "ward_id": 293435
+        },
+        {
+            "ward_no": 293486,
+            "ward_name": "Gobor Chuk",
+            "ward_id": 293486
+        },
+        {
+            "ward_no": 293456,
+            "ward_name": "Gosai Bari",
+            "ward_id": 293456
+        },
+        {
+            "ward_no": 293528,
+            "ward_name": "Haladhi Bari",
+            "ward_id": 293528
+        },
+        {
+            "ward_no": 293477,
+            "ward_name": "Hawli",
+            "ward_id": 293477
+        },
+        {
+            "ward_no": 293540,
+            "ward_name": "Jaborchuk Bosa Gaon",
+            "ward_id": 293540
+        },
+        {
+            "ward_no": 293538,
+            "ward_name": "Jabor Chuk Gaon",
+            "ward_id": 293538
+        },
+        {
+            "ward_no": 293539,
+            "ward_name": "Jabor Chuk Kathoni",
+            "ward_id": 293539
+        },
+        {
+            "ward_no": 293483,
+            "ward_name": "Jengrai Chapori",
+            "ward_id": 293483
+        },
+        {
+            "ward_no": 293482,
+            "ward_name": "Jengrai Miri Gaon",
+            "ward_id": 293482
+        },
+        {
+            "ward_no": 293451,
+            "ward_name": "Jomud Chuk",
+            "ward_id": 293451
+        },
+        {
+            "ward_no": 293449,
+            "ward_name": "Jorbeel",
+            "ward_id": 293449
+        },
+        {
+            "ward_no": 293525,
+            "ward_name": "Kachari Gaon",
+            "ward_id": 293525
+        },
+        {
+            "ward_no": 293433,
+            "ward_name": "Kalia Gaon",
+            "ward_id": 293433
+        },
+        {
+            "ward_no": 293516,
+            "ward_name": "Kandhulimari",
+            "ward_id": 293516
+        },
+        {
+            "ward_no": 293452,
+            "ward_name": "Karki Chuk",
+            "ward_id": 293452
+        },
+        {
+            "ward_no": 293453,
+            "ward_name": "Karki Chuk Lahon Gaon",
+            "ward_id": 293453
+        },
+        {
+            "ward_no": 293507,
+            "ward_name": "Kathal Khowa Kathamia",
+            "ward_id": 293507
+        },
+        {
+            "ward_no": 293509,
+            "ward_name": "Kuhiar Bari",
+            "ward_id": 293509
+        },
+        {
+            "ward_no": 293501,
+            "ward_name": "Lahon Gaon",
+            "ward_id": 293501
+        },
+        {
+            "ward_no": 293496,
+            "ward_name": "Major Deuri",
+            "ward_id": 293496
+        },
+        {
+            "ward_no": 293513,
+            "ward_name": "Mayongia",
+            "ward_id": 293513
+        },
+        {
+            "ward_no": 293484,
+            "ward_name": "Moghua Chuk",
+            "ward_id": 293484
+        },
+        {
+            "ward_no": 293518,
+            "ward_name": "Monbhal Chuk",
+            "ward_id": 293518
+        },
+        {
+            "ward_no": 293454,
+            "ward_name": "Nagan Chuk",
+            "ward_id": 293454
+        },
+        {
+            "ward_no": 293492,
+            "ward_name": "Namoni Serepai No.1",
+            "ward_id": 293492
+        },
+        {
+            "ward_no": 293493,
+            "ward_name": "Namoni Serepai No.2",
+            "ward_id": 293493
+        },
+        {
+            "ward_no": 293488,
+            "ward_name": "Namoni Serepai No.3",
+            "ward_id": 293488
+        },
+        {
+            "ward_no": 293545,
+            "ward_name": "Natun Bonoria Chapori N C",
+            "ward_id": 293545
+        },
+        {
+            "ward_no": 293473,
+            "ward_name": "Owguri Baghpam",
+            "ward_id": 293473
+        },
+        {
+            "ward_no": 293510,
+            "ward_name": "Panikhati",
+            "ward_id": 293510
+        },
+        {
+            "ward_no": 293481,
+            "ward_name": "Phuloni No.1",
+            "ward_id": 293481
+        },
+        {
+            "ward_no": 293480,
+            "ward_name": "Phuloni No.2",
+            "ward_id": 293480
+        },
+        {
+            "ward_no": 293517,
+            "ward_name": "Phutchang",
+            "ward_id": 293517
+        },
+        {
+            "ward_no": 293457,
+            "ward_name": "Pohumara",
+            "ward_id": 293457
+        },
+        {
+            "ward_no": 293487,
+            "ward_name": "Polongani",
+            "ward_id": 293487
+        },
+        {
+            "ward_no": 293455,
+            "ward_name": "Rangachahi",
+            "ward_id": 293455
+        },
+        {
+            "ward_no": 293498,
+            "ward_name": "Rangali Bahar",
+            "ward_id": 293498
+        },
+        {
+            "ward_no": 293506,
+            "ward_name": "Ratanpur Gabharumelia",
+            "ward_id": 293506
+        },
+        {
+            "ward_no": 293520,
+            "ward_name": "Ratanpur Miri Gaon",
+            "ward_id": 293520
+        },
+        {
+            "ward_no": 293526,
+            "ward_name": "Ratanpur Miri Pam",
+            "ward_id": 293526
+        },
+        {
+            "ward_no": 293521,
+            "ward_name": "Ratanpur Miri Pathar",
+            "ward_id": 293521
+        },
+        {
+            "ward_no": 293458,
+            "ward_name": "Sukan Suti Miri",
+            "ward_id": 293458
+        },
+        {
+            "ward_no": 293541,
+            "ward_name": "Takarchuk Chapori N C",
+            "ward_id": 293541
+        },
+        {
+            "ward_no": 293511,
+            "ward_name": "Tanti Bari",
+            "ward_id": 293511
+        },
+        {
+            "ward_no": 293450,
+            "ward_name": "Thakur Suti",
+            "ward_id": 293450
+        },
+        {
+            "ward_no": 293494,
+            "ward_name": "Ujoni Serepai No.1",
+            "ward_id": 293494
+        },
+        {
+            "ward_no": 293495,
+            "ward_name": "Ujoni Serepai No.2",
+            "ward_id": 293495
+        }
+    ]
+}

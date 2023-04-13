@@ -5,8 +5,7 @@ import requests
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from rest_framework import HTTP_HEADER_ENCODING, exceptions
-from rest_framework import status
+from rest_framework import HTTP_HEADER_ENCODING, exceptions, status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
@@ -34,17 +33,14 @@ class CustomJWTAuthentication(JWTAuthentication):
 
 
 class CustomBasicAuthentication(BasicAuthentication):
-
     def authenticate_credentials(self, userid, password, request=None):
         """
         Authenticate the userid and password against username and password
         with optional request for context.
         """
         from config.auth_views import CaptchaRequiredException
-        credentials = {
-            User.USERNAME_FIELD: userid,
-            'password': password
-        }
+
+        credentials = {User.USERNAME_FIELD: userid, "password": password}
         if ratelimit(request, "login", [userid], increment=False):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
@@ -54,10 +50,10 @@ class CustomBasicAuthentication(BasicAuthentication):
 
         if user is None:
             ratelimit(request, "login", [userid])
-            raise exceptions.AuthenticationFailed(_('Invalid username/password.'))
+            raise exceptions.AuthenticationFailed(_("Invalid username/password."))
 
         if not user.is_active:
-            raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
+            raise exceptions.AuthenticationFailed(_("User inactive or deleted."))
 
         return (user, None)
 
@@ -100,9 +96,11 @@ class MiddlewareAuthentication(JWTAuthentication):
         except (Facility.DoesNotExist, ValidationError) as e:
             raise InvalidToken({"detail": "Invalid Facility", "messages": []}) from e
 
+        if not facility.middleware_address:
+            raise InvalidToken({"detail": "Facility not connected to a middleware"})
+
         open_id_url = (
-            facility.middleware_address
-            or "http://localhost:8090" + "/.well-known/openid-configuration/"
+            f"https://{facility.middleware_address}/.well-known/openid-configuration/"
         )
 
         validated_token = self.get_validated_token(open_id_url, raw_token)

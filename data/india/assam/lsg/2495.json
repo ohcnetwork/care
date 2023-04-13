@@ -1,0 +1,254 @@
+{
+    "name": "Gomaphulbari",
+    "lsg_code": 2495,
+    "district": "Barpeta",
+    "state": "Assam",
+    "no_of_wards": 49,
+    "wards": [
+        {
+            "ward_no": 905141,
+            "ward_name": "Bahari Reserve",
+            "ward_id": 905141
+        },
+        {
+            "ward_no": 283004,
+            "ward_name": "Balapara",
+            "ward_id": 283004
+        },
+        {
+            "ward_no": 282842,
+            "ward_name": "Balapara",
+            "ward_id": 282842
+        },
+        {
+            "ward_no": 283111,
+            "ward_name": "Bara",
+            "ward_id": 283111
+        },
+        {
+            "ward_no": 283117,
+            "ward_name": "Bar Baradi",
+            "ward_id": 283117
+        },
+        {
+            "ward_no": 283110,
+            "ward_name": "Barbila",
+            "ward_id": 283110
+        },
+        {
+            "ward_no": 283120,
+            "ward_name": "Bar Ghol",
+            "ward_id": 283120
+        },
+        {
+            "ward_no": 283116,
+            "ward_name": "Bar Suha (Barsoha)",
+            "ward_id": 283116
+        },
+        {
+            "ward_no": 283141,
+            "ward_name": "Belortari",
+            "ward_id": 283141
+        },
+        {
+            "ward_no": 283131,
+            "ward_name": "Chaka Bausi Gaon",
+            "ward_id": 283131
+        },
+        {
+            "ward_no": 283130,
+            "ward_name": "Chaka Bausi Pathar",
+            "ward_id": 283130
+        },
+        {
+            "ward_no": 283135,
+            "ward_name": "Chakda (Chakada)",
+            "ward_id": 283135
+        },
+        {
+            "ward_no": 282971,
+            "ward_name": "Chandan Pur N.C.",
+            "ward_id": 282971
+        },
+        {
+            "ward_no": 283134,
+            "ward_name": "Charag Para",
+            "ward_id": 283134
+        },
+        {
+            "ward_no": 283122,
+            "ward_name": "Dakreswar",
+            "ward_id": 283122
+        },
+        {
+            "ward_no": 283124,
+            "ward_name": "Damal Jar",
+            "ward_id": 283124
+        },
+        {
+            "ward_no": 283136,
+            "ward_name": "Dhakua",
+            "ward_id": 283136
+        },
+        {
+            "ward_no": 283138,
+            "ward_name": "Dongra",
+            "ward_id": 283138
+        },
+        {
+            "ward_no": 283129,
+            "ward_name": "Garemari Gaon",
+            "ward_id": 283129
+        },
+        {
+            "ward_no": 283133,
+            "ward_name": "Garemari Habi",
+            "ward_id": 283133
+        },
+        {
+            "ward_no": 283128,
+            "ward_name": "Garemari Pathar",
+            "ward_id": 283128
+        },
+        {
+            "ward_no": 283003,
+            "ward_name": "Guma (Goma)",
+            "ward_id": 283003
+        },
+        {
+            "ward_no": 282970,
+            "ward_name": "Hepecha N.C.",
+            "ward_id": 282970
+        },
+        {
+            "ward_no": 283119,
+            "ward_name": "Kachari Para",
+            "ward_id": 283119
+        },
+        {
+            "ward_no": 283112,
+            "ward_name": "Kaljahi",
+            "ward_id": 283112
+        },
+        {
+            "ward_no": 283001,
+            "ward_name": "Kaltali",
+            "ward_id": 283001
+        },
+        {
+            "ward_no": 282964,
+            "ward_name": "Kedegi",
+            "ward_id": 282964
+        },
+        {
+            "ward_no": 283121,
+            "ward_name": "Khapan Baria Bhitha",
+            "ward_id": 283121
+        },
+        {
+            "ward_no": 282972,
+            "ward_name": "Kholabandha N.C.",
+            "ward_id": 282972
+        },
+        {
+            "ward_no": 282966,
+            "ward_name": "Laharapara N.C.",
+            "ward_id": 282966
+        },
+        {
+            "ward_no": 282974,
+            "ward_name": "Lakhimpur N.C.",
+            "ward_id": 282974
+        },
+        {
+            "ward_no": 282967,
+            "ward_name": "Lehi",
+            "ward_id": 282967
+        },
+        {
+            "ward_no": 282969,
+            "ward_name": "Marisakandi N.C.",
+            "ward_id": 282969
+        },
+        {
+            "ward_no": 283126,
+            "ward_name": "Milekuchi (Mail Kuchi)",
+            "ward_id": 283126
+        },
+        {
+            "ward_no": 283142,
+            "ward_name": "Nangalkur",
+            "ward_id": 283142
+        },
+        {
+            "ward_no": 282965,
+            "ward_name": "Nirala N.C.",
+            "ward_id": 282965
+        },
+        {
+            "ward_no": 283115,
+            "ward_name": "Omura (Gumura)",
+            "ward_id": 283115
+        },
+        {
+            "ward_no": 283139,
+            "ward_name": "Pahumara (Pomara)",
+            "ward_id": 283139
+        },
+        {
+            "ward_no": 283118,
+            "ward_name": "Pajar Bhanga",
+            "ward_id": 283118
+        },
+        {
+            "ward_no": 283125,
+            "ward_name": "Pakda Bilor Pathar(Pakdahabila",
+            "ward_id": 283125
+        },
+        {
+            "ward_no": 283127,
+            "ward_name": "Palhaji",
+            "ward_id": 283127
+        },
+        {
+            "ward_no": 282973,
+            "ward_name": "Pathimari N.C.",
+            "ward_id": 282973
+        },
+        {
+            "ward_no": 283132,
+            "ward_name": "Rahampur",
+            "ward_id": 283132
+        },
+        {
+            "ward_no": 282968,
+            "ward_name": "Salmara Pathar",
+            "ward_id": 282968
+        },
+        {
+            "ward_no": 283114,
+            "ward_name": "Sila",
+            "ward_id": 283114
+        },
+        {
+            "ward_no": 283123,
+            "ward_name": "Suha Bil Daloni(Sohabil Doloni",
+            "ward_id": 283123
+        },
+        {
+            "ward_no": 283002,
+            "ward_name": "Tarabari",
+            "ward_id": 283002
+        },
+        {
+            "ward_no": 283140,
+            "ward_name": "Teklabala (Tekelabala)",
+            "ward_id": 283140
+        },
+        {
+            "ward_no": 283137,
+            "ward_name": "Temura",
+            "ward_id": 283137
+        }
+    ]
+}

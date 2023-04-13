@@ -1,0 +1,689 @@
+{
+    "name": "Bilasipara",
+    "lsg_code": 2550,
+    "district": "Dhubri",
+    "state": "Assam",
+    "no_of_wards": 136,
+    "wards": [
+        {
+            "ward_no": 281295,
+            "ward_name": "Alengmari",
+            "ward_id": 281295
+        },
+        {
+            "ward_no": 281338,
+            "ward_name": "Anand Nagar (Ct)",
+            "ward_id": 281338
+        },
+        {
+            "ward_no": 281306,
+            "ward_name": "Andhurjhar Pt.Ii",
+            "ward_id": 281306
+        },
+        {
+            "ward_no": 281300,
+            "ward_name": "Baghmari",
+            "ward_id": 281300
+        },
+        {
+            "ward_no": 281299,
+            "ward_name": "Baghmari",
+            "ward_id": 281299
+        },
+        {
+            "ward_no": 281287,
+            "ward_name": "Bakuabhangi",
+            "ward_id": 281287
+        },
+        {
+            "ward_no": 281332,
+            "ward_name": "Bamunpara Pt.Iv",
+            "ward_id": 281332
+        },
+        {
+            "ward_no": 281328,
+            "ward_name": "Bandhabpara",
+            "ward_id": 281328
+        },
+        {
+            "ward_no": 281327,
+            "ward_name": "Bangalipara Pt.I",
+            "ward_id": 281327
+        },
+        {
+            "ward_no": 281304,
+            "ward_name": "Barshi Pt.I",
+            "ward_id": 281304
+        },
+        {
+            "ward_no": 281305,
+            "ward_name": "Barshi Pt.Ii",
+            "ward_id": 281305
+        },
+        {
+            "ward_no": 281268,
+            "ward_name": "Bhaispara",
+            "ward_id": 281268
+        },
+        {
+            "ward_no": 281293,
+            "ward_name": "Bhalukmari",
+            "ward_id": 281293
+        },
+        {
+            "ward_no": 281283,
+            "ward_name": "Bhandarkuti",
+            "ward_id": 281283
+        },
+        {
+            "ward_no": 281296,
+            "ward_name": "Bhashanigaon",
+            "ward_id": 281296
+        },
+        {
+            "ward_no": 281272,
+            "ward_name": "Borjhora (Kauragaon)",
+            "ward_id": 281272
+        },
+        {
+            "ward_no": 281292,
+            "ward_name": "Chinamari",
+            "ward_id": 281292
+        },
+        {
+            "ward_no": 281311,
+            "ward_name": "Chokapara Pt.Iii",
+            "ward_id": 281311
+        },
+        {
+            "ward_no": 281285,
+            "ward_name": "Gaurangtari Pt.I",
+            "ward_id": 281285
+        },
+        {
+            "ward_no": 281286,
+            "ward_name": "Gaurangtari Pt.Ii",
+            "ward_id": 281286
+        },
+        {
+            "ward_no": 281321,
+            "ward_name": "Gopigaon Pt.I",
+            "ward_id": 281321
+        },
+        {
+            "ward_no": 281322,
+            "ward_name": "Gopigaon Pt.Ii",
+            "ward_id": 281322
+        },
+        {
+            "ward_no": 281323,
+            "ward_name": "Gopigaon Pt.Iii",
+            "ward_id": 281323
+        },
+        {
+            "ward_no": 281307,
+            "ward_name": "Hakama Pt.I",
+            "ward_id": 281307
+        },
+        {
+            "ward_no": 281308,
+            "ward_name": "Hakama Pt.V",
+            "ward_id": 281308
+        },
+        {
+            "ward_no": 281331,
+            "ward_name": "Hatipota Pt.I",
+            "ward_id": 281331
+        },
+        {
+            "ward_no": 281391,
+            "ward_name": "Hatipota Pt.Ii",
+            "ward_id": 281391
+        },
+        {
+            "ward_no": 281284,
+            "ward_name": "Hazaripara",
+            "ward_id": 281284
+        },
+        {
+            "ward_no": 281317,
+            "ward_name": "Houdartari",
+            "ward_id": 281317
+        },
+        {
+            "ward_no": 281316,
+            "ward_name": "Kachuagaon",
+            "ward_id": 281316
+        },
+        {
+            "ward_no": 281288,
+            "ward_name": "Kaimari",
+            "ward_id": 281288
+        },
+        {
+            "ward_no": 281333,
+            "ward_name": "Kajaikata Pt.I",
+            "ward_id": 281333
+        },
+        {
+            "ward_no": 281334,
+            "ward_name": "Kajaikata Pt.Ii",
+            "ward_id": 281334
+        },
+        {
+            "ward_no": 281329,
+            "ward_name": "Kathaldi Pt.Iii",
+            "ward_id": 281329
+        },
+        {
+            "ward_no": 281290,
+            "ward_name": "Khudigaon Pt.I",
+            "ward_id": 281290
+        },
+        {
+            "ward_no": 281291,
+            "ward_name": "Khudigaon Pt.Ii",
+            "ward_id": 281291
+        },
+        {
+            "ward_no": 281281,
+            "ward_name": "Kurshakati",
+            "ward_id": 281281
+        },
+        {
+            "ward_no": 281318,
+            "ward_name": "Kushakati",
+            "ward_id": 281318
+        },
+        {
+            "ward_no": 281302,
+            "ward_name": "Lakhiganj",
+            "ward_id": 281302
+        },
+        {
+            "ward_no": 281314,
+            "ward_name": "Lutapara",
+            "ward_id": 281314
+        },
+        {
+            "ward_no": 281279,
+            "ward_name": "Mamudpur",
+            "ward_id": 281279
+        },
+        {
+            "ward_no": 281278,
+            "ward_name": "Molandubi",
+            "ward_id": 281278
+        },
+        {
+            "ward_no": 281294,
+            "ward_name": "Nayapara",
+            "ward_id": 281294
+        },
+        {
+            "ward_no": 281313,
+            "ward_name": "Paikandara Pt.I",
+            "ward_id": 281313
+        },
+        {
+            "ward_no": 281312,
+            "ward_name": "Paikandara Pt.Ii",
+            "ward_id": 281312
+        },
+        {
+            "ward_no": 281277,
+            "ward_name": "Pakirtol",
+            "ward_id": 281277
+        },
+        {
+            "ward_no": 281315,
+            "ward_name": "Puran Laupara",
+            "ward_id": 281315
+        },
+        {
+            "ward_no": 281282,
+            "ward_name": "Rakhaltari",
+            "ward_id": 281282
+        },
+        {
+            "ward_no": 281269,
+            "ward_name": "Sasargaon Pt.I",
+            "ward_id": 281269
+        },
+        {
+            "ward_no": 281270,
+            "ward_name": "Sasargaon Pt.Ii",
+            "ward_id": 281270
+        },
+        {
+            "ward_no": 281271,
+            "ward_name": "Shaktola",
+            "ward_id": 281271
+        },
+        {
+            "ward_no": 281324,
+            "ward_name": "Shiberdabri",
+            "ward_id": 281324
+        },
+        {
+            "ward_no": 281273,
+            "ward_name": "Simlabari",
+            "ward_id": 281273
+        },
+        {
+            "ward_no": 281297,
+            "ward_name": "Singimari",
+            "ward_id": 281297
+        },
+        {
+            "ward_no": 281280,
+            "ward_name": "Sonaluguri",
+            "ward_id": 281280
+        },
+        {
+            "ward_no": 281337,
+            "ward_name": "Suapata Pt.I",
+            "ward_id": 281337
+        },
+        {
+            "ward_no": 281336,
+            "ward_name": "Suapata Pt.Ii",
+            "ward_id": 281336
+        },
+        {
+            "ward_no": 281335,
+            "ward_name": "Suapata Pt.V",
+            "ward_id": 281335
+        },
+        {
+            "ward_no": 281301,
+            "ward_name": "Sukulartari",
+            "ward_id": 281301
+        },
+        {
+            "ward_no": 281325,
+            "ward_name": "Suryakhata Pt.I",
+            "ward_id": 281325
+        },
+        {
+            "ward_no": 281326,
+            "ward_name": "Suryakhata Pt.Ii",
+            "ward_id": 281326
+        },
+        {
+            "ward_no": 281298,
+            "ward_name": "Takimari",
+            "ward_id": 281298
+        },
+        {
+            "ward_no": 281289,
+            "ward_name": "Tarangmukh",
+            "ward_id": 281289
+        },
+        {
+            "ward_no": 281319,
+            "ward_name": "Udmari Pt.I",
+            "ward_id": 281319
+        },
+        {
+            "ward_no": 281320,
+            "ward_name": "Udmari Pt.Ii",
+            "ward_id": 281320
+        },
+        {
+            "ward_no": 281303,
+            "ward_name": "Udmari Pt.Iii",
+            "ward_id": 281303
+        },
+        {
+            "ward_no": 281310,
+            "ward_name": "Udmari Pt.Iv",
+            "ward_id": 281310
+        },
+        {
+            "ward_no": 281309,
+            "ward_name": "Udmari Pt.V",
+            "ward_id": 281309
+        },
+        {
+            "ward_no": 281295,
+            "ward_name": "Alengmari",
+            "ward_id": 281295
+        },
+        {
+            "ward_no": 281338,
+            "ward_name": "Anand Nagar (Ct)",
+            "ward_id": 281338
+        },
+        {
+            "ward_no": 281306,
+            "ward_name": "Andhurjhar Pt.Ii",
+            "ward_id": 281306
+        },
+        {
+            "ward_no": 281300,
+            "ward_name": "Baghmari",
+            "ward_id": 281300
+        },
+        {
+            "ward_no": 281299,
+            "ward_name": "Baghmari",
+            "ward_id": 281299
+        },
+        {
+            "ward_no": 281287,
+            "ward_name": "Bakuabhangi",
+            "ward_id": 281287
+        },
+        {
+            "ward_no": 281332,
+            "ward_name": "Bamunpara Pt.Iv",
+            "ward_id": 281332
+        },
+        {
+            "ward_no": 281328,
+            "ward_name": "Bandhabpara",
+            "ward_id": 281328
+        },
+        {
+            "ward_no": 281327,
+            "ward_name": "Bangalipara Pt.I",
+            "ward_id": 281327
+        },
+        {
+            "ward_no": 281304,
+            "ward_name": "Barshi Pt.I",
+            "ward_id": 281304
+        },
+        {
+            "ward_no": 281305,
+            "ward_name": "Barshi Pt.Ii",
+            "ward_id": 281305
+        },
+        {
+            "ward_no": 281268,
+            "ward_name": "Bhaispara",
+            "ward_id": 281268
+        },
+        {
+            "ward_no": 281293,
+            "ward_name": "Bhalukmari",
+            "ward_id": 281293
+        },
+        {
+            "ward_no": 281283,
+            "ward_name": "Bhandarkuti",
+            "ward_id": 281283
+        },
+        {
+            "ward_no": 281296,
+            "ward_name": "Bhashanigaon",
+            "ward_id": 281296
+        },
+        {
+            "ward_no": 281272,
+            "ward_name": "Borjhora (Kauragaon)",
+            "ward_id": 281272
+        },
+        {
+            "ward_no": 281292,
+            "ward_name": "Chinamari",
+            "ward_id": 281292
+        },
+        {
+            "ward_no": 281311,
+            "ward_name": "Chokapara Pt.Iii",
+            "ward_id": 281311
+        },
+        {
+            "ward_no": 281285,
+            "ward_name": "Gaurangtari Pt.I",
+            "ward_id": 281285
+        },
+        {
+            "ward_no": 281286,
+            "ward_name": "Gaurangtari Pt.Ii",
+            "ward_id": 281286
+        },
+        {
+            "ward_no": 281321,
+            "ward_name": "Gopigaon Pt.I",
+            "ward_id": 281321
+        },
+        {
+            "ward_no": 281322,
+            "ward_name": "Gopigaon Pt.Ii",
+            "ward_id": 281322
+        },
+        {
+            "ward_no": 281323,
+            "ward_name": "Gopigaon Pt.Iii",
+            "ward_id": 281323
+        },
+        {
+            "ward_no": 281307,
+            "ward_name": "Hakama Pt.I",
+            "ward_id": 281307
+        },
+        {
+            "ward_no": 281308,
+            "ward_name": "Hakama Pt.V",
+            "ward_id": 281308
+        },
+        {
+            "ward_no": 281331,
+            "ward_name": "Hatipota Pt.I",
+            "ward_id": 281331
+        },
+        {
+            "ward_no": 281391,
+            "ward_name": "Hatipota Pt.Ii",
+            "ward_id": 281391
+        },
+        {
+            "ward_no": 281284,
+            "ward_name": "Hazaripara",
+            "ward_id": 281284
+        },
+        {
+            "ward_no": 281317,
+            "ward_name": "Houdartari",
+            "ward_id": 281317
+        },
+        {
+            "ward_no": 281316,
+            "ward_name": "Kachuagaon",
+            "ward_id": 281316
+        },
+        {
+            "ward_no": 281288,
+            "ward_name": "Kaimari",
+            "ward_id": 281288
+        },
+        {
+            "ward_no": 281333,
+            "ward_name": "Kajaikata Pt.I",
+            "ward_id": 281333
+        },
+        {
+            "ward_no": 281334,
+            "ward_name": "Kajaikata Pt.Ii",
+            "ward_id": 281334
+        },
+        {
+            "ward_no": 281329,
+            "ward_name": "Kathaldi Pt.Iii",
+            "ward_id": 281329
+        },
+        {
+            "ward_no": 281290,
+            "ward_name": "Khudigaon Pt.I",
+            "ward_id": 281290
+        },
+        {
+            "ward_no": 281291,
+            "ward_name": "Khudigaon Pt.Ii",
+            "ward_id": 281291
+        },
+        {
+            "ward_no": 281281,
+            "ward_name": "Kurshakati",
+            "ward_id": 281281
+        },
+        {
+            "ward_no": 281318,
+            "ward_name": "Kushakati",
+            "ward_id": 281318
+        },
+        {
+            "ward_no": 281302,
+            "ward_name": "Lakhiganj",
+            "ward_id": 281302
+        },
+        {
+            "ward_no": 281314,
+            "ward_name": "Lutapara",
+            "ward_id": 281314
+        },
+        {
+            "ward_no": 281279,
+            "ward_name": "Mamudpur",
+            "ward_id": 281279
+        },
+        {
+            "ward_no": 281278,
+            "ward_name": "Molandubi",
+            "ward_id": 281278
+        },
+        {
+            "ward_no": 281294,
+            "ward_name": "Nayapara",
+            "ward_id": 281294
+        },
+        {
+            "ward_no": 281313,
+            "ward_name": "Paikandara Pt.I",
+            "ward_id": 281313
+        },
+        {
+            "ward_no": 281312,
+            "ward_name": "Paikandara Pt.Ii",
+            "ward_id": 281312
+        },
+        {
+            "ward_no": 281277,
+            "ward_name": "Pakirtol",
+            "ward_id": 281277
+        },
+        {
+            "ward_no": 281315,
+            "ward_name": "Puran Laupara",
+            "ward_id": 281315
+        },
+        {
+            "ward_no": 281282,
+            "ward_name": "Rakhaltari",
+            "ward_id": 281282
+        },
+        {
+            "ward_no": 281269,
+            "ward_name": "Sasargaon Pt.I",
+            "ward_id": 281269
+        },
+        {
+            "ward_no": 281270,
+            "ward_name": "Sasargaon Pt.Ii",
+            "ward_id": 281270
+        },
+        {
+            "ward_no": 281271,
+            "ward_name": "Shaktola",
+            "ward_id": 281271
+        },
+        {
+            "ward_no": 281324,
+            "ward_name": "Shiberdabri",
+            "ward_id": 281324
+        },
+        {
+            "ward_no": 281273,
+            "ward_name": "Simlabari",
+            "ward_id": 281273
+        },
+        {
+            "ward_no": 281297,
+            "ward_name": "Singimari",
+            "ward_id": 281297
+        },
+        {
+            "ward_no": 281280,
+            "ward_name": "Sonaluguri",
+            "ward_id": 281280
+        },
+        {
+            "ward_no": 281337,
+            "ward_name": "Suapata Pt.I",
+            "ward_id": 281337
+        },
+        {
+            "ward_no": 281336,
+            "ward_name": "Suapata Pt.Ii",
+            "ward_id": 281336
+        },
+        {
+            "ward_no": 281335,
+            "ward_name": "Suapata Pt.V",
+            "ward_id": 281335
+        },
+        {
+            "ward_no": 281301,
+            "ward_name": "Sukulartari",
+            "ward_id": 281301
+        },
+        {
+            "ward_no": 281325,
+            "ward_name": "Suryakhata Pt.I",
+            "ward_id": 281325
+        },
+        {
+            "ward_no": 281326,
+            "ward_name": "Suryakhata Pt.Ii",
+            "ward_id": 281326
+        },
+        {
+            "ward_no": 281298,
+            "ward_name": "Takimari",
+            "ward_id": 281298
+        },
+        {
+            "ward_no": 281289,
+            "ward_name": "Tarangmukh",
+            "ward_id": 281289
+        },
+        {
+            "ward_no": 281319,
+            "ward_name": "Udmari Pt.I",
+            "ward_id": 281319
+        },
+        {
+            "ward_no": 281320,
+            "ward_name": "Udmari Pt.Ii",
+            "ward_id": 281320
+        },
+        {
+            "ward_no": 281303,
+            "ward_name": "Udmari Pt.Iii",
+            "ward_id": 281303
+        },
+        {
+            "ward_no": 281310,
+            "ward_name": "Udmari Pt.Iv",
+            "ward_id": 281310
+        },
+        {
+            "ward_no": 281309,
+            "ward_name": "Udmari Pt.V",
+            "ward_id": 281309
+        }
+    ]
+}

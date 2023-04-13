@@ -1,0 +1,344 @@
+{
+    "name": "Katigorah",
+    "lsg_code": 2513,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 67,
+    "wards": [
+        {
+            "ward_no": 298953,
+            "ward_name": "Balirbond",
+            "ward_id": 298953
+        },
+        {
+            "ward_no": 298909,
+            "ward_name": "Bhatarchak",
+            "ward_id": 298909
+        },
+        {
+            "ward_no": 298920,
+            "ward_name": "Chandi Nagar Pt I",
+            "ward_id": 298920
+        },
+        {
+            "ward_no": 298921,
+            "ward_name": "Chandi Nagar Pt Ii",
+            "ward_id": 298921
+        },
+        {
+            "ward_no": 298918,
+            "ward_name": "Chandi Nagar Pt Iii",
+            "ward_id": 298918
+        },
+        {
+            "ward_no": 298919,
+            "ward_name": "Chandi Nagar Pt Iv",
+            "ward_id": 298919
+        },
+        {
+            "ward_no": 298916,
+            "ward_name": "Chandi Nagar Pt V",
+            "ward_id": 298916
+        },
+        {
+            "ward_no": 298917,
+            "ward_name": "Chandi Nagar Pt Vi",
+            "ward_id": 298917
+        },
+        {
+            "ward_no": 298965,
+            "ward_name": "Dudpur Pt I",
+            "ward_id": 298965
+        },
+        {
+            "ward_no": 298967,
+            "ward_name": "Dudpur Pt Ii",
+            "ward_id": 298967
+        },
+        {
+            "ward_no": 298966,
+            "ward_name": "Dudpur Pt Iii",
+            "ward_id": 298966
+        },
+        {
+            "ward_no": 298969,
+            "ward_name": "Ganirgram Pt I",
+            "ward_id": 298969
+        },
+        {
+            "ward_no": 298970,
+            "ward_name": "Ganirgram Pt Ii",
+            "ward_id": 298970
+        },
+        {
+            "ward_no": 298971,
+            "ward_name": "Ganirgram Pt Iii",
+            "ward_id": 298971
+        },
+        {
+            "ward_no": 298968,
+            "ward_name": "Ganirgram Pt Iv",
+            "ward_id": 298968
+        },
+        {
+            "ward_no": 298948,
+            "ward_name": "Gobindapur Pt I",
+            "ward_id": 298948
+        },
+        {
+            "ward_no": 298949,
+            "ward_name": "Gobindapur Pt Ii",
+            "ward_id": 298949
+        },
+        {
+            "ward_no": 298950,
+            "ward_name": "Gobindapur Pt Iii",
+            "ward_id": 298950
+        },
+        {
+            "ward_no": 298922,
+            "ward_name": "Hari Nagar Pt I",
+            "ward_id": 298922
+        },
+        {
+            "ward_no": 298923,
+            "ward_name": "Hari Nagar Pt Ii",
+            "ward_id": 298923
+        },
+        {
+            "ward_no": 298925,
+            "ward_name": "Hari Nagar Pt Iii",
+            "ward_id": 298925
+        },
+        {
+            "ward_no": 298926,
+            "ward_name": "Hari Nagar Pt Iv",
+            "ward_id": 298926
+        },
+        {
+            "ward_no": 298939,
+            "ward_name": "Jagadishpur Pt I",
+            "ward_id": 298939
+        },
+        {
+            "ward_no": 298938,
+            "ward_name": "Jagadishpur Pt Ii",
+            "ward_id": 298938
+        },
+        {
+            "ward_no": 298940,
+            "ward_name": "Jagadishpur Pt Iii",
+            "ward_id": 298940
+        },
+        {
+            "ward_no": 298943,
+            "ward_name": "Jagadishpur Pt Iv",
+            "ward_id": 298943
+        },
+        {
+            "ward_no": 298937,
+            "ward_name": "Jagadishpur Pt V",
+            "ward_id": 298937
+        },
+        {
+            "ward_no": 298959,
+            "ward_name": "Kalinagar",
+            "ward_id": 298959
+        },
+        {
+            "ward_no": 298931,
+            "ward_name": "Karai Kandi Pt I",
+            "ward_id": 298931
+        },
+        {
+            "ward_no": 298932,
+            "ward_name": "Karai Kandi Pt Ii",
+            "ward_id": 298932
+        },
+        {
+            "ward_no": 298936,
+            "ward_name": "Lahamali",
+            "ward_id": 298936
+        },
+        {
+            "ward_no": 298935,
+            "ward_name": "Lathimara (Latimara)",
+            "ward_id": 298935
+        },
+        {
+            "ward_no": 298933,
+            "ward_name": "Madar Pur",
+            "ward_id": 298933
+        },
+        {
+            "ward_no": 298972,
+            "ward_name": "Mahadevpur",
+            "ward_id": 298972
+        },
+        {
+            "ward_no": 298946,
+            "ward_name": "Mohanpur Pt I",
+            "ward_id": 298946
+        },
+        {
+            "ward_no": 298947,
+            "ward_name": "Mohanpur Pt Ii",
+            "ward_id": 298947
+        },
+        {
+            "ward_no": 298934,
+            "ward_name": "Nazat Pur",
+            "ward_id": 298934
+        },
+        {
+            "ward_no": 906321,
+            "ward_name": "Nij Balikashi",
+            "ward_id": 906321
+        },
+        {
+            "ward_no": 298960,
+            "ward_name": "Niz-Fulbari Pt I",
+            "ward_id": 298960
+        },
+        {
+            "ward_no": 298961,
+            "ward_name": "Niz-Fulbari Pt Ii",
+            "ward_id": 298961
+        },
+        {
+            "ward_no": 298962,
+            "ward_name": "Niz-Fulbari Pt Iii",
+            "ward_id": 298962
+        },
+        {
+            "ward_no": 298927,
+            "ward_name": "Niz Hari Tikar Pt I",
+            "ward_id": 298927
+        },
+        {
+            "ward_no": 298928,
+            "ward_name": "Niz Hari Tikar Pt Ii",
+            "ward_id": 298928
+        },
+        {
+            "ward_no": 298941,
+            "ward_name": "Niz Katigorah Pt I",
+            "ward_id": 298941
+        },
+        {
+            "ward_no": 298942,
+            "ward_name": "Niz Katigorah Pt Ii",
+            "ward_id": 298942
+        },
+        {
+            "ward_no": 299130,
+            "ward_name": "Niz Katigorah Pt Iii (Ct)",
+            "ward_id": 299130
+        },
+        {
+            "ward_no": 298911,
+            "ward_name": "Niz Leverpute Pt Ii (Lavarputa Ii)",
+            "ward_id": 298911
+        },
+        {
+            "ward_no": 298910,
+            "ward_name": "Niz Leverpute Pt I(Lavarputa I)",
+            "ward_id": 298910
+        },
+        {
+            "ward_no": 298951,
+            "ward_name": "Noon Nagar (Nurnagar)",
+            "ward_id": 298951
+        },
+        {
+            "ward_no": 298954,
+            "ward_name": "Panch Gram",
+            "ward_id": 298954
+        },
+        {
+            "ward_no": 298912,
+            "ward_name": "Saidpur Pt I",
+            "ward_id": 298912
+        },
+        {
+            "ward_no": 298913,
+            "ward_name": "Saidpur Pt Ii",
+            "ward_id": 298913
+        },
+        {
+            "ward_no": 298914,
+            "ward_name": "Saidpur Pt Iii",
+            "ward_id": 298914
+        },
+        {
+            "ward_no": 298915,
+            "ward_name": "Salimabad",
+            "ward_id": 298915
+        },
+        {
+            "ward_no": 298955,
+            "ward_name": "Sibnarain Pur",
+            "ward_id": 298955
+        },
+        {
+            "ward_no": 298945,
+            "ward_name": "Siddeswar Pt Ii",
+            "ward_id": 298945
+        },
+        {
+            "ward_no": 298944,
+            "ward_name": "Siddeswar Pt I (Sidheswar-I)",
+            "ward_id": 298944
+        },
+        {
+            "ward_no": 298952,
+            "ward_name": "Sidhipur",
+            "ward_id": 298952
+        },
+        {
+            "ward_no": 299062,
+            "ward_name": "Singduar T.E.",
+            "ward_id": 299062
+        },
+        {
+            "ward_no": 298963,
+            "ward_name": "Sripur Pt I",
+            "ward_id": 298963
+        },
+        {
+            "ward_no": 298964,
+            "ward_name": "Sripur Pt Ii",
+            "ward_id": 298964
+        },
+        {
+            "ward_no": 298956,
+            "ward_name": "Tarinipur Pt I",
+            "ward_id": 298956
+        },
+        {
+            "ward_no": 298957,
+            "ward_name": "Tarinipur Pt Ii",
+            "ward_id": 298957
+        },
+        {
+            "ward_no": 298958,
+            "ward_name": "Tarinipur Pt Iii",
+            "ward_id": 298958
+        },
+        {
+            "ward_no": 298930,
+            "ward_name": "Teli Tikar Pt I",
+            "ward_id": 298930
+        },
+        {
+            "ward_no": 298929,
+            "ward_name": "Teli Tikar Pt Ii(Talitikar Ii)",
+            "ward_id": 298929
+        },
+        {
+            "ward_no": 298924,
+            "ward_name": "Tuker Gram",
+            "ward_id": 298924
+        }
+    ]
+}

@@ -5,6 +5,7 @@ on:
 
 jobs:
   test:
+    if: github.repository == 'coronasafe/care'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/care

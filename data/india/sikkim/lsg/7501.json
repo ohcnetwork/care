@@ -1,0 +1,34 @@
+{
+    "name": "Baiguney",
+    "lsg_code": 7501,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 5,
+    "wards": [
+        {
+            "ward_no": 261069,
+            "ward_name": "Mabong",
+            "ward_id": 261069
+        },
+        {
+            "ward_no": 261070,
+            "ward_name": "Segeng",
+            "ward_id": 261070
+        },
+        {
+            "ward_no": 261072,
+            "ward_name": "Gelling",
+            "ward_id": 261072
+        },
+        {
+            "ward_no": 261071,
+            "ward_name": "Samsing",
+            "ward_id": 261071
+        },
+        {
+            "ward_no": 261099,
+            "ward_name": "Zoom",
+            "ward_id": 261099
+        }
+    ]
+}

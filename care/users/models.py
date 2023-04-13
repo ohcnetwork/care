@@ -25,6 +25,13 @@ phone_number_regex = RegexValidator(
     code="invalid_mobile",
 )
 
+phone_number_regex_11 = RegexValidator(
+    # allow 10 to 11 digit mobile numbers if the first 4 digits are 1800
+    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}|1800\d{6,7}$",
+    message="Please Enter 10/11 digit mobile/landline/tollfree number",
+    code="invalid_mobile",
+)
+
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
     (2, "Kollam"),
@@ -140,7 +147,7 @@ class CustomUserManager(UserManager):
 
 
 class Skill(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=True, blank=True, default="")
 
     def __str__(self):
@@ -230,6 +237,23 @@ class User(AbstractUser):
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
+
+    doctor_qualification = models.TextField(
+        blank=False,
+        null=True,
+    )
+    doctor_experience_commenced_on = models.DateField(
+        default=None,
+        blank=False,
+        null=True,
+    )
+    doctor_medical_council_registration = models.CharField(
+        max_length=255,
+        default=None,
+        blank=False,
+        null=True,
+    )
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 

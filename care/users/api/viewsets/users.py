@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
@@ -15,6 +17,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
@@ -244,6 +247,44 @@ class UserViewSet(
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
+    @swagger_auto_schema(
+        method="delete",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=["facility"],
+            title="Facility",
+            properties={
+                "facility": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_UUID,
+                    title="Facility External ID",
+                )
+            },
+        ),
+        responses={
+            204: "Deleted Successfully",
+        },
+    )
+    @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
+    def clear_home_facility(self, request, *args, **kwargs):
+        user = self.get_object()
+        requesting_user = request.user
+
+        if not user.home_facility:
+            raise ValidationError({"home_facility": "No Home Facility Present"})
+        if (
+            requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or requesting_user.user_type in READ_ONLY_USER_TYPES
+        ):
+            raise ValidationError({"home_facility": "Insufficient Permissions"})
+
+        if not self.has_user_type_permission_elevation(requesting_user, user):
+            raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        user.home_facility = None
+        user.save(update_fields=["home_facility"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def delete_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
@@ -269,7 +310,11 @@ class UserViewSet(
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["PATCH", "GET"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=["PATCH", "GET"],
+        permission_classes=[IsAuthenticated],
+    )
     def pnconfig(self, request, *args, **kwargs):
         user = request.user
         if request.method == "GET":

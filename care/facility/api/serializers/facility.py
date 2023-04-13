@@ -13,6 +13,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.csp import config as cs_provider
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 User = get_user_model()
 
@@ -118,6 +119,15 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
         ]
         read_only_fields = ("modified_date", "created_date")
+
+    def validate_middleware_address(self, value):
+        value = value.strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user

@@ -1,0 +1,219 @@
+{
+    "name": "Tapang",
+    "lsg_code": 2521,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 42,
+    "wards": [
+        {
+            "ward_no": 299277,
+            "ward_name": "Alambag",
+            "ward_id": 299277
+        },
+        {
+            "ward_no": 299258,
+            "ward_name": "Bangala Ghat Grant",
+            "ward_id": 299258
+        },
+        {
+            "ward_no": 299259,
+            "ward_name": "Bangalaghat Pt Ii (Bagaighat)",
+            "ward_id": 299259
+        },
+        {
+            "ward_no": 299245,
+            "ward_name": "Banglaghat Pt I (Baglaghat)",
+            "ward_id": 299245
+        },
+        {
+            "ward_no": 299305,
+            "ward_name": "Barsangan Grant",
+            "ward_id": 299305
+        },
+        {
+            "ward_no": 905593,
+            "ward_name": "Chandrapur Pt-I",
+            "ward_id": 905593
+        },
+        {
+            "ward_no": 299276,
+            "ward_name": "Chengduar Pt I",
+            "ward_id": 299276
+        },
+        {
+            "ward_no": 299281,
+            "ward_name": "Chengduar Pt Ii",
+            "ward_id": 299281
+        },
+        {
+            "ward_no": 299367,
+            "ward_name": "Chengduar Pt. - Iii",
+            "ward_id": 299367
+        },
+        {
+            "ward_no": 299261,
+            "ward_name": "Chenglorie Grant",
+            "ward_id": 299261
+        },
+        {
+            "ward_no": 299324,
+            "ward_name": "Chibitabichia Pt I",
+            "ward_id": 299324
+        },
+        {
+            "ward_no": 299302,
+            "ward_name": "Chibitabichia Pt Ii",
+            "ward_id": 299302
+        },
+        {
+            "ward_no": 299300,
+            "ward_name": "Chibitabichia Pt Iii",
+            "ward_id": 299300
+        },
+        {
+            "ward_no": 299279,
+            "ward_name": "Chibitabichia Pt Iv",
+            "ward_id": 299279
+        },
+        {
+            "ward_no": 299301,
+            "ward_name": "Chibitabichia Pt Ix",
+            "ward_id": 299301
+        },
+        {
+            "ward_no": 299298,
+            "ward_name": "Chibitabichia Pt V",
+            "ward_id": 299298
+        },
+        {
+            "ward_no": 299280,
+            "ward_name": "Chibitabichia Pt Vi",
+            "ward_id": 299280
+        },
+        {
+            "ward_no": 299296,
+            "ward_name": "Chibitabichia Pt Vii",
+            "ward_id": 299296
+        },
+        {
+            "ward_no": 299297,
+            "ward_name": "Chibitabichia Pt Viii",
+            "ward_id": 299297
+        },
+        {
+            "ward_no": 299304,
+            "ward_name": "Chibitabichia Pt X",
+            "ward_id": 299304
+        },
+        {
+            "ward_no": 299303,
+            "ward_name": "Chibitabichia Pt Xi",
+            "ward_id": 299303
+        },
+        {
+            "ward_no": 299247,
+            "ward_name": "David Sonapur",
+            "ward_id": 299247
+        },
+        {
+            "ward_no": 299252,
+            "ward_name": "Digorsrikona Pt I",
+            "ward_id": 299252
+        },
+        {
+            "ward_no": 299253,
+            "ward_name": "Digorsrikona Pt Ii",
+            "ward_id": 299253
+        },
+        {
+            "ward_no": 299255,
+            "ward_name": "Elgin Grant",
+            "ward_id": 299255
+        },
+        {
+            "ward_no": 299295,
+            "ward_name": "Gangapur",
+            "ward_id": 299295
+        },
+        {
+            "ward_no": 299254,
+            "ward_name": "Indragarh Block",
+            "ward_id": 299254
+        },
+        {
+            "ward_no": 299246,
+            "ward_name": "Indragarhgrant",
+            "ward_id": 299246
+        },
+        {
+            "ward_no": 299283,
+            "ward_name": "Kathal Grant",
+            "ward_id": 299283
+        },
+        {
+            "ward_no": 299282,
+            "ward_name": "Merua Grant",
+            "ward_id": 299282
+        },
+        {
+            "ward_no": 299706,
+            "ward_name": "Nagakhal",
+            "ward_id": 299706
+        },
+        {
+            "ward_no": 299292,
+            "ward_name": "Niz Chatla Howar",
+            "ward_id": 299292
+        },
+        {
+            "ward_no": 299256,
+            "ward_name": "Pachim Biroinhowar",
+            "ward_id": 299256
+        },
+        {
+            "ward_no": 299326,
+            "ward_name": "Ratanpur Pt I",
+            "ward_id": 299326
+        },
+        {
+            "ward_no": 299325,
+            "ward_name": "Ratanpur Pt Ii",
+            "ward_id": 299325
+        },
+        {
+            "ward_no": 299322,
+            "ward_name": "Rosekandi Grant Pt I",
+            "ward_id": 299322
+        },
+        {
+            "ward_no": 299321,
+            "ward_name": "Rosekandi Grant Pt Ii",
+            "ward_id": 299321
+        },
+        {
+            "ward_no": 299323,
+            "ward_name": "Salchapra T.E. (Shahpur T.E.)",
+            "ward_id": 299323
+        },
+        {
+            "ward_no": 299248,
+            "ward_name": "Srikona Grant",
+            "ward_id": 299248
+        },
+        {
+            "ward_no": 299299,
+            "ward_name": "Tapang Pt I",
+            "ward_id": 299299
+        },
+        {
+            "ward_no": 299278,
+            "ward_name": "Tapang Pt Ii",
+            "ward_id": 299278
+        },
+        {
+            "ward_no": 299306,
+            "ward_name": "Tarutazabari Pt Ii",
+            "ward_id": 299306
+        }
+    ]
+}

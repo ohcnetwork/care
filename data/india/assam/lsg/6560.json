@@ -1,0 +1,134 @@
+{
+    "name": "Rani (Pt)",
+    "lsg_code": 6560,
+    "district": "Kamrup Metro",
+    "state": "Assam",
+    "no_of_wards": 25,
+    "wards": [
+        {
+            "ward_no": 303409,
+            "ward_name": "Agcia",
+            "ward_id": 303409
+        },
+        {
+            "ward_no": 303419,
+            "ward_name": "Azara (Ct)",
+            "ward_id": 303419
+        },
+        {
+            "ward_no": 303410,
+            "ward_name": "Barjhar",
+            "ward_id": 303410
+        },
+        {
+            "ward_no": 303399,
+            "ward_name": "Char Majir N.C.",
+            "ward_id": 303399
+        },
+        {
+            "ward_no": 303417,
+            "ward_name": "Deurali",
+            "ward_id": 303417
+        },
+        {
+            "ward_no": 303423,
+            "ward_name": "Dharapur (Ct)",
+            "ward_id": 303423
+        },
+        {
+            "ward_no": 303420,
+            "ward_name": "Garal (Ct)",
+            "ward_id": 303420
+        },
+        {
+            "ward_no": 303405,
+            "ward_name": "Garbhanga N.C.",
+            "ward_id": 303405
+        },
+        {
+            "ward_no": 303401,
+            "ward_name": "Gog",
+            "ward_id": 303401
+        },
+        {
+            "ward_no": 303402,
+            "ward_name": "Gog N.C.",
+            "ward_id": 303402
+        },
+        {
+            "ward_no": 303412,
+            "ward_name": "Jabe",
+            "ward_id": 303412
+        },
+        {
+            "ward_no": 303418,
+            "ward_name": "Jangaliapara",
+            "ward_id": 303418
+        },
+        {
+            "ward_no": 303413,
+            "ward_name": "Jogipara",
+            "ward_id": 303413
+        },
+        {
+            "ward_no": 303422,
+            "ward_name": "Kahi Kuchi (Ct)",
+            "ward_id": 303422
+        },
+        {
+            "ward_no": 303415,
+            "ward_name": "Kamar Gaon",
+            "ward_id": 303415
+        },
+        {
+            "ward_no": 303408,
+            "ward_name": "Kendukuchi",
+            "ward_id": 303408
+        },
+        {
+            "ward_no": 303404,
+            "ward_name": "Lakhara",
+            "ward_id": 303404
+        },
+        {
+            "ward_no": 303403,
+            "ward_name": "Lakhara N.C.",
+            "ward_id": 303403
+        },
+        {
+            "ward_no": 303421,
+            "ward_name": "Majir Gaon (Ct)",
+            "ward_id": 303421
+        },
+        {
+            "ward_no": 303414,
+            "ward_name": "Matikutni",
+            "ward_id": 303414
+        },
+        {
+            "ward_no": 303406,
+            "ward_name": "Mikirpara Chokardoi",
+            "ward_id": 303406
+        },
+        {
+            "ward_no": 303407,
+            "ward_name": "Mirzapur",
+            "ward_id": 303407
+        },
+        {
+            "ward_no": 303416,
+            "ward_name": "Pacheniapara",
+            "ward_id": 303416
+        },
+        {
+            "ward_no": 303398,
+            "ward_name": "Pamehi",
+            "ward_id": 303398
+        },
+        {
+            "ward_no": 303411,
+            "ward_name": "Pat Gaon",
+            "ward_id": 303411
+        }
+    ]
+}

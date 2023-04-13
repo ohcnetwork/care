@@ -1,0 +1,149 @@
+{
+    "name": "Namchi",
+    "lsg_code": 2157,
+    "district": "Namchi",
+    "state": "Sikkim",
+    "no_of_wards": 28,
+    "wards": [
+        {
+            "ward_no": 261127,
+            "ward_name": "Sangbung",
+            "ward_id": 261127
+        },
+        {
+            "ward_no": 261128,
+            "ward_name": "Assangthang",
+            "ward_id": 261128
+        },
+        {
+            "ward_no": 261140,
+            "ward_name": "Boomtar",
+            "ward_id": 261140
+        },
+        {
+            "ward_no": 261139,
+            "ward_name": "Bul",
+            "ward_id": 261139
+        },
+        {
+            "ward_no": 261108,
+            "ward_name": "Chemchey",
+            "ward_id": 261108
+        },
+        {
+            "ward_no": 261109,
+            "ward_name": "Damthang",
+            "ward_id": 261109
+        },
+        {
+            "ward_no": 261124,
+            "ward_name": "Gom",
+            "ward_id": 261124
+        },
+        {
+            "ward_no": 261110,
+            "ward_name": "Jaubari",
+            "ward_id": 261110
+        },
+        {
+            "ward_no": 261115,
+            "ward_name": "Kamrang",
+            "ward_id": 261115
+        },
+        {
+            "ward_no": 261132,
+            "ward_name": "Kitam",
+            "ward_id": 261132
+        },
+        {
+            "ward_no": 261129,
+            "ward_name": "Kopchey",
+            "ward_id": 261129
+        },
+        {
+            "ward_no": 261112,
+            "ward_name": "Mamley",
+            "ward_id": 261112
+        },
+        {
+            "ward_no": 261144,
+            "ward_name": "Maniram",
+            "ward_id": 261144
+        },
+        {
+            "ward_no": 261131,
+            "ward_name": "Manpur",
+            "ward_id": 261131
+        },
+        {
+            "ward_no": 261130,
+            "ward_name": "Mikkhola",
+            "ward_id": 261130
+        },
+        {
+            "ward_no": 261197,
+            "ward_name": "Namchi Forest Block",
+            "ward_id": 261197
+        },
+        {
+            "ward_no": 261113,
+            "ward_name": "Pabong(Mamley)",
+            "ward_id": 261113
+        },
+        {
+            "ward_no": 261114,
+            "ward_name": "Pakjer",
+            "ward_id": 261114
+        },
+        {
+            "ward_no": 261137,
+            "ward_name": "Pallum",
+            "ward_id": 261137
+        },
+        {
+            "ward_no": 261143,
+            "ward_name": "Phalidara",
+            "ward_id": 261143
+        },
+        {
+            "ward_no": 261136,
+            "ward_name": "Rong",
+            "ward_id": 261136
+        },
+        {
+            "ward_no": 261142,
+            "ward_name": "Salleybong",
+            "ward_id": 261142
+        },
+        {
+            "ward_no": 261126,
+            "ward_name": "Shyampani",
+            "ward_id": 261126
+        },
+        {
+            "ward_no": 261141,
+            "ward_name": "Singhithang",
+            "ward_id": 261141
+        },
+        {
+            "ward_no": 261138,
+            "ward_name": "Singtam",
+            "ward_id": 261138
+        },
+        {
+            "ward_no": 261125,
+            "ward_name": "Sorok",
+            "ward_id": 261125
+        },
+        {
+            "ward_no": 261111,
+            "ward_name": "Tingrithang",
+            "ward_id": 261111
+        },
+        {
+            "ward_no": 261116,
+            "ward_name": "Tinzeer",
+            "ward_id": 261116
+        }
+    ]
+}

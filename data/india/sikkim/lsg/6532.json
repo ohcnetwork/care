@@ -1,0 +1,79 @@
+{
+    "name": "Khamdong",
+    "lsg_code": 6532,
+    "district": "Gangtok",
+    "state": "Sikkim",
+    "no_of_wards": 14,
+    "wards": [
+        {
+            "ward_no": 261267,
+            "ward_name": "Beng",
+            "ward_id": 261267
+        },
+        {
+            "ward_no": 261261,
+            "ward_name": "Aritar",
+            "ward_id": 261261
+        },
+        {
+            "ward_no": 261266,
+            "ward_name": "Budang Thangsing",
+            "ward_id": 261266
+        },
+        {
+            "ward_no": 261259,
+            "ward_name": "Chadey",
+            "ward_id": 261259
+        },
+        {
+            "ward_no": 261271,
+            "ward_name": "Chisopani",
+            "ward_id": 261271
+        },
+        {
+            "ward_no": 261265,
+            "ward_name": "Dung Dung",
+            "ward_id": 261265
+        },
+        {
+            "ward_no": 261268,
+            "ward_name": "Khamdong",
+            "ward_id": 261268
+        },
+        {
+            "ward_no": 261262,
+            "ward_name": "Lingzey (Simik)",
+            "ward_id": 261262
+        },
+        {
+            "ward_no": 261274,
+            "ward_name": "Namgeythang",
+            "ward_id": 261274
+        },
+        {
+            "ward_no": 261273,
+            "ward_name": "Rabdang",
+            "ward_id": 261273
+        },
+        {
+            "ward_no": 261270,
+            "ward_name": "Sakyong",
+            "ward_id": 261270
+        },
+        {
+            "ward_no": 261260,
+            "ward_name": "Simik",
+            "ward_id": 261260
+        },
+        {
+            "ward_no": 261269,
+            "ward_name": "Sirwani",
+            "ward_id": 261269
+        },
+        {
+            "ward_no": 261267,
+            "ward_name": "Beng",
+            "ward_id": 261267
+        }
+    ]
+}

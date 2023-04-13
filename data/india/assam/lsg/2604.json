@@ -1,0 +1,239 @@
+{
+    "name": "Chandrapur",
+    "lsg_code": 2604,
+    "district": "Kamrup Metro",
+    "state": "Assam",
+    "no_of_wards": 46,
+    "wards": [
+        {
+            "ward_no": 303595,
+            "ward_name": "1 No. Dhamkhunda",
+            "ward_id": 303595
+        },
+        {
+            "ward_no": 303617,
+            "ward_name": "2 No. Birkuchi",
+            "ward_id": 303617
+        },
+        {
+            "ward_no": 303616,
+            "ward_name": "2 No. Bonda",
+            "ward_id": 303616
+        },
+        {
+            "ward_no": 303587,
+            "ward_name": "2 No. Chandrapur",
+            "ward_id": 303587
+        },
+        {
+            "ward_no": 303598,
+            "ward_name": "2 No.Dhamkhunda",
+            "ward_id": 303598
+        },
+        {
+            "ward_no": 303612,
+            "ward_name": "2 No. Khankar",
+            "ward_id": 303612
+        },
+        {
+            "ward_no": 303614,
+            "ward_name": "2 No. Kharghuli",
+            "ward_id": 303614
+        },
+        {
+            "ward_no": 303601,
+            "ward_name": "2 No. Michamari",
+            "ward_id": 303601
+        },
+        {
+            "ward_no": 303609,
+            "ward_name": "2 No. Niz-Panbari",
+            "ward_id": 303609
+        },
+        {
+            "ward_no": 303613,
+            "ward_name": "2 No. Panikhati",
+            "ward_id": 303613
+        },
+        {
+            "ward_no": 303603,
+            "ward_name": "2 No. Thakurbari",
+            "ward_id": 303603
+        },
+        {
+            "ward_no": 303610,
+            "ward_name": "Ahorigog",
+            "ward_id": 303610
+        },
+        {
+            "ward_no": 303585,
+            "ward_name": "Barchapahi",
+            "ward_id": 303585
+        },
+        {
+            "ward_no": 303615,
+            "ward_name": "Bonda",
+            "ward_id": 303615
+        },
+        {
+            "ward_no": 303623,
+            "ward_name": "Borbila Bill",
+            "ward_id": 303623
+        },
+        {
+            "ward_no": 303588,
+            "ward_name": "Chandrapur",
+            "ward_id": 303588
+        },
+        {
+            "ward_no": 303624,
+            "ward_name": "Chandrapur Baghicha (Ct)",
+            "ward_id": 303624
+        },
+        {
+            "ward_no": 303600,
+            "ward_name": "Dhipujijan Pam",
+            "ward_id": 303600
+        },
+        {
+            "ward_no": 303599,
+            "ward_name": "Dhipuji Pathar",
+            "ward_id": 303599
+        },
+        {
+            "ward_no": 303593,
+            "ward_name": "Ghoramarajan Pam",
+            "ward_id": 303593
+        },
+        {
+            "ward_no": 303592,
+            "ward_name": "Gobardhan Grant",
+            "ward_id": 303592
+        },
+        {
+            "ward_no": 303594,
+            "ward_name": "Govali",
+            "ward_id": 303594
+        },
+        {
+            "ward_no": 303621,
+            "ward_name": "Hajobari N.C.",
+            "ward_id": 303621
+        },
+        {
+            "ward_no": 303591,
+            "ward_name": "Hatibagara",
+            "ward_id": 303591
+        },
+        {
+            "ward_no": 303584,
+            "ward_name": "Hojobari",
+            "ward_id": 303584
+        },
+        {
+            "ward_no": 303589,
+            "ward_name": "Kajalichowki",
+            "ward_id": 303589
+        },
+        {
+            "ward_no": 303430,
+            "ward_name": "Kalitakuchi N.C.",
+            "ward_id": 303430
+        },
+        {
+            "ward_no": 303596,
+            "ward_name": "Kamarpur Pahar",
+            "ward_id": 303596
+        },
+        {
+            "ward_no": 303597,
+            "ward_name": "Kamarpur Village",
+            "ward_id": 303597
+        },
+        {
+            "ward_no": 303583,
+            "ward_name": "Khankar",
+            "ward_id": 303583
+        },
+        {
+            "ward_no": 303619,
+            "ward_name": "Khankar N.C.",
+            "ward_id": 303619
+        },
+        {
+            "ward_no": 303434,
+            "ward_name": "Kharghuli",
+            "ward_id": 303434
+        },
+        {
+            "ward_no": 303581,
+            "ward_name": "Kharghuli N.C.",
+            "ward_id": 303581
+        },
+        {
+            "ward_no": 303604,
+            "ward_name": "Michamari",
+            "ward_id": 303604
+        },
+        {
+            "ward_no": 303620,
+            "ward_name": "Michamari N.C.",
+            "ward_id": 303620
+        },
+        {
+            "ward_no": 303590,
+            "ward_name": "Mikirpam",
+            "ward_id": 303590
+        },
+        {
+            "ward_no": 303435,
+            "ward_name": "Narengi (Og)",
+            "ward_id": 303435
+        },
+        {
+            "ward_no": 303605,
+            "ward_name": "Niz-Panbari",
+            "ward_id": 303605
+        },
+        {
+            "ward_no": 303622,
+            "ward_name": "Niz-Panbari N.C.",
+            "ward_id": 303622
+        },
+        {
+            "ward_no": 303431,
+            "ward_name": "No.1 Bonda Grant",
+            "ward_id": 303431
+        },
+        {
+            "ward_no": 303432,
+            "ward_name": "No.2 Bonda Grant",
+            "ward_id": 303432
+        },
+        {
+            "ward_no": 303582,
+            "ward_name": "Panikhaiti",
+            "ward_id": 303582
+        },
+        {
+            "ward_no": 303586,
+            "ward_name": "Tatimara",
+            "ward_id": 303586
+        },
+        {
+            "ward_no": 303602,
+            "ward_name": "Thakurkuchi Gaon",
+            "ward_id": 303602
+        },
+        {
+            "ward_no": 303618,
+            "ward_name": "Thakurkuchi N.C.",
+            "ward_id": 303618
+        },
+        {
+            "ward_no": 303433,
+            "ward_name": "Tintukura N.C.",
+            "ward_id": 303433
+        }
+    ]
+}

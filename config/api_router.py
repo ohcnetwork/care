@@ -72,6 +72,9 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
+from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -202,6 +205,11 @@ consultation_nested_router = NestedSimpleRouter(
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
+
+# HCX
+router.register("hcx/policy", PolicyViewSet)
+router.register("hcx/claim", ClaimViewSet)
+router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)

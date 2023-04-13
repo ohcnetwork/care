@@ -9,7 +9,7 @@ jobs:
   issue_opened_and_reopened:
     name: issue_opened_and_reopened
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues' && github.event.action == 'opened' || github.event.action == 'reopened'
+    if: github.repository == 'coronasafe/care' && github.event_name == 'issues' && github.event.action == 'opened' || github.event.action == 'reopened'
     steps:
       - name: 'Move issue to "Triage"'
         uses: leonsteinhaeuser/project-beta-automations@v1.0.1
@@ -22,7 +22,7 @@ jobs:
   issue_closed:
     name: issue_closed
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues' && github.event.action == 'closed'
+    if: github.repository == 'coronasafe/care' && github.event_name == 'issues' && github.event.action == 'closed'
     steps:
       - name: 'Moved issue to "Done"'
         uses: leonsteinhaeuser/project-beta-automations@v1.0.1

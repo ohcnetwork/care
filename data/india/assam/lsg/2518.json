@@ -1,0 +1,234 @@
+{
+    "name": "Salchapra",
+    "lsg_code": 2518,
+    "district": "Cachar",
+    "state": "Assam",
+    "no_of_wards": 45,
+    "wards": [
+        {
+            "ward_no": 299218,
+            "ward_name": "Algapur",
+            "ward_id": 299218
+        },
+        {
+            "ward_no": 299210,
+            "ward_name": "Balighat",
+            "ward_id": 299210
+        },
+        {
+            "ward_no": 298982,
+            "ward_name": "Barjatrapur",
+            "ward_id": 298982
+        },
+        {
+            "ward_no": 299188,
+            "ward_name": "Bhairab Nagar",
+            "ward_id": 299188
+        },
+        {
+            "ward_no": 298973,
+            "ward_name": "Bhangarpar-I",
+            "ward_id": 298973
+        },
+        {
+            "ward_no": 298974,
+            "ward_name": "Bhangerpar Pt Ii",
+            "ward_id": 298974
+        },
+        {
+            "ward_no": 298975,
+            "ward_name": "Bhangerpar Pt Iii",
+            "ward_id": 298975
+        },
+        {
+            "ward_no": 298976,
+            "ward_name": "Bhangerpar Pt Iv",
+            "ward_id": 298976
+        },
+        {
+            "ward_no": 298977,
+            "ward_name": "Bhangerpar Pt V",
+            "ward_id": 298977
+        },
+        {
+            "ward_no": 298983,
+            "ward_name": "Buribali Pt I",
+            "ward_id": 298983
+        },
+        {
+            "ward_no": 298986,
+            "ward_name": "Buribali Pt Ii",
+            "ward_id": 298986
+        },
+        {
+            "ward_no": 298987,
+            "ward_name": "Buribali Pt Iii",
+            "ward_id": 298987
+        },
+        {
+            "ward_no": 298978,
+            "ward_name": "Chandpur Pt I",
+            "ward_id": 298978
+        },
+        {
+            "ward_no": 298979,
+            "ward_name": "Chandpur Pt Ii",
+            "ward_id": 298979
+        },
+        {
+            "ward_no": 298980,
+            "ward_name": "Chandpur Pt Iii",
+            "ward_id": 298980
+        },
+        {
+            "ward_no": 298981,
+            "ward_name": "Chandpur Pt Iv",
+            "ward_id": 298981
+        },
+        {
+            "ward_no": 298984,
+            "ward_name": "Chandpur Pt V",
+            "ward_id": 298984
+        },
+        {
+            "ward_no": 299191,
+            "ward_name": "Dubag",
+            "ward_id": 299191
+        },
+        {
+            "ward_no": 299172,
+            "ward_name": "Durgapur",
+            "ward_id": 299172
+        },
+        {
+            "ward_no": 299223,
+            "ward_name": "Ghagrapar Pt I",
+            "ward_id": 299223
+        },
+        {
+            "ward_no": 299227,
+            "ward_name": "Ghagrapar Pt Ii",
+            "ward_id": 299227
+        },
+        {
+            "ward_no": 299221,
+            "ward_name": "Hatirhar Pt Ii",
+            "ward_id": 299221
+        },
+        {
+            "ward_no": 299220,
+            "ward_name": "Hatirhar Pt I(Matirhar Pt I)",
+            "ward_id": 299220
+        },
+        {
+            "ward_no": 299189,
+            "ward_name": "Krishna Pur",
+            "ward_id": 299189
+        },
+        {
+            "ward_no": 299213,
+            "ward_name": "Kumarpara",
+            "ward_id": 299213
+        },
+        {
+            "ward_no": 299216,
+            "ward_name": "Manikpur",
+            "ward_id": 299216
+        },
+        {
+            "ward_no": 299217,
+            "ward_name": "Nischintapur",
+            "ward_id": 299217
+        },
+        {
+            "ward_no": 299194,
+            "ward_name": "Niz-Joynagar",
+            "ward_id": 299194
+        },
+        {
+            "ward_no": 299219,
+            "ward_name": "Patheri Gram",
+            "ward_id": 299219
+        },
+        {
+            "ward_no": 299192,
+            "ward_name": "Peladahar",
+            "ward_id": 299192
+        },
+        {
+            "ward_no": 298985,
+            "ward_name": "Pratapi Para",
+            "ward_id": 298985
+        },
+        {
+            "ward_no": 299193,
+            "ward_name": "Raipur",
+            "ward_id": 299193
+        },
+        {
+            "ward_no": 299215,
+            "ward_name": "Rakhal Khaler Par Pt I",
+            "ward_id": 299215
+        },
+        {
+            "ward_no": 299228,
+            "ward_name": "Rakhalkhalerpar Pt Ii",
+            "ward_id": 299228
+        },
+        {
+            "ward_no": 299173,
+            "ward_name": "Raninagar",
+            "ward_id": 299173
+        },
+        {
+            "ward_no": 299250,
+            "ward_name": "Salchapra Grant",
+            "ward_id": 299250
+        },
+        {
+            "ward_no": 299226,
+            "ward_name": "Salchapra Pt I",
+            "ward_id": 299226
+        },
+        {
+            "ward_no": 299225,
+            "ward_name": "Salchapra Pt Ii",
+            "ward_id": 299225
+        },
+        {
+            "ward_no": 299224,
+            "ward_name": "Salchapra Pt Iii",
+            "ward_id": 299224
+        },
+        {
+            "ward_no": 299190,
+            "ward_name": "Sarail",
+            "ward_id": 299190
+        },
+        {
+            "ward_no": 299222,
+            "ward_name": "Sridharpur",
+            "ward_id": 299222
+        },
+        {
+            "ward_no": 299229,
+            "ward_name": "Srikona Pt I",
+            "ward_id": 299229
+        },
+        {
+            "ward_no": 299249,
+            "ward_name": "Srikona Pt Ii",
+            "ward_id": 299249
+        },
+        {
+            "ward_no": 299251,
+            "ward_name": "Srikona Pt Iii",
+            "ward_id": 299251
+        },
+        {
+            "ward_no": 299175,
+            "ward_name": "Ujan Gram",
+            "ward_id": 299175
+        }
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "name": "Ranka",
+    "lsg_code": 6535,
+    "district": "Gangtok",
+    "state": "Sikkim",
+    "no_of_wards": 12,
+    "wards": [
+        {
+            "ward_no": 261296,
+            "ward_name": "Barbing",
+            "ward_id": 261296
+        },
+        {
+            "ward_no": 261293,
+            "ward_name": "Chinzey",
+            "ward_id": 261293
+        },
+        {
+            "ward_no": 261299,
+            "ward_name": "Lingdum",
+            "ward_id": 261299
+        },
+        {
+            "ward_no": 261305,
+            "ward_name": "Luing",
+            "ward_id": 261305
+        },
+        {
+            "ward_no": 261306,
+            "ward_name": "Parbing",
+            "ward_id": 261306
+        },
+        {
+            "ward_no": 261294,
+            "ward_name": "Ranka",
+            "ward_id": 261294
+        },
+        {
+            "ward_no": 261292,
+            "ward_name": "Rawtey Rumtek",
+            "ward_id": 261292
+        },
+        {
+            "ward_no": 261298,
+            "ward_name": "Rey",
+            "ward_id": 261298
+        },
+        {
+            "ward_no": 261297,
+            "ward_name": "Rey Mendu",
+            "ward_id": 261297
+        },
+        {
+            "ward_no": 261323,
+            "ward_name": "Rumtek Forest Block",
+            "ward_id": 261323
+        },
+        {
+            "ward_no": 261291,
+            "ward_name": "Sajong Rumtek",
+            "ward_id": 261291
+        },
+        {
+            "ward_no": 261295,
+            "ward_name": "Sangtong",
+            "ward_id": 261295
+        }
+    ]
+}

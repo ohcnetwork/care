@@ -1,0 +1,304 @@
+{
+    "name": "Amguri",
+    "lsg_code": 2693,
+    "district": "Sivasagar",
+    "state": "Assam",
+    "no_of_wards": 59,
+    "wards": [
+        {
+            "ward_no": 292769,
+            "ward_name": "Abhoipuria",
+            "ward_id": 292769
+        },
+        {
+            "ward_no": 292788,
+            "ward_name": "Aboipuria Nara",
+            "ward_id": 292788
+        },
+        {
+            "ward_no": 292825,
+            "ward_name": "Ahu Grant",
+            "ward_id": 292825
+        },
+        {
+            "ward_no": 292792,
+            "ward_name": "Amguri Grant",
+            "ward_id": 292792
+        },
+        {
+            "ward_no": 292786,
+            "ward_name": "Baghjan Grant",
+            "ward_id": 292786
+        },
+        {
+            "ward_no": 292799,
+            "ward_name": "Bailung",
+            "ward_id": 292799
+        },
+        {
+            "ward_no": 292826,
+            "ward_name": "Bandarjan Grant",
+            "ward_id": 292826
+        },
+        {
+            "ward_no": 292807,
+            "ward_name": "Bangali Gaon",
+            "ward_id": 292807
+        },
+        {
+            "ward_no": 292784,
+            "ward_name": "Barbam Grant",
+            "ward_id": 292784
+        },
+        {
+            "ward_no": 292801,
+            "ward_name": "Barsayak Dibrual",
+            "ward_id": 292801
+        },
+        {
+            "ward_no": 292787,
+            "ward_name": "Baruah Pukhuri Baghjan Grant",
+            "ward_id": 292787
+        },
+        {
+            "ward_no": 292782,
+            "ward_name": "Baruah Pukhuri Chah",
+            "ward_id": 292782
+        },
+        {
+            "ward_no": 292778,
+            "ward_name": "Bhuyan Gaon",
+            "ward_id": 292778
+        },
+        {
+            "ward_no": 292777,
+            "ward_name": "Bhuyan Hat Nowboisa",
+            "ward_id": 292777
+        },
+        {
+            "ward_no": 292818,
+            "ward_name": "Bolimara Karchua",
+            "ward_id": 292818
+        },
+        {
+            "ward_no": 292820,
+            "ward_name": "Borsila Grant",
+            "ward_id": 292820
+        },
+        {
+            "ward_no": 292800,
+            "ward_name": "Bosasayak Dibrual",
+            "ward_id": 292800
+        },
+        {
+            "ward_no": 292806,
+            "ward_name": "Burha Gaon",
+            "ward_id": 292806
+        },
+        {
+            "ward_no": 292780,
+            "ward_name": "Changmai Konwar",
+            "ward_id": 292780
+        },
+        {
+            "ward_no": 292813,
+            "ward_name": "Chariali",
+            "ward_id": 292813
+        },
+        {
+            "ward_no": 292773,
+            "ward_name": "Deodhai",
+            "ward_id": 292773
+        },
+        {
+            "ward_no": 292823,
+            "ward_name": "Deopani Bagisha",
+            "ward_id": 292823
+        },
+        {
+            "ward_no": 292822,
+            "ward_name": "Deopani Grant",
+            "ward_id": 292822
+        },
+        {
+            "ward_no": 292824,
+            "ward_name": "Deopani Patta",
+            "ward_id": 292824
+        },
+        {
+            "ward_no": 292815,
+            "ward_name": "Dhadumia",
+            "ward_id": 292815
+        },
+        {
+            "ward_no": 292812,
+            "ward_name": "Dhepor Mridongia",
+            "ward_id": 292812
+        },
+        {
+            "ward_no": 292816,
+            "ward_name": "Dulia",
+            "ward_id": 292816
+        },
+        {
+            "ward_no": 292783,
+            "ward_name": "Dulia Charal",
+            "ward_id": 292783
+        },
+        {
+            "ward_no": 292809,
+            "ward_name": "Dum Gaon",
+            "ward_id": 292809
+        },
+        {
+            "ward_no": 292776,
+            "ward_name": "Gadhuli Bazar Chawdang",
+            "ward_id": 292776
+        },
+        {
+            "ward_no": 292810,
+            "ward_name": "Gharphalia",
+            "ward_id": 292810
+        },
+        {
+            "ward_no": 292781,
+            "ward_name": "Gharphalia Japihajia",
+            "ward_id": 292781
+        },
+        {
+            "ward_no": 292790,
+            "ward_name": "Haluadang Grant",
+            "ward_id": 292790
+        },
+        {
+            "ward_no": 292791,
+            "ward_name": "Haluating Grant",
+            "ward_id": 292791
+        },
+        {
+            "ward_no": 292772,
+            "ward_name": "Hatimuria Gharphalia",
+            "ward_id": 292772
+        },
+        {
+            "ward_no": 292789,
+            "ward_name": "Jaradhara",
+            "ward_id": 292789
+        },
+        {
+            "ward_no": 292794,
+            "ward_name": "Julagaon",
+            "ward_id": 292794
+        },
+        {
+            "ward_no": 292798,
+            "ward_name": "Kachari",
+            "ward_id": 292798
+        },
+        {
+            "ward_no": 292774,
+            "ward_name": "Khanikor",
+            "ward_id": 292774
+        },
+        {
+            "ward_no": 292805,
+            "ward_name": "Kukura Chowanara",
+            "ward_id": 292805
+        },
+        {
+            "ward_no": 292814,
+            "ward_name": "Kumar",
+            "ward_id": 292814
+        },
+        {
+            "ward_no": 292793,
+            "ward_name": "Ladoigar Grant",
+            "ward_id": 292793
+        },
+        {
+            "ward_no": 292770,
+            "ward_name": "Lalimchiga Chapori",
+            "ward_id": 292770
+        },
+        {
+            "ward_no": 292817,
+            "ward_name": "Lunpuria",
+            "ward_id": 292817
+        },
+        {
+            "ward_no": 292785,
+            "ward_name": "Miri Chutia",
+            "ward_id": 292785
+        },
+        {
+            "ward_no": 292797,
+            "ward_name": "Morankari",
+            "ward_id": 292797
+        },
+        {
+            "ward_no": 292803,
+            "ward_name": "Mout",
+            "ward_id": 292803
+        },
+        {
+            "ward_no": 292819,
+            "ward_name": "Namti Bangali (Borgohain)",
+            "ward_id": 292819
+        },
+        {
+            "ward_no": 292821,
+            "ward_name": "Namti Grant",
+            "ward_id": 292821
+        },
+        {
+            "ward_no": 292804,
+            "ward_name": "Natun Changmai",
+            "ward_id": 292804
+        },
+        {
+            "ward_no": 292795,
+            "ward_name": "Perabhari",
+            "ward_id": 292795
+        },
+        {
+            "ward_no": 292802,
+            "ward_name": "Purani Changmai",
+            "ward_id": 292802
+        },
+        {
+            "ward_no": 292779,
+            "ward_name": "Raidongia",
+            "ward_id": 292779
+        },
+        {
+            "ward_no": 292811,
+            "ward_name": "Senchoa",
+            "ward_id": 292811
+        },
+        {
+            "ward_no": 292796,
+            "ward_name": "Sumdar",
+            "ward_id": 292796
+        },
+        {
+            "ward_no": 292775,
+            "ward_name": "Sunuwal",
+            "ward_id": 292775
+        },
+        {
+            "ward_no": 292808,
+            "ward_name": "Tiphuk Chah Bagisha",
+            "ward_id": 292808
+        },
+        {
+            "ward_no": 292827,
+            "ward_name": "Tiphuk Grant",
+            "ward_id": 292827
+        },
+        {
+            "ward_no": 292771,
+            "ward_name": "Uttar Gharphalia",
+            "ward_id": 292771
+        }
+    ]
+}

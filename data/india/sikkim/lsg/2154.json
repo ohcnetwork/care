@@ -1,0 +1,99 @@
+{
+    "name": "Pakyong",
+    "lsg_code": 2154,
+    "district": "Pakyong",
+    "state": "Sikkim",
+    "no_of_wards": 18,
+    "wards": [
+        {
+            "ward_no": 261330,
+            "ward_name": "Aho",
+            "ward_id": 261330
+        },
+        {
+            "ward_no": 261344,
+            "ward_name": "Amba",
+            "ward_id": 261344
+        },
+        {
+            "ward_no": 261346,
+            "ward_name": "Bering",
+            "ward_id": 261346
+        },
+        {
+            "ward_no": 261339,
+            "ward_name": "Chalamthang",
+            "ward_id": 261339
+        },
+        {
+            "ward_no": 261331,
+            "ward_name": "Changey Senti (Tsaney)",
+            "ward_id": 261331
+        },
+        {
+            "ward_no": 261328,
+            "ward_name": "Chotta Singtam",
+            "ward_id": 261328
+        },
+        {
+            "ward_no": 261337,
+            "ward_name": "Dikling",
+            "ward_id": 261337
+        },
+        {
+            "ward_no": 261338,
+            "ward_name": "Kartok",
+            "ward_id": 261338
+        },
+        {
+            "ward_no": 261341,
+            "ward_name": "Losing",
+            "ward_id": 261341
+        },
+        {
+            "ward_no": 261333,
+            "ward_name": "Namcheybong",
+            "ward_id": 261333
+        },
+        {
+            "ward_no": 261332,
+            "ward_name": "Pachey",
+            "ward_id": 261332
+        },
+        {
+            "ward_no": 261342,
+            "ward_name": "Pacheykhani",
+            "ward_id": 261342
+        },
+        {
+            "ward_no": 935336,
+            "ward_name": "Pakyong Bazar",
+            "ward_id": 935336
+        },
+        {
+            "ward_no": 261355,
+            "ward_name": "Pakyong Forest Block",
+            "ward_id": 261355
+        },
+        {
+            "ward_no": 261345,
+            "ward_name": "Tareythang",
+            "ward_id": 261345
+        },
+        {
+            "ward_no": 261343,
+            "ward_name": "Taza",
+            "ward_id": 261343
+        },
+        {
+            "ward_no": 261329,
+            "ward_name": "Yangtam",
+            "ward_id": 261329
+        },
+        {
+            "ward_no": 261336,
+            "ward_name": "East Pendam",
+            "ward_id": 261336
+        }
+    ]
+}

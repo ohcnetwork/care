@@ -26,6 +26,7 @@ class FileUpload(FacilityBaseModel):
         PATIENT = 1
         CONSULTATION = 2
         SAMPLE_MANAGEMENT = 3
+        CLAIM = 4
 
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"
