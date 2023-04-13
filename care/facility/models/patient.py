@@ -523,8 +523,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # Last Consultation Details
         "last_consultation__consultation_status": "Status during consultation",
         "last_consultation__created_date": "Date of first consultation",
-        "last_consultation__created_date__time": "Time of last consultation",
-        "last_consultation__icd11_diagnoses": "Final Diagnoses",
+        "last_consultation__created_date__time": "Time of first consultation",
+        "last_consultation__icd11_diagnoses": "Diagnoses",
         "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
@@ -555,7 +555,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
         "last_consultation__consultation_status": (
-            lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-")
+            lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__discharge_reason": (
