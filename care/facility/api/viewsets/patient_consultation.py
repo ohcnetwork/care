@@ -130,7 +130,8 @@ class PatientConsultationViewSet(
         raise Response(
             {
                 "message": "Discharge summary is not ready yet. Please try again after a few moments."
-            }
+            },
+            status=status.HTTP_404_NOT_FOUND,
         )
 
     @swagger_auto_schema(
