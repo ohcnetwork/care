@@ -416,10 +416,14 @@ class PatientViewSet(
                 raise serializers.ValidationError(
                     {"discharge_reason": "discharge reason is not valid"}
                 )
+            discharge_date = request.data.get("discharge_date", "")
             last_consultation.discharge_reason = reason
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
-                last_consultation.discharge_date = current_time
+                if discharge_date:
+                    last_consultation.discharge_date = discharge_date
+                else:
+                    last_consultation.discharge_date = current_time
             last_consultation.current_bed = None
             if reason == "EXP":
                 death_datetime = request.data.get("death_datetime")
@@ -439,7 +443,6 @@ class PatientViewSet(
                 discharge_prn_prescription = request.data.get(
                     "discharge_prn_prescription", []
                 )
-                discharge_date = request.data.get("discharge_date")
                 if discharge_date is None:
                     raise serializers.ValidationError(
                         {"discharge_date": "Please set the discharge date"}
