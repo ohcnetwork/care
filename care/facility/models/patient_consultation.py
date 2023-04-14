@@ -238,3 +238,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+    def has_object_discharge_patient_permission(self, request):
+        return self.has_object_update_permission(request)
+    
+    def has_object_email_discharge_summary_permission(self, request):
+        return self.has_object_read_permission(request)
