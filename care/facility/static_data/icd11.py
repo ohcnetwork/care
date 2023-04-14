@@ -41,6 +41,7 @@ for icd11_object in icd11_objects:
 ICDDiseases.create_search_index("label")
 ICDDiseases.create_index("id", unique=True)
 
+
 def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
     diagnosis_objects = []
     for diagnosis in diagnoses_ids:

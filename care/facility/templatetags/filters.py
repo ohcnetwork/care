@@ -18,9 +18,11 @@ def suggestion_string(suggestion_code: str):
         return "Domiciliary Care"
     return "Other"
 
+
 @register.filter()
 def field_name_to_label(value):
-    return value.replace('_', ' ').capitalize()
+    return value.replace("_", " ").capitalize()
+
 
 @register.filter(expects_localtime=True)
 def parse_datetime(value):

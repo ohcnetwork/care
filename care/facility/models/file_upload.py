@@ -94,7 +94,7 @@ class FileUpload(FacilityBaseModel):
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
                 "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,
+            ExpiresIn=60 * 60, #seconds
         )
 
     def read_signed_url(self):
@@ -105,7 +105,7 @@ class FileUpload(FacilityBaseModel):
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
                 "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,
+            ExpiresIn=60 * 60, #seconds
         )
     
     def put_object(self, file, bucket=settings.FILE_UPLOAD_BUCKET, **kwargs):
