@@ -733,6 +733,129 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
+    def _op_consultation_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="371530004",
+                        display="Clinical consultation report",
+                    )
+                ]
+            ),
+            title="OP Consultation Document",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=[
+                CompositionSection(
+                    title="Prescribed medications",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="440545006",
+                                display="Prescription",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda medicine: self._reference(
+                                self._medication_request(medicine)[1]
+                            ),
+                            self.consultation.discharge_advice,
+                        )
+                    ),
+                ),
+                CompositionSection(
+                    title="Health Documents",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="419891008",
+                                display="Record",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda file: self._reference(
+                                self._document_reference(file)
+                            ),
+                            FileUpload.objects.filter(
+                                associating_id=self.consultation.id
+                            ),
+                        )
+                    ),
+                ),
+                *list(
+                    map(
+                        lambda daily_round: CompositionSection(
+                            title=f"Daily Round - {daily_round.created_date}",
+                            code=CodeableConcept(
+                                coding=[
+                                    Coding(
+                                        system="https://projecteka.in/sct",
+                                        display="Wellness Record",
+                                    )
+                                ]
+                            ),
+                            entry=list(
+                                map(
+                                    lambda observation_profile: self._reference(
+                                        observation_profile
+                                    ),
+                                    self._observations_from_daily_round(daily_round),
+                                )
+                            ),
+                        ),
+                        self.consultation.daily_rounds.all(),
+                    )
+                ),
+                CompositionSection(
+                    title="Procedures",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="371525003",
+                                display="Clinical procedure report",
+                            )
+                        ]
+                    ),
+                    entry=list(
+                        map(
+                            lambda procedure: self._reference(
+                                self._procedure(procedure)
+                            ),
+                            self.consultation.procedure,
+                        )
+                    ),
+                ),
+                CompositionSection(
+                    title="Care Plan",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="734163000",
+                                display="Care Plan",
+                            )
+                        ]
+                    ),
+                    entry=[self._reference(self._careplan())],
+                ),
+            ],
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter(include_diagnosis=True)),
+            author=[self._reference(self._organization())],
+        )
+
     def _bundle_entry(self, resource):
         return BundleEntry(fullUrl=self._reference_url(resource), resource=resource)
 
@@ -888,6 +1011,61 @@ class Fhir:
             ],
         ).json()
 
+    def create_op_consultation_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._op_consultation_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                self._bundle_entry(self._careplan()),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._medication_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._medication_request_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._condition_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._procedure_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._document_reference_profiles,
+                    )
+                ),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._observation_profiles,
+                    )
+                ),
+            ],
+        ).json()
+
     def create_record(self, record_type):
         if record_type == "Prescription":
             return self.create_prescription_record()
@@ -902,6 +1080,6 @@ class Fhir:
         elif record_type == "DischargeSummary":
             return self.create_discharge_summary_record()
         elif record_type == "OPConsultation":
-            return self.create_discharge_summary_record()
+            return self.create_op_consultation_record()
         else:
             return self.create_discharge_summary_record()
