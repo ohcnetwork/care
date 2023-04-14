@@ -12,6 +12,7 @@ from fhir.resources.coding import Coding
 from fhir.resources.composition import Composition, CompositionSection
 from fhir.resources.condition import Condition
 from fhir.resources.contactpoint import ContactPoint
+from fhir.resources.diagnosticreport import DiagnosticReport
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.dosage import Dosage
 from fhir.resources.encounter import Encounter, EncounterDiagnosis
@@ -31,6 +32,7 @@ from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.patient_investigation import InvestigationValue
 from care.facility.static_data.icd11 import ICDDiseases
 
 
@@ -43,6 +45,7 @@ class Fhir:
         self._organization_profile = None
         self._encounter_profile = None
         self._careplan_profile = None
+        self._diagnostic_report_profile = None
         self._medication_profiles = []
         self._medication_request_profiles = []
         self._observation_profiles = []
@@ -213,12 +216,46 @@ class Fhir:
 
         return self._careplan_profile
 
+    def _diagnostic_report(self):
+        if self._diagnostic_report_profile:
+            return self._diagnostic_report_profile
+
+        self._diagnostic_report_profile = DiagnosticReport(
+            id=str(uuid()),
+            status="final",
+            code=CodeableConcept(text="Investigation/Test Results"),
+            result=list(
+                map(
+                    lambda investigation: self._reference(
+                        self._observation(
+                            title=investigation.investigation.name,
+                            value={
+                                "value": investigation.value,
+                                "unit": investigation.investigation.unit,
+                            },
+                            id=str(investigation.external_id),
+                            date=investigation.created_date.isoformat(),
+                        )
+                    ),
+                    InvestigationValue.objects.filter(consultation=self.consultation),
+                )
+            ),
+            subject=self._reference(self._patient()),
+            performer=[self._reference(self._organization())],
+            resultsInterpreter=[self._reference(self._organization())],
+            conclusion="Refer to Doctor. To be correlated with further study.",
+        )
+
+        return self._diagnostic_report_profile
+
     def _observation(self, title, value, id, date):
         if not value or (type(value) == dict and not value["value"]):
             return
 
         return Observation(
-            id=f"{id}.{title.replace(' ', '')}" if id and title else str(uuid()),
+            id=f"{id}.{title.replace(' ', '').replace('_', '-')}"
+            if id and title
+            else str(uuid()),
             status="final",
             effectiveDateTime=date if date else None,
             code=CodeableConcept(text=title),
@@ -610,6 +647,43 @@ class Fhir:
             author=[self._reference(self._organization())],
         )
 
+    def _diagnostic_report_composition(self):
+        id = str(uuid())  # TODO: use identifiable id
+        return Composition(
+            id=id,
+            identifier=Identifier(value=id),
+            status="final",  # TODO: use appropriate one
+            type=CodeableConcept(
+                coding=[
+                    Coding(
+                        system="https://projecteka.in/sct",
+                        code="721981007",
+                        display="Diagnostic Report",
+                    ),
+                ],
+            ),
+            title="Diagnostic Report",
+            date=datetime.now(timezone.utc).isoformat(),
+            section=[
+                CompositionSection(
+                    title="Investigation Report",
+                    code=CodeableConcept(
+                        coding=[
+                            Coding(
+                                system="https://projecteka.in/sct",
+                                code="721981007",
+                                display="Diagnostic Report",
+                            ),
+                        ],
+                    ),
+                    entry=[self._reference(self._diagnostic_report())],
+                ),
+            ],
+            subject=self._reference(self._patient()),
+            encounter=self._reference(self._encounter()),
+            author=[self._reference(self._organization())],
+        )
+
     def _discharge_summary_composition(self):
         id = str(uuid())  # TODO: use identifiable id
         return Composition(
@@ -932,6 +1006,30 @@ class Fhir:
             ],
         ).json()
 
+    def create_diagnostic_report_record(self):
+        id = str(uuid())
+        now = datetime.now(timezone.utc).isoformat()
+        return Bundle(
+            id=id,
+            identifier=Identifier(value=id),
+            type="document",
+            meta=Meta(lastUpdated=now),
+            timestamp=now,
+            entry=[
+                self._bundle_entry(self._diagnostic_report_composition()),
+                self._bundle_entry(self._practioner()),
+                self._bundle_entry(self._patient()),
+                self._bundle_entry(self._organization()),
+                self._bundle_entry(self._encounter()),
+                *list(
+                    map(
+                        lambda resource: self._bundle_entry(resource),
+                        self._observation_profiles,
+                    )
+                ),
+            ],
+        ).json()
+
     def create_health_document_record(self):
         id = str(uuid())
         now = datetime.now(timezone.utc).isoformat()
@@ -1076,7 +1174,7 @@ class Fhir:
         elif record_type == "HealthDocumentRecord":
             return self.create_health_document_record()
         elif record_type == "DiagnosticReport":
-            return self.create_discharge_summary_record()
+            return self.create_diagnostic_report_record()
         elif record_type == "DischargeSummary":
             return self.create_discharge_summary_record()
         elif record_type == "OPConsultation":
