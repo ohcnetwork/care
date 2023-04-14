@@ -246,7 +246,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, default=ActionEnum.PENDING.value
+        choices=ActionChoices, blank=True, null=True, default=None
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
