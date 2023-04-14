@@ -137,7 +137,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -155,6 +154,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
+            else:
+                patient.action = None
 
             if "review_interval" in validated_data:
                 review_interval = validated_data.pop("review_interval")
@@ -203,7 +204,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return consultation
 
     def create(self, validated_data):
-
         action = -1
         review_interval = -1
         if "action" in validated_data:
